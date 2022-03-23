@@ -1,6 +1,6 @@
 {
   "name": "hsjm",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Opinionated collection of common components, composables and utils for Vue projects.",
   "license": "MIT",
