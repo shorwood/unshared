@@ -13,8 +13,8 @@
   "scripts": {
     "build": "tsup --minify",
     "dev": "tsup --watch",
-    "lint": "eslint --ext=js,ts,tsx,vue,md,json .",
-    "lint:fix": "nr lint --fix"
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix"
   },
   "peerDependencies": {
     "@vue/composition-api": "^1.0.0-rc.1",
