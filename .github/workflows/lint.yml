@@ -21,7 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install pnpm
+      - name: Install PNPM
         uses: pnpm/action-setup@v2.0.1
         with:
           version: 6.24.3
@@ -32,7 +32,8 @@ jobs:
           node-version: 16
           cache: "pnpm"
 
-      - run: pnpm install
+      - name: Instal dependencies
+        run: pnpm install
 
       - name: Lint
-        run: pnpm run lint
+        run: pnpm lint
