@@ -96,7 +96,12 @@
     }
   },
   "eslintConfig": {
-    "ignorePatterns": ["dist/", "node_modules/"],
+    "ignorePatterns": [
+      "dist/",
+      "node_modules/",
+      ".github/",
+      ".vscode/"
+    ],
     "extends": [
       "./dist/eslint-config/basic.js",
       "./dist/eslint-config/typescript.js"
