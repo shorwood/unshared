@@ -1,18 +1,20 @@
 {
-  "name": "hsjm",
+  "name": "@hsjm/monorepo",
   "version": "1.0.0",
   "private": true,
   "description": "Opinionated collection of common components, composables and utils for Vue projects.",
   "license": "MIT",
   "author": "Stanley Horwood <stanley@hsjm.io>",
-  "files": [
-    "dist",
-    "LICENCE",
-    "README.md"
-  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hsjm-io/hsjm.git"
+  },
   "scripts": {
     "build": "tsup --minify",
     "dev": "tsup --watch",
+    "update:indexes": "esno ./scripts/updateIndexes.ts",
+    "update:readmes": "esno ./scripts/updateReadmes.ts",
+    "update:packages": "esno ./scripts/updatePackages.ts",
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix"
   },
@@ -26,67 +28,52 @@
     }
   },
   "dependencies": {
+    "@hsjm/eslint-config": "^1.0.3",
     "@iconify/iconify": "^2.2.0",
-    "@iconify/utils": "^1.0.30",
-    "@vueuse/components": "^8.1.2",
-    "@vueuse/core": "^8.1.2",
-    "@vueuse/shared": "^8.1.2",
-    "axios": "^0.26.1",
-    "firebase": "^9.6.9",
-    "leaflet": "^1.7.1",
-    "lodash": "^4.17.21",
-    "milsymbol": "^2.0.0",
-    "vue-demi": "^0.12.4",
-    "vue-router": "^4.0.14"
-  },
-  "devDependencies": {
+    "@iconify/utils": "^1.0.31",
     "@types/eslint": "^8.4.1",
     "@types/leaflet": "^1.7.9",
     "@types/lodash": "^4.14.180",
-    "@types/node": "^17.0.22",
-    "@typescript-eslint/eslint-plugin": "^5.16.0",
-    "@typescript-eslint/parser": "^5.16.0",
+    "@types/node": "^17.0.23",
+    "@vueuse/components": "^8.2.0",
+    "@vueuse/core": "^8.2.0",
+    "@vueuse/shared": "^8.2.0",
+    "axios": "^0.26.1",
+    "consola": "^2.15.3",
     "eslint": "^8.11.0",
-    "eslint-config-standard": "17.0.0-1",
-    "eslint-plugin-eslint-comments": "^3.2.0",
-    "eslint-plugin-html": "^6.2.0",
-    "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-jsonc": "^2.2.1",
-    "eslint-plugin-markdown": "^2.2.1",
-    "eslint-plugin-n": "^15.0.1",
-    "eslint-plugin-promise": "^6.0.0",
-    "eslint-plugin-unicorn": "^41.0.1",
-    "eslint-plugin-yml": "^0.14.0",
     "esno": "^0.14.1",
-    "jsonc-eslint-parser": "^2.1.0",
+    "fast-glob": "^3.2.11",
+    "firebase": "^9.6.10",
+    "leaflet": "^1.7.1",
+    "lodash": "^4.17.21",
+    "milsymbol": "^2.0.0",
     "tslib": "^2.3.1",
     "tsup": "^5.12.1",
-    "typescript": "^4.6.2",
-    "unplugin-vue-components": "^0.18.3",
+    "typescript": "^4.6.3",
+    "unplugin-vue-components": "^0.18.4",
     "vue": "^3.2.31",
-    "yaml-eslint-parser": "^0.5.0"
+    "vue-demi": "^0.12.4",
+    "vue-router": "^4.0.14"
   },
   "tsup": [
     {
-      "entry": ["src/*/index.ts"],
+      "entry": [
+        "packages/*/index.ts"
+      ],
       "loader": {
         ".css": "default",
         ".jpg": "dataurl",
         ".png": "dataurl"
       },
-      "format": ["esm", "cjs"],
+      "format": [
+        "esm",
+        "cjs"
+      ],
       "splitting": false,
       "sourcemap": true,
       "metafile": true,
       "clean": true,
       "dts": true
-    },
-    {
-      "entry": ["src/eslint-config/*.ts"],
-      "outDir": "dist/eslint-config",
-      "format": ["cjs"],
-      "splitting": false,
-      "shims": false
     }
   ],
   "pnpm": {
@@ -97,14 +84,17 @@
   },
   "eslintConfig": {
     "ignorePatterns": [
-      "dist/",
+      "dist/**/*.js",
+      "dist/**/*.mjs",
+      "dist/**/*.d.js",
       "node_modules/",
       ".github/",
-      ".vscode/"
+      ".vscode/",
+      "pnpm*.yaml"
     ],
     "extends": [
-      "./dist/eslint-config/basic.js",
-      "./dist/eslint-config/typescript.js"
+      "@hsjm/eslint-config/basic",
+      "@hsjm/eslint-config/typescript"
     ]
   }
 }
