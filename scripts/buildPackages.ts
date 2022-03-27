@@ -21,15 +21,16 @@ glob('./*/package.json', {
 
   // --- Compute `index.ts` content.
   .map((packagePath) => {
-    const packageDirectoryAbsolute = packagePath.split('/').slice(0, -1).join('/')
-    const packageDirectory = packageDirectoryAbsolute.split('/').slice(-2).join('/')
-    const packageName = packageDirectory.split('/')[1]
-    const packagePathNew = resolve(root, 'dist', packageName, 'package.json')
+    const sourceDirectoryAbsolute = packagePath.split('/').slice(0, -1).join('/')
+    const sourceDirectory = sourceDirectoryAbsolute.split('/').slice(-2).join('/')
+    const packageName = sourceDirectory.split('/')[1]
+    const outPath = resolve(root, 'dist', packageName)
+    const packagePathNew = resolve(outPath, 'package.json')
     const npmNamespace = rootPackage.name.split('/')[0]
 
     // --- Get all source files.
-    const sources = glob('./**/*.ts', {
-      cwd: packageDirectoryAbsolute,
+    const sources = glob('./index.(mjs|d.ts)', {
+      cwd: outPath,
       onlyFiles: true,
       absolute: true,
     })
@@ -52,7 +53,7 @@ glob('./*/package.json', {
 
     // --- Generate package.json
     return {
-      packageDirectory,
+      srcDirectory: sourceDirectory,
       filePath: packagePathNew,
       filePathRelative: relative(root, packagePathNew),
       content: {
@@ -62,7 +63,7 @@ glob('./*/package.json', {
         license: rootPackage.license,
         repository: {
           ...rootPackage.repository,
-          directory: packageDirectory,
+          directory: sourceDirectory,
         },
         bugs: rootPackage.bugs,
         main: './index.js',
@@ -89,6 +90,6 @@ glob('./*/package.json', {
       writeFileSync(x.filePath, JSON.stringify(x.content, undefined, 2))
     }
     else {
-      consola.error(`Package "${x.packageDirectory}" is missing "name" attribute.`)
+      consola.error(`Package "${x.srcDirectory}" is missing "name" attribute.`)
     }
   })
