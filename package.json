@@ -2,9 +2,9 @@
   "name": "@hsjm/monorepo",
   "version": "1.0.0",
   "private": true,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
   "description": "Opinionated collection of common components, composables and utils for Vue projects.",
   "license": "MIT",
-  "author": "Stanley Horwood <stanley@hsjm.io>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hsjm-io/hsjm.git"
