@@ -11,9 +11,10 @@
   },
   "scripts": {
     "dev": "pnpm build:pre && tsup --watch --onSuccess 'pnpm build:post'",
-    "build": "pnpm build:pre && tsup --minify --onSuccess 'pnpm build:post'",
-    "build:post": "pnpm build:packages && pnpm build:readmes",
+    "build": "pnpm build:pre && tsup --onSuccess 'pnpm build:post'",
+    "build:post": "pnpm build:licences && pnpm build:packages && pnpm build:readmes",
     "build:pre": "pnpm build:indexes",
+    "build:licences": "esno ./scripts/buildLicences.ts",
     "build:indexes": "esno ./scripts/buildIndexes.ts",
     "build:readmes": "esno ./scripts/buildReadmes.ts",
     "build:packages": "esno ./scripts/buildPackages.ts",
@@ -30,6 +31,8 @@
     }
   },
   "dependencies": {
+    "@firebase/app-compat": "^0.1.21",
+    "@firebase/app-types": "^0.7.0",
     "@hsjm/components": "link:packages/components",
     "@hsjm/core": "link:packages",
     "@hsjm/eslint-config": "^1.0.3",
@@ -54,8 +57,12 @@
     "esno": "^0.14.1",
     "fast-glob": "^3.2.11",
     "firebase": "^9.6.10",
+    "firebase-admin": "^10.0.2",
+    "firebase-functions": "^3.19.0",
+    "firebase-tools": "^10.5.0",
     "leaflet": "^1.7.1",
     "lodash": "^4.17.21",
+    "marked": "^4.0.12",
     "milsymbol": "^2.0.0",
     "tslib": "^2.3.1",
     "tsup": "^5.12.1",
@@ -94,9 +101,7 @@
   },
   "eslintConfig": {
     "ignorePatterns": [
-      "dist/**/*.js",
-      "dist/**/*.mjs",
-      "dist/**/*.d.js",
+      "dist",
       "node_modules/",
       ".github/",
       ".vscode/",
