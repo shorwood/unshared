@@ -73,8 +73,8 @@ glob('./*/package.json', {
         // jsdelivr: './index.iife.min.js',
         exports: {
           '.': {
+            require: './index.js',
             import: './index.mjs',
-            require: './index.cjs',
             types: './index.d.ts',
           },
         },
