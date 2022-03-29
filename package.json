@@ -17,9 +17,9 @@
     "build:licences": "esno ./scripts/buildLicences.ts",
     "build:indexes": "esno ./scripts/buildIndexes.ts",
     "build:readmes": "esno ./scripts/buildReadmes.ts",
-    "build:packages": "esno ./scripts/buildPackages.ts",
+    "build:packages": "esno ./scripts/buildPackages.ts && eslint ./dist/**/package.json --fix --no-ignore",
     "lint": "eslint .",
-    "lint:fix": "pnpm lint --fix"
+    "lint:fix": "eslint . --fix"
   },
   "peerDependencies": {
     "@vue/composition-api": "^1.0.0-rc.1",
@@ -34,7 +34,7 @@
     "@firebase/app-compat": "^0.1.21",
     "@firebase/app-types": "^0.7.0",
     "@hsjm/components": "link:packages/components",
-    "@hsjm/core": "link:packages",
+    "@hsjm/core": "link:packages/core",
     "@hsjm/eslint-config": "^1.0.3",
     "@hsjm/firebase": "link:packages/firebase",
     "@hsjm/fireworks": "link:packages/fireworks",
@@ -44,7 +44,6 @@
     "@hsjm/milsymbol": "link:packages/milsymbol",
     "@iconify/iconify": "^2.2.0",
     "@iconify/utils": "^1.0.31",
-    "@types/eslint": "^8.4.1",
     "@types/leaflet": "^1.7.9",
     "@types/lodash": "^4.14.180",
     "@types/node": "^17.0.23",
@@ -52,6 +51,8 @@
     "@vueuse/core": "^8.2.0",
     "@vueuse/shared": "^8.2.0",
     "axios": "^0.26.1",
+    "brain.js": "^2.0.0-beta.10",
+    "chalk": "^5.0.1",
     "consola": "^2.15.3",
     "eslint": "^8.12.0",
     "esno": "^0.14.1",
@@ -59,7 +60,7 @@
     "firebase": "^9.6.10",
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.19.0",
-    "firebase-tools": "^10.5.0",
+    "gpu.js": "^2.15.2",
     "leaflet": "^1.7.1",
     "lodash": "^4.17.21",
     "marked": "^4.0.12",
@@ -67,10 +68,10 @@
     "tslib": "^2.3.1",
     "tsup": "^5.12.1",
     "typescript": "^4.6.3",
-    "unplugin-vue-components": "^0.18.5",
     "vue": "^3.2.31",
     "vue-demi": "^0.12.4",
-    "vue-router": "^4.0.14"
+    "vue-router": "^4.0.14",
+    "windicss": "^3.5.1"
   },
   "tsup": [
     {
