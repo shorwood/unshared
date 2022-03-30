@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { relative, resolve } from 'node:path'
 import { sync as glob } from 'fast-glob'
 import consola from 'consola'
-import { chain } from 'lodash'
+import { chain, defaultsDeep } from 'lodash'
 import { extractDependencies, loadJson } from './utils'
 
 // --- Compute paths.
@@ -51,13 +51,14 @@ glob('./*/package.json', {
         : rootPackage.dependencies[x].replace(/^\^/, '')))
       .value()
 
+    const sourcePackage = loadJson(packagePath)
+
     // --- Generate package.json
     return {
       srcDirectory: sourceDirectory,
       filePath: packagePathNew,
       filePathRelative: relative(root, packagePathNew),
-      content: {
-        ...loadJson(packagePath),
+      content: defaultsDeep(sourcePackage, {
         version: rootPackage.version,
         author: rootPackage.author,
         license: rootPackage.license,
@@ -79,7 +80,7 @@ glob('./*/package.json', {
           },
         },
         dependencies,
-      },
+      }),
     }
   })
 
