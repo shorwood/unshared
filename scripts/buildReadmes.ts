@@ -8,7 +8,7 @@ import { loadJson } from './utils'
 const root = resolve(__dirname, '../')
 const distPath = resolve(root, 'dist')
 
-glob('./**/package.json', {
+glob('./*/package.json', {
   cwd: distPath,
   onlyFiles: true,
   absolute: true,
