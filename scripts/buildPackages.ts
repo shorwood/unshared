@@ -42,7 +42,8 @@ glob('./*/package.json', {
       .filter((x) => {
         if (x.startsWith(npmNamespace)) return true
         if (rootPackage.dependencies[x]) return true
-        consola.error(`Dependecy "${x}" is missing root package.`)
+        if (['fs', 'https', 'os', 'path'].includes(x)) return false
+        consola.error(`Dependecy "${x}" is missing in root package.`)
         return false
       })
       .mapKeys(x => x)
