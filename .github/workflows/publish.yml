@@ -29,14 +29,14 @@ jobs:
       - name: Install dependencies with PNPM
         run: pnpm install
 
-      - name: Publish to Github
-        run: npx conventional-github-releaser -p angular
-        continue-on-error: true
-        env:
-          CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      # - name: Publish to Github
+      #   run: npx conventional-github-releaser -p angular
+      #   continue-on-error: true
+      #   env:
+      #     CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - name: Publish to NPM
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-          NODE_OPTIONS: '--max-old-space-size=6144'
+      # - name: Publish to NPM
+      #   run: npm publish --access public
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      #     NODE_OPTIONS: '--max-old-space-size=6144'
