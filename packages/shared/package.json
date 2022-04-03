@@ -1,0 +1,5 @@
+{
+  "name": "@hsjm/shared",
+  "description": "Shared utilities for @hsjm packages.",
+  "sideEffects": false
+}
