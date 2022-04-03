@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable unicorn/no-null */
-import { readFileSync, writeFileSync } from 'node:fs'
 
 /**
  * Parse to JSON.
@@ -43,7 +43,7 @@ export const jsonParse = <T extends string | number | boolean | JSON | null | un
  * @returns JSON content as object.
  */
 export const jsonImport = <T extends string | number | boolean | JSON | null | undefined>(path: string, encoding?: BufferEncoding) =>
-  jsonParse<T>(readFileSync(path).toString(encoding))
+  jsonParse<T>(require('node:fs').readFileSync(path).toString(encoding))
 
 /**
  * Save object as JSON file.
@@ -51,5 +51,5 @@ export const jsonImport = <T extends string | number | boolean | JSON | null | u
  * @param object Object to save.
  */
 export const jsonExport = (path: string, object: JSON) => {
-  writeFileSync(path, JSON.stringify(object, undefined, 2))
+  require('node:fs').writeFileSync(path, JSON.stringify(object, undefined, 2))
 }
