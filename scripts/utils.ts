@@ -58,6 +58,17 @@ export const generateLicence = (cwd: string) => {
 export const generatePackageJson = (cwd: string) => {
   const rootPackage = jsonImport<any>(join(ROOT_PATH, 'package.json'))
   const sourcePackage = jsonImport<any>(join(cwd.replace('dist/', 'packages/'), 'package.json'))
+
+  const dependencies = sourcePackage.dependencies
+    ? Object.entries(<Record<string, string>>sourcePackage.dependencies)
+      .map(([packageName, version]) => [
+        packageName,
+        version
+          .replace('workspace:*', rootPackage.version)
+          .replace(/\^|>=|<=(.*)/, '$1'),
+      ])
+    : []
+
   const distPackage = {
     ...sourcePackage,
     version: rootPackage.version,
@@ -78,6 +89,7 @@ export const generatePackageJson = (cwd: string) => {
         types: './index.d.ts',
       },
     },
+    dependencies: Object.fromEntries(dependencies),
   }
 
   writeFileSync(join(cwd, 'package.json'), JSON.stringify(distPackage, undefined, 2))
