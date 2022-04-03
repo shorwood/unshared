@@ -76,7 +76,7 @@ export const generatePackageJson = (cwd: string) => {
     license: rootPackage.license,
     repository: {
       ...rootPackage.repository,
-      directory: cwd.replace('/dist', '/packages'),
+      directory: cwd.replace('dist/', 'packages/'),
     },
     bugs: rootPackage.bugs,
     main: './index.js',
