@@ -61,6 +61,8 @@
       "milsymbol",
       "@mapbox/mapbox-sdk",
       "leaflet",
+      "unocss",
+      "@unocss/preset-mini",
       "brain.js",
       "gpu.js"
     ],
