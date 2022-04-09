@@ -1,6 +1,7 @@
 export * from './collection'
 export * from './color'
 export * from './convertToUnit'
+export * from './createPalette'
 export * from './environment'
 export * from './hash'
 export * from './json'
