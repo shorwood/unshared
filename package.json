@@ -17,7 +17,8 @@
     "build:post": "esno ./scripts/buildPost.ts && pnpm build:lint",
     "build:lint": "eslint ./dist/*/package.json --fix --no-ignore",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "upgrade:all": "pnpm upgrade && esno ./scripts/upgrade.ts"
   },
   "devDependencies": {
     "@hsjm/eslint-config": "^1.0.3",
