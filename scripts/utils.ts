@@ -1,6 +1,7 @@
 
 import { copyFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { execSync } from 'node:child_process'
 import { sync as glob } from 'fast-glob'
 import consola from 'consola'
 import { jsonImport } from '../packages/shared'
@@ -93,4 +94,8 @@ export const generatePackageJson = (cwd: string) => {
   }
 
   writeFileSync(join(cwd, 'package.json'), JSON.stringify(distPackage, undefined, 2))
+}
+
+export const upgradePackage = (cwd: string) => {
+  execSync(`pnpm upgrade -C ${cwd}`)
 }
