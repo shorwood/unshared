@@ -8,19 +8,20 @@ export type Validator<T = any, P = undefined> = P extends undefined
 
 // --- Generic.
 export const isPrimitiveType: Validator<any, string> = type => value => typeof value === type
-export const isNull: Validator<any> = value => value === null
+export const isNull = (value?: any): value is null => value === null
 export const isNotNull: Validator<any> = value => value !== null
 export const isUndefined: Validator<any> = value => typeof value === 'undefined'
 export const isNotUndefined: Validator<any> = value => typeof value !== 'undefined'
+export const isNil = (value?: any): value is undefined | null => value !== null && value !== undefined
+export const isNotNil = <T>(value?: T): value is Exclude<T, undefined | null> => value !== null && value !== undefined
 
 // --- String.
-export const isString: Validator<string> = value => typeof value === 'string'
-export const isStringEmpty: Validator<string> = value => value!.trim().length === 0
-export const isStringNotEmpty: Validator<string> = value => value!.trim().length > 0
-export const isStringStartingWith: Validator<string, string> = substr => value => value!.startsWith(substr)
-export const isStringEndingWith: Validator<string, string> = substr => value => value!.endsWith(substr)
-export const isStringEqualTo: Validator<string, string> = string => value => string === value
-export const isStringMatching: Validator<string, RegExp> = regex => value => regex.test(value)
+export const isString = (value?: any): value is string => typeof value === 'string'
+export const isStringEmpty = (value?: any): value is '' => value?.trim().length === 0
+export const isStringNotEmpty = (value?: any): value is string => value?.trim().length > 0
+export const isStringStartingWith = (value?: any, substr?: string): value is string => value!.startsWith(substr)
+export const isStringEndingWith = (value?: any, substr?: string): value is string => value!.endsWith(substr)
+export const isStringMatching = (value?: any, regex?: RegExp): value is string => regex!.test(value)
 export const isStringLongerThan: Validator<string, number> = length => value => value.length >= length
 export const isStringShorterThan: Validator<string, number> = length => value => value.length <= length
 export const isStringLengthBetween: Validator<string, { min: number; max: number }> = ({ min, max }) => value => value.length >= min && value.length <= max

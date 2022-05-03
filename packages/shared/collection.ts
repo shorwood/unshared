@@ -1,4 +1,4 @@
-type Key = string | number
+type Key = string | number | symbol
 
 export const chunk = <T>(array: Array<T>, chunkSize: number): Array<T>[] => {
   const arrayChunked = []
@@ -13,21 +13,26 @@ export const uniq = <T>(array: Array<T>) =>
 export const compact = <T>(array: Array<T>): Array<Exclude<T, false | '' | 0 | null | undefined>> =>
   <any>uniq(array.filter(Boolean))
 
-// export const get = <T>(object: Record)
-
 export const omit = <T, K extends Key>(object: Record<K, T>, iterator: ((value: T, key: K) => boolean)) => {
   const entries = Object.entries(object).filter(([key, value]) => !iterator(<T>value, <K>key))
   return <Record<K, T>>Object.fromEntries(entries)
 }
 
-export const pick = <T, K extends Key>(object: Record<Key, T>, iterator: ((value: T, key: Key) => boolean)) => {
+export const pick = <T, K extends Key>(object: Record<K, T>, iterator: ((value: T, key: K) => boolean)) => {
   const entries = Object.entries(object).filter(([key, value]) => iterator(<T>value, <K>key))
   return <Record<K, T>>Object.fromEntries(entries)
 }
 
-export const mapValues = <T, K extends Key, TResult>(object: Record<K, T>, iterator: ((value: T, key: K) => TResult)) => {
-  const entries = Object.entries(object).map(([key, value]) => [key, iterator(<T>value, <K>key)])
-  return <Record<K, TResult>>Object.fromEntries(entries)
+interface MapValues {
+  <T, K extends Key, TResult>(object: Record<K, T>, iterator: ((value: T, key: K) => TResult)): Record<K, TResult>
+  <T, TResult>(object: Array<T>, iterator: ((value: T, key: number) => TResult)): Array<TResult>
+}
+
+export const mapValues: MapValues = (object: any, iterator: any) => {
+  const entries = Array.isArray(object)
+    ? object.map((value, key) => [iterator(<any>value, <any>key), value])
+    : Object.entries(object).map(([key, value]) => [key, iterator(<any>value, <any>key)])
+  return Object.fromEntries(entries)
 }
 
 interface MapKeys {
@@ -42,6 +47,6 @@ export const mapKeys: MapKeys = (object: any, iterator: any) => {
   return Object.fromEntries(entries)
 }
 
-export const arrayify = <T>(value: T | T[]) => (
+export const arrayify = <T>(value: T | Array<T>): Array<T> => (
   Array.isArray(value) ? value : [value]
 )
