@@ -13,3 +13,8 @@ export const noopAsync = async() => {}
 
 export const partialApply = <T extends Function, A extends any[]>(function_: T, ...arguments_: A) =>
   function_.bind(undefined, ...arguments_)
+
+export const functionName = (_function?: Function) => (_function
+  ? _function.name
+  : functionName.caller.name
+)
