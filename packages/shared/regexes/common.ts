@@ -31,8 +31,5 @@ export const semver = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\
 /** Matches comma separeted latitude and longitude values. */
 export const latLong = /^((-?|\+?)?\d+(\.\d+)?),\s*((-?|\+?)?\d+(\.\d+)?)$/
 
-/** Matches date (and time) with dashes, slashes or with spaces (e.g. `dd-mm-yyyy` `dd/mm/yyyy` `dd mm yyyy`). */
-export const dateTime = /^(0?[1-9]|[12]\d|3[01])([ /\-])(0?[1-9]|1[0-2])\2(\d{4})(([ -])([01]?\d|2[0-3])(?::[0-5]?\d){2})?$/
-
 /** Matches a valid date and times in the ISO-8601 format, excludes durations. */
 export const dateTimeIso8601 = /^(?![+-]?\d{4,5}-?(?:\d{2}|w\d{2})t)(?:|(\d{4}|[+-]\d{5})-?(?:|(0\d|1[0-2])(?:|-?([0-2]\d|3[01]))|([0-2]\d{2}|3[0-5]\d|36[0-6])|w([0-4]\d|5[0-3])(?:|-?([1-7])))(?:(?!\d)|t(?=\d)))(?:|([01]\d|2[0-4])(?:|:?([0-5]\d)(?:|:?([0-5]\d)(?:|\.(\d{3})))(?:|z|([+-](?:[01]\d|2[0-4]))(?:|:?([0-5]\d)))))$/i
