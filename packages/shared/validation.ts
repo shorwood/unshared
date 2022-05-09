@@ -2,11 +2,17 @@ import { mapValues } from './collection'
 import { isObject } from './validators'
 
 // --- Types.
+type NotFunction = (string | number | symbol | any[] | object) & { apply?: never }
 export type Validator = (value: any, argument?: any, context?: any) => any
 export type ValidatorArgument = (result: ValidateRuleResult) => any
+
 export type Schema = Record<string, RuleSet>
-export type RuleSet = Rule | Rule[] | Rule[][]
-export type Rule = Validator | [Validator, any] | [Validator, any, string] | RuleObject
+export type RuleSet = Rule[][] | Rule[] | Rule
+
+export type Rule = Validator
+| [handler: Validator, arguments: NotFunction, errorMessage?: string]
+| RuleObject
+
 export interface RuleObject {
   handler: Validator
   name?: string
@@ -54,11 +60,10 @@ const isRule = (value: any): value is Rule => (
   )
   || (
     Array.isArray(value)
-    && value.length > 0
+    && value.length >= 2
     && value.length <= 3
     && typeof value[0] === 'function'
     && typeof value[1] !== 'function'
-    && typeof value[2] !== 'function'
   )
 )
 
@@ -175,8 +180,10 @@ export const validateRules = async(value: any, rules: Rule | Rule[], context?: a
 export const validateRuleSet = async(value: any, ruleSets: RuleSet, context?: any): Promise<ValidateRulesResult> => {
   const results: ValidateRulesResult[] = []
   if (isRule(ruleSets)) ruleSets = [[ruleSets]]
-  // @ts-expect-error: Is isValid.
-  if (ruleSets.every(isRule)) ruleSets = [ruleSets]
+  // @ts-expect-error: Is valid.
+  else if (ruleSets.every(isRule)) ruleSets = [ruleSets]
+  // @ts-expect-error: Is valid.
+  else if (!ruleSets.every(x => isRule(x) || x.every(isRule))) throw new Error('invalid rule set')
 
   // --- Validate and store results of each rules one by one.
   // --- If one of the rules does not return a string, use it as new value.
@@ -189,15 +196,18 @@ export const validateRuleSet = async(value: any, ruleSets: RuleSet, context?: an
     }
   }
 
+  const isValid = results.some(x => x.isValid)
+  const isInvalid = !isValid
+
   // --- Return  result.
   return {
     results: results.flatMap(x => x.results),
-    failed: results.flatMap(x => x.failed),
-    valid: results.flatMap(x => x.valid),
-    errors: results.flatMap(x => x.errors),
+    failed: isInvalid ? results.flatMap(x => x.failed) : [],
+    valid: isInvalid ? results.flatMap(x => x.valid) : [],
+    errors: isInvalid ? results.flatMap(x => x.errors) : [],
     value,
-    isValid: results.some(x => x.isValid),
-    isInvalid: !results.some(x => x.isValid),
+    isValid,
+    isInvalid,
   }
 }
 

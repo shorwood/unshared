@@ -1,5 +1,8 @@
 {
   "name": "@hsjm/shared",
   "description": "Shared utilities for @hsjm packages.",
-  "sideEffects": false
+  "sideEffects": false,
+  "devDependencies": {
+    "axios": "^0.26.1"
+  }
 }
