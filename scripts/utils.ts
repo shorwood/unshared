@@ -1,7 +1,6 @@
 
 import { copyFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { execSync } from 'node:child_process'
 import { sync as glob } from 'fast-glob'
 import consola from 'consola'
 import { jsonImport } from '../packages/shared'
