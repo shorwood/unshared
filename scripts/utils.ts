@@ -112,7 +112,3 @@ export const generatePackageJson = (cwd: string) => {
 
   writeFileSync(join(cwd, 'package.json'), JSON.stringify(distPackage, undefined, 2))
 }
-
-export const upgradePackage = (cwd: string) => {
-  execSync(`pnpm upgrade -C ${cwd}`)
-}
