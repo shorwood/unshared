@@ -66,7 +66,7 @@ export const generateLicence = (cwd: string) => {
 export const generatePackageJson = (cwd: string) => {
   const rootPackage = jsonImport<any>(join(ROOT_PATH, 'package.json'))
   const sourcePackage = jsonImport<any>(join(cwd.replace('dist/', 'packages/'), 'package.json'))
-  const customIndexes = glob('./**/index.js', { cwd, onlyFiles: true })
+  const customIndexes = glob('./*/index.js', { cwd, onlyFiles: true })
 
   const dependencies = sourcePackage.dependencies
     ? Object.entries(<Record<string, string>>sourcePackage.dependencies)
