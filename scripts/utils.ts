@@ -9,11 +9,18 @@ import { jsonImport } from '../packages/shared'
 const ROOT_PATH = join(__dirname, '..')
 
 export const generateIndex = (cwd: string) => {
-  const content = glob('./*.(t|j)s', { cwd, onlyFiles: true, ignore: ['index.*'] })
+  const files = glob('./*.(t|j)s', { cwd, onlyFiles: true })
+
+  // --- Abort if already exists.
+  if (files.includes('index.ts')) return
+  if (files.length === 0) return
+
+  const content = files
     .map(x => x.replace(/\.[^./]+$/, ''))
     .sort()
     .map(file => `export * from './${file}'\n`)
     .join('')
+
   if (content.length > 0) {
     writeFileSync(join(cwd, 'index.ts'), content)
     consola.success(`Generated index file "${join(cwd, 'index.ts')}"`)
@@ -59,6 +66,7 @@ export const generateLicence = (cwd: string) => {
 export const generatePackageJson = (cwd: string) => {
   const rootPackage = jsonImport<any>(join(ROOT_PATH, 'package.json'))
   const sourcePackage = jsonImport<any>(join(cwd.replace('dist/', 'packages/'), 'package.json'))
+  const customIndexes = glob('./**/index.js', { cwd, onlyFiles: true })
 
   const dependencies = sourcePackage.dependencies
     ? Object.entries(<Record<string, string>>sourcePackage.dependencies)
@@ -84,11 +92,20 @@ export const generatePackageJson = (cwd: string) => {
     module: './index.mjs',
     types: './index.d.ts',
     exports: {
-      '.': {
-        require: './index.js',
-        import: './index.mjs',
-        types: './index.d.ts',
-      },
+      ...Object.fromEntries(customIndexes.map((fileName) => {
+        const moduleName = fileName
+          .replace(/^index.js$/, '.')
+          .replace(/^(\w+)\/index.js$/, './$1')
+
+        const key = `${moduleName}`
+        const value = {
+          require: `${moduleName}/index.js`,
+          import: `${moduleName}/index.mjs`,
+          types: `${moduleName}/index.d.ts`,
+        }
+        return [key, value]
+      })),
+      './package.json': './package.json',
     },
     dependencies: Object.fromEntries(dependencies),
   }
