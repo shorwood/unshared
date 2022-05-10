@@ -12,7 +12,7 @@
   },
   "scripts": {
     "dev": "pnpm build:pre && tsup --watch --onSuccess 'pnpm build:post'",
-    "build": "pnpm build:pre && tsup --minify --onSuccess 'pnpm build:post'",
+    "build": "pnpm build:pre && tsup --onSuccess 'pnpm build:post'",
     "build:pre": "esno ./scripts/buildPre.ts",
     "build:post": "esno ./scripts/buildPost.ts && pnpm build:lint",
     "build:lint": "eslint ./dist/*/package.json --fix --no-ignore",
