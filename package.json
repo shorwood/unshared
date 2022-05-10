@@ -11,7 +11,8 @@
     "url": "git+https://github.com/hsjm-io/hsjm.git"
   },
   "scripts": {
-    "dev": "pm2 start && pm2 dash && pm2 kill",
+    "dev": "pm2 start",
+    "dev:stop": "pm2 stop /hsjm-.+/",
     "build": "pnpm recursive run build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
@@ -40,6 +41,7 @@
     "ignorePatterns": [
       "dist",
       "node_modules",
+      "LICENCE",
       ".github",
       ".vscode",
       "*.yaml",
