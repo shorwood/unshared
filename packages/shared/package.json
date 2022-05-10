@@ -28,7 +28,7 @@
   ],
   "scripts": {
     "dev": "pnpm build -- --watch",
-    "build": "tsup build index.ts */index.ts --onSuccess 'pnpm build:post && pnpm build:lint'",
+    "build": "tsup index.ts */index.ts --onSuccess 'pnpm build:post && pnpm build:lint'",
     "build:post": "esno ../../scripts/buildPost.ts",
     "build:lint": "eslint package.json --fix --no-ignore"
   },
