@@ -88,14 +88,14 @@ export const generatePackageJson = (cwd: string) => {
     exports: {
       ...Object.fromEntries(customIndexes.map((fileName) => {
         const moduleName = fileName
-          .replace('./index.js', '.')
-          .replace(/^(\w+)\/index.js$/, './$1')
+          .replace('./index.js', '')
+          .replace(/^(\w+)\/index.js$/, '/$1')
 
-        const key = `${moduleName}`
+        const key = `.${moduleName}`
         const value = {
-          require: `${moduleName}/dist/index.js`,
-          import: `${moduleName}/dist/index.mjs`,
-          types: `${moduleName}/dist/index.d.ts`,
+          require: `./dist${moduleName}/index.js`,
+          import: `./dist${moduleName}/index.mjs`,
+          types: `./dist${moduleName}/index.d.ts`,
         }
         return [key, value]
       })),
@@ -103,5 +103,8 @@ export const generatePackageJson = (cwd: string) => {
     },
   }
 
-  writeFileSync(join(cwd, 'package.json'), JSON.stringify(distPackage, undefined, 2))
+  writeFileSync(
+    join(cwd, 'package.json'),
+    `${JSON.stringify(distPackage, undefined, 2)}\n`,
+  )
 }
