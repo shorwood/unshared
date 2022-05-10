@@ -1,8 +1,39 @@
 {
   "name": "@hsjm/shared",
+  "version": "1.0.0",
+  "author": "Stanley Horwood <stanley@hsjm.io>",
   "description": "Shared utilities for @hsjm packages.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hsjm-io/hsjm.git",
+    "directory": "/home/shorwood/workspaces/hsjm/packages/shared"
+  },
   "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENCE"
+  ],
+  "scripts": {
+    "dev": "pnpm build -- --watch",
+    "build": "tsup build ./index.ts --onSuccess 'pnpm build:post && pnpm build:lint'",
+    "build:post": "esno ../../scripts/buildPost.ts",
+    "build:lint": "eslint package.json --fix --no-ignore"
+  },
   "devDependencies": {
+    "@types/node": "^17.0.31",
     "axios": "^0.26.1"
   }
 }

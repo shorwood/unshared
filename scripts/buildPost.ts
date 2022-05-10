@@ -1,10 +1,13 @@
-import { sync as glob } from 'fast-glob'
+import { cwd as getCwd } from 'node:process'
+import { join, relative } from 'node:path'
 import consola from 'consola'
 import { generateLicence, generatePackageJson, generateReadme } from './utils'
 
-glob('dist/*', { onlyDirectories: true }).forEach((distDirectory) => {
-  generatePackageJson(distDirectory)
-  generateLicence(distDirectory)
-  generateReadme(distDirectory)
-  consola.success(`Finished post-build script for package "${distDirectory}".`)
-})
+const cwd = getCwd()
+const root = join(__dirname, '..')
+const cwdRelative = relative(root, cwd)
+
+generatePackageJson(cwd)
+generateLicence(cwd)
+generateReadme(cwd)
+consola.success(`Finished post-build script for package "${cwdRelative}".`)

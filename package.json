@@ -11,14 +11,10 @@
     "url": "git+https://github.com/hsjm-io/hsjm.git"
   },
   "scripts": {
-    "dev": "pnpm build:pre && tsup --watch --onSuccess 'pnpm build:post'",
-    "build": "pnpm build:pre && tsup --onSuccess 'pnpm build:post'",
-    "build:pre": "esno ./scripts/buildPre.ts",
-    "build:post": "esno ./scripts/buildPost.ts && pnpm build:lint",
-    "build:lint": "eslint ./dist/*/package.json --fix --no-ignore",
+    "dev": "pm2 start && pm2 dash && pm2 kill",
+    "build": "pnpm recursive run build",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "upgrade:all": "pnpm upgrade && esno ./scripts/upgrade.ts"
+    "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
     "@hsjm/eslint-config": "^1.0.3",
@@ -32,48 +28,11 @@
     "typescript": "^4.6.4"
   },
   "tsup": {
-    "entry": [
-      "packages/*/index.ts",
-      "packages/*/*/index.ts"
-    ],
     "outDir": "dist",
-    "loader": {
-      ".css": "default",
-      ".jpg": "dataurl",
-      ".png": "dataurl"
-    },
-    "format": [
-      "esm",
-      "cjs"
-    ],
-    "external": [
-      "@hsjm/core",
-      "@hsjm/shared",
-      "@hsjm/firebase",
-      "@hsjm/fireworks",
-      "@vueuse/core",
-      "@vueuse/shared",
-      "vue-demi",
-      "vue",
-      "firebase",
-      "firebase-admin",
-      "firebase-functions",
-      "@iconify/iconify",
-      "@iconify/utils",
-      "milsymbol",
-      "@mapbox/mapbox-sdk",
-      "leaflet",
-      "unocss",
-      "@unocss/preset-mini",
-      "mock-require",
-      "brain.js",
-      "gpu.js",
-      "vee-validate"
-    ],
+    "format": ["esm", "cjs" ],
     "splitting": false,
     "sourcemap": true,
-    "metafile": true,
-    "clean": true,
+    "clean": false,
     "shims": false,
     "dts": true
   },

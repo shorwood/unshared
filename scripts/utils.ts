@@ -64,18 +64,8 @@ export const generateLicence = (cwd: string) => {
 
 export const generatePackageJson = (cwd: string) => {
   const rootPackage = jsonImport<any>(join(ROOT_PATH, 'package.json'))
-  const sourcePackage = jsonImport<any>(join(cwd.replace('dist/', 'packages/'), 'package.json'))
-  const customIndexes = glob(['./index.js', './*/index.js'], { cwd, onlyFiles: true })
-
-  const dependencies = sourcePackage.dependencies
-    ? Object.entries(<Record<string, string>>sourcePackage.dependencies)
-      .map(([packageName, version]) => [
-        packageName,
-        version
-          .replace('workspace:*', rootPackage.version)
-          .replace(/\^|>=|<=(.*)/, '$1'),
-      ])
-    : []
+  const sourcePackage = jsonImport<any>(join(cwd, 'package.json'))
+  const customIndexes = glob(['./index.js', './*/index.js'], { cwd: join(cwd, 'dist'), onlyFiles: true })
 
   const distPackage = {
     ...sourcePackage,
@@ -87,9 +77,14 @@ export const generatePackageJson = (cwd: string) => {
       directory: cwd.replace('dist/', 'packages/'),
     },
     bugs: rootPackage.bugs,
-    main: './index.js',
-    module: './index.mjs',
-    types: './index.d.ts',
+    files: [
+      'dist',
+      'README.md',
+      'LICENCE',
+    ],
+    main: './dist/index.js',
+    module: './dist/index.mjs',
+    types: './dist/index.d.ts',
     exports: {
       ...Object.fromEntries(customIndexes.map((fileName) => {
         const moduleName = fileName
@@ -98,15 +93,14 @@ export const generatePackageJson = (cwd: string) => {
 
         const key = `${moduleName}`
         const value = {
-          require: `${moduleName}/index.js`,
-          import: `${moduleName}/index.mjs`,
-          types: `${moduleName}/index.d.ts`,
+          require: `${moduleName}/dist/index.js`,
+          import: `${moduleName}/dist/index.mjs`,
+          types: `${moduleName}/dist/index.d.ts`,
         }
         return [key, value]
       })),
       './package.json': './package.json',
     },
-    dependencies: Object.fromEntries(dependencies),
   }
 
   writeFileSync(join(cwd, 'package.json'), JSON.stringify(distPackage, undefined, 2))
