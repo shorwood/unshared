@@ -24,13 +24,17 @@
     "eslint": "^8.15.0",
     "esno": "^0.14.1",
     "fast-glob": "^3.2.11",
+    "pm2": "^5.2.0",
     "tslib": "^2.4.0",
     "tsup": "^5.12.7",
     "typescript": "^4.6.4"
   },
   "tsup": {
     "outDir": "dist",
-    "format": ["esm", "cjs" ],
+    "format": [
+      "esm",
+      "cjs"
+    ],
     "splitting": false,
     "sourcemap": true,
     "clean": false,
