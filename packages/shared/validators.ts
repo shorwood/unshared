@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-null */
 import { get } from './collection'
 import { dateTimeIso8601, email, firestoreId, url } from './regexes'
 import { RuleSet, Schema, validateRuleSet, validateSchema } from './validation'
@@ -75,10 +76,14 @@ export const isObjectShape = async(object: Record<string, any>, schema: Schema) 
 export const isEqualToValue = (value: any, x: any) => value === x
 export const isEqualToContext = (value: any, path: string, context: any) => value === get(context, path)
 
-// --- Transformers.
+// --- Defaulters.
 export const defaultToValue = (value: any, defaultValue: any) => (value !== undefined ? false : defaultValue)
 export const defaultToContext = (value: any, path: string, context: any) => (value !== undefined ? false : get(context, path))
 export const defaultToContexts = (value: any, paths: string[], context: any) => (value !== undefined ? false : paths.map(path => get(context, path)))
+
+// --- Transformers
+export const toNull = () => null
+export const toUndefined = () => {}
 export const toValue = (value: any, newValue: any) => newValue
 export const toContext = (value: any, path: string, context: any) => get(context, path)
 export const toContexts = (value: any, paths: string[], context: any) => paths.map(path => get(context, path))
