@@ -14,18 +14,18 @@ export const isNotNil = (value: any) => typeof value !== 'undefined' && value !=
 
 // --- String validators.
 export const isString = (value: any): value is string => typeof value === 'string'
-export const isStringEmpty = (string: string) => string.trim().length === 0
-export const isStringNotEmpty = (string: string) => string.trim().length > 0
-export const isStringStartingWith = (string: string, substr: string) => string.startsWith(substr)
-export const isStringEndingWith = (string: string, substr: string) => string.endsWith(substr)
-export const isStringMatching = (string: string, regex: RegExp) => regex.test(string)
-export const isStringLonger = (string: string, length: number) => string.length > length
-export const isStringLongerOrEq = (string: string, length: number) => string.length >= length
-export const isStringShorter = (string: string, length: number) => string.length < length
-export const isStringShorterOrEq = (string: string, length: number) => string.length <= length
-export const isStringBetween = (string: string, { min, max }: { min: number; max: number }) => string.length > min && string.length < max
-export const isStringBetweenOrEq = (string: string, { min, max }: { min: number; max: number }) => string.length >= min && string.length <= max
-export const isStringNumber = (string: string) => !Number.isNaN(+string)
+export const isStringEmpty = (value: string) => value.trim().length === 0
+export const isStringNotEmpty = (value: string) => value.trim().length > 0
+export const isStringStartingWith = (value: string, substr: string) => value.startsWith(substr)
+export const isStringEndingWith = (value: string, substr: string) => value.endsWith(substr)
+export const isStringMatching = (value: string, regex: RegExp) => regex.test(value)
+export const isStringLonger = (value: string, length: number) => value.length > length
+export const isStringLongerOrEq = (value: string, length: number) => value.length >= length
+export const isStringShorter = (value: string, length: number) => value.length < length
+export const isStringShorterOrEq = (value: string, length: number) => value.length <= length
+export const isStringBetween = (value: string, { min, max }: { min: number; max: number }) => value.length > min && value.length < max
+export const isStringBetweenOrEq = (value: string, { min, max }: { min: number; max: number }) => value.length >= min && value.length <= max
+export const isStringNumber = (value: string) => !Number.isNaN(+value)
 
 // --- Regex validators.
 export const isStringUrl = (value: string) => url.test(value)
@@ -42,14 +42,14 @@ export const isFalse = (value: boolean): value is false => value === false
 
 // --- Number validators.
 export const isNumber = (value: any) => typeof value === 'number' && !Number.isNaN(value) && Number.isFinite(value)
-export const isNumberLess = (number: number, n: number) => number < n
-export const isNumberLessOrEq = (number: number, n: number) => number <= n
-export const isNumberGreater = (number: number, n: number) => number > n
-export const isNumberGreaterOrEq = (number: number, n: number) => number >= n
-export const isNumberInRange = (number: number, { min, max }: { min: number; max: number }) => number >= min && number <= max
-export const isNumberPositive = (number: number) => number >= 0
-export const isNumberNegative = (number: number) => number < 0
-export const isNumberInteger = (number: number) => Number.isInteger(number)
+export const isNumberLess = (value: number, n: number) => value < n
+export const isNumberLessOrEq = (value: number, n: number) => value <= n
+export const isNumberGreater = (value: number, n: number) => value > n
+export const isNumberGreaterOrEq = (value: number, n: number) => value >= n
+export const isNumberInRange = (value: number, { min, max }: { min: number; max: number }) => value >= min && value <= max
+export const isNumberPositive = (value: number) => value >= 0
+export const isNumberNegative = (value: number) => value < 0
+export const isNumberInteger = (value: number) => Number.isInteger(value)
 
 // --- Array validators.
 export const isArray = (value: any): value is any[] => Array.isArray(value)
@@ -57,8 +57,8 @@ export const isArrayEmpty = (value: any[]): value is [] => Array.isArray(value) 
 export const isArrayNotEmpty = (value: any[]): value is any[] => Array.isArray(value) && value.length > 0
 export const isArrayIncluding = (value: any[], x: any): value is any[] => value.includes(x)
 export const isArrayIncludingContext = (value: any[], path: string, context: any): value is any[] => value.includes(get(context, path))
-export const isArrayOf = async(array: any[], ruleSet: RuleSet, context?: any) => {
-  const resultPromises = array.map(value => validateRuleSet(value, ruleSet, context))
+export const isArrayOf = async(value: any[], ruleSet: RuleSet, context?: any) => {
+  const resultPromises = value.map(x => validateRuleSet(x, ruleSet, context))
   const results = await Promise.all(resultPromises)
   const errors = results.flatMap(x => x.errors)
   if (errors.length > 0) throw new Error(errors[0])
@@ -67,8 +67,8 @@ export const isArrayOf = async(array: any[], ruleSet: RuleSet, context?: any) =>
 
 // --- Object validators.
 export const isObject = (value: any): value is Record<string | symbol, any> => Object.prototype.toString.call(value) === '[object Object]'
-export const isObjectShape = async(object: Record<string, any>, schema: Schema) => {
-  const result = await validateSchema(object, schema)
+export const isObjectShape = async(value: Record<string, any>, schema: Schema) => {
+  const result = await validateSchema(value, schema)
   return result.isValid
 }
 
@@ -84,6 +84,6 @@ export const defaultToContexts = (value: any, paths: string[], context: any) => 
 // --- Transformers
 export const toNull = () => null
 export const toUndefined = () => {}
-export const toValue = (value: any, newValue: any) => newValue
-export const toContext = (value: any, path: string, context: any) => get(context, path)
-export const toContexts = (value: any, paths: string[], context: any) => paths.map(path => get(context, path))
+export const toValue = (_value: any, newValue: any) => newValue
+export const toContext = (_value: any, path: string, context: any) => get(context, path)
+export const toContexts = (_value: any, paths: string[], context: any) => paths.map(path => get(context, path))
