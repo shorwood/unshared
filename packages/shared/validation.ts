@@ -136,9 +136,7 @@ export const validateRule = async(value: any, rule: Rule, context?: any): Promis
     }
 
     // --- Interpret result as transformed value.
-    else {
-      result.value = ruleResult ?? value
-    }
+    else { result.value = ruleResult }
   }
 
   // --- Store error if one occurs.
