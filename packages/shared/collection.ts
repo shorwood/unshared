@@ -1,4 +1,5 @@
-type Key = string | number | symbol
+export type Key = string | number | symbol
+export type MaybeArray<T> = T | T[]
 
 export const chunk = <T>(array: Array<T>, chunkSize: number): Array<T>[] => {
   const arrayChunked = []
@@ -7,7 +8,7 @@ export const chunk = <T>(array: Array<T>, chunkSize: number): Array<T>[] => {
   return arrayChunked
 }
 
-export const arrayify = <T>(value?: T | Array<T>): Array<T> =>
+export const arrayify = <T>(value?: MaybeArray<T>): Array<T> =>
   (value ? (Array.isArray(value) ? value : [value]) : [])
 
 export const uniq = <T>(array?: Array<T>) =>
