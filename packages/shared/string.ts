@@ -20,24 +20,24 @@ export const upperCase = (value: string) => value
 export const snakeCase = (value: string) => value
   .trim()
   .toLowerCase()
-  .replace(/[^a-z]+/gi, '_')
+  .replace(/[^\da-z]+/gi, '-')
 
 export const kebabCase = (value: string) => value
   .trim()
   .toLowerCase()
-  .replace(/[^a-z]+/gi, '-')
+  .replace(/[^\da-z]+/gi, '-')
 
 export const camelCase = (value: string) => value
   .trim()
   .toLowerCase()
   .replace(/^\w|[A-Z]|\b\w/g, (word, index) => (index === 0 ? word.toLowerCase() : word.toUpperCase()))
-  .replace(/[^a-z]+/gi, '')
+  .replace(/[^\da-z]+/gi, '-')
 
 export const pascalCase = (value: string) => value
   .trim()
   .toLowerCase()
   .replace(/^\w|[A-Z]|\b\w/g, word => word.toUpperCase())
-  .replace(/[^a-z]+/gi, '')
+  .replace(/[^\da-z]+/gi, '-')
 
 export const capitalize = (value: string) => value
   .toLowerCase()
