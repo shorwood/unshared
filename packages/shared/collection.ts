@@ -17,14 +17,26 @@ export const uniq = <T>(array?: Array<T>) =>
 export const compact = <T>(array?: Array<T>): Array<T> =>
   (array ? array.filter(Boolean) : [])
 
-export const omit = <T, K extends Key>(object: Record<K, T>, iterator: ((value: T, key: K) => boolean)) => {
-  const entries = Object.entries(object).filter(([key, value]) => !iterator(<T>value, <K>key))
-  return <Record<K, T>>Object.fromEntries(entries)
+export interface Omit {
+  <T, K extends Key>(object: Record<K, T>, iterator: ((value: T, key: K) => boolean)): Record<K, T>
+  <T, K extends Key, O extends K>(object: Record<K, T>, iterator: O | O[]): Record<Exclude<K, O>, T>
 }
 
-export const pick = <T, K extends Key>(object: Record<K, T>, iterator: ((value: T, key: K) => boolean)) => {
-  const entries = Object.entries(object).filter(([key, value]) => iterator(<T>value, <K>key))
-  return <Record<K, T>>Object.fromEntries(entries)
+export const omit: Omit = (object: any, iterator: any): any => {
+  if (typeof iterator !== 'function') iterator = (_v: any, k: string) => arrayify(iterator).includes(k)
+  const entries = Object.entries(object).filter(([key, value]) => !iterator(value, key))
+  return Object.fromEntries(entries)
+}
+
+export interface Pick {
+  <T, K extends Key>(object: Record<K, T>, iterator: ((value: T, key: K) => boolean)): Record<K, T>
+  <T, K extends Key, P extends K>(object: Record<K, T>, iterator: P | P[]): Record<Extract<K, P>, T>
+}
+
+export const pick: Pick = (object: any, iterator: any): any => {
+  if (typeof iterator !== 'function') iterator = (_v: any, k: string) => arrayify(iterator).includes(k)
+  const entries = Object.entries(object).filter(([key, value]) => iterator(value, key))
+  return Object.fromEntries(entries)
 }
 
 interface MapValues {
