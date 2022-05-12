@@ -11,7 +11,7 @@
     "url": "git+https://github.com/hsjm-io/hsjm.git"
   },
   "scripts": {
-    "dev": "pm2 start",
+    "dev": "pm2 restart ecosystem.config.js",
     "dev:stop": "pm2 stop /hsjm-.+/",
     "build": "pnpm recursive run build",
     "lint": "eslint .",
@@ -37,8 +37,8 @@
     ],
     "splitting": false,
     "sourcemap": true,
-    "clean": false,
-    "shims": false,
+    "clean": true,
+    "shims": true,
     "dts": true
   },
   "eslintConfig": {
