@@ -19,6 +19,51 @@
       "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
     },
+    "./collection": {
+      "require": "./dist/collection/index.js",
+      "import": "./dist/collection/index.mjs",
+      "types": "./dist/collection/index.d.ts"
+    },
+    "./color": {
+      "require": "./dist/color/index.js",
+      "import": "./dist/color/index.mjs",
+      "types": "./dist/color/index.d.ts"
+    },
+    "./hash": {
+      "require": "./dist/hash/index.js",
+      "import": "./dist/hash/index.mjs",
+      "types": "./dist/hash/index.d.ts"
+    },
+    "./json": {
+      "require": "./dist/json/index.js",
+      "import": "./dist/json/index.mjs",
+      "types": "./dist/json/index.d.ts"
+    },
+    "./misc": {
+      "require": "./dist/misc/index.js",
+      "import": "./dist/misc/index.mjs",
+      "types": "./dist/misc/index.d.ts"
+    },
+    "./number": {
+      "require": "./dist/number/index.js",
+      "import": "./dist/number/index.mjs",
+      "types": "./dist/number/index.d.ts"
+    },
+    "./regexes": {
+      "require": "./dist/regexes/index.js",
+      "import": "./dist/regexes/index.mjs",
+      "types": "./dist/regexes/index.d.ts"
+    },
+    "./string": {
+      "require": "./dist/string/index.js",
+      "import": "./dist/string/index.mjs",
+      "types": "./dist/string/index.d.ts"
+    },
+    "./validation": {
+      "require": "./dist/validation/index.js",
+      "import": "./dist/validation/index.mjs",
+      "types": "./dist/validation/index.d.ts"
+    },
     "./package.json": "./package.json"
   },
   "files": [

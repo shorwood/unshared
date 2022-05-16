@@ -36,20 +36,3 @@ export const jsonParse = <T extends string | number | boolean | JSON | null | un
   // --- On error, returns input.
   catch { return <T>json }
 }
-
-/**
- * Load and parse JSON file.
- * @param path Path to file.
- * @returns JSON content as object.
- */
-export const jsonImport = <T extends string | number | boolean | JSON | null | undefined>(path: string, encoding?: BufferEncoding) =>
-  jsonParse<T>(require('node:fs').readFileSync(path).toString(encoding))
-
-/**
- * Save object as JSON file.
- * @param path Path to file.
- * @param object Object to save.
- */
-export const jsonExport = (path: string, object: JSON) => {
-  require('node:fs').writeFileSync(path, JSON.stringify(object, undefined, 2))
-}

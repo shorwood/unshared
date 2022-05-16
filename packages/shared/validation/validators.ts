@@ -1,7 +1,9 @@
 /* eslint-disable unicorn/no-null */
-import { get } from './collection'
-import { dateTimeIso8601, email, firestoreId, url } from './regexes'
-import { RuleSet, Schema, validateRuleSet, validateSchema } from './validation'
+import { get } from '../collection'
+import { dateTimeIso8601, email, firestoreId, url } from '../regexes'
+import { RuleSet, Schema } from './types'
+import { validateRuleSet } from './validateRuleSet'
+import { validateSchema } from './validateSchema'
 
 // --- Generic validators.
 export const isTypeOf = (value: any, type: string) => typeof value === type

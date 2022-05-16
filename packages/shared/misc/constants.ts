@@ -1,3 +1,9 @@
+/** Empty function. */
+export const noop = () => {}
+
+/** Empty async function. */
+export const noopAsync = async() => {}
+
 /** Current process's environment object. */
 // @ts-expect-error: Property 'env' does not exist on type 'ImportMeta'.
 export const environment = import.meta?.env ?? typeof process !== 'undefined' ? process.env : {}
