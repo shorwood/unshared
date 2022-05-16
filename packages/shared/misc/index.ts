@@ -1,3 +1,5 @@
 export * from './convertToUnit'
+export * from './debounce'
 export * from './functionName'
 export * from './resolvable'
+export * from './throttle'
