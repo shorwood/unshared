@@ -1,8 +1,7 @@
 import { writeFileSync } from 'node:fs'
 import axios from 'axios'
 import { mapKeys, mapValues } from '../collection'
-import { capitalize } from '../string/capitalize'
-import { pascalCase } from '../string/pascalCase'
+import { capitalize, pascalCase } from '../string'
 
 // --- Define globals.
 const API_BASE_URL = 'http://i18napis.appspot.com/address/data'
