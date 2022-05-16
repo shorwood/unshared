@@ -1,9 +1,9 @@
+import { Iterator, Key, MaybeArray } from '../types'
 import { get } from './get'
 
 interface Map {
-  <T, R>(object: T[], iterator: Iterator<T, R>): R[]
-  <T, K extends keyof T>(object: Record<K, T>, path: K | K[]): T[K]
-  <T, K extends keyof T, R>(object: Record<K, T>, iterator: Iterator<T, R>): R[]
+  <U, T = any>(object: Array<T>, iterator: Iterator<T[], number, U>): U[]
+  <U, T = any>(object: Array<T>, path: MaybeArray<Key>): U[]
 }
 
 /**

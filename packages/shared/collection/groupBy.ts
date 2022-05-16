@@ -2,7 +2,7 @@ import { Iterator } from '../types'
 
 interface GroupBy {
   <T, K extends keyof T>(object: Array<T>, path: K): Record<string, T[]>
-  <T>(object: Array<T>, iterator: Iterator<T, string>): Record<string, T[]>
+  <T>(object: Array<T>, iterator: Iterator<T, keyof T, string>): Record<string, T[]>
 }
 
 /**
