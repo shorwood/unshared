@@ -3,9 +3,11 @@ import { get } from './get'
 
 interface MapValues {
   <T>(object: Array<T>, path: MaybeArray<Key>): Record<string, T>
-  <U, T = any>(object: Array<T>, iterator: (value: T, key: keyof T, array: Array<T>) => U): Record<string, U>
+  <T, U>(object: Array<T>, iterator: (value: T, key: keyof T, array: Array<T>) => U): Record<string, U>
+  <T>(object: Array<T>, iterator: any): Record<string, T>
   <T>(object: Record<string, T>, path: MaybeArray<Key>): Record<string, T>
-  <U, T = any>(object: Record<string, T>, iterator: (value: T, key: keyof T, object: Record<string, T>) => U): Record<string, U>
+  <T, U>(object: Record<string, T>, iterator: (value: T, key: keyof T, object: Record<string, T>) => U): Record<string, U>
+  <T>(object: Record<string, T>, iterator: any): Record<string, T>
 }
 
 /**

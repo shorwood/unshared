@@ -4,9 +4,10 @@ import { get } from './get'
 interface Discard {
   <T>(array: Array<T>, path: MaybeArray<Key>): Array<T>
   <T>(array: Array<T>, iterator: (value: T, key: number, array: Array<T>) => boolean): Array<T>
+  <T>(array: Array<T>, path: any): Array<T>
   <T extends object, K extends keyof T>(object: T, path: K): Pick<T, K>
   <T extends object, K extends keyof T>(object: T, iterator: (value: T[K], key: K, array: T) => boolean): Partial<T>
-  <T extends object>(object: T, path: MaybeArray<Key>): Partial<T>
+  <T extends object>(object: T, path: any): Partial<T>
 }
 
 /**
