@@ -20,7 +20,7 @@ export const map: Map = (object, iterator: any) => {
     iterator = (value: any) => get(value, path)
   }
 
-  // --- Map array values or object entries.
+  // --- Map values.
   return Array.isArray(object)
     ? object.map(iterator)
     : Object.entries(object).map(([key, value]) => iterator(value, key, object))
