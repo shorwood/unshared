@@ -1,3 +1,5 @@
+import { requireSafe } from '../module'
+
 /** Empty function. */
 export const noop = () => {}
 
@@ -22,3 +24,6 @@ export const isNode = typeof process !== 'undefined' && typeof process.versions?
 
 /** Is process running in a web worker instance. */
 export const isWebWorker = typeof self === 'object' && self.constructor?.name === 'DedicatedWorkerGlobalScope'
+
+/** Is process running in a CLI context. */
+export const isCli = requireSafe('node:process')!.argv?.length > 0
