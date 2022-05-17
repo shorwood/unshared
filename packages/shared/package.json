@@ -79,6 +79,7 @@
   },
   "devDependencies": {
     "@types/node": "^17.0.31",
-    "axios": "^0.26.1"
+    "axios": "^0.26.1",
+    "lodash": "^4.17.21"
   }
 }
