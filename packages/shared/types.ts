@@ -15,11 +15,11 @@ export type ArrayType<T> =
     : T extends (infer U)[] ? U
       : never
 
-/** Generic iterator function. */
-export type Iterator<T, K extends keyof T, R> = (value: T[K], key: K, object: T) => R
-
 /** Generic 2D array. */
 export type Matrix<T> = T[][]
 
 /** Anything that is not a function. */
 export type NotFunction = (string | number | bigint | symbol | any[] | object) & { apply?: never }
+
+/** Array with fixed length */
+export type Tuple<N extends number, T = any, R extends readonly T[] = []> = R['length'] extends N ? R : Tuple<N, T, readonly [T, ...R]>
