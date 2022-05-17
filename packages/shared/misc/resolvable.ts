@@ -8,9 +8,9 @@ export interface Resolvable<T> {
 }
 
 /**
- * Create a promise and provide it's `resolve` callback and `resolved` state.
+ * Create a promise and provide it's callbacks and state.
  */
-export const resolvable = <T extends void>() => {
+export const resolvable = <T = void>() => {
   // --- Initialize state.
   const state = <Resolvable<T>>{}
 
