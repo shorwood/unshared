@@ -1,5 +1,9 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable unicorn/no-null */
+
+interface JsonParse {
+  <T>(json: string): T
+  (json: string): string | number | boolean | JSON | null | undefined
+}
 
 /**
  * Parse to JSON.
@@ -9,20 +13,20 @@
  * @see https://github.com/fastify/secure-json-parse
  * @see https://github.com/hapijs/bourne
  */
-export const jsonParse = <T extends string | number | boolean | JSON | null | undefined>(json: string): T => {
+export const jsonParse: JsonParse = (json: string): any => {
   if (typeof json !== 'string') return json
 
   // --- Return the value early.
   const value = json.toLowerCase()
-  if (value === 'true') return <T>true
-  if (value === 'false') return <T>false
-  if (value === 'null') return <T>null
-  if (value === 'nan') return <T>Number.NaN
-  if (value === 'infinity') return <T>Number.POSITIVE_INFINITY
-  if (value === 'undefined') return <T>undefined
+  if (value === 'true') return true
+  if (value === 'false') return false
+  if (value === 'null') return null
+  if (value === 'nan') return Number.NaN
+  if (value === 'infinity') return Number.POSITIVE_INFINITY
+  if (value === 'undefined') return undefined
 
   // --- If the input looks like invalid JSON, return input.
-  if (!/^["[{]|^-?\d[\d.]{0,14}$/.test(json)) return <T>json
+  if (!/^["[{]|^-?\d[\d.]{0,14}$/.test(json)) return json
 
   // --- Parse the old way but delete `__proto__` and `constuctor` properties if need be.
   try {
@@ -34,5 +38,5 @@ export const jsonParse = <T extends string | number | boolean | JSON | null | un
   }
 
   // --- On error, returns input.
-  catch { return <T>json }
+  catch { return json }
 }

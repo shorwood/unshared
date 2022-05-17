@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+import { requireSafe } from './requireSafe'
 
 /**
  * Save object as JSON file.
@@ -6,5 +6,6 @@
  * @param object Object to save.
  */
 export const jsonExport = (path: string, object: JSON) => {
-  require('node:fs').writeFileSync(path, JSON.stringify(object, undefined, 2))
+  const fs = requireSafe('node:fs')
+  if (fs) fs.writeFileSync(path, JSON.stringify(object, undefined, 2))
 }
