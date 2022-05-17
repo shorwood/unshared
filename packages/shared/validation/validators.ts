@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/no-null */
 import { get } from '../collection'
-import { dateTimeIso8601, email, firestoreId, url } from '../regexes'
+import { dateTimeIso8601, email, firestoreId, url } from '../regex'
 import { RuleSet, Schema } from './types'
 import { validateRuleSet } from './validateRuleSet'
 import { validateSchema } from './validateSchema'
