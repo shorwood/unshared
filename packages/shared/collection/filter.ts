@@ -5,9 +5,9 @@ interface Filter {
   <T>(array: Array<T>, path: MaybeArray<Key>): Array<T>
   <T>(array: Array<T>, iterator: (value: T, key: number, array: Array<T>) => boolean): Array<T>
   <T>(array: Array<T>, path: any): Array<T>
-  <T extends object, K extends keyof T>(object: T, path: K): Omit<T, K>
-  <T extends object, K extends keyof T>(object: T, iterator: (value: T[K], key: K, array: T) => boolean): Partial<T>
-  <T extends object>(object: T, path: any): Partial<T>
+  <T>(object: Record<string, T>, path: MaybeArray<Key>): Record<string, T>
+  <T>(object: Record<string, T>, iterator: (value: T, key: string, object: Record<string, T>) => boolean): Record<string, T>
+  <T>(object: Record<string, T>, path: any): Record<string, T>
 }
 
 /**
