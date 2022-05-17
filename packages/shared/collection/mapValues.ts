@@ -1,8 +1,11 @@
-import { Iterator, Key } from '../types'
+import { Key, MaybeArray } from '../types'
+import { get } from './get'
 
 interface MapValues {
-  <T, R>(object: Array<T>, iterator: Iterator<T, R>): Array<R>
-  <T, K extends Key, R>(object: Record<K, T>, iterator: Iterator<T, R>): Record<K, R>
+  <T>(object: Array<T>, path: MaybeArray<Key>): Record<string, T>
+  <T>(object: Array<T>, iterator: (value: T, key: keyof T, array: Array<T>) => string): Record<string, T>
+  <T>(object: Record<string, T>, path: MaybeArray<Key>): Record<string, T>
+  <T>(object: Record<string, T>, iterator: (value: T, key: keyof T, object: Record<string, T>) => string): Record<string, T>
 }
 
 /**
@@ -11,8 +14,14 @@ interface MapValues {
  * @param iterator
  */
 export const mapValues: MapValues = (object: any, iterator: any) => {
-  const entries = Array.isArray(object)
-    ? object.map((value, key) => [iterator(<any>value, <any>key), value])
-    : Object.entries(object).map(([key, value]) => [key, iterator(<any>value, <any>key)])
-  return Object.fromEntries(entries)
+  // --- If iterator is a path, cast as getter function.
+  if (typeof iterator !== 'function') {
+    const path = iterator
+    iterator = (value: any) => get(value, path)
+  }
+
+  // --- Map entries.
+  return Array.isArray(object)
+    ? object.map(iterator)
+    : Object.fromEntries(Object.entries(object).map(([key, value]) => [key, iterator(value, key, object)]))
 }

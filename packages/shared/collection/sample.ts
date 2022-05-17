@@ -13,14 +13,16 @@ export const sample: Sample = (array: any, size?: any): any => {
   if (size !== undefined) {
     // --- If size is invalid, fallback to random sample size.
     if (size <= 0) size = Math.ceil(Math.random() * array.length)
+    if (size >= array.length) return [...array]
 
-    // ---
+    // --- Move items to copy until we have the requested size.
     const arrayCopy = [...array]
-    while (arrayCopy.length > size) {
+    const arrayResult = []
+    while (arrayResult.length < size) {
       const index = Math.floor(Math.random() * arrayCopy.length)
-      arrayCopy.splice(index, 1)
+      arrayResult.push(arrayCopy.splice(index, 1))
     }
-    return arrayCopy
+    return arrayResult
   }
 
   // --- Get item at random index.
