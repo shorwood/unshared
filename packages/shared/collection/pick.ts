@@ -13,8 +13,8 @@ interface IPick {
 export const pick: IPick = (object: any, iterator?: any): any => {
   // --- If iterator is a path, cast as getter function.
   if (typeof iterator !== 'function') {
-    const path = iterator
-    iterator = (value: any, key: any) => key === path
+    const paths = Array.isArray(iterator) ? iterator : [iterator]
+    iterator = (value: any, key: any) => paths.includes(key)
   }
 
   // --- Filter entries.
