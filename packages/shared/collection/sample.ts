@@ -1,5 +1,4 @@
-
-export interface Sample {
+interface Sample {
   <T>(array: Array<T>, size: number): Array<T>
   <T>(array: Array<T>): T
 }
