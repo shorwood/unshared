@@ -26,8 +26,9 @@ export const groupBy: GroupBy = (object, iterator: any) => {
     // @ts-expect-error: Array/Object getter.
     const value = object[key]
     const groupKey = iterator(value, key, object)
-    const group = result[groupKey] ?? []
-    group.push(value)
+    result[groupKey] = result[groupKey]
+      ? [...result[groupKey], value]
+      : [value]
   }
 
   // --- Return result.

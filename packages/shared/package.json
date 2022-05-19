@@ -34,25 +34,25 @@
       "import": "./dist/hash/index.mjs",
       "types": "./dist/hash/index.d.ts"
     },
-    "./json": {
-      "require": "./dist/json/index.js",
-      "import": "./dist/json/index.mjs",
-      "types": "./dist/json/index.d.ts"
-    },
     "./misc": {
       "require": "./dist/misc/index.js",
       "import": "./dist/misc/index.mjs",
       "types": "./dist/misc/index.d.ts"
+    },
+    "./module": {
+      "require": "./dist/module/index.js",
+      "import": "./dist/module/index.mjs",
+      "types": "./dist/module/index.d.ts"
     },
     "./number": {
       "require": "./dist/number/index.js",
       "import": "./dist/number/index.mjs",
       "types": "./dist/number/index.d.ts"
     },
-    "./regexes": {
-      "require": "./dist/regexes/index.js",
-      "import": "./dist/regexes/index.mjs",
-      "types": "./dist/regexes/index.d.ts"
+    "./regex": {
+      "require": "./dist/regex/index.js",
+      "import": "./dist/regex/index.mjs",
+      "types": "./dist/regex/index.d.ts"
     },
     "./string": {
       "require": "./dist/string/index.js",
@@ -63,6 +63,11 @@
       "require": "./dist/validation/index.js",
       "import": "./dist/validation/index.mjs",
       "types": "./dist/validation/index.d.ts"
+    },
+    "./validator": {
+      "require": "./dist/validator/index.js",
+      "import": "./dist/validator/index.mjs",
+      "types": "./dist/validator/index.d.ts"
     },
     "./package.json": "./package.json"
   },

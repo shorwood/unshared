@@ -5,7 +5,7 @@ import { requireSafe } from './requireSafe'
  * @param path Path to file.
  * @param object Object to save.
  */
-export const jsonExport = (path: string, object: JSON) => {
+export const jsonExport = (path: string, object: any) => {
   const fs = requireSafe('node:fs')
   if (fs) fs.writeFileSync(path, JSON.stringify(object, undefined, 2))
 }

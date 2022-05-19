@@ -1,4 +1,4 @@
-import { isObject } from './validators'
+import { isObject } from '../validator'
 import { Rule } from './types'
 
 /**

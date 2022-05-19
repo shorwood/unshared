@@ -14,6 +14,6 @@ export const get: Get = (value, path, defaultValue?: any) => {
   if (!Array.isArray(path)) path = [path]
   path
     .flatMap((key: any) => key.split('.'))
-    .forEach((key: any) => value = value[key])
+    .forEach((key: any) => value = value?.[key])
   return value ?? defaultValue
 }

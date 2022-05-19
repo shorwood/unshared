@@ -23,7 +23,10 @@ export const mapKeys: MapKeys = (object: any, iterator: any) => {
   }
 
   // --- Map entries.
-  return Array.isArray(object)
+  const entries = Array.isArray(object)
     ? object.map((value, key, object) => [iterator(value, key, object), value])
-    : Object.fromEntries(Object.entries(object).map(([key, value]) => [iterator(value, key, object), value]))
+    : Object.entries(object).map(([key, value]) => [iterator(value, key, object), value])
+
+  // --- Cast as object.
+  return Object.fromEntries(entries)
 }

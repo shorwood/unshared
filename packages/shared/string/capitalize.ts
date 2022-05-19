@@ -3,5 +3,6 @@
  * @param value
  */
 export const capitalize = (value: string) => value
-  .toLowerCase()
+  ?.toLowerCase()
   .replace(/^\w|[A-Z]|\b\w/g, word => word.toUpperCase())
+  .replace(/[^\da-z]+/gi, ' ')
