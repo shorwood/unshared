@@ -1,9 +1,10 @@
 import { Matrix } from '../types'
 
 /**
- *
- * @param array
- * @param size
+ * Splits an array into smaller arrays of a specified size.
+ * @param {Array<T>} array The array to split
+ * @param {number} size The size of each resulting array
+ * @returns {Matrix<T>} The resulting array of arrays
  */
 export const chunk = <T>(array: Array<T>, size: number): Matrix<T> => {
   const result = []

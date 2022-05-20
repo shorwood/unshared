@@ -1,12 +1,12 @@
 import { HSL, RGB } from './types'
 
 /**
-* Converts an RGB color value to HSL. Conversion formula
-* adapted from http://en.wikipedia.org/wiki/HSL_color_space.
-* @param rgb RGB color.
-* @return The HSL representation
-* @see https://stackoverflow.com/a/9493060/12414909
-*/
+ * Converts an RGB color value to HSL.
+ * @param rgb RGB color.
+ * @return The HSL representation
+ * @see https://stackoverflow.com/a/9493060/12414909
+ * @see http://en.wikipedia.org/wiki/HSL_color_space
+ */
 
 export const rgbToHsl = ({ r, g, b }: RGB) => {
   r /= 255

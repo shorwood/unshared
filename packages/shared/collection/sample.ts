@@ -4,9 +4,10 @@ interface Sample {
 }
 
 /**
- * Sample elements from an array.
- * @param array
- * @param size
+ * Returns a random item from an array, or an array of random items if a size is specified.
+ * @param {Array} array The array to select from
+ * @param {number} [size] The number of items to select
+ * @returns {any} A random item from the array
  */
 export const sample: Sample = (array: any, size?: any): any => {
   if (size !== undefined) {

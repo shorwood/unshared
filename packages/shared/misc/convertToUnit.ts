@@ -1,8 +1,8 @@
 /**
  * Convert a string or number into a CSS unit.
- * @param input Input string.
- * @param unit CSS unit.
- * @return Unit converted into a valid CSS value string. Returns undefined if the input is invalid
+ * @param {string | number} input A value
+ * @param {"px" | "rem" | "em" | "vh" | "vw" | "%"} unit The unit to convert to
+ * @returns {string} A unit
  */
 export function convertToUnit(input?: string | number, unit = 'px' as 'px' | 'rem' | 'em' | 'vh' | 'vw' | '%') {
   // --- If input is invalid.

@@ -7,9 +7,10 @@ interface IPick {
 }
 
 /**
- *
- * @param object
- * @param iterator
+ * Returns a new object with the specified properties filtered.
+ * @param {object} object The source object
+ * @param {MaybeArray<string | number | symbol>} iterator The property path(s) to pick
+ * @returns {object} A new object with the picked properties
  */
 export const pick: IPick = (object: any, iterator?: any): any => {
   // --- If iterator is a path, cast as getter function.

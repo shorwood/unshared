@@ -1,10 +1,10 @@
-/* eslint-disable arrow-body-style */
 import { MaybeArray } from '../types'
 
 /**
- *
- * @param value
+ * Converts a value into an array if it is not one already.
+ * @param {T} value The value to convert
+ * @returns {Array<T>} The array
  */
-export const arrayify = <T>(value: MaybeArray<T>): Array<T> => {
-  return Array.isArray(value) ? value : [value]
-}
+export const arrayify = <T>(value: MaybeArray<T>): Array<T> => (
+  Array.isArray(value) ? value : [value]
+)

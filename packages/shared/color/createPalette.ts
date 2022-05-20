@@ -17,11 +17,12 @@ export interface CreatePaletteOptions {
 }
 
 /**
-* Generate a TailwindCSS / WindiCSS / UnoCSS color palette from a single hex color.
-* @param color Input color.
-* @param options Options.
-* @see https://github.com/anheric/tailwindshades/blob/master/src/components/Shades.vue#L336
-*/
+ * Generate a TailwindCSS / WindiCSS / UnoCSS color palette from a single hex color.
+ * @param {string} color A starting color in hexadecimal format
+ * @param {CreatePaletteOptions} options Optional options for palette creation
+ * @returns {Record<string, string>} A palette of colors
+ * @see https://github.com/anheric/tailwindshades/blob/master/src/components/Shades.vue#L336
+ */
 export const createPalette = (color: string, options = {} as CreatePaletteOptions) => {
 // --- Destructure options.
   const {

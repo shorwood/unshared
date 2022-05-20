@@ -10,13 +10,13 @@ const hueP = (p: number, q: number, t: number) => {
 }
 
 /**
-* Converts an HSL color value to RGB. Conversion formula
-* adapted from http://en.wikipedia.org/wiki/HSL_color_space.
-* @param hsl HSL color.
-* @return The RGB representation
-* @see https://stackoverflow.com/a/9493060/12414909
-*/
-export const hslToRgb = ({ h, s, l }: HSL) => {
+ * Converts HSL values to RGB.
+ * @param {HSL} hsl The HSL values
+ * @returns {RGB} The RGB values
+ * @return The RGB representation
+ * @see http://en.wikipedia.org/wiki/HSL_color_space.
+ */
+export const hslToRgb = ({ h, s, l }: HSL): RGB => {
   h /= 360
   s /= 100
   l /= 100

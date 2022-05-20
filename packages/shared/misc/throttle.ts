@@ -2,12 +2,10 @@
 export type Throttle = <T extends Function>(callback: T, delay: number) => T
 
 /**
- * Returns a `Function`, once called, and then as long as it continues to be
- * invoked, will not be triggered. The function will be allowed to call after
- * `delay` milliseconds.
- * @param callback Function to throttle.
- * @param delay Throttle delay in ms. Defaulted to `200`.
- * @see https://gist.github.com/sagiavinash/303a2f1153739de8859b
+ * Returns a function, that, when invoked, will only be triggered at most once during a given window of time.
+ * @param {Function} callback The function to throttle
+ * @param {number} delay The amount of time in milliseconds to throttle invocations
+ * @returns {Function}
  */
 export const throttle: Throttle = (callback: Function, delay = 200): any => {
   let timeout: NodeJS.Timeout

@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable unicorn/prefer-number-properties */
 /**
- * Return the type of `value` as a string.
- * @param value Value to get the type of.
+ * Gets the type of a value.
+ * @param {*} value The value to check
+ * @returns {string} The type of value
  */
 export const getType = (value: any) => {
   if (typeof value === 'undefined') return 'undefined'
@@ -44,9 +43,10 @@ interface IsType {
 }
 
 /**
- * Predicates if `value` is of type `type`.
- * @param value Value to infer.
- * @param type Type to check.
+ * Checks if the value is of a specific type.
+ * @param {any} value The value to check
+ * @param {string} type The expected type
+ * @returns {boolean} True if the value is of the expected type, false otherwise
  */
 // @ts-expect-error: Function is not detected as a type predicactor.
 export const isType: IsType = (value, type) => getType(value) === type

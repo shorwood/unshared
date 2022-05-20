@@ -1,9 +1,9 @@
 import { requireSafe } from './requireSafe'
 
 /**
- * Save object as JSON file.
- * @param path Path to file.
- * @param object Object to save.
+ * Exports an object to a JSON file.
+ * @param {string} path The path to the file
+ * @param {any} object The object to export
  */
 export const jsonExport = (path: string, object: any) => {
   const fs = requireSafe('node:fs')

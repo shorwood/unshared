@@ -9,9 +9,17 @@ interface Map {
 }
 
 /**
+ * Iterates over an object or array, returning a new array
+ * consisting of the results of the callback function or path.
  *
- * @param object
- * @param iterator
+ * If path is supplied, it will be used to iterate over the object or array.
+ *
+ * If a callback is supplied, it will be invoked for each item in the object or array.
+ * The callback can return a new value to be added to the new object or array.
+ *
+ * @param {Array|Object} object The object or array to iterate over
+ * @param {MaybeArray<Key>|Function} iterator The callback function or path to iterate over
+ * @returns {Array|Object} A new array consisting of the results of the callback function
  */
 export const map: Map = (object, iterator: any) => {
   // --- If iterator is a path, cast as getter function.

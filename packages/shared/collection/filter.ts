@@ -11,9 +11,10 @@ interface Filter {
 }
 
 /**
- *
- * @param object
- * @param iterator
+ * Filters an array or object.
+ * @param {Array|Object} object The array or object to filter
+ * @param {Function|string} iterator The function or path to use for filtering
+ * @returns {Array|Object} The filtered array or object
  */
 export const filter: Filter = (object: any, iterator?: any): any => {
   // --- If iterator is a path, cast as getter function.

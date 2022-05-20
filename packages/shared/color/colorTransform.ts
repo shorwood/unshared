@@ -4,9 +4,7 @@ import { rgbToHex } from './rgbToHex'
 import { hslToHex } from './hslToHex'
 import { hexToHsl } from './hexToHsl'
 
-export interface ColorTranformer extends Function {
-  (x: number): number
-}
+export type ColorTranformer = (x: number) => number
 export interface ColorTranformerMap {
   r?: ColorTranformer
   g?: ColorTranformer
@@ -17,11 +15,11 @@ export interface ColorTranformerMap {
 }
 
 /**
-* Apply function to color or its components.
-* @param value Color to adjust.
-* @param transformer Processor.
-*/
-
+ * Takes a color and transforms it according to the transformer passed in. The transformer can be a map or a function.
+ * @param {string} value A color in hexadecimal, RGB or HSL
+ * @param {ColorTranformer | ColorTranformerMap} transformer A map or function to transform the color
+ * @returns {string} The transformed color
+ */
 export const colorTransform = (value: string, transformer: ColorTranformer | ColorTranformerMap) => {
   if (typeof transformer === 'function') {
     let { r, g, b } = hexToRgb(value)

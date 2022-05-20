@@ -6,14 +6,14 @@ interface Get {
 }
 
 /**
- *
- * @param object
- * @param path
+ * Get a value from an object by a path of keys.
+ * @param {any} value The object to get the value from
+ * @param {MaybeArray<Key>} path The path of keys
+ * @param {any} [defaultValue] The default value to return if the path does not exist
+ * @returns {any} The value at the path or the default value
  */
-export const get: Get = (value, path, defaultValue?: any) => {
+export const get: Get = (value: any, path: MaybeArray<Key>, defaultValue?: any): any => {
   if (!Array.isArray(path)) path = [path]
-  path
-    .flatMap((key: any) => key.split('.'))
-    .forEach((key: any) => value = value?.[key])
+  path.forEach((key: any) => value = value?.[key])
   return value ?? defaultValue
 }

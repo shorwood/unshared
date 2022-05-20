@@ -1,28 +1,39 @@
 import { RGB } from './types'
 
 /**
-* Decompose Hex3 color.
-* @param hex Color to adjust.
-* @see https://stackoverflow.com/questions/11068240/what-is-the-most-efficient-way-to-parse-a-css-color-in-javascript
-*/
-export const hexToRgb = (value: string): RGB => {
-  const hex3 = value.match(/^#([\da-f]{3})$/i)?.[1]
-  if (hex3) {
+ * Takes an hexadecimal color and converts it into an RGB color.
+ * @param {string} color A color in hexadecimal format
+ * @throws {Error} If the given color is invalid
+ * @returns {RGB} An RGB object
+ */
+export const hexToRgb = (color: string): RGB => {
+  // --- Extract components.
+  const match = color.match(/^#([\da-f]{3}|[\da-f]{6})([\da-f]{2})?$/i) || []
+
+  // --- Throws error if the given color is invalid
+  if (!match) throw new Error('Invalid color')
+
+  const hex = match[1]
+  const alpha = match[2]
+  const isShortHex = hex.length === 3
+
+  const r = Number.parseInt(hex.slice(0, 2), 16)
+  const g = Number.parseInt(hex.slice(2, 4), 16)
+  const b = Number.parseInt(hex.slice(4, 6), 16)
+
+  if (isShortHex) {
     return {
-      r: Number.parseInt(hex3.charAt(0), 16) * 0x11,
-      g: Number.parseInt(hex3.charAt(1), 16) * 0x11,
-      b: Number.parseInt(hex3.charAt(2), 16) * 0x11,
+      r: (r << 4) | r,
+      g: (g << 4) | g,
+      b: (b << 4) | b,
+      a: alpha ? Number.parseInt(alpha, 16) / 255 : 1,
     }
   }
 
-  const hex6 = value.match(/^#([\da-f]{6})$/i)?.[1]
-  if (hex6) {
-    return {
-      r: Number.parseInt(hex6.slice(0, 2), 16),
-      g: Number.parseInt(hex6.slice(2, 4), 16),
-      b: Number.parseInt(hex6.slice(4, 6), 16),
-    }
+  return {
+    r,
+    g,
+    b,
+    a: alpha ? Number.parseInt(alpha, 16) / 255 : 1,
   }
-
-  return { r: 0, g: 0, b: 0 }
 }

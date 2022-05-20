@@ -1,13 +1,15 @@
 /**
-*
-* @param data
-* @param seed
-*/
-export const hashCyrb53 = (data: string, seed = Math.random()) => {
+ * Hashes a string using the [Cyrb53](https://github.com/bryc/code/blob/master/jshash/experimental/cyrb53.js) algorithm.
+ * @param {string} data The string to hash
+ * @param {number} seed A seed value
+ * @returns {number} The hashed number
+ * @author [github.com/bryc](https://github.com/bryc)
+ */
+export const hashCyrb53 = (value: string, seed = 0): string => {
   let h1 = 0xDEADBEEF ^ seed
   let h2 = 0x41C6CE57 ^ seed
-  for (let index = 0, ch; index < data.length; index++) {
-    ch = data.charCodeAt(index)
+  for (let index = 0, ch; index < value.length; index++) {
+    ch = value.charCodeAt(index)
     h1 = Math.imul(h1 ^ ch, 2654435761)
     h2 = Math.imul(h2 ^ ch, 1597334677)
   }

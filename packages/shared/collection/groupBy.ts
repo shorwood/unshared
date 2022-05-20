@@ -9,9 +9,10 @@ interface GroupBy {
 }
 
 /**
- *
- * @param object
- * @param iterator
+ * Groups an array or object by the result of an iterator function.
+ * @param {Array|Object} object The array or object to group
+ * @param {Function|Array} iterator The iterator function or path
+ * @returns {Object} The grouped object
  */
 export const groupBy: GroupBy = (object, iterator: any) => {
   // --- If iterator is a path, cast as getter function.
@@ -26,9 +27,8 @@ export const groupBy: GroupBy = (object, iterator: any) => {
     // @ts-expect-error: Array/Object getter.
     const value = object[key]
     const groupKey = iterator(value, key, object)
-    result[groupKey] = result[groupKey]
-      ? [...result[groupKey], value]
-      : [value]
+    if (groupKey in result) result[groupKey].push(value)
+    else result[groupKey] = [value]
   }
 
   // --- Return result.

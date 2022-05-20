@@ -7,9 +7,10 @@ interface IOmit {
 }
 
 /**
- *
- * @param object
- * @param iterator
+ * Returns a new object with the specified properties omitted.
+ * @param {object} object The source object
+ * @param {MaybeArray<string | number | symbol>} iterator The property path(s) to omit
+ * @returns {object} A new object with the omitied properties
  */
 export const omit: IOmit = (object: any, iterator?: any): any => {
   // --- If iterator is a path, cast as getter function.

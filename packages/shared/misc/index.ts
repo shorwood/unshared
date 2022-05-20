@@ -1,5 +1,5 @@
 export * from './compare'
-export * from './constants'
+export * from './environment'
 export * from './convertToUnit'
 export * from './debounce'
 export * from './functionName'

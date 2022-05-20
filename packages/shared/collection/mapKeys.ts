@@ -11,9 +11,10 @@ interface MapKeys {
 }
 
 /**
- *
- * @param object
- * @param iterator
+ * Maps keys in an object or array.
+ * @param {Array|Object} object The object or array to map keys for
+ * @param {Function|string[]} iterator The iterator function or path
+ * @returns {Object} The new object with mapped keys
  */
 export const mapKeys: MapKeys = (object: any, iterator: any) => {
   // --- If iterator is a path, cast as getter function.

@@ -9,9 +9,9 @@ interface JsonImport {
 }
 
 /**
- * Load and parse JSON file.
- * @param path Path to file.
- * @returns JSON content as object.
+ * Imports a JSON file.
+ * @param {string} path The path to the JSON file
+ * @returns {any} The parsed JSON data
  */
 export const jsonImport: JsonImport = (path: string): any => {
   const fs = requireSafe('node:fs')

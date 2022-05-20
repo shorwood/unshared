@@ -8,7 +8,7 @@ export interface Resolvable<T> {
 }
 
 /**
- * Create a promise and provide it's callbacks and state.
+ * Creates a new resolvable object with convenience methods for Promise resolution and state management.
  */
 export const resolvable = <T = void>() => {
   // --- Initialize state.

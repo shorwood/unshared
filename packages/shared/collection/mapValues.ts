@@ -11,9 +11,10 @@ interface MapValues {
 }
 
 /**
- *
- * @param object
- * @param iterator
+ * Maps values of an object or array according to an iterator function or a key path.
+ * @param {Array|Record} object The object to map
+ * @param {Function|Array} iterator The iterator function or key path
+ * @returns {Array|Record} A new object or array
  */
 export const mapValues: MapValues = (object: any, iterator: any) => {
   // --- If iterator is a path, cast as getter function.

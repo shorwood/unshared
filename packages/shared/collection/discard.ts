@@ -11,9 +11,10 @@ interface Discard {
 }
 
 /**
- *
- * @param object
- * @param iterator
+ * Discards values from an array or object according to the given predicate function.
+ * @param {Array|Object} object The array or object to filter
+ * @param {Function} iterator The function to call for each value. If this is a path (string or array), the function will get that value.
+ * @returns {Array|Object} A new array or object with only the values for which the iterator function returned false.
  */
 export const discard: Discard = (object: any, iterator: any): any => {
   // --- If iterator is a path, cast as getter function.

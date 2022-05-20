@@ -9,9 +9,10 @@ interface Sort {
 }
 
 /**
- *
- * @param array
- * @param iterator
+ * Sorts an array by the result of an iterator function.
+ * @param {Array} array The array to sort
+ * @param {Function} iterator The iterator function or path
+ * @returns {Array} The sorted array
  */
 export const sort: Sort = (array: any, iterator: any) => {
   // --- If iterator is a path, cast as getter function.
