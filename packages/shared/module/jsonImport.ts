@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { requireSafe } from './requireSafe'
 import { jsonParse } from './jsonParse'
 
