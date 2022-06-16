@@ -1,8 +1,6 @@
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable unicorn/prevent-abbreviations */
-import { rmSync, writeFileSync } from 'node:fs'
-import { tmpdir } from 'node:os'
-import { join } from 'node:path'
-import { Worker } from 'node:worker_threads'
+import { requireSafe } from '../module'
 
 export interface Workerize {
   <T extends (...args: A[]) => R, A, R>(callback: T): (...args: A[]) => Promise<R>
@@ -14,6 +12,22 @@ export interface Workerize {
  * @returns The wrapped function
  */
 export const workerize: Workerize = (callback: Function): any => {
+  const fs = requireSafe<typeof import('node:fs')>('node:fs')
+  const os = requireSafe<typeof import('node:os')>('node:os')
+  const path = requireSafe<typeof import('node:path')>('node:path')
+  const workerThreads = requireSafe<typeof import('node:worker_threads')>('node:worker_threads')
+
+  // --- Missing dependency.
+  if (!fs) throw new Error('Cannot workerize function. Missing dependency "node:fs"')
+  if (!os) throw new Error('Cannot workerize function. Missing dependency "node:os"')
+  if (!path) throw new Error('Cannot workerize function. Missing dependency "node:path"')
+  if (!workerThreads) throw new Error('Cannot workerize function. Missing dependency "node:worker_threads"')
+
+  const { writeFileSync, rmSync } = fs
+  const { tmpdir } = os
+  const { join } = path
+  const { Worker } = workerThreads
+
   const code = `
   import { parentPort, isMainThread, threadId, workerData } from 'worker_threads'
   if (isMainThread) throw new Error('Workerize can only be called from a Worker thread.')

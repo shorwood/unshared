@@ -1,5 +1,6 @@
 export * from './collection'
 export * from './color'
+export * from './function'
 export * from './hash'
 export * from './misc'
 export * from './number'

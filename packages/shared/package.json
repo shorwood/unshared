@@ -29,6 +29,11 @@
       "import": "./dist/color/index.mjs",
       "types": "./dist/color/index.d.ts"
     },
+    "./function": {
+      "require": "./dist/function/index.js",
+      "import": "./dist/function/index.mjs",
+      "types": "./dist/function/index.d.ts"
+    },
     "./hash": {
       "require": "./dist/hash/index.js",
       "import": "./dist/hash/index.mjs",
@@ -84,7 +89,6 @@
   },
   "devDependencies": {
     "@types/node": "^17.0.38",
-    "axios": "^0.26.1",
-    "lodash": "^4.17.21"
+    "axios": "^0.26.1"
   }
 }
