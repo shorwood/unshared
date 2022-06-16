@@ -1,5 +1,6 @@
 export * from './camelCase'
 export * from './capitalize'
+export * from './complexity'
 export * from './join'
 export * from './kebabCase'
 export * from './lowerCase'
