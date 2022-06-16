@@ -1,11 +1,11 @@
 import { isObject } from '../validator'
-import { Rule } from './types'
+import { ValidationRule } from './types'
 
 /**
  *
  * @param value
  */
-export const isRule = (value: any): value is Rule => (
+export const isRule = (value: any): value is ValidationRule => (
   typeof value === 'function'
   || (isObject(value) && typeof value.handler === 'function')
   || (Array.isArray(value)

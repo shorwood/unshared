@@ -1,4 +1,4 @@
-import { Rule, ValidateRuleResult } from './types'
+import { ValidateRuleResult, ValidationRule } from './types'
 
 /**
  *
@@ -6,7 +6,7 @@ import { Rule, ValidateRuleResult } from './types'
  * @param rule
  * @param context
  */
-export const validateRule = async(value: any, rule: Rule, context?: any): Promise<ValidateRuleResult> => {
+export const validateRule = async(value: any, rule: ValidationRule, context?: any): Promise<ValidateRuleResult> => {
   let result: any = {
     value,
     isValid: true,

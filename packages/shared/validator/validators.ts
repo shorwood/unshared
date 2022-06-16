@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/no-null */
 import { get } from '../collection'
 import { dateTimeIso8601, email, firestoreId, url } from '../regex'
-import { RuleSet, Schema, validateRuleSet, validateSchema } from '../validation'
+import { ValidationRuleSet, ValidationSchema, validateRuleSet, validateSchema } from '../validation'
 
 // --- Generic validators.
 export const isTypeOf = (value: any, type: string) => typeof value === type
@@ -57,7 +57,7 @@ export const isArrayEmpty = (value: any[]): value is [] => Array.isArray(value) 
 export const isArrayNotEmpty = (value: any[]): value is any[] => Array.isArray(value) && value.length > 0
 export const isArrayIncluding = (value: any[], x: any): value is any[] => value.includes(x)
 export const isArrayIncludingContext = (value: any[], path: string, context: any): value is any[] => value.includes(get(context, path))
-export const isArrayOf = async(value: any[], ruleSet: RuleSet, context?: any) => {
+export const isArrayOf = async(value: any[], ruleSet: ValidationRuleSet, context?: any) => {
   const resultPromises = value.map(x => validateRuleSet(x, ruleSet, context))
   const results = await Promise.all(resultPromises)
   const errors = results.flatMap(x => x.errors)
@@ -67,7 +67,7 @@ export const isArrayOf = async(value: any[], ruleSet: RuleSet, context?: any) =>
 
 // --- Object validators.
 export const isObject = (value: any): value is Record<string | symbol, any> => Object.prototype.toString.call(value) === '[object Object]'
-export const isObjectShape = async(value: Record<string, any>, schema: Schema) => {
+export const isObjectShape = async(value: Record<string, any>, schema: ValidationSchema) => {
   const result = await validateSchema(value, schema)
   return result.isValid
 }

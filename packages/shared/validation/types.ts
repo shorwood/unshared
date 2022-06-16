@@ -3,12 +3,9 @@ import { NotFunction } from '../types'
 export type Validator = (value: any, argument?: any, context?: any) => any
 export type ValidatorArgument = (result: ValidateRuleResult) => any
 
-export type Schema = Record<string, RuleSet>
-export type RuleSet = Rule[][] | Rule[] | Rule
-
-export type Rule = Validator |
-[handler: Validator, arguments: NotFunction, errorMessage?: string] |
-RuleObject
+export type ValidationSchema = Record<string, ValidationRuleSet>
+export type ValidationRuleSet = ValidationRule[][] | ValidationRule[] | ValidationRule
+export type ValidationRule = Validator | [handler: Validator, arguments: NotFunction, errorMessage?: string] | RuleObject
 
 export interface RuleObject {
   handler: Validator

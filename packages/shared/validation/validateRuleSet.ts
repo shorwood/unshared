@@ -1,6 +1,6 @@
 import { isRule } from './isRule'
 import { validateRules } from './validateRules'
-import { Rule, RuleSet, ValidateRulesResult } from './types'
+import { ValidationRuleSet, ValidateRulesResult, ValidationRule } from './types'
 
 /**
  *
@@ -8,7 +8,7 @@ import { Rule, RuleSet, ValidateRulesResult } from './types'
  * @param ruleSets
  * @param context
  */
-export const validateRuleSet = async(value: any, ruleSets: RuleSet, context?: any): Promise<ValidateRulesResult> => {
+export const validateRuleSet = async(value: any, ruleSets: ValidationRuleSet, context?: any): Promise<ValidateRulesResult> => {
   const results: ValidateRulesResult[] = []
   if (isRule(ruleSets)) ruleSets = [[ruleSets]]
   // @ts-expect-error: Is valid.
@@ -18,7 +18,7 @@ export const validateRuleSet = async(value: any, ruleSets: RuleSet, context?: an
 
   // --- Validate and store results of each rules one by one.
   // --- If one of the rules does not return a string, use it as new value.
-  for (const rules of <Rule[][]>ruleSets) {
+  for (const rules of <ValidationRule[][]>ruleSets) {
     const result = await validateRules(value, rules, context)
     results.push(result)
     if (result.isValid) {
