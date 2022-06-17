@@ -5,4 +5,8 @@
  * @param {number} max The maximum value
  * @returns {number} The clamped value
  */
-export const clamp = (n: number, min: number, max: number): number => Math.min(Math.max(n, min), max)
+export const clamp = (n: number, min: number, max: number): number => {
+  if (n < min) return min
+  if (n > max) return max
+  return n
+}
