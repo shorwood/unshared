@@ -1,6 +1,6 @@
 import { mapValues } from '../collection'
 import { validateRuleSet } from './validateRuleSet'
-import { ValidationSchema, ValidateSchemaResult } from './types'
+import { ValidateSchemaResult, ValidationSchema } from './types'
 
 export const validateSchema = async(object?: any, schema?: ValidationSchema, context?: any): Promise<ValidateSchemaResult> => {
   if (!object || !schema) {

@@ -1,6 +1,6 @@
 import { isRule } from './isRule'
 import { validateRules } from './validateRules'
-import { ValidationRuleSet, ValidateRulesResult, ValidationRule } from './types'
+import { ValidateRulesResult, ValidationRule, ValidationRuleSet } from './types'
 
 /**
  *
