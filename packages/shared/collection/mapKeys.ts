@@ -1,5 +1,3 @@
-import { get } from './get'
-
 interface MapKeys {
   <T>(object: Array<T>, path: keyof T): Record<string, T>
   <T>(object: Array<T>, iterator: (value: T, key: keyof T, array: Array<T>) => string): Record<string, T>
@@ -17,7 +15,7 @@ export const mapKeys: MapKeys = (object: any, iterator: any): any => {
   // --- If iterator is a path, cast as getter function.
   if (typeof iterator !== 'function') {
     const path = iterator
-    iterator = (value: any) => get(value, path)
+    iterator = (value: any) => value[path]
   }
 
   // --- Map entries.
