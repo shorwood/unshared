@@ -11,5 +11,5 @@
 export const isLowerCase = (value: string | number): boolean => (
   typeof value === 'number'
     ? value >= 97 && value <= 122
-    : value.toLowerCase() === value
+    : [...value].map(x => x.charCodeAt(0)).every(isLowerCase)
 )

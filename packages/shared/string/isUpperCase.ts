@@ -11,5 +11,5 @@
 export const isUpperCase = (value: string | number): boolean => (
   typeof value === 'number'
     ? value >= 65 && value <= 90
-    : value.toUpperCase() === value
+    : [...value].map(x => x.charCodeAt(0)).every(isUpperCase)
 )
