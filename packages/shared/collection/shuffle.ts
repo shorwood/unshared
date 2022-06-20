@@ -1,10 +1,10 @@
 /**
  * Shuffle an array randomly or with a seed.
- * @param {any[]} array An array
+ * @param {Array<T>} array An array
  * @param {number} [seed] A seed value
- * @returns {string} A new shuffled array
+ * @returns {Array<T>} A new shuffled array
  */
-export const shuffle = (array: any[], seed = Math.random()) => {
+export const shuffle = <T>(array: Array<T>, seed: number = Math.random()): Array<T> => {
   const newArray = [...array]
   let currentIndex = array.length
   let valueBuffer

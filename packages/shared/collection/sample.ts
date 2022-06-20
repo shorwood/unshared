@@ -5,27 +5,34 @@ interface Sample {
 
 /**
  * Returns a random item from an array, or an array of random items if a size is specified.
- * @param {Array} array The array to select from
+ * @param {Array<T>} array The array to select from
  * @param {number} [size] The number of items to select
- * @returns {any} A random item from the array
+ * @param {number} [seed] A seed number for predictable results
+ * @returns {T | Array<T>} A random item from the array
  */
-export const sample: Sample = (array: any, size?: any): any => {
-  if (size !== undefined) {
-    // --- If size is invalid, fallback to random sample size.
-    if (size <= 0) size = Math.ceil(Math.random() * array.length)
-    if (size >= array.length) return [...array]
-
-    // --- Move items to copy until we have the requested size.
-    const arrayCopy = [...array]
-    const arrayResult = []
-    while (arrayResult.length < size) {
-      const index = Math.floor(Math.random() * arrayCopy.length)
-      arrayResult.push(arrayCopy.splice(index, 1))
-    }
-    return arrayResult
-  }
+export const sample: Sample = (array: any[], size?: number, seed: number = Math.random()): any => {
+  // --- Handle edge cases.
+  if (array.length === 0) return []
+  if (size && size < 1) throw new Error('Array chunk size must be greater than 0')
 
   // --- Get item at random index.
-  const index = Math.floor(Math.random() * array.length)
-  return array[index]
+  if (size === undefined) {
+    const index = Math.floor(seed * array.length)
+    return array[index]
+  }
+
+  // --- If size is invalid, fallback to random sample size.
+  if (size <= 0) size = Math.ceil(seed * array.length)
+  if (size >= array.length) return [...array]
+
+  // --- Move items to copy until we have the requested size.
+  const arrayCopy = [...array]
+  const arrayResult = []
+  while (arrayResult.length < size) {
+    const index = Math.floor(seed * arrayCopy.length)
+    arrayResult.push(arrayCopy?.[index])
+  }
+
+  // --- Return results
+  return arrayResult
 }

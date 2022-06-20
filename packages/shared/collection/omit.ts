@@ -3,7 +3,6 @@ import { MaybeArray } from '../types'
 interface IOmit {
   <T extends object, K extends keyof T>(object: T, path: MaybeArray<K>): Omit<T, K>
   <T extends object, K extends keyof T>(object: T, iterator: (value: T[K], key: K, object: T) => boolean): Partial<T>
-  <T extends object>(object: T, path: any): Partial<T>
 }
 
 /**

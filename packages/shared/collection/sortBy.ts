@@ -1,11 +1,8 @@
 import { compare } from '../misc'
-import { Key, MaybeArray } from '../types'
-import { get } from './get'
 
-interface Sort {
-  <T>(array: Array<T>, path: MaybeArray<Key>): Array<T>
+interface SortBy {
+  <T, K extends keyof T>(array: Array<T>, path: K): Array<T>
   <T>(array: Array<T>, iterator: (value: T, key: number, array: Array<T>) => any): Array<T>
-  <T>(array: Array<T>, path: any): Array<T>
 }
 
 /**
@@ -14,19 +11,16 @@ interface Sort {
  * @param {Function} iterator The iterator function or path
  * @returns {Array} The sorted array
  */
-export const sort: Sort = (array: any, iterator: any) => {
+export const sortBy: SortBy = (array: Array<any>, iterator: any): Array<any> => {
   // --- If iterator is a path, cast as getter function.
   if (typeof iterator !== 'function') {
     const path = iterator
-    iterator = (value: any) => get(value, path)
+    iterator = (value: any) => value[path]
   }
 
-  // --- Define comparator.
-  const comparator = (a: any, b: any) => compare(
+  // --- Sort with custom comparator.
+  return array.sort((a: any, b: any) => compare(
     iterator(a),
     iterator(b),
-  )
-
-  // --- Sort.
-  return array.sort(comparator)
+  ))
 }

@@ -7,11 +7,14 @@ import { Matrix } from '../types'
  * @returns {Matrix<T>} The resulting array of arrays
  */
 export const chunk = <T>(array: Array<T>, size: number): Matrix<T> => {
+  // --- Handle edge cases.
+  if (size < 1) throw new Error('Array chunk size must be greater than 0')
+
+  // --- Chunk array.
   const result = []
-  let index = 0
-  while (index < array.length) {
+  for (let index = 0; index < array.length; index += size)
     result.push(array.slice(index, index + size))
-    index = index + size
-  }
+
+  // --- Return result.
   return result
 }

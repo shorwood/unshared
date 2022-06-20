@@ -1,33 +1,24 @@
-import { Key, MaybeArray } from '../types'
-import { get } from './get'
+import { MaybeArray } from '../types'
+import { arrayify } from './arrayify'
 
 interface Filter {
-  <T>(array: Array<T>, path: MaybeArray<Key>): Array<T>
   <T>(array: Array<T>, iterator: (value: T, key: number, array: Array<T>) => boolean): Array<T>
-  <T>(array: Array<T>, path: any): Array<T>
-  <T>(object: Record<string, T>, path: MaybeArray<Key>): Record<string, T>
-  <T>(object: Record<string, T>, iterator: (value: T, key: string, object: Record<string, T>) => boolean): Record<string, T>
-  <T>(object: Record<string, T>, path: any): Record<string, T>
+  <T>(array: Array<T>, filtered: MaybeArray<T>): Array<T>
 }
 
 /**
- * Filters an array or object.
- * @param {Array|Object} object The array or object to filter
- * @param {Function|string} iterator The function or path to use for filtering
- * @returns {Array|Object} The filtered array or object
+ * Filter values from an array according to the given predicate function.
+ * @param {Array|Object} object The array to filter
+ * @param {Function} iterator The function to call for each value. If this is a path (string or array), the function will get that value.
+ * @returns {Array|Object} A new array with only the values for which the iterator function returned false.
  */
-export const filter: Filter = (object: any, iterator?: any): any => {
+export const filter: Filter = (object: any, iterator: any): any => {
   // --- If iterator is a path, cast as getter function.
   if (typeof iterator !== 'function') {
-    const path = iterator
-    iterator = (value: any) => get(value, path)
+    const filtered = arrayify(iterator)
+    iterator = (value: any) => filtered.includes(value)
   }
 
   // --- If array, use built-in function.
-  if (Array.isArray(object))
-    return object.filter(iterator)
-
-  // --- If object, filter entries.
-  const entries = Object.entries(object).filter(([key, value]) => iterator(value, key, object))
-  return Object.fromEntries(entries)
+  return object.filter((value: any, index: any, array: any) => iterator(value, index, array))
 }
