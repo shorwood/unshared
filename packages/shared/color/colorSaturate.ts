@@ -6,4 +6,4 @@ import { colorTransform } from './colorTransform'
  * @param {number} n A number
  * @returns {string} A new hexadecimal color
  */
-export const colorSaturation = (hex: string, n: number) => colorTransform(hex, { s: x => x + n })
+export const colorSaturate = (hex: string, n: number): string => colorTransform(hex, { s: x => x * n })

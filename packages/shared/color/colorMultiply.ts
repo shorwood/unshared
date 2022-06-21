@@ -6,4 +6,4 @@ import { colorTransform } from './colorTransform'
  * @param {number} n A number
  * @returns {string} A color in hexadecimal format
  */
-export const colorMultiply = (hex: string, n: number) => colorTransform(hex, x => x * n)
+export const colorMultiply = (hex: string, n: number): string => colorTransform(hex, x => x * n)

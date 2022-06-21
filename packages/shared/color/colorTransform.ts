@@ -1,49 +1,52 @@
-import { clamp } from '../number'
+/* eslint-disable prefer-const */
 import { hexToRgb } from './hexToRgb'
 import { rgbToHex } from './rgbToHex'
-import { hslToHex } from './hslToHex'
-import { hexToHsl } from './hexToHsl'
+import { HSL, RGB } from './types'
+import { rgbToHsl } from './rgbToHsl'
+import { hslToRgb } from './hslToRgb'
 
 export type ColorTranformer = (x: number) => number
-export interface ColorTranformerMap {
-  r?: ColorTranformer
-  g?: ColorTranformer
-  b?: ColorTranformer
-  h?: ColorTranformer
-  s?: ColorTranformer
-  l?: ColorTranformer
-}
+export type ColorTranformerMap = Partial<Record<keyof RGB, ColorTranformer> | Record<keyof HSL, ColorTranformer>>
 
 /**
  * Takes a color and transforms it according to the transformer passed in. The transformer can be a map or a function.
- * @param {string} value A color in hexadecimal, RGB or HSL
+ * @param {string} value A color in hexadecimal, RGBA or HSLA
  * @param {ColorTranformer | ColorTranformerMap} transformer A map or function to transform the color
  * @returns {string} The transformed color
  */
-export const colorTransform = (value: string, transformer: ColorTranformer | ColorTranformerMap) => {
+export const colorTransform = (value: string, transformer: ColorTranformer | ColorTranformerMap): string => {
   if (typeof transformer === 'function') {
-    let { r, g, b } = hexToRgb(value)
-    r = clamp(transformer(r), 0, 255)
-    g = clamp(transformer(g), 0, 255)
-    b = clamp(transformer(b), 0, 255)
-    return rgbToHex({ r, g, b })
+    let { r, g, b, a } = hexToRgb(value)
+    return rgbToHex({
+      r: transformer(r),
+      g: transformer(g),
+      b: transformer(b),
+      a,
+    }, a < 1 ? 'rgba' : 'rgb')
   }
 
-  if (Object.keys(transformer).some(x => 'rgb'.includes(x))) {
-    let { r, g, b } = hexToRgb(value)
-    if (transformer.r) r = clamp(transformer.r(r), 0, 255)
-    if (transformer.g) g = clamp(transformer.g(g), 0, 255)
-    if (transformer.b) b = clamp(transformer.b(b), 0, 255)
-    value = rgbToHex({ r, g, b })
+  // --- Convert color to RGBA object.
+  let rgba = hexToRgb(value)
+
+  // --- If transformer objects transforms RGB parts.
+  if (transformer.a) rgba.a = transformer.a(rgba.a)
+
+  // --- If transformer objects transforms RGB parts.
+  if ('r' in transformer || 'g' in transformer || 'b' in transformer) {
+    if (transformer.r) rgba.r = transformer.r(rgba.r)
+    if (transformer.g) rgba.g = transformer.g(rgba.g)
+    if (transformer.b) rgba.b = transformer.b(rgba.b)
   }
 
-  if (Object.keys(transformer).some(x => 'hsl'.includes(x))) {
-    let { h, s, l } = hexToHsl(value)
-    if (transformer.h) h = transformer.h(h) % 360
+  // --- If transformer objects transforms HSL parts.
+  if ('h' in transformer || 's' in transformer || 'l' in transformer) {
+    let { h, s, l, a } = rgbToHsl(rgba)
+    if (transformer.h) h = transformer.h(h)
     if (transformer.s) s = transformer.s(s)
     if (transformer.l) l = transformer.l(l)
-    value = hslToHex({ h, s, l })
+    rgba = hslToRgb({ h, s, l, a })
   }
 
-  return value
+  // --- Return result.
+  return rgbToHex(rgba, rgba.a < 1 ? 'rgba' : 'rgb')
 }

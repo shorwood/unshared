@@ -1,10 +1,10 @@
 import { hslToRgb } from './hslToRgb'
 import { rgbToHex } from './rgbToHex'
-import { HSL } from './types'
+import { ColorIntegerFormat, HSLA } from './types'
 
 /**
- * Takes an HSL color and converts it into an hexadecimal color.
- * @param {HSL} value An HSL object
+ * Takes an HSLA color and converts it into an hexadecimal color.
+ * @param {HSLA} value An HSLA object
  * @returns {string} An hexadecimal color
  */
-export const hslToHex = (value: HSL): string => rgbToHex(hslToRgb(value))
+export const hslToHex = (value: HSLA, format: ColorIntegerFormat = 'rgb'): string => rgbToHex(hslToRgb(value), format)

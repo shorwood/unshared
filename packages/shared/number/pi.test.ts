@@ -16,5 +16,5 @@ it('approximates pi with variable accuracy', () => {
 })
 
 it('should fail when accuracy is negative', () => {
-  expect(() => { pi(-1) }).toThrow(Error)
+  expect(() => { pi(-1) }).toThrowError()
 })

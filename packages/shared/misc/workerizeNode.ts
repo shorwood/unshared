@@ -1,17 +1,25 @@
+/* eslint-disable unicorn/prefer-add-event-listener */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable unicorn/prevent-abbreviations */
-import { requireSafe } from '../module'
-
-export interface Workerize {
-  <T extends (...args: A[]) => R, A, R>(callback: T): (...args: A[]) => Promise<R>
-}
+import { requireSafe } from './requireSafe'
 
 /**
- * Wrap a function to make it run in its own thread.
- * @param { Function } callback The function to run in the worker thread
- * @returns The wrapped function
+ * Workerize a runtime function so that it can be run in a separate thread.
+ * @param {T} callback The function to workerize
+ * @returns {(...args: A[]) => Promise<R>} The workerized function
+ * @example
+ * // Define a function to run in a separate thread.
+ * const myFunction = (a: number, b: number): number => a + b
+ *
+ * // workerize it.
+ * const myWorkerizedFunction = workerizeBrowser(myFunction)
+ *
+ * // run it
+ * myWorkerizedFunction(2, 3).then(result => {
+ *   console.log(`Result is: ${result}`)
+ * })
  */
-export const workerize: Workerize = (callback: Function): any => {
+export const workerizeNode = <T extends (...args: any) => any>(callback: T): (...args: Parameters<T>) => Promise<ReturnType<T>> => {
   const fs = requireSafe<typeof import('node:fs')>('node:fs')
   const os = requireSafe<typeof import('node:os')>('node:os')
   const path = requireSafe<typeof import('node:path')>('node:path')
@@ -38,7 +46,7 @@ export const workerize: Workerize = (callback: Function): any => {
     process.exit()
   })`
 
-  const filePath = `${join(tmpdir(), Math.random().toString(36).slice(2))}.js`
+  const filePath = `${join(tmpdir(), `worker-${new Date().getSeconds()}`)}.js`
   writeFileSync(filePath, code)
 
   // --- Instantiate the worker.
@@ -57,5 +65,6 @@ export const workerize: Workerize = (callback: Function): any => {
   process.on('SIGUSR2', exitHandler)
   process.on('uncaughtException', exitHandler)
 
-  return wrapped
+  // --- Return wrapped function
+  return wrapped as any
 }

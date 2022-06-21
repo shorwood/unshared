@@ -12,17 +12,16 @@ interface Sample {
  */
 export const sample: Sample = (array: any[], size?: number, seed: number = Math.random()): any => {
   // --- Handle edge cases.
-  if (array.length === 0) return []
-  if (size && size < 1) throw new Error('Array chunk size must be greater than 0')
+  if (typeof size === 'number' && size < 1) throw new Error('Array chunk size must be greater than 0')
 
   // --- Get item at random index.
   if (size === undefined) {
-    const index = Math.floor(seed * array.length)
-    return array[index]
+    return array.length <= 1
+      ? array[0]
+      : array[Math.floor(seed * array.length)]
   }
 
-  // --- If size is invalid, fallback to random sample size.
-  if (size <= 0) size = Math.ceil(seed * array.length)
+  //  --- If sample size larger than array size, return copy of array.
   if (size >= array.length) return [...array]
 
   // --- Move items to copy until we have the requested size.

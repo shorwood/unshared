@@ -6,4 +6,4 @@ import { colorTransform } from './colorTransform'
  * @param {number} n The amount to shift the hue
  * @returns {string} A color represented in hexadecimal
  */
-export const colorShift = (hex: string, n: number) => colorTransform(hex, { h: x => x + n })
+export const colorShift = (hex: string, n: number): string => colorTransform(hex, { h: x => x + n })

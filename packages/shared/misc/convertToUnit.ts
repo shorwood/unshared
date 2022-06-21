@@ -4,7 +4,7 @@
  * @param {"px" | "rem" | "em" | "vh" | "vw" | "%"} unit The unit to convert to
  * @returns {string} A unit
  */
-export function convertToUnit(input?: string | number, unit = 'px' as 'px' | 'rem' | 'em' | 'vh' | 'vw' | '%') {
+export function convertToUnit(input?: string | number, unit: 'px' | 'rem' | 'em' | 'vh' | 'vw' | '%' = 'px'): string {
   // --- If input is invalid.
   if (!input) return '0'
 

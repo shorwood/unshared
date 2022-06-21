@@ -3,17 +3,20 @@ import { hslToHex } from './hslToHex'
 import { hexToHsl } from './hexToHsl'
 
 export interface CreatePaletteOptions {
-  /** Luminance added each stops. */
+  /** Luminance increase each stops. */
   stepUp?: number
-  /** Luminance removed each stops. */
+  /** Luminance decrease each stops. */
   stepDown?: number
   /** Hue shift each steps. */
   hueShift?: number
   /**
    * Palette stops.
-   * @default [50, 100, 200, 300, 400, 500, 600, 700, 800, 900]
+   * @default
+   * [50, 100, 200, 300, 400, 500, 600, 700, 800, 900]
    */
   stops?: number[]
+  /** Stop of the input color. */
+  baseStop?: number
 }
 
 /**
@@ -26,7 +29,11 @@ export interface CreatePaletteOptions {
 export const createPalette = (color: string, options = {} as CreatePaletteOptions) => {
 // --- Destructure options.
   const {
-    stepUp = 8, stepDown = 11, hueShift = 0, stops = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900],
+    stepUp = 8,
+    stepDown = 11,
+    hueShift = 0,
+    stops = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900],
+    baseStop = 500,
   } = options
 
   // --- Generate shades.
@@ -35,8 +42,8 @@ export const createPalette = (color: string, options = {} as CreatePaletteOption
     const _hsl = { ...hsl }
 
     // --- Shift luminance.
-    const distance = 5 - (stop / 100)
-    const direction = distance > 0 ? stepUp : stepDown
+    const distance = (baseStop - stop) / 100
+    const direction = distance > 0 ? stepUp / 100 : stepDown / 100
     _hsl.l = clamp(_hsl.l + direction * distance, 0, 100)
 
     // --- Shift hue.

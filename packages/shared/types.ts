@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prevent-abbreviations */
 /** Types allowed for object keys. */
 export type Key = string | number | symbol
 
@@ -23,3 +24,6 @@ export type NotFunction = (string | number | bigint | symbol | any[] | object) &
 
 /** Array with fixed length */
 export type Tuple<N extends number, T = any, R extends readonly T[] = []> = R['length'] extends N ? R : Tuple<N, T, readonly [T, ...R]>
+
+/** Remove first argument from a function */
+export type OmitFirstParameter<F> = F extends (x: any, ...args: infer P) => infer R ? (...args: P) => R : never

@@ -12,7 +12,7 @@ import { rgbToHex } from './rgbToHex'
  * - A `bias` value of 0.0 means the output is 100% the second color.
  * @returns {string} The mixed color
  */
-export const colorMerge = (hex1: string, hex2: string, bias = 0.5) => {
+export const colorMerge = (hex1: string, hex2: string, bias = 0.5): string => {
   const bias1 = clamp(bias, 0, 1)
   const bias2 = clamp(1 - bias, 0, 1)
   const color1 = hexToRgb(hex1)

@@ -21,17 +21,19 @@ export const resolvable = <T = void>() => {
 
     // --- Init promise.
     state.promise = new Promise<T>((resolve, reject) => {
-      state.resolve = resolve
-      state.reject = reject
-    })
+      // --- Wrap  resolve.
+      state.resolve = (value) => {
+        state.resolved = true
+        state.pending = false
+        resolve(value)
+      }
 
-    // --- Extend `resolve` callback.
-    state.promise.then(() => state.resolved = true)
-
-    // --- Extend `reject` callback.
-    state.promise.catch(() => {
-      state.resolved = false
-      state.pending = false
+      // --- Wrap reject.
+      state.reject = (value) => {
+        state.resolved = false
+        state.pending = false
+        reject(value)
+      }
     })
   }
 

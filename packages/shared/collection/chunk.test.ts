@@ -27,6 +27,6 @@ it('should not chunk empty arrays', () => {
 })
 
 it('should throw an error if the chunk size is less than 1', () => {
-  expect(() => { chunk([1, 2, 3, 4, 5], 0) }).toThrow(Error)
-  expect(() => { chunk([1, 2, 3, 4, 5], -1) }).toThrow(Error)
+  expect(() => chunk([1, 2, 3, 4, 5], 0)).toThrowError()
+  expect(() => chunk([1, 2, 3, 4, 5], -1)).toThrowError()
 })

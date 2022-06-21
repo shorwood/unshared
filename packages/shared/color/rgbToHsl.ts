@@ -1,41 +1,42 @@
-import { HSL, RGB } from './types'
+/* eslint-disable unicorn/prefer-switch */
+import { clamp } from '../number/clamp'
+import { HSLA, RGB } from './types'
 
 /**
- * Converts an RGB color value to HSL.
- * @param rgb RGB color.
- * @return The HSL representation
+ * Converts an RGB or RGBA color value to HSLA.
+ * @param {RGB} rgb RGBA color.
+ * @return {HSLA} The HSLA representation
  * @see https://stackoverflow.com/a/9493060/12414909
- * @see http://en.wikipedia.org/wiki/HSL_color_space
+ * @see http://en.wikipedia.org/wiki/HSLA_color_space
  */
+export const rgbToHsl = ({ r, g, b, a = 1 }: RGB): HSLA => {
+  // --- Clamp between 0 and 255.
+  r = Math.round(clamp(r, 0, 255)) / 255
+  g = Math.round(clamp(g, 0, 255)) / 255
+  b = Math.round(clamp(b, 0, 255)) / 255
+  a = clamp(a, 0, 1)
 
-export const rgbToHsl = ({ r, g, b }: RGB) => {
-  r /= 255
-  g /= 255
-  b /= 255
-
+  // --- Get min and max values.
   const max = Math.max(r, g, b)
   const min = Math.min(r, g, b)
+  const delta = max - min
+
+  // --- Initialize variables.
   let h = 0
   let s = 0
   const l = (max + min) / 2
 
-  if (max !== min) {
-    const d = max - min
-    s = l > 0.5
-      ? d / (2 - max - min)
-      : d / (max + min)
-    switch (max) {
-      case r: h = (g - b) / d + (g < b ? 6 : 0); break
-      case g: h = (b - r) / d + 2; break
-      case b: h = (r - g) / d + 4; break
-    }
-    h /= 6
-  }
+  // --- Compute Hue.
+  if (max === min) h = 0
+  else if (r === max) h = (60 * ((g - b) / delta)) % 360
+  else if (g === max) h = (60 * ((b - r) / delta) + 120)
+  else if (b === max) h = (60 * ((r - g) / delta) + 240)
 
-  // --- Multiply & return
-  return <HSL>{
-    h: h * 360,
-    s: s * 100,
-    l: l * 100,
-  }
+  // --- Compute saturation.
+  if (max === min) s = 0
+  else if (l <= 0.5) s = delta / (max + min)
+  else s = delta / (2 - max - min)
+
+  // --- Return HSLA object.
+  return { h, s, l, a }
 }

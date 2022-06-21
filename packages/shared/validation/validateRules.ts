@@ -1,14 +1,16 @@
+import { MaybeArray } from '../types'
 import { isRule } from './isRule'
 import { validateRule } from './validateRule'
 import { ValidateRuleResult, ValidateRulesResult, ValidationRule } from './types'
 
 /**
- *
- * @param value
- * @param rules
- * @param context
+ * Validate a list of rules and return the result
+ * @param {any} value The value to validate
+ * @param {MaybeArray<ValidationRule>} rules The rules to validate againt
+ * @param {any} context An optional context to pass to the rules
+ * @returns {Promise<ValidateRulesResult>} The validation result
  */
-export const validateRules = async(value: any, rules: ValidationRule | ValidationRule[], context?: any): Promise<ValidateRulesResult> => {
+export const validateRules = async(value: any, rules: MaybeArray<ValidationRule>, context?: any): Promise<ValidateRulesResult> => {
   const results: ValidateRuleResult[] = []
   rules = isRule(rules) ? [rules] : rules
 
@@ -18,8 +20,7 @@ export const validateRules = async(value: any, rules: ValidationRule | Validatio
     const result = await validateRule(value, rule, context)
     value = result.value ?? value
     results.push(result)
-    if (!result.isValid)
-      break
+    if (!result.isValid) break
   }
 
   // --- Return  result.
@@ -28,7 +29,7 @@ export const validateRules = async(value: any, rules: ValidationRule | Validatio
     results,
     valid: results.filter(x => x.isValid).map(x => x.name),
     failed: results.filter(x => !x.isValid).map(x => x.name),
-    errors: results.filter(x => !x.isValid).map(x => x.errorMessage ?? `rule "${x.name}" failed with value "${x.value}"`).filter(Boolean),
+    errors: results.filter(x => !x.isValid).flatMap(x => x.errorMessage ?? x.name).filter(Boolean),
     isValid: results.every(x => x.isValid),
     isInvalid: !results.every(x => x.isValid),
   }

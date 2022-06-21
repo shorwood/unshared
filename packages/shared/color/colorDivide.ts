@@ -6,4 +6,4 @@ import { colorTransform } from './colorTransform'
  * @param {number} n A number to divide by
  * @returns {string} An hexadecimal color
  */
-export const colorDivide = (hex: string, n: number) => colorTransform(hex, x => x / n)
+export const colorDivide = (hex: string, n: number): string => colorTransform(hex, x => x / n)

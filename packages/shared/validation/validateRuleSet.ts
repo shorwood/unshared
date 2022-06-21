@@ -17,7 +17,7 @@ export const validateRuleSet = async(value: any, ruleSets: ValidationRuleSet, co
   else if (!ruleSets.every(x => isRule(x) || x.every(isRule))) throw new Error('invalid rule set')
 
   // --- Validate and store results of each rules one by one.
-  // --- If one of the rules does not return a string, use it as new value.
+  // --- If one of the rules does not return a boolean, use it as new value.
   for (const rules of <ValidationRule[][]>ruleSets) {
     const result = await validateRules(value, rules, context)
     results.push(result)

@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/prevent-abbreviations */
-export type Throttle = <T extends Function>(callback: T, delay: number) => T
+export type ThrottledFn<T extends (...args: any) => any> = (...args: Parameters<T>) => void
 
 /**
  * Returns a function, that, when invoked, will only be triggered at most once during a given window of time.
@@ -7,17 +7,20 @@ export type Throttle = <T extends Function>(callback: T, delay: number) => T
  * @param {number} delay The amount of time in milliseconds to throttle invocations
  * @returns {Function}
  */
-export const throttle: Throttle = (callback: Function, delay = 200): any => {
+export const throttle = <T extends (...args: any) => any>(callback: T, delay: number): ThrottledFn<T> => {
+  // --- Handle edge cases.
+  if (delay <= 0) return callback
+
+  // --- Initialize variables.
   let timeout: NodeJS.Timeout
   let last: number
+
+  // --- Instantiate and return a thottled function.
   return (...args: any[]) => {
     const now = Date.now()
-    if (last && now < last + delay) {
+    if (last && now <= last + delay) {
       clearTimeout(timeout)
-      timeout = setTimeout(() => {
-        last = now
-        callback(args)
-      }, delay)
+      timeout = setTimeout(() => last = now, delay)
     }
     else {
       last = now

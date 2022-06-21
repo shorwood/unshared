@@ -1,4 +1,4 @@
-import { getType, isType } from './isType'
+import { getType, isType } from '../validation'
 
 const typeOrder = [
   'undefined',
@@ -20,13 +20,32 @@ const typeOrder = [
   'object',
 ]
 
+/**
+ * Compare two values.
+ * @param {any} a The first value to compare
+ * @param {any} b The second value to compare
+ * @returns {number} -1 if a < b, 1 if a > b, 0 if a === b
+ * @example
+ * compare(0, 1) // => -1
+ * compare('a', 'b') // => -1
+ * compare(new Date(0), new Date(1)) // => -1
+ * compare([1, 2], [1, 2, 3]) // => -1
+ * compare({ a: 1 }, { a: 1, b: 2 }) // => -1
+ * compare({ a: 1, b: 2 }, { a: 1, b: 2 }) // => 0
+ */
 export const compare = (a: any, b: any): number => {
+  // --- Handle strict equality.
+  if (a === b) return 0
+
+  // --- Get types.
   const aType = getType(a)
   const bType = getType(b)
 
   // --- Compare by types.
-  if (aType !== bType)
-    return typeOrder.indexOf(aType) - typeOrder.indexOf(bType)
+  if (aType !== bType) {
+    const delta = typeOrder.indexOf(aType) - typeOrder.indexOf(bType)
+    return delta > 0 ? 1 : -1
+  }
 
   // --- Cast Map/WeakMap as array.
   if (aType === 'map' || aType === 'weakmap') {

@@ -1,40 +1,45 @@
-import { HSL, RGB } from './types'
-
-const hueP = (p: number, q: number, t: number) => {
-  if (t < 0) t += 1
-  if (t > 1) t -= 1
-  if (t < 1 / 6) return p + (q - p) * 6 * t
-  if (t < 1 / 2) return q
-  if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6
-  return p
-}
+import { clamp } from '../number'
+import { HSL, RGB, RGBA } from './types'
 
 /**
- * Converts HSL values to RGB.
- * @param {HSL} hsl The HSL values
- * @returns {RGB} The RGB values
- * @return The RGB representation
- * @see http://en.wikipedia.org/wiki/HSL_color_space.
+ * Converts HSL values to RGBA.
+ * @param {HSL} hsl The HSLA values
+ * @returns {RGBA} The RGBA values
+ * @return The RGBA representation
+ * @see http://en.wikipedia.org/wiki/HSLA_color_space.
  */
-export const hslToRgb = ({ h, s, l }: HSL): RGB => {
-  h /= 360
-  s /= 100
-  l /= 100
-  let r = l
-  let g = l
-  let b = l
+export const hslToRgb = ({ h, s, l, a = 1 }: HSL): RGBA => {
+  // --- Loop hue & clamp values
+  h = (h < 0 ? h + 360 : h) % 360
+  s = clamp(s, 0, 1)
+  l = clamp(l, 0, 1)
+  a = clamp(a, 0, 1)
 
-  if (s !== 0) {
-    const q = l < 0.5 ? l * (1 + s) : l + s - l * s
-    const p = 2 * l - q
-    r = hueP(p, q, h + 1 / 3)
-    g = hueP(p, q, h)
-    b = hueP(p, q, h - 1 / 3)
+  // --- Handle edge cases.
+  if (s === 0) {
+    l = Math.round(l * 255)
+    return { r: l, g: l, b: l, a }
   }
 
-  return <RGB>{
-    r: r * 255,
-    g: g * 255,
-    b: b * 255,
+  // --- Helper constants
+  const c = (1 - Math.abs(2 * l - 1)) * s
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1))
+  const m = l - c / 2
+
+  // --- Handle different color ranges
+  let rgb: RGB
+  if (h < 60) rgb = { r: c, g: x, b: 0 }
+  else if (h < 120) rgb = { r: x, g: c, b: 0 }
+  else if (h < 180) rgb = { r: 0, g: c, b: x }
+  else if (h < 240) rgb = { r: 0, g: x, b: c }
+  else if (h < 300) rgb = { r: x, g: 0, b: c }
+  else rgb = { r: c, g: 0, b: x, a }
+
+  // --- Return RGBA object.
+  return {
+    r: Math.round(clamp((rgb.r + m) * 255, 0, 255)),
+    g: Math.round(clamp((rgb.g + m) * 255, 0, 255)),
+    b: Math.round(clamp((rgb.b + m) * 255, 0, 255)),
+    a,
   }
 }

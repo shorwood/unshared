@@ -1,9 +1,11 @@
+export type TypeExtended = 'undefined' | 'null' | 'boolean' | 'number' | 'bigint' | 'string' | 'symbol' | 'function' | 'regexp' | 'date' | 'set' | 'map' | 'weakset' | 'weakmap' | 'array' | 'object'
+
 /**
  * Gets the type of a value.
- * @param {*} value The value to check
- * @returns {string} The type of value
+ * @param {unknown} value The value to check
+ * @returns {TypeExtended} The type of value
  */
-export const getType = (value: any) => {
+export const getType = (value?: unknown): TypeExtended => {
   if (typeof value === 'undefined') return 'undefined'
   if (value === null) return 'null'
   if (typeof value === 'boolean') return 'boolean'
@@ -44,9 +46,9 @@ interface IsType {
 
 /**
  * Checks if the value is of a specific type.
- * @param {any} value The value to check
+ * @param {unknown} value The value to check
  * @param {string} type The expected type
  * @returns {boolean} True if the value is of the expected type, false otherwise
  */
-// @ts-expect-error: Function is not detected as a type predicactor.
-export const isType: IsType = (value, type) => getType(value) === type
+// @ts-expect-error: function is indeed a type predicactor.
+export const isType: IsType = (value: unknown, type: string): boolean => getType(value) === type

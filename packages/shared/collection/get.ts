@@ -13,22 +13,20 @@ interface Get {
  * @returns {any} The value at the path or the default value
  */
 export const get: Get = (value: any, path: MaybeArray<Key>, defaultValue?: any): any => {
-  // --- Handle edge cases.
-  if (value === null || value === undefined) return defaultValue
-
   // --- If `path` is an array, arrayify the path
   if (!Array.isArray(path)) path = [path]
 
-  // --- Split path segments
-  path = path.flatMap((segment: any) => {
-    if (typeof segment === 'string') return segment.split('.')
-    return [segment]
-  })
+  // --- Split path segments.
+  path = path.flatMap((segment: any) => (
+    typeof segment === 'string'
+      ? segment.split('.')
+      : segment),
+  )
 
   // --- Loop through the path and get the value.
   let result = value
   for (const key of path) {
-    if (key in result) result = result[key]
+    if (result && key in result) result = result[key]
     else return defaultValue
   }
 

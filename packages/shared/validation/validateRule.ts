@@ -1,10 +1,11 @@
 import { ValidateRuleResult, ValidationRule } from './types'
 
 /**
- *
- * @param value
- * @param rule
- * @param context
+ * Validate a rule against a value.
+ * @param {any} value The value to validate
+ * @param {ValidationRule} rule The validation rule
+ * @param {any} [context] Any context to pass on to the validator
+ * @returns {ValidateRuleResult} The result of validation
  */
 export const validateRule = async(value: any, rule: ValidationRule, context?: any): Promise<ValidateRuleResult> => {
   let result: any = {

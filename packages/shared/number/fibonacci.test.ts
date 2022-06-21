@@ -16,5 +16,5 @@ it('computes the Fibonacci number at N non recursively', () => {
 })
 
 it('should fail when N is negative', () => {
-  expect(() => { fibonacci(-1) }).toThrow(Error)
+  expect(() => { fibonacci(-1) }).toThrowError()
 })

@@ -6,4 +6,4 @@ import { colorTransform } from './colorTransform'
  * @param {number} n The amount to lighten the color
  * @returns {string} A color in hexadecimal format
  */
-export const colorLighten = (hex: string, n: number) => colorTransform(hex, { l: x => x + n })
+export const colorLighten = (hex: string, n: number): string => colorTransform(hex, { l: x => x * n })
