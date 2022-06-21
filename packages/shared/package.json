@@ -59,11 +59,6 @@
       "import": "./dist/validation/index.mjs",
       "types": "./dist/validation/index.d.ts"
     },
-    "./validator": {
-      "require": "./dist/validator/index.js",
-      "import": "./dist/validator/index.mjs",
-      "types": "./dist/validator/index.d.ts"
-    },
     "./package.json": "./package.json"
   },
   "files": [

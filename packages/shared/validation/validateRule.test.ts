@@ -48,13 +48,15 @@ it('should pass a transformation rule when valid and provide a transformed value
 
 it('should fail a transformation rule when runtime error occured', async() => {
   const value = undefined
-  const rule: ValidateRuleResult = await validateRule(value, [toUpperCase, undefined, 'Invalid value'])
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const ruleThrowingError = () => { throw new Error('Error') }
+  const rule: ValidateRuleResult = await validateRule(value, [ruleThrowingError, undefined, 'Invalid value'])
   expect(rule.value).toBe(value)
   expect(rule.isValid).toBeFalsy()
   expect(rule.isInvalid).toBeTruthy()
-  expect(rule.errorMessage).toBe('Cannot read properties of undefined (reading \'toUpperCase\')')
-  expect(rule.name).toBe('toUpperCase')
-  expect(rule.handler).toBe(toUpperCase)
+  expect(rule.errorMessage).toBe('Error')
+  expect(rule.name).toBe('ruleThrowingError')
+  expect(rule.handler).toBe(ruleThrowingError)
   expect(rule.args).toBeUndefined()
   expect(rule.context).toBeUndefined()
 })

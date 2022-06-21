@@ -7,15 +7,22 @@ import { isRule } from './isRule'
 it('should return true if the value is a ValidationRule as object', () => {
   expect(isRule({ handler: noop })).toBeTruthy()
   expect(isRule({ handler: 'noop' })).toBeFalsy()
+  expect(isRule({ handler: noop, name: noop })).toBeFalsy()
   expect(isRule({ handler: noop, name: 'foo' })).toBeTruthy()
-  expect(isRule({ handler: noop, arguments: (result: any) => result })).toBeTruthy()
+  expect(isRule({ handler: noop, name: 1 })).toBeFalsy()
+  expect(isRule({ handler: noop, arguments: noop })).toBeTruthy()
+  expect(isRule({ handler: noop, arguments: 'foo' })).toBeTruthy()
+  expect(isRule({ handler: noop, arguments: 1 })).toBeTruthy()
   expect(isRule({ handler: noop, errorMessage: 'foo' })).toBeTruthy()
+  expect(isRule({ handler: noop, errorMessage: noop })).toBeTruthy()
+  expect(isRule({ handler: noop, errorMessage: 1 })).toBeFalsy()
 })
 
 it('should return true if the value is a ValidationRule as array', () => {
   expect(isRule([noop])).toBeFalsy()
   expect(isRule([noop, 'foo'])).toBeTruthy()
   expect(isRule([noop, 'foo', noop])).toBeTruthy()
+  expect(isRule([noop, 'foo', noop, 1])).toBeFalsy()
   expect(isRule([noop, noop])).toBeFalsy()
   expect(isRule([noop, noop, noop])).toBeFalsy()
   expect(isRule([noop, [noop, 'foo']])).toBeFalsy()

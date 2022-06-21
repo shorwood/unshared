@@ -47,7 +47,7 @@ export const isArrayIncludingEvery = <T>(value: T[], items: T[]): boolean => ite
   * Check if array does not include item
   * @param {any[]} value The array to check
   * @param {any} item The value to look for
-  * @returns {boolean} True if array does not include item
+  * @returns {boolean} True if array does not include itemobject
   */
 export const isArrayNotIncluding = <T>(value: T[], item: T): boolean => !value.includes(item)
 

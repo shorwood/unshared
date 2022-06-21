@@ -4,7 +4,7 @@
   * @param {RegExp | string} regex The regex to match
   * @returns {boolean} `true` if string matches regex, `false` otherwise
   */
-export const isStringMatching = (value: string, regex: RegExp | string): boolean => (regex instanceof RegExp ? regex : new RegExp(regex)).test(value)
+export const isStringMatching = (value: string, regex: RegExp): boolean => regex.test(value)
 
 /**
  * Check if string matches emojis.
@@ -56,7 +56,6 @@ export const isStringSlug = (value: string): boolean => /^[\da-z-]+$/.test(value
   * - `foo@bar.co.uk`
   * - `foo@bar.io`
   * - `foo@bar.museum`
-  * - `foo@baz`
   * - `foo@baz.com`
   * - `foo@baz.com.co`
   * - `foo@baz.net`
@@ -164,11 +163,11 @@ export const isStringPort = (value: string): boolean => /^((6553[0-5])|(655[0-2]
   * @returns {boolean} `true` if string matches regex, `false` otherwise
   *
   * @example Matched strings:
-  * - `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c`
+  * - `eyJhbGciOiJIUz.eyJzdWIiOiIxMjM0NTY3O.SflKxwRJSM6POk6yJV_adQssw5c`
   *
   * @see https://jwt.io/
   */
-export const isStringJsonWebToken = (value: string): boolean => /^[\w=-]+\.[\w=-]+\.?[\w+./=-]*$/.test(value)
+export const isStringJwt = (value: string): boolean => /^[\w=-]+\.[\w=-]+\.?[\w+./=-]*$/.test(value)
 
 /**
   * Check if string matches Semantic Versioning.
@@ -186,7 +185,7 @@ export const isStringJsonWebToken = (value: string): boolean => /^[\w=-]+\.[\w=-
   *
   * @see https://semver.org/
   */
-export const isStringSemanticVersioning = (value: string): boolean => /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-z-][\da-z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-z-][\da-z-]*))*))?(?:\+([\da-z-]+(?:\.[\da-z-]+)*))?$/i.test(value)
+export const isStringSemver = (value: string): boolean => /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-z-][\da-z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-z-][\da-z-]*))*))?(?:\+([\da-z-]+(?:\.[\da-z-]+)*))?$/i.test(value)
 
 /**
   * Check if string matches latitude and longitude.
@@ -203,7 +202,7 @@ export const isStringSemanticVersioning = (value: string): boolean => /^(0|[1-9]
   *
   * @see https://en.wikipedia.org/wiki/Geographic_coordinate_system
   */
-export const isStringLatitudeLongitude = (value: string): boolean => /^((-?|\+?)?\d+(\.\d+)?),\s*((-?|\+?)?\d+(\.\d+)?)$/.test(value)
+export const isStringLatLong = (value: string): boolean => /^((-?|\+?)?\d+(\.\d+)?),\s*((-?|\+?)?\d+(\.\d+)?)$/.test(value)
 
 /**
   * Check if string matches ISO 8601.
@@ -213,29 +212,6 @@ export const isStringLatitudeLongitude = (value: string): boolean => /^((-?|\+?)
   * @example Matched strings:
   * - `1994-11-05T13:15:30Z`
   * - `1994-11-05T08:15:30-05:00`
-  * - `1994-11-05T08:15:30+05:00`
-  * - `1994-11-05T08:15:30.45`
-  * - `1994-11-05T08:15:30.45+05:00`
-  * - `1994-11-05`
-  * - `19941105T131530Z`
-  * - `19941105T131530.45`
-  * - `19941105T131530.45+0500`
-  * - `1994-W48-5`
-  * - `1994W485`
-  * - `1994-135`
-  * - `19941350`
-  * - `1994-W15-5T13:15:30Z`
-  * - `1994W155T131530Z`
-  * - `1994-W15-5`
-  * - `1994W155`
-  * - `1994-05`
-  * - `199405`
-  * - `1994-05-05T08:15:30-05:00`
-  * - `19940505T131530Z`
-  * - `1994-05-05`
-  * - `19940505`
-  * - `1994137T131530Z`
-  * - `1994137`
   *
   * @see https://en.wikipedia.org/wiki/ISO_8601
   */

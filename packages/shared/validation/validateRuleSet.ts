@@ -3,10 +3,11 @@ import { validateRules } from './validateRules'
 import { ValidateRulesResult, ValidationRule, ValidationRuleSet } from './types'
 
 /**
- *
- * @param value
- * @param ruleSets
- * @param context
+ * Validate a value against a ValidationRuleSet.
+ * @param {any} value The value to validate
+ * @param {ValidationRuleSet} ruleSets The ValidationRuleSet to validate against
+ * @param {any} context A context to pass through to the validation rules
+ * @returns {Promise<ValidateRuleResult>} The result of the validation
  */
 export const validateRuleSet = async(value: any, ruleSets: ValidationRuleSet, context?: any): Promise<ValidateRulesResult> => {
   const results: ValidateRulesResult[] = []
@@ -33,9 +34,9 @@ export const validateRuleSet = async(value: any, ruleSets: ValidationRuleSet, co
   // --- Return  result.
   return {
     results: results.flatMap(x => x.results),
-    failed: isInvalid ? results.flatMap(x => x.failed) : [],
-    valid: isInvalid ? results.flatMap(x => x.valid) : [],
-    errors: isInvalid ? results.flatMap(x => x.errors) : [],
+    valid: results.flatMap(x => x.valid),
+    failed: results.flatMap(x => x.failed),
+    errors: results.flatMap(x => x.errors),
     value,
     isValid,
     isInvalid,

@@ -10,7 +10,7 @@ export type ValidationRule = Validator | [handler: Validator, arguments: NotFunc
 export interface ValidationRuleObject {
   handler: Validator
   name?: string
-  arguments?: (result: ValidateRuleResult) => any
+  arguments?: any
   errorMessage?: string | ((result: ValidateRuleResult) => string)
 }
 

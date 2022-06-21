@@ -17,11 +17,11 @@ it('should return a validation function that returns a custom error message when
   expect(result).toBe('must be an integer')
 })
 
-it.todo('should return a validation schema that can be used with vee-validate', async() => {
+it('should return a validation schema that can be used with vee-validate', async() => {
   const schema = createVeeSchema({
     id: Number.isInteger,
-    name: [isStringNotEmpty, undefined, 'must be a string'],
+    name: [isStringNotEmpty, undefined, 'must not be empty'],
   })
-  const result = await schema.validate({ id: 1, name: 'John' })
-  expect(result.valid).toBe(true)
+  expect(await schema.id(1)).toBe(true)
+  expect(await schema.name('')).toBe('must not be empty')
 })
