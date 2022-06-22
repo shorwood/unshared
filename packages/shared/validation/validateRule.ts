@@ -19,7 +19,7 @@ export const validateRule = async(value: any, rule: ValidationRule, context?: an
   if (Array.isArray(rule)) {
     result = {
       ...result,
-      args: rule?.[1],
+      argument: rule?.[1],
       name: rule[0].name,
       handler: rule[0],
       errorMessage: rule?.[2],
@@ -30,7 +30,7 @@ export const validateRule = async(value: any, rule: ValidationRule, context?: an
   else if (typeof rule === 'function') {
     result = {
       ...result,
-      args: undefined,
+      argument: undefined,
       name: rule.name,
       handler: rule,
       errorMessage: undefined,
@@ -47,9 +47,9 @@ export const validateRule = async(value: any, rule: ValidationRule, context?: an
 
   try {
     // --- Resolve arguments.
-    result.args = typeof result.args === 'function'
-      ? result.args(result)
-      : result.args
+    result.argument = typeof result.argument === 'function'
+      ? result.argument(result)
+      : result.argument
 
     // --- Resolve error message.
     result.errorMessage = typeof result.errorMessage === 'function'
@@ -57,7 +57,7 @@ export const validateRule = async(value: any, rule: ValidationRule, context?: an
       : result.errorMessage
 
     // --- Try validating or transforming. Store error if one occurs.
-    let ruleResult = result.handler(value, result.args, context)
+    let ruleResult = result.handler(value, result.argument, context)
 
     // --- If validator is async, await it and catch errors.
     if (ruleResult instanceof Promise) {

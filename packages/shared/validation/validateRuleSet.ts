@@ -18,18 +18,10 @@ export const validateRuleSet = async(value: any, ruleSets: ValidationRuleSet, co
   else if (!ruleSets.every(x => isRule(x) || x.every(isRule))) throw new Error('invalid rule set')
 
   // --- Validate and store results of each rules one by one.
-  // --- If one of the rules does not return a boolean, use it as new value.
   for (const rules of <ValidationRule[][]>ruleSets) {
     const result = await validateRules(value, rules, context)
     results.push(result)
-    if (result.isValid) {
-      value = result.value ?? value
-      break
-    }
   }
-
-  const isValid = results.some(x => x.isValid)
-  const isInvalid = !isValid
 
   // --- Return  result.
   return {
@@ -37,8 +29,8 @@ export const validateRuleSet = async(value: any, ruleSets: ValidationRuleSet, co
     valid: results.flatMap(x => x.valid),
     failed: results.flatMap(x => x.failed),
     errors: results.flatMap(x => x.errors),
-    value,
-    isValid,
-    isInvalid,
+    value: results.find(x => x.isValid)?.value ?? value,
+    isValid: results.some(x => x.isValid),
+    isInvalid: results.some(x => x.isInvalid),
   }
 }

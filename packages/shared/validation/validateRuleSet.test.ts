@@ -5,6 +5,7 @@ const isRequired = (value: any): boolean => !!value
 const isGreater = (value: number, n: number): boolean => value > n
 const isEqual = (value: number, n: number): boolean => value === n
 const toValue = (value: number, n: number): number => n
+const toUndefined = () => {}
 
 it('should pass a rule set when one path is valid', async() => {
   const result = await validateRuleSet(1, [
@@ -56,12 +57,18 @@ it('should pass a rule set when one path is valid and has a tranformer', async()
 
 it('should fail a rule set when all path are invalid and has a tranformer', async() => {
   const result = await validateRuleSet(1, [
-    [[toValue, 0], isRequired],
-    [[toValue, 10], [isEqual, 1]],
+    [toUndefined, [toValue, 10], [isEqual, 1]],
+    [toUndefined, [toValue, 0], isRequired],
   ])
   expect(result.isValid).toBeFalsy()
   expect(result.value).toBe(1)
-  expect(result.errors).toEqual(['isRequired', 'isEqual'])
-  expect(result.failed).toEqual(['isRequired', 'isEqual'])
-  expect(result.valid).toEqual(['toValue', 'toValue'])
+  expect(result.errors).toEqual(['isEqual', 'isRequired'])
+  expect(result.failed).toEqual(['isEqual', 'isRequired'])
+  expect(result.valid).toEqual(['toUndefined', 'toValue', 'toUndefined', 'toValue'])
+})
+
+it('should throw an error on invalid rule set', async() => {
+  const invalidRuleSet = [[false]] as any
+  const invalidCall = async() => await validateRuleSet(1, invalidRuleSet)
+  expect(await invalidCall().catch(error => error)).toBeInstanceOf(Error)
 })

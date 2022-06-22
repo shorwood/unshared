@@ -5,18 +5,18 @@ export type ValidatorArgument = (result: ValidateRuleResult) => any
 
 export type ValidationSchema = Record<string, ValidationRuleSet>
 export type ValidationRuleSet = ValidationRule[][] | ValidationRule[] | ValidationRule
-export type ValidationRule = Validator | [handler: Validator, arguments: NotFunction | undefined, errorMessage?: string] | ValidationRuleObject
+export type ValidationRule = Validator | [handler: Validator, argument: NotFunction | undefined, errorMessage?: string] | ValidationRuleObject
 
 export interface ValidationRuleObject {
   handler: Validator
   name?: string
-  arguments?: any
+  argument?: any
   errorMessage?: string | ((result: ValidateRuleResult) => string)
 }
 
 export interface ValidateRuleResult {
   value: any
-  args?: unknown
+  argument?: unknown
   isValid: boolean
   isInvalid: boolean
   context: any
