@@ -3,7 +3,7 @@
  * @param {string} data The string to hash
  * @param {number} seed A seed value
  * @returns {number} The hashed number
- * @author [github.com/bryc](https://github.com/bryc)
+ * @See https://github.com/bryc
  */
 export const hashCyrb53 = (value: string, seed = 0): string => {
   let h1 = 0xDEADBEEF ^ seed
