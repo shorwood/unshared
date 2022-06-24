@@ -12,9 +12,12 @@ it('throttles a function so it is only called once every delay', async() => {
   throttled()
   expect(counter).toBe(1)
 
-  // --- Third cycle
-  await delay(10)
+  // --- Second cycle (Not unlocked yet)
+  await delay(5)
   expect(counter).toBe(1)
+  
+  // --- Third cycle (Now unlocked)
+  await delay(10)
   throttled()
   expect(counter).toBe(2)
 })
