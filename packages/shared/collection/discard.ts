@@ -1,5 +1,4 @@
 import { MaybeArray } from '../types'
-import { arrayify } from './arrayify'
 
 interface Discard {
   <T>(array: Array<T>, iterator: (value: T, key: number, array: Array<T>) => boolean): Array<T>
@@ -15,7 +14,7 @@ interface Discard {
 export const discard: Discard = (object: Array<any>, iterator: any): any => {
   // --- If iterator is a path, cast as getter function.
   if (typeof iterator !== 'function') {
-    const discarded = arrayify(iterator)
+    const discarded = Array.isArray(iterator) ? iterator : [iterator]
     iterator = (value: any) => discarded.includes(value)
   }
 

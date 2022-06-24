@@ -1,5 +1,4 @@
 import { MaybeArray } from '../types'
-import { arrayify } from './arrayify'
 
 interface Filter {
   <T>(array: Array<T>, iterator: (value: T, key: number, array: Array<T>) => boolean): Array<T>
@@ -15,7 +14,7 @@ interface Filter {
 export const filter: Filter = (object: any, iterator: any): any => {
   // --- If iterator is a path, cast as getter function.
   if (typeof iterator !== 'function') {
-    const filtered = arrayify(iterator)
+    const filtered = Array.isArray(iterator) ? iterator : [iterator]
     iterator = (value: any) => filtered.includes(value)
   }
 
