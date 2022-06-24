@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { environment, getEnvironmentVariable, isBrowser, isCli, isDevelopment, isNode, isProduction, isStrictMode, isWebWorker } from './environment'
+import { environment, getEnvironmentVariable, isCli, isDevelopment, isNode, isProduction, isStrictMode, isWebWorker } from './environment'
 
 it('environment should return the environment variables', async() => {
   expect(environment).toEqual(process.env)
@@ -15,10 +15,6 @@ it('isDevelopment should return true if environment.DEV is set', () => {
 
 it('isProduction should return true if environment.NODE_ENV is "production"', () => {
   expect(isProduction).toBeTypeOf('boolean')
-})
-
-it('isBrowser should return true if window and window.document are defined', () => {
-  expect(isBrowser).toBe(false)
 })
 
 it('isNode should return true if process and process.versions.node are defined', () => {
