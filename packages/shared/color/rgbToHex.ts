@@ -10,10 +10,9 @@ import { ColorIntegerFormat, RGB, RGBA } from './types'
 export const rgbToHex = (rgba: RGB | RGBA, format: ColorIntegerFormat = 'rgb'): string => {
   const hex = rgbToInt(rgba, format).toString(16)
 
-  // --- Generate missing zeros.
+  // --- Get final hex length.
   const length = format === 'rgb' ? 6 : 8
-  const zeros = '0'.repeat(length - hex.length)
 
   // --- Return hex string.
-  return `#${zeros}${hex}`
+  return `#${hex.padStart(length, '0')}`
 }
