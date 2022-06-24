@@ -2,9 +2,14 @@
 import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   test: {
+    api: {
+      port: 9000,
+    },
+    include: [
+      './packages/**/*.test.ts',
+    ],
     coverage: {
       all: true,
       reporter: ['clover', 'cobertura', 'lcov', 'text'],
