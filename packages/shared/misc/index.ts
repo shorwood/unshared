@@ -1,3 +1,4 @@
+export * from './benchmark'
 export * from './bindThis'
 export * from './compare'
 export * from './convertToUnit'
