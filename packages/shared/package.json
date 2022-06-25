@@ -19,6 +19,11 @@
       "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
     },
+    "./binary": {
+      "require": "./dist/binary/index.js",
+      "import": "./dist/binary/index.mjs",
+      "types": "./dist/binary/index.d.ts"
+    },
     "./collection": {
       "require": "./dist/collection/index.js",
       "import": "./dist/collection/index.mjs",
