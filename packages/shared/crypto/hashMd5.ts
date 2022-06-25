@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prevent-abbreviations */
 import { getEndianness, swapEndian } from '../binary'
 
 // --- Initialize and compute constants table based on sin(0...63)
@@ -5,22 +6,22 @@ const K: number[] = []
 for (let index = 0; index < 64; index++)
   K[index] = Math.trunc(Math.abs(Math.sin(index + 1)) * 0x100000000)
 
-const FF = (a: number, b: number, c: number, d: number, x: any, s: number, t: number) => {
+const f = (...[a, b, c, d, x, s, t]: number[]) => {
   const n = a + ((b & c) | (~b & d)) + x + t
   return ((n << s) | (n >>> (32 - s))) + b
 }
 
-const GG = (a: number, b: number, c: number, d: number, x: any, s: number, t: number) => {
+const g = (...[a, b, c, d, x, s, t]: number[]) => {
   const n = a + ((b & d) | (c & ~d)) + x + t
   return ((n << s) | (n >>> (32 - s))) + b
 }
 
-const HH = (a: number, b: number, c: number, d: number, x: any, s: number, t: number) => {
+const h = (...[a, b, c, d, x, s, t]: number[]) => {
   const n = a + (b ^ c ^ d) + x + t
   return ((n << s) | (n >>> (32 - s))) + b
 }
 
-const II = (a: number, b: number, c: number, d: number, x: any, s: number, t: number) => {
+const i = (...[a, b, c, d, x, s, t]: number[]) => {
   const n = a + (c ^ (b | ~d)) + x + t
   return ((n << s) | (n >>> (32 - s))) + b
 }
@@ -36,70 +37,70 @@ const process = (chunk: Uint32Array, words: Uint32Array) => {
   let d = words[3]
 
   // --- Hash.
-  a = FF(a, b, c, d, chunk[0], 7, K[0])
-  d = FF(d, a, b, c, chunk[1], 12, K[1])
-  c = FF(c, d, a, b, chunk[2], 17, K[2])
-  b = FF(b, c, d, a, chunk[3], 22, K[3])
-  a = FF(a, b, c, d, chunk[4], 7, K[4])
-  d = FF(d, a, b, c, chunk[5], 12, K[5])
-  c = FF(c, d, a, b, chunk[6], 17, K[6])
-  b = FF(b, c, d, a, chunk[7], 22, K[7])
-  a = FF(a, b, c, d, chunk[8], 7, K[8])
-  d = FF(d, a, b, c, chunk[9], 12, K[9])
-  c = FF(c, d, a, b, chunk[10], 17, K[10])
-  b = FF(b, c, d, a, chunk[11], 22, K[11])
-  a = FF(a, b, c, d, chunk[12], 7, K[12])
-  d = FF(d, a, b, c, chunk[13], 12, K[13])
-  c = FF(c, d, a, b, chunk[14], 17, K[14])
-  b = FF(b, c, d, a, chunk[15], 22, K[15])
-  a = GG(a, b, c, d, chunk[1], 5, K[16])
-  d = GG(d, a, b, c, chunk[6], 9, K[17])
-  c = GG(c, d, a, b, chunk[11], 14, K[18])
-  b = GG(b, c, d, a, chunk[0], 20, K[19])
-  a = GG(a, b, c, d, chunk[5], 5, K[20])
-  d = GG(d, a, b, c, chunk[10], 9, K[21])
-  c = GG(c, d, a, b, chunk[15], 14, K[22])
-  b = GG(b, c, d, a, chunk[4], 20, K[23])
-  a = GG(a, b, c, d, chunk[9], 5, K[24])
-  d = GG(d, a, b, c, chunk[14], 9, K[25])
-  c = GG(c, d, a, b, chunk[3], 14, K[26])
-  b = GG(b, c, d, a, chunk[8], 20, K[27])
-  a = GG(a, b, c, d, chunk[13], 5, K[28])
-  d = GG(d, a, b, c, chunk[2], 9, K[29])
-  c = GG(c, d, a, b, chunk[7], 14, K[30])
-  b = GG(b, c, d, a, chunk[12], 20, K[31])
-  a = HH(a, b, c, d, chunk[5], 4, K[32])
-  d = HH(d, a, b, c, chunk[8], 11, K[33])
-  c = HH(c, d, a, b, chunk[11], 16, K[34])
-  b = HH(b, c, d, a, chunk[14], 23, K[35])
-  a = HH(a, b, c, d, chunk[1], 4, K[36])
-  d = HH(d, a, b, c, chunk[4], 11, K[37])
-  c = HH(c, d, a, b, chunk[7], 16, K[38])
-  b = HH(b, c, d, a, chunk[10], 23, K[39])
-  a = HH(a, b, c, d, chunk[13], 4, K[40])
-  d = HH(d, a, b, c, chunk[0], 11, K[41])
-  c = HH(c, d, a, b, chunk[3], 16, K[42])
-  b = HH(b, c, d, a, chunk[6], 23, K[43])
-  a = HH(a, b, c, d, chunk[9], 4, K[44])
-  d = HH(d, a, b, c, chunk[12], 11, K[45])
-  c = HH(c, d, a, b, chunk[15], 16, K[46])
-  b = HH(b, c, d, a, chunk[2], 23, K[47])
-  a = II(a, b, c, d, chunk[0], 6, K[48])
-  d = II(d, a, b, c, chunk[7], 10, K[49])
-  c = II(c, d, a, b, chunk[14], 15, K[50])
-  b = II(b, c, d, a, chunk[5], 21, K[51])
-  a = II(a, b, c, d, chunk[12], 6, K[52])
-  d = II(d, a, b, c, chunk[3], 10, K[53])
-  c = II(c, d, a, b, chunk[10], 15, K[54])
-  b = II(b, c, d, a, chunk[1], 21, K[55])
-  a = II(a, b, c, d, chunk[8], 6, K[56])
-  d = II(d, a, b, c, chunk[15], 10, K[57])
-  c = II(c, d, a, b, chunk[6], 15, K[58])
-  b = II(b, c, d, a, chunk[13], 21, K[59])
-  a = II(a, b, c, d, chunk[4], 6, K[60])
-  d = II(d, a, b, c, chunk[11], 10, K[61])
-  c = II(c, d, a, b, chunk[2], 15, K[62])
-  b = II(b, c, d, a, chunk[9], 21, K[63])
+  a = f(a, b, c, d, chunk[0], 7, K[0])
+  d = f(d, a, b, c, chunk[1], 12, K[1])
+  c = f(c, d, a, b, chunk[2], 17, K[2])
+  b = f(b, c, d, a, chunk[3], 22, K[3])
+  a = f(a, b, c, d, chunk[4], 7, K[4])
+  d = f(d, a, b, c, chunk[5], 12, K[5])
+  c = f(c, d, a, b, chunk[6], 17, K[6])
+  b = f(b, c, d, a, chunk[7], 22, K[7])
+  a = f(a, b, c, d, chunk[8], 7, K[8])
+  d = f(d, a, b, c, chunk[9], 12, K[9])
+  c = f(c, d, a, b, chunk[10], 17, K[10])
+  b = f(b, c, d, a, chunk[11], 22, K[11])
+  a = f(a, b, c, d, chunk[12], 7, K[12])
+  d = f(d, a, b, c, chunk[13], 12, K[13])
+  c = f(c, d, a, b, chunk[14], 17, K[14])
+  b = f(b, c, d, a, chunk[15], 22, K[15])
+  a = g(a, b, c, d, chunk[1], 5, K[16])
+  d = g(d, a, b, c, chunk[6], 9, K[17])
+  c = g(c, d, a, b, chunk[11], 14, K[18])
+  b = g(b, c, d, a, chunk[0], 20, K[19])
+  a = g(a, b, c, d, chunk[5], 5, K[20])
+  d = g(d, a, b, c, chunk[10], 9, K[21])
+  c = g(c, d, a, b, chunk[15], 14, K[22])
+  b = g(b, c, d, a, chunk[4], 20, K[23])
+  a = g(a, b, c, d, chunk[9], 5, K[24])
+  d = g(d, a, b, c, chunk[14], 9, K[25])
+  c = g(c, d, a, b, chunk[3], 14, K[26])
+  b = g(b, c, d, a, chunk[8], 20, K[27])
+  a = g(a, b, c, d, chunk[13], 5, K[28])
+  d = g(d, a, b, c, chunk[2], 9, K[29])
+  c = g(c, d, a, b, chunk[7], 14, K[30])
+  b = g(b, c, d, a, chunk[12], 20, K[31])
+  a = h(a, b, c, d, chunk[5], 4, K[32])
+  d = h(d, a, b, c, chunk[8], 11, K[33])
+  c = h(c, d, a, b, chunk[11], 16, K[34])
+  b = h(b, c, d, a, chunk[14], 23, K[35])
+  a = h(a, b, c, d, chunk[1], 4, K[36])
+  d = h(d, a, b, c, chunk[4], 11, K[37])
+  c = h(c, d, a, b, chunk[7], 16, K[38])
+  b = h(b, c, d, a, chunk[10], 23, K[39])
+  a = h(a, b, c, d, chunk[13], 4, K[40])
+  d = h(d, a, b, c, chunk[0], 11, K[41])
+  c = h(c, d, a, b, chunk[3], 16, K[42])
+  b = h(b, c, d, a, chunk[6], 23, K[43])
+  a = h(a, b, c, d, chunk[9], 4, K[44])
+  d = h(d, a, b, c, chunk[12], 11, K[45])
+  c = h(c, d, a, b, chunk[15], 16, K[46])
+  b = h(b, c, d, a, chunk[2], 23, K[47])
+  a = i(a, b, c, d, chunk[0], 6, K[48])
+  d = i(d, a, b, c, chunk[7], 10, K[49])
+  c = i(c, d, a, b, chunk[14], 15, K[50])
+  b = i(b, c, d, a, chunk[5], 21, K[51])
+  a = i(a, b, c, d, chunk[12], 6, K[52])
+  d = i(d, a, b, c, chunk[3], 10, K[53])
+  c = i(c, d, a, b, chunk[10], 15, K[54])
+  b = i(b, c, d, a, chunk[1], 21, K[55])
+  a = i(a, b, c, d, chunk[8], 6, K[56])
+  d = i(d, a, b, c, chunk[15], 10, K[57])
+  c = i(c, d, a, b, chunk[6], 15, K[58])
+  b = i(b, c, d, a, chunk[13], 21, K[59])
+  a = i(a, b, c, d, chunk[4], 6, K[60])
+  d = i(d, a, b, c, chunk[11], 10, K[61])
+  c = i(c, d, a, b, chunk[2], 15, K[62])
+  b = i(b, c, d, a, chunk[9], 21, K[63])
 
   // --- Intermediate hash value.
   words[0] = words[0] + a
