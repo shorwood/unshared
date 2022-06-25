@@ -9,6 +9,7 @@ import {
   isArrayNotIncluding,
   isArrayNotIncludingEvery,
   isArrayNotIncludingSome,
+  isArrayValid,
 } from './isArray'
 
 it('checks if value is an array', () => {
@@ -65,4 +66,13 @@ it('checks if array does not includes every', () => {
   expect(isArrayNotIncludingEvery([1, 2, 3], [4, 5])).toBeTruthy()
   expect(isArrayNotIncludingEvery([1, 2, 3], [1, 2, 3])).toBeFalsy()
   expect(isArrayNotIncludingEvery([], [1, 3])).toBeTruthy()
+})
+
+const isNumber = (v: any) => typeof v === 'number'
+const isString = (v: any) => typeof v === 'string'
+
+it('checks if array does not includes every', async() => {
+  expect(await isArrayValid([1, 2, 3], isNumber)).toBeTruthy()
+  expect(await isArrayValid(['1', '2', '3'], isString)).toBeTruthy()
+  expect(await isArrayValid([true, 2, '3'], isString)).toBeFalsy()
 })

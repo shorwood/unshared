@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/no-null */
 /* eslint-disable unicorn/no-useless-undefined */
 import { expect, it } from 'vitest'
-import { isObject, isObjectConverging, isObjectEqual } from './isObject'
+import { isObject, isObjectConverging, isObjectEqual, isObjectValid } from './isObject'
 
 it('returns true if the value is an object', () => {
   expect(isObject(1)).toEqual(false)
@@ -32,4 +32,12 @@ it('returns true if objects are equal', () => {
   expect(isObjectEqual({ a: 1 }, { a: 2 })).toEqual(false)
   expect(isObjectEqual({ a: 1 }, { b: 1 })).toEqual(false)
   expect(isObjectEqual({ a: 1 }, { a: 1, b: 1 })).toEqual(false)
+})
+
+const isNumber = (v: any) => typeof v === 'number'
+const isString = (v: any) => typeof v === 'string'
+it('returns true if objects are equal', async() => {
+  expect(await isObjectValid({ a: 1, b: 2 }, { a: isNumber, b: isNumber })).toEqual(true)
+  expect(await isObjectValid({ a: '1', b: '2' }, { a: isString, b: isString })).toEqual(true)
+  expect(await isObjectValid({ a: 1, b: '2' }, { a: isString, b: isString })).toEqual(false)
 })
