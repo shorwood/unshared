@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 import { isBrowser, requireSafe } from '../misc'
 
 /**
@@ -10,17 +11,13 @@ import { isBrowser, requireSafe } from '../misc'
  * @see https://github.com/brix/crypto-js/blob/develop/src/core.js#L47
  */
 export const random = (): number => {
-  // --- If browser environment
+  // --- If browser environment, use `globalThis.crypto`, falls back to `Math.random()`
   if (isBrowser) {
-    // --- Get global object.
-    const global = window ?? globalThis
-
-    // --- Use `crypto.getRandomValues()`, falls back to `Math.random()`
-    return global.crypto
-      ? global.crypto.getRandomValues(new Uint32Array(1))[0]
+    return globalThis.crypto
+      ? globalThis.crypto.getRandomValues(new Uint32Array(1))[0]
       : Math.trunc(Math.random() * 0xFFFFFFFF)
   }
 
   // --- If NodeJS, use `node:crypto`.
-  return requireSafe('node:crypto').randomBytes(4).readInt32LE()
+  return requireSafe<typeof import('node:crypto')>('node:crypto').randomBytes(4).readInt32LE()
 }
