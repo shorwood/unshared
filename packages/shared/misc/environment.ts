@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 import { requireSafe } from './requireSafe'
 
 /** Current process's environment object. */
@@ -23,7 +24,7 @@ export const isNode = typeof process !== 'undefined' && typeof process.versions?
 export const isWebWorker = typeof self === 'object' && self.constructor?.name === 'DedicatedWorkerGlobalScope'
 
 /** Is process running in a CLI context. */
-export const isCli = requireSafe('node:process')?.argv?.length > 0
+export const isCli = !!requireSafe<typeof import('node:process')>('node:process')?.argv?.length
 
 /** Is process running in strict mode. */
 export const isStrictMode = typeof this === 'undefined' || this === null || this === {}
