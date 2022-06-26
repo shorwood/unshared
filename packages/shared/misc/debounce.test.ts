@@ -9,11 +9,11 @@ it('debounces a function so it is only called once after delay', async() => {
   // --- First cycle
   debounced()
   debounced()
-  expect(counter).toBe(0)
+  expect(counter).toEqual(0)
 
   // --- Third cycle
   await delay(10)
-  expect(counter).toBe(1)
+  expect(counter).toEqual(1)
   debounced()
-  expect(counter).toBe(1)
+  expect(counter).toEqual(1)
 })

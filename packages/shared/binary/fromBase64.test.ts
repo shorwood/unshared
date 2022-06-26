@@ -13,7 +13,7 @@ it.each([
   const result = fromBase64(input)
   const resultUtf8 = toUtf8(result)
   expect(result).toBeInstanceOf(ArrayBuffer)
-  expect(result.byteLength).toBe(expected.length)
+  expect(result.byteLength).toEqual(expected.length)
   expect(resultUtf8).toEqual(expected)
 })
 

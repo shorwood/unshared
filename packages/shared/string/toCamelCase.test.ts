@@ -2,9 +2,9 @@ import { expect, it } from 'vitest'
 import { toCamelCase } from './toCamelCase'
 
 it('converts a string to camel case', () => {
-  expect(toCamelCase('fooBar')).toBe('fooBar')
-  expect(toCamelCase('FooBar')).toBe('fooBar')
-  expect(toCamelCase('Foo-Bar')).toBe('fooBar')
-  expect(toCamelCase('foo bar')).toBe('fooBar')
-  expect(toCamelCase('FOO BAR')).toBe('fooBar')
+  expect(toCamelCase('fooBar')).toEqual('fooBar')
+  expect(toCamelCase('FooBar')).toEqual('fooBar')
+  expect(toCamelCase('Foo-Bar')).toEqual('fooBar')
+  expect(toCamelCase('foo bar')).toEqual('fooBar')
+  expect(toCamelCase('FOO BAR')).toEqual('fooBar')
 })

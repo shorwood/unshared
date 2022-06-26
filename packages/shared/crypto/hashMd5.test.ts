@@ -16,5 +16,5 @@ it.each([
   const hash = hashMd5(inputBuffer)
   const hashHex = toHex(hash)
   expect(hash).toBeInstanceOf(ArrayBuffer)
-  expect(hashHex).toBe(expected)
+  expect(hashHex).toEqual(expected)
 })

@@ -10,5 +10,5 @@ it('should bind "this" to the "greet" function', () => {
     greet = bindThis(greet)
   }
 
-  expect(new Person('Joe').greet()).toBe('Hello, I am Joe')
+  expect(new Person('Joe').greet()).toEqual('Hello, I am Joe')
 })

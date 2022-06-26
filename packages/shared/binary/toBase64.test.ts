@@ -12,7 +12,7 @@ it.each([
 ])('converts an ArrayBuffer equal to "%s" to a Base64 string equal to "%s"', (input, expected) => {
   const buffer = fromUtf8(input)
   const result = toBase64(buffer)
-  expect(result).toBe(expected)
+  expect(result).toEqual(expected)
   expect(result).toBeTypeOf('string')
-  expect(result.length).toBe(expected.length)
+  expect(result.length).toEqual(expected.length)
 })

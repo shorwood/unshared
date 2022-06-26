@@ -16,9 +16,9 @@ it.each([
 ])('converts ArrayBuffer "%s" to an ArrayBuffer equal to "%s"', (input, expected, expectedLength) => {
   const result = toArrayBuffer(input)
   const resultHex = toHex(result)
-  expect(resultHex).toBe(expected)
+  expect(resultHex).toEqual(expected)
   expect(result).toBeInstanceOf(ArrayBuffer)
-  expect(result.byteLength).toBe(expectedLength)
+  expect(result.byteLength).toEqual(expectedLength)
 })
 
 it.each([
@@ -32,7 +32,7 @@ it.each([
   const resultHex = toHex(result)
   expect(resultHex).toEqual(expected)
   expect(result).toBeInstanceOf(ArrayBuffer)
-  expect(result.byteLength).toBe(expectedLength)
+  expect(result.byteLength).toEqual(expectedLength)
 })
 
 it.each([
@@ -46,7 +46,7 @@ it.each([
   const resultHex = toHex(result)
   expect(resultHex).toEqual(expected)
   expect(result).toBeInstanceOf(ArrayBuffer)
-  expect(result.byteLength).toBe(expectedLength)
+  expect(result.byteLength).toEqual(expectedLength)
 })
 
 it.each([
@@ -60,7 +60,7 @@ it.each([
   const resultHex = toHex(result)
   expect(resultHex).toEqual(expected)
   expect(result).toBeInstanceOf(ArrayBuffer)
-  expect(result.byteLength).toBe(expectedLength)
+  expect(result.byteLength).toEqual(expectedLength)
 })
 
 it.each([
@@ -74,7 +74,7 @@ it.each([
   const resultHex = toHex(result)
   expect(resultHex).toEqual(expected)
   expect(result).toBeInstanceOf(ArrayBuffer)
-  expect(result.byteLength).toBe(expectedLength)
+  expect(result.byteLength).toEqual(expectedLength)
 })
 
 it.each([
@@ -88,7 +88,7 @@ it.each([
   const resultHex = toHex(result)
   expect(resultHex).toEqual(expected)
   expect(result).toBeInstanceOf(ArrayBuffer)
-  expect(result.byteLength).toBe(expectedLength)
+  expect(result.byteLength).toEqual(expectedLength)
 })
 
 it.each([
@@ -99,7 +99,7 @@ it.each([
   const result = toArrayBuffer(input, type as any)
   const resultUtf8 = toUtf8(result)
   expect(result).toBeInstanceOf(ArrayBuffer)
-  expect(result.byteLength).toBe(expectedLength)
+  expect(result.byteLength).toEqual(expectedLength)
   expect(resultUtf8).toEqual(expected)
 })
 

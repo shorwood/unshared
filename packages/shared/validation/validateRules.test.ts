@@ -14,7 +14,7 @@ it('should pass an array of rules when valid', async() => {
   expect(result.valid).toEqual(['isRequired', 'isGreater', 'isLower'])
   expect(result.failed).toEqual([])
   expect(result.errors).toEqual([])
-  expect(result.value).toBe(5)
+  expect(result.value).toEqual(5)
   expect(result.results).toBeTypeOf('object')
 })
 
@@ -24,7 +24,7 @@ it('should fail an array of rules when invalid', async() => {
   expect(result.valid).toEqual(['isRequired', 'isGreater'])
   expect(result.failed).toEqual(['isLower'])
   expect(result.errors).toEqual(['isLower'])
-  expect(result.value).toBe(20)
+  expect(result.value).toEqual(20)
   expect(result.results).toBeTypeOf('object')
 })
 
@@ -34,7 +34,7 @@ it('should pass and array of tranformation  when valid', async() => {
   expect(result.valid).toEqual(['toUpperCase'])
   expect(result.failed).toEqual([])
   expect(result.errors).toEqual([])
-  expect(result.value).toBe('FOO')
+  expect(result.value).toEqual('FOO')
   expect(result.results).toBeTypeOf('object')
 })
 
@@ -44,7 +44,7 @@ it('should pass and array of mixed rules and transformation  when valid', async(
   expect(result.valid).toEqual(['isRequired', 'toUpperCase'])
   expect(result.failed).toEqual([])
   expect(result.errors).toEqual([])
-  expect(result.value).toBe('FOO')
+  expect(result.value).toEqual('FOO')
   expect(result.results).toBeTypeOf('object')
 })
 
@@ -54,7 +54,7 @@ it('should fail an array of mixed rules and transformation when invalid', async(
   expect(result.valid).toEqual([])
   expect(result.failed).toEqual(['isRequired'])
   expect(result.errors).toEqual(['isRequired'])
-  expect(result.value).toBe(0)
+  expect(result.value).toEqual(0)
   expect(result.results).toBeTypeOf('object')
 })
 
@@ -64,7 +64,7 @@ it('should pass a single rule when valid', async() => {
   expect(result.valid).toEqual(['isRequired'])
   expect(result.failed).toEqual([])
   expect(result.errors).toEqual([])
-  expect(result.value).toBe(5)
+  expect(result.value).toEqual(5)
   expect(result.results).toBeTypeOf('object')
 })
 
@@ -74,7 +74,7 @@ it('should fail a single rule when invalid', async() => {
   expect(result.valid).toEqual([])
   expect(result.failed).toEqual(['isRequired'])
   expect(result.errors).toEqual(['isRequired'])
-  expect(result.value).toBe(0)
+  expect(result.value).toEqual(0)
   expect(result.results).toBeTypeOf('object')
 })
 
@@ -84,7 +84,7 @@ it('should pass a single transformation rule when valid', async() => {
   expect(result.valid).toEqual(['toUpperCase'])
   expect(result.failed).toEqual([])
   expect(result.errors).toEqual([])
-  expect(result.value).toBe('FOO')
+  expect(result.value).toEqual('FOO')
   expect(result.results).toBeTypeOf('object')
 })
 
@@ -94,7 +94,7 @@ it('should pass a mixed rule and transformation rule when valid', async() => {
   expect(result.valid).toEqual(['isRequired', 'toUpperCase'])
   expect(result.failed).toEqual([])
   expect(result.errors).toEqual([])
-  expect(result.value).toBe('FOO')
+  expect(result.value).toEqual('FOO')
   expect(result.results).toBeTypeOf('object')
 })
 
@@ -104,7 +104,7 @@ it('should fail a mixed rule and transformation rule when invalid', async() => {
   expect(result.valid).toEqual(['toUpperCase'])
   expect(result.failed).toEqual(['isRequired'])
   expect(result.errors).toEqual(['Value is required'])
-  expect(result.value).toBe('')
+  expect(result.value).toEqual('')
   expect(result.results).toBeTypeOf('object')
 })
 
@@ -114,7 +114,7 @@ it('should pass a single rule with context when valid', async() => {
   expect(result.valid).toEqual(['isRequired', 'isEqToFoo'])
   expect(result.failed).toEqual([])
   expect(result.errors).toEqual([])
-  expect(result.value).toBe(5)
+  expect(result.value).toEqual(5)
   expect(result.results).toBeTypeOf('object')
 })
 
@@ -124,7 +124,7 @@ it('should fail a single rule with context when invalid', async() => {
   expect(result.valid).toEqual(['isRequired'])
   expect(result.failed).toEqual(['isEqToFoo'])
   expect(result.errors).toEqual(['isEqToFoo'])
-  expect(result.value).toBe(5)
+  expect(result.value).toEqual(5)
   expect(result.results).toBeTypeOf('object')
 })
 
@@ -134,7 +134,7 @@ it('should pass a single rule with argument when valid', async() => {
   expect(result.valid).toEqual(['isGreater'])
   expect(result.failed).toEqual([])
   expect(result.errors).toEqual([])
-  expect(result.value).toBe(5)
+  expect(result.value).toEqual(5)
   expect(result.results).toBeTypeOf('object')
 })
 
@@ -144,7 +144,7 @@ it('should fail a single rule with argument when invalid', async() => {
   expect(result.valid).toEqual([])
   expect(result.failed).toEqual(['isGreater'])
   expect(result.errors).toEqual(['isGreater'])
-  expect(result.value).toBe(5)
+  expect(result.value).toEqual(5)
   expect(result.results).toBeTypeOf('object')
 })
 
@@ -154,7 +154,7 @@ it('should pass a single rule with argument and message when valid', async() => 
   expect(result.valid).toEqual(['isGreater'])
   expect(result.failed).toEqual([])
   expect(result.errors).toEqual([])
-  expect(result.value).toBe(5)
+  expect(result.value).toEqual(5)
   expect(result.results).toBeTypeOf('object')
 })
 
@@ -164,6 +164,6 @@ it('should fail a single rule with argument and message when invalid', async() =
   expect(result.valid).toEqual([])
   expect(result.failed).toEqual(['isGreater'])
   expect(result.errors).toEqual(['Must be greater than 10'])
-  expect(result.value).toBe(5)
+  expect(result.value).toEqual(5)
   expect(result.results).toBeTypeOf('object')
 })

@@ -2,9 +2,9 @@ import { expect, it } from 'vitest'
 import { toPascalCase } from './toPascalCase'
 
 it('converts a string to pascal case', () => {
-  expect(toPascalCase('fooBar')).toBe('FooBar')
-  expect(toPascalCase('FooBar')).toBe('FooBar')
-  expect(toPascalCase('Foo-Bar')).toBe('FooBar')
-  expect(toPascalCase('foo bar')).toBe('FooBar')
-  expect(toPascalCase('FOO BAR')).toBe('FooBar')
+  expect(toPascalCase('fooBar')).toEqual('FooBar')
+  expect(toPascalCase('FooBar')).toEqual('FooBar')
+  expect(toPascalCase('Foo-Bar')).toEqual('FooBar')
+  expect(toPascalCase('foo bar')).toEqual('FooBar')
+  expect(toPascalCase('FOO BAR')).toEqual('FooBar')
 })

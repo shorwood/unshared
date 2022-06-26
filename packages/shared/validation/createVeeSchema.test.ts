@@ -7,14 +7,14 @@ it('should return a validation function that can be used with vee-validate', asy
   const validator = createVeeValidator(Number.isInteger)
   const result1 = await validator(1)
   const result2 = await validator(0.5)
-  expect(result1).toBe(true)
-  expect(result2).toBe('isInteger')
+  expect(result1).toEqual(true)
+  expect(result2).toEqual('isInteger')
 })
 
 it('should return a validation function that returns a custom error message when provided', async() => {
   const validator = createVeeValidator([Number.isInteger, undefined, 'must be an integer'])
   const result = await validator(0.5)
-  expect(result).toBe('must be an integer')
+  expect(result).toEqual('must be an integer')
 })
 
 it('should return a validation schema that can be used with vee-validate', async() => {
@@ -22,6 +22,6 @@ it('should return a validation schema that can be used with vee-validate', async
     id: Number.isInteger,
     name: [isStringNotEmpty, undefined, 'must not be empty'],
   })
-  expect(await schema.id(1)).toBe(true)
-  expect(await schema.name('')).toBe('must not be empty')
+  expect(await schema.id(1)).toEqual(true)
+  expect(await schema.name('')).toEqual('must not be empty')
 })

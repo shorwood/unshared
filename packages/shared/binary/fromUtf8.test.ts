@@ -12,5 +12,5 @@ it.each([
   const resultUtf8 = toUtf8(result)
   expect(result).toBeInstanceOf(ArrayBuffer)
   expect(resultUtf8).toEqual(expected)
-  expect(result.byteLength).toBe(expectedLength)
+  expect(result.byteLength).toEqual(expectedLength)
 })

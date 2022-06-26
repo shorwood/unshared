@@ -18,15 +18,15 @@ it('isProduction should return true if environment.NODE_ENV is "production"', ()
 })
 
 it('isNode should return true if process and process.versions.node are defined', () => {
-  expect(isNode).toBe(true)
+  expect(isNode).toEqual(true)
 })
 
 it('isWebWorker should return true if self is a DedicatedWorkerGlobalScope', () => {
-  expect(isWebWorker).toBe(false)
+  expect(isWebWorker).toEqual(false)
 })
 
 it('isCli should return true if process.argv has length > 0', () => {
-  expect(isCli).toBe(true)
+  expect(isCli).toEqual(true)
 })
 
 it('isStrictMode() should return true if current runtime is in strict mode', () => {

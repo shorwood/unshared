@@ -22,7 +22,7 @@ it('should validate an object against a validation schema', async() => {
     baz: [isRequired, toUpperCase],
   }
   const result = await validateSchema(object, schema, { foo: 'foo' })
-  expect(result.isValid).toBeTruthy()
+  expect(result.isValid).toEqual(true)
   expect(result.errors).toEqual({ foo: [], bar: [], baz: [] })
   expect(result.failed).toEqual({ foo: [], bar: [], baz: [] })
   expect(result.valid.foo).toEqual(['isRequired', 'isEqToFoo'])
@@ -44,7 +44,7 @@ it('should transform valid fields even if validation failed', async() => {
     baz: [isRequired, toUpperCase],
   }
   const result = await validateSchema(object, schema, { foo: 'foo' })
-  expect(result.isValid).toBeFalsy()
+  expect(result.isValid).toEqual(false)
   expect(result.errors).toEqual({ foo: [], bar: ['isGreater'], baz: [] })
   expect(result.failed).toEqual({ foo: [], bar: ['isGreater'], baz: [] })
   expect(result.valid.foo).toEqual(['isRequired', 'isEqToFoo'])

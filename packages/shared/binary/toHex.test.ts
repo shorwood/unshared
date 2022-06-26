@@ -10,6 +10,6 @@ it.each([
   const buffer = fromUtf8(input)
   const result = toHex(buffer)
   expect(result).toBeTypeOf('string')
-  expect(result.length).toBe(expectedLength)
-  expect(result).toBe(expected)
+  expect(result.length).toEqual(expectedLength)
+  expect(result).toEqual(expected)
 })
