@@ -23,13 +23,16 @@ export const validateRuleSet = async(value: any, ruleSets: ValidationRuleSet, co
     results.push(result)
   }
 
+  // --- Compute isValid state.
+  const isValid = results.some(x => x.isValid)
+
   // --- Return  result.
   return {
     results: results.flatMap(x => x.results),
     valid: results.flatMap(x => x.valid),
     failed: results.flatMap(x => x.failed),
-    errors: results.flatMap(x => x.errors),
+    errors: !isValid ? results.flatMap(x => x.errors) : [],
     value: results.find(x => x.isValid)?.value ?? value,
-    isValid: results.some(x => x.isValid),
+    isValid,
   }
 }
