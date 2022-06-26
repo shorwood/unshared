@@ -31,6 +31,5 @@ export const validateRuleSet = async(value: any, ruleSets: ValidationRuleSet, co
     errors: results.flatMap(x => x.errors),
     value: results.find(x => x.isValid)?.value ?? value,
     isValid: results.some(x => x.isValid),
-    isInvalid: results.some(x => x.isInvalid),
   }
 }

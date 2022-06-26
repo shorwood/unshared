@@ -12,8 +12,8 @@ it('should pass a rule set when one path is valid', async() => {
     [isRequired, [isGreater, 5]],
     [isRequired, [isEqual, 1]],
   ])
-  expect(result.isValid).toBeTruthy()
-  expect(result.value).toBe(1)
+  expect(result.isValid).toEqual(true)
+  expect(result.value).toEqual(1)
   expect(result.errors).toEqual(['isGreater'])
   expect(result.failed).toEqual(['isGreater'])
   expect(result.valid).toEqual(['isRequired', 'isRequired', 'isEqual'])
@@ -24,8 +24,8 @@ it('should fail a rule set when all path are invalid', async() => {
     [isRequired, [isGreater, 5]],
     [isRequired, [isEqual, 0]],
   ])
-  expect(result.isValid).toBeFalsy()
-  expect(result.value).toBe(1)
+  expect(result.isValid).toEqual(false)
+  expect(result.value).toEqual(1)
   expect(result.errors).toEqual(['isGreater', 'isEqual'])
   expect(result.failed).toEqual(['isGreater', 'isEqual'])
   expect(result.valid).toEqual(['isRequired', 'isRequired'])
@@ -36,8 +36,8 @@ it('should pass a rule set when one path is valid but an invalid path had a tran
     [[toValue, 0], isRequired],
     [[isEqual, 1]],
   ])
-  expect(result.isValid).toBeTruthy()
-  expect(result.value).toBe(1)
+  expect(result.isValid).toEqual(true)
+  expect(result.value).toEqual(1)
   expect(result.errors).toEqual(['isRequired'])
   expect(result.failed).toEqual(['isRequired'])
   expect(result.valid).toEqual(['toValue', 'isEqual'])
@@ -48,8 +48,8 @@ it('should pass a rule set when one path is valid and has a tranformer', async()
     [[toValue, 0], isRequired],
     [[isEqual, 1], [toValue, 10]],
   ])
-  expect(result.isValid).toBeTruthy()
-  expect(result.value).toBe(10)
+  expect(result.isValid).toEqual(true)
+  expect(result.value).toEqual(10)
   expect(result.errors).toEqual(['isRequired'])
   expect(result.failed).toEqual(['isRequired'])
   expect(result.valid).toEqual(['toValue', 'isEqual', 'toValue'])
@@ -60,8 +60,8 @@ it('should fail a rule set when all path are invalid and has a tranformer', asyn
     [toUndefined, [toValue, 10], [isEqual, 1]],
     [toUndefined, [toValue, 0], isRequired],
   ])
-  expect(result.isValid).toBeFalsy()
-  expect(result.value).toBe(1)
+  expect(result.isValid).toEqual(false)
+  expect(result.value).toEqual(1)
   expect(result.errors).toEqual(['isEqual', 'isRequired'])
   expect(result.failed).toEqual(['isEqual', 'isRequired'])
   expect(result.valid).toEqual(['toUndefined', 'toValue', 'toUndefined', 'toValue'])

@@ -31,6 +31,5 @@ export const validateRules = async(value: any, rules: MaybeArray<ValidationRule>
     failed: results.filter(x => !x.isValid).map(x => x.name),
     errors: results.filter(x => !x.isValid).flatMap(x => x.errorMessage ?? x.name).filter(Boolean),
     isValid: results.every(x => x.isValid),
-    isInvalid: !results.every(x => x.isValid),
   }
 }

@@ -25,7 +25,6 @@ export const validateSchema = async(object: any, schema: ValidationSchema, conte
     valid: mapValues(results, x => x.valid),
     errors: mapValues(results, x => x.errors),
     value: { ...object, ...mapValues(results, x => x.value) },
-    isValid: Object.entries(results).every(([,result]) => (<any>result).isValid),
-    isInvalid: !Object.entries(results).every(([,result]) => (<any>result).isValid),
+    isValid: Object.values(results).every(result => (<any>result).isValid),
   }
 }

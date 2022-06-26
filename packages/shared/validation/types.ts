@@ -17,12 +17,11 @@ export interface ValidationRuleObject {
 export interface ValidateRuleResult {
   value: any
   argument?: unknown
-  isValid: boolean
-  isInvalid: boolean
   context: any
   name: string
   handler: Validator
   errorMessage: string
+  isValid: boolean
 }
 
 export interface ValidateRulesResult {
@@ -32,7 +31,6 @@ export interface ValidateRulesResult {
   errors: string[]
   value: any
   isValid: boolean
-  isInvalid: boolean
 }
 
 export interface ValidateSchemaResult {
@@ -42,5 +40,4 @@ export interface ValidateSchemaResult {
   errors: Record<string, string[]>
   value: any
   isValid: boolean
-  isInvalid: boolean
 }
