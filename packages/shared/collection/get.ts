@@ -26,7 +26,7 @@ export const get: Get = (value: any, path: MaybeArray<Key>, defaultValue?: any):
   // --- Loop through the path and get the value.
   let result = value
   for (const key of path) {
-    if (result && key in result) result = result[key]
+    if (result?.[key] !== undefined) result = result[key]
     else return defaultValue
   }
 
