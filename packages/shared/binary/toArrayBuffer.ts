@@ -1,9 +1,7 @@
-import { MaybeArray } from '../types'
 import { fromBase64 } from './fromBase64'
 import { fromHex } from './fromHex'
 import { fromUtf8 } from './fromUtf8'
 
-export type Buffereable = string | MaybeArray<number | bigint | boolean> | { buffer: ArrayBuffer } | ArrayBuffer
 export type BuffereableFrom = 'utf8' | 'base64' | 'binary' | 'hex' | 'uint8' | 'uint16' | 'uint32' | 'uint64' | 'uint8clamped'
 
 /**
@@ -12,7 +10,15 @@ export type BuffereableFrom = 'utf8' | 'base64' | 'binary' | 'hex' | 'uint8' | '
  * @param from The encoding or integer type to convert from
  * @returns The value as an `ArrayBuffer`
  */
-export const toArrayBuffer = (value: Buffereable, from?: BuffereableFrom): ArrayBuffer => {
+export const toArrayBuffer = (value?: any, from?: BuffereableFrom): ArrayBuffer => {
+  // --- is value Nil
+  if (typeof value === 'undefined' || value === null)
+    return new ArrayBuffer(0)
+
+  // --- is or has an array buffer
+  if (typeof value === 'object' && 'buffer' in value) return value.buffer
+  if (value instanceof ArrayBuffer) return value
+
   // --- is a string.
   if (typeof value === 'string') {
     if (from === 'base64') return fromBase64(value)
@@ -20,22 +26,20 @@ export const toArrayBuffer = (value: Buffereable, from?: BuffereableFrom): Array
     return fromUtf8(value)
   }
 
-  // --- is integer-like.
-  if (typeof value === 'number' || typeof value === 'bigint' || typeof value === 'boolean') value = [value]
-
   // --- is an array of integer-like
-  if (Array.isArray(value)) {
-    if (from === 'uint8') return new Uint8Array(value.map(Number)).buffer
-    if (from === 'uint16') return new Uint16Array(value.map(Number)).buffer
-    if (from === 'uint32') return new Uint32Array(value.map(Number)).buffer
-    if (from === 'uint64') return new BigUint64Array(value.map(BigInt)).buffer
-    return new Uint8ClampedArray(value.map(Number)).buffer
+  if (from && ['uint8', 'uint16', 'uint32', 'uint64', 'uint8clamped'].includes(from)) {
+    if (!Array.isArray(value)) value = [value]
+    if (from === 'uint8') return new Uint8Array(value).buffer
+    if (from === 'uint16') return new Uint16Array(value).buffer
+    if (from === 'uint32') return new Uint32Array(value).buffer
+    if (from === 'uint64') return new BigUint64Array(value).buffer
+    return new Uint8ClampedArray(value).buffer
   }
 
-  // --- is or has an array buffer
-  if ('buffer' in value) return value.buffer
-  if (value instanceof ArrayBuffer) return value
+  // --- is a function
+  if (typeof value === 'function') return fromUtf8(value.toString())
 
   // --- is not bufferizeable
-  throw new Error('Value type not supported')
+  try { return fromUtf8(JSON.stringify(value)) }
+  catch { throw new Error('Value type not supported') }
 }
