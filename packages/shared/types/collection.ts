@@ -40,7 +40,13 @@ export type Value<T, P = ''> =
       // --- Path might be undefined
       : Value<NotNil<T>, P> | undefined
 
-/** Nested paths of an object */
+/**
+ * Extract nested paths of an object.
+ * @param T - Object type
+ * @param N - Number of nested keys to explore
+ * @param P - Current path
+ * @returns List of possible paths.
+ */
 export type Path<T, N extends number = 3, P extends string = ''> = Extract<{
   // --- For each keys of T of type `string` or `number`
   [K in keyof T]: K extends string | number
