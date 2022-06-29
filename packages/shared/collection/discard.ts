@@ -1,7 +1,7 @@
-import { MaybeArray } from '../types'
+import { IteratorFunction, MaybeArray } from '../types'
 
 interface Discard {
-  <T>(array: Array<T>, iterator: (value: T, key: number, array: Array<T>) => boolean): Array<T>
+  <T>(array: Array<T>, iterator: IteratorFunction<T, boolean>): Array<T>
   <T>(array: Array<T>, discarded: MaybeArray<T>): Array<T>
 }
 

@@ -1,8 +1,8 @@
+import { Collection, IteratorFunction } from '../types'
+
 interface Some {
-  <T>(array: Array<T>, value: T): boolean
-  <T, U>(array: Array<T>, iterator: (value: T, key: number, array: Array<T>) => U): boolean
-  <T>(object: Record<string, T>, value: T): boolean
-  <T, U>(object: Record<string, T>, iterator: (value: T, key: keyof T, object: Record<string, T>) => U): boolean
+  <T>(array: Collection<T>, iterator: IteratorFunction<T, boolean>): boolean
+  <T>(array: Collection<T>, value: T): boolean
 }
 
 /**

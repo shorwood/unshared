@@ -1,4 +1,4 @@
-import { Matrix } from '../types'
+import { Vector } from '../types'
 
 /**
  * Splits an array into smaller arrays of a specified size.
@@ -6,7 +6,7 @@ import { Matrix } from '../types'
  * @param {number} size The size of each resulting array
  * @returns {Matrix<T>} The resulting array of arrays
  */
-export const chunk = <T>(array: Array<T>, size: number): Matrix<T> => {
+export const chunk = <T>(array: Array<T>, size: number): Vector<T> => {
   // --- Handle edge cases.
   if (size < 1) throw new Error('Array chunk size must be greater than 0')
 
