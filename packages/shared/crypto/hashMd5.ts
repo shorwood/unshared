@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/prevent-abbreviations */
-import { getEndianness, swapEndian } from '../binary'
+import { endianness, swapEndian } from '../binary'
 
 // --- Initialize and compute constants table based on sin(0...63)
 const K: number[] = []
@@ -28,7 +28,7 @@ const i = (...[a, b, c, d, x, s, t]: number[]) => {
 
 const process = (chunk: Uint32Array, words: Uint32Array) => {
   // --- Make sure chunk are little-endian.
-  if (getEndianness() !== 'LE') chunk = chunk.slice(0, 15).map(swapEndian)
+  if (endianness !== 'LE') chunk = chunk.slice(0, 15).map(swapEndian)
 
   // --- Initialize hash parts.
   let a = words[0]

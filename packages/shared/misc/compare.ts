@@ -1,4 +1,4 @@
-import { getType, isType } from '../validation'
+import { getType, isType } from '../validation/isType'
 
 const typeOrder = [
   'undefined',

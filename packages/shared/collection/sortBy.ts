@@ -1,4 +1,4 @@
-import { compare } from '../misc'
+import { compare } from '../misc/compare'
 
 interface SortBy {
   <T, K extends keyof T>(array: Array<T>, path: K): Array<T>

@@ -19,42 +19,6 @@ export const isEqualToValue = (value: any, expected: any): boolean => value === 
 export const isEqualToContext = (expected: any, path: string, context: any): boolean => expected === get(context, path)
 
 /**
-  * Get the default value if the value is undefined
-  * @param {any} value The value to check
-  * @param {any} defaultValue The value to return if the value is undefined
-  * @returns {any} The default value if the value is undefined, the value otherwise
-  */
-export const defaultToValue = (value: any, defaultValue: any): any => (value !== undefined ? false : defaultValue)
-
-/**
-  * Get the default value from the context if the value is undefined
-  * @param {any} value The value to check
-  * @param {string} path The path to the default value
-  * @param {any} context The context
-  * @returns {any} The default value if the value is undefined, the value otherwise
-  */
-export const defaultToContext = (value: any, path: string, context: any): any => (value !== undefined ? false : get(context, path))
-
-/**
-  * Get the default values from the context if the value is undefined
-  * @param {any} value The value to check
-  * @param {string[]} paths The paths to the default values
-  * @param {any} context The context
-  * @returns {any[]} The default values if the value is undefined, the value otherwise
-  */
-export const defaultToContexts = (value: any, paths: string[], context: any): false | any[] => (value !== undefined ? false : paths.map(path => get(context, path)))
-
-/**
-  * @returns {null}
-  */
-export const toNull = (): null => null
-
-/**
-  * @returns {undefined}
-  */
-export const toUndefined = (): undefined => undefined
-
-/**
   * @param {any} _ Ignored
   * @param {any} newValue The new value
   * @returns {any} The new value
@@ -78,3 +42,18 @@ export const toContext = (_: any, path: string, context: any): any => get(contex
   * @returns {any[]} The values at the given paths in the context
   */
 export const toContexts = (_: any, paths: string[], context: any): any[] => paths.map(path => get(context, path))
+
+/**
+  * @returns {null} `null`
+  */
+export const toNull = (): null => null
+
+/**
+  * @returns {undefined} `undefined`
+  */
+export const toUndefined = (): undefined => undefined
+
+/**
+  * @returns {[]} An empty array
+  */
+export const toEmptyArray = <T>(): T[] => []
