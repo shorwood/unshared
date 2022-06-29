@@ -2,9 +2,9 @@ import { Collection, IteratorFunction, Path, Value, Values } from '../types'
 import { get } from './get'
 
 interface Map {
-  <T, K extends Path<T>>(object: Collection<T>, path: K): Value<T, K>[]
-  <T, R>(collection: T, iterator: IteratorFunction<T, R>): R[]
-  <T>(collection: T): Values<T>[]
+  <T, K extends Path<T>>(object: Collection<T>, path: K): Array<Value<T, K>>
+  <T, R>(collection: T, iterator: IteratorFunction<T, R>): Array<R>
+  <T>(collection: T): Array<Values<T>>
 }
 
 /**

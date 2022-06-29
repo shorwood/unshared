@@ -3,7 +3,7 @@ import { expect, it } from 'vitest'
 import { groupBy } from './groupBy'
 
 it('groups array by iterator function', () => {
-  const object = [1, 2, 3, 4, 5]
+  const object = [1, 2, 3, 4, 5] as const
   const iterator = (value: number) => (value % 2 === 0 ? 'even' : 'odd')
   const result = groupBy(object, iterator)
   expect(result).toEqual({
@@ -16,13 +16,12 @@ it('groups array by path', () => {
   const object = [
     { name: 'one', value: 1 },
     { name: 'two', value: 2 },
-    { name: 'three', value: 3 },
-  ]
-  const result = groupBy(object, 'value')
+    { name: 'two', value: 3 },
+  ] as const
+  const result = groupBy(object, 'name')
   expect(result).toEqual({
-    1: [{ name: 'one', value: 1 }],
-    2: [{ name: 'two', value: 2 }],
-    3: [{ name: 'three', value: 3 }],
+    one: [{ name: 'one', value: 1 }],
+    two: [{ name: 'two', value: 2 }, { name: 'two', value: 3 }],
   })
 })
 
@@ -30,13 +29,11 @@ it('groups object by iterator function', () => {
   const object = {
     1: { name: 'one', value: 1 },
     2: { name: 'two', value: 2 },
-    3: { name: 'three', value: 3 },
-  }
-  const iterator = (value: { name: string; value: number }) => value.name
-  const result = groupBy(object, iterator)
+    3: { name: 'two', value: 3 },
+  } as const
+  const result = groupBy(object, value => value.name)
   expect(result).toEqual({
     one: [{ name: 'one', value: 1 }],
-    two: [{ name: 'two', value: 2 }],
-    three: [{ name: 'three', value: 3 }],
+    two: [{ name: 'two', value: 2 }, { name: 'two', value: 3 }],
   })
 })

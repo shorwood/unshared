@@ -1,8 +1,9 @@
+import { Collection, IteratorFunction, Key, Literal, Path, Value, Values } from '../types'
+import { get } from './get'
+
 interface GroupBy {
-  <T>(object: Array<T>, path: keyof T): Record<string, T[]>
-  <T>(object: Array<T>, iterator: (value: T, key: number, array: Array<T>) => string): Record<string, T[]>
-  <T>(object: Record<string, T>, path: keyof T): Record<string, T[]>
-  <T>(object: Record<string, T>, iterator: (value: T, key: number, object: Record<string, T>) => string): Record<string, T[]>
+  <T, K extends Path<T>>(object: Collection<T>, path: K): Record<Literal<Value<T, K>>, Array<T>>
+  <T, R extends Key>(object: T, iterator: IteratorFunction<T, R>): Record<R, Array<Values<T>>>
 }
 
 /**
@@ -11,17 +12,16 @@ interface GroupBy {
  * @param iterator The iterator function or path
  * @returns The grouped object
  */
-export const groupBy: GroupBy = (object, iterator: any) => {
+export const groupBy: GroupBy = (object: any, iterator: any): any => {
   // --- If iterator is a path, cast as getter function.
   if (typeof iterator !== 'function') {
     const path = iterator
-    iterator = (value: any) => value[path]
+    iterator = (value: any) => get(value, path)
   }
 
   // --- Iterate over object properties and push them in the correct group.
-  const result: Record<string, any[]> = {}
+  const result: any = {}
   for (const key in object) {
-    // @ts-expect-error: ignore.
     const value = object[key]
     const groupKey = iterator(value, key, object)
     if (groupKey in result) result[groupKey].push(value)

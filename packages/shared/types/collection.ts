@@ -3,20 +3,22 @@ import { NotNil } from './common'
 
 /**
  * Collection of items in the form of an object or an array.
- * @param U The type of the items in the collection.
+ * @param T The type of the items in the collection.
  * @param K The type of the keys in the collection.
  * @returns The collection.
  */
-export type Collection<U, K = any> = K extends number
-  ? Array<U>
-  : Record<Extract<K, string>, U>
+export type Collection<T, K = any> = K extends number
+  ? T[] | readonly T[]
+  : { [P in Extract<K, string>]: T }
+
+// <T, K extends Path<T>>(object: Collection<T>, path: K): Record<Literal<Value<T, K>>, Array<T>>
 
 /**
  * Values of an array or object
  * @param T The collection to get the values from
  * @returns The values of the collection
  */
-export type Values<T = object> = T extends string | any[]
+export type Values<T = object> = T extends string | any[] | readonly any[]
   ? T[number]
   : T extends object
     ? T[keyof T]
