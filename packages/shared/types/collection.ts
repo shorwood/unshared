@@ -1,44 +1,74 @@
 import { Decrease } from './arithmetic'
 import { NotNil } from './common'
 
-/** Types allowed for object keys. */
-export type Key = string | number
-
-/** Collection of items in the form of an object or an array. */
-export type Collection<U, K extends string | number = any> = K extends number
+/**
+ * Collection of items in the form of an object or an array.
+ * @param U The type of the items in the collection.
+ * @param K The type of the keys in the collection.
+ * @returns The collection.
+ */
+export type Collection<U, K = any> = K extends number
   ? Array<U>
-  : { [P in K]: U }
+  : Record<Extract<K, string>, U>
 
-/** Values of an array or object */
+/**
+ * Values of an array or object
+ * @param T The collection to get the values from
+ * @returns The values of the collection
+ */
 export type Values<T = object> = T extends string | any[]
   ? T[number]
   : T extends object
     ? T[keyof T]
     : never
 
-/** Keys of an array or object */
-export type Keys<T> = T extends string | any[]
+/**
+ * Extract the keys of an object.
+ * @param T The object to extract the keys from
+ * @return The keys of the object
+ */
+export type Key<T = any> = T extends string | any[] | readonly any[]
   ? Extract<keyof T, number>
   : T extends object
-    ? Exclude<keyof T, symbol>
-    : never
+    ? Extract<keyof T, string>
+    : string | number
 
-/** Nested values of an object */
-export type Value<T, P = ''> =
-  // --- Is key, return value
-  P extends keyof T
-    ? T[P]
+/**
+ * Extract value of an object.
+ * @param T - Object type
+ * @param K - Key to get value from
+ * @returns Value at path.
+ */
+// @ts-expect-error: ignore
+export type Get<T, K> = K extends Key<T> ? T[K] : never
 
-  // --- Is path, list of segments
-    : P extends `${infer K}.${infer PNext}`
+/**
+ * Extract nested value of an object.
+ * @param T - Object type
+ * @param P - Path to get value from
+ * @param N - Number of nested keys to explore
+ * @returns Value at path.
+ */
+export type Value<T, P = '', N extends number = 5> =
+  // --- If P key of T, return value
+  P extends Key<T> ? Get<T, P>
 
-    // --- First segment is key of the object, recurse
-      ? K extends keyof T
-        ? Value<T[K], PNext>
-        : Value<NotNil<T>, P> | undefined
+    // --- If recursion threashold, return `any`.
+    : N extends 0 ? any
 
-      // --- Path might be undefined
-      : Value<NotNil<T>, P> | undefined
+      // --- Extract current segment.
+      : P extends `${infer K}.${infer PNext}`
+
+        // --- First segment is key of the object, recurse
+        ? K extends Key<T>
+          ? Value<Values<T>, PNext, Decrease<N>>
+          | Extract<T, undefined>
+
+          // --- Path is invalid
+          : never
+
+        // --- Path is invalid
+        : never
 
 /**
  * Extract nested paths of an object.
@@ -49,16 +79,18 @@ export type Value<T, P = ''> =
  */
 export type Path<T, N extends number = 3, P extends string = ''> = Extract<{
   // --- For each keys of T of type `string` or `number`
-  [K in keyof T]: K extends string | number
+  [K in keyof NotNil<T>]: K extends string | number
 
-    // --- If value is any, return `foo.${string}`
-    ? N extends 0
-      ? `${P}${K}` | `${P}${K}.${string}`
+    // --- Add T keys (Handle number keys as string AND numbers)
+    ? (P extends '' ? (K | `${K}`) : `${P}${K}`)
 
-      // --- If value is an object
-      : NotNil<T[K]> extends object
-        ? `${P}${K}` | Path<NotNil<T[K]>, Decrease<N>, `${P}${K}.`>
-        : `${P}${K}` | `${P}${K}.${string}`
+    // ---  Check for recursion threshold.
+    | (N extends 0 ? `${P}${K}.${string}`
+
+      // --- If value is an object, recurse
+      : NotNil<T>[K] extends object
+        ? Path<NotNil<T>[K], Decrease<N>, `${P}${K}.`>
+        : `${P}${K}.${string}`)
 
     // --- Ignore symbols
     : never
