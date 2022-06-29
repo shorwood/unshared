@@ -51,7 +51,7 @@ export type Get<T, K> = K extends Key<T> ? T[K] : never
  */
 export type Value<T, P = '', N extends number = 5> =
   // --- If P key of T, return value
-  P extends Key<T> ? Get<T, P>
+  P extends (Key<T> | `${Key<T>}`) ? Get<T, P>
 
     // --- If recursion threashold, return `any`.
     : N extends 0 ? any
@@ -60,7 +60,7 @@ export type Value<T, P = '', N extends number = 5> =
       : P extends `${infer K}.${infer PNext}`
 
         // --- First segment is key of the object, recurse
-        ? K extends Key<T>
+        ? K extends (Key<T> | `${Key<T>}`)
           ? Value<Values<T>, PNext, Decrease<N>>
           | Extract<T, undefined>
 
