@@ -15,25 +15,6 @@ it('isEqualToContext should check if the value at the given path in the context 
   expect(isEqualToContext(3, 'baz', context)).toEqual(false)
 })
 
-it('defaultToValue should return the default value if the value is undefined', () => {
-  expect(defaultToValue(1, 2)).toEqual(false)
-  expect(defaultToValue(undefined, 2)).toEqual(2)
-})
-
-it('defaultToContext should return the default value from the context if the value is undefined', () => {
-  expect(defaultToContext(1, 'foo', context)).toEqual(false)
-  expect(defaultToContext(undefined, 'foo', context)).toEqual(1)
-  expect(defaultToContext(undefined, 'bar', context)).toEqual(2)
-  expect(defaultToContext(undefined, 'baz', context)).toEqual(undefined)
-})
-
-it('defaultToContexts should return the default values from the context if the value is undefined', () => {
-  expect(defaultToContexts(1, ['foo'], context)).toEqual(false)
-  expect(defaultToContexts(undefined, ['foo'], context)).toEqual([1])
-  expect(defaultToContexts(undefined, ['bar'], context)).toEqual([2])
-  expect(defaultToContexts(undefined, ['baz'], context)).toEqual([undefined])
-})
-
 it('toNull should return null', () => {
   expect(toNull()).toEqual(null)
 })
