@@ -59,6 +59,11 @@
       "import": "./dist/string/index.mjs",
       "types": "./dist/string/index.d.ts"
     },
+    "./types": {
+      "require": "./dist/types/index.js",
+      "import": "./dist/types/index.mjs",
+      "types": "./dist/types/index.d.ts"
+    },
     "./validation": {
       "require": "./dist/validation/index.js",
       "import": "./dist/validation/index.mjs",
