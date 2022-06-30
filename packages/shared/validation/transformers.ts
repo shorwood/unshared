@@ -54,6 +54,11 @@ export const toNull = (): null => null
 export const toUndefined = (): undefined => undefined
 
 /**
-  * @returns {[]} An empty array
+  * @returns {[]} `[]` -  An empty array
   */
-export const toEmptyArray = <T>(): T[] => []
+export const toEmptyArray = (): any[] => []
+
+/**
+  * @returns {''} `''` - An empty string
+  */
+export const toEmptyString = (): string => ''

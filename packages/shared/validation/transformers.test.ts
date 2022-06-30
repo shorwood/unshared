@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/no-null */
 import { expect, it } from 'vitest'
-import { defaultToContext, defaultToContexts, defaultToValue, isEqualToContext, isEqualToValue, toContext, toContexts, toNull, toUndefined, toValue } from './transformers'
+import { isEqualToContext, isEqualToValue, toContext, toContexts, toEmptyArray, toEmptyString, toNull, toUndefined, toValue } from './transformers'
 
 const context = { foo: 1, bar: 2 }
 
@@ -21,6 +21,14 @@ it('toNull should return null', () => {
 
 it('toUndefined should return undefined', () => {
   expect(toUndefined()).toEqual(undefined)
+})
+
+it('toEmptyArray should return []', () => {
+  expect(toEmptyArray()).toEqual([])
+})
+
+it('toEmptyString should return \'\'', () => {
+  expect(toEmptyString()).toEqual('')
 })
 
 it('toValue should return the new value', () => {
