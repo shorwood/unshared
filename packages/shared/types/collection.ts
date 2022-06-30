@@ -37,8 +37,8 @@ export type Key<T = any> = T extends string | any[] | readonly any[]
 
 /**
  * Extract value of an object.
- * @param T - Object type
- * @param K - Key to get value from
+ * @param T Object type
+ * @param K Key to get value from
  * @returns Value at path.
  */
 // @ts-expect-error: ignore
@@ -46,9 +46,9 @@ export type Get<T, K> = K extends Key<T> ? T[K] : never
 
 /**
  * Extract nested value of an object.
- * @param T - Object type
- * @param P - Path to get value from
- * @param N - Number of nested keys to explore
+ * @param T Object type
+ * @param P Path to get value from
+ * @param N Number of nested keys to explore
  * @returns Value at path.
  */
 export type Value<T, P = '', N extends number = 5> =
@@ -74,9 +74,9 @@ export type Value<T, P = '', N extends number = 5> =
 
 /**
  * Extract nested paths of an object.
- * @param T - Object type
- * @param N - Number of nested keys to explore
- * @param P - Current path
+ * @param T Object type
+ * @param N Number of nested keys to explore
+ * @param P Current path
  * @returns List of possible paths.
  */
 export type Path<T, N extends number = 3, P extends string = ''> = Extract<{
@@ -99,3 +99,11 @@ export type Path<T, N extends number = 3, P extends string = ''> = Extract<{
 
 // --- Extract keys only.s
 }[keyof T], string>
+
+/**
+ * Map a collection to a new collection.
+ * @param T Collection type
+ * @param U New value type
+ * @returns New collection
+ */
+export type Mapped<T, U> = { [P in keyof T]: U }
