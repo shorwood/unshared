@@ -1,6 +1,7 @@
 export * from './collection'
 export * from './color'
 export * from './crypto'
+export * from './environment'
 export * from './misc'
 export * from './number'
 export * from './regex'

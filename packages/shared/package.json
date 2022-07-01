@@ -39,6 +39,11 @@
       "import": "./dist/crypto/index.mjs",
       "types": "./dist/crypto/index.d.ts"
     },
+    "./environment": {
+      "require": "./dist/environment/index.js",
+      "import": "./dist/environment/index.mjs",
+      "types": "./dist/environment/index.d.ts"
+    },
     "./misc": {
       "require": "./dist/misc/index.js",
       "import": "./dist/misc/index.mjs",
