@@ -1,8 +1,8 @@
-import { Keys, Values } from './collection'
+import { Key, Values } from './collection'
 import { Any } from './common'
 
 /** Function to iterate over an array or object values. */
-export type IteratorFunction<T, R> = (value: Values<T>, key: Keys<T>, object: T) => R
+export type IteratorFunction<T, R> = (value: Values<T>, key: Key<T>, object: T) => R
 
 /** Anything that is not a function. */
 export type NotFunction = Any & { apply?: never }
