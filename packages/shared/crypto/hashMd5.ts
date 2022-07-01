@@ -6,22 +6,22 @@ const K: number[] = []
 for (let index = 0; index < 64; index++)
   K[index] = Math.trunc(Math.abs(Math.sin(index + 1)) * 0x100000000)
 
-const f = (...[a, b, c, d, x, s, t]: number[]) => {
+const f = (a: number, b: number, c: number, d: number, x: number, s: number, t: number) => {
   const n = a + ((b & c) | (~b & d)) + x + t
   return ((n << s) | (n >>> (32 - s))) + b
 }
 
-const g = (...[a, b, c, d, x, s, t]: number[]) => {
+const g = (a: number, b: number, c: number, d: number, x: number, s: number, t: number) => {
   const n = a + ((b & d) | (c & ~d)) + x + t
   return ((n << s) | (n >>> (32 - s))) + b
 }
 
-const h = (...[a, b, c, d, x, s, t]: number[]) => {
+const h = (a: number, b: number, c: number, d: number, x: number, s: number, t: number) => {
   const n = a + (b ^ c ^ d) + x + t
   return ((n << s) | (n >>> (32 - s))) + b
 }
 
-const i = (...[a, b, c, d, x, s, t]: number[]) => {
+const i = (a: number, b: number, c: number, d: number, x: number, s: number, t: number) => {
   const n = a + (c ^ (b | ~d)) + x + t
   return ((n << s) | (n >>> (32 - s))) + b
 }
@@ -31,10 +31,7 @@ const process = (chunk: Uint32Array, words: Uint32Array) => {
   if (endianness !== 'LE') chunk = chunk.slice(0, 15).map(swapEndian)
 
   // --- Initialize hash parts.
-  let a = words[0]
-  let b = words[1]
-  let c = words[2]
-  let d = words[3]
+  let [a, b, c, d] = words
 
   // --- Hash.
   a = f(a, b, c, d, chunk[0], 7, K[0])
@@ -103,10 +100,10 @@ const process = (chunk: Uint32Array, words: Uint32Array) => {
   b = i(b, c, d, a, chunk[9], 21, K[63])
 
   // --- Intermediate hash value.
-  words[0] = words[0] + a
-  words[1] = words[1] + b
-  words[2] = words[2] + c
-  words[3] = words[3] + d
+  words[0] += a
+  words[1] += b
+  words[2] += c
+  words[3] += d
 }
 
 const preprocess = (data: ArrayBuffer) => {

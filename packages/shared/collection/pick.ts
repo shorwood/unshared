@@ -1,8 +1,8 @@
-import { MaybeArray } from '../types'
+import { IteratorFunction, MaybeArray } from '../types'
 
 interface IPick {
-  <T extends object, K extends keyof T>(object: T, path: MaybeArray<K>): Pick<T, K>
-  <T extends object, K extends keyof T>(object: T, iterator: (value: T[K], key: K, object: T) => boolean): Partial<T>
+  <T, K extends keyof T>(object: T, path: MaybeArray<K>): Pick<T, K>
+  <T>(object: T, iterator: IteratorFunction<T, boolean>): Partial<T>
 }
 
 /**
