@@ -1,6 +1,6 @@
 import { Collection, Key } from '../types'
 
-export interface Values {
+export interface IValues {
   <T, K extends Key>(object: Collection<T>, key: K): Array<T & { [P in K]: string }>
   <T>(object: Collection<T>): Array<T>
 }
@@ -11,7 +11,7 @@ export interface Values {
  * @param {Key} [key] The key name to store the original key in the array
  * @returns {Array<T>} The array of objects
  */
-export const values: Values = (value: any, key?: any): any[] => {
+export const values: IValues = (value: any, key?: any): any[] => {
   // --- If value is an array, return a copy.
   if (Array.isArray(value)) return value
 
