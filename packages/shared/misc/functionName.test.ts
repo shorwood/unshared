@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/consistent-function-scoping */
 import { expect, it } from 'vitest'
-import { isStrictMode } from './environment'
+import { isStrictMode } from '../environment/runtime'
 import { functionName } from './functionName'
 
 const testArrow = () => {}

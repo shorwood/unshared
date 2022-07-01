@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest'
 import { bindThis } from './bindThis'
 
-it('should bind "this" to the "greet" function', () => {
+it('should bind "this" to the first parameter of the "greet" function', () => {
   const greet = (person: Person) => `Hello, I am ${person.name}`
 
   class Person {
@@ -10,5 +10,6 @@ it('should bind "this" to the "greet" function', () => {
     greet = bindThis(greet)
   }
 
-  expect(new Person('Joe').greet()).toEqual('Hello, I am Joe')
+  const result = new Person('Joe').greet()
+  expect(result).toEqual('Hello, I am Joe')
 })

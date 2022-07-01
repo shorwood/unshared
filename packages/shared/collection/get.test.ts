@@ -2,7 +2,7 @@ import { expect, it } from 'vitest'
 import { get } from './get'
 
 it('should get a value from an object by a path of keys', () => {
-  const object = { a: { b: { c: Math.random() > 0.5 ? undefined : 1 } } }
+  const object = { a: { b: { c: Math.random() > 0.5 ? 0 : 1 } } }
   expect(get(object, 'a')).toEqual(object.a)
   expect(get(object, 'a', 'default')).toEqual(object.a)
   expect(get(object, 'a.b')).toEqual(object.a.b)

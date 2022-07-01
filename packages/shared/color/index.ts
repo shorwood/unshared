@@ -17,3 +17,13 @@ export * from './rgbToHex'
 export * from './rgbToHsl'
 export * from './rgbToInt'
 export * from './types'
+
+// TODO: Add LAB color space support.
+// TODO: Add HCL color space support.
+// TODO: Add CMYK color space support.
+// TODO: Add XYZ color space support.
+// TODO: Add YIQ color space support.
+// TODO: Add YUV color space support.
+// TODO: Add YCbCr color space support.
+// TODO: Add YPbPr color space support.
+// TODO: Add "rgb()", "rgba()", "hsl()", "hsla()" color function support.

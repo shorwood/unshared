@@ -28,6 +28,5 @@ export const get: Get = (value: any, path: string, defaultValue?: any): any => {
   }
 
   // --- Return result.
-  // TODO: Add the `()` feature to make it call the function if it's a function.
   return result
 }
