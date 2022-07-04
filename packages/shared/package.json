@@ -54,11 +54,6 @@
       "import": "./dist/number/index.mjs",
       "types": "./dist/number/index.d.ts"
     },
-    "./regex": {
-      "require": "./dist/regex/index.js",
-      "import": "./dist/regex/index.mjs",
-      "types": "./dist/regex/index.d.ts"
-    },
     "./string": {
       "require": "./dist/string/index.js",
       "import": "./dist/string/index.mjs",
