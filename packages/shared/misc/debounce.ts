@@ -5,7 +5,7 @@ export type DebouncedFn<T extends (...args: any) => any> = (...args: Parameters<
  * Returns a debounced version of the passed function.
  * @param {Function} callback The function to debounce
  * @param {number} [delay] The debounce delay in milliseconds
- * @returns {Function} The debounced function
+ * @returns {Function} A debounced function
  */
 export const debounce = <T extends (...args: any) => any>(callback: T, delay: number): DebouncedFn<T> => {
   // --- Handle edge cases.

@@ -1,5 +1,3 @@
-/* eslint-disable no-compare-neg-zero */
-
 /**
  * Takes a number and clamps it between a minimum and a maximum value.
  * @param {number} n The number to clamp

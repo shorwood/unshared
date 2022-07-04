@@ -1,4 +1,4 @@
-import { Collection, Key } from '../types'
+import { Collection, Key } from '../types/collection'
 
 export interface IValues {
   <T, K extends Key>(object: Collection<T>, key: K): Array<T & { [P in K]: string }>

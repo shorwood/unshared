@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/prevent-abbreviations */
-import { OmitFirstParameter } from '../types'
+import { OmitFirstParameter } from '../types/function'
 
 /**
  * Wrap a function that binds it's first argument to `this`

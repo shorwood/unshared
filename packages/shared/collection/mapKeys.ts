@@ -5,6 +5,8 @@ interface MapKeys {
   <T>(object: Record<string, T>, iterator: (value: T, key: keyof T, object: Record<string, T>) => string): Record<string, T>
 }
 
+// TODO: Implements `get` path iterator
+
 /**
  * Maps keys in an object or array.
  * @param {Array<T>|Record<string, T>} object The object or array to map keys for

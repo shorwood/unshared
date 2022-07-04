@@ -1,8 +1,9 @@
 /* eslint-disable unicorn/no-null */
 /* eslint-disable unicorn/no-useless-undefined */
 import { expect, it } from 'vitest'
-import { noop } from '../misc'
 import { isRule } from './isRule'
+
+const noop = () => {}
 
 it('should return true if the value is a ValidationRule as object', () => {
   expect(isRule({ handler: noop })).toEqual(true)

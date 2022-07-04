@@ -5,6 +5,8 @@ interface MapValues {
   <T, U>(object: Record<string, T>, iterator: (value: T, key: keyof T, object: Record<string, T>) => U): Record<string, U>
 }
 
+// TODO: Implements `get` path iterator
+
 /**
  * Maps values of an object or array according to an iterator function or a key path.
  * @param object The object to map

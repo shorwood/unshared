@@ -1,10 +1,13 @@
 /* eslint-disable unicorn/prevent-abbreviations */
+
+export type MemoizedFn<T extends Function> = T
+
 /**
  * Wrap a function to cache it's results indexed by their parameters
  * @param {Function} fn The function to be cached
- * @returns {Function} The wrapped function
+ * @returns {Function} The memoized function
  */
-export const memoize = <T extends Function>(fn: T): T => {
+export const memoize = <T extends Function>(fn: T): MemoizedFn<T> => {
   // --- Define a cache
   const cache: Record<string, any> = {}
 
@@ -21,5 +24,5 @@ export const memoize = <T extends Function>(fn: T): T => {
   }
 
   // --- Return the wrapped function
-  return wrappedFunction as unknown as T
+  return wrappedFunction as unknown as MemoizedFn<T>
 }

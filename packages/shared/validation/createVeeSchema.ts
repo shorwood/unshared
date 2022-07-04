@@ -1,4 +1,4 @@
-import { mapValues } from '../collection'
+import { mapValues } from '../collection/mapValues'
 import { ValidationRuleSet, ValidationSchema } from './types'
 import { validateRuleSet } from './validateRuleSet'
 

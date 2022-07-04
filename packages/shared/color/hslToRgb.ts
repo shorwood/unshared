@@ -1,4 +1,4 @@
-import { clamp } from '../number'
+import { clamp } from '../number/clamp'
 import { HSL, RGB, RGBA } from './types'
 
 /**

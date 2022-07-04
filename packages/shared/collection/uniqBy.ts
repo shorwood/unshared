@@ -1,3 +1,8 @@
+
+// TODO: Implement `get` path iterator
+// TODO: Rename `uniqBy` with `unique`
+// TODO: Merge `uniqueBy` and `unique`
+
 /**
  * Returns a new array containing only unique items, based on a given key.
  * @param {Array<T>} array The array to filter

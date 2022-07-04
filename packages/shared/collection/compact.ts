@@ -1,4 +1,4 @@
-import { NotNil } from '../types'
+import { NotNil } from '../types/common'
 
 /**
  * Filters out `undefined` and `null` values from an array.

@@ -9,8 +9,9 @@ export interface Resolvable<T> {
 
 /**
  * Creates a new resolvable object with convenience methods for Promise resolution and state management.
+ * @return {Resolvable<T>} A new resolvable object
  */
-export const resolvable = <T = void>() => {
+export const resolvable = <T = void>(): Resolvable<T> => {
   // --- Initialize state.
   const state = <Resolvable<T>>{}
 

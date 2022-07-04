@@ -1,4 +1,5 @@
-import { Collection, IteratorFunction } from '../types'
+import { Collection } from '../types/collection'
+import { IteratorFunction } from '../types/function'
 
 interface Every {
   <T, U>(array: T, iterator: IteratorFunction<T, U>): boolean

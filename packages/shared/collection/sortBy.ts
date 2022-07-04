@@ -1,5 +1,9 @@
 import { compare } from '../misc/compare'
 
+// TODO: Implement `get` path iterator
+// TODO: Implement `sortBy` values iterator: `sort(array)`
+// TODO: Rename `sortBy` with `sort`
+
 interface SortBy {
   <T, K extends keyof T>(array: Array<T>, path: K): Array<T>
   <T>(array: Array<T>, iterator: (value: T, key: number, array: Array<T>) => any): Array<T>

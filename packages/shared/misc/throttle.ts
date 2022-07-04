@@ -5,7 +5,7 @@ export type ThrottledFn<T extends (...args: any) => any> = (...args: Parameters<
  * Returns a function, that, when invoked, will only be triggered at most once during a given window of time.
  * @param {Function} callback The function to throttle
  * @param {number} delay The amount of time in milliseconds to throttle invocations
- * @returns {Function}
+ * @returns {Function} A function throttled function.
  */
 export const throttle = <T extends (...args: any) => any>(callback: T, delay: number): ThrottledFn<T> => {
   // --- Handle edge cases.

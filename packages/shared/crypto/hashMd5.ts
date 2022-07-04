@@ -1,5 +1,6 @@
 /* eslint-disable unicorn/prevent-abbreviations */
-import { endianness, swapEndian } from '../binary'
+import { endianness } from '../binary/getEndianness'
+import { swapEndian } from '../binary/swapEndian'
 
 // --- Initialize and compute constants table based on sin(0...63)
 const K: number[] = []

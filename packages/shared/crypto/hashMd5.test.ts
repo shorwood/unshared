@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest'
-import { toArrayBuffer, toHex } from '../binary'
+import { toArrayBuffer } from '../binary/toArrayBuffer'
+import { toHex } from '../binary/toHex'
 import { hashMd5 } from './hashMd5'
 
 it.each([

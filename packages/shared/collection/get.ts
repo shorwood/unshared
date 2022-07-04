@@ -1,4 +1,5 @@
-import { Default, Path, Value } from '../types'
+import { Path, Value } from '../types/collection'
+import { Default } from '../types/common'
 
 interface Get {
   <T, K extends Path<T>, U>(value: T, path: K, defaultValue: U): Default<Value<T, K>, U>

@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/no-null */
-import { get } from '../collection'
+import { get } from '../collection/get'
 
 /**
  * Check if value is equal to expected

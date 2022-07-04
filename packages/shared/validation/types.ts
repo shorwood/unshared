@@ -1,4 +1,4 @@
-import { NotFunction } from '../types'
+import { NotFunction } from '../types/function'
 
 export type Validator = (value: any, argument?: any, context?: any) => any
 export type ValidatorArgument = (result: ValidateRuleResult) => any

@@ -1,4 +1,4 @@
-import { clamp } from '../number'
+import { clamp } from '../number/clamp'
 import { hexToRgb } from './hexToRgb'
 import { rgbToHex } from './rgbToHex'
 
