@@ -21,20 +21,19 @@ export const isLinux = isBrowser
 /** Is process running in a WSL environment. */
 export const isWSL = isNode
   && environment.WSL_DISTRO_NAME !== undefined
-  && environment.WSL_DISTRO_NAME !== 'unknown'
-  && requireSafe('node:fs').existsSync('/proc/version')
-  && /wsl/i.test(requireSafe('node:fs').readFileSync('/proc/version', 'utf8'))
+  && requireSafe('node:fs')?.existsSync('/proc/version')
+  && /wsl/i.test(requireSafe('node:fs')?.readFileSync('/proc/version', 'utf8') ?? '')
 
 /** Is process running in a Docker container. */
 export const isDocker = isNode
-  && requireSafe('node:fs').existsSync('/proc/self/cgroup')
-  && /docker/i.test(requireSafe('node:fs').readFileSync('/proc/self/cgroup', 'utf8'))
+  && requireSafe('node:fs')?.existsSync('/proc/self/cgroup')
+  && /docker/i.test(requireSafe('node:fs')?.readFileSync('/proc/self/cgroup', 'utf8') ?? '')
 
 /** Is process running in Kubernetes */
 export const isKubernetes = isNode
   && environment.KUBERNETES_SERVICE_HOST !== undefined
-  && requireSafe('node:fs').existsSync('/proc/self/cgroup')
-  && /kubernetes/i.test(requireSafe('node:fs').readFileSync('/proc/self/cgroup', 'utf8'))
+  && requireSafe('node:fs')?.existsSync('/proc/self/cgroup')
+  && /kubernetes/i.test(requireSafe('node:fs')?.readFileSync('/proc/self/cgroup', 'utf8') ?? '')
 
 /** Is process running in AWS */
 export const isAWS = isNode

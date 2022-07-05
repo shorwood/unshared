@@ -20,10 +20,10 @@ import { requireSafe } from './requireSafe'
  * })
  */
 export const workerizeNode = <T extends (...args: any) => any>(callback: T): (...args: Parameters<T>) => Promise<ReturnType<T>> => {
-  const fs = requireSafe<typeof import('node:fs')>('node:fs')
-  const os = requireSafe<typeof import('node:os')>('node:os')
-  const path = requireSafe<typeof import('node:path')>('node:path')
-  const workerThreads = requireSafe<typeof import('node:worker_threads')>('node:worker_threads')
+  const fs = requireSafe('node:fs')
+  const os = requireSafe('node:os')
+  const path = requireSafe('node:path')
+  const workerThreads = requireSafe('node:worker_threads')
 
   // --- Missing dependency.
   if (!fs) throw new Error('Cannot workerize function. Missing dependency "node:fs"')

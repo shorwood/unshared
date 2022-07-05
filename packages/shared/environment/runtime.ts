@@ -16,8 +16,5 @@ export const isElectron = isNode && !!process.versions?.electron
 /** Is process running in a web worker instance. */
 export const isWebWorker = typeof self === 'object' && self.constructor?.name === 'DedicatedWorkerGlobalScope'
 
-/** Is process running in strict mode. */
-export const isStrictMode = typeof this === 'undefined' || this === null || this === {}
-
 /** Is process supporting touch inputs. */
 export const isTouch = isBrowser && globalThis.navigator.maxTouchPoints > 0
