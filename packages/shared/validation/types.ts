@@ -1,11 +1,23 @@
+import { Primitive } from '../types/common'
 import { NotFunction } from '../types/function'
 
-export type Validator = (value: any, argument?: any, context?: any) => any
-export type ValidatorArgument = (result: ValidateRuleResult) => any
-
 export type ValidationSchema = Record<string, ValidationRuleSet>
-export type ValidationRuleSet = ValidationRule[][] | ValidationRule[] | ValidationRule
-export type ValidationRule = Validator | [handler: Validator, argument: NotFunction | undefined, errorMessage?: string] | ValidationRuleObject
+
+export type Validator =
+  | ((value: any, argument?: any, context?: any) => any)
+  | RegExp
+  | Boolean
+  | Primitive
+
+export type ValidationRuleSet =
+  | ValidationRule[][]
+  | ValidationRule[]
+  | ValidationRule
+
+export type ValidationRule =
+  | Validator
+  | [handler: Validator, argument: NotFunction | undefined, errorMessage?: string]
+  | ValidationRuleObject
 
 export interface ValidationRuleObject {
   handler: Validator

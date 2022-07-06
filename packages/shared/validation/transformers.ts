@@ -1,3 +1,5 @@
+/* eslint-disable no-new-wrappers */
+/* eslint-disable unicorn/new-for-builtins */
 /* eslint-disable unicorn/no-null */
 import { get } from '../collection/get'
 
@@ -62,3 +64,13 @@ export const toEmptyArray = (): any[] => []
   * @returns {''} `''` - An empty string
   */
 export const toEmptyString = (): string => ''
+
+/**
+ * @returns {Boolean} `Boolean(true)` - A boolean object with a value of `true`
+ */
+export const toTrue = (): Boolean => new Boolean(true)
+
+/**
+ * @returns {Boolean} `Boolean(false)` - A boolean object with a value of `false`
+ */
+export const toFalse = (): Boolean => new Boolean(false)
