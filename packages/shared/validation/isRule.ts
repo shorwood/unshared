@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/prevent-abbreviations */
-import { ValidationRule } from './types'
+import { ValidationRule, ValidationRuleSet } from './types'
 
 /**
  * Checks if the value is a `ValidationRule`.
@@ -32,5 +32,25 @@ export const isRule = (value: any): value is ValidationRule => {
   }
 
   // --- Is indeed a rule
+  return false
+}
+
+/**
+ * Checks if the value is a `ValidationRuleSet`.
+ * @param value The value to check
+ * @returns {boolean} whether or not the value is a `ValidationRuleSet`
+ */
+export const isRuleSet = (value: any): value is ValidationRuleSet => {
+  // --- Is a single rule as rule set
+  if (isRule(value)) return true
+
+  // --- is rule set as array
+  if (Array.isArray(value)) {
+    if (value.every(isRule)) return true
+    if (value.every(x => Array.isArray(x) && x.every(isRule))) return true
+    return false
+  }
+
+  // --- Is not a ruleSet
   return false
 }
