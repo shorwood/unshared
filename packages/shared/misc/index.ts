@@ -1,3 +1,4 @@
+export * from './attempt'
 export * from './benchmark'
 export * from './bindThis'
 export * from './compare'
