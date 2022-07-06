@@ -1,4 +1,7 @@
+export * from './capitalize'
 export * from './complexity'
+export * from './escapeHtml'
+export * from './escapeRegExp'
 export * from './isLowerCase'
 export * from './isUpperCase'
 export * from './join'

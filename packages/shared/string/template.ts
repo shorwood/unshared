@@ -1,4 +1,5 @@
 import { get } from '../collection/get'
+import { escapeRegExp } from './escapeRegExp'
 
 export interface TemplateOptions {
   /**
@@ -20,7 +21,7 @@ export const template = (content: string, data: any, options: TemplateOptions = 
   const { delimiters = ['{{', '}}'] } = options
 
   // --- Escape delimiters and create regex.
-  const [open, close] = delimiters.map(d => d.replace(/[$()*+.?[\\\]^{|}]/g, '\\$&'))
+  const [open, close] = delimiters.map(escapeRegExp)
   const matches = new RegExp(`${open}(.+?)${close}`, 'g')
 
   // --- Replace interpolation.
