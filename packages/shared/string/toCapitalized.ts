@@ -8,5 +8,8 @@
  * toCamelCase('FOO_BAR') // returns 'Foo_bar'
  * ```
  */
-export const toCapitalized = (value: string): string =>
-  value[0].toUpperCase() + value.slice(1).toLowerCase()
+export const toCapitalized = (value: string): string => {
+  if (value.length === 0) return value
+  if (value.length === 1) return value.toUpperCase()
+  return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
+}
