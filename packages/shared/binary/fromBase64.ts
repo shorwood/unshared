@@ -5,11 +5,15 @@ export const base64Symbols = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwx
  * Convert a Base64 string to an ArrayBuffer
  * @param {string} value The Base64 string to convert
  * @returns {ArrayBuffer} The converted ArrayBuffer
+ * @example
+ * fromBase64('AQ==') // ArrayBuffer([0x00])
+ * fromBase64('AQID') // ArrayBuffer([0x00, 0x01, 0x02, 0x03])
  */
 export const fromBase64 = (value: string): ArrayBuffer => {
   // --- Check if string is valid
-  if (value.length % 4 !== 0) throw new Error('Value must be a valid base64 string')
-  if (!/^[\d+/=a-z]*$/i.test(value)) throw new Error('Value must contain only base64 digits')
+  if (typeof value !== 'string') throw new Error('Value must be a string')
+  if (value.length % 4 !== 0) throw new Error('String must have a length that is a multiple of 4')
+  if (!/^[\d+/=a-z]*$/i.test(value)) throw new Error('String must only contain base64 digits')
   value = value.replace(/=/g, '')
 
   // --- Initialize buffer
