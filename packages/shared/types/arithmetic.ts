@@ -26,21 +26,22 @@ type MultiSub<N extends number, D extends number, Q extends number> = LT<N, D> e
   ? Q
   : Add<Q, 1> extends number ? MultiSub<Subtract<N, D>, D, Add<Q, 1>> : never
 
+/** Checks if both values are positive integers */
 type ArePositiveInteger<A extends number, B extends number> = A extends PositiveInteger<A>
   ? (B extends PositiveInteger<B> ? true : false)
   : false
-
-/**
- * Utilities bellow are thanks to [Ryan Dabler](https://medium.com/@ryan.dabler)
- * and his [article about TypeScript Arithmetics](https://medium.com/itnext/implementing-arithmetic-within-typescripts-type-system-a1ef140a6f6f)
- */
 
 /** Addition of two positive integers */
 export type Add<A extends number, B extends number> = ArePositiveInteger<A, B> extends true
   ? Length<[...Tuple<A>, ...Tuple<B>]>
   : never
 
-/** Substraction of two positive integers */
+/**
+ * Substraction of two positive integers
+ * @param A The first positive integer
+ * @param B The second positive integer
+ * @returns The difference of the two positive integers
+ */
 export type Subtract<A extends number, B extends number> =
   ArePositiveInteger<A, B> extends true
     ? Tuple<A> extends [...(infer U), ...Tuple<B>]
@@ -48,26 +49,49 @@ export type Subtract<A extends number, B extends number> =
       : never
     : never
 
-/** Multiple of two positive integers */
+/**
+ * Multiple of two positive integers
+ * @param A The first positive integer
+ * @param B The second positive integer
+ * @returns The product of the two positive integers
+ */
 export type Multiply<A extends number, B extends number> =
   ArePositiveInteger<A, B> extends true
     ? MultiAdd<A, 0, B>
     : never
 
-/** Euclidian division of two positive integers */
+/**
+ * Euclidian division of two positive integers
+ * @param A The first positive integer
+ * @param B The second positive integer
+ * @returns The quotient of the two positive integers
+ */
 export type Divide<A extends number, B extends number> =
   ArePositiveInteger<A, B> extends true
     ? MultiSub<A, B, 0>
     : never
 
-/** Modulo of two positive integers */
+/**
+ * Modulo of two positive integers
+ * @param A The first positive integer
+ * @param B The second positive integer
+ * @returns The remainder of the division of the two positive integers
+ */
 export type Modulo<A extends number, B extends number> =
   ArePositiveInteger<A, B> extends true
     ? LT<A, B> extends true ? A : Modulo<Subtract<A, B>, B>
     : never
 
-/** Number increased by 1 */
+/**
+ * Number increased by 1
+ * @param A The number
+ * @returns The number increased by 1
+ */
 export type Increase<N extends number> = Add<N, 1>
 
-/** Number decreased by 1 */
+/**
+ * Number decreased by 1
+ * @param N The number to decrease
+ * @returns The number decreased by 1
+ */
 export type Decrease<N extends number> = Subtract<N, 1>
