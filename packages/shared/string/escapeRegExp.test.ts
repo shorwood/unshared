@@ -1,10 +1,14 @@
 import { expect, it } from 'vitest'
 import { escapeRegExp } from './escapeRegExp'
 
-it('should escape all the special characters', () => {
-  expect(escapeRegExp('$()*+.?[\\\]^{|}')).toEqual('\\$\\(\\)\\*\\+\\.\\?\\[\\\\\\]\\^\\{\\|\\}')
-})
+it.each([
 
-it('should escape the backslash character', () => {
-  expect(escapeRegExp('\\')).toEqual('\\\\')
+  ['foo\\[bar\\]baz', 'foo[bar]baz'],
+  ['foo\\(bar\\)baz', 'foo(bar)baz'],
+  ['foo\\+bar\\+baz', 'foo+bar+baz'],
+  ['foo\\.bar\\.baz', 'foo.bar.baz'],
+
+])('should escape Regular Expression special characters to %s', (expected, value) => {
+  const result = escapeRegExp(value)
+  expect(result).toEqual(expected)
 })

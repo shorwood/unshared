@@ -1,7 +1,9 @@
 /**
  * Escape the HTML special characters.
- * @param value The string to escape.
- * @returns The escaped string.
+ * @param {string} value The string to escape.
+ * @returns {string} The escaped string.
+ * @example
+ * escapeHtml('foo<bar>baz') // 'foo&lt;bar&gt;baz'
  */
 export const escapeHtml = (value: string): string => value
   .replace(/&/g, '&amp;')
