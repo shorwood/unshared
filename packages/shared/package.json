@@ -54,6 +54,11 @@
       "import": "./dist/number/index.mjs",
       "types": "./dist/number/index.d.ts"
     },
+    "./predicate": {
+      "require": "./dist/predicate/index.js",
+      "import": "./dist/predicate/index.mjs",
+      "types": "./dist/predicate/index.d.ts"
+    },
     "./string": {
       "require": "./dist/string/index.js",
       "import": "./dist/string/index.mjs",
