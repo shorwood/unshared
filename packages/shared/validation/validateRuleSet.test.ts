@@ -1,74 +1,61 @@
 import { expect, it } from 'vitest'
 import { validateRuleSet } from './validateRuleSet'
 
-const isRequired = (value: any): boolean => !!value
-const isGreater = (value: number, n: number): boolean => value > n
-const isEqual = (value: number, n: number): boolean => value === n
-const toValue = (value: number, n: number): number => n
-const toUndefined = () => {}
+const isRequired = (value: any) => !!value
+const isGreater = (value: number, n: number) => value > n
+const isEqual = (value: any, n: any) => value === n
+const toValue = (_: any, n: any) => n
 
-it('should pass a rule set when one path is valid', async() => {
-  const result = await validateRuleSet(1, [
-    [isRequired, [isGreater, 5]],
-    [isRequired, [isEqual, 1]],
-  ])
-  expect(result.isValid).toEqual(true)
-  expect(result.value).toEqual(1)
-  expect(result.errors).toEqual([])
-  expect(result.failed).toEqual(['isGreater'])
-  expect(result.valid).toEqual(['isRequired', 'isRequired', 'isEqual'])
-})
+it.each([
 
-it('should fail a rule set when all path are invalid', async() => {
-  const result = await validateRuleSet(1, [
-    [isRequired, [isGreater, 5]],
-    [isRequired, [isEqual, 0]],
-  ])
-  expect(result.isValid).toEqual(false)
-  expect(result.value).toEqual(1)
-  expect(result.errors).toEqual(['isGreater', 'isEqual'])
-  expect(result.failed).toEqual(['isGreater', 'isEqual'])
-  expect(result.valid).toEqual(['isRequired', 'isRequired'])
-})
+  // --- Validate and transform (passes at [1]).
+  [10, [
+    [isRequired, [isGreater, 20]],
+    [isRequired, [isEqual, 10], [toValue, 20]],
+  ], {
+    valid: ['isRequired', 'isRequired', 'isEqual', 'toValue'],
+    failed: ['isGreater'],
+    value: 20,
+    isValid: true,
+  }],
 
-it('should pass a rule set when one path is valid but an invalid path had a tranformer', async() => {
-  const result = await validateRuleSet(1, [
-    [[toValue, 0], isRequired],
-    [[isEqual, 1]],
-  ])
-  expect(result.isValid).toEqual(true)
-  expect(result.value).toEqual(1)
-  expect(result.errors).toEqual([])
-  expect(result.failed).toEqual(['isRequired'])
-  expect(result.valid).toEqual(['toValue', 'isEqual'])
-})
+  // --- Validate and transform (passes at [0]).
+  [10, [
+    [isRequired, [isEqual, 10], [toValue, 20]],
+    [isRequired, [isGreater, 20]],
+  ], {
+    valid: ['isRequired', 'isEqual', 'toValue'],
+    failed: [],
+    value: 20,
+    isValid: true,
+  }],
 
-it('should pass a rule set when one path is valid and has a tranformer', async() => {
-  const result = await validateRuleSet(1, [
-    [[toValue, 0], isRequired],
-    [[isEqual, 1], [toValue, 10]],
-  ])
-  expect(result.isValid).toEqual(true)
-  expect(result.value).toEqual(10)
-  expect(result.errors).toEqual([])
-  expect(result.failed).toEqual(['isRequired'])
-  expect(result.valid).toEqual(['toValue', 'isEqual', 'toValue'])
-})
+  // --- Validate and transform (passes).
+  [10, [isRequired, [isGreater, 10]], {
+    valid: ['isRequired'],
+    failed: ['isGreater'],
+    error: 'Failed rule: isGreater',
+    value: 10,
+    isValid: false,
+  }],
 
-it('should fail a rule set when all path are invalid and has a tranformer', async() => {
-  const result = await validateRuleSet(1, [
-    [toUndefined, [toValue, 10], [isEqual, 1]],
-    [toUndefined, [toValue, 0], isRequired],
-  ])
-  expect(result.isValid).toEqual(false)
-  expect(result.value).toEqual(1)
-  expect(result.errors).toEqual(['isEqual', 'isRequired'])
-  expect(result.failed).toEqual(['isEqual', 'isRequired'])
-  expect(result.valid).toEqual(['toUndefined', 'toValue', 'toUndefined', 'toValue'])
-})
+  // --- Validate and transform (passes).
+  [10, isRequired, {
+    valid: ['isRequired'],
+    failed: [],
+    value: 10,
+    isValid: true,
+  }],
 
-it('should throw an error on invalid rule set', async() => {
-  const invalidRuleSet = [[false]] as any
-  const invalidCall = async() => await validateRuleSet(1, invalidRuleSet)
-  expect(await invalidCall().catch(error => error)).toBeInstanceOf(Error)
+])('should validate a value against a set of rules', async(value, ruleSet: any, expected: any) => {
+  const result = await validateRuleSet(value, ruleSet).catch((error: any) => error.message)
+
+  // --- Simplify the assertment.
+  delete result.results
+  result.error = result.error?.message
+
+  console.log(result)
+
+  // --- Assert.
+  expect(result).toEqual(expected)
 })

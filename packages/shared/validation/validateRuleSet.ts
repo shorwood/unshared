@@ -1,27 +1,25 @@
-import { isRule, isRuleSet } from './isRule'
-import { validateRules } from './validateRules'
-import { ValidateRulesResult, ValidationRule, ValidationRuleSet } from './types'
+import { validateRulePipe } from './validateRulePipe'
+import { ValidateRulePipeResult, ValidateRuleSetResult, ValidationRule, ValidationRulePipe, ValidationRuleSet } from './types'
+import { createRuleSet } from './utils/createRuleSet'
 
 /**
  * Validate a value against a ValidationRuleSet.
  * @param {any} value The value to validate
  * @param {ValidationRuleSet} ruleSet The ValidationRuleSet to validate against
- * @param {any} context A context to pass through to the validation rules
+ * @param {Record<string, any>} context A context to pass through to the validation rules
  * @returns {Promise<ValidateRuleResult>} The result of the validation
  */
-export const validateRuleSet = async(value: any, ruleSet: ValidationRuleSet, context?: any): Promise<ValidateRulesResult> => {
-  const results: ValidateRulesResult[] = []
+export const validateRuleSet = async(value: any, ruleSet: ValidationRule | ValidationRulePipe | ValidationRuleSet, context?: Record<string, any>): Promise<ValidateRuleSetResult> => {
+  const results: ValidateRulePipeResult[] = []
 
-  // --- Handle invalid ruleSet and normalize it.
-  if (!isRuleSet(ruleSet)) throw new Error('ruleSet must be a ValidationRuleSet')
-  if (isRule(ruleSet)) ruleSet = [[ruleSet]]
-  // @ts-expect-error: ignore
-  if (Array.isArray(ruleSet) && ruleSet.every(isRule)) ruleSet = [ruleSet]
+  // --- Make sure it's a set of rules.
+  ruleSet = createRuleSet(ruleSet)
 
   // --- Validate and store results of each rules one by one.
-  for (const rules of <ValidationRule[][]>ruleSet) {
-    const result = await validateRules(value, rules, context)
+  for (const rules of ruleSet) {
+    const result = await validateRulePipe(value, rules, context)
     results.push(result)
+    if (result.isValid) break
   }
 
   // --- Compute isValid state.
@@ -32,7 +30,7 @@ export const validateRuleSet = async(value: any, ruleSet: ValidationRuleSet, con
     results: results.flatMap(x => x.results),
     valid: results.flatMap(x => x.valid),
     failed: results.flatMap(x => x.failed),
-    errors: !isValid ? results.flatMap(x => x.errors) : [],
+    error: !isValid ? results.find(x => !x.isValid)?.error : undefined,
     value: results.find(x => x.isValid)?.value ?? value,
     isValid,
   }

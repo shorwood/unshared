@@ -1,60 +1,74 @@
 
 import { expect, it } from 'vitest'
-import { ValidationSchema } from './types'
+import { mapValues } from '../collection'
 import { validateSchema } from './validateSchema'
 
 const isRequired = (value: any): boolean => !!value
 const isGreater = (value: number, n: number): boolean => value >= n
-const isEqToFoo = (value: number, a: any, context: any): boolean => value === context.foo
+const isEqToFoo = function(this: any, value: number) { return value === this.foo }
 const toUpperCase = (value: string): string => value.toUpperCase()
 
 const object = {
-  foo: 'foo',
+  foo: 'bar',
   bar: 10,
   baz: 'baz',
-  fou: 'fou',
+  qux: 'qux',
+  quux: 'quux',
 }
 
-it('should validate an object against a validation schema', async() => {
-  const schema: ValidationSchema = {
+it.each([
+
+  // --- Validate and transform (passes).
+  [object, {
     foo: [isRequired, isEqToFoo],
     bar: [isRequired, [isGreater, 0]],
-    baz: [isRequired, toUpperCase],
-  }
-  const result = await validateSchema(object, schema, { foo: 'foo' })
-  expect(result.isValid).toEqual(true)
-  expect(result.errors).toEqual({ foo: [], bar: [], baz: [] })
-  expect(result.failed).toEqual({ foo: [], bar: [], baz: [] })
-  expect(result.valid.foo).toEqual(['isRequired', 'isEqToFoo'])
-  expect(result.valid.bar).toEqual(['isRequired', 'isGreater'])
-  expect(result.valid.baz).toEqual(['isRequired', 'toUpperCase'])
-  expect(result.valid.fou).toBeUndefined()
-  expect(result.value).toEqual({
-    foo: 'foo',
-    bar: 10,
-    baz: 'BAZ',
-    fou: 'fou',
-  })
-})
+    baz: [[isGreater], [isRequired, toUpperCase]],
+    qux: isRequired,
+  }, {
+    failed: { foo: [], bar: [], baz: ['isGreater'], qux: [] },
+    valid: {
+      foo: ['isRequired', 'isEqToFoo'],
+      bar: ['isRequired', 'isGreater'],
+      baz: ['isRequired', 'toUpperCase'],
+      qux: ['isRequired'],
+    },
+    errors: { foo: undefined, bar: undefined, baz: undefined, qux: undefined },
+    value: { foo: 'bar', bar: 10, baz: 'BAZ', qux: 'qux', quux: 'quux' },
+    isValid: true,
+    areValid: { foo: true, bar: true, baz: true, qux: true },
+  }],
 
-it('should transform valid fields even if validation failed', async() => {
-  const schema: ValidationSchema = {
+  // --- Validate and transform (fails).
+  [object, {
     foo: [isRequired, isEqToFoo],
     bar: [isRequired, [isGreater, 20]],
-    baz: [isRequired, toUpperCase],
-  }
-  const result = await validateSchema(object, schema, { foo: 'foo' })
-  expect(result.isValid).toEqual(false)
-  expect(result.errors).toEqual({ foo: [], bar: ['isGreater'], baz: [] })
-  expect(result.failed).toEqual({ foo: [], bar: ['isGreater'], baz: [] })
-  expect(result.valid.foo).toEqual(['isRequired', 'isEqToFoo'])
-  expect(result.valid.bar).toEqual(['isRequired'])
-  expect(result.valid.baz).toEqual(['isRequired', 'toUpperCase'])
-  expect(result.valid.fou).toBeUndefined()
-  expect(result.value).toEqual({
-    foo: 'foo',
-    bar: 10,
-    baz: 'BAZ',
-    fou: 'fou',
-  })
+    baz: [[isGreater], [isRequired, toUpperCase]],
+    qux: isRequired,
+  }, {
+    failed: { foo: [], bar: ['isGreater'], baz: ['isGreater'], qux: [] },
+    valid: {
+      foo: ['isRequired', 'isEqToFoo'],
+      bar: ['isRequired'],
+      baz: ['isRequired', 'toUpperCase'],
+      qux: ['isRequired'],
+    },
+    errors: {
+      foo: undefined,
+      bar: 'Failed rule: isGreater',
+      baz: undefined,
+      qux: undefined,
+    },
+    value: { foo: 'bar', bar: 10, baz: 'BAZ', qux: 'qux', quux: 'quux' },
+    isValid: false,
+    areValid: { foo: true, bar: false, baz: true, qux: true },
+  }],
+
+])('should validate %s with %s', async(value: any, schema: any, expected: any) => {
+  const result = await validateSchema(value, schema, { foo: 'bar' }).catch((error: any) => error.message)
+
+  // --- Clean up result.
+  delete result.results
+  result.errors = mapValues(result.errors, (error: any) => error?.message)
+
+  expect(result).toEqual(expected)
 })

@@ -1,55 +1,55 @@
-import { Primitive } from '../types/common'
 import { NotFunction } from '../types/function'
 
 export type ValidationSchema = Record<string, ValidationRuleSet>
+export type ValidatorFunction<R = any> = ((value: any, argument?: any) => R)
+export type Validator = ValidatorFunction | RegExp | boolean
 
-export type Validator =
-  | ((value: any, argument?: any, context?: any) => any)
-  | RegExp
-  | Boolean
-  | Primitive
-
-export type ValidationRuleSet =
-  | ValidationRule[][]
-  | ValidationRule[]
-  | ValidationRule
+export interface ValidationRuleObject {
+  name: string
+  handler: ValidatorFunction
+  parameters: any[]
+  error: Error
+}
 
 export type ValidationRule =
   | Validator
-  | [handler: Validator, argument: NotFunction | undefined, errorMessage?: string]
   | ValidationRuleObject
+  | [handler: RegExp, replacement: string]
+  | [handler: ValidatorFunction, ...parameters: NotFunction[]]
 
-export interface ValidationRuleObject {
-  handler: Validator
-  name?: string
-  argument?: any
-  errorMessage?: string | ((result: ValidateRuleResult) => string)
-}
-
+export type ValidationRulePipe = ValidationRule[]
+export type ValidationRuleSet = ValidationRule[][]
 export interface ValidateRuleResult {
-  value: any
-  argument?: unknown
-  context: any
   name: string
-  handler: Validator
-  errorMessage: string
+  value: any
   isValid: boolean
+  parameters?: any[]
+  error?: Error
 }
 
-export interface ValidateRulesResult {
+export interface ValidateRulePipeResult {
+  value: any
+  isValid: boolean
   results: ValidateRuleResult[]
   failed: string[]
   valid: string[]
-  errors: string[]
+  error?: Error
+}
+export interface ValidateRuleSetResult {
   value: any
   isValid: boolean
+  results: ValidateRuleResult[]
+  failed: string[]
+  valid: string[]
+  error?: Error
 }
 
 export interface ValidateSchemaResult {
-  results: Record<string, ValidateRulesResult>
-  failed: Record<string, string[]>
-  valid: Record<string, string[]>
-  errors: Record<string, string[]>
   value: any
   isValid: boolean
+  areValid: Record<string, boolean>
+  results: Record<string, ValidateRuleSetResult>
+  failed: Record<string, string[]>
+  valid: Record<string, string[]>
+  errors: Record<string, Error | undefined>
 }

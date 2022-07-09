@@ -1,99 +1,55 @@
 import { ValidateRuleResult, ValidationRule } from './types'
+import { createRule } from './utils/createRule'
 
 /**
  * Validate a rule against a value.
  * @param {any} value The value to validate
  * @param {ValidationRule} rule The validation rule
- * @param {any} [context] Any context to pass on to the validator
- * @returns {ValidateRuleResult} The result of validation
+ * @param {Record<string, any>} [context] Any context to pass on to the validator
+ * @returns {ValidateRuleResult} The validation result
+ * @throws {TypeError} If the rule is not valid
+ * @example
+ * const result = validateRule(1, Number.isNaN) // { isValid: true, value: 1, name: 'isNaN' }
  */
-export const validateRule = async(value: any, rule: ValidationRule, context?: any): Promise<ValidateRuleResult> => {
-  let result: any = {
-    value,
-    isValid: true,
-    isInvalid: false,
-    context,
-  }
-
-  // --- Extract parameters from array.
-  if (Array.isArray(rule)) result = { ...result, handler: rule[0], argument: rule[1], errorMessage: rule[2] }
-
-  // --- Extract parameters from object.
-  else if (rule && typeof rule === 'object' && 'handler' in rule) result = { ...result, ...rule }
-
-  // --- Extract parameters from value.
-  else result = { ...result, handler: rule }
-
-  // --- Try to recover name of the rule from the handler.
-  if (!result.name) {
-    result.name = result.handler?.name
-      || result.handler?.toString()
-      || (result.handler === undefined && 'undefined')
-      || (result.handler === null && 'null')
-      || 'anonymous'
-  }
-
-  // --- If handler is a RegExp
-  // --- And argument: replace string.
-  // --- And no argument: check if value matches.
-  if (result.handler instanceof RegExp) {
-    const regExp = result.handler
-    result.handler = result.argument
-      ? (value: string, argument: string) => value.replace(regExp, argument)
-      : (value: string) => regExp.test(value)
-  }
-
-  // --- If handler is not a function, use it as the handler.
-  if (typeof result.handler !== 'function') {
-    const value = result.handler
-    result.handler = () => value
-  }
+export const validateRule = async(value: any, rule: ValidationRule, context?: Record<string, any>): Promise<ValidateRuleResult> => {
+  // --- Initialize rule object.
+  const result = { value, isValid: true } as ValidateRuleResult
 
   try {
-    // --- Resolve arguments.
-    result.argument = typeof result.argument === 'function'
-      ? result.argument(result)
-      : result.argument
-
-    // --- Resolve error message.
-    result.errorMessage = typeof result.errorMessage === 'function'
-      ? result.errorMessage(result)
-      : result.errorMessage
-
-    // --- Try validating or transforming. Store error if one occurs.
-    let ruleResult = result.handler(value, result.argument, context)
+    // --- Format rule object and try validating or transforming.
+    const { handler, name, parameters, error } = createRule(rule)
+    result.name = name
+    result.error = error
+    result.parameters = parameters
+    let ruleResult = handler.call(context, value, ...parameters)
 
     // --- If validator is async, await it and catch errors.
+    // --- Save the result or error if any.
     if (ruleResult instanceof Promise) {
-      ruleResult = await ruleResult.catch((error: any) => {
-        result.isValid = false
-        result.isInvalid = true
-        result.errorMessage = error.message
-      })
+      await ruleResult
+        .then(result => ruleResult = result)
+        .catch((error: any) => {
+          result.isValid = false
+          result.error = error
+          ruleResult = value
+        })
     }
 
     // --- Interpret result as validation result.
-    if (typeof ruleResult === 'boolean') {
-      result.isValid = ruleResult
-      result.isInvalid = !ruleResult
-    }
+    if (typeof ruleResult === 'boolean') result.isValid = ruleResult
 
     // --- Interpret result as transformed value.
     // --- If result is a Boolean, return its `valueOf` result.
-    else {
-      result.value = (ruleResult instanceof Boolean)
-        ? ruleResult.valueOf()
-        : ruleResult
-    }
+    else result.value = (ruleResult instanceof Boolean) ? ruleResult.valueOf() : ruleResult
   }
 
-  // --- Store error if one occurs.
+  // --- Catch errors.
   catch (error: any) {
     result.isValid = false
-    result.isInvalid = true
-    result.errorMessage = error.message
+    result.error = error
   }
 
   // --- Return result.
+  if (result.isValid) result.error = undefined
   return result
 }
