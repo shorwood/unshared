@@ -1,4 +1,4 @@
-import { getType, isType } from '../validation/isType'
+import { kindOf } from '../predicate/kindOf'
 
 const typeOrder = [
   'undefined',
@@ -10,13 +10,13 @@ const typeOrder = [
   'string',
   'symbol',
   'function',
-  'regexp',
-  'date',
-  'set',
-  'map',
-  'weakset',
-  'weakmap',
-  'array',
+  'RegExp',
+  'Date',
+  'Set',
+  'Map',
+  'Weakset',
+  'WeakMap',
+  'Array',
   'object',
 ]
 
@@ -38,8 +38,8 @@ export const compare = (a: any, b: any): number => {
   if (a === b) return 0
 
   // --- Get types.
-  const aType = getType(a)
-  const bType = getType(b)
+  const aType = kindOf(a)
+  const bType = kindOf(b)
 
   // --- Compare by types.
   if (aType !== bType) {
@@ -60,7 +60,7 @@ export const compare = (a: any, b: any): number => {
   }
 
   // --- Compare arrays and objects.
-  if (isType(a, 'array') || isType(a, 'object')) {
+  if (aType === 'array' || aType === 'object') {
     const aKeys = Object.keys(a)
     const bKeys = Object.keys(b)
     const aLength = aKeys.length

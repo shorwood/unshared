@@ -7,7 +7,6 @@ it.each([
   ['foo&amp;bar&amp;baz', 'foo&bar&baz'],
   ['foo&quot;bar&quot;baz', 'foo"bar"baz'],
   ['foo&#39;bar&#39;baz', 'foo\'bar\'baz'],
-  ['foo&#x27;bar&#x27;baz', 'foo\'bar\'baz'],
   ['&amp;&lt;&gt;&quot;&#39;', '&<>"\''],
 
 ])('should escape HTML special characters to %s', (expected, value) => {
