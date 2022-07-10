@@ -13,13 +13,8 @@ export const kindOf = (value?: any): string => {
   if (value === null) return 'null'
 
   // --- Primitive types
-  if (typeof value === 'undefined') return 'undefined'
-  if (typeof value === 'boolean') return 'boolean'
-  if (typeof value === 'number') return 'number'
-  if (typeof value === 'bigint') return 'bigint'
-  if (typeof value === 'string') return 'string'
-  if (typeof value === 'symbol') return 'symbol'
-  if (typeof value === 'function') return 'function'
+  const typeOf = typeof value
+  if (typeOf !== 'object') return typeOf
 
   // --- Value is an array
   if (Array.isArray(value)) return 'array'
