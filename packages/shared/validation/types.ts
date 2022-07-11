@@ -1,5 +1,7 @@
 import { NotFunction } from '../types/function'
 
+// TODO: Infer parameters anr return type from function
+
 export type ValidationSchema = Record<string, ValidationRuleSet>
 export type ValidatorFunction<R = any> = ((value: any, argument?: any) => R)
 export type Validator = ValidatorFunction | RegExp | boolean
