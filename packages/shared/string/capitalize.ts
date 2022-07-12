@@ -4,8 +4,8 @@
  * @returns {string} The converted string
  * @example
  * ```
- * toCamelCase('foo_bar') // returns 'Foo_bar'
- * toCamelCase('FOO_BAR') // returns 'FOO_BAR'
+ * capitalize('foo_bar') // returns 'Foo_bar'
+ * capitalize('FOO_BAR') // returns 'FOO_BAR'
  * ```
  */
 export const capitalize = (value: string): string => {
