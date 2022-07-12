@@ -1,33 +1,41 @@
+/* eslint-disable unicorn/no-null */
 import { expect, it } from 'vitest'
 import { get } from './get'
 
-it('should get a value from an object by a path of keys', () => {
-  const object = { a: { b: { c: Math.random() > 0.5 ? 0 : 1 } } }
-  expect(get(object, 'a')).toEqual(object.a)
-  expect(get(object, 'a', 'default')).toEqual(object.a)
-  expect(get(object, 'a.b')).toEqual(object.a.b)
-  expect(get(object, 'a.b', 'default')).toEqual(object.a.b)
-  expect(get(object, 'a.b.c')).toEqual(object.a.b.c)
-  expect(get(object, 'a.b.c', 'default')).toEqual(object.a.b.c)
-})
+const object = {
+  a: {
+    b: { c: Math.random() > 0.5 ? 0 : 1 },
+    d: [{ e: 'f' }],
+  },
+}
 
-it('should get a value from an array in an object', () => {
-  const object = { a: [{ b: 'c' }] }
-  const array = [object]
-  expect(get(object, 'a.0.b')).toEqual('c')
-  expect(get(object, 'a.0.b', 'default')).toEqual('c')
-  expect(get(array, '0.a.0.b')).toEqual('c')
-  expect(get(array, '0.a.0.b', 'default')).toEqual('c')
-})
+it.each([
 
-it('should return the default value if the path does not exist', () => {
-  const object = { a: { b: { c: 'd' } } }
-  expect(get(object, 'invalid-path')).toBeUndefined()
-  expect(get(object, 'invalid-path', 'default')).toEqual('default')
-  expect(get(object, 'invalid-path')).toBeUndefined()
-  expect(get(object, 'invalid-path', 'default')).toEqual('default')
-})
+  // --- Test 1: Get a value from an object by a path of keys.
+  ['a', object.a, undefined],
+  ['a', object.a, 'default'],
+  ['a.b', object.a.b, undefined],
+  ['a.b', object.a.b, 'default'],
+  ['a.b.c', object.a.b.c, undefined],
+  ['a.b.c', object.a.b.c, 'default'],
+  ['a.no', undefined, undefined],
+  ['a.no', 'default', 'default'],
 
-it('should return default value if value is undefined or null', () => {
-  expect(get(undefined, 'undefined')).toBeUndefined()
+  // --- Test 2: Get a value from an array in an object.
+  ['a.d.0.e', object.a.d[0].e, undefined],
+  ['a.d.0.e', object.a.d[0].e, 'default'],
+
+  // --- Test 3: Get the object itself.
+  [undefined, object, undefined],
+  [null, object, undefined],
+
+  // --- Test 4: Get a value from an object by a getter function.
+  [(x: any) => x.a, object.a, undefined],
+  [(x: any) => x.a, object.a, 'default'],
+  [(x: any) => x.a.no, undefined, undefined],
+  [(x: any) => x.a.no, 'default', 'default'],
+
+])('should get a value using %s', (path, value, defaultValue) => {
+  const result = get(object, path, defaultValue)
+  expect(result).toEqual(value)
 })
