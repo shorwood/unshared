@@ -3,6 +3,9 @@ import { requireSafe } from '../misc/requireSafe'
 import { isBrowser, isNode } from './runtime'
 import { environment } from './getVariable'
 
+// TODO: Split this into a separate file.
+// TODO: Improved tree-shaking
+
 /** Is process running in Windows. */
 export const isWindows = isBrowser
   ? /win/i.test(window.navigator.userAgent)

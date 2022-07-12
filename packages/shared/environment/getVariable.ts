@@ -1,5 +1,8 @@
 import { isNode } from './runtime'
 
+// TODO: Split this into a separate file.
+// TODO: Improved tree-shaking
+
 /** Current process's environment object. */
 // @ts-expect-error: Property 'env' does not exist on type 'ImportMeta'.
 export const environment = import.meta?.env ?? isNode ? process.env : {}

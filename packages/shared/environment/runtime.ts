@@ -1,3 +1,6 @@
+// TODO: Split into separate files
+// TODO: Improve tree-shaking
+
 /** Is process running in NodeJs instance. */
 export const isNode = typeof process !== 'undefined' && typeof process.versions?.node !== 'undefined'
 
