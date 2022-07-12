@@ -9,13 +9,13 @@ import { RGB, RGBA } from './types'
  */
 export const rgbToInt = ({ r, g, b, a = 1 }: RGB | RGBA, format: 'rgb' | 'rgba' | 'argb' = 'rgb'): number => {
   // --- Clamp between 0 and 255 and cast as big integer.
-  const rInt = BigInt(Math.round(clamp(r, 0, 255)))
-  const gInt = BigInt(Math.round(clamp(g, 0, 255)))
-  const bInt = BigInt(Math.round(clamp(b, 0, 255)))
-  const aInt = BigInt(Math.round(clamp(a, 0, 1) * 255))
+  const rInt = Math.round(clamp(r, 0, 0xFF))
+  const gInt = Math.round(clamp(g, 0, 0xFF))
+  const bInt = Math.round(clamp(b, 0, 0xFF))
+  const aInt = Math.round(clamp(a, 0, 1) * 0xFF)
 
   // --- Return integer with specified format.
-  if (format === 'rgba') return Number(rInt << 24n | gInt << 16n | bInt << 8n | aInt)
-  if (format === 'argb') return Number(rInt << 16n | gInt << 8n | bInt | aInt << 24n)
-  return Number(rInt << 16n | gInt << 8n | bInt)
+  if (format === 'rgba') return (rInt << 24 | gInt << 16 | bInt << 8 | aInt) >>> 0
+  if (format === 'argb') return (aInt << 24 | rInt << 16 | gInt << 8 | bInt) >>> 0
+  return rInt << 16 | gInt << 8 | bInt
 }
