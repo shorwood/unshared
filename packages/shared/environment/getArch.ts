@@ -8,12 +8,9 @@ import { isBrowser } from './runtime'
  */
 export const getArch = (): string => {
   // --- Fallback to user agent detection if process running in browser.
-  if (isBrowser) return /x64|x86_64/i.test(window.navigator.userAgent) ? 'x64' : 'x86'
+  if (isBrowser) return /x(86_)?64/i.test(window.navigator.userAgent) ? 'x64' : 'x86'
 
   // --- Get arch using `uname`
-  const childProcess = requireSafe('child_process')
-  return childProcess?.execSync('uname -m').toString() ?? process.arch
+  const childProcess = requireSafe('node:child_process')
+  return childProcess?.execSync('uname -m', { encoding: 'utf8' }) ?? process.arch
 }
-
-/** The CPU architecture of the current runtime. */
-export const arch = getArch()
