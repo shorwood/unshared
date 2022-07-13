@@ -1,3 +1,4 @@
+import { isNil } from '../predicate/isNil'
 import { Path, Value } from '../types/collection'
 import { Default } from '../types/common'
 
@@ -16,8 +17,7 @@ interface Get {
  * @returns {any} The object at the path or the default object
  */
 export const get: Get = (object: any, pathOrGetter: any, defaultValue?: any): any => {
-  if (typeof pathOrGetter === 'undefined') return object
-  if (pathOrGetter === null) return object
+  if (isNil(pathOrGetter)) return defaultValue ?? object
 
   // --- If the path is a function, call it and return the result.
   if (typeof pathOrGetter === 'function')

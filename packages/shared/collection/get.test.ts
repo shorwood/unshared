@@ -27,7 +27,9 @@ it.each([
 
   // --- Test 3: Get the object itself.
   [undefined, object, undefined],
+  [undefined, 'default', 'default'],
   [null, object, undefined],
+  [null, 'default', 'default'],
 
   // --- Test 4: Get a value from an object by a getter function.
   [(x: any) => x.a, object.a, undefined],
@@ -35,7 +37,7 @@ it.each([
   [(x: any) => x.a.no, undefined, undefined],
   [(x: any) => x.a.no, 'default', 'default'],
 
-])('should get a value using %s', (path, value, defaultValue) => {
-  const result = get(object, path, defaultValue)
-  expect(result).toEqual(value)
+])('should get a value using %s', (getter, expected, defaultValue) => {
+  const result = get(object, getter, defaultValue)
+  expect(result).toEqual(expected)
 })
