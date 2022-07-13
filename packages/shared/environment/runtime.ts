@@ -8,7 +8,7 @@ export const isNode = typeof process !== 'undefined' && typeof process.versions?
 export const isDeno = isNode && !!process.versions?.deno
 
 /** Is process running in a browser */
-export const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined'
+export const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined' && typeof navigator !== 'undefined'
 
 /** Is process running in a CLI context. */
 export const isCli = isNode && process.argv?.length > 1
