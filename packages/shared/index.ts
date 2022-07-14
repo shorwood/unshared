@@ -1,3 +1,4 @@
+export * from './binary'
 export * from './collection'
 export * from './color'
 export * from './crypto'
