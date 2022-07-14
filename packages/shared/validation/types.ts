@@ -3,7 +3,7 @@ import { NotFunction } from '../types/function'
 // TODO: Infer parameters anr return type from function
 
 export type ValidationSchema = Record<string, ValidationRuleSet>
-export type ValidatorFunction<R = any> = ((value: any, argument?: any) => R)
+export type ValidatorFunction<R = any> = (value: any, ...parameters: any[]) => R
 export type Validator = ValidatorFunction | RegExp | boolean
 
 export interface ValidationRuleObject {
@@ -16,8 +16,8 @@ export interface ValidationRuleObject {
 export type ValidationRule =
   | Validator
   | ValidationRuleObject
-  | [handler: RegExp, replacement: string]
   | [handler: ValidatorFunction, ...parameters: NotFunction[]]
+  | [handler: RegExp, replacement: string]
 
 export type ValidationRulePipe = ValidationRule[]
 export type ValidationRuleSet = ValidationRule[][]
