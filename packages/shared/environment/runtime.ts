@@ -21,3 +21,6 @@ export const isWebWorker = typeof self === 'object' && self.constructor?.name ==
 
 /** Is process supporting touch inputs. */
 export const isTouch = isBrowser && globalThis.navigator.maxTouchPoints > 0
+
+/** Is process running in Nuxt.js instance. */
+export const isNuxt = isBrowser && !!(<any>globalThis).__NUXT__
