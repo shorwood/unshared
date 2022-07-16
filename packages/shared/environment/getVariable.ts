@@ -4,8 +4,7 @@ import { isNode } from './runtime'
 // TODO: Improved tree-shaking
 
 /** Current process's environment object. */
-// @ts-expect-error: Property 'env' does not exist on type 'ImportMeta'.
-export const environment = import.meta?.env ?? isNode ? process.env : {}
+export const environment = isNode ? process.env : {}
 
 /** Is process running in development environment. */
 export const isDevelopment = environment.DEV === 'true' || environment.NODE_ENV !== 'production'
