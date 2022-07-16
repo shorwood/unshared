@@ -82,8 +82,8 @@ export const generatePackageJson = (cwd: string) => {
       'README.md',
       'LICENCE',
     ],
-    main: './dist/index.js',
-    module: './dist/index.mjs',
+    main: './dist/index.cjs',
+    module: './dist/index.js',
     types: './dist/index.d.ts',
     exports: {
       ...Object.fromEntries(customIndexes.map((fileName) => {
@@ -93,8 +93,8 @@ export const generatePackageJson = (cwd: string) => {
 
         const key = `.${moduleName}`
         const value = {
-          require: `./dist${moduleName}/index.js`,
-          import: `./dist${moduleName}/index.mjs`,
+          require: `./dist${moduleName}/index.cjs`,
+          import: `./dist${moduleName}/index.js`,
           types: `./dist${moduleName}/index.d.ts`,
         }
         return [key, value]

@@ -1,5 +1,6 @@
 {
   "name": "@hsjm/shared",
+  "type": "module",
   "version": "1.0.0",
   "author": "Stanley Horwood <stanley@hsjm.io>",
   "description": "Shared utilities for @hsjm packages.",
@@ -10,68 +11,68 @@
     "directory": "/home/shorwood/workspaces/hsjm/packages/shared"
   },
   "sideEffects": false,
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
     "./binary": {
-      "require": "./dist/binary/index.js",
-      "import": "./dist/binary/index.mjs",
+      "require": "./dist/binary/index.cjs",
+      "import": "./dist/binary/index.js",
       "types": "./dist/binary/index.d.ts"
     },
     "./collection": {
-      "require": "./dist/collection/index.js",
-      "import": "./dist/collection/index.mjs",
+      "require": "./dist/collection/index.cjs",
+      "import": "./dist/collection/index.js",
       "types": "./dist/collection/index.d.ts"
     },
     "./color": {
-      "require": "./dist/color/index.js",
-      "import": "./dist/color/index.mjs",
+      "require": "./dist/color/index.cjs",
+      "import": "./dist/color/index.js",
       "types": "./dist/color/index.d.ts"
     },
     "./crypto": {
-      "require": "./dist/crypto/index.js",
-      "import": "./dist/crypto/index.mjs",
+      "require": "./dist/crypto/index.cjs",
+      "import": "./dist/crypto/index.js",
       "types": "./dist/crypto/index.d.ts"
     },
     "./environment": {
-      "require": "./dist/environment/index.js",
-      "import": "./dist/environment/index.mjs",
+      "require": "./dist/environment/index.cjs",
+      "import": "./dist/environment/index.js",
       "types": "./dist/environment/index.d.ts"
     },
     "./misc": {
-      "require": "./dist/misc/index.js",
-      "import": "./dist/misc/index.mjs",
+      "require": "./dist/misc/index.cjs",
+      "import": "./dist/misc/index.js",
       "types": "./dist/misc/index.d.ts"
     },
     "./number": {
-      "require": "./dist/number/index.js",
-      "import": "./dist/number/index.mjs",
+      "require": "./dist/number/index.cjs",
+      "import": "./dist/number/index.js",
       "types": "./dist/number/index.d.ts"
     },
     "./predicate": {
-      "require": "./dist/predicate/index.js",
-      "import": "./dist/predicate/index.mjs",
+      "require": "./dist/predicate/index.cjs",
+      "import": "./dist/predicate/index.js",
       "types": "./dist/predicate/index.d.ts"
     },
     "./string": {
-      "require": "./dist/string/index.js",
-      "import": "./dist/string/index.mjs",
+      "require": "./dist/string/index.cjs",
+      "import": "./dist/string/index.js",
       "types": "./dist/string/index.d.ts"
     },
     "./types": {
-      "require": "./dist/types/index.js",
-      "import": "./dist/types/index.mjs",
+      "require": "./dist/types/index.cjs",
+      "import": "./dist/types/index.js",
       "types": "./dist/types/index.d.ts"
     },
     "./validation": {
-      "require": "./dist/validation/index.js",
-      "import": "./dist/validation/index.mjs",
+      "require": "./dist/validation/index.cjs",
+      "import": "./dist/validation/index.js",
       "types": "./dist/validation/index.d.ts"
     },
     "./package.json": "./package.json"
