@@ -59,8 +59,8 @@
       "*.js"
     ],
     "extends": [
-      "@hsjm/eslint-config/basic",
-      "@hsjm/eslint-config/typescript"
+      "./packages/eslint-config/basic",
+      "./packages/eslint-config/typescript"
     ]
   }
 }
