@@ -22,7 +22,8 @@ export const isProduction = !isDevelopment
  * getVariable('MY_VARIABLE', Number.parseInt) // => 42
  * ```
  */
-export const getVariable = <U = string>(name: string, transform?: (value: string) => U): U | undefined => {
-  const value = environment[name] ?? environment[`VITE_${name}`]
-  return (transform && value ? transform(value) : value) as U
+export const getVariable = <U = string>(name: string, transform?: (value?: string) => U): U | undefined => {
+  if (!isNode) return undefined
+  const value = process.env[name] ?? process.env[`VITE_${name}`]
+  return transform?.(value) ?? value as any
 }

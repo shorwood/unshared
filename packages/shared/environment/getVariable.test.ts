@@ -1,14 +1,19 @@
-import { expect, it } from 'vitest'
+import { expect, it, vi } from 'vitest'
 import { getVariable } from './getVariable'
 
-it('should return undefined if the variable is missing', () => {
-  expect(getVariable('MISSING')).toEqual(undefined)
+vi.stubGlobal('process', {
+  env: {
+    FOO_BIN: '/usr/bin',
+    FOO_ANSWER_OF_THE_UNIVERSE: '42',
+  },
 })
 
-it('should return the variable value as a string if no transform is given', () => {
-  expect(getVariable('PWD')).toEqual(process.cwd())
-})
-
-it('should return the variable value transformed if a transform is given', () => {
-  expect(getVariable('SHELL', pwd => pwd.split('/')?.pop())).toMatch('sh')
+it.each([
+  ['UNDEFINED', undefined, undefined],
+  ['FOO_BIN', '/usr/bin', undefined],
+  ['FOO_ANSWER_OF_THE_UNIVERSE', 42, Number.parseInt],
+])
+('should parse environment variables', (name, expected, transform) => {
+  const result = getVariable(name, transform)
+  expect(result).toEqual(expected)
 })
