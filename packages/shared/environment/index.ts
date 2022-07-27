@@ -1,5 +1,6 @@
 export * from './getArch'
 export * from './getPlatform'
 export * from './getVariable'
+export * from './getVariables'
 export * from './isPortInUse'
 export * from './runtime'
