@@ -1,6 +1,7 @@
 export * from './arrayify'
 export * from './chunk'
 export * from './compact'
+export * from './defaults'
 export * from './discard'
 export * from './every'
 export * from './filter'
