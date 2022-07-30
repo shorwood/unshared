@@ -7,7 +7,7 @@ import { NotNil } from './common'
  * @param K The type of the keys in the collection.
  * @returns The collection.
  */
-export type Collection<T, K = any> = K extends number
+export type Collection<T = any, K = any> = K extends number
   ? T[] | readonly T[]
   : { [P in Extract<K, string>]: T }
 
@@ -107,3 +107,18 @@ export type Path<T, N extends number = 3, P extends string = ''> = Extract<{
  * @returns New collection
  */
 export type Mapped<T, U> = { [P in keyof T]: U }
+
+/**
+ * Collection with it's values defaulted by an other object.
+ * @param T Collection type
+ * @param U Default collection type
+ * @returns New collection
+ * @TODO: Add support for nested defaults.
+ */
+export type Defaulted<T, U> = {
+  [P in keyof T]: P extends keyof U
+    ? T[P] extends undefined | undefined
+      ? U[P]
+      : T[P]
+    : T[P]
+}
