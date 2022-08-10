@@ -24,3 +24,12 @@ export const isTouch = isBrowser && globalThis.navigator.maxTouchPoints > 0
 
 /** Is process running in Nuxt.js instance. */
 export const isNuxt = isBrowser && !!(<any>globalThis).__NUXT__
+
+/** Current process's environment object. */
+export const environment = isNode ? process.env : {}
+
+/** Is process running in development environment. */
+export const isDevelopment = environment.DEV === 'true' || environment.NODE_ENV !== 'production'
+
+/** Is process running in production environment. */
+export const isProduction = !isDevelopment

@@ -3,15 +3,6 @@ import { isNode } from './runtime'
 // TODO: Split this into a separate file.
 // TODO: Improved tree-shaking
 
-/** Current process's environment object. */
-export const environment = isNode ? process.env : {}
-
-/** Is process running in development environment. */
-export const isDevelopment = environment.DEV === 'true' || environment.NODE_ENV !== 'production'
-
-/** Is process running in production environment. */
-export const isProduction = !isDevelopment
-
 /**
  * Get a variable from the environment.
  * @param name Name of the variable.
