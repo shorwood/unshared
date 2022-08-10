@@ -24,7 +24,7 @@
   "devDependencies": {
     "@firebase/rules-unit-testing": "^2.0.4",
     "@hsjm/eslint-config": "workspace:^1.0.3",
-    "@types/node": "^18.6.3",
+    "@types/node": "^18.6.5",
     "@vitest/ui": "^0.19.1",
     "@vue/test-utils": "^2.0.2",
     "c8": "^7.12.0",
@@ -39,7 +39,7 @@
     "tslib": "^2.4.0",
     "tsup": "^6.2.1",
     "typescript": "^4.7.4",
-    "vite": "^3.0.4",
+    "vite": "^3.0.5",
     "vitest": "^0.19.1"
   },
   "eslintConfig": {
