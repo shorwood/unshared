@@ -3,7 +3,8 @@
  * - `number` will be returned as is
  * - `string` will be converted to a number, 0 if it can't be converted
  * - `boolean` will be converted to 1 or 0 (supports `Boolean` objects)
- * - `bigint` will be clamped and converted to a number
+ * - `bigint` will be converted to a number
+ * - Any other type will be converted to 0
  * @param value The value to convert
  * @returns {number} The converted value
  * @example
@@ -20,7 +21,7 @@ export const toNumber = (value: any): number => {
 
   // --- If the value is a string, convert it to a number
   if (typeof value === 'string') {
-    value = Number(value)
+    value = Number.parseFloat(value)
     return Number.isNaN(value) ? 0 : value
   }
 
