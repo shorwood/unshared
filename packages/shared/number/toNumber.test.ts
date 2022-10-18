@@ -20,7 +20,7 @@ it.each([
   [0, []],
   [0, {}],
   [0, Number.NaN],
-])('should return %s when converting %s to a number', (expected, value: any) => {
+])('should return %s when converting %s to a number', (expected: number, value: any) => {
   const result = toNumber(value)
   expect(result).toEqual(expected)
 })
