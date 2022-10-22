@@ -1,4 +1,4 @@
-import { jsonParse } from '../misc/jsonParse'
+import { jsonParse } from './jsonParse'
 import { requireSafe } from './requireSafe'
 
 /**
