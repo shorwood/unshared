@@ -1,8 +1,8 @@
 import { expect, it } from 'vitest'
-import { delay } from './delay'
+import { sleep } from './sleep'
 
 it('delay execution by ms milliseconds', async() => {
   const start = Date.now()
-  await delay(100)
+  await sleep(100)
   expect(Date.now() - start).toBeGreaterThanOrEqual(100)
 })

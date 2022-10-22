@@ -1,7 +1,7 @@
 
 import { expect, it } from 'vitest'
 import { throttle } from './throttle'
-import { delay } from './delay'
+import { sleep } from './sleep'
 
 it('throttles a function so it is only called once every delay', async() => {
   let counter = 0
@@ -13,11 +13,11 @@ it('throttles a function so it is only called once every delay', async() => {
   expect(counter).toEqual(1)
 
   // --- Second cycle (Not unlocked yet)
-  await delay(5)
+  await sleep(5)
   expect(counter).toEqual(1)
 
   // --- Third cycle (Now unlocked)
-  await delay(10)
+  await sleep(10)
   throttled(10)
   expect(counter).toEqual(11)
 })

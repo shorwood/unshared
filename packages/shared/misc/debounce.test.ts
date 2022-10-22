@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest'
 import { debounce } from './debounce'
-import { delay } from './delay'
+import { sleep } from './sleep'
 
 it('debounces a function so it is only called once after delay', async() => {
   let counter = 0
@@ -12,7 +12,7 @@ it('debounces a function so it is only called once after delay', async() => {
   expect(counter).toEqual(0)
 
   // --- Third cycle
-  await delay(10)
+  await sleep(10)
   expect(counter).toEqual(1)
   debounced()
   expect(counter).toEqual(1)
