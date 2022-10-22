@@ -1,17 +1,21 @@
 /**
- * Try multiple functions and return the first one that does not throw.
+ * Try multiple functions and return the first one that does not throw or is not undefined.
  * @param {...Function[]} functions The functions to try.
- * @returns {any | undefined} The first function that is not undefined.
+ * @returns {any | undefined} The first stateful result. Returns `undefined` if all functions throw or return `undefined`.
  * @example
  * const noop = () => {}
- * const returns = () => 'Returns'
- * const throws = () => { throw new Error('Throws') }
- * tries(throws, returns) // returns 'Returns'
- * tries(throws, noop, returns) // returns undefined
+ * const throws = () => { throw new Error }
+ * tries(throws, noop, Date.now) // returns 1658682347132
  */
 export const tries = <T>(...functions: Array<() => T>): T | undefined => {
-  for (const triedFunction of functions) {
-    try { return triedFunction() }
+  // --- Try the functions
+  for (const _function of functions) {
+    try {
+      const result = _function()
+      if (result !== undefined) return result
+    }
+
+    // --- Ignore errors
     catch {}
   }
 }
