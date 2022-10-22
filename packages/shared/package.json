@@ -50,6 +50,11 @@
       "import": "./dist/misc/index.js",
       "types": "./dist/misc/index.d.ts"
     },
+    "./module": {
+      "require": "./dist/module/index.cjs",
+      "import": "./dist/module/index.js",
+      "types": "./dist/module/index.d.ts"
+    },
     "./number": {
       "require": "./dist/number/index.cjs",
       "import": "./dist/number/index.js",

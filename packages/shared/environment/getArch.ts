@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { requireSafe } from '../misc/requireSafe'
+import { requireSafe } from '../module/requireSafe'
 import { isBrowser } from './runtime'
 
 /**

@@ -3,7 +3,7 @@ import { copyFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { sync as glob } from 'fast-glob'
 import consola from 'consola'
-import { jsonImport } from '../packages/shared'
+import { jsonImport } from '../packages/shared/module/jsonImport'
 
 const ROOT_PATH = join(__dirname, '..')
 
@@ -67,7 +67,7 @@ export const generatePackageJson = (cwd: string) => {
   const sourcePackage = jsonImport<any>(join(cwd, 'package.json'))
   const customIndexes = glob(['./index.js', './*/index.js'], { cwd: join(cwd, 'dist'), onlyFiles: true })
 
-  const distPackage = {
+  const distributionPackage = {
     ...sourcePackage,
     version: rootPackage.version,
     author: rootPackage.author,
@@ -105,6 +105,6 @@ export const generatePackageJson = (cwd: string) => {
 
   writeFileSync(
     join(cwd, 'package.json'),
-    `${JSON.stringify(distPackage, undefined, 2)}\n`,
+    `${JSON.stringify(distributionPackage, undefined, 2)}\n`,
   )
 }

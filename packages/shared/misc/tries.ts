@@ -1,5 +1,3 @@
-/* eslint-disable unicorn/prevent-abbreviations */
-
 /**
  * Try multiple functions and return the first one that does not throw.
  * @param {...Function[]} functions The functions to try.
@@ -12,8 +10,8 @@
  * tries(throws, noop, returns) // returns undefined
  */
 export const tries = <T>(...functions: Array<() => T>): T | undefined => {
-  for (const fn of functions) {
-    try { return fn() }
+  for (const triedFunction of functions) {
+    try { return triedFunction() }
     catch {}
   }
 }

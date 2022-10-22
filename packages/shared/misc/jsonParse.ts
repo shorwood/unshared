@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/no-null */
 
 /**
- * Parse to JSON. (Taken from `unjs/destr`)
+ * Parse to JSON.
  * @param {string} json String to parse.
  * @returns {string | number | boolean | JSON | null | undefined} Parsed JSON value.
  * @throws {Error} If JSON is invalid.
@@ -22,7 +22,7 @@ export const jsonParse = <T = any>(json: string): T | undefined => {
   if (value === 'undefined') return undefined as any
 
   // --- If the input looks like invalid JSON, return input.
-  if (!/^["[{]|^-?\d[\d.]{0,14}$/.test(json)) return undefined as any
+  if (!/^["[{]|^-?\d[\d.]{0,14}$/.test(json)) return undefined
 
   // --- Parse the old way but delete `__proto__` and `constuctor` properties if need be.
   try {
@@ -33,7 +33,7 @@ export const jsonParse = <T = any>(json: string): T | undefined => {
       : JSON.parse(json)
   }
 
-  // --- Catch JSON parse errors.
+  // --- If unparsable, return `undefined`.
   catch {
     return undefined
   }

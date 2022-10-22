@@ -1,5 +1,5 @@
+import { jsonParse } from '../misc/jsonParse'
 import { requireSafe } from './requireSafe'
-import { jsonParse } from './jsonParse'
 
 /**
  * Imports data from a JSON file.

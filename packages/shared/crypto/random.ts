@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { requireSafe } from '../misc/requireSafe'
+import { requireSafe } from '../module/requireSafe'
 
 /**
  * Returns a cryptographically secure pseudorandom 32-bit number.

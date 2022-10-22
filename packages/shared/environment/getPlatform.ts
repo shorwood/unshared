@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { requireSafe } from '../misc/requireSafe'
-import { isBrowser, isNode } from './runtime'
-import { environment } from './getVariable'
+import { requireSafe } from '../module/requireSafe'
+import { environment, isBrowser, isNode } from './runtime'
 
 // TODO: Split this into a separate file.
 // TODO: Improved tree-shaking
