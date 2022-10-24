@@ -1,5 +1,5 @@
 import { defineConfig } from 'tsup'
-import { isProduction } from './packages/shared'
+import { isProduction } from './packages/shared/environment'
 
 export default defineConfig({
   outDir: 'dist',
