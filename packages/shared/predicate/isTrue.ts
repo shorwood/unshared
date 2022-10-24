@@ -5,8 +5,8 @@ export interface IsTrue {
 
 /**
  * Check if value is `true` or a `Boolean` with a value of `true`
- * @param {boolean | Boolean} value The value to check
- * @returns {boolean} `true` if value is `true`, `false` otherwise
+ * @param value The value to check
+ * @return `true` if value is `true`, `false` otherwise
  * @example
  * isTrue(true) // true
  * isTrue(new Boolean(true)) // true

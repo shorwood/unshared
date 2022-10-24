@@ -1,7 +1,7 @@
 /**
  * Check if the string represents a negative number
- * @param {string} value The value to check
- * @returns {boolean} `true` if the string represents a negative number, `false` otherwise
+ * @param value The value to check
+ * @return `true` if the string represents a negative number, `false` otherwise
  * @example
  * isStringNumberNegative('1') // false
  * isStringNumberNegative('-1.0') // true

@@ -2,8 +2,8 @@
 
 /**
  * Attemt to run a function and return an array with the value and the error if any.
- * @param {Function} fn The function to run.
- * @returns {[any, Error]} The value and the error if any.
+ * @param fn The function to run.
+ * @returns The value and the error if any.
  */
 export const attempt = async<R>(fn: () => R | Promise<R>): Promise<[R | undefined, Error | undefined]> => {
   try {

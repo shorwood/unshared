@@ -8,9 +8,9 @@ export type ThrottledFn<T extends (...args: any) => any> = (...args: Parameters<
  * If the function is called again before the delay has passed,
  * the timer will be reset. Useful for implementing spam protection.
  *
- * @param {Function} callback The function to throttle
- * @param {number} [delay] The throttle delay in milliseconds
- * @returns {Function} A throttled function
+ * @param callback The function to throttle
+ * @param delay The throttle delay in milliseconds
+ * @return A throttled function
  * @example
  * const getUsers = (id: string) => axios.get(`/users/${id}`)
  * const throttled = throttle(getUser)

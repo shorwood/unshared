@@ -1,8 +1,8 @@
 /**
   * Check if value is less than n
-  * @param {number} value The value to check
-  * @param {number} n The number to compare
-  * @returns {boolean} `true` if value is less than n, `false` otherwises
+  * @param value The value to check
+  * @param n The number to compare
+  * @return `true` if value is less than n, `false` otherwises
   * @example
   * isNumberLower(2, 0) // false
   * isNumberLower(2, 2) // false

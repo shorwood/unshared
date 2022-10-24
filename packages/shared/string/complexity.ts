@@ -1,7 +1,7 @@
 /**
  * Computes the complexity of a string, generally a value.
- * @param {string} value The string
- * @returns {number} Approximate complexity
+ * @param value The string
+ * @return Approximate complexity
  */
 export const complexity = (value: string): number => {
   // --- Initialize variables.

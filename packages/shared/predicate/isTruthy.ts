@@ -9,7 +9,7 @@ import { isFunctionSkippable } from './isFunctionSkippable'
  * - an empty object `{}`
  * - a skippable function: `() => {}`
  * @param value The value to check
- * @returns {boolean} `true` if value is truthy, `false` otherwise
+ * @return `true` if value is truthy, `false` otherwise
  * @example
  * isTruthy(true) // true
  * isTruthy(new Boolean(false)) // false

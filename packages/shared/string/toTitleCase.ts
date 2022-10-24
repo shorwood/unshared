@@ -2,8 +2,8 @@ import { tokenize } from './tokenize'
 
 /**
  * Converts a string to title case.
- * @param {string} value The string to convert
- * @returns {string} The converted string
+ * @param value The string to convert
+ * @return The converted string
  * @example
  * toCamelCase('foo_bar') // returns 'Foo Bar'
  * toCamelCase('FOO_BAR') // returns 'Foo Bar'

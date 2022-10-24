@@ -1,8 +1,8 @@
 /**
  * Shuffle an array randomly or with a seed.
- * @param {Array<T>} array An array
- * @param {number} [seed] A seed value
- * @returns {Array<T>} A new shuffled array
+ * @param array An array
+ * @param seed A seed value
+ * @return A new shuffled array
  */
 export const shuffle = <T>(array: Array<T>, seed: number = Math.random()): Array<T> => {
   const newArray = [...array]

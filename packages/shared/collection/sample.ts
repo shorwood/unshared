@@ -5,10 +5,10 @@ interface Sample {
 
 /**
  * Returns a random item from an array, or an array of random items if a size is specified.
- * @param {Array<T>} array The array to select from
- * @param {number} [size] The number of items to select
- * @param {number} [seed] A seed number for predictable results
- * @returns {T | Array<T>} A random item from the array
+ * @param array The array to select from
+ * @param size The number of items to select
+ * @param seed A seed number for predictable results
+ * @return A random item from the array
  */
 export const sample: Sample = (array: any[], size?: number, seed: number = Math.random()): any => {
   // --- Handle edge cases.

@@ -1,8 +1,8 @@
 /**
   * Check if value is greater than n
-  * @param {number} value The value to check
-  * @param {number} n The number to compare
-  * @returns {boolean} `true` if value is greater than n, `false` otherwise
+  * @param value The value to check
+  * @param n The number to compare
+  * @return `true` if value is greater than n, `false` otherwise
   * @example
   * isNumberGreaterOrEq(2, 0) // true
   * isNumberGreaterOrEq(2, 2) // true

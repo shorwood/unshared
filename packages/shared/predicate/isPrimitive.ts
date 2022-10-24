@@ -3,8 +3,8 @@ import { Primitive } from '../types/common'
 /**
  * Checks if the value is a primitive
  * A primitive is a value that is not an object or an array
- * @param {any} value The value to check
- * @returns {boolean} `true` if the value is a primitive, `false` otherwise
+ * @param value The value to check
+ * @return `true` if the value is a primitive, `false` otherwise
  * @example
  * isPrimitive(1) // true
  * isPrimitive({}) // false

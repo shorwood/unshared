@@ -1,7 +1,7 @@
 /**
  * Check if the string is empty
- * @param {string} value The value to check
- * @returns {boolean} `true` if value is empty, `false` otherwise
+ * @param value The value to check
+ * @return `true` if value is empty, `false` otherwise
  * @example
  * isStringEmpty('') // true
  * isStringEmpty('\n\n') // true

@@ -2,10 +2,10 @@
  * Checks if an object's properties are equal to another object's properties.
  * - If the `depth` parameter, it will recusively check if the nested properties are equal.
  * - To avoid infinite recursion, the `depth` parameter can be set to a number.
- * @param {Record<string, any>} object1 The first object
- * @param {Record<string, any>} object2 The second object
- * @param {number | boolean} [depth] The depth of the nested properties to compare
- * @returns {boolean} `true` if object1's properties are equal to object2's properties, `false` otherwise
+ * @param object1 The first object
+ * @param object2 The second object
+ * @param depth The depth of the nested properties to compare
+ * @return `true` if object1's properties are equal to object2's properties, `false` otherwise
  * @example
  * isObjectEqual({ a: 1 }, { a: 1 }) // true
  * isObjectEqual({ a: 1 }, { a: 2 }) // false

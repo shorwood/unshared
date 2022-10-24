@@ -2,9 +2,9 @@
 
 /**
  * Parse to JSON.
- * @param {string} json String to parse.
- * @returns {string | number | boolean | JSON | null | undefined} Parsed JSON value.
- * @throws {Error} If JSON is invalid.
+ * @param json String to parse.
+ * @return Parsed JSON value.
+ * @throws If JSON is invalid.
  * @see https://github.com/unjs/destr
  * @see https://github.com/fastify/secure-json-parse
  * @see https://github.com/hapijs/bourne

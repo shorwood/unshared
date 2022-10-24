@@ -1,7 +1,7 @@
 /**
  * Escape the HTML special characters.
- * @param {string} value The string to escape.
- * @returns {string} The escaped string.
+ * @param value The string to escape.
+ * @return The escaped string.
  * @example
  * escapeHtml('foo<bar>baz') // 'foo&lt;bar&gt;baz'
  */

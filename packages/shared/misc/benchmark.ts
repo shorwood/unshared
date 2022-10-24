@@ -2,9 +2,9 @@
 
 /**
  * Benchmark a function
- * @param {Function} benchmarked The function to benchmark
- * @param {number} [iterations] The number of times to run the function
- * @returns {number} The average amount of time, in milliseconds, it took to run the function
+ * @param benchmarked The function to benchmark
+ * @param iterations The number of times to run the function
+ * @return The average amount of time, in milliseconds, it took to run the function
  */
 export const benchmark = (benchmarked: Function, iterations = 1000): number => {
   // --- First, run the function once to avoid cold start issues

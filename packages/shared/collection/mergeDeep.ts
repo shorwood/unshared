@@ -5,8 +5,8 @@ export interface MergeDeep {
 
 /**
  * Merge multiple objects together deeply and concat colliding arrays.
- * @param {...Record<string, any>} objects Objects to merge
- * @returns {Record<string, any>} Merged object
+ * @param objects Objects to merge
+ * @return Merged object
  */
 export const mergeDeep: MergeDeep = (...objects: Record<string, any>[]): Record<string, any> => {
   const result = { ...objects[0] }

@@ -1,7 +1,7 @@
 /**
  * Check if value is a valid finite number
- * @param {any} value The value to check
- * @returns {boolean} `true` if value is a valid finite number, `false` otherwise
+ * @param value The value to check
+ * @return `true` if value is a valid finite number, `false` otherwise
  * @example
  * isNumber(0) // true
  * isNumber('0') // false

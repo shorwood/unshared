@@ -8,9 +8,9 @@ import { validateSchema } from './validateSchema'
 
 /**
  * Check if an object passes a validation schema
- * @param {Record<string, any>} object The object to check
- * @param {ValidationSchema} schema The validation schema
- * @returns {Promise<boolean>} True if the object passes a validation schema
+ * @param object The object to check
+ * @param schema The validation schema
+ * @return True if the object passes a validation schema
  */
 export const isObjectValid = async(object: Record<string, any>, schema: ValidationSchema): Promise<boolean> => {
   const result = await validateSchema(object, schema)
@@ -19,9 +19,9 @@ export const isObjectValid = async(object: Record<string, any>, schema: Validati
 
 /**
  * Check if every items of an array passes a validation rule set
- * @param {any[]} array The array to check
- * @param {ValidationRuleSet} ruleSet The validation rule set
- * @returns {Promise<boolean>} True if every items of the array passes the validation rule set
+ * @param array The array to check
+ * @param ruleSet The validation rule set
+ * @return True if every items of the array passes the validation rule set
  */
 export const isArrayValid = async(array: any[], ruleSet: ValidationRuleSet): Promise<boolean> => {
   const promises = array.map(item => validateRuleSet(item, ruleSet))
@@ -31,62 +31,62 @@ export const isArrayValid = async(array: any[], ruleSet: ValidationRuleSet): Pro
 
 /**
  * Check if value is equal to expected
- * @param {any} expected The expected value
- * @param {any} value The actual value
- * @returns {boolean} True if the value is equal to the expected value
+ * @param expected The expected value
+ * @param value The actual value
+ * @return True if the value is equal to the expected value
  */
 export const isEqualToValue = (value: any, expected: any): boolean => value === expected
 
 /**
   * Check if a value in the context is equal to a value
-  * @param {any} value The value
-  * @param {string} path The path to the context value
-  * @returns {boolean} `true` if the value is equal to the value in the context
+  * @param value The value
+  * @param path The path to the context value
+  * @return `true` if the value is equal to the value in the context
   */
 export const isEqualToContext = function(this: any, value: any, path: string): boolean { return value === get(this, path) }
 
 /**
-  * @param {any} _ Ignored
-  * @param {any} newValue The new value
-  * @returns {any} The new value
+  * @param _ Ignored
+  * @param newValue The new value
+  * @return The new value
   */
 export const toValue = (_: any, newValue: any): any => newValue
 
 /**
   * Get a value from the context
-  * @param {any} value Ignored
-  * @param {string} path The path to the value in the context
-  * @param {any} defaultValue The default value if the value is not found
-  * @returns {any} The value at the given path in the context
+  * @param value Ignored
+  * @param path The path to the value in the context
+  * @param defaultValue The default value if the value is not found
+  * @return The value at the given path in the context
   */
 export const toContext = function(this: any, value: any, path: string, defaultValue: any): any { return get(this, path, defaultValue) }
 
 /**
-  * @returns {null} `null`
+  * @return `null`
   */
 export const toNull = (): null => null
 
 /**
-  * @returns {undefined} `undefined`
+  * @return `undefined`
   */
 export const toUndefined = (): undefined => undefined
 
 /**
-  * @returns {[]} `[]` -  An empty array
+  * @return `[]` -  An empty array
   */
 export const toEmptyArray = (): any[] => []
 
 /**
-  * @returns {''} `''` - An empty string
+  * @return `''` - An empty string
   */
 export const toEmptyString = (): string => ''
 
 /**
- * @returns {Boolean} `Boolean(true)` - A boolean object with a value of `true`
+ * @return `Boolean(true)` - A boolean object with a value of `true`
  */
 export const toTrue = (): Boolean => new Boolean(true)
 
 /**
- * @returns {Boolean} `Boolean(false)` - A boolean object with a value of `false`
+ * @return `Boolean(false)` - A boolean object with a value of `false`
  */
 export const toFalse = (): Boolean => new Boolean(false)

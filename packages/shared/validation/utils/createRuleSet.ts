@@ -3,9 +3,9 @@ import { isRule } from './isRule'
 
 /**
  * Converts a rule, array of rule or rule set to a rule set.
- * @param {ValidationRuleSet} ruleSet The rule set to convert
- * @returns {ValidationRuleSet} The rule set
- * @throws {TypeError} If the rule set is not valid
+ * @param ruleSet The rule set to convert
+ * @return The rule set
+ * @throws If the rule set is not valid
  * @example
  * const ruleSet = createRuleSet(Number.isNaN) // [[Number.isNaN]]
  */

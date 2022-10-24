@@ -2,9 +2,9 @@ import { RGBA } from './types'
 
 /**
  * Takes an hexadecimal color and converts it into an RGBA color.
- * @param {string} color A color in hexadecimal format
- * @throws {Error} If the given color is invalid
- * @returns {RGBA} An RGBA object
+ * @param color A color in hexadecimal format
+ * @throws If the given color is invalid
+ * @return An RGBA object
  */
 export const hexToRgb = (color: string): RGBA => {
   // --- Extract components.

@@ -2,9 +2,9 @@ import { Vector } from '../types'
 
 /**
  * Splits an array into smaller arrays of a specified size.
- * @param {Array<T>} array The array to split
- * @param {number} size The size of each resulting array
- * @returns {Matrix<T>} The resulting array of arrays
+ * @param array The array to split
+ * @param size The size of each resulting array
+ * @return The resulting array of arrays
  */
 export const chunk = <T>(array: Array<T>, size: number): Vector<T> => {
   // --- Handle edge cases.

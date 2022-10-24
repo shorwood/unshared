@@ -1,8 +1,8 @@
 /**
  * Hashes a string using the [Cyrb53](https://github.com/bryc/code/blob/master/jshash/experimental/cyrb53.js) algorithm.
- * @param {string} data The string to hash
- * @param {number} seed A seed value
- * @returns {number} The hashed number
+ * @param data The string to hash
+ * @param seed A seed value
+ * @return The hashed number
  * @See https://github.com/bryc
  */
 export const hashCyrb53 = (value: string, seed = 0): string => {

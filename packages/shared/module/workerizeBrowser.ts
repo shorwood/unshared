@@ -3,8 +3,8 @@
 
 /**
  * Workerize a browser-side function so that it can be run in a separate thread.
- * @param {T} callback The function to workerize
- * @returns {(...args: A[]) => Promise<R>} The workerized function
+ * @param callback The function to workerize
+ * @return The workerized function
  * @example
  * // Define a function to run in a separate thread.
  * const myFunction = (a: number, b: number): number => a + b

@@ -1,7 +1,7 @@
 /**
  * Check if string matches an email.
- * @param {string} value The value to check
- * @returns {boolean} `true` if string is an email, `false` otherwise
+ * @param value The value to check
+ * @return `true` if string is an email, `false` otherwise
  * @see https://en.wikipedia.org/wiki/Email_address
  * @example
  * isStringEmail('john.doe@') // false

@@ -2,8 +2,8 @@ import { randomFloat } from './randomFloat'
 
 /**
  * Generate a random string of `n` length
- * @param {number} [n] length of the string
- * @param {string} [chars] characters to use in the string
+ * @param n length of the string
+ * @param chars characters to use in the string
  */
 
 export const randomString = (n = 16, chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'): string => {

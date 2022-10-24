@@ -4,8 +4,8 @@ import { HSLA, RGB } from './types'
 
 /**
  * Converts an RGB or RGBA color value to HSLA.
- * @param {RGB} rgb RGBA color.
- * @return {HSLA} The HSLA representation
+ * @param rgb RGBA color.
+ * @return The HSLA representation
  * @see https://stackoverflow.com/a/9493060/12414909
  * @see http://en.wikipedia.org/wiki/HSLA_color_space
  */

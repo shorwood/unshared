@@ -17,10 +17,10 @@ export interface TemplateOptions {
 
 /**
  * Template a string by injecting values into it.
- * @param {string} content The string to template.
- * @param {object} data The data to inject into the string.
- * @param {TemplateOptions} options Custom options.
- * @returns {string} The templated string.
+ * @param content The string to template.
+ * @param data The data to inject into the string.
+ * @param options Custom options.
+ * @return The templated string.
  * @example
  * template('Hello {{name}}', { name: 'World' }) // 'Hello World'
  * template('Hello {{name}}', { name: 'World' }, { delimiters: ['[[', ']]'] }) // 'Hello [[name]]'

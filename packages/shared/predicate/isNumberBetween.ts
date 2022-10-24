@@ -1,8 +1,8 @@
 /**
   * Check if value is a number in the given range
-  * @param {number} value The value to check
-  * @param {{ min: number; max: number }} range The range to check
-  * @returns {boolean} True if value is in the given range
+  * @param value The value to check
+  * @param } range The range to check
+  * @return True if value is in the given range
   * @example
   * isNumberBetween(1, { min: 0 }) // true
   * isNumberBetween(1, { max: 1 }) // true

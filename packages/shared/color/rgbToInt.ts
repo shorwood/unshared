@@ -3,9 +3,9 @@ import { RGB, RGBA } from './types'
 
 /**
  * Convert RGB values to a 24-bit or 32-bit integer
- * @param {RGB | RGBA} rgba The RGB values to convert
- * @param {'rgb' | 'rgba' | 'argb'} [format='rgb'] The integer format to return
- * @returns {number} The 24-bit or 32-bit integer
+ * @param rgba The RGB values to convert
+ * @param format The integer format to return
+ * @return The 24-bit or 32-bit integer
  */
 export const rgbToInt = ({ r, g, b, a = 1 }: RGB | RGBA, format: 'rgb' | 'rgba' | 'argb' = 'rgb'): number => {
   // --- Clamp between 0 and 255 and cast as big integer.

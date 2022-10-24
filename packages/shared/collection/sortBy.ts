@@ -11,9 +11,9 @@ interface SortBy {
 
 /**
  * Sorts an array by the result of an iterator function.
- * @param {Array} array The array to sort
- * @param {Function} iterator The iterator function or path
- * @returns {Array} The sorted array
+ * @param array The array to sort
+ * @param iterator The iterator function or path
+ * @return The sorted array
  */
 export const sortBy: SortBy = (array: Array<any>, iterator: any): Array<any> => {
   // --- If iterator is a path, cast as getter function.

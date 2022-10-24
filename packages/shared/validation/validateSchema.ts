@@ -4,10 +4,10 @@ import { ValidateSchemaResult, ValidationSchema } from './types'
 
 /**
  * Validate an object against a validation schema.
- * @param {Record<string, any>} object The object to validate
- * @param {ValidationSchema} schema The validation schema
- * @param {Record<string, any>} context The context to use for validation
- * @returns {Promise<ValidateSchemaResult>} A promise resolving to the validation result
+ * @param object The object to validate
+ * @param schema The validation schema
+ * @param context The context to use for validation
+ * @return A promise resolving to the validation result
  */
 export const validateSchema = async(object: any, schema: ValidationSchema, context?: Record<string, any>): Promise<ValidateSchemaResult> => {
   // --- Validate rule sets for every fields.

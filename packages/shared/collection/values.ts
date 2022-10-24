@@ -7,9 +7,9 @@ export interface IValues {
 
 /**
  * Cast an object or array as an array and keep the properties' keys in its value
- * @param {Collection<T>} value The object or array to cast
- * @param {Key} [key] The key name to store the original key in the array
- * @returns {Array<T>} The array of objects
+ * @param value The object or array to cast
+ * @param key The key name to store the original key in the array
+ * @return The array of objects
  */
 export const values: IValues = (value: any, key?: any): any[] => {
   // --- If value is an array, return a copy.

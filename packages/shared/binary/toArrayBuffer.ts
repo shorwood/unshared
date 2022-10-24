@@ -26,7 +26,7 @@ export const toArrayBuffer = (value?: any, from?: BuffereableFrom): ArrayBuffer 
     return fromUtf8(value)
   }
 
-  // --- is an array of integer-like
+  // --- is an array of integer-like values.
   if (from && ['uint8', 'uint16', 'uint32', 'uint64', 'uint8clamped'].includes(from)) {
     if (!Array.isArray(value)) value = [value]
     if (from === 'uint8') return new Uint8Array(value).buffer
@@ -36,10 +36,10 @@ export const toArrayBuffer = (value?: any, from?: BuffereableFrom): ArrayBuffer 
     return new Uint8ClampedArray(value).buffer
   }
 
-  // --- is a function
+  // --- is a function, return the stringified version.
   if (typeof value === 'function') return fromUtf8(value.toString())
 
-  // --- is not bufferizeable
+  // --- anything else, stringify and return.
   try { return fromUtf8(JSON.stringify(value)) }
   catch { throw new Error('Value type not supported') }
 }

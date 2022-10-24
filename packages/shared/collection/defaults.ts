@@ -8,10 +8,10 @@ export interface Defaults {
 
 /**
  * Defaut property values of a collection.
- * @param {*} object The object to apply the default values to.
- * @param {*} from The default values to apply.
- * @param {number} [depth=0] The maximum depth to apply the default values to.
- * @returns {*} The object with the default values applied.
+ * @param object The object to apply the default values to.
+ * @param from The default values to apply.
+ * @param depth The maximum depth to apply the default values to.
+ * @return The object with the default values applied.
  * @TODO: Improve return type in overloads
  */
 export const defaults: Defaults = (object: any, from: any, depth = 0): any => {

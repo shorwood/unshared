@@ -1,8 +1,8 @@
 /**
   * Check if the string matches regex
-  * @param {string} value The value to check
-  * @param {RegExp | string} regex The regex to match
-  * @returns {boolean} `true` if string matches regex, `false` otherwise
+  * @param value The value to check
+  * @param regex The regex to match
+  * @return `true` if string matches regex, `false` otherwise
   */
 export const isStringMatching = (value: string, regex: string | RegExp): boolean => {
   // --- Handle edge cases

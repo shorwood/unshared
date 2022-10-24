@@ -8,9 +8,9 @@ export type DebouncedFn<T extends (...args: any) => any> = (...args: Parameters<
  * If the function is called again before the delay has passed,
  * the timer will be reset. Useful for implementing spam protection.
  *
- * @param {Function} callback The function to debounce
- * @param {number} [delay] The debounce delay in milliseconds
- * @returns {Function} A debounced function
+ * @param callback The function to debounce
+ * @param delay The debounce delay in milliseconds
+ * @return A debounced function
  * @example
  * const getUser = (id: string) => axios.get(`/users/${id}`)
  * const debounced = debounce(getUser)

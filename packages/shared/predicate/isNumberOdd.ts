@@ -1,7 +1,7 @@
 /**
   * Mandatory meme function to check if number is odd
-  * @param {number} value The number to check
-  * @returns {boolean} `true` if number is odd, `false` otherwise
+  * @param value The number to check
+  * @return `true` if number is odd, `false` otherwise
   * @example
   * isNumberOdd(0) // false
   * isNumberOdd(1) // true

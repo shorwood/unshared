@@ -4,8 +4,8 @@ import { resolveImport } from './resolveImport'
 
 /**
  * Resolve all dependencies for a given entry point.
- * @param {string} entryPoint The entry point.
- * @returns {string[]} The resolved dependencies path.
+ * @param entryPoint The entry point.
+ * @return The resolved dependencies path.
  */
 export const resolveDependencies = (entryPoint: string): string[] => {
   const dependencies = [] as string[]

@@ -4,10 +4,10 @@ import { createRuleSet } from './utils/createRuleSet'
 
 /**
  * Validate a value against a ValidationRuleSet.
- * @param {any} value The value to validate
- * @param {ValidationRuleSet} ruleSet The ValidationRuleSet to validate against
- * @param {Record<string, any>} context A context to pass through to the validation rules
- * @returns {Promise<ValidateRuleResult>} The result of the validation
+ * @param value The value to validate
+ * @param ruleSet The ValidationRuleSet to validate against
+ * @param context A context to pass through to the validation rules
+ * @return The result of the validation
  */
 export const validateRuleSet = async(value: any, ruleSet: ValidationRule | ValidationRulePipe | ValidationRuleSet, context?: Record<string, any>): Promise<ValidateRuleSetResult> => {
   const results: ValidateRulePipeResult[] = []

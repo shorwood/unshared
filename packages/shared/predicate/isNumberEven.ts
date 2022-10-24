@@ -1,7 +1,7 @@
 /**
   * Mandatory meme function to check if number is even
-  * @param {number} value The number to check
-  * @returns {boolean} `true` if number is even, `false` otherwise
+  * @param value The number to check
+  * @return `true` if number is even, `false` otherwise
   * @example
   * isNumberEven(0) // true
   * isNumberEven(1) // false

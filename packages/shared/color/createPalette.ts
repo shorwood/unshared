@@ -21,9 +21,9 @@ export interface CreatePaletteOptions<K extends number> {
 
 /**
  * Generate a TailwindCSS / WindiCSS / UnoCSS color palette from a single hex color.
- * @param {string} color A starting color in hexadecimal format
- * @param {CreatePaletteOptions} options Optional options for palette creation
- * @returns {Record<string, string>} A palette of colors
+ * @param color A starting color in hexadecimal format
+ * @param options Optional options for palette creation
+ * @return A palette of colors
  * @see https://github.com/anheric/tailwindshades/blob/master/src/components/Shades.vue#L336
  */
 export const createPalette = <K extends number = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900>(color: string, options: CreatePaletteOptions<K> = {}): Record<K, string> => {

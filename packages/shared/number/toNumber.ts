@@ -6,7 +6,7 @@
  * - `bigint` will be converted to a number
  * - Any other type will be converted to 0
  * @param value The value to convert
- * @returns {number} The converted value
+ * @return The converted value
  * @example
  * toNumber(42) // 42
  * toNumber(42n) // 42

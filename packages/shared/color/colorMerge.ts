@@ -4,13 +4,13 @@ import { rgbToHex } from './rgbToHex'
 
 /**
  * Takes two hexadecimal colors and mixes them together.
- * @param {string} hex1 First color
- * @param {string} hex2 Second color
- * @param {number} [bias=0.5] Bias towards the first or second color.
+ * @param hex1 First color
+ * @param hex2 Second color
+ * @param bias Bias towards the first or second color.
  * - A `bias` value of 0.5 means the colors are mixed evenly.
  * - A `bias` value of 1.0 means the output is 100% the first color.
  * - A `bias` value of 0.0 means the output is 100% the second color.
- * @returns {string} The mixed color
+ * @return The mixed color
  */
 export const colorMerge = (hex1: string, hex2: string, bias = 0.5): string => {
   const bias1 = clamp(bias, 0, 1)

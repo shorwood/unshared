@@ -1,7 +1,7 @@
 /**
  * Check if string matches IPv6 addresses.
- * @param {string} value The value to check
- * @returns {boolean} `true` if string matches regex, `false` otherwise
+ * @param value The value to check
+ * @return `true` if string matches regex, `false` otherwise
  * @see https://en.wikipedia.org/wiki/IPv6
  * @example
  * isStringIpv6('::1') // true

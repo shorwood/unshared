@@ -3,7 +3,7 @@ import { requireSafe } from '../module/requireSafe'
 /**
  * Returns a cryptographically secure pseudorandom 32-bit number.
  * Falls back to Math.random() if `node:crypto` and `globalThis.crypto` is not available.
- * @returns {number} A random number
+ * @return A random number
  */
 export const random = (): number =>
   requireSafe('node:crypto')?.randomBytes(4).readUint32LE(0)

@@ -1,7 +1,7 @@
 /**
  * Compute Fibonacci number at N non recursively)
- * @param {number} n The number to calculate
- * @returns {number} The Fibonacci number at position N
+ * @param n The number to calculate
+ * @return The Fibonacci number at position N
  */
 export const fibonacci = (n: number): number => {
   // --- Handle edge and common cases.

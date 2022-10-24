@@ -1,7 +1,7 @@
 /**
  * Gets the type of a value. If the value is an object, it will return the constructor name.
- * @param {any} value The value to check
- * @returns {string} The type or constructor name of the value
+ * @param value The value to check
+ * @return The type or constructor name of the value
  * @example
  * getType([]) // 'array'
  * getType(null) // 'null'

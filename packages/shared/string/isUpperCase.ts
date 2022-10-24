@@ -1,7 +1,7 @@
 /**
  * Checks if a value is an uppercase character
- * @param {string | number} value The value to check
- * @returns {boolean} Returns true if the value is an uppercase character, otherwise false
+ * @param value The value to check
+ * @return Returns true if the value is an uppercase character, otherwise false
  * @example
  * isLowerCase('FOO') // => true
  * isLowerCase('Foo') // => false

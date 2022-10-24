@@ -1,8 +1,8 @@
 /**
   * Check if the string starts with substr
-  * @param {string} value The value to check
-  * @param {string} substr The substring to look for
-  * @returns {boolean} `true` if value starts with substr, `false` otherwise
+  * @param value The value to check
+  * @param substr The substring to look for
+  * @return `true` if value starts with substr, `false` otherwise
   * @example
   * isStringStartingWith('foo', 'fo') // true
   * isStringStartingWith('foo', 'bar') // false

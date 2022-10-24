@@ -4,10 +4,10 @@ import { isBrowser } from './runtime'
 
 /**
  * Get the architecture of the current runtime.
- * @returns {string} The architecture of the current runtime.
+ * @return The architecture of the current runtime.
  */
 export const getArch = (): string => {
-  // --- Fallback to user agent detection if process running in browser.
+  // --- If browser, detect with user agent.
   if (isBrowser) return /x(86_)?64/i.test(window.navigator.userAgent) ? 'x64' : 'x86'
 
   // --- Get arch using `uname`

@@ -1,7 +1,7 @@
 /**
  * Try multiple functions and return the first one that does not throw or is not undefined.
- * @param {...Function[]} functions The functions to try.
- * @returns {any | undefined} The first stateful result. Returns `undefined` if all functions throw or return `undefined`.
+ * @param functions The functions to try.
+ * @return The first stateful result. Returns `undefined` if all functions throw or return `undefined`.
  * @example
  * const noop = () => {}
  * const throws = () => { throw new Error }

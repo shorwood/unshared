@@ -1,9 +1,9 @@
 /**
  * Split the string into an array of substrings
- * @param {string} value The string to split
- * @param {string | RegExp} separator A string that identifies character or characters to use in separating the string. If omitted, a single-element array containing the entire string is returned.
- * @param {number} [limit] A value used to limit the number of elements returned in the array.
- * @returns {string[]} An array containing the substrings from the original string that are found at the start of the string and are separated by the specified separator string.
+ * @param value The string to split
+ * @param separator A string that identifies character or characters to use in separating the string. If omitted, a single-element array containing the entire string is returned.
+ * @param limit A value used to limit the number of elements returned in the array.
+ * @return An array containing the substrings from the original string that are found at the start of the string and are separated by the specified separator string.
  * @example
   * split('a,b,c', ',') // => ['a', 'b', 'c']
   * split('a,b,c', ',', 2) // => ['a', 'b']

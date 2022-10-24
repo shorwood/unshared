@@ -3,11 +3,11 @@ import { createRule } from './utils/createRule'
 
 /**
  * Validate a rule against a value.
- * @param {any} value The value to validate
- * @param {ValidationRule} rule The validation rule
- * @param {Record<string, any>} [context] Any context to pass on to the validator
- * @returns {ValidateRuleResult} The validation result
- * @throws {TypeError} If the rule is not valid
+ * @param value The value to validate
+ * @param rule The validation rule
+ * @param context Any context to pass on to the validator
+ * @return The validation result
+ * @throws If the rule is not valid
  * @example
  * const result = validateRule(1, Number.isNaN) // { isValid: true, value: 1, name: 'isNaN' }
  */

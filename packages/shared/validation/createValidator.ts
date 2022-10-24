@@ -3,8 +3,8 @@ import { validateRuleSet } from './validateRuleSet'
 
 /**
  * Instantiate a validator to validate a value against a validation rule set.
- * @param {ValidationRuleSet} ruleSet The validation rule set to use.
- * @param {Record<string, any>} [defaultContext] The default context to provide to the validation rules.
+ * @param ruleSet The validation rule set to use.
+ * @param defaultContext The default context to provide to the validation rules.
  * @returns A validation function that can be used with `vee-validate`.
  * @example
  * const validator = createValidator([Number.isNaN])

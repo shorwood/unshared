@@ -10,9 +10,9 @@ export type ColorTranformerMap = Partial<Record<keyof RGB, ColorTranformer> | Re
 
 /**
  * Takes a color and transforms it according to the transformer passed in. The transformer can be a map or a function.
- * @param {string} value A color in hexadecimal, RGBA or HSLA
- * @param {ColorTranformer | ColorTranformerMap} transformer A map or function to transform the color
- * @returns {string} The transformed color
+ * @param value A color in hexadecimal, RGBA or HSLA
+ * @param transformer A map or function to transform the color
+ * @return The transformed color
  */
 export const colorTransform = (value: string, transformer: ColorTranformer | ColorTranformerMap): string => {
   if (typeof transformer === 'function') {

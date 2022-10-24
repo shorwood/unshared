@@ -187,9 +187,9 @@ export const postalCodePatterns = {
 
 /**
  * Checks if a string is a valid postal code.
- * @param {string} value The string to check.
- * @param {string} country The country code.
- * @returns {boolean} `true` if the string is a valid postal code, `false` otherwise.
+ * @param value The string to check.
+ * @param country The country code.
+ * @return `true` if the string is a valid postal code, `false` otherwise.
  * @throws If the postal code is not supported.
  * @example
  * isPostalCode('90210', 'US'); // true

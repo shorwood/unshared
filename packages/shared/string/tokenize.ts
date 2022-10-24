@@ -1,7 +1,7 @@
 /**
  * Tokenize a string into an array of strings.
- * @param {string} value The string to tokenize
- * @returns {string[]} The list of tokens
+ * @param value The string to tokenize
+ * @return The list of tokens
  * @example
  * tokenize('This is a test') // => ['This', 'is', 'a', 'test']
  */

@@ -1,7 +1,7 @@
 /**
   * Check if value is a negative number
-  * @param {number} value The value to check
-  * @returns {boolean} `true` if value is a negative number, `false` otherwise
+  * @param value The value to check
+  * @return `true` if value is a negative number, `false` otherwise
   * @example
   * isNumberNegative(-1) // true
   * isNumberNegative(1) // false

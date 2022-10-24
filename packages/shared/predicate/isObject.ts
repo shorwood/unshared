@@ -1,7 +1,7 @@
 /**
  * Checks if the value is an object
  * @param value The value to check
- * @returns {boolean} `true` if value is an object, `false` otherwise
+ * @return `true` if value is an object, `false` otherwise
  * @example
  * isObject({}) // true
  * isObject([]) // false

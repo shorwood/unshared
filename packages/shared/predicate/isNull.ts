@@ -1,7 +1,7 @@
 /**
  * Check if value is null
  * @param value The value to check
- * @returns {boolean} `true` if value is null, `false` otherwise
+ * @return `true` if value is null, `false` otherwise
  * @example
  * isNull(0) // false
  * isNull(null) // true

@@ -53,8 +53,8 @@ export interface UriComponents {
 
 /**
  * Extract components from a URL
- * @param {string} uri The URL to extract components from
- * @returns {object} An object with the following properties:
+ * @param uri The URL to extract components from
+ * @return An object with the following properties:
  * - `protocol`: The protocol (e.g. `http`)
  * - `authority`: The authority (e.g. `user:pass@www.example.com:443`)
  * - `origin`: The origin (e.g. `http://www.example.com`)

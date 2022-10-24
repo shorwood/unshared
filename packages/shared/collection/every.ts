@@ -8,9 +8,9 @@ interface Every {
 
 /**
  * Checks if every object or array values predicates a function
- * @param {Array<T>|Record<string, T>} object The object or array to check
- * @param {Function|any} iterator A function that returns true if the value should be included
- * @returns {boolean} True if there is at least one value, false otherwise
+ * @param object The object or array to check
+ * @param iterator A function that returns true if the value should be included
+ * @return True if there is at least one value, false otherwise
  */
 export const every: Every = (object: any, iterator: any): boolean => {
   // --- If iterator is a path, cast as getter function.

@@ -2,9 +2,9 @@ import { random } from './random'
 
 /**
  * Returns a cryptographically secure pseudorandom float.
- * @param {number} [min] The minimum value
- * @param {number} [max] The maximum value
- * @returns {number} A random float
+ * @param min The minimum value
+ * @param max The maximum value
+ * @return A random float
  */
 export const randomFloat = (min = 0, max = 1): number => {
   const randomInt = random()

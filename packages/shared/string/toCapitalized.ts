@@ -1,7 +1,7 @@
 /**
  * Converts a string to capitalized case.
- * @param {string} value The string to convert
- * @returns {string} The converted string
+ * @param value The string to convert
+ * @return The converted string
  * @example
  * ```
  * toCamelCase('foo_bar') // returns 'Foo_bar'

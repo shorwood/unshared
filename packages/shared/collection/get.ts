@@ -11,10 +11,10 @@ interface Get {
 
 /**
  * Get a value from a nested object's property by a path of keys.
- * @param {any} object The object to get the object from
- * @param {string} pathOrGetter The path to the property or a getter function
- * @param {any} [defaultValue] The default object to return if the path does not exist
- * @returns {any} The object at the path or the default object
+ * @param object The object to get the object from
+ * @param pathOrGetter The path to the property or a getter function
+ * @param defaultValue The default object to return if the path does not exist
+ * @return The object at the path or the default object
  */
 export const get: Get = (object: any, pathOrGetter: any, defaultValue?: any): any => {
   if (isNil(pathOrGetter)) return defaultValue ?? object

@@ -1,7 +1,7 @@
 /**
  * Check if port is currently serving a connection.
- * @param {number} port Port to check
- * @return {Promise<boolean>} A promise that resolves to `true` if the port is serving a connection.
+ * @param port Port to check
+ * @return A promise that resolves to `true` if the port is serving a connection.
  */
 export const isPortInUse = async(port: number): Promise<boolean> => {
   try {

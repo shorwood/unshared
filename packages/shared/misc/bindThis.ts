@@ -3,8 +3,8 @@ import { OmitFirstParameter } from '../types/function'
 
 /**
  * Wrap a function that binds it's first argument to `this`
- * @param {Function} fn The function to bind
- * @returns {Function} A function that has `this` bound
+ * @param fn The function to bind
+ * @return A function that has `this` bound
  * @example
  * const greet = (person: Person) => `Hello, I am ${person.name}`
  *

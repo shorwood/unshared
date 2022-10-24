@@ -1,7 +1,7 @@
 /**
  * Create a promise that resolves after a given delay.
- * @param {number} ms The amount of milliseconds to delay
- * @returns {Promise<void>} A promise that resolves in `ms` milliseconds
+ * @param ms The amount of milliseconds to delay
+ * @return A promise that resolves in `ms` milliseconds
  * @example
  * await sleep(1000)
  */

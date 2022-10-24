@@ -1,7 +1,7 @@
 /**
  * Check if string matches an URL
- * @param {string} value The value to check
- * @returns {boolean} `true` if string matches is an URL, `false` otherwise
+ * @param value The value to check
+ * @return `true` if string matches is an URL, `false` otherwise
  * @see https://urlregex.com/
  * @example
  * isStringUrl('https://') // false

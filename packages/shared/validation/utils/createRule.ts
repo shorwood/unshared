@@ -2,9 +2,9 @@ import { ValidationRule, ValidationRuleObject } from '../types'
 
 /**
  * Convert a validation rule to a validation rule object
- * @param {ValidationRule} rule The rule to convert
- * @returns {ValidationRuleObject} The validation rule object
- * @throws {TypeError} If the rule is not valid
+ * @param rule The rule to convert
+ * @return The validation rule object
+ * @throws If the rule is not valid
  * @example
  * const ruleObject = createRule(Number.isNaN) // { handler: Number.isNaN, name: 'isNaN', parameters: [] }
  */

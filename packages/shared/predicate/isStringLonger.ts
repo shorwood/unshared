@@ -1,8 +1,8 @@
 /**
   * Check if the string is longer than length
-  * @param {string} value The value to check
-  * @param {number} length The length to compare to
-  * @returns {boolean} `true` if the string is longer than length, `false` otherwise
+  * @param value The value to check
+  * @param length The length to compare to
+  * @return `true` if the string is longer than length, `false` otherwise
   * @example
   * isStringLonger('foo', 3) // false
   * isStringLonger('foobar', 3) // true

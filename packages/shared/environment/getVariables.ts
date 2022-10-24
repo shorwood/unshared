@@ -9,9 +9,9 @@ export interface GetVariables {
 /**
  * Get variables from the environment that are prefixed with `prefix`
  * and map them to an object where the prefix is omitted and the keys are camel cased.
- * @param {string} prefix Prefix to match variables
- * @param {Function} [transformers] A map of functions used to transformers the variables
- * @returns {object} Object with variables mapped to their values
+ * @param prefix Prefix to match variables
+ * @param transformers A map of functions used to transformers the variables
+ * @return Object with variables mapped to their values
  * @TODO: Improve `transformers` parameter type in overloads
  */
 export const getVariables: GetVariables = (prefix, transformers: any = {}) => {

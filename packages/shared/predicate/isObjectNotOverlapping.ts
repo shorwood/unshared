@@ -3,10 +3,10 @@
  * - Meaning that the objects can be merged without losing any information.
  * - If the `depth` parameter, it will recusively check if the properties are equal.
  * - To avoid infinite recursion, the `depth` parameter can be set to a number.
- * @param {Record<string, any>} object1 The first object
- * @param {Record<string, any>} object2 The second object
- * @param {number | boolean} [depth] The depth of the nested properties to compare
- * @returns {boolean} `true` if the objects are not overlapping, `false` otherwise
+ * @param object1 The first object
+ * @param object2 The second object
+ * @param depth The depth of the nested properties to compare
+ * @return `true` if the objects are not overlapping, `false` otherwise
  * @example
  * isObjectNotOverlapping({ a: 1 }, { a: 1 }) // true
  * isObjectNotOverlapping({ a: 1 }, { b: 1 }) // true

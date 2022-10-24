@@ -8,9 +8,9 @@ interface Set {
 /**
   * Set a value of a nested object's property by a path of keys.
   * If the path does not exist, it will be created.
-  * @param {any} object The object to set the value to
-  * @param {string} path The path of keys separated by a dot
-  * @param {any} value The value to set to the path
+  * @param object The object to set the value to
+  * @param path The path of keys separated by a dot
+  * @param value The value to set to the path
   */
 export const set: Set = (object: any, path: string, value?: any): any => {
   // --- Split path segments.

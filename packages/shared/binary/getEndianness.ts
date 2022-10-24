@@ -2,7 +2,7 @@
 /**
  * Get the endianness of the current runtime
  * @warning Prefer `endianness` over this function as the result won't change.
- * @returns {string} The endianness of the runtime
+ * @returns The endianness of the runtime
  */
 export const getEndianness = (): 'LE' | 'BE' => {
   const uint8Array = new Uint8Array([0x01, 0x02, 0x03, 0x04])

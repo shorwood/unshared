@@ -2,9 +2,9 @@ import { kindOf } from './kindOf'
 
 /**
  * Checks if the value is of a specific kind.
- * @param {any} value The value to check
- * @param {string | string[]} kind The expected kind(s)
- * @returns {boolean} `true` if the value is of the expected kind, `false` otherwise
+ * @param value The value to check
+ * @param kind The expected kind(s)
+ * @return `true` if the value is of the expected kind, `false` otherwise
  * @see `kindOf()`
  * @example
  * isKind('foo', 'string') // true

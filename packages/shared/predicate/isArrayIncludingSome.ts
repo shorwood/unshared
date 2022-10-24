@@ -1,8 +1,8 @@
 /**
  * Check if an array includes some of the items
- * @param {any[]} array The array to check
- * @param {any[]} items The values to look for
- * @returns {boolean} `true` if the array includes some of the items, `false` otherwise
+ * @param array The array to check
+ * @param items The values to look for
+ * @return `true` if the array includes some of the items, `false` otherwise
  * @example
  * isArrayIncludingSome([], []) // false
  * isArrayIncludingSome([1, 2, 3], [1]) // true

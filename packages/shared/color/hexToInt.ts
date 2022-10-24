@@ -4,7 +4,7 @@ import { ColorIntegerFormat } from './types'
 
 /**
  * Takes an hexadecimal color and converts it into an integer.
- * @param {string} value An hexadecimal color
- * @returns {number} An integer
+ * @param value An hexadecimal color
+ * @return An integer
  */
 export const hexToInt = (value: string, format: ColorIntegerFormat = 'rgb'): number => rgbToInt(hexToRgb(value), format)

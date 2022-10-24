@@ -1,7 +1,7 @@
 /**
  * Approximate pi with variable accuracy.
- * @param {number} accuracy The accuracy to aim for
- * @returns {number} Approximated pi
+ * @param accuracy The accuracy to aim for
+ * @return Approximated pi
  */
 export const pi = (accuracy: number): number => {
   // --- Handle edge cases.

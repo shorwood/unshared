@@ -2,8 +2,8 @@ import { base64Symbols } from './fromBase64'
 
 /**
  * Convert an ArrayBuffer to a Base64-encoded string.
- * @param {ArrayBuffer} buffer The ArrayBuffer to convert
- * @returns {string} The Base64-encoded string
+ * @param buffer The ArrayBuffer to convert
+ * @return The Base64-encoded string
  */
 export const toBase64 = (buffer: ArrayBuffer): string => {
   // --- Instantiate DataView

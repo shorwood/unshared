@@ -2,8 +2,8 @@
 
 /**
  * Check if a function is skippable, meaning it is empty or returns undefined.
- * @param {Function} fn The function to check
- * @returns {boolean} `true` if the function is skippable, `false` otherwise
+ * @param fn The function to check
+ * @return `true` if the function is skippable, `false` otherwise
  * @example
  * isFunctionSkippable(() => {}) // true
  * isFunctionSkippable(() => null) // false

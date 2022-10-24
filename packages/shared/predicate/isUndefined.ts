@@ -1,7 +1,7 @@
 /**
  * Check if value is undefined
  * @param value The value to check
- * @returns {boolean} `true` if value is undefined, `false` otherwise
+ * @return `true` if value is undefined, `false` otherwise
  * @example
  * isUndefined(null) // false
  * isUndefined(undefined) // true

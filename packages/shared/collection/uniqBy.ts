@@ -5,9 +5,9 @@
 
 /**
  * Returns a new array containing only unique items, based on a given key.
- * @param {Array<T>} array The array to filter
- * @param {keyof T} key The key to use for filtering
- * @returns {Array<T>} The filtered array
+ * @param array The array to filter
+ * @param key The key to use for filtering
+ * @return The filtered array
  */
 export const uniqBy = <T>(array: Array<T>, key: keyof T): Array<T> => {
   const seen: Set<T> = new Set()

@@ -3,8 +3,8 @@ import { HSL, RGB, RGBA } from './types'
 
 /**
  * Converts HSL values to RGBA.
- * @param {HSL} hsl The HSLA values
- * @returns {RGBA} The RGBA values
+ * @param hsl The HSLA values
+ * @return The RGBA values
  * @return The RGBA representation
  * @see http://en.wikipedia.org/wiki/HSLA_color_space.
  */

@@ -1,7 +1,7 @@
 /**
  * Convert the first letter of a string to uppercase.
- * @param {string} value The string to convert
- * @returns {string} The converted string
+ * @param value The string to convert
+ * @return The converted string
  * @example
  * ```
  * capitalize('foo_bar') // returns 'Foo_bar'

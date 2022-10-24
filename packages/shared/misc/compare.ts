@@ -22,9 +22,9 @@ const typeOrder = [
 
 /**
  * Compare two values.
- * @param {any} a The first value to compare
- * @param {any} b The second value to compare
- * @returns {number} -1 if a < b, 1 if a > b, 0 if a === b
+ * @param a The first value to compare
+ * @param b The second value to compare
+ * @return -1 if a < b, 1 if a > b, 0 if a === b
  * @example
  * compare(0, 1) // => -1
  * compare('a', 'b') // => -1

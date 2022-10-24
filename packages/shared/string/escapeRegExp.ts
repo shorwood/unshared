@@ -1,7 +1,7 @@
 /**
  * Escape the Regular Expression special characters.
- * @param {string} value The string to escape.
- * @returns {string} The escaped string.
+ * @param value The string to escape.
+ * @return The escaped string.
  * @example
  * escapeRegExp('foo[bar]baz') // 'foo\[bar\]baz'
  */
