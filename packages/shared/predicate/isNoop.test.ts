@@ -4,7 +4,7 @@
 /* eslint-disable arrow-body-style */
 /* eslint-disable unicorn/no-useless-undefined */
 import { expect, it } from 'vitest'
-import { isFunctionSkippable } from './isFunctionSkippable'
+import { isNoop } from './isNoop'
 
 it.each([
 
@@ -34,6 +34,6 @@ it.each([
   [false, function named() { throw new Error('error') }],
 
 ])('should return %s when checking if %s is a function skippable', (expected, value) => {
-  const result = isFunctionSkippable(value)
+  const result = isNoop(value)
   expect(result).toEqual(expected)
 })

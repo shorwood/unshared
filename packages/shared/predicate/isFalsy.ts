@@ -1,4 +1,4 @@
-import { isFunctionSkippable } from './isFunctionSkippable'
+import { isNoop } from './isNoop'
 
 /**
  * Check if value is "falsy" extended to `Boolean`, arrays, objects an functions
@@ -28,7 +28,7 @@ export const isFalsy = (value: any): boolean => {
   if (typeof value === 'object' && value !== null) return Object.keys(value).length === 0
 
   // --- If value is a function, return true if it is empty
-  if (typeof value === 'function') return isFunctionSkippable(value)
+  if (typeof value === 'function') return isNoop(value)
 
   // --- Fallback to default behavior
   return !value

@@ -5,11 +5,11 @@
  * @param fn The function to check
  * @return `true` if the function is skippable, `false` otherwise
  * @example
- * isFunctionSkippable(() => {}) // true
- * isFunctionSkippable(() => null) // false
- * isFunctionSkippable(() => undefined) // true
+ * isNoop(() => {}) // true
+ * isNoop(() => null) // false
+ * isNoop(() => undefined) // true
  */
-export const isFunctionSkippable = (fn: Function): fn is () => {} => {
+export const isNoop = (fn: Function): fn is () => {} => {
   // --- Make sure it is a function
   if (typeof fn !== 'function') return false
 
