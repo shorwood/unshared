@@ -1,20 +1,20 @@
+import { readFileSync } from 'node:fs'
 import { jsonParse } from './jsonParse'
-import { requireSafe } from './requireSafe'
 
 /**
  * Imports data from a JSON file.
- * @param {string} path The path to the JSON file
- * @returns {any} The parsed JSON data
+ * @param path The path to the JSON file
+ * @returns The parsed JSON data
+ * @throws If the JSON file is invalid
  */
-export const jsonImport = <T>(path: string): T | undefined => {
-  // --- Import `fs` safely
-  const fs = requireSafe('node:fs')
+export const jsonImport = <T>(path: string): T => {
+  // --- Read and parse the JSON file.
+  const json = readFileSync(path, 'utf8')
+  const result = jsonParse<T>(json)
 
-  // --- Make sure FS is available and the file exists
-  if (!fs) return undefined
-  if (!fs.existsSync(path)) return undefined
+  // --- Throw an error if the JSON is invalid.
+  if (!result) throw new Error(`Failed to parse the JSON file at path: "${path}"`)
 
-  // --- Get the JSON data and parse it
-  const json = fs.readFileSync(path, 'utf8')
-  return jsonParse<T>(json)
+  // --- Return the parsed JSON data.
+  return result
 }
