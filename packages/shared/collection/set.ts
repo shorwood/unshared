@@ -1,18 +1,18 @@
 import { Path } from '../types/collection'
 
-interface Set {
-  <T extends object, K extends Path<T>>(object: T, path: K, value: any): T
-  <T extends object>(object: T, path: string, value: any): T
-}
-
 /**
   * Set a value of a nested object's property by a path of keys.
   * If the path does not exist, it will be created.
+  *
+  * This function will mutate the original object.
   * @param object The object to set the value to
   * @param path The path of keys separated by a dot
   * @param value The value to set to the path
+  * @returns The object with the value set to the path
   */
-export const set: Set = (object: any, path: string, value?: any): any => {
+export function set<T extends object, K extends Path<T>>(object: T, path: K, value: any): T
+export function set<T extends object>(object: T, path: string, value: any): T
+export function set(object: any, path: string, value?: any): any {
   // --- Split path segments.
   const keys = typeof path === 'string' ? path.split('.') : path
 
