@@ -3,10 +3,8 @@
  * @param value The string to convert
  * @return The converted string
  * @example
- * ```
  * capitalize('foo_bar') // returns 'Foo_bar'
  * capitalize('FOO_BAR') // returns 'FOO_BAR'
- * ```
  */
 export const capitalize = (value: string): string => {
   if (value.length === 0) return value

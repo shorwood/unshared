@@ -1,10 +1,13 @@
 import { expect, it } from 'vitest'
 import { capitalize } from './capitalize'
 
-it('converts a string to kebab case', () => {
-  expect(capitalize('fooBar')).toEqual('FooBar')
-  expect(capitalize('FooBar')).toEqual('FooBar')
-  expect(capitalize('Foo-Bar')).toEqual('Foo-Bar')
-  expect(capitalize('foo bar')).toEqual('Foo bar')
-  expect(capitalize('FOO BAR')).toEqual('FOO BAR')
+it.each([
+  ['fooBar', 'FooBar'],
+  ['FooBar', 'FooBar'],
+  ['Foo-Bar', 'Foo-Bar'],
+  ['foo bar', 'Foo bar'],
+  ['FOO BAR', 'FOO BAR'],
+])('should capitalize from "%s" to "%s"', (input, expected) => {
+  const result = capitalize(input)
+  expect(result).toEqual(expected)
 })
