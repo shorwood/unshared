@@ -8,21 +8,17 @@ export default defineConfig({
     vue(),
   ],
   test: {
-    api: {
-      port: 9000,
-    },
-    include: [
-      './packages/**/*.test.ts',
-      './packages/**/*.test.*.ts',
-    ],
+    api: { port: 9000 },
+    environment: 'node',
+    setupFiles: '/__mocks__/setup.ts',
+    include: ['./packages/**/*.test.ts', './packages/**/*.test.*.ts'],
     coverage: {
       all: true,
       reporter: ['clover', 'cobertura', 'lcov', 'text'],
-      include: ['packages'],
+      include: ['./packages'],
       extension: ['ts'],
       excludeNodeModules: true,
-      reportsDirectory: resolve(__dirname, './coverage'),
+      reportsDirectory: './coverage',
     },
-    environment: 'node',
   },
 })
