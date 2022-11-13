@@ -14,14 +14,16 @@ import { dirname, resolve } from 'node:path'
  */
 export const resolveAncestors = (fileName: string, from: string = cwd()): string[] => {
   const paths: string[] = []
+  let lastFrom = from
 
   // --- Try to find the file in the current working directory or parent directories.
-  while (from !== '/') {
+  do {
     const filePath = resolve(from, fileName)
     if (existsSync(filePath))
       paths.push(filePath)
+    lastFrom = from
     from = dirname(from)
-  }
+  } while (from !== lastFrom)
 
   // --- If the file was not found, return undefined.
   return paths

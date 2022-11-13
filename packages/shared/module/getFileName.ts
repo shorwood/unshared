@@ -6,15 +6,15 @@
  * getFileName('/path/to/file.js') // returns 'file'
  */
 export const getFileName = (path: string): string => {
-  if (typeof path !== 'string') throw new TypeError('Path must be a string')
+  if (typeof path !== 'string') throw new TypeError('Path must be a string.')
 
   // --- Get the file name.
   const fileNameExtension = path.match(/[^/\\]+$/)?.[0]
-  if (!fileNameExtension) throw new Error('File name not found')
+  if (!fileNameExtension) throw new Error('File name not found.')
 
   // --- Remove the extension.
   const fileName = fileNameExtension.split('.').shift()
-  if (!fileName) throw new Error('File name not found')
+  if (!fileName) throw new Error('File name not found.')
 
   // --- Return the file name.
   return fileName

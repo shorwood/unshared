@@ -6,7 +6,7 @@ import { dirname, resolve } from 'node:path'
  * Find path of a file in the context directory or one of its ancestors.
  * @param fileName The file name to find.
  * @param from
- * The path to start exploring from.
+ * The absolute path to start from.
  * Defaults to the current working directory.
  * @returns If the file was found, returns the absolute path.
  * @throws If the file was not found.

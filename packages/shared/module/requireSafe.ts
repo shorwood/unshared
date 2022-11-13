@@ -34,7 +34,7 @@ export interface RequireSafe {
  * @param moduleId The id of the module to require
  * @return The required module, or undefined if it couldn't be required
  */
-export const requireSafe: RequireSafe = (moduleId: string): any => {
+export const requireSafe = (moduleId: string): any => {
   try { return require(moduleId) }
   catch {}
 }

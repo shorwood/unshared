@@ -7,7 +7,11 @@ const cwd = getCwd()
 const root = join(__dirname, '..')
 const cwdRelative = relative(root, cwd)
 
-generatePackageJson(cwd)
-generateLicence(cwd)
-generateReadme(cwd)
-consola.success(`Finished post-build script for package "${cwdRelative}".`)
+const main = async() => {
+  generatePackageJson(cwd)
+  await generateLicence(cwd)
+  await generateReadme(cwd)
+  consola.success(`Finished post-build script for package "${cwdRelative}".`)
+}
+
+main()

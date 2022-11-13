@@ -4,7 +4,7 @@ import { cwd } from 'node:process'
 import { isBuiltin } from 'node:module'
 import { PackageJSON } from 'types-pkg-json'
 import { tries } from '../misc/tries'
-import { jsonImport } from './jsonImport'
+import { loadObject } from './loadObject'
 import { resolveAncestor } from './resolveAncestor'
 import { resolveImport } from './resolveImport'
 import { resolveModule } from './resolveModule'
@@ -23,7 +23,7 @@ export const resolveTypes = (path: string = cwd()): string => {
       // --- Find and import the `package.json` as an object.
       const absolutePath = resolveImport(path)
       const packageJsonPath = resolveAncestor('package.json', absolutePath)
-      const packageJson = jsonImport<PackageJSON>(packageJsonPath)
+      const packageJson = loadObject<PackageJSON>(packageJsonPath)
 
       // --- Get the path of the type definitions.
       const typesRelativePath = packageJson.types || packageJson.typings
@@ -41,7 +41,7 @@ export const resolveTypes = (path: string = cwd()): string => {
       // --- Find
       const packageDirectory = resolveModule(packageName)
       const packageJsonPath = resolve(packageDirectory, 'package.json')
-      const packageJson = jsonImport<PackageJSON>(packageJsonPath)
+      const packageJson = loadObject<PackageJSON>(packageJsonPath)
       if (!packageJson) throw new Error(`"${packageJsonPath}" does not exist.`)
 
       // --- Get the path of the type definitions.

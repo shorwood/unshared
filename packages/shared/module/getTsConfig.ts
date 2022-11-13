@@ -1,8 +1,7 @@
 import { cwd } from 'node:process'
 import { TSConfigJSON } from 'types-tsconfig'
-import { jsonImport } from './jsonImport'
-import { resolveAncestor } from './resolveAncestor'
-import { resolveImport } from './resolveImport'
+import { getTsConfigPath } from './getTsConfigPath'
+import { loadObject } from './loadObject'
 
 /**
  * Get the content of the `tsconfig.json` file from a context directory.
@@ -11,13 +10,7 @@ import { resolveImport } from './resolveImport'
  * Defaults to the current working directory.
  * @returns The content of the `tsconfig.json` file.
  */
-export const getTsConfig = (path: string = cwd()): TSConfigJSON | undefined => {
-  const absolutePath = resolveImport(path)
-
-  // --- Try to find the `tsconfig.json` file.
-  const tsConfigPath = resolveAncestor('tsconfig.json', absolutePath)
-  if (!tsConfigPath) return undefined
-
-  // --- Import and return the `tsconfig.json` as an object.
-  return jsonImport<TSConfigJSON>(tsConfigPath)
+export const getTsConfig = async(from: string = cwd()): Promise<TSConfigJSON> => {
+  const path = await getTsConfigPath(from)
+  return loadObject<TSConfigJSON>(path)
 }

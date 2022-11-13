@@ -3,7 +3,7 @@ import { copyFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { sync as glob } from 'fast-glob'
 import consola from 'consola'
-import { jsonImport } from '../packages/shared/module/jsonImport'
+import { loadObject } from '../packages/shared/module/loadObject'
 
 const ROOT_PATH = join(__dirname, '..')
 
@@ -26,8 +26,8 @@ export const generateIndex = (cwd: string) => {
   }
 }
 
-export const generateReadme = (cwd: string) => {
-  const packageJson = jsonImport<any>(join(cwd, 'package.json'))
+export const generateReadme = async(cwd: string) => {
+  const packageJson = await loadObject<any>(join(cwd, 'package.json'))
   const readme = `# ${packageJson.name}
 
 [![NPM version](https://img.shields.io/npm/v/${packageJson.name}?color=a1b858)](https://www.npmjs.com/package/${packageJson.name})
@@ -62,9 +62,9 @@ export const generateLicence = (cwd: string) => {
     copyFileSync(licencePath, join(cwd, 'LICENCE'))
 }
 
-export const generatePackageJson = (cwd: string) => {
-  const rootPackage = jsonImport<any>(join(ROOT_PATH, 'package.json'))
-  const sourcePackage = jsonImport<any>(join(cwd, 'package.json'))
+export const generatePackageJson = async(cwd: string) => {
+  const rootPackage = await loadObject<any>(join(ROOT_PATH, 'package.json'))
+  const sourcePackage = await loadObject<any>(join(cwd, 'package.json'))
   const customIndexes = glob(['./index.js', './*/index.js'], { cwd: join(cwd, 'dist'), onlyFiles: true })
 
   const distributionPackage = {

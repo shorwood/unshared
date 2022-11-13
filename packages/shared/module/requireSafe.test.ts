@@ -1,7 +1,14 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { expect, it } from 'vitest'
 import { requireSafe } from './requireSafe'
 
-it('requires a module, but doesn\'t throw an error if it fails', () => {
-  expect(requireSafe('node:fs')).toBeDefined()
-  expect(requireSafe('not-a-real-module')).toBeUndefined()
+it('should should require an existing module', () => {
+  const result = requireSafe('node:path')
+  const expected = require('node:path')
+  expect(result).toStrictEqual(expected)
+})
+
+it('should should not require a non-existing module', () => {
+  const result = requireSafe('not-a-real-module')
+  expect(result).toBeUndefined()
 })
