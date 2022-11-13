@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/consistent-function-scoping */
 import { expect, it } from 'vitest'
 import { fibonacci } from './fibonacci'
 
@@ -21,5 +22,6 @@ it.each([
 })
 
 it('should fail when N is negative', () => {
-  expect(() => { fibonacci(-1) }).toThrowError()
+  const shouldThrow = () => fibonacci(-1)
+  expect(shouldThrow).toThrowError()
 })
