@@ -18,17 +18,20 @@ export function tries<R>(...functions: Array<() => R>): R | undefined
 export function tries(...functions: Array<() => unknown>): unknown {
   // --- Execute each function until one returns a value.
   while (functions.length > 0) {
-    const result = functions.shift()?.()
+    try {
+      const result = functions.shift()?.()
 
-    // --- If one of the functions returns a promise
-    // --- Recursively call `tries` until the promise is resolved.
-    if (result instanceof Promise) {
-      return result
-        .then(value => value ?? tries(...functions))
-        .catch(() => tries(...functions))
+      // --- If one of the functions returns a promise
+      // --- Recursively call `tries` until the promise is resolved.
+      if (result instanceof Promise) {
+        return result
+          .then(value => value ?? tries(...functions))
+          .catch(() => tries(...functions))
+      }
+
+      // --- If one of the functions returns a value, return it.
+      if (result !== undefined) return result
     }
-
-    // --- If one of the functions returns a value, return it.
-    if (result !== undefined) return result
+    catch { /* Ignore errors */ }
   }
 }
