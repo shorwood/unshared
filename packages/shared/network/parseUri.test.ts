@@ -114,6 +114,5 @@ it.each([
 
 ])('should extract the components of %s', (url, expected: any) => {
   const result = parseUri(url)
-  console.log(url, result)
   expect(result).toEqual(expected)
 })

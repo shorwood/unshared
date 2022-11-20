@@ -1,5 +1,5 @@
-import { ClientRequest, IncomingMessage } from 'node:http'
-import { parseCookies, parseJson } from './utils'
+import { ClientRequest, IncomingMessage, request as requestHttp } from 'node:http'
+import { parseCookies } from './utils'
 import { Request, RequestOptions, RequestState } from './request'
 
 /**
@@ -8,7 +8,6 @@ import { Request, RequestOptions, RequestState } from './request'
  * @param options Request options
  * @see https://ozzyczech.cz/js/fetch-in-pure-node-js/
  */
-
 export const request: Request = (url: string | URL, options = {} as RequestOptions<any>) => new Promise<any>((resolve, reject) => {
   // --- Destructure options.
   const { parser = parseJson, returnState = false } = options
@@ -22,7 +21,7 @@ export const request: Request = (url: string | URL, options = {} as RequestOptio
 
   // --- Make the request.
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  state.request = require('node:https').request(url, options, (response: IncomingMessage) => {
+  state.request = requestHttp(url, options, (response: IncomingMessage) => {
     // --- Pipe data & save response headers.
     const data: Uint8Array[] = []
     response.on('data', chunk => data.push(chunk))

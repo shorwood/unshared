@@ -7,7 +7,6 @@ import { Request, RequestOptions, RequestState } from './request'
  * @param options Request options
  * @see https://javascript.info/xmlhttprequest
  */
-
 export const request: Request = (url: string | URL, options = {} as RequestOptions<any>) => new Promise<any>((resolve, reject) => {
   // --- Destructure options.
   const {
