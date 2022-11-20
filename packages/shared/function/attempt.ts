@@ -1,31 +1,22 @@
 /* eslint-disable unicorn/prevent-abbreviations */
+import { MaybePromise } from '../types'
 
 /**
  * Attemt to run a function and return an array with the value and the error if any.
  * @param fn The function to run.
  * @returns The value and the error if any.
  */
-export const attempt = async<R>(fn: () => R | Promise<R>): Promise<[R | undefined, Error | undefined]> => {
+export function attempt<R>(fn: () => Promise<R>): Promise<[R | undefined, Error | undefined]>
+export function attempt<R>(fn: () => Exclude<R, Promise<any>>): [R | undefined, Error | undefined]
+export function attempt<R>(fn: () => MaybePromise<R>): MaybePromise<[R | undefined, Error | undefined]>
+export function attempt(fn: Function): any {
   try {
-    // --- Get function result.
     const result = fn()
-
-    // --- Handle promises.
-    if (result instanceof Promise) {
-      let promiseError: Error | undefined
-      let promiseResult: R | undefined
-
-      // --- Wait for the promise to resolve.
-      await result
-        .then(value => promiseResult = value)
-        .catch(error => promiseError = error)
-
-      // --- Return the result and the error.
-      return [promiseResult, promiseError]
-    }
-
-    // --- Return result.
-    return [result, undefined]
+    return result instanceof Promise
+      ? result
+        .then(value => [value, undefined])
+        .catch(error => [undefined, error])
+      : [result, undefined]
   }
 
   // --- Catch sync error.
