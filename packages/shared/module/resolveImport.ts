@@ -1,7 +1,5 @@
-import { cwd } from 'node:process'
-import { resolve } from 'node:path'
-import { createRequire } from 'node:module'
-import { tries } from '../misc/tries'
+import { tries } from '../function/tries'
+import { requireSafe } from './requireSafe'
 
 /**
  * Resolve the absolute path of a relative or package module.
@@ -10,18 +8,23 @@ import { tries } from '../misc/tries'
  * @returns If the import was found, returns it's absolute path.
  * @throws If the import was not found.
  */
-export const resolveImport = (path: string, from: string = cwd()): string => {
-  if (!path) throw new Error('Missing import path.')
+export const resolveImport = (path: string, from?: string): string => {
+  const nodePath = requireSafe('node:path')
+  const nodeProcess = requireSafe('node:process')
 
-  // --- Create the `require` function.
-  const require = createRequire(from)
+  // --- Check if native Node.js modules are available.
+  if (!nodePath) throw new Error('Native Node.js module "path" is not available.')
+  if (!nodeProcess) throw new Error('Native Node.js module "process" is not available.')
+  if (!from) from = nodeProcess.cwd()
 
   // --- Try to resolve import's absolute path.
   // --- If the path is a package import.
   // --- If the path is a relative import.
   const resolvedPath = tries(
+    // @ts-expect-error: `from` is defined.
     () => require.resolve(path, { paths: [from] }),
-    () => require.resolve(resolve(from, path)),
+    // @ts-expect-error: `from` is defined.
+    () => require.resolve(nodePath.resolve(from, path)),
   )
 
   // --- Throw if the import was not found.

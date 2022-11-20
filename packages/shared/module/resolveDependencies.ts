@@ -1,5 +1,3 @@
-import { existsSync, readFileSync } from 'node:fs'
-import { dirname } from 'node:path'
 import { resolveImport } from './resolveImport'
 
 /**
@@ -7,9 +5,13 @@ import { resolveImport } from './resolveImport'
  * @param entryPoint The entry point.
  * @return The resolved dependencies path.
  */
-export const resolveDependencies = (entryPoint: string): string[] => {
+export const resolveDependencies = async(entryPoint: string): Promise<string[]> => {
+  const { dirname } = await import('node:path')
+  const { constants } = await import('node:fs')
+  const { access, readFile } = await import('node:fs/promises')
+
   const dependencies = [] as string[]
-  const toExplore = [resolveImport(entryPoint) as string]
+  const toExplore = [resolveImport(entryPoint)]
 
   // --- Regular expression to find all imports.
   const regexes = [
@@ -21,10 +23,11 @@ export const resolveDependencies = (entryPoint: string): string[] => {
   while (true) {
     const filePath = toExplore.pop()
     if (!filePath) break
-    if (!existsSync(filePath)) continue
+    try { await access(filePath, constants.F_OK) }
+    catch { continue }
 
     // --- Read the file.
-    const fileContent = readFileSync(filePath, 'utf8')
+    const fileContent = await readFile(filePath, 'utf8')
 
     // --- Loop through all regular expressions.
     for (const regex of regexes) {

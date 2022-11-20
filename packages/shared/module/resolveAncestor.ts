@@ -1,7 +1,3 @@
-import { cwd } from 'node:process'
-import { existsSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
-
 /**
  * Find path of a file in the context directory or one of its ancestors.
  * @param fileName The file name to find.
@@ -15,11 +11,16 @@ import { dirname, resolve } from 'node:path'
  * resolveAncestor('package.json') // '/home/user/project/package.json'
  * resolveAncestor('tsconfig.json') // '/home/user/project/tsconfig.json'
  */
-export const resolveAncestor = (fileName: string, from: string = cwd()): string => {
+export const resolveAncestor = async(fileName: string, from: string): Promise<string> => {
+  const { constants } = await import('node:fs')
+  const { access } = await import('node:fs/promises')
+  const { dirname, resolve } = await import('node:path')
+
   // --- Try to find the file in the current working directory or parent directories.
   while (from !== '/') {
     const filePath = resolve(from, fileName)
-    if (existsSync(filePath)) return filePath
+    try { await access(filePath, constants.F_OK); return filePath }
+    catch {}
     from = dirname(from)
   }
 

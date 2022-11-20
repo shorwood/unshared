@@ -1,6 +1,3 @@
-import { cwd } from 'node:process'
-import { resolve } from 'node:path'
-import { createRequire } from 'node:module'
 import { MaybeArray } from '../types'
 import { arrayify } from '../collection'
 
@@ -14,9 +11,8 @@ import { arrayify } from '../collection'
  * const aliases = { '@/*': ['/usr/bin/*', '/usr/local/bin/*'] }
  * resolveAlias('@/cat', aliases) // '/usr/bin/cat'
  */
-export const resolveAlias = (path: string, aliases: Record<string, MaybeArray<string>> = {}): string => {
-  // --- Create the `require` function.
-  const require = createRequire(cwd())
+export const resolveAlias = async(path: string, aliases: Record<string, MaybeArray<string>> = {}): Promise<string> => {
+  const { resolve } = await import('node:path')
 
   // --- Try with each alias.
   for (const alias in aliases) {

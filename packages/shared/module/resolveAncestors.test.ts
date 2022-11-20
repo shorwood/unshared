@@ -3,7 +3,7 @@ import { expect, it } from 'vitest'
 import { vol } from 'memfs'
 import { resolveAncestors } from './resolveAncestors'
 
-it('should resolve ancestors', () => {
+it('should resolve ancestors', async() => {
   const json = {
     '/home/user/project/.env': '',
     '/home/user/.env': '',
@@ -11,22 +11,20 @@ it('should resolve ancestors', () => {
     '/.env': '',
   }
   vol.fromJSON(json)
-  const result = resolveAncestors('.env', '/home/user/project')
+  const result = await resolveAncestors('.env', '/home/user/project')
   const expected = Object.keys(json)
   expect(result).toEqual(expected)
 })
 
-it('should resolve ancestors at root', () => {
-  const json = {
-    '/.env': '',
-  }
+it('should resolve ancestors at root', async() => {
+  const json = { '/.env': '' }
   vol.fromJSON(json)
-  const result = resolveAncestors('.env', '/')
+  const result = await resolveAncestors('.env', '/')
   const expected = Object.keys(json)
   expect(result).toEqual(expected)
 })
 
-it('should return empty array if no ancestors', () => {
-  const result = resolveAncestors('.env', '/home/user/project')
+it('should return empty array if no ancestors', async() => {
+  const result = await resolveAncestors('.env', '/home/user/project')
   expect(result).toEqual([])
 })

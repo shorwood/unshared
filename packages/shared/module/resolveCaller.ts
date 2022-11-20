@@ -5,4 +5,5 @@ import { resolveStack } from './resolveStack'
  * @example
  * resolveCaller() // '/home/user/project/index.js'
  */
-export const resolveCaller = () => resolveStack()[2] ?? import.meta.url.slice(7)
+export const resolveCaller = (): string =>
+  resolveStack()[2] ?? import.meta.url.slice(7)

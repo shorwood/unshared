@@ -1,4 +1,3 @@
-import { readFile } from 'node:fs/promises'
 import { parseJson } from './parseJson'
 
 /**
@@ -8,6 +7,7 @@ import { parseJson } from './parseJson'
  * @throws If the JSON file is invalid
  */
 export const loadObject = async <T = unknown>(path: string): Promise<T> => {
+  const { readFile } = await import('node:fs/promises')
   const json = await readFile(path, 'utf8')
   return parseJson<T>(json)
 }
