@@ -94,6 +94,6 @@
     "build:lint": "eslint package.json --fix --no-ignore"
   },
   "devDependencies": {
-    "@types/node": "^18.11.4"
+    "@types/node": "^18.11.9"
   }
 }
