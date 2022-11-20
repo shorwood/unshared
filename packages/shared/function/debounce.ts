@@ -12,12 +12,12 @@ export type DebouncedFn<T extends (...args: any) => any> = (...args: Parameters<
  * @param delay The debounce delay in milliseconds
  * @return A debounced function
  * @example
- * const getUser = (id: string) => axios.get(`/users/${id}`)
+ * const getUser = (id: string) => fetch(`/users/${id}`)
  * const debounced = debounce(getUser)
  */
 export const debounce = <T extends (...args: any) => any>(callback: T, delay: number): DebouncedFn<T> => {
   // --- Handle edge cases.
-  if (delay <= 0) return callback
+  if (delay <= 0) throw new Error('Debounce delay must be greater than 0.')
 
   // --- Initialize timeout.
   let timeout: NodeJS.Timeout

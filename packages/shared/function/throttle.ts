@@ -12,12 +12,12 @@ export type ThrottledFn<T extends (...args: any) => any> = (...args: Parameters<
  * @param delay The throttle delay in milliseconds
  * @return A throttled function
  * @example
- * const getUsers = (id: string) => axios.get(`/users/${id}`)
+ * const getUsers = (id: string) => fetch(`/users/${id}`)
  * const throttled = throttle(getUser)
  */
 export const throttle = <T extends (...args: any) => any>(callback: T, delay: number): ThrottledFn<T> => {
   // --- Handle edge cases.
-  if (delay <= 0) return callback
+  if (delay <= 0) throw new Error('Throttle delay must be greater than 0.')
 
   // --- Initialize variables.
   let timeout: NodeJS.Timeout

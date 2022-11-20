@@ -21,3 +21,9 @@ it('throttles a function so it is only called once every delay', async() => {
   throttled(10)
   expect(counter).toEqual(11)
 })
+
+it('throws if delay is lower than 1', () => {
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const shouldThrow = () => throttle(() => {}, 0)
+  expect(shouldThrow).toThrow()
+})

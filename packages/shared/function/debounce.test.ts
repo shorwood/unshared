@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest'
+import { sleep } from '../misc/sleep'
 import { debounce } from './debounce'
-import { sleep } from './sleep'
 
 it('debounces a function so it is only called once after delay', async() => {
   let counter = 0
@@ -16,4 +16,10 @@ it('debounces a function so it is only called once after delay', async() => {
   expect(counter).toEqual(1)
   debounced()
   expect(counter).toEqual(1)
+})
+
+it('throws if delay is lower than 1', () => {
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const shouldThrow = () => debounce(() => {}, 0)
+  expect(shouldThrow).toThrow()
 })
