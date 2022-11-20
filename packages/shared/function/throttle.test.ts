@@ -1,7 +1,7 @@
 
 import { expect, it } from 'vitest'
+import { sleep } from '../misc/sleep'
 import { throttle } from './throttle'
-import { sleep } from './sleep'
 
 it('throttles a function so it is only called once every delay', async() => {
   let counter = 0

@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { sleep } from './sleep'
+import { sleep } from '../misc/sleep'
 import { memoize } from './memoize'
 
 it('should memoize a function', async() => {
