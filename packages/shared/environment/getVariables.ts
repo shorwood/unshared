@@ -1,10 +1,5 @@
 import { toCamelCase } from '../string/toCamelCase'
-import { isNode } from './runtime'
-
-export interface GetVariables {
-  <T = Record<string, string>>(path: string): Partial<T>
-  <T = Record<string, any>>(path: string, transformers?: Partial<{ [P in keyof T]: (value: string) => T[P] }>): Partial<T>
-}
+import { getEnvironment } from './getEnvironment'
 
 /**
  * Get variables from the environment that are prefixed with `prefix`
@@ -12,20 +7,21 @@ export interface GetVariables {
  * @param prefix Prefix to match variables
  * @param transformers A map of functions used to transformers the variables
  * @return Object with variables mapped to their values
- * @TODO: Improve `transformers` parameter type in overloads
  */
-export const getVariables: GetVariables = (prefix, transformers: any = {}) => {
-  if (!isNode) return {}
+export function getVariables<T = Record<string, any>>(prefix: string, transformers?: Partial<{ [P in keyof T]: (value: string) => T[P] }>): Partial<T>
+export function getVariables<T = Record<string, string>>(prefix: string): Partial<T>
+export function getVariables(prefix: string, transformers: any = {}) {
+  const environment = getEnvironment()
+  const entries = Object.entries(environment)
 
-  // --- Get the variables from the environment.
-  const environmentEntries = Object.entries(process.env)
-    .filter(([key, value]) => key.startsWith(prefix) && value !== undefined) as [string, string][]
+    // --- Filter out entries that don't match the prefix.
+    .filter(([key]) => key.startsWith(prefix))
 
-  // --- Filter out entries that don't match the prefix, map to camel case, and transformers the value.
-  const transformedVariablesEntries = environmentEntries
+    // --- Map to camel case
     .map(([key, value]) => {
       // --- Transform the key.
-      key = toCamelCase(key.replace(prefix, ''))
+      key = key.replace(prefix, '')
+      key = toCamelCase(key)
 
       // --- Transform the value.
       value = typeof transformers[key] === 'function'
@@ -37,5 +33,5 @@ export const getVariables: GetVariables = (prefix, transformers: any = {}) => {
     })
 
   // --- Create an object from the filtered entries and return it.
-  return Object.fromEntries(transformedVariablesEntries)
+  return Object.fromEntries(entries)
 }

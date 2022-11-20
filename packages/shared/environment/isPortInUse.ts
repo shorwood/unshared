@@ -5,10 +5,9 @@
  */
 export const isPortInUse = async(port: number): Promise<boolean> => {
   try {
-    const nodeNet = await import('node:net')
-    const server = nodeNet.createServer()
+    const { createServer } = await import('node:net')
+    const server = createServer()
     return await new Promise<boolean>((resolve, reject) => server
-      .listen(port)
       .on('error', reject)
       .on('listening', () => { server.close(); resolve(true) })
       .listen(port),
