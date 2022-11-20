@@ -1,20 +1,63 @@
 /* eslint-disable unicorn/prevent-abbreviations */
 
+export interface BenchmarkOptions {
+  /** Number of times to run the benchmark. */
+  iterations?: number
+  /** Cold-start the benchmark. */
+  coldStart?: boolean
+}
+
+export interface BenchmarkResult {
+  /** The average time (in milliseconds) per run. */
+  average: number
+  /** The total time (in milliseconds) of the benchmark. */
+  total: number
+  /** The average memory usage per run. */
+  memory: number
+  /** The number of iterations per run. */
+  iterations: number
+}
+
 /**
  * Benchmark a function
- * @param benchmarked The function to benchmark
- * @param iterations The number of times to run the function
- * @return The average amount of time, in milliseconds, it took to run the function
+ * @param fn The function to benchmark
+ * @param options The benchmark options
+ * @return The average amount of milliseconds it took to run the function
  */
-export const benchmark = (benchmarked: Function, iterations = 1000): number => {
-  // --- First, run the function once to avoid cold start issues
-  benchmarked()
+export const benchmark = async(fn: Function, options: BenchmarkOptions = {}): Promise<BenchmarkResult> => {
+  const { memoryUsage } = await import('node:process')
+  const { performance } = await import('node:perf_hooks')
 
-  // --- Now, run the function `iterations` times, and get the start and end timestamps
-  const start = performance.now()
-  for (let index = 0; index < iterations; index++) benchmarked()
-  const end = performance.now()
+  // --- Get options and initialize result.
+  const { iterations = 1000, coldStart = true } = options
+  const result = {
+    average: 0,
+    total: 0,
+    memory: 0,
+    iterations: 0,
+  }
 
-  // --- Return the average amount of time it took to run the function
-  return (end - start) / iterations
+  // --- Run the function once to avoid cold start issues
+  try {
+    if (coldStart) await fn()
+
+    // --- Now, run the function `iterations` times, and record the results.
+    for (let index = 0; index < iterations; index++) {
+      const startTime = performance.now()
+      const startHeap = memoryUsage().external
+      await fn()
+      const endTime = performance.now()
+      const endHeap = memoryUsage().external
+      const time = endTime - startTime
+      const memory = endHeap - startHeap
+      result.iterations++
+      result.total += time
+      result.memory = (result.memory + memory) / 2
+    }
+  }
+  catch { /* Ignore errors */ }
+
+  // --- Calculate the average time and return the result.
+  result.average = result.total / result.iterations
+  return result
 }
