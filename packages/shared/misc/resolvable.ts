@@ -7,6 +7,8 @@ export interface Resolvable<T> {
   reset: () => void
 }
 
+// TODO: Proxyfy the state object so that it can be used as a promise.
+
 /**
  * Creates a new resolvable object with convenience methods for Promise resolution and state management.
  * @return A new resolvable object
