@@ -1,6 +1,6 @@
 export * from './hashCyrb53'
 export * from './hashJenkins'
 export * from './hashMd5'
-export * from './random'
+export * from './randomInt'
 export * from './randomFloat'
 export * from './randomString'
