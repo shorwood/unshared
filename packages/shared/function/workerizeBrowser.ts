@@ -16,8 +16,8 @@ export const workerizeBrowser = <T extends (...args: any) => any>(callback: T): 
   import { parentPort, isMainThread, threadId, workerData } from 'worker_threads'
   if (isMainThread) throw new Error('Workerize can only be called from a Worker thread.')
   const run = (${callback.toString()})
-  parentPort.on('message', data => {
-    const result = run(data)
+  parentPort.on('message', async data => {
+    const result = await run(data)
     parentPort.postMessage(result)
     process.exit()
   })`

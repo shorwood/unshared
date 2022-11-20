@@ -1,7 +1,5 @@
-/* eslint-disable unicorn/prefer-add-event-listener */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable unicorn/prevent-abbreviations */
-import { requireSafe } from '../module/requireSafe'
+import { randomString } from '../crypto'
 
 /**
  * Workerize a runtime function so that it can be run in a separate thread.
@@ -9,38 +7,29 @@ import { requireSafe } from '../module/requireSafe'
  * @return The workerized function
  * @example
  * const add = (a: number, b: number): number => a + b
- * const addWorkerized = workerizeBrowser(myFunction)
+ * const addWorkerized = await workerizeNode(myFunction)
  * await addWorkerized(2, 3) // => 5
  */
-export const workerizeNode = <T extends (...args: any) => any>(callback: T): (...args: Parameters<T>) => Promise<ReturnType<T>> => {
-  const fs = requireSafe('node:fs')
-  const os = requireSafe('node:os')
-  const path = requireSafe('node:path')
-  const workerThreads = requireSafe('node:worker_threads')
-
-  // --- Missing dependency.
-  if (!fs) throw new Error('Cannot workerize function. Missing dependency "node:fs"')
-  if (!os) throw new Error('Cannot workerize function. Missing dependency "node:os"')
-  if (!path) throw new Error('Cannot workerize function. Missing dependency "node:path"')
-  if (!workerThreads) throw new Error('Cannot workerize function. Missing dependency "node:worker_threads"')
-
-  const { writeFileSync, rmSync } = fs
-  const { tmpdir } = os
-  const { join } = path
-  const { Worker } = workerThreads
+export const workerizeNode = async<T extends (...args: any) => any>(callback: T): Promise<(...args: Parameters<T>) => Promise<ReturnType<T>>> => {
+  const { writeFile, rm } = await import('node:fs/promises')
+  const { tmpdir } = await import('node:os')
+  const { join } = await import('node:path')
+  const { Worker } = await import('node:worker_threads')
 
   const code = `
   import { parentPort, isMainThread, threadId, workerData } from 'worker_threads'
   if (isMainThread) throw new Error('Workerize can only be called from a Worker thread.')
   const run = (${callback.toString()})
-  parentPort.on('message', data => {
-    const result = run(data)
+  parentPort.on('message', async data => {
+    const result = await run(data)
     parentPort.postMessage(result)
     process.exit()
   })`
 
-  const filePath = `${join(tmpdir(), `worker-${new Date().getSeconds()}`)}.js`
-  writeFileSync(filePath, code)
+  const fileName = `${randomString(16)}.js`
+  const fileDir = tmpdir()
+  const filePath = join(fileDir, fileName)
+  await writeFile(filePath, code)
 
   // --- Instantiate the worker.
   const worker = new Worker(filePath)
@@ -51,7 +40,7 @@ export const workerizeNode = <T extends (...args: any) => any>(callback: T): (..
   })
 
   // --- Remove temporary script on exit.
-  const exitHandler = () => rmSync(filePath)
+  const exitHandler = () => rm(filePath)
   process.on('exit', exitHandler)
   process.on('SIGINT', exitHandler)
   process.on('SIGUSR1', exitHandler)
