@@ -9,6 +9,7 @@ it.each([
 
   // --- Returns false
   [false, [1, 2, 3]],
+  [false, ''],
   [false, {}],
 
 ])('should return %s when checking if %s is an empty array', (expected, value: any) => {

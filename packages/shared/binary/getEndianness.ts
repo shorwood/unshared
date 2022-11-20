@@ -1,4 +1,3 @@
-
 /**
  * Get the endianness of the current runtime
  * @warning Prefer `endianness` over this function as the result won't change.

@@ -6,6 +6,6 @@
  * isArrayEmpty([]) // true
  * isArrayEmpty([1, 2, 3]) // false
  */
-export const isArrayEmpty = (array: any[]): array is [] =>
+export const isArrayEmpty = (array: unknown[]): array is [] =>
   Array.isArray(array)
   && array.length === 0

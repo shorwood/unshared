@@ -49,13 +49,9 @@ it.each([
 
 ])('should validate a value against a set of rules', async(value, ruleSet: any, expected: any) => {
   const result = await validateRuleSet(value, ruleSet).catch((error: any) => error.message)
-
-  // --- Simplify the assertment.
-  delete result.results
-  result.error = result.error?.message
-
-  console.log(result)
-
-  // --- Assert.
-  expect(result).toEqual(expected)
+  expect(result.valid).toEqual(expected.valid)
+  expect(result.failed).toEqual(expected.failed)
+  expect(result.value).toEqual(expected.value)
+  expect(result.isValid).toEqual(expected.isValid)
+  if (expected.error) expect(result.error.message).toEqual(expected.error)
 })

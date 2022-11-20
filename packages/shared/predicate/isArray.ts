@@ -6,5 +6,5 @@
  * isArray([]) // true
  * isArray({}) // false
  */
-export const isArray = (value: any): value is any[] =>
+export const isArray = (value: unknown): value is unknown[] =>
   Array.isArray(value)

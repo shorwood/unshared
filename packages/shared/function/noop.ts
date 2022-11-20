@@ -1,6 +1,5 @@
-
-/** Empty function. */
+/**
+ * Empty function.
+ * @return `undefined`.
+ */
 export const noop = () => {}
-
-/** Empty async function. */
-export const noopAsync = async() => {}
