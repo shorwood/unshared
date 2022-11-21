@@ -54,19 +54,8 @@
     "vitest": "^0.25.2"
   },
   "eslintConfig": {
-    "ignorePatterns": [
-      "dist",
-      "node_modules",
-      "LICENCE",
-      ".github",
-      ".vscode",
-      "*.yaml",
-      "*.mjs",
-      "*.js"
-    ],
     "extends": [
-      "@hsjm/eslint-config/basic",
-      "@hsjm/eslint-config/typescript"
+      "@hsjm/eslint-config"
     ]
   }
 }
