@@ -7,7 +7,7 @@ export default defineConfig({
   onSuccess: 'pnpm build:post && pnpm build:lint',
   outDir: 'dist',
   format: ['esm', 'cjs', 'iife'],
-  entry: ['index.ts'],
+  entry: ['index.ts', '*/index.ts'],
   treeshake: isProduction(),
   splitting: isProduction(),
   minify: isProduction(),
