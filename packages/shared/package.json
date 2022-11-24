@@ -20,6 +20,71 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
+    "./binary": {
+      "require": "./dist/binary/index.cjs",
+      "import": "./dist/binary/index.js",
+      "types": "./dist/binary/index.d.ts"
+    },
+    "./collection": {
+      "require": "./dist/collection/index.cjs",
+      "import": "./dist/collection/index.js",
+      "types": "./dist/collection/index.d.ts"
+    },
+    "./color": {
+      "require": "./dist/color/index.cjs",
+      "import": "./dist/color/index.js",
+      "types": "./dist/color/index.d.ts"
+    },
+    "./crypto": {
+      "require": "./dist/crypto/index.cjs",
+      "import": "./dist/crypto/index.js",
+      "types": "./dist/crypto/index.d.ts"
+    },
+    "./environment": {
+      "require": "./dist/environment/index.cjs",
+      "import": "./dist/environment/index.js",
+      "types": "./dist/environment/index.d.ts"
+    },
+    "./function": {
+      "require": "./dist/function/index.cjs",
+      "import": "./dist/function/index.js",
+      "types": "./dist/function/index.d.ts"
+    },
+    "./misc": {
+      "require": "./dist/misc/index.cjs",
+      "import": "./dist/misc/index.js",
+      "types": "./dist/misc/index.d.ts"
+    },
+    "./module": {
+      "require": "./dist/module/index.cjs",
+      "import": "./dist/module/index.js",
+      "types": "./dist/module/index.d.ts"
+    },
+    "./number": {
+      "require": "./dist/number/index.cjs",
+      "import": "./dist/number/index.js",
+      "types": "./dist/number/index.d.ts"
+    },
+    "./predicate": {
+      "require": "./dist/predicate/index.cjs",
+      "import": "./dist/predicate/index.js",
+      "types": "./dist/predicate/index.d.ts"
+    },
+    "./string": {
+      "require": "./dist/string/index.cjs",
+      "import": "./dist/string/index.js",
+      "types": "./dist/string/index.d.ts"
+    },
+    "./types": {
+      "require": "./dist/types/index.cjs",
+      "import": "./dist/types/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./validation": {
+      "require": "./dist/validation/index.cjs",
+      "import": "./dist/validation/index.js",
+      "types": "./dist/validation/index.d.ts"
+    },
     "./package.json": "./package.json"
   },
   "files": [

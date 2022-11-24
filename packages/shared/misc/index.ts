@@ -1,3 +1,4 @@
+export * from './awaitable'
 export * from './compare'
 export * from './convertToUnit'
 export * from './sleep'
