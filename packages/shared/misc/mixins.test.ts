@@ -43,3 +43,14 @@ it('should preserve the `this` context', () => {
   expect(result.getBar()).toBe('bar')
   expect(result.getBaz()).toBe('baz')
 })
+
+it('should preserve private properties', () => {
+  class ClassA { private foo = 'foo' }
+  class ClassB { private bar = 'bar' }
+  class ClassC { private baz = 'baz' }
+  class Result extends mixins(ClassA, ClassB, ClassC) {}
+  const result = new Result()
+  expect(result).toHaveProperty('foo', 'foo')
+  expect(result).toHaveProperty('bar', 'bar')
+  expect(result).toHaveProperty('baz', 'baz')
+})
