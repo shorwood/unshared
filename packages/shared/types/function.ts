@@ -12,6 +12,3 @@ export type IteratorFunction<T, R> = (value: Values<T>, key: Key<T>, object: T) 
 
 /** Remove first argument from a function */
 export type OmitFirstParameter<F> = F extends (x: any, ...parameters: infer P) => infer U ? (...parameters: P) => U : never
-
-/** An object that is awaitable. */
-export type Awaitable<T> = T & PromiseLike<T>
