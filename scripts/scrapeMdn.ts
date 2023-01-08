@@ -1,5 +1,10 @@
 import axios from 'axios'
 
+interface MdnEntry {
+  name: string
+  document: string
+}
+
 /**
  * Parse an MDN raw content and transforms {{HTTP*}} and {{Glossary}} into links.
  * @param content The raw MDN content.
@@ -75,9 +80,4 @@ export const scrapeMdn = async(path: string): Promise<MdnEntry[]> => {
   )
 
   return entries.filter(Boolean) as MdnEntry[]
-}
-
-interface MdnEntry {
-  name: string
-  document: string
 }

@@ -19,8 +19,8 @@
 
 ### Before submitting the PR, please make sure you do the following
 
-- [ ] Read the [Contributing Guidelines](https://github.com/hsjm-io/hsjm/blob/main/CONTRIBUTING.md).
-- [ ] Read the [Pull Request Guidelines](https://github.com/hsjm-io/hsjm/blob/main/packages/guidelines.md).
+- [ ] Read the [Contributing Guidelines](https://github.com/shorwood/unshared/blob/main/CONTRIBUTING.md).
+- [ ] Read the [Pull Request Guidelines](https://github.com/shorwood/unshared/blob/main/packages/guidelines.md).
 - [ ] Check that there isn't already a PR that solves the problem the same way to avoid creating a duplicate.
 - [ ] Provide a description in this PR that addresses **what** the PR is solving, or reference the issue that it solves (e.g. `fixes #123`).
 - [ ] Ideally, include relevant tests that fail without this PR but pass with it.

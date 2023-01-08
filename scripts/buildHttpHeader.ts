@@ -15,7 +15,7 @@ export const buildHttpHeader = async(): Promise<void> => {
 
   // --- Build the output string and write it to a file
   const output = buildEnum('HttpHeader', entries)
-  const path = resolve(__dirname, '../packages/shared/network/httpHeader.ts')
+  const path = resolve(__dirname, '../packages/network/httpHeader.ts')
   await writeFile(path, output)
 }
 

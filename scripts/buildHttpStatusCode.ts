@@ -15,7 +15,7 @@ export const buildHttpStatusCode = async(): Promise<void> => {
 
   // --- Build the output string and write it to a file
   const output = buildEnum('HttpStatusCode', entries)
-  const path = resolve(__dirname, '../packages/shared/network/httpStatusCode.ts')
+  const path = resolve(__dirname, '../packages/network/httpStatusCode.ts')
   await writeFile(path, output)
 }
 

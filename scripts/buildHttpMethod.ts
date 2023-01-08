@@ -15,7 +15,7 @@ export const buildHttpMethod = async(): Promise<void> => {
 
   // --- Build the output string and write it to a file
   const output = buildEnum('HttpMethod', entries)
-  const path = resolve(__dirname, '../packages/shared/network/httpMethod.ts')
+  const path = resolve(__dirname, '../packages/network/httpMethod.ts')
   await writeFile(path, output)
 }
 

@@ -1,5 +1,5 @@
 name: "\U0001F41E Bug report"
-description: Report an issue with `hsjm`
+description: Report an issue with `unshared`
 labels: [pending triage]
 body:
   - type: markdown
@@ -18,7 +18,7 @@ body:
     id: reproduction
     attributes:
       label: Reproduction
-      # description: Please provide a link via [hsjm](https://stackblitz.com/edit/vitejs-vite-rptfks/) or a link to a repo that can reproduce the problem you ran into. A [minimal reproduction](https://stackoverflow.com/help/minimal-reproducible-example) is required.
+      # description: Please provide a link via [unshared](https://stackblitz.com/edit/vitejs-vite-rptfks/) or a link to a repo that can reproduce the problem you ran into. A [minimal reproduction](https://stackoverflow.com/help/minimal-reproducible-example) is required.
       placeholder: Reproduction
     validations:
       required: true
@@ -26,7 +26,7 @@ body:
     id: system-info
     attributes:
       label: System Info
-      description: Output of `npx envinfo --system --npmPackages '{vue,hsjm}' --binaries --browsers`
+      description: Output of `npx envinfo --system --npmPackages '{vue,unshared}' --binaries --browsers`
       render: Shell
       placeholder: System, Binaries, Browsers
     validations:
@@ -48,17 +48,17 @@ body:
       label: Validations
       description: Before submitting the issue, please make sure you do the following
       options:
-        - label: Follow our [Code of Conduct](https://github.com/hsjm-io/hsjm/blob/main/CODE_OF_CONDUCT.md)
+        - label: Follow our [Code of Conduct](https://github.com/unshared-io/unshared/blob/main/CODE_OF_CONDUCT.md)
           required: true
-        - label: Read the [Contributing Guidelines](https://github.com/hsjm-io/hsjm/blob/main/CONTRIBUTING.md).
+        - label: Read the [Contributing Guidelines](https://github.com/unshared-io/unshared/blob/main/CONTRIBUTING.md).
           required: true
-        # - label: Read the [docs](https://docs.hsjm.io/guide).
+        # - label: Read the [docs](https://docs.unshared.io/guide).
         #   required: true
-        - label: Check that there isn't [already an issue](https://github.com/hsjm-io/hsjm/issues) that reports the same bug to avoid creating a duplicate.
+        - label: Check that there isn't [already an issue](https://github.com/unshared-io/unshared/issues) that reports the same bug to avoid creating a duplicate.
           required: true
-        - label: Make sure this is a `hsjm` issue and not a framework-specific issue. For example, if it's a Vue SFC related bug, it should likely be reported to https://github.com/vuejs/core instead.
+        - label: Make sure this is a `unshared` issue and not a framework-specific issue. For example, if it's a Vue SFC related bug, it should likely be reported to https://github.com/vuejs/core instead.
           required: true
-        - label: Check that this is a concrete bug. For Q&A open a [GitHub Discussion](https://github.com/hsjm-io/hsjm/discussions).
+        - label: Check that this is a concrete bug. For Q&A open a [GitHub Discussion](https://github.com/unshared-io/unshared/discussions).
           required: true
         - label: The provided reproduction is a [minimal reproducible example](https://stackoverflow.com/help/minimal-reproducible-example) of the bug.
           required: true
