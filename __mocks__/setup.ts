@@ -1,7 +1,7 @@
 import { fs, vol } from 'memfs'
-import { afterEach, beforeAll, vi } from 'vitest'
+import { afterEach, beforeEach, vi } from 'vitest'
 
-beforeAll(() => {
+beforeEach(() => {
   vi.mock('node:fs', () => fs)
   vi.mock('node:fs/promises', () => fs.promises)
   vi.mock('firebase/firestore')
