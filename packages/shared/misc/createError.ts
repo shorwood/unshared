@@ -39,8 +39,8 @@ export function createError(cause?: Error | HTTPError | string, name?: string, s
     : cause as HTTPError
 
   // --- Set additional properties
-  error.name = name || 'E_UNKNOWN'
-  error.statusCode = error.statusCode || statusCode || 500
+  error.name = name || error.name || 'E_UNKNOWN'
+  error.statusCode = statusCode || error.statusCode || 500
 
   // --- Capture stack trace and return
   Error.captureStackTrace(error, createError)
