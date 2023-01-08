@@ -1,16 +1,6 @@
 import { PathLike } from 'node:fs'
 import { FileHandle } from 'node:fs/promises'
 
-// TODO: Support .yaml files
-// TODO: Support .toml files
-// TODO: Support .xml files
-// TODO: Support .ini files
-// TODO: Support .csv files
-// TODO: Support .tsv files
-// TODO: Support .env files
-// TODO: Support .properties files
-// TODO: Support .xslx files
-
 /**
  * Exports an object as a JSON file.
  * @param pathOrFd The path or file descriptor to the output file.

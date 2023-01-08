@@ -10,7 +10,7 @@
  * @see https://github.com/hapijs/bourne
  */
 export const parseJson = <T = unknown>(json: string): T => {
-  if (typeof json !== 'string') throw new TypeError('Expected a string')
+  if (typeof json !== 'string') throw new TypeError('Cannot parse non-string JSON.')
 
   // --- Return the value early.
   const value = json.toLowerCase().trim()
@@ -22,7 +22,7 @@ export const parseJson = <T = unknown>(json: string): T => {
   if (value === 'undefined') return undefined as any
 
   // --- If the input looks like invalid JSON, return input.
-  if (!/^["[{]|^-?\d[\d.]{0,14}$/.test(json)) throw new Error('Invalid JSON')
+  if (!/^["[{]|^-?\d[\d.]{0,14}$/.test(json)) throw new SyntaxError('Invalid JSON.')
 
   // --- Parse the old way but delete `__proto__` and `constuctor` properties if need be.
   return (
