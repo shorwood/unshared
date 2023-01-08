@@ -1,4 +1,4 @@
-import { kindOf } from './kindOf'
+import { kindOf } from '../misc/kindOf'
 
 /**
  * Checks if the value is of a specific kind.
