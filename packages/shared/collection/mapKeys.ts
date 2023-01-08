@@ -1,10 +1,3 @@
-interface MapKeys {
-  <T>(object: Array<T>, path: keyof T): Record<string, T>
-  <T>(object: Array<T>, iterator: (value: T, key: keyof T, array: Array<T>) => string): Record<string, T>
-  <T>(object: Record<string, T>, path: keyof T): Record<string, T>
-  <T>(object: Record<string, T>, iterator: (value: T, key: keyof T, object: Record<string, T>) => string): Record<string, T>
-}
-
 // TODO: Implements `get` path iterator
 
 /**
@@ -13,7 +6,11 @@ interface MapKeys {
  * @param iterator The iterator function or path
  * @return The new object with mapped keys
  */
-export const mapKeys: MapKeys = (object: any, iterator: any): any => {
+export function mapKeys<T>(object: Array<T>, path: keyof T): Record<string, T>
+export function mapKeys<T>(object: Array<T>, iterator: (value: T, key: keyof T, array: Array<T>) => string): Record<string, T>
+export function mapKeys<T>(object: Record<string, T>, path: keyof T): Record<string, T>
+export function mapKeys<T>(object: Record<string, T>, iterator: (value: T, key: keyof T, object: Record<string, T>) => string): Record<string, T>
+export function mapKeys(object: any, iterator: any): any {
   // --- If iterator is a path, cast as getter function.
   if (typeof iterator !== 'function') {
     const path = iterator

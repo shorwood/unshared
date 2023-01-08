@@ -11,7 +11,8 @@ import { validateRuleSet } from './validateRuleSet'
  * await validator(NaN) // true
  * await validator(1) // 'Failed rule: isNaN'
  */
-export const createValidator = (ruleSet: ValidationRuleSet, defaultContext?: Record<string, any>) => async(value?: any, context?: Record<string, any>) => {
-  const { isValid, error } = await validateRuleSet(value, ruleSet, { ...defaultContext, ...context })
-  return isValid ? true : error?.message
-}
+export const createValidator = (ruleSet: ValidationRuleSet, defaultContext?: Record<string, any>) =>
+  async(value?: any, context?: Record<string, any>) => {
+    const { isValid, error } = await validateRuleSet(value, ruleSet, { ...defaultContext, ...context })
+    return isValid ? true : error?.message
+  }

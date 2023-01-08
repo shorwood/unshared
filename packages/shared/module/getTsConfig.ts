@@ -1,6 +1,6 @@
 import { TSConfigJSON } from 'types-tsconfig'
+import { loadObject } from '../io/loadObject'
 import { getTsConfigPath } from './getTsConfigPath'
-import { loadObject } from './loadObject'
 
 /**
  * Get the content of the `tsconfig.json` file from a context directory.

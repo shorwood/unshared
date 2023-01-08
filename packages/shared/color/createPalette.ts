@@ -2,7 +2,7 @@ import { clamp } from '../number/clamp'
 import { hslToHex } from './hslToHex'
 import { hexToHsl } from './hexToHsl'
 
-export interface CreatePaletteOptions<K extends number> {
+export interface CreatePaletteOptions<K extends number = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900> {
   /** Luminance increase each stops. */
   stepUp?: number
   /** Luminance decrease each stops. */
@@ -26,7 +26,7 @@ export interface CreatePaletteOptions<K extends number> {
  * @return A palette of colors
  * @see https://github.com/anheric/tailwindshades/blob/master/src/components/Shades.vue#L336
  */
-export const createPalette = <K extends number = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900>(color: string, options: CreatePaletteOptions<K> = {}): Record<K, string> => {
+export const createPalette = <K extends number>(color: string, options: CreatePaletteOptions<K> = {}): Record<K, string> => {
 // --- Destructure options.
   const {
     stepUp = 8,
@@ -60,5 +60,5 @@ export const createPalette = <K extends number = 50 | 100 | 200 | 300 | 400 | 50
   })
 
   // --- Return palette.
-  return Object.fromEntries(shades) as Record<string, string>
+  return Object.fromEntries(shades) as Record<K, string>
 }

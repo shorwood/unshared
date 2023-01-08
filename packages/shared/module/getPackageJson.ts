@@ -1,6 +1,6 @@
 import { PackageJSON } from 'types-pkg-json'
+import { loadObject } from '../io/loadObject'
 import { getPackageJsonPath } from './getPackageJsonPath'
-import { loadObject } from './loadObject'
 
 /**
  * Get the content of the `package.json` file from a context directory.

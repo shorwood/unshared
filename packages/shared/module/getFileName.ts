@@ -2,6 +2,7 @@
  * Get the file name of an absolute path without the extension.
  * @param path The absolute path.
  * @returns The file name.
+ * @throws If the path is invalid.
  * @example
  * getFileName('/path/to/file.js') // returns 'file'
  */

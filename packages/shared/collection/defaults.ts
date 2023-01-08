@@ -16,7 +16,7 @@ export interface Defaults {
  */
 export const defaults: Defaults = (object: any, from: any, depth = 0): any => {
   // --- Handle edge cases.
-  if (typeof depth !== 'number') throw new Error('Depth must be a number.')
+  if (typeof depth !== 'number') throw new TypeError('Depth must be a number.')
   if (typeof object !== 'object') return object ?? from
   if (!from) return { ...object }
 

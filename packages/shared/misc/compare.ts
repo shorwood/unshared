@@ -1,4 +1,4 @@
-import { kindOf } from '../predicate/kindOf'
+import { kindOf } from './kindOf'
 
 const typeOrder = [
   'undefined',

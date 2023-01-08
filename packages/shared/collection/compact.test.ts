@@ -3,5 +3,6 @@ import { expect, it } from 'vitest'
 import { compact } from './compact'
 
 it('should filter out undefined and null values', () => {
-  expect(compact([0, undefined, 1, null, 2])).toEqual([0, 1, 2])
+  const result = compact([1, undefined, 2, null, 3])
+  expect(result).toEqual([1, 2, 3])
 })

@@ -15,5 +15,5 @@ it('should apply default values to nested objects', () => {
   const defaultValue = { a: 1, b: 2, c: 3, d: 4, e: 5, f: { a: 1 }, g: [1] }
   const expected = { a: 1, b: 2, c: 0, d: false, e: '', f: { a: 1 }, g: [1] }
   const result = defaults<any>(object, defaultValue, 1)
-  expect(result, JSON.stringify(result)).toEqual(expected)
+  expect(result).toEqual(expected)
 })

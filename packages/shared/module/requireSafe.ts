@@ -36,8 +36,8 @@ export function requireSafe(moduleId: 'node:vm'): typeof import('node:vm') | und
 export function requireSafe<T = unknown>(moduleId: string): T | undefined
 export function requireSafe<T = unknown>(moduleId: string, from: string | URL = import.meta.url): T | undefined {
   try {
-    const __require = require('node:module').createRequire(from) ?? require
-    return __require(moduleId)
+    const nodeRequire = require('node:module').createRequire(from) ?? require
+    return nodeRequire(moduleId)
   }
   catch {}
 }

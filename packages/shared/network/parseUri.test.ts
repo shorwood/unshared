@@ -112,7 +112,7 @@ it.each([
     hostName: '-',
   }],
 
-])('should extract the components of %s', (url, expected: any) => {
+])('should extract the components of "%s"', (url, expected: any) => {
   const result = parseUri(url)
   expect(result).toEqual(expected)
 })

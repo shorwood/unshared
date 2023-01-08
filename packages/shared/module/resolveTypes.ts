@@ -1,7 +1,7 @@
 
 import { PackageJSON } from 'types-pkg-json'
 import { tries } from '../function/tries'
-import { loadObject } from './loadObject'
+import { loadObject } from '../io/loadObject'
 import { resolveAncestor } from './resolveAncestor'
 import { resolveImport } from './resolveImport'
 import { resolveModule } from './resolveModule'
