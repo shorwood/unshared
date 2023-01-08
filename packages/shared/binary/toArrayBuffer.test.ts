@@ -50,16 +50,19 @@ it.each([
   [() => ({ a: 1 }), '2829203d3e20287b20613a2031207d29'],
   [{ a: 1 }, '7b2261223a317d'],
 
-])('converts "%s" to an ArrayBuffer equal to "%s"', (input: any, expected: string, from?: string) => {
+])('should convert "%s" to an ArrayBuffer equal to "%s"', (input: any, expected: string, from?: string) => {
   const result = toArrayBuffer(input, from as any)
   const resultHex = toHex(result)
   expect(result).toBeInstanceOf(ArrayBuffer)
   expect(resultHex).toEqual(expected)
 })
 
-it('throws an error if the value is not bufferizable', () => {
-  expect(() => toArrayBuffer('?', 'hex')).toThrowError()
-  expect(() => toArrayBuffer('?', 'base64')).toThrowError()
-  expect(() => toArrayBuffer(1n)).toThrowError()
-  expect(() => toArrayBuffer(1n, 'uint8')).toThrowError()
+it.each([
+  ['?', 'hex'],
+  ['?', 'base64'],
+  [1n],
+  [1n, 'uint8'],
+])('should throws an error if the value is not bufferizable', (input: any, from?: string) => {
+  const shouldThrow = () => toArrayBuffer(input, from as any)
+  expect(shouldThrow).toThrowError()
 })

@@ -3,11 +3,10 @@ import { vol } from 'memfs'
 import { getPackageJsonPath } from './getPackageJsonPath'
 
 it('should get the package.json path', async() => {
-  const json = {
+  vol.fromJSON({
     '/home/user/project/package.json': '',
     '/package.json': '',
-  }
-  vol.fromJSON(json)
+  })
   const result = await getPackageJsonPath('/home/user/project')
   expect(result).toStrictEqual('/home/user/project/package.json')
 })

@@ -1,6 +1,6 @@
 /**
  * Get the endianness of the current runtime
- * @warning Prefer `endianness` over this function as the result won't change.
+ * @deprecated Prefer `endianness` over this function as the result won't change.
  * @returns The endianness of the runtime
  */
 export const getEndianness = (): 'LE' | 'BE' => {

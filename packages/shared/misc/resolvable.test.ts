@@ -1,13 +1,13 @@
 import { expect, it } from 'vitest'
 import { resolvable } from './resolvable'
 
-it.concurrent('should initialize', () => {
+it('should initialize', () => {
   const state = resolvable()
   expect(state.pending).toEqual(true)
   expect(state.resolved).toEqual(false)
 })
 
-it.concurrent('should resolve a value', async() => {
+it('should resolve a value', async() => {
   const value = 'test'
   const state = resolvable<string>()
   setTimeout(() => state.resolve(value), 10)
@@ -16,7 +16,7 @@ it.concurrent('should resolve a value', async() => {
   expect(state.resolved).toEqual(true)
 }, 20)
 
-it.concurrent('should reject a value', async() => {
+it('should reject a value', async() => {
   const value = 'test'
   const state = resolvable<string>()
   setTimeout(() => state.reject(value), 10)
@@ -25,7 +25,7 @@ it.concurrent('should reject a value', async() => {
   expect(state.resolved).toEqual(false)
 }, 20)
 
-it.concurrent('should be resolved after reset is called if already resolved', () => {
+it('should be resolved after reset is called if already resolved', () => {
   const state = resolvable()
   state.resolve()
   state.reset()
@@ -33,7 +33,7 @@ it.concurrent('should be resolved after reset is called if already resolved', ()
   expect(state.resolved).toEqual(false)
 })
 
-it.concurrent('should be pending after reset is called if already rejected', () => {
+it('should be pending after reset is called if already rejected', () => {
   const state = resolvable()
   state.reject()
   state.reset()
