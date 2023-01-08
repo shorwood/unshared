@@ -40,6 +40,3 @@ export type NotNil<U = any> = U extends null | undefined ? never : U
 
 /** Replace `undefined` with `U`. */
 export type Default<T, U> = T extends undefined ? NotUndefined<T> | U : T
-
-/** An object that is optionally asyncronous. */
-export type Awaitable<T> = T & PromiseLike<T>

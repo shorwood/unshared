@@ -1,4 +1,5 @@
-import { Awaitable } from '../types'
+/** An object that is optionally asyncronous. */
+export type Awaitable<T> = T & PromiseLike<T>
 
 /**
  * Extend an an object with a promise that resolves with the same object.
