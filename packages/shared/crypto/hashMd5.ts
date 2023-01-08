@@ -130,7 +130,13 @@ const preprocess = (data: ArrayBuffer) => {
   return new Uint32Array(buffer.buffer)
 }
 
-export const hashMd5 = (data: ArrayBuffer) => {
+/**
+ * Hashes the given data using the [MD5](https://en.wikipedia.org/wiki/MD5) algorithm.
+ * @param data The data to hash.
+ * @returns The hash of the data.
+ * @see https://en.wikipedia.org/wiki/MD5
+ */
+export const hashMd5 = (data: ArrayBufferLike): ArrayBuffer => {
   // --- Preprocess data buffer and initialize data.
   const chunks = preprocess(data)
   const hash = new Uint32Array([0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476])
