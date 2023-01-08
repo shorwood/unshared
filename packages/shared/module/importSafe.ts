@@ -33,7 +33,8 @@ export async function importSafe(moduleId: 'node:querystring'): Promise<typeof i
 export async function importSafe(moduleId: 'node:stream'): Promise<typeof import('stream') | undefined>
 export async function importSafe(moduleId: 'node:v8'): Promise<typeof import('node:v8') | undefined>
 export async function importSafe(moduleId: 'node:vm'): Promise<typeof import('node:vm') | undefined>
+export async function importSafe<T = unknown>(moduleId: string): Promise<T | undefined>
 export async function importSafe<T = unknown>(moduleId: string): Promise<T | undefined> {
-  try { return import(moduleId) }
+  try { return await import(moduleId) }
   catch {}
 }
