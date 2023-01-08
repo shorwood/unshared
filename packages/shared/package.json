@@ -99,7 +99,7 @@
     "build:lint": "eslint package.json --fix --no-ignore"
   },
   "devDependencies": {
-    "@types/node": "^18.11.9",
+    "@types/node": "^18.11.18",
     "types-pkg-json": "^1.2.1",
     "types-tsconfig": "^1.2.1"
   }
