@@ -1,0 +1,39 @@
+{
+  "name": "@unshared/thread",
+  "version": "1.0.0",
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shorwood/unshared.git",
+    "directory": "packages/thread"
+  },
+  "sideEffects": false,
+  "exports": {
+    "./ipcPublish": {
+      "import": "./dist/ipcPublish.js",
+      "require": "./dist/ipcPublish.cjs",
+      "types": "./dist/ipcPublish.d.ts"
+    },
+    "./ipcRequest": {
+      "import": "./dist/ipcRequest.js",
+      "require": "./dist/ipcRequest.cjs",
+      "types": "./dist/ipcRequest.d.ts"
+    },
+    "./ipcRespond": {
+      "import": "./dist/ipcRespond.js",
+      "require": "./dist/ipcRespond.cjs",
+      "types": "./dist/ipcRespond.d.ts"
+    },
+    "./ipcSubscribe": {
+      "import": "./dist/ipcSubscribe.js",
+      "require": "./dist/ipcSubscribe.cjs",
+      "types": "./dist/ipcSubscribe.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
+}
