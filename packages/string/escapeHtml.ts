@@ -11,3 +11,6 @@ export const escapeHtml = (value: string): string => value
   .replace(/>/g, '&gt;')
   .replace(/"/g, '&quot;')
   .replace(/'/g, '&#39;')
+
+// @TODO: Remplace in one pass
+// @TODO: Avoid multiple replacing already escaped characters
