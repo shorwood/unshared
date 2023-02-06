@@ -48,3 +48,34 @@ it('should wrap promise and return the resolved value', async() => {
   expect(result).toEqual(object)
   expect(result).resolves.toEqual('bar')
 })
+
+it('should preserver the `this` context of it\'s methods', async() => {
+  const object = { value: 'bar', [Symbol.iterator]() { return this.value[Symbol.iterator]() } }
+  const result = awaitable(object)
+  const characters = []
+  for (const value of result) characters.push(value)
+  expect(characters).toEqual(['b', 'a', 'r'])
+  expect(result).toHaveProperty('value', 'bar')
+})
+
+it('should throw an error if the promise is not a promise or a promise factory', () => {
+  const object = { foo: 'bar' }
+  const shouldThrow = () => awaitable(object, 'foo' as any)
+  expect(shouldThrow).toThrow(TypeError)
+})
+
+it('should wrap a promise factory with a promise that resolves with the same promise', async() => {
+  const object = { foo: 'bar' }
+  const promise = new Promise<void>(resolve => resolve())
+  const result = awaitable(object, () => promise)
+  expect(result).toEqual(object)
+  expect(result).resolves.toEqual(object)
+})
+
+it('should wrap a promise factory and return the resolved value', async() => {
+  const object = { foo: 'bar' }
+  const promise = new Promise<string>(resolve => resolve('bar'))
+  const result = awaitable(object, () => promise)
+  expect(result).toEqual(object)
+  expect(result).resolves.toEqual('bar')
+});
