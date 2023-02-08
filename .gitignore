@@ -4,3 +4,6 @@ dist/
 docs/api
 docs/**/metadata.json
 *.log
+
+# Source as distribution.
+!packages/eslint-config/dist/

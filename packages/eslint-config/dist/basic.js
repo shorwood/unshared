@@ -13,6 +13,8 @@ module.exports = {
     'plugin:yml/standard',
     'plugin:markdown/recommended',
     'plugin:unicorn/recommended',
+    'plugin:jsdoc/recommended',
+    'plugin:sonarjs/recommended',
   ],
   ignorePatterns: [
     '*.min.*',
@@ -36,7 +38,9 @@ module.exports = {
   ],
   plugins: [
     'html',
+    'jsdoc',
     'unicorn',
+    'sonarjs',
   ],
   settings: {
     'import/resolver': {
@@ -250,7 +254,7 @@ module.exports = {
     'unicorn/escape-case': 'error',
     'unicorn/no-array-instanceof': 'error',
     'unicorn/no-new-buffer': 'error',
-    'unicorn/no-unsafe-regex': 'off',
+    'unicorn/no-unsafe-regex': 'error',
     'unicorn/number-literal-case': 'error',
     'unicorn/prefer-exponentiation-operator': 'error',
     'unicorn/prefer-includes': 'error',
@@ -264,9 +268,12 @@ module.exports = {
     'unicorn/prefer-module': 'off',
     'unicorn/no-array-for-each': 'off',
     'unicorn/filename-case': ['error', { cases: { camelCase: true, pascalCase: true } }],
+    'unicorn/consistent-function-scoping': 'off',
     'unicorn/prevent-abbreviations': ['error', {
       allowList: {
         props: true,
+        args: true,
+        fn: true,
       },
     }],
 
@@ -278,5 +285,9 @@ module.exports = {
     // yml
     'yml/quotes': ['error', { prefer: 'single', avoidEscape: false }],
     'yml/no-empty-document': 'off',
+
+    // --- JSDOC
+    'jsdoc/require-jsdoc': 'off',
+    'jsdoc/check-alignment': 'error',
   },
 }

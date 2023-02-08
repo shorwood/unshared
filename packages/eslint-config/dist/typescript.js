@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/prefer-module */
-const basic = require('./basic')
+const basic = require('./basic.js')
 
 module.exports = {
   extends: [
@@ -57,5 +57,9 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/ban-types': 'off',
     '@typescript-eslint/no-namespace': 'off',
+
+    // --- Disabled JsDoc rules
+    'jsdoc/require-param-type': 'off',
+    'jsdoc/require-returns-type': 'off',
   },
 }
