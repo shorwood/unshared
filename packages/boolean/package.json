@@ -1,0 +1,54 @@
+{
+  "name": "@unshared/boolean",
+  "version": "1.0.0",
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shorwood/unshared.git",
+    "directory": "packages/boolean"
+  },
+  "sideEffects": false,
+  "exports": {
+    "./Boolean": {
+      "import": "./dist/Boolean.js",
+      "require": "./dist/Boolean.cjs",
+      "types": "./dist/Boolean.d.ts"
+    },
+    "./and": {
+      "import": "./dist/and.js",
+      "require": "./dist/and.cjs",
+      "types": "./dist/and.d.ts"
+    },
+    "./nand": {
+      "import": "./dist/nand.js",
+      "require": "./dist/nand.cjs",
+      "types": "./dist/nand.d.ts"
+    },
+    "./nor": {
+      "import": "./dist/nor.js",
+      "require": "./dist/nor.cjs",
+      "types": "./dist/nor.d.ts"
+    },
+    "./not": {
+      "import": "./dist/not.js",
+      "require": "./dist/not.cjs",
+      "types": "./dist/not.d.ts"
+    },
+    "./or": {
+      "import": "./dist/or.js",
+      "require": "./dist/or.cjs",
+      "types": "./dist/or.d.ts"
+    },
+    "./xor": {
+      "import": "./dist/xor.js",
+      "require": "./dist/xor.cjs",
+      "types": "./dist/xor.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
+}
