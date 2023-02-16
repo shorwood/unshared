@@ -1,0 +1,136 @@
+{
+  "name": "@unshared/string",
+  "version": "1.0.0",
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shorwood/unshared.git",
+    "directory": "packages/string"
+  },
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./capitalize": {
+      "import": "./dist/capitalize.js",
+      "require": "./dist/capitalize.cjs",
+      "types": "./dist/capitalize.d.ts"
+    },
+    "./complexity": {
+      "import": "./dist/complexity.js",
+      "require": "./dist/complexity.cjs",
+      "types": "./dist/complexity.d.ts"
+    },
+    "./deburr": {
+      "import": "./dist/deburr.js",
+      "require": "./dist/deburr.cjs",
+      "types": "./dist/deburr.d.ts"
+    },
+    "./escapeHtml": {
+      "import": "./dist/escapeHtml.js",
+      "require": "./dist/escapeHtml.cjs",
+      "types": "./dist/escapeHtml.d.ts"
+    },
+    "./escapeRegExp": {
+      "import": "./dist/escapeRegExp.js",
+      "require": "./dist/escapeRegExp.cjs",
+      "types": "./dist/escapeRegExp.d.ts"
+    },
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./isLowerCase": {
+      "import": "./dist/isLowerCase.js",
+      "require": "./dist/isLowerCase.cjs",
+      "types": "./dist/isLowerCase.d.ts"
+    },
+    "./isUpperCase": {
+      "import": "./dist/isUpperCase.js",
+      "require": "./dist/isUpperCase.cjs",
+      "types": "./dist/isUpperCase.d.ts"
+    },
+    "./join": {
+      "import": "./dist/join.js",
+      "require": "./dist/join.cjs",
+      "types": "./dist/join.d.ts"
+    },
+    "./mapLines": {
+      "import": "./dist/mapLines.js",
+      "require": "./dist/mapLines.cjs",
+      "types": "./dist/mapLines.d.ts"
+    },
+    "./split": {
+      "import": "./dist/split.js",
+      "require": "./dist/split.cjs",
+      "types": "./dist/split.d.ts"
+    },
+    "./template": {
+      "import": "./dist/template.js",
+      "require": "./dist/template.cjs",
+      "types": "./dist/template.d.ts"
+    },
+    "./toCamelCase": {
+      "import": "./dist/toCamelCase.js",
+      "require": "./dist/toCamelCase.cjs",
+      "types": "./dist/toCamelCase.d.ts"
+    },
+    "./toCapitalized": {
+      "import": "./dist/toCapitalized.js",
+      "require": "./dist/toCapitalized.cjs",
+      "types": "./dist/toCapitalized.d.ts"
+    },
+    "./toKebabCase": {
+      "import": "./dist/toKebabCase.js",
+      "require": "./dist/toKebabCase.cjs",
+      "types": "./dist/toKebabCase.d.ts"
+    },
+    "./toLowerCase": {
+      "import": "./dist/toLowerCase.js",
+      "require": "./dist/toLowerCase.cjs",
+      "types": "./dist/toLowerCase.d.ts"
+    },
+    "./toPascalCase": {
+      "import": "./dist/toPascalCase.js",
+      "require": "./dist/toPascalCase.cjs",
+      "types": "./dist/toPascalCase.d.ts"
+    },
+    "./toSnakeCase": {
+      "import": "./dist/toSnakeCase.js",
+      "require": "./dist/toSnakeCase.cjs",
+      "types": "./dist/toSnakeCase.d.ts"
+    },
+    "./toTitleCase": {
+      "import": "./dist/toTitleCase.js",
+      "require": "./dist/toTitleCase.cjs",
+      "types": "./dist/toTitleCase.d.ts"
+    },
+    "./toUpperCase": {
+      "import": "./dist/toUpperCase.js",
+      "require": "./dist/toUpperCase.cjs",
+      "types": "./dist/toUpperCase.d.ts"
+    },
+    "./tokenize": {
+      "import": "./dist/tokenize.js",
+      "require": "./dist/tokenize.cjs",
+      "types": "./dist/tokenize.d.ts"
+    },
+    "./trim": {
+      "import": "./dist/trim.js",
+      "require": "./dist/trim.cjs",
+      "types": "./dist/trim.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "@unshared/collection": "workspace:*",
+    "@unshared/types": "workspace:*"
+  }
+}
