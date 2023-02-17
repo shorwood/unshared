@@ -1,24 +1,20 @@
+import { BooleanAnd } from '@unshared/types/BooleanAnd'
+
 /**
- * Computes the logical AND of the given booleans.
+ * Computes the logical [AND](https://en.wikipedia.org/wiki/AND_gate) of the given booleans.
  *
- * @param a The first boolean to AND.
- * @param b The second boolean to AND.
+ * @param a The first boolean.
+ * @param b The second boolean.
  * @returns `true` if `a` and `b` are both `true`.
- * @throws If a non-boolean is provided or if less than 2 booleans are provided.
- * @see https://en.wikipedia.org/wiki/AND_gate
+ * @throws If a non-boolean is provided.
  * @example and(true, true) // true
  */
-export function and(a: true, b: true): true
-export function and(a: true, b: false): false
-export function and(a: false, b: true): false
-export function and(a: false, b: false): false
-export function and(a: boolean, b: boolean): boolean
-export function and(a: boolean, b: boolean): boolean {
+export function and<A extends boolean, B extends boolean>(a: A, b: B): BooleanAnd<A, B> {
   if (typeof a !== 'boolean')
     throw new TypeError(`Expected first parameter to be a boolean. Received ${a}.`)
   if (typeof b !== 'boolean')
     throw new TypeError(`Expected second parameter to be a boolean. Received ${b}.`)
-  return a && b
+  return a && b as BooleanAnd<A, B>
 }
 
 /* c8 ignore next */

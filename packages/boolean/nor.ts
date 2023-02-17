@@ -1,24 +1,20 @@
+import { BooleanNor } from '@unshared/types/BooleanNor'
+
 /**
- * Computes the logical NOR of the given booleans.
+ * Computes the logical [NOR](https://en.wikipedia.org/wiki/NOR_gate) of two booleans.
  *
- * @param a The first boolean to NOR.
- * @param b The second boolean to NOR.
+ * @param a The first boolean.
+ * @param b The second boolean
  * @returns `true` if `a` and `b` are `false`.
- * @throws If a non-boolean is provided or if less than 2 booleans are provided.
- * @see https://en.wikipedia.org/wiki/NOR_gate
+ * @throws If a non-boolean is provided.
  * @example nor(false, true) // false
  */
-export function nor(a: true, b: true): false
-export function nor(a: true, b: false): false
-export function nor(a: false, b: true): false
-export function nor(a: false, b: false): true
-export function nor(a: boolean, b: boolean): boolean
-export function nor(a: boolean, b: boolean): boolean {
+export function nor<A extends boolean, B extends boolean>(a: A, b: B): BooleanNor<A, B> {
   if (typeof a !== 'boolean')
     throw new TypeError(`Expected first parameter to be a boolean. Received ${a}.`)
   if (typeof b !== 'boolean')
     throw new TypeError(`Expected second parameter to be a boolean. Received ${b}.`)
-  return !(a || b)
+  return !(a || b) as BooleanNor<A, B>
 }
 
 /* c8 ignore next */

@@ -1,24 +1,20 @@
+import { BooleanOr } from '@unshared/types/BooleanOr'
+
 /**
- * Computes the logical OR of the given booleans.
+ * Computes the logical [OR](https://en.wikipedia.org/wiki/OR_gate) of two booleans.
  *
- * @param a The first boolean to OR.
- * @param b The second boolean to OR.
+ * @param a The first boolean.
+ * @param b The second boolean.
  * @returns `true` if `a` or `b` is `true`.
- * @throws If a non-boolean is provided or if less than 2 booleans are provided.
- * @see https://en.wikipedia.org/wiki/OR_gate
+ * @throws If a non-boolean is provided.
  * @example or(false, true) // true
  */
-export function or(a: true, b: true): true
-export function or(a: true, b: false): true
-export function or(a: false, b: true): true
-export function or(a: false, b: false): false
-export function or(a: boolean, b: boolean): boolean
-export function or(a: boolean, b: boolean): boolean {
+export function or<A extends boolean, B extends boolean>(a: A, b: B): BooleanOr<A, B> {
   if (typeof a !== 'boolean')
     throw new TypeError(`Expected first parameter to be a boolean. Received ${a}.`)
   if (typeof b !== 'boolean')
     throw new TypeError(`Expected second parameter to be a boolean. Received ${b}.`)
-  return a || b
+  return (a || b) as BooleanOr<A, B>
 }
 
 /* c8 ignore next */

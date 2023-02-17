@@ -1,19 +1,17 @@
+import { BooleanNot } from '@unshared/types/BooleanNot'
+
 /**
- * Computes the logical negation of the given boolean.
+ * Computes the [NOT](https://en.wikipedia.org/wiki/NOT_gate) of a boolean.
  *
  * @param a The boolean to negate.
  * @returns `true` if `a` is `false`.
  * @throws If a non-boolean is provided.
- * @see https://en.wikipedia.org/wiki/NOT_gate
  * @example not(false) // true
  */
-export function not(a: true): false
-export function not(a: false): true
-export function not(a: boolean): boolean
-export function not(a: boolean): boolean {
+export function not<A extends boolean>(a: A): BooleanNot<A> {
   if (typeof a !== 'boolean')
     throw new TypeError(`Expected parameter to be a boolean. Received ${a}.`)
-  return !a
+  return !a as BooleanNot<A>
 }
 
 /* c8 ignore next */

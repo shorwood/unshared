@@ -1,24 +1,21 @@
+import { BooleanXor } from '@unshared/types/BooleanXor'
+
 /**
- * Computes the logical XOR of the given booleans.
+ * Computes the logical [XOR](https://en.wikipedia.org/wiki/Exclusive_or) of the given booleans.
  *
- * @param a The first boolean to XOR.
- * @param b The second boolean to XOR.
+ * @param a The first boolean.
+ * @param b The second boolean.
  * @returns `true` if `a` and `b` are different.
- * @throws If a non-boolean is provided or if less than 2 booleans are provided.
- * @see https://en.wikipedia.org/wiki/Exclusive_or
+ * @throws If a non-boolean is provided.
  * @example xor(false, true) // true
  */
-export function xor(a: true, b: true): false
-export function xor(a: true, b: false): true
-export function xor(a: false, b: true): true
-export function xor(a: false, b: false): false
-export function xor(a: boolean, b: boolean): boolean
-export function xor(a: boolean, b: boolean): boolean {
+export function xor<A extends boolean, B extends boolean>(a: A, b: B): BooleanXor<A, B> {
   if (typeof a !== 'boolean')
     throw new TypeError(`Expected first parameter to be a boolean. Received ${a}.`)
   if (typeof b !== 'boolean')
     throw new TypeError(`Expected second parameter to be a boolean. Received ${b}.`)
-  return a !== b
+  // @ts-expect-error: ignore
+  return (a !== b) as BooleanXor<A, B>
 }
 
 /* c8 ignore next */

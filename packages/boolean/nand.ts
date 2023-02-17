@@ -1,24 +1,20 @@
+import { BooleanNand } from '@unshared/types/BooleanNand'
+
 /**
- * Computes the logical NAND of the given booleans.
+ * Computes the logical [NAND](https://en.wikipedia.org/wiki/NAND_gate) of two booleans.
  *
- * @param a The first boolean to NAND.
- * @param b The second boolean to NAND.
+ * @param a The first boolean.
+ * @param b The second boolean.
  * @returns `true` if `a` and `b` are `false`.
- * @throws If a non-boolean is provided or if less than 2 booleans are provided.
- * @see https://en.wikipedia.org/wiki/NAND_gate
+ * @throws If a non-boolean is provided.
  * @example nand(false, true) // true
  */
-export function nand(a: true, b: true): false
-export function nand(a: true, b: false): true
-export function nand(a: false, b: true): true
-export function nand(a: false, b: false): true
-export function nand(a: boolean, b: boolean): boolean
-export function nand(a: boolean, b: boolean): boolean {
+export function nand<A extends boolean, B extends boolean>(a: A, b: B): BooleanNand<A, B> {
   if (typeof a !== 'boolean')
     throw new TypeError(`Expected first parameter to be a boolean. Received ${a}.`)
   if (typeof b !== 'boolean')
     throw new TypeError(`Expected second parameter to be a boolean. Received ${b}.`)
-  return !(a && b)
+  return !(a && b) as BooleanNand<A, B>
 }
 
 /* c8 ignore next */

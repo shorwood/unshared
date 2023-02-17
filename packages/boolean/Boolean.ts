@@ -1,4 +1,11 @@
 /* eslint-disable no-new-wrappers */
+import { BooleanAnd } from '@unshared/types/BooleanAnd'
+import { BooleanNand } from '@unshared/types/BooleanNand'
+import { BooleanNor } from '@unshared/types/BooleanNor'
+import { BooleanNot } from '@unshared/types/BooleanNot'
+import { BooleanOr } from '@unshared/types/BooleanOr'
+import { BooleanXnor } from '@unshared/types/BooleanXnor'
+import { BooleanXor } from '@unshared/types/BooleanXor'
 import { and } from './and'
 import { nand } from './nand'
 import { nor } from './nor'
@@ -13,7 +20,7 @@ import { xor } from './xor'
  *
  * @example const result = new Boolean(true).and(false) // false
  */
-export class Boolean<T extends boolean = boolean> {
+export class Boolean<A extends boolean = boolean> {
   /**
    * Create a new Boolean instance with the given value.
    *
@@ -21,7 +28,7 @@ export class Boolean<T extends boolean = boolean> {
    * @throws If the value is not a boolean.
    * @example new Boolean(true) // Boolean<true>
    */
-  constructor(public value: T) {
+  constructor(public value: A) {
     if (typeof value !== 'boolean')
       throw new Error('Expected value to be a boolean')
   }
@@ -30,7 +37,7 @@ export class Boolean<T extends boolean = boolean> {
    * Create a new Boolean with value `true`.
    *
    * @returns A new Boolean with value `true`.
-   * @example Boolean.true // Boolean<true>
+   * @example Boolean.true // Boolean { value: true }
    */
   static get true(): Boolean<true> {
     return new Boolean(true)
@@ -40,7 +47,7 @@ export class Boolean<T extends boolean = boolean> {
    * Create a new Boolean with value `false`.
    *
    * @returns A new Boolean with value `false`.
-   * @example Boolean.false // Boolean<false>
+   * @example Boolean.false // Boolean { value: false }
    */
   static get false(): Boolean<false> {
     return new Boolean(false)
@@ -52,7 +59,7 @@ export class Boolean<T extends boolean = boolean> {
    * @returns `true` if the value of this boolean is `true`.
    * @example new Boolean(true).isTrue // true
    */
-  get isTrue(): T extends true ? true : false {
+  get isTrue(): A {
     // @ts-expect-error: ignore
     return this.value === true
   }
@@ -63,116 +70,90 @@ export class Boolean<T extends boolean = boolean> {
    * @returns `true` if the value of this boolean is `false`.
    * @example new Boolean(true).isFalse // false
    */
-  get isFalse(): T extends false ? true : false {
+  get isFalse(): BooleanNot<A> {
     // @ts-expect-error: ignore
     return this.value === false
   }
 
   /**
-   * Computes the logical AND of this boolean and another boolean.
+   * Computes the logical [AND](https://en.wikipedia.org/wiki/AND_gate) of this boolean and another boolean.
    *
    * @param value The other boolean.
    * @returns `true` if both booleans are `true`.
    * @throws If the value is not a boolean.
    * @example new Boolean(true).and(true) // true
-   * @see https://en.wikipedia.org/wiki/AND_gate
    */
-  and(value: true): T extends true ? Boolean<true> : Boolean<false>
-  and(value: false): Boolean<false>
-  and(value: boolean): Boolean
-  and(value: boolean): Boolean {
+  and<B extends boolean>(value: B): Boolean<BooleanAnd<A, B>> {
     return new Boolean(and(this.value, value))
   }
 
   /**
-   * Computes the logical NAND of this boolean and another boolean.
+   * Computes the logical [NAND](https://en.wikipedia.org/wiki/NAND_gate) of this boolean and another boolean.
    *
    * @param value The other boolean.
    * @returns `true` if both booleans are `false`.
    * @throws If the value is not a boolean.
    * @example new Boolean(true).nand(true) // false
-   * @see https://en.wikipedia.org/wiki/NAND_gate
    */
-  nand(value: true): T extends true ? Boolean<false> : Boolean<true>
-  nand(value: false): Boolean<true>
-  nand(value: boolean): Boolean
-  nand(value: boolean): Boolean {
+  nand<B extends boolean>(value: B): Boolean<BooleanNand<A, B>> {
     return new Boolean(nand(this.value, value))
   }
 
   /**
-   * Computes the logical NOR of this boolean and another boolean.
+   * Computes the logical [NOR](https://en.wikipedia.org/wiki/NOR_gate) of this boolean and another boolean.
    *
    * @param value The other boolean.
    * @returns `true` if both booleans are `false`.
    * @throws If the value is not a boolean.
    * @example new Boolean(true).nor(true) // false
-   * @see https://en.wikipedia.org/wiki/NOR_gate
    */
-  nor(value: true): Boolean<false>
-  nor(value: false): T extends false ? Boolean<true> : Boolean<false>
-  nor(value: boolean): Boolean
-  nor(value: boolean): Boolean {
+  nor<B extends boolean>(value: B): Boolean<BooleanNor<A, B>> {
     return new Boolean(nor(this.value, value))
   }
 
   /**
-   * Computes the logical NOT of this boolean.
+   * Computes the logical [NOT](https://en.wikipedia.org/wiki/NOT_gate) of this boolean.
    *
    * @returns `true` if the boolean is `false`.
    * @example new Boolean(true).not // false
-   * @see https://en.wikipedia.org/wiki/NOT_gate
    */
-  get not(): T extends true ? Boolean<false> : Boolean<true> {
-    // @ts-expect-error: ignore
+  get not(): Boolean<BooleanNot<A>> {
     return new Boolean(not(this.value))
   }
 
   /**
-   * Computes the logical OR of this boolean and another boolean.
+   * Computes the logical [OR](https://en.wikipedia.org/wiki/OR_gate) of this boolean and another boolean.
    *
    * @param value The other boolean.
    * @returns `true` if either boolean is `true`.
    * @throws If the value is not a boolean.
    * @example new Boolean(true).or(true) // true
-   * @see https://en.wikipedia.org/wiki/OR_gate
    */
-  or(value: true): Boolean<true>
-  or(value: false): T extends false ? Boolean<false> : Boolean<true>
-  or(value: boolean): Boolean
-  or(value: boolean): Boolean {
+  or<B extends boolean>(value: B): Boolean<BooleanOr<A, B>> {
     return new Boolean(or(this.value, value))
   }
 
   /**
-   * Computes the logical XNOR of this boolean and another boolean.
+   * Computes the logical [XNOR](https://en.wikipedia.org/wiki/XNOR_gate) of this boolean and another boolean.
    *
    * @param value The other boolean.
    * @returns `true` if both booleans are equal.
    * @throws If the value is not a boolean.
    * @example new Boolean(true).xnor(true) // true
-   * @see https://en.wikipedia.org/wiki/XNOR_gate
    */
-  xnor(value: true): T extends true ? Boolean<true> : Boolean<false>
-  xnor(value: false): T extends false ? Boolean<true> : Boolean<false>
-  xnor(value: boolean): Boolean
-  xnor(value: boolean): Boolean {
+  xnor<B extends boolean>(value: B): Boolean<BooleanXnor<A, B>> {
     return new Boolean(xnor(this.value, value))
   }
 
   /**
-   * Computes the logical XOR of this boolean and another boolean.
+   * Computes the logical [XOR](https://en.wikipedia.org/wiki/XOR_gate) of this boolean and another boolean.
    *
    * @param value The other boolean.
    * @returns `true` if both booleans are different.
    * @throws If the value is not a boolean.
    * @example new Boolean(true).xor(true) // false
-   * @see https://en.wikipedia.org/wiki/XOR_gate
    */
-  xor(value: true): T extends true ? Boolean<false> : Boolean<true>
-  xor(value: false): T extends false ? Boolean<false> : Boolean<true>
-  xor(value: boolean): Boolean
-  xor(value: boolean): Boolean {
+  xor<B extends boolean>(value: B): Boolean<BooleanXor<A, B>> {
     return new Boolean(xor(this.value, value))
   }
 }

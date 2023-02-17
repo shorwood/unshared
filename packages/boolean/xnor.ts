@@ -1,24 +1,21 @@
+import { BooleanXnor } from '@unshared/types/BooleanXnor'
+
 /**
- * Computes the logical XNOR of the given booleans.
+ * Computes the logical [XNOR](https://en.wikipedia.org/wiki/XNOR_gate) of the given booleans.
  *
- * @param a The first boolean to XNOR.
- * @param b The second boolean to XNOR.
+ * @param a The first boolean.
+ * @param b The second boolean.
  * @returns `true` if `a` and `b` are the same.
- * @throws If a non-boolean is provided or if less than 2 booleans are provided.
- * @see https://en.wikipedia.org/wiki/XNOR_gate
+ * @throws If a non-boolean is provided.
  * @example xnor(false, true) // false
  */
-export function xnor(a: true, b: true): true
-export function xnor(a: true, b: false): false
-export function xnor(a: false, b: true): false
-export function xnor(a: false, b: false): true
-export function xnor(a: boolean, b: boolean): boolean
-export function xnor(a: boolean, b: boolean): boolean {
+export function xnor<A extends boolean, B extends boolean>(a: A, b: B): BooleanXnor<A, B> {
   if (typeof a !== 'boolean')
     throw new TypeError(`Expected first parameter to be a boolean. Received ${a}.`)
   if (typeof b !== 'boolean')
     throw new TypeError(`Expected second parameter to be a boolean. Received ${b}.`)
-  return a === b
+  // @ts-expect-error: ignore
+  return (a === b) as BooleanXnor<A, B>
 }
 
 /* c8 ignore next */
