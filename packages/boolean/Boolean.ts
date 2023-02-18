@@ -26,7 +26,7 @@ export class Boolean<A extends boolean = boolean> {
    *
    * @param value The value of the new Boolean instance.
    * @throws If the value is not a boolean.
-   * @example new Boolean(true) // Boolean<true>
+   * @example new Boolean(true) // Boolean { value: true }
    */
   constructor(public value: A) {
     if (typeof value !== 'boolean')
@@ -81,7 +81,7 @@ export class Boolean<A extends boolean = boolean> {
    * @param value The other boolean.
    * @returns `true` if both booleans are `true`.
    * @throws If the value is not a boolean.
-   * @example new Boolean(true).and(true) // true
+   * @example new Boolean(true).and(true) // Boolean { value: true }
    */
   and<B extends boolean>(value: B): Boolean<BooleanAnd<A, B>> {
     return new Boolean(and(this.value, value))
@@ -93,7 +93,7 @@ export class Boolean<A extends boolean = boolean> {
    * @param value The other boolean.
    * @returns `true` if both booleans are `false`.
    * @throws If the value is not a boolean.
-   * @example new Boolean(true).nand(true) // false
+   * @example new Boolean(true).nand(true) // Boolean { value: false }
    */
   nand<B extends boolean>(value: B): Boolean<BooleanNand<A, B>> {
     return new Boolean(nand(this.value, value))
@@ -105,7 +105,7 @@ export class Boolean<A extends boolean = boolean> {
    * @param value The other boolean.
    * @returns `true` if both booleans are `false`.
    * @throws If the value is not a boolean.
-   * @example new Boolean(true).nor(true) // false
+   * @example new Boolean(true).nor(true) // Boolean { value: false }
    */
   nor<B extends boolean>(value: B): Boolean<BooleanNor<A, B>> {
     return new Boolean(nor(this.value, value))
@@ -115,7 +115,7 @@ export class Boolean<A extends boolean = boolean> {
    * Computes the logical [NOT](https://en.wikipedia.org/wiki/NOT_gate) of this boolean.
    *
    * @returns `true` if the boolean is `false`.
-   * @example new Boolean(true).not // false
+   * @example new Boolean(true).not // Boolean { value: false }
    */
   get not(): Boolean<BooleanNot<A>> {
     return new Boolean(not(this.value))
@@ -127,7 +127,7 @@ export class Boolean<A extends boolean = boolean> {
    * @param value The other boolean.
    * @returns `true` if either boolean is `true`.
    * @throws If the value is not a boolean.
-   * @example new Boolean(true).or(true) // true
+   * @example new Boolean(true).or(true) // Boolean { value: true }
    */
   or<B extends boolean>(value: B): Boolean<BooleanOr<A, B>> {
     return new Boolean(or(this.value, value))
@@ -139,7 +139,7 @@ export class Boolean<A extends boolean = boolean> {
    * @param value The other boolean.
    * @returns `true` if both booleans are equal.
    * @throws If the value is not a boolean.
-   * @example new Boolean(true).xnor(true) // true
+   * @example new Boolean(true).xnor(true) // Boolean { value: true }
    */
   xnor<B extends boolean>(value: B): Boolean<BooleanXnor<A, B>> {
     return new Boolean(xnor(this.value, value))
@@ -151,7 +151,7 @@ export class Boolean<A extends boolean = boolean> {
    * @param value The other boolean.
    * @returns `true` if both booleans are different.
    * @throws If the value is not a boolean.
-   * @example new Boolean(true).xor(true) // false
+   * @example new Boolean(true).xor(true) // Boolean { value: false }
    */
   xor<B extends boolean>(value: B): Boolean<BooleanXor<A, B>> {
     return new Boolean(xor(this.value, value))
