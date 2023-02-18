@@ -9,7 +9,10 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "typeRoots": ["./node_modules/@types"],
-    "types": ["vitest/globals"]
+    "types": [
+      "vitest/globals",
+      "vitest/importMeta"
+    ]
   },
   "include": [ "packages", "scripts" ],
   "exclude": [ "node_modules", "dist" ]
