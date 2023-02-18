@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { isArrayIncludingSome } from './isArrayIncludingSome'
 
 it.each([

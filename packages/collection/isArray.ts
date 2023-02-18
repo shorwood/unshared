@@ -1,7 +1,8 @@
 /**
  * Check if value is an array
+ *
  * @param value The value to check
- * @return `true` if value is an array, `false` otherwise
+ * @returns `true` if value is an array, `false` otherwise
  * @example
  * isArray([]) // true
  * isArray({}) // false

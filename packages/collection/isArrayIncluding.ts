@@ -1,8 +1,9 @@
 /**
  * Check if an array includes item
+ *
  * @param array The array to check
  * @param item The array to look for
- * @return `true` if the array includes item, `false` otherwise
+ * @returns `true` if the array includes item, `false` otherwise
  * @example
  * isArrayIncluding([], 1) // false
  * isArrayIncluding([1, 2, 3], 1) // true

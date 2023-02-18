@@ -1,14 +1,15 @@
 /**
  * Check if an array includes all of the items
+ *
  * @param array The array to check
  * @param items The values to look for
- * @return `true` if the array includes all of the items, `false` otherwise
+ * @returns `true` if the array includes all of the items, `false` otherwise
  * @example
  * isArrayIncludingEvery([], []) // true
  * isArrayIncludingEvery([1, 2, 3], [1]) // true
  * isArrayIncludingEvery([1, 2, 3], [1, 2, 3, 4]) // false
  */
-export const isArrayIncludingEvery = <T>(array: T[], items: T[]): boolean =>
+export const isArrayIncludingEvery = <T>(array: unknown[], items: T[]): array is T[] =>
   Array.isArray(array)
   && Array.isArray(items)
   && items.every(item => array.includes(item))
