@@ -10,3 +10,21 @@
 export const isArrayEmpty = (array: unknown[]): array is [] =>
   Array.isArray(array)
   && array.length === 0
+
+/** c8 ignore next */
+if (import.meta.vitest) {
+  it.each([
+
+    // --- Returns true
+    [true, []],
+
+    // --- Returns false
+    [false, [1, 2, 3]],
+    [false, ''],
+    [false, {}],
+
+  ])('should return %s when checking if %s is an empty array', (expected, value: any) => {
+    const result = isArrayEmpty(value)
+    expect(result).toEqual(expected)
+  })
+}

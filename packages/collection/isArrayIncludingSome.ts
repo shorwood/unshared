@@ -13,3 +13,24 @@ export const isArrayIncludingSome = <T>(array: T[], items: T[]): boolean =>
   Array.isArray(array)
   && Array.isArray(items)
   && items.some(item => array.includes(item))
+
+/** c8 ignore next */
+if (import.meta.vitest) {
+  it.each([
+
+    // --- Returns true
+    [true, [1, 2, 3], [1]],
+    [true, [1, 2, 3], [1, 2, 3]],
+    [true, [1, 2, 3], [1, 2, 4]],
+
+    // --- Returns false
+    [false, [1, 2, 3], 1],
+    [false, [1, 2, 3], []],
+    [false, [1, 2, 3], [4]],
+    [false, [1, 2, 3], ['1']],
+
+  ])('should return %s when checking if %s is an array including %s', (expected, value, array: any) => {
+    const result = isArrayIncludingSome(value, array)
+    expect(result).toEqual(expected)
+  })
+}

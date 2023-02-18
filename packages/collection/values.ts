@@ -1,31 +1,30 @@
-import { Collection, Key } from '@unshared-dev/types/collection'
-
-export interface IValues {
-  <T, K extends Key>(object: Collection<T>, key: K): Array<T & { [P in K]: string }>
-  <T>(object: Collection<T>): Array<T>
-}
+import { Collection, Key } from '@unshared/types/collection'
 
 /**
- * Cast an object or array as an array and keep the properties' keys in its value
- * @param value The object or array to cast
- * @param key The key name to store the original key in the array
- * @return The array of objects
+ * Cast a collection into an array.
+ *
+ * @param object The collection to cast as an array.
+ * @returns An array of items.
+ * @example values({ key1: { foo: 'bar' }}) // [{ foo: 'bar'}]
  */
-export const values: IValues = (value: any, key?: any): any[] => {
-  // --- If value is an array, return a copy.
-  if (Array.isArray(value)) return value
+export function values<T>(object: Collection<T>): Array<T>
+/**
+ * Cast a collection into an array and keep store the original key in the properties of each item.
+ *
+ * @param object The collection to cast as an array.
+ * @param key The name of the property to store the original key.
+ * @returns An array of items.
+ * @example values({ key1: { foo: 'bar' }}) // [{ foo: 'bar', key: 'key1' }]
+ */
+export function values<U, K1 extends Key, K2 extends Key>(object: Record<K1, U>, key?: K2): Array<U & Record<K2, K1>>
+export function values(object: object, key?: string | number | symbol): unknown[] {
+  // --- If no key was provided, just return values.
+  if (key === undefined) return Object.values(object)
 
-  // --- If no key name was provided, just return values.
+  // --- If key is provided but of invalid type, throw error.
   if (typeof key !== 'string' && typeof key !== 'number' && typeof key !== 'symbol')
-    return Object.values(value)
-
-  // --- Initialize result
-  const result: Array<any> = []
+    throw new TypeError('Cannot use a non-string/number/symbol value as key name.')
 
   // --- Iterate over value's keys.
-  for (const originalKey in value)
-    result.push({ [key]: originalKey, ...value[originalKey] })
-
-  // --- Return new array.
-  return result
+  return Object.entries(object).map(([originalKey, value]) => ({ [key]: originalKey, ...value }))
 }

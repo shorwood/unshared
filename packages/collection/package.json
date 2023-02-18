@@ -1,0 +1,125 @@
+{
+  "name": "@unshared/collection",
+  "version": "1.0.0",
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shorwood/unshared.git",
+    "directory": "packages/collection"
+  },
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "exports": {
+    "./arrayify": {
+      "import": "./dist/arrayify.js",
+      "require": "./dist/arrayify.cjs"
+    },
+    "./chunk": {
+      "import": "./dist/chunk.js",
+      "require": "./dist/chunk.cjs"
+    },
+    "./compact": {
+      "import": "./dist/compact.js",
+      "require": "./dist/compact.cjs"
+    },
+    "./compare": {
+      "import": "./dist/compare.js",
+      "require": "./dist/compare.cjs"
+    },
+    "./defaults": {
+      "import": "./dist/defaults.js",
+      "require": "./dist/defaults.cjs"
+    },
+    "./discard": {
+      "import": "./dist/discard.js",
+      "require": "./dist/discard.cjs"
+    },
+    "./every": {
+      "import": "./dist/every.js",
+      "require": "./dist/every.cjs"
+    },
+    "./filter": {
+      "import": "./dist/filter.js",
+      "require": "./dist/filter.cjs"
+    },
+    "./get": {
+      "import": "./dist/get.js",
+      "require": "./dist/get.cjs"
+    },
+    "./groupBy": {
+      "import": "./dist/groupBy.js",
+      "require": "./dist/groupBy.cjs"
+    },
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./map": {
+      "import": "./dist/map.js",
+      "require": "./dist/map.cjs"
+    },
+    "./mapKeys": {
+      "import": "./dist/mapKeys.js",
+      "require": "./dist/mapKeys.cjs"
+    },
+    "./mapValues": {
+      "import": "./dist/mapValues.js",
+      "require": "./dist/mapValues.cjs"
+    },
+    "./mergeDeep": {
+      "import": "./dist/mergeDeep.js",
+      "require": "./dist/mergeDeep.cjs"
+    },
+    "./omit": {
+      "import": "./dist/omit.js",
+      "require": "./dist/omit.cjs"
+    },
+    "./pick": {
+      "import": "./dist/pick.js",
+      "require": "./dist/pick.cjs"
+    },
+    "./sample": {
+      "import": "./dist/sample.js",
+      "require": "./dist/sample.cjs"
+    },
+    "./set": {
+      "import": "./dist/set.js",
+      "require": "./dist/set.cjs"
+    },
+    "./shuffle": {
+      "import": "./dist/shuffle.js",
+      "require": "./dist/shuffle.cjs"
+    },
+    "./some": {
+      "import": "./dist/some.js",
+      "require": "./dist/some.cjs"
+    },
+    "./sortBy": {
+      "import": "./dist/sortBy.js",
+      "require": "./dist/sortBy.cjs"
+    },
+    "./uniq": {
+      "import": "./dist/uniq.js",
+      "require": "./dist/uniq.cjs"
+    },
+    "./uniqBy": {
+      "import": "./dist/uniqBy.js",
+      "require": "./dist/uniqBy.cjs"
+    },
+    "./values": {
+      "import": "./dist/values.js",
+      "require": "./dist/values.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "@unshared/predicate": "workspace:*",
+    "@unshared/types": "workspace:*"
+  }
+}

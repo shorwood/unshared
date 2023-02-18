@@ -1,4 +1,4 @@
-import { compare } from '@unshared-dev/misc/compare'
+import { compare } from './compare'
 
 // TODO: Implement `get` path iterator
 // TODO: Implement `sortBy` values iterator: `sort(array)`
@@ -11,9 +11,10 @@ interface SortBy {
 
 /**
  * Sorts an array by the result of an iterator function.
+ *
  * @param array The array to sort
  * @param iterator The iterator function or path
- * @return The sorted array
+ * @returns The sorted array
  */
 export const sortBy: SortBy = (array: Array<any>, iterator: any): Array<any> => {
   // --- If iterator is a path, cast as getter function.
@@ -27,4 +28,21 @@ export const sortBy: SortBy = (array: Array<any>, iterator: any): Array<any> => 
     iterator(a),
     iterator(b),
   ))
+}
+
+/** c8 ignore next */
+if (import.meta.vitest) {
+  it('sorts an array by the result of an iterator function', () => {
+    const array = [1, 2, 3]
+    const result = sortBy(array, x => x * -1)
+    expect(result.length).toEqual(array.length)
+    expect(result).toEqual([3, 2, 1])
+  })
+
+  it('sorts an array by the result of a path', () => {
+    const array = [{ a: 3 }, { a: 2 }, { a: 1 }]
+    const result = sortBy(array, 'a')
+    expect(result.length).toEqual(array.length)
+    expect(result).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }])
+  })
 }

@@ -1,4 +1,4 @@
-import { isNil } from '@unshared-dev/predicate/isNil'
+import { isNil } from '@unshared/predicate/isNil'
 
 export interface Defaults {
   <T>(object: Partial<T>, defaults: T, depth?: number): T
@@ -6,13 +6,15 @@ export interface Defaults {
   // <T1, T2>(object: T1, defaults: T2, depth?: number): Defaults<T1, T2>
 }
 
+// TODO: [collection/defaults] Improve return type in overloads
+
 /**
  * Defaut property values of a collection.
+ *
  * @param object The object to apply the default values to.
  * @param from The default values to apply.
  * @param depth The maximum depth to apply the default values to.
- * @return The object with the default values applied.
- * @TODO: Improve return type in overloads
+ * @returns The object with the default values applied.
  */
 export const defaults: Defaults = (object: any, from: any, depth = 0): any => {
   // --- Handle edge cases.
@@ -38,4 +40,25 @@ export const defaults: Defaults = (object: any, from: any, depth = 0): any => {
 
   // --- Return the defaulted object.
   return object
+}
+
+/** c8 ignore next */
+if (import.meta.vitest) {
+  it('should apply default values', () => {
+    // eslint-disable-next-line unicorn/no-null
+    const object = { a: undefined, b: null, c: 0, d: false, e: '', f: {}, g: [] }
+    const defaultValue = { a: 1, b: 2, c: 3, d: 4, e: 5, f: { a: 1 }, g: [1], h: 'h' }
+    const expected = { a: 1, b: 2, c: 0, d: false, e: '', f: {}, g: [], h: 'h' }
+    const result = defaults<any>(object, defaultValue)
+    expect(result).toEqual(expected)
+  })
+
+  it('should apply default values to nested objects', () => {
+    // eslint-disable-next-line unicorn/no-null
+    const object = { a: undefined, b: null, c: 0, d: false, e: '', f: {}, g: [] }
+    const defaultValue = { a: 1, b: 2, c: 3, d: 4, e: 5, f: { a: 1 }, g: [1] }
+    const expected = { a: 1, b: 2, c: 0, d: false, e: '', f: { a: 1 }, g: [1] }
+    const result = defaults<any>(object, defaultValue, 1)
+    expect(result).toEqual(expected)
+  })
 }
