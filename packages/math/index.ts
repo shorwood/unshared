@@ -1,4 +1,7 @@
+export * from './add'
 export * from './clamp'
 export * from './fibonacci'
+export * from './multiply'
 export * from './pi'
+export * from './substract'
 export * from './toNumber'
