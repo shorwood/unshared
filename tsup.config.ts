@@ -1,18 +1,17 @@
 import { readFileSync, readdirSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { dirname, resolve } from 'node:path'
 import { Options, defineConfig } from 'tsup'
 import { toPascalCase } from './packages/string'
+import { postbuild } from './scripts/postbuild'
+import pluginProgress from 'esbuild-plugin-progress'
 
-const outExtension: Options['outExtension'] = ({ format }) => {
-  let js = '.js'
-  if (format === 'cjs') js = '.cjs'
-  if (format === 'esm') js = '.js'
-  if (format === 'iife') js = '.global.js'
-  return { js }
-}
+const __dirname = dirname(import.meta.url.slice(7))
+
+const packages = new Set(['process', 'boolean'])
 
 const configs = readdirSync('./packages', { withFileTypes: true })
   .filter(dirent => dirent.isDirectory())
+  .filter(dirent => packages.has(dirent.name))
   .map((dirent): Options => {
     // --- Define the input and output paths.
     const entry = resolve(__dirname, `./packages/${dirent.name}/*.ts`)
@@ -30,23 +29,41 @@ const configs = readdirSync('./packages', { withFileTypes: true })
       entry: [entry, '!**/*.test.ts', '!**/*.test.*.ts'],
       outDir: outDirectory,
       globalName,
+      silent: true,
       platform: 'node',
       target: ['node18'],
       splitting: true,
-      bundle: false,
+      bundle: true,
       external: [/^@unshared\/.*/],
       sourcemap: true,
       clean: true,
-      shims: false,
+      shims: true,
       dts: true,
-      outExtension,
       treeshake: true,
       minifySyntax: true,
       define: { 'import.meta.vitest': 'false' },
+
       esbuildOptions: (options) => {
         options.chunkNames = 'chunks/[hash]'
         options.ignoreAnnotations = true
+        options.packages = 'external'
       },
+      
+      esbuildPlugins: [
+        pluginProgress({
+          message: `Building ${dirent.name}...`
+        })
+      ],
+
+      outExtension: ({ format }) => {
+        let js = '.js'
+        if (format === 'cjs') js = '.cjs'
+        if (format === 'esm') js = '.js'
+        if (format === 'iife') js = '.global.js'
+        return { js }
+      },
+
+      onSuccess: () => postbuild(dirent.name),
 
       // --- Merge the package.json configuration.
       ...(packageJson ? packageJson.tsup : {}),

@@ -7,6 +7,7 @@ interface MdnEntry {
 
 /**
  * Parse an MDN raw content and transforms {{HTTP*}} and {{Glossary}} into links.
+ *
  * @param content The raw MDN content.
  * @returns The parsed MDN content.
  */
@@ -46,6 +47,7 @@ const parseMdn = (content: string) => {
 
 /**
  * Load a list of files and their content from the MDN repository on GitHub.
+ *
  * @param path The path to the folder in the MDN repository to load.
  * @returns A list of files and their content.
  */
