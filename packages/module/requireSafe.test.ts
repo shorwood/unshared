@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { expect, it } from 'vitest'
 import { requireSafe } from './requireSafe'
 
 it('should should require an existing module', () => {

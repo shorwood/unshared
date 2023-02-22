@@ -1,5 +1,6 @@
 /**
  * Find paths of files in the context directory or one of its ancestors.
+ *
  * @param fileName The file name to find.
  * @param from The path to start from.
  * @returns The absolute paths of the files found.

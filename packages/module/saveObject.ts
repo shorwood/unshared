@@ -3,9 +3,10 @@ import { FileHandle } from 'node:fs/promises'
 
 /**
  * Exports an object as a JSON file.
+ *
  * @param pathOrFd The path or file descriptor to the output file.
  * @param object The object to export.
- * @return A promise that resolves when the file has been written.
+ * @returns A promise that resolves when the file has been written.
  * @throws If the file could not be written.
  */
 export const saveObject = async(pathOrFd: PathLike | FileHandle, object: unknown): Promise<void> => {

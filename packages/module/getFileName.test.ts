@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { getFileName } from './getFileName'
 
 it.each([
@@ -8,7 +7,7 @@ it.each([
   ['/path/to/file.ext', 'file'],
 ])('should get the file name of %s', (path, expected) => {
   const result = getFileName(path)
-  expect(result).toBe(expected)
+  expect(result).toEqual(expected)
 })
 
 it.each([

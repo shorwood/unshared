@@ -1,8 +1,9 @@
-import { tries } from '@unshared-dev/function/tries'
+import { tries } from '@unshared/function/tries'
 import { requireSafe } from './requireSafe'
 
 /**
  * Resolve the absolute path of a relative or package module.
+ *
  * @param path The import path.
  * @param from The base path.
  * @returns If the import was found, returns it's absolute path.

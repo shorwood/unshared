@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-/* eslint-disable @typescript-eslint/no-var-requires */
 
 /**
  * Imports a module, but doesn't throw an error if it fails.
+ *
  * @param moduleId The id of the module to require
- * @return The required module, or `undefined` if it couldn't be required
+ * @returns The required module, or `undefined` if it couldn't be required
  */
 export async function importSafe(moduleId: 'node:fs'): Promise<typeof import('node:fs') | undefined>
 export async function importSafe(moduleId: 'node:fs/promises'): Promise<typeof import('node:fs/promises') | undefined>
@@ -37,4 +37,18 @@ export async function importSafe<T = unknown>(moduleId: string): Promise<T | und
 export async function importSafe<T = unknown>(moduleId: string): Promise<T | undefined> {
   try { return await import(moduleId) }
   catch {}
+}
+
+/* c8 ignore next */
+if (import.meta.vitest) {
+  it('should should require an existing module', async() => {
+    const result = await importSafe('node:path')
+    const expected = await import('node:path')
+    expect(result).toStrictEqual(expected)
+  })
+
+  it('should should not require a non-existing module', async() => {
+    const result = await importSafe('not-a-real-module')
+    expect(result).toBeUndefined()
+  })
 }

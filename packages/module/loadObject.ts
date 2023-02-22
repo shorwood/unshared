@@ -1,7 +1,8 @@
-import { parseJson } from './parseJson'
+import { parseJson } from '../serial/parseJson'
 
 /**
  * Imports data from a JSON file.
+ *
  * @param path The path to the JSON file
  * @returns A promise that resolves to the parsed JSON data
  * @throws If the JSON file is invalid

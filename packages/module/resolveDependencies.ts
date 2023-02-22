@@ -2,8 +2,9 @@ import { resolveImport } from './resolveImport'
 
 /**
  * Resolve all dependencies for a given entry point.
+ *
  * @param entryPoint The entry point.
- * @return The resolved dependencies path.
+ * @returns The resolved dependencies path.
  */
 export const resolveDependencies = async(entryPoint: string): Promise<string[]> => {
   const { dirname } = await import('node:path')

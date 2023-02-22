@@ -1,5 +1,6 @@
 /**
  * Import a module from an inline script using `eval()`
+ *
  * @param script The script to import from.
  * @returns The imported module.
  */

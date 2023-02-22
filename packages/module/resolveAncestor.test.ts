@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { vol } from 'memfs'
 import { resolveAncestor } from './resolveAncestor'
 
@@ -12,7 +11,7 @@ it('should resolve the first ancestor', async() => {
   vol.fromJSON(json)
   const result = await resolveAncestor('.env', '/home/user/project')
   const expected = Object.keys(json)[0]
-  expect(result).toBe(expected)
+  expect(result).toEqual(expected)
 })
 
 it('should throw if no ancestors', () => {

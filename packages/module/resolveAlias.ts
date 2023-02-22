@@ -1,8 +1,9 @@
-import { MaybeArray } from '@unshared-dev/types'
-import { arrayify } from '@unshared-dev/collection'
+import { MaybeArray } from '@unshared/types'
+import { arrayify } from '@unshared/collection'
 
 /**
  * Resolve a path based on a list of aliases.
+ *
  * @param path The path to resolve.
  * @param aliases The aliases to use.
  * @returns If the path was found, returns it's absolute path.

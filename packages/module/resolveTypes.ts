@@ -1,6 +1,6 @@
 
+import { tries } from '@unshared/function/tries'
 import { PackageJSON } from 'types-pkg-json'
-import { tries } from '@unshared-dev/function/tries'
 import { loadObject } from './loadObject'
 import { resolveAncestor } from './resolveAncestor'
 import { resolveImport } from './resolveImport'
@@ -8,7 +8,9 @@ import { resolveModule } from './resolveModule'
 
 /**
  * Resolve the absolute path of the type definition of an import.
+ *
  * @param path The module id to analyze.
+ * @param from The base path to resolve from.
  * @returns The path of the type definition.
  */
 export const resolveTypes = async(path: string, from?: string): Promise<string> => {

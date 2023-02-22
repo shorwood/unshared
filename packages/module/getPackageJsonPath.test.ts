@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { vol } from 'memfs'
 import { getPackageJsonPath } from './getPackageJsonPath'
 

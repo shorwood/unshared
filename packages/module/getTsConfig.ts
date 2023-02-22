@@ -4,6 +4,7 @@ import { getTsConfigPath } from './getTsConfigPath'
 
 /**
  * Get the content of the `tsconfig.json` file from a context directory.
+ *
  * @param from The path to start from. Can be a file, a directory or a package name.
  * @returns The content of the `tsconfig.json` file.
  */

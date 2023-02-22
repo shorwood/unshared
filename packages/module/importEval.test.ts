@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { importEval } from './importEval'
 
 it('should import the default export from an inline CommonJS script', () => {

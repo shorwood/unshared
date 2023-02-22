@@ -2,6 +2,7 @@ import { resolveAncestors } from './resolveAncestors'
 
 /**
  * Resolve the path of a node module relative to a base path.
+ *
  * @param moduleName The name of the module.
  * @param from The base path.
  * @throws If the module was not found.

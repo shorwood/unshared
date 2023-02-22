@@ -3,8 +3,9 @@
 
 /**
  * Requires a module, but doesn't throw an error if it fails.
+ *
  * @param moduleId The id of the module to require
- * @return The required module, or `undefined` if it couldn't be required
+ * @returns The required module, or `undefined` if it couldn't be required
  * @deprecated Use `importSafe()` instead.
  */
 export function requireSafe(moduleId: 'node:fs'): typeof import('node:fs') | undefined
