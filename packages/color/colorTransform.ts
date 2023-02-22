@@ -10,9 +10,10 @@ export type ColorTranformerMap = Partial<Record<keyof RGB, ColorTranformer> | Re
 
 /**
  * Takes a color and transforms it according to the transformer passed in. The transformer can be a map or a function.
+ *
  * @param value A color in hexadecimal, RGBA or HSLA
  * @param transformer A map or function to transform the color
- * @return The transformed color
+ * @returns The transformed color
  */
 export const colorTransform = (value: string, transformer: ColorTranformer | ColorTranformerMap): string => {
   if (typeof transformer === 'function') {
@@ -49,4 +50,19 @@ export const colorTransform = (value: string, transformer: ColorTranformer | Col
 
   // --- Return result.
   return rgbToHex(rgba, rgba.a < 1 ? 'rgba' : 'rgb')
+}
+
+/** c8 ignore next */
+if (import.meta.vitest) {
+  it('should transform the color using a map of transformers or transformer function', () => {
+    expect(colorTransform('#808080', x => x + 16)).toEqual('#909090')
+    expect(colorTransform('#80808000', x => x + 16)).toEqual('#90909000')
+    expect(colorTransform('#808080', { r: x => x + 16 })).toEqual('#908080')
+    expect(colorTransform('#808080', { g: x => x + 16 })).toEqual('#809080')
+    expect(colorTransform('#808080', { b: x => x + 16 })).toEqual('#808090')
+    expect(colorTransform('#808080', { h: x => x + 16 })).toEqual('#808080')
+    expect(colorTransform('#808080', { s: x => x + 16 })).toEqual('#ff0101')
+    expect(colorTransform('#808080', { l: x => x + 1 })).toEqual('#ffffff')
+    expect(colorTransform('#808080', { a: x => x - 16 })).toEqual('#80808000')
+  })
 }
