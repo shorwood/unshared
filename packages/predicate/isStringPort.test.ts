@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { isStringPort } from './isStringPort'
 
 it.each([

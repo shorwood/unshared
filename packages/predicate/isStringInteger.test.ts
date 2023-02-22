@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { isStringInteger } from './isStringInteger'
 
 it.each([

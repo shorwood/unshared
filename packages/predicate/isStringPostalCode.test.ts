@@ -1,5 +1,4 @@
-import { expect, it } from 'vitest'
-import { isPostalCode } from './isPostalCode'
+import { isPostalCode } from './isStringPostalCode'
 
 it.each([
 

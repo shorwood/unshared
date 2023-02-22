@@ -3,7 +3,6 @@
 /* eslint-disable no-useless-return */
 /* eslint-disable arrow-body-style */
 /* eslint-disable unicorn/no-useless-undefined */
-import { expect, it } from 'vitest'
 import { isNoop } from './isNoop'
 
 it.each([

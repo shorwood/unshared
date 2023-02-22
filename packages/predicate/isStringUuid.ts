@@ -1,7 +1,8 @@
 /**
  * Check if string matches UUID.
+ *
  * @param value The value to check
- * @return `true` if string matches an UUID, `false` otherwise
+ * @returns `true` if string matches an UUID, `false` otherwise
  * @see https://www.ietf.org/rfc/rfc4122.txt
  * @example
  * isStringUuid('12345678-1234-1234-1234-123456789012') // true

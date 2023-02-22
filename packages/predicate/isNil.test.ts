@@ -1,6 +1,5 @@
 /* eslint-disable unicorn/no-null */
 /* eslint-disable unicorn/no-useless-undefined */
-import { expect, it } from 'vitest'
 import { isNil } from './isNil'
 
 it.each([

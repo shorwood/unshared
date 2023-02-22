@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { isStringJwt } from './isStringJwt'
 
 it.each([

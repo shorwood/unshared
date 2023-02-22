@@ -1,10 +1,11 @@
-import { kindOf } from '@unshared-dev/misc/kindOf'
+import { kindOf } from './kindOf'
 
 /**
  * Checks if the value is of a specific kind.
+ *
  * @param value The value to check
  * @param kind The expected kind(s)
- * @return `true` if the value is of the expected kind, `false` otherwise
+ * @returns `true` if the value is of the expected kind, `false` otherwise
  * @see `kindOf()`
  * @example
  * isKind('foo', 'string') // true

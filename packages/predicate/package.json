@@ -1,0 +1,184 @@
+{
+  "name": "@unshared/predicate",
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shorwood/unshared.git",
+    "directory": "packages/predicate"
+  },
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./isKind": {
+      "import": "./dist/isKind.js",
+      "require": "./dist/isKind.cjs"
+    },
+    "./isNil": {
+      "import": "./dist/isNil.js",
+      "require": "./dist/isNil.cjs"
+    },
+    "./isNoop": {
+      "import": "./dist/isNoop.js",
+      "require": "./dist/isNoop.cjs"
+    },
+    "./isNotNil": {
+      "import": "./dist/isNotNil.js",
+      "require": "./dist/isNotNil.cjs"
+    },
+    "./isNotNull": {
+      "import": "./dist/isNotNull.js",
+      "require": "./dist/isNotNull.cjs"
+    },
+    "./isNotUndefined": {
+      "import": "./dist/isNotUndefined.js",
+      "require": "./dist/isNotUndefined.cjs"
+    },
+    "./isNull": {
+      "import": "./dist/isNull.js",
+      "require": "./dist/isNull.cjs"
+    },
+    "./isPrimitive": {
+      "import": "./dist/isPrimitive.js",
+      "require": "./dist/isPrimitive.cjs"
+    },
+    "./isString": {
+      "import": "./dist/isString.js",
+      "require": "./dist/isString.cjs"
+    },
+    "./isStringBetween": {
+      "import": "./dist/isStringBetween.js",
+      "require": "./dist/isStringBetween.cjs"
+    },
+    "./isStringEmail": {
+      "import": "./dist/isStringEmail.js",
+      "require": "./dist/isStringEmail.cjs"
+    },
+    "./isStringEmoji": {
+      "import": "./dist/isStringEmoji.js",
+      "require": "./dist/isStringEmoji.cjs"
+    },
+    "./isStringEmpty": {
+      "import": "./dist/isStringEmpty.js",
+      "require": "./dist/isStringEmpty.cjs"
+    },
+    "./isStringEndingWith": {
+      "import": "./dist/isStringEndingWith.js",
+      "require": "./dist/isStringEndingWith.cjs"
+    },
+    "./isStringInteger": {
+      "import": "./dist/isStringInteger.js",
+      "require": "./dist/isStringInteger.cjs"
+    },
+    "./isStringIntegerNegative": {
+      "import": "./dist/isStringIntegerNegative.js",
+      "require": "./dist/isStringIntegerNegative.cjs"
+    },
+    "./isStringIntegerPositive": {
+      "import": "./dist/isStringIntegerPositive.js",
+      "require": "./dist/isStringIntegerPositive.cjs"
+    },
+    "./isStringIpv4": {
+      "import": "./dist/isStringIpv4.js",
+      "require": "./dist/isStringIpv4.cjs"
+    },
+    "./isStringIpv6": {
+      "import": "./dist/isStringIpv6.js",
+      "require": "./dist/isStringIpv6.cjs"
+    },
+    "./isStringJwt": {
+      "import": "./dist/isStringJwt.js",
+      "require": "./dist/isStringJwt.cjs"
+    },
+    "./isStringLatLong": {
+      "import": "./dist/isStringLatLong.js",
+      "require": "./dist/isStringLatLong.cjs"
+    },
+    "./isStringLonger": {
+      "import": "./dist/isStringLonger.js",
+      "require": "./dist/isStringLonger.cjs"
+    },
+    "./isStringLongerOrEq": {
+      "import": "./dist/isStringLongerOrEq.js",
+      "require": "./dist/isStringLongerOrEq.cjs"
+    },
+    "./isStringMac": {
+      "import": "./dist/isStringMac.js",
+      "require": "./dist/isStringMac.cjs"
+    },
+    "./isStringMatching": {
+      "import": "./dist/isStringMatching.js",
+      "require": "./dist/isStringMatching.cjs"
+    },
+    "./isStringNotEmpty": {
+      "import": "./dist/isStringNotEmpty.js",
+      "require": "./dist/isStringNotEmpty.cjs"
+    },
+    "./isStringNumber": {
+      "import": "./dist/isStringNumber.js",
+      "require": "./dist/isStringNumber.cjs"
+    },
+    "./isStringNumberNegative": {
+      "import": "./dist/isStringNumberNegative.js",
+      "require": "./dist/isStringNumberNegative.cjs"
+    },
+    "./isStringNumberPositive": {
+      "import": "./dist/isStringNumberPositive.js",
+      "require": "./dist/isStringNumberPositive.cjs"
+    },
+    "./isStringPort": {
+      "import": "./dist/isStringPort.js",
+      "require": "./dist/isStringPort.cjs"
+    },
+    "./isStringPostalCode": {
+      "import": "./dist/isStringPostalCode.js",
+      "require": "./dist/isStringPostalCode.cjs"
+    },
+    "./isStringSemver": {
+      "import": "./dist/isStringSemver.js",
+      "require": "./dist/isStringSemver.cjs"
+    },
+    "./isStringShorter": {
+      "import": "./dist/isStringShorter.js",
+      "require": "./dist/isStringShorter.cjs"
+    },
+    "./isStringShorterOrEq": {
+      "import": "./dist/isStringShorterOrEq.js",
+      "require": "./dist/isStringShorterOrEq.cjs"
+    },
+    "./isStringStartingWith": {
+      "import": "./dist/isStringStartingWith.js",
+      "require": "./dist/isStringStartingWith.cjs"
+    },
+    "./isStringTimestamp": {
+      "import": "./dist/isStringTimestamp.js",
+      "require": "./dist/isStringTimestamp.cjs"
+    },
+    "./isStringUrl": {
+      "import": "./dist/isStringUrl.js",
+      "require": "./dist/isStringUrl.cjs"
+    },
+    "./isStringUuid": {
+      "import": "./dist/isStringUuid.js",
+      "require": "./dist/isStringUuid.cjs"
+    },
+    "./isUndefined": {
+      "import": "./dist/isUndefined.js",
+      "require": "./dist/isUndefined.cjs"
+    },
+    "./kindOf": {
+      "import": "./dist/kindOf.js",
+      "require": "./dist/kindOf.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
+}

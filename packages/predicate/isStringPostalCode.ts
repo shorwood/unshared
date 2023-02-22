@@ -1,6 +1,7 @@
 /**
  * Map of regexes matching the postal code of a country.
  * Each key corresponds to a postal code ISO identifier
+ *
  * @see https://www.wikiwand.com/en/List_of_postal_codes
  * @see http://i18napis.appspot.com/address/data
  */
@@ -187,16 +188,17 @@ export const postalCodePatterns = {
 
 /**
  * Checks if a string is a valid postal code.
+ *
  * @param value The string to check.
  * @param country The country code.
- * @return `true` if the string is a valid postal code, `false` otherwise.
+ * @returns `true` if the string is a valid postal code, `false` otherwise.
  * @throws If the postal code is not supported.
  * @example
  * isPostalCode('90210', 'US'); // true
  * isPostalCode('90210', 'DE'); // false
  * isPostalCode('90210', 'ZZ'); // throws
  */
-export const isPostalCode = (value: string, country: keyof typeof postalCodePatterns): boolean => {
+export const isStringPostalCode = (value: string, country: keyof typeof postalCodePatterns): boolean => {
   // --- Make sure the value is a string
   if (typeof value !== 'string') return false
 

@@ -1,7 +1,8 @@
 /**
  * Check if string matches port numbers.
+ *
  * @param value The value to check
- * @return `true` if string matches a port number, `false` otherwise
+ * @returns `true` if string matches a port number, `false` otherwise
  * @see https://en.wikipedia.org/wiki/Port_(computer_networking)
  * @example
  * isStringPort('443') // true
