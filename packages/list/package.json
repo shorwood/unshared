@@ -1,0 +1,107 @@
+{
+  "name": "@unshared/list",
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shorwood/unshared.git",
+    "directory": "packages/list"
+  },
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "exports": {
+    "./List": {
+      "import": "./dist/List.js",
+      "require": "./dist/List.cjs"
+    },
+    "./createList": {
+      "import": "./dist/createList.js",
+      "require": "./dist/createList.cjs"
+    },
+    "./createListFromArray": {
+      "import": "./dist/createListFromArray.js",
+      "require": "./dist/createListFromArray.cjs"
+    },
+    "./createListNode": {
+      "import": "./dist/createListNode.js",
+      "require": "./dist/createListNode.cjs"
+    },
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./isList": {
+      "import": "./dist/isList.js",
+      "require": "./dist/isList.cjs"
+    },
+    "./isListNode": {
+      "import": "./dist/isListNode.js",
+      "require": "./dist/isListNode.cjs"
+    },
+    "./listAt": {
+      "import": "./dist/listAt.js",
+      "require": "./dist/listAt.cjs"
+    },
+    "./listClone": {
+      "import": "./dist/listClone.js",
+      "require": "./dist/listClone.cjs"
+    },
+    "./listConcat": {
+      "import": "./dist/listConcat.js",
+      "require": "./dist/listConcat.cjs"
+    },
+    "./listEvery": {
+      "import": "./dist/listEvery.js",
+      "require": "./dist/listEvery.cjs"
+    },
+    "./listNodeSwap": {
+      "import": "./dist/listNodeSwap.js",
+      "require": "./dist/listNodeSwap.cjs"
+    },
+    "./listPop": {
+      "import": "./dist/listPop.js",
+      "require": "./dist/listPop.cjs"
+    },
+    "./listPush": {
+      "import": "./dist/listPush.js",
+      "require": "./dist/listPush.cjs"
+    },
+    "./listReverse": {
+      "import": "./dist/listReverse.js",
+      "require": "./dist/listReverse.cjs"
+    },
+    "./listShift": {
+      "import": "./dist/listShift.js",
+      "require": "./dist/listShift.cjs"
+    },
+    "./listSlice": {
+      "import": "./dist/listSlice.js",
+      "require": "./dist/listSlice.cjs"
+    },
+    "./listSome": {
+      "import": "./dist/listSome.js",
+      "require": "./dist/listSome.cjs"
+    },
+    "./listUnshift": {
+      "import": "./dist/listUnshift.js",
+      "require": "./dist/listUnshift.cjs"
+    },
+    "./listValues": {
+      "import": "./dist/listValues.js",
+      "require": "./dist/listValues.cjs"
+    },
+    "./types": {
+      "import": "./dist/types.js",
+      "require": "./dist/types.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "@unshared/types": "workspace:*"
+  }
+}
