@@ -1,10 +1,11 @@
-import { requireSafe } from '@unshared-dev/module/requireSafe'
+import { requireSafe } from '@unshared/module/requireSafe'
 
 /**
  * Returns a cryptographically secure pseudorandom 32-bit number.
  * Falls back to Math.random() if `node:crypto` and `globalThis.crypto` is not available.
+ *
  * @param allowUnsafe If `true`, falls back to Math.random() if `node:crypto` and `globalThis.crypto` is not available.
- * @return A random number
+ * @returns A random number
  * @throws If `node:crypto` and `globalThis.crypto` is not available and `allowUnsafe` is `false`
  * @example
  * randomInt() // 1234567890

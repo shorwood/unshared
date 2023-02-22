@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/prevent-abbreviations */
-import { endianness } from '@unshared-dev/binary/getEndianness'
-import { swapEndian } from '@unshared-dev/binary/swapEndian'
+import { endianness } from '@unshared/binary/getEndianness'
+import { swapEndian } from '@unshared/binary/swapEndian'
 
 // --- Initialize and compute constants table based on sin(0...63)
 const K: number[] = []
@@ -132,6 +132,7 @@ const preprocess = (data: ArrayBuffer) => {
 
 /**
  * Hashes the given data using the [MD5](https://en.wikipedia.org/wiki/MD5) algorithm.
+ *
  * @param data The data to hash.
  * @returns The hash of the data.
  * @see https://en.wikipedia.org/wiki/MD5

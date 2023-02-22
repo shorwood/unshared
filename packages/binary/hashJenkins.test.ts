@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { hashJenkins } from './hashJenkins'
 
 it('should hash "%s" into an ArrayBuffer equal to "0x%s"', () => {
