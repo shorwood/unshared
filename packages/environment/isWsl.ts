@@ -1,5 +1,6 @@
 /**
  * Check if process is running in a Windows Subsystem for Linux (WSL) environment
+ *
  * @returns `true` if process is running in a WSL environment
  */
 export const isWsl = async() => {

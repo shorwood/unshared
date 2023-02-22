@@ -1,5 +1,6 @@
 /**
  * Check if process is running in a Kubernetes environment
+ *
  * @returns `true` if process is running in a Kubernetes environment
  */
 export const isKubernetes = async() => {

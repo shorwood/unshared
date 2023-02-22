@@ -1,5 +1,6 @@
 /**
  * Check if process is running on Minikube
+ *
  * @returns `true` if process is running on Minikube
  */
 export const isMinikube = async(): Promise<boolean> => {

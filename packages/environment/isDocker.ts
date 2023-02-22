@@ -1,5 +1,6 @@
 /**
  * Check if process is running in a Docker container
+ *
  * @returns `true` if process is running in a Docker container
  */
 export const isDocker = async() => {

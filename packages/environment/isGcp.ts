@@ -1,5 +1,6 @@
 /**
  * Check if process is running on Google Cloud Functions
+ *
  * @returns `true` if process is running on Google Cloud Functions
  */
 export const isGcp = async() => {

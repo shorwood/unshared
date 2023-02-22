@@ -1,5 +1,6 @@
 /**
  * Check if process is running on a Nuxt.js instance
+ *
  * @returns `true` if process is running on a Nuxt.js instance
  */
 export const isNuxt = () => {

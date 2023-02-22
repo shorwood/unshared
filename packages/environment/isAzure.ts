@@ -1,5 +1,6 @@
 /**
  * Check if process is running on Azure Functions
+ *
  * @returns `true` if process is running on Azure Functions
  */
 export const isAzure = async() => {

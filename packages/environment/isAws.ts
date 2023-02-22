@@ -1,5 +1,6 @@
 /**
  * Check if process is running on AWS Lambda
+ *
  * @returns `true` if process is running on AWS Lambda
  */
 export const isAws = async() => {
