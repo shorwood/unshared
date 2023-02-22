@@ -1,6 +1,6 @@
 {
   "name": "@unshared/boolean",
-  "version": "1.0.0",
+  "type": "module",
   "author": "Stanley Horwood <stanley@hsjm.io>",
   "license": "MIT",
   "repository": {
@@ -9,41 +9,64 @@
     "directory": "packages/boolean"
   },
   "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "exports": {
     "./Boolean": {
       "import": "./dist/Boolean.js",
-      "require": "./dist/Boolean.cjs",
-      "types": "./dist/Boolean.d.ts"
+      "require": "./dist/Boolean.cjs"
     },
     "./and": {
       "import": "./dist/and.js",
-      "require": "./dist/and.cjs",
-      "types": "./dist/and.d.ts"
+      "require": "./dist/and.cjs"
+    },
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./isBoolean": {
+      "import": "./dist/isBoolean.js",
+      "require": "./dist/isBoolean.cjs"
+    },
+    "./isFalse": {
+      "import": "./dist/isFalse.js",
+      "require": "./dist/isFalse.cjs"
+    },
+    "./isFalsy": {
+      "import": "./dist/isFalsy.js",
+      "require": "./dist/isFalsy.cjs"
+    },
+    "./isTrue": {
+      "import": "./dist/isTrue.js",
+      "require": "./dist/isTrue.cjs"
+    },
+    "./isTruthy": {
+      "import": "./dist/isTruthy.js",
+      "require": "./dist/isTruthy.cjs"
     },
     "./nand": {
       "import": "./dist/nand.js",
-      "require": "./dist/nand.cjs",
-      "types": "./dist/nand.d.ts"
+      "require": "./dist/nand.cjs"
     },
     "./nor": {
       "import": "./dist/nor.js",
-      "require": "./dist/nor.cjs",
-      "types": "./dist/nor.d.ts"
+      "require": "./dist/nor.cjs"
     },
     "./not": {
       "import": "./dist/not.js",
-      "require": "./dist/not.cjs",
-      "types": "./dist/not.d.ts"
+      "require": "./dist/not.cjs"
     },
     "./or": {
       "import": "./dist/or.js",
-      "require": "./dist/or.cjs",
-      "types": "./dist/or.d.ts"
+      "require": "./dist/or.cjs"
+    },
+    "./xnor": {
+      "import": "./dist/xnor.js",
+      "require": "./dist/xnor.cjs"
     },
     "./xor": {
       "import": "./dist/xor.js",
-      "require": "./dist/xor.cjs",
-      "types": "./dist/xor.d.ts"
+      "require": "./dist/xor.cjs"
     }
   },
   "files": [
