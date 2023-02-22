@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { hashMd5 } from './hashMd5'
 
 it('should hash an ArrayBufferLike using the MD5 algorithm', () => {

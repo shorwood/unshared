@@ -11,9 +11,9 @@ afterEach(() => {
 
 it('returns a random unsigned 32-bit integer', () => {
   const result = randomInt()
-  expect(result).toBeTypeOf('number')
+  expect(result).toEqualTypeOf('number')
   expect(result).toBeGreaterThanOrEqual(0x00000000)
-  expect(result).toBeLessThanOrEqual(0xFFFFFFFF)
+  expect(result).toEqualLessThanOrEqual(0xFFFFFFFF)
   expect(Number.isInteger(result)).toEqual(true)
 })
 
@@ -21,13 +21,13 @@ it('should fallback to `globalThis.crypto` if `node:crypto` is not available', (
   vi.stubGlobal('crypto', { getRandomValues: () => [0x12345678] })
   require('node:crypto').randomBytes = undefined
 
-  expect(globalThis.crypto.getRandomValues).toBeDefined()
+  expect(globalThis.crypto.getRandomValues).toEqualDefined()
   expect(require('node:crypto').randomBytes).toBeUndefined()
 
   const result = randomInt()
-  expect(result).toBeTypeOf('number')
+  expect(result).toEqualTypeOf('number')
   expect(result).toBeGreaterThanOrEqual(0x00000000)
-  expect(result).toBeLessThanOrEqual(0xFFFFFFFF)
+  expect(result).toEqualLessThanOrEqual(0xFFFFFFFF)
   expect(Number.isInteger(result)).toEqual(true)
 })
 
@@ -39,9 +39,9 @@ it('should return a random number if allowUnsafe is true and crypto is not avail
   expect(require('node:crypto').randomBytes).toBeUndefined()
 
   const result = randomInt(true)
-  expect(result).toBeTypeOf('number')
+  expect(result).toEqualTypeOf('number')
   expect(result).toBeGreaterThanOrEqual(0x00000000)
-  expect(result).toBeLessThanOrEqual(0xFFFFFFFF)
+  expect(result).toEqualLessThanOrEqual(0xFFFFFFFF)
   expect(Number.isInteger(result)).toEqual(true)
 })
 

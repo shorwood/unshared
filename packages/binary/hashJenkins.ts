@@ -1,5 +1,6 @@
 /**
  * Hashes the given data using the [Jenkins](https://www.wikiwand.com/en/Jenkins_hash_function) algorithm.
+ *
  * @param data The data to hash.
  * @returns The hash of the data.
  * @see https://www.wikiwand.com/en/Jenkins_hash_function

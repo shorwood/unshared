@@ -1,8 +1,9 @@
 /**
  * Hashes a string using the [Cyrb53](https://github.com/bryc/code/blob/master/jshash/experimental/cyrb53.js) algorithm.
+ *
  * @param data The string to hash
  * @param seed A seed value (default: `0`)
- * @return The hashed number
+ * @returns The hashed number
  * @See https://github.com/bryc
  */
 export const hashCyrb53 = (data: ArrayBufferLike, seed = 0): ArrayBuffer => {

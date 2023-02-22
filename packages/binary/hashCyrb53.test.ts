@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { hashCyrb53 } from './hashCyrb53'
 
 it('should hash "%s" into an ArrayBuffer equal to "0x%s"', () => {
