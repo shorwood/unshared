@@ -1,9 +1,10 @@
-import { ValidationRule, ValidationRuleObject } from '@unshared-dev/types'
+import { ValidationRule, ValidationRuleObject } from '../types'
 
 /**
  * Convert a validation rule to a validation rule object
+ *
  * @param rule The rule to convert
- * @return The validation rule object
+ * @returns The validation rule object
  * @throws If the rule is not valid
  * @example
  * const ruleObject = createRule(Number.isNaN) // { handler: Number.isNaN, name: 'isNaN', parameters: [] }

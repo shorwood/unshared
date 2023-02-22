@@ -1,8 +1,9 @@
-import { ValidationRule, ValidationRulePipe } from '@unshared-dev/types'
+import { ValidationRule, ValidationRulePipe } from '../types'
 import { isRule } from './isRule'
 
 /**
  * Converts a rule or array of rules to a rule pipe.
+ *
  * @param rules The rules to convert
  * @returns The rule pipe
  */
