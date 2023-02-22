@@ -2,12 +2,16 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
+    open: false,
     globals: true,
+    reporters: ['dot'],
     coverage: {
       100: true,
-      enabled: true,
+      clean: true,
+      enabled: false,
+      cleanOnRerun: true,
       excludeNodeModules: true,
-      reporter: ['text', 'lcov', 'html'],
+      reporter: ['html'],
     },
     setupFiles: './packages/setupTest.ts',
     passWithNoTests: true,
