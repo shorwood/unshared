@@ -1,9 +1,10 @@
-import { createError } from '@unshared-dev/misc/createError'
-import { HttpStatusCode } from '@unshared-dev/network/httpStatusCode'
-import { isArrayEmpty } from '@unshared-dev/predicate/isArrayEmpty'
+import { createError } from '@unshared/misc/createError'
+import { HttpStatusCode } from '@unshared/network/httpStatusCode'
+import { isArrayEmpty } from '@unshared/predicate/isArrayEmpty'
 
 /**
  * Asserts that the value is an empty array.
+ *
  * @param value The value to check
  * @throws If the value is not an empty array
  * @example
