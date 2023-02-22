@@ -1,0 +1,23 @@
+{
+  "name": "@unshared/archive",
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shorwood/unshared.git",
+    "directory": "packages/archive"
+  },
+  "sideEffects": false,
+  "exports": {
+    "./extractTar": {
+      "import": "./dist/extractTar.js",
+      "require": "./dist/extractTar.cjs",
+      "types": "./dist/extractTar.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
+}
