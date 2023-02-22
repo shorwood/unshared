@@ -1,10 +1,11 @@
 /* eslint-disable unicorn/prevent-abbreviations */
-import { randomString } from '@unshared-dev/crypto'
+import { randomString } from '@unshared/crypto'
 
 /**
  * Workerize a runtime function so that it can be run in a separate thread.
+ *
  * @param callback The function to workerize
- * @return The workerized function
+ * @returns The workerized function
  * @example
  * const add = (a: number, b: number): number => a + b
  * const addWorkerized = await workerizeNode(myFunction)

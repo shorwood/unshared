@@ -3,8 +3,9 @@
 
 /**
  * Workerize a browser-side function so that it can be run in a separate thread.
+ *
  * @param callback The function to workerize
- * @return The workerized function
+ * @returns The workerized function
  * @example
  * const add = (a: number, b: number): number => a + b
  * const addWorkerized = workerizeBrowser(myFunction)
