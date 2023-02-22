@@ -1,21 +1,16 @@
 /* eslint-disable unicorn/no-null */
-import { parseJson } from '@unshared-dev/module'
+import { parseJson } from '@unshared/module'
 
 /**
- * Fetches a resource from the network using the same specification
- * as the browser's `fetch` API.
- *
- * This can be used as a drop-in
- * replacement for `fetch` in the browser.
- *
- * Original source: [developit/unfetch](https://github.com/developit/unfetch/blob/master/src/index.mjs)
+ * Fetches a resource from the network using the same specification as the browser's `fetch` function.
+ * Can be used as a drop-in replacement for `fetch` in the browser.
  *
  * @param url The URL to fetch
  * @param options The options to use
- * @return The response
+ * @returns The response
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
- * @example
- * await fetch('https://example.com')
+ * @see https://github.com/developit/unfetch/blob/master/src/index.mjs
+ * @example await fetch('https://example.com') // Promise<Response>
  */
 export const fetch = (url: string, options: RequestInit = {}): Promise<Response> => {
   const {

@@ -41,6 +41,7 @@ export const strintToBuffer = (value: string) => {
 /**
  *
  * @param path
+ * @param {...any} paths
  * @see https://stackoverflow.com/a/29855511/12414909
  */
 export const joinPath = (...paths: string[]) => {

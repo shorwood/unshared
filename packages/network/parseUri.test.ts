@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { parseUri } from './parseUri'
 
 it.each([
