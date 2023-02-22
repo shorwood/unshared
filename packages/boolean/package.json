@@ -1,6 +1,5 @@
 {
   "name": "@unshared/boolean",
-  "type": "module",
   "author": "Stanley Horwood <stanley@hsjm.io>",
   "license": "MIT",
   "repository": {
@@ -14,59 +13,73 @@
   "exports": {
     "./Boolean": {
       "import": "./dist/Boolean.js",
-      "require": "./dist/Boolean.cjs"
+      "require": "./dist/Boolean.cjs",
+      "types": "./dist/Boolean.d.ts"
     },
     "./and": {
       "import": "./dist/and.js",
-      "require": "./dist/and.cjs"
+      "require": "./dist/and.cjs",
+      "types": "./dist/and.d.ts"
     },
     ".": {
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
     },
     "./isBoolean": {
       "import": "./dist/isBoolean.js",
-      "require": "./dist/isBoolean.cjs"
+      "require": "./dist/isBoolean.cjs",
+      "types": "./dist/isBoolean.d.ts"
     },
     "./isFalse": {
       "import": "./dist/isFalse.js",
-      "require": "./dist/isFalse.cjs"
+      "require": "./dist/isFalse.cjs",
+      "types": "./dist/isFalse.d.ts"
     },
     "./isFalsy": {
       "import": "./dist/isFalsy.js",
-      "require": "./dist/isFalsy.cjs"
+      "require": "./dist/isFalsy.cjs",
+      "types": "./dist/isFalsy.d.ts"
     },
     "./isTrue": {
       "import": "./dist/isTrue.js",
-      "require": "./dist/isTrue.cjs"
+      "require": "./dist/isTrue.cjs",
+      "types": "./dist/isTrue.d.ts"
     },
     "./isTruthy": {
       "import": "./dist/isTruthy.js",
-      "require": "./dist/isTruthy.cjs"
+      "require": "./dist/isTruthy.cjs",
+      "types": "./dist/isTruthy.d.ts"
     },
     "./nand": {
       "import": "./dist/nand.js",
-      "require": "./dist/nand.cjs"
+      "require": "./dist/nand.cjs",
+      "types": "./dist/nand.d.ts"
     },
     "./nor": {
       "import": "./dist/nor.js",
-      "require": "./dist/nor.cjs"
+      "require": "./dist/nor.cjs",
+      "types": "./dist/nor.d.ts"
     },
     "./not": {
       "import": "./dist/not.js",
-      "require": "./dist/not.cjs"
+      "require": "./dist/not.cjs",
+      "types": "./dist/not.d.ts"
     },
     "./or": {
       "import": "./dist/or.js",
-      "require": "./dist/or.cjs"
+      "require": "./dist/or.cjs",
+      "types": "./dist/or.d.ts"
     },
     "./xnor": {
       "import": "./dist/xnor.js",
-      "require": "./dist/xnor.cjs"
+      "require": "./dist/xnor.cjs",
+      "types": "./dist/xnor.d.ts"
     },
     "./xor": {
       "import": "./dist/xor.js",
-      "require": "./dist/xor.cjs"
+      "require": "./dist/xor.cjs",
+      "types": "./dist/xor.d.ts"
     }
   },
   "files": [
@@ -75,6 +88,8 @@
     "LICENSE"
   ],
   "dependencies": {
-    "@unshared/types": "workspace:1.0.0"
-  }
+    "@unshared/types": "workspace:*"
+  },
+  "type": "module",
+  "types": "./dist/index.d.ts"
 }
