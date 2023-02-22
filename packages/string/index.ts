@@ -1,5 +1,3 @@
-export * from './capitalize'
-export * from './complexity'
 export * from './deburr'
 export * from './escapeHtml'
 export * from './escapeRegExp'
