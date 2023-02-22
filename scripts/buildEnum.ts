@@ -1,5 +1,6 @@
 /**
  * Generate a TypeScript file that exports a const object with the given name and properties.
+ *
  * @param exportName The name of the exported const object.
  * @param entries The entries of the exported const object.
  * @returns The generated TypeScript file.
