@@ -1,15 +1,34 @@
 {
-  "name": "@unshared/thread",
-  "version": "1.0.0",
+  "name": "@unshared/process",
   "author": "Stanley Horwood <stanley@hsjm.io>",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shorwood/unshared.git",
-    "directory": "packages/thread"
+    "directory": "packages/process"
   },
   "sideEffects": false,
   "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./ipcCall": {
+      "import": "./dist/ipcCall.js",
+      "require": "./dist/ipcCall.cjs",
+      "types": "./dist/ipcCall.d.ts"
+    },
+    "./ipcExpose": {
+      "import": "./dist/ipcExpose.js",
+      "require": "./dist/ipcExpose.cjs",
+      "types": "./dist/ipcExpose.d.ts"
+    },
+    "./ipcExposeModule": {
+      "import": "./dist/ipcExposeModule.js",
+      "require": "./dist/ipcExposeModule.cjs",
+      "types": "./dist/ipcExposeModule.d.ts"
+    },
     "./ipcPublish": {
       "import": "./dist/ipcPublish.js",
       "require": "./dist/ipcPublish.cjs",
@@ -35,5 +54,9 @@
     "dist",
     "README.md",
     "LICENSE"
-  ]
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module"
 }
