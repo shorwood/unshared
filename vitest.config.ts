@@ -3,6 +3,12 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   test: {
     globals: true,
+    reporters: ['dot'],
+    typecheck: {
+      checker: 'tsc',
+      ignoreSourceErrors: false,
+      include: ['./packages/types/*.ts'],
+    },
     coverage: {
       100: true,
       enabled: true,

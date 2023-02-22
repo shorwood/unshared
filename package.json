@@ -18,6 +18,7 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:watch": "vitest --watch",
+    "test:types": "vitest typecheck",
     "test:coverage": "vitest --coverage"
   },
   "peerDependencies": {
