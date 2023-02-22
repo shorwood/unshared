@@ -1,10 +1,11 @@
-import { ValidationRule, ValidationRulePipe, ValidationRuleSet } from '@unshared-dev/types'
+import { ValidationRule, ValidationRulePipe, ValidationRuleSet } from '../types'
 import { isRule } from './isRule'
 
 /**
  * Converts a rule, array of rule or rule set to a rule set.
+ *
  * @param ruleSet The rule set to convert
- * @return The rule set
+ * @returns The rule set
  * @throws If the rule set is not valid
  * @example
  * const ruleSet = createRuleSet(Number.isNaN) // [[Number.isNaN]]

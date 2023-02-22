@@ -1,4 +1,4 @@
-import { NotFunction } from '@unshared-dev/types/function'
+import { NotFunction } from '@unshared/types/NotFunction'
 
 // TODO: Infer parameters anr return type from function
 
