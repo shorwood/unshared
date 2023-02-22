@@ -1,6 +1,5 @@
 {
   "name": "@unshared/collection",
-  "version": "1.0.0",
   "author": "Stanley Horwood <stanley@hsjm.io>",
   "license": "MIT",
   "repository": {
@@ -52,9 +51,65 @@
       "import": "./dist/groupBy.js",
       "require": "./dist/groupBy.cjs"
     },
+    "./immutable": {
+      "import": "./dist/immutable.js",
+      "require": "./dist/immutable.cjs"
+    },
     ".": {
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./isArray": {
+      "import": "./dist/isArray.js",
+      "require": "./dist/isArray.cjs"
+    },
+    "./isArrayEmpty": {
+      "import": "./dist/isArrayEmpty.js",
+      "require": "./dist/isArrayEmpty.cjs"
+    },
+    "./isArrayIncluding": {
+      "import": "./dist/isArrayIncluding.js",
+      "require": "./dist/isArrayIncluding.cjs"
+    },
+    "./isArrayIncludingEvery": {
+      "import": "./dist/isArrayIncludingEvery.js",
+      "require": "./dist/isArrayIncludingEvery.cjs"
+    },
+    "./isArrayIncludingSome": {
+      "import": "./dist/isArrayIncludingSome.js",
+      "require": "./dist/isArrayIncludingSome.cjs"
+    },
+    "./isArrayNotEmpty": {
+      "import": "./dist/isArrayNotEmpty.js",
+      "require": "./dist/isArrayNotEmpty.cjs"
+    },
+    "./isArrayNotIncluding": {
+      "import": "./dist/isArrayNotIncluding.js",
+      "require": "./dist/isArrayNotIncluding.cjs"
+    },
+    "./isArrayNotIncludingEvery": {
+      "import": "./dist/isArrayNotIncludingEvery.js",
+      "require": "./dist/isArrayNotIncludingEvery.cjs"
+    },
+    "./isArrayNotIncludingSome": {
+      "import": "./dist/isArrayNotIncludingSome.js",
+      "require": "./dist/isArrayNotIncludingSome.cjs"
+    },
+    "./isObject": {
+      "import": "./dist/isObject.js",
+      "require": "./dist/isObject.cjs"
+    },
+    "./isObjectEqual": {
+      "import": "./dist/isObjectEqual.js",
+      "require": "./dist/isObjectEqual.cjs"
+    },
+    "./isObjectNotOverlapping": {
+      "import": "./dist/isObjectNotOverlapping.js",
+      "require": "./dist/isObjectNotOverlapping.cjs"
+    },
+    "./isObjectOverlapping": {
+      "import": "./dist/isObjectOverlapping.js",
+      "require": "./dist/isObjectOverlapping.cjs"
     },
     "./map": {
       "import": "./dist/map.js",

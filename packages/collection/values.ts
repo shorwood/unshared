@@ -1,4 +1,5 @@
-import { Collection, Key } from '@unshared/types/collection'
+import { Key } from '@unshared/types/Key'
+import { Collection } from '@unshared/types/Collection'
 
 /**
  * Cast a collection into an array.
