@@ -2,7 +2,6 @@
 const boxChars = ['┌', '─', '┐', '│', '┘', '─', '└', '│']
 
 export const renderBox = (props: Record<string, any>): string => {
-
   const boxLines: string[] = []
   const width = process.stdout.columns - 2
 

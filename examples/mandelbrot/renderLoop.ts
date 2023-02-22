@@ -16,7 +16,6 @@ export interface RenderOptions {
   maxIterations: number
 }
 
-
 export const renderLoop = async() => {
   // --- Hide the cursor.
   process.stdout.write('\u001B[?25l')
@@ -28,7 +27,6 @@ export const renderLoop = async() => {
   let zoom = 1
   let zoomVel = 0
 
-  
   // --- Listen for keypresses.
   emitKeypressEvents(process.stdin)
   process.stdin.isTTY = true
@@ -79,7 +77,7 @@ export const renderLoop = async() => {
       maxIterations: Math.max(zoom / 2, 100),
       zoom,
     }
-    
+
     // // --- Write the stats in the top left corner in a box.
     const box = renderBox({
       'Elapsed': `${elapsed / 1000}s`,
@@ -88,7 +86,7 @@ export const renderLoop = async() => {
       'Position': `(${xPos.toFixed(4)}, ${yPos.toFixed(4)})`,
       'Velocity': `(${xVel.toFixed(4)}, ${yVel.toFixed(4)})`,
       'Iterations': `${stats.maxIterations.toFixed(0)}`,
-      'Refresh Rate': `${refreshRate.toFixed()}ms`,
+      'Refresh Rate': `${refreshRate.toFixed(0)}ms`,
       'CPU Usage': `${(process.cpuUsage().user / process.cpuUsage().system).toFixed(2)}%`,
       'Memory Usage': `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB`,
       'Press': 'WASD to move, QE to zoom, CTRL+C to exit',
@@ -98,14 +96,13 @@ export const renderLoop = async() => {
     process.stdout.write('\u001B[0;0H')
     process.stdout.write('\u001B[0m')
     process.stdout.write(box)
-    
+
     // --- Write the output in a box below the stats.
     const boxHeight = box.split('\n').length
-    const o = await render({...stats, height: process.stdout.rows - boxHeight - 2})
+    const o = await render({ ...stats, height: process.stdout.rows - boxHeight - 2 })
     process.stdout.write(o)
 
     await new Promise(resolve => setTimeout(resolve, refreshRate * 0.5))
-
 
     // --- Reset the cursor position.
     process.stdout.write('\u001B[0;0H')
@@ -119,4 +116,4 @@ class Test {
   constructor(public x: number, public y: number) {}
 }
 
-type TestParams = ConstructorParameters<typeof Test>
+type TestParameters = ConstructorParameters<typeof Test>
