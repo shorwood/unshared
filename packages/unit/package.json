@@ -1,0 +1,23 @@
+{
+  "name": "@unshared/unit",
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shorwood/unshared.git",
+    "directory": "packages/unit"
+  },
+  "sideEffects": false,
+  "exports": {
+    "./convertToUnit": {
+      "import": "./dist/convertToUnit.js",
+      "require": "./dist/convertToUnit.cjs",
+      "types": "./dist/convertToUnit.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
+}
