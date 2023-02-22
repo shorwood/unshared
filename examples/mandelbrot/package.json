@@ -1,0 +1,19 @@
+{
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "tsup-node --watch",
+    "build": "tsup-node",
+    "start": "node dist/index.mjs"
+  },
+  "dependencies": {
+    "@unshared/function": "workspace:*",
+    "@unshared/process": "workspace:*"
+  },
+  "devDependencies": {
+    "@chialab/esbuild-plugin-meta-url": "0.17.2",
+    "@chialab/esbuild-plugin-worker": "0.17.3",
+    "tsup": "6.6.3",
+    "tsx": "3.12.3"
+  }
+}
