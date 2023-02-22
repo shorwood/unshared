@@ -5,6 +5,11 @@ export default defineConfig({
     open: false,
     globals: true,
     reporters: ['dot'],
+    typecheck: {
+      checker: 'tsc',
+      ignoreSourceErrors: false,
+      include: ['./packages/types/*.ts'],
+    },
     coverage: {
       100: true,
       clean: true,

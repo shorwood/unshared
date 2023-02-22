@@ -1,5 +1,4 @@
 node_modules/
-coverage/
 dist/
 docs/api
 docs/**/metadata.json
@@ -7,3 +6,7 @@ docs/**/metadata.json
 
 # Source as distribution.
 !packages/eslint-config/dist/
+
+# Vitest
+coverage/
+tsconfig.vitest-temp.json
