@@ -1,7 +1,7 @@
 /**
  * A decimal number.
  *
- * @param N Number to match.
+ * @template N Number to match.
  * @returns A number that is garanteed to be a positive decimal number.
  * @example NumberDecimal<1.1> // 1.1
  */

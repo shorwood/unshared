@@ -1,8 +1,8 @@
 /**
  * The NAND of two booleans.
  *
- * @param A The first boolean
- * @param B The second boolean
+ * @template A The first boolean
+ * @template B The second boolean
  * @returns The NAND of the two booleans
  * @example BooleanNand<true, false> // true
  */

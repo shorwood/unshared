@@ -1,8 +1,8 @@
 /**
  * The XOR of two booleans.
  *
- * @param A The first boolean
- * @param B The second boolean
+ * @template A The first boolean
+ * @template B The second boolean
  * @returns The XOR of the two booleans
  * @example BooleanXor<true, false> // true
  */

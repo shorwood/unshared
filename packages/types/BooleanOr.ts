@@ -1,8 +1,8 @@
 /**
  * The OR of two booleans.
  *
- * @param A The first boolean
- * @param B The second boolean
+ * @template A The first boolean
+ * @template B The second boolean
  * @returns The OR of the two booleans
  * @example BooleanOr<true, false> // true
  */

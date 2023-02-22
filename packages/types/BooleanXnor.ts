@@ -1,8 +1,8 @@
 /**
  * The XNOR of two booleans.
  *
- * @param A The first boolean
- * @param B The second boolean
+ * @template A The first boolean
+ * @template B The second boolean
  * @returns The XNOR of the two booleans
  * @example BooleanXnor<true, false> // false
  */

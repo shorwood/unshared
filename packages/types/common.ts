@@ -11,18 +11,6 @@ export type Any = Primitive | object
 /** Not `any` */
 export type NotAny<T = any> = any extends T ? never : T
 
-/** Might be an array. */
-export type MaybeArray<U = any> = U | U[]
-
-/** Not an `Array` */
-export type NotArray<U = any> = U extends any[] ? never : U
-
-/** Might be a promise. */
-export type MaybePromise<U = any> = U | Promise<U>
-
-/** Not a `Promise` */
-export type NotPromise<U = any> = U extends Promise<any> ? never : U
-
 /** Generic 2D vector. */
 export type Vector<U = any> = U[][]
 
@@ -40,3 +28,12 @@ export type NotNil<U = any> = U extends null | undefined ? never : U
 
 /** Replace `undefined` with `U`. */
 export type Default<T, U> = T extends undefined ? NotUndefined<T> | U : T
+
+/**
+ * One of the two interfaces but not both.
+ *
+ * @template T1 First interface.
+ * @template T2 Second interface.
+ * @returns One of the two interfaces but not both.
+ */
+// export type OneOrTheOther<T1, T2> = {

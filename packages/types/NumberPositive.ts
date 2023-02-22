@@ -1,7 +1,7 @@
 /**
  * A strictly positive number. Excludes zero.
  *
- * @param N Number to match.
+ * @template N Number to match.
  * @returns A number that is garanteed to be striclty positive.
  * @example NumberPositive<1> // 1
  */

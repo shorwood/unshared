@@ -1,7 +1,7 @@
 /**
  * A negative number.
  *
- * @param N Number to match.
+ * @template N Number to match.
  * @returns A number that is garanteed to be negative.
  * @example NumberNegative<-1> // -1
  */

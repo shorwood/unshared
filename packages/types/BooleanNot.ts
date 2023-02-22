@@ -1,7 +1,7 @@
 /**
  * The NOT of this boolean.
  *
- * @param T The type of this boolean
+ * @template T The type of this boolean
  * @returns The NOT of this boolean
  * @example BooleanNot<true> // false
  */

@@ -1,0 +1,19 @@
+{
+  "name": "@unshared/types",
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shorwood/unshared.git",
+    "directory": "packages/types"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "tsup": {
+    "format": []
+  }
+}

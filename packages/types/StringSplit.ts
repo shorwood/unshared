@@ -1,11 +1,11 @@
-import { Decrease } from './arithmetic'
+import { MathDecrease } from './MathDecrease'
 
 /**
  * Extract litteral types of strings separated by a delimiter.
  *
- * @param S String to extract litteral types from.
- * @param D Delimiter to split string with.
- * @param N Maximum number of splits. (default: `128`)
+ * @template S String to extract litteral types from.
+ * @template D Delimiter to split string with.
+ * @template N Maximum number of splits. (default: `128`)
  * @returns Litteral types of strings separated by a delimiter.
  * @example StringSplit<'Hello,World'> // 'Hello' | 'World'
  */
@@ -16,7 +16,7 @@ export type StringSplit<S extends string, D extends string = ',', N extends numb
     // --- Cutoff recursion
     ? never
     : S extends `${infer A}${D}${infer B}`
-      ? `${A}` | StringSplit<B, D, Decrease<N>>
+      ? `${A}` | StringSplit<B, D, MathDecrease<N>>
 
       // --- Last split
       : Exclude<`${S}`, ''>

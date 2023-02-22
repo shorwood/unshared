@@ -1,7 +1,7 @@
 /**
  * A negative decimal number.
  *
- * @param N Number to match.
+ * @template N Number to match.
  * @returns A number that is garanteed to be a negative decimal number.
  * @example NumberDecimalNegative<-1.1> // -1.1
  */

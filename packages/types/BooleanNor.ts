@@ -1,8 +1,8 @@
 /**
  * The NOR of two booleans.
  *
- * @param A The first boolean
- * @param B The second boolean
+ * @template A The first boolean
+ * @template B The second boolean
  * @returns The NOR of the two booleans
  * @example BooleanNor<true, false> // false
  */

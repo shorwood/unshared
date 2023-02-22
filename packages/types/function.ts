@@ -1,14 +1,26 @@
-import { Key, Values } from './collection'
-import { Any } from './common'
 
-/** A function */
-export type Function<A extends any[] = any[], T = any> = (...parameters: A) => T
-
-/** Anything that is not a function. */
-export type NotFunction = Any & { apply?: never }
-
-/** Function to iterate over an array or object values. */
-export type IteratorFunction<T, R> = (value: Values<T>, key: Key<T>, object: T) => R
-
-/** Remove first argument from a function */
+/**
+ * A function where the first parameter is omitted.
+ *
+ * @template F The function to omit the first parameter from.
+ * @example OmitFirstParameter<(x: number, y: string) => boolean> // (y: string) => boolean
+ */
 export type OmitFirstParameter<F> = F extends (x: any, ...parameters: infer P) => infer U ? (...parameters: P) => U : never
+
+/**
+ * Wrap a type or the return type of `T` in a promise. If the type is already a
+ * promise, the type is returned as-is.
+ *
+ * @template T The type to wrap.
+ * @example
+ * PromiseWrap<number> // Promise<number>
+ * PromiseWrap<Promise<number>> // Promise<number>
+ * PromiseWrap<() => number> // () => Promise<number>
+ * PromiseWrap<() => Promise<number>> // () => Promise<number>
+ */
+export type PromiseWrap<T = unknown> =
+  T extends Promise<unknown> ? T :
+    T extends (...parameters: infer P) => infer U
+      ? (...parameters: P) => U extends Promise<unknown> ? U
+        : Promise<U>
+      : Promise<T>
