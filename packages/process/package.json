@@ -1,5 +1,6 @@
 {
   "name": "@unshared/process",
+  "type": "module",
   "author": "Stanley Horwood <stanley@hsjm.io>",
   "license": "MIT",
   "repository": {
@@ -8,6 +9,9 @@
     "directory": "packages/process"
   },
   "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -48,6 +52,11 @@
       "import": "./dist/ipcSubscribe.js",
       "require": "./dist/ipcSubscribe.cjs",
       "types": "./dist/ipcSubscribe.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types.js",
+      "require": "./dist/types.cjs",
+      "types": "./dist/types.d.ts"
     }
   },
   "files": [
@@ -55,8 +64,7 @@
     "README.md",
     "LICENSE"
   ],
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "type": "module"
+  "devDependencies": {
+    "@unshared/types": "workspace:*"
+  }
 }
