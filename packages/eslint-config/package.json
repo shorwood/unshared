@@ -1,6 +1,5 @@
 {
   "name": "@unshared/eslint-config",
-  "version": "1.0.0",
   "author": "Stanley Horwood <stanley@hsjm.io>",
   "license": "MIT",
   "repository": {
