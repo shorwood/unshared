@@ -1,5 +1,4 @@
 import { endianness as osEndianness } from 'node:os'
-import { expect, it } from 'vitest'
 import { endianness, getEndianness, isBigEndian, isLittleEndian } from './getEndianness'
 
 it('returns the endianness of the machine', () => {

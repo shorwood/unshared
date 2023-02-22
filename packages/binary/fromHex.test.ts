@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { toUtf8 } from './toUtf8'
 import { fromHex } from './fromHex'
 

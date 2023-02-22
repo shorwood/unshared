@@ -6,13 +6,14 @@ export type BuffereableFrom = 'utf8' | 'base64' | 'binary' | 'hex' | 'uint8' | '
 
 /**
  * Convert a value to an `ArrayBuffer`
+ *
  * @param value The value to convert
  * @param from The encoding or integer type to convert from
  * @returns The value as an `ArrayBuffer`
  */
 export const toArrayBuffer = (value?: any, from?: BuffereableFrom): ArrayBuffer => {
   // --- is value Nil
-  if (typeof value === 'undefined' || value === null)
+  if (value === undefined || value === null)
     return new ArrayBuffer(0)
 
   // --- is or has an array buffer

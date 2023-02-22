@@ -1,0 +1,143 @@
+{
+  "name": "@unshared/binary",
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shorwood/unshared.git",
+    "directory": "packages/binary"
+  },
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "exports": {
+    "./createStreamDecompress": {
+      "import": "./dist/createStreamDecompress.js",
+      "require": "./dist/createStreamDecompress.cjs"
+    },
+    "./createStreamDemultiplex": {
+      "import": "./dist/createStreamDemultiplex.js",
+      "require": "./dist/createStreamDemultiplex.cjs"
+    },
+    "./createStreamMultiplex": {
+      "import": "./dist/createStreamMultiplex.js",
+      "require": "./dist/createStreamMultiplex.cjs"
+    },
+    "./createStreamTransform": {
+      "import": "./dist/createStreamTransform.js",
+      "require": "./dist/createStreamTransform.cjs"
+    },
+    "./createStreamValve": {
+      "import": "./dist/createStreamValve.js",
+      "require": "./dist/createStreamValve.cjs"
+    },
+    "./fromBase64": {
+      "import": "./dist/fromBase64.js",
+      "require": "./dist/fromBase64.cjs"
+    },
+    "./fromHex": {
+      "import": "./dist/fromHex.js",
+      "require": "./dist/fromHex.cjs"
+    },
+    "./fromUtf8": {
+      "import": "./dist/fromUtf8.js",
+      "require": "./dist/fromUtf8.cjs"
+    },
+    "./getEndianness": {
+      "import": "./dist/getEndianness.js",
+      "require": "./dist/getEndianness.cjs"
+    },
+    "./hashCyrb53": {
+      "import": "./dist/hashCyrb53.js",
+      "require": "./dist/hashCyrb53.cjs"
+    },
+    "./hashJenkins": {
+      "import": "./dist/hashJenkins.js",
+      "require": "./dist/hashJenkins.cjs"
+    },
+    "./hashMd5": {
+      "import": "./dist/hashMd5.js",
+      "require": "./dist/hashMd5.cjs"
+    },
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./isBinaryLike": {
+      "import": "./dist/isBinaryLike.js",
+      "require": "./dist/isBinaryLike.cjs"
+    },
+    "./randomFloat": {
+      "import": "./dist/randomFloat.js",
+      "require": "./dist/randomFloat.cjs"
+    },
+    "./randomInt": {
+      "import": "./dist/randomInt.js",
+      "require": "./dist/randomInt.cjs"
+    },
+    "./randomString": {
+      "import": "./dist/randomString.js",
+      "require": "./dist/randomString.cjs"
+    },
+    "./streamConcat": {
+      "import": "./dist/streamConcat.js",
+      "require": "./dist/streamConcat.cjs"
+    },
+    "./streamDemultiplex": {
+      "import": "./dist/streamDemultiplex.js",
+      "require": "./dist/streamDemultiplex.cjs"
+    },
+    "./streamFork": {
+      "import": "./dist/streamFork.js",
+      "require": "./dist/streamFork.cjs"
+    },
+    "./streamLength": {
+      "import": "./dist/streamLength.js",
+      "require": "./dist/streamLength.cjs"
+    },
+    "./streamMultiplex": {
+      "import": "./dist/streamMultiplex.js",
+      "require": "./dist/streamMultiplex.cjs"
+    },
+    "./streamPeek": {
+      "import": "./dist/streamPeek.js",
+      "require": "./dist/streamPeek.cjs"
+    },
+    "./streamRead": {
+      "import": "./dist/streamRead.js",
+      "require": "./dist/streamRead.cjs"
+    },
+    "./swapEndian": {
+      "import": "./dist/swapEndian.js",
+      "require": "./dist/swapEndian.cjs"
+    },
+    "./toArrayBuffer": {
+      "import": "./dist/toArrayBuffer.js",
+      "require": "./dist/toArrayBuffer.cjs"
+    },
+    "./toBase64": {
+      "import": "./dist/toBase64.js",
+      "require": "./dist/toBase64.cjs"
+    },
+    "./toHex": {
+      "import": "./dist/toHex.js",
+      "require": "./dist/toHex.cjs"
+    },
+    "./toStream": {
+      "import": "./dist/toStream.js",
+      "require": "./dist/toStream.cjs"
+    },
+    "./toUtf8": {
+      "import": "./dist/toUtf8.js",
+      "require": "./dist/toUtf8.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "@unshared/function": "workspace:*"
+  }
+}

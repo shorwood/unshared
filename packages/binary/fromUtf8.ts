@@ -1,5 +1,6 @@
 /**
  * Convert an UTF8 string to an ArrayBuffer
+ *
  * @param value The string to convert
  * @returns A new ArrayBuffer
  * @example

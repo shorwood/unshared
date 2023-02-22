@@ -1,5 +1,6 @@
 /**
  * Convert an hexadecimal string to an ArrayBuffer
+ *
  * @param value The string to convert
  * @returns The converted string
  * @throws If value is not a hexadecimal string

@@ -1,5 +1,6 @@
 /**
  * Get the endianness of the current runtime
+ *
  * @deprecated Prefer `endianness` over this function as the result won't change.
  * @returns The endianness of the runtime
  */

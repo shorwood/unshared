@@ -1,7 +1,8 @@
 /**
  * Converts an `ArrayBuffer` into an hexadecimal string
+ *
  * @param buffer The `ArrayBuffer` to convert
- * @return The hexadecimal string
+ * @returns The hexadecimal string
  */
 export const toHex = (buffer: ArrayBuffer): string => {
   // --- Instantiate DataView

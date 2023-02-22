@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { fromHex } from './fromHex'
 import { toUtf8 } from './toUtf8'
 
@@ -9,7 +8,7 @@ it.each([
 ])('converts an ArrayBuffer equal to "0x%s" to an UTF-8 string "%s"', (input, expected, expectedLength) => {
   const buffer = fromHex(input)
   const result = toUtf8(buffer)
-  expect(result).toBeTypeOf('string')
+  expect(result).toEqualTypeOf('string')
   expect(result.length).toEqual(expectedLength)
   expect(result).toEqual(expected)
 })
