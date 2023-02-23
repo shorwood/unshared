@@ -1,7 +1,7 @@
 /* eslint-disable jsdoc/check-param-names */
 import { nextTick } from 'node:process'
-import { PromiseFactory } from '@unshared/types/PromiseFactory'
 import { Awaitable } from '@unshared/types/Awaitable'
+import { FunctionAsync } from '@unshared/types/FunctionAsync'
 
 /**
  * Extend an object with a promise making it awaitable. If the promise resolves to a value,
@@ -17,8 +17,8 @@ import { Awaitable } from '@unshared/types/Awaitable'
  * awaitable(itemsLocal, itemsRemote) // Item[] & Promise<Item[]>
  */
 export function awaitable<T extends object, U>(object: T, promise: Promise<U>): Awaitable<T, U>
-export function awaitable<T extends object, U>(object: T, promise: PromiseFactory<U>): Awaitable<T, U>
-export function awaitable(object: object, promise: Promise<unknown> | PromiseFactory<unknown>): Awaitable<unknown> {
+export function awaitable<T extends object, U>(object: T, promise: FunctionAsync<U>): Awaitable<T, U>
+export function awaitable(object: object, promise: Promise<unknown> | FunctionAsync<unknown>): Awaitable<unknown> {
   // --- Handle edge cases.
   if (typeof promise !== 'function' && promise instanceof Promise === false)
     throw new TypeError('The promise must be a promise or a function that returns a promise')
