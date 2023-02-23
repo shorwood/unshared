@@ -1,4 +1,4 @@
-import { PromiseWrap } from '@unshared/types/function'
+import { PromiseWrap } from "@unshared/types/PromiseWrap"
 import { Function } from "@unshared/types/Function"
 
 export interface QueueOptions {
