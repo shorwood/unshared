@@ -1,20 +1,27 @@
 /**
  * A function that returns a promise.
  *
- * @template T The type of the promise.
- * @example FunctionAsync<void> // () => Promise<void>
+ * @template U The type of the return value.
+ * @template P The type of the parameters.
+ * @example FunctionAsync<boolean, [number, string]> // (a: number, b: string) => Promise<boolean>
  */
-export type FunctionAsync<T = unknown> = (...parameters: unknown[]) => Promise<T>
+export type FunctionAsync<U = unknown, P extends unknown[] = any[]> =
+  (...parameters: P) => Promise<U>
 
 /** c8 ignore next */
 if (import.meta.vitest) {
-  it('should build a promise factory', () => {
-    type result = FunctionAsync
-    expectTypeOf<result>().toEqualTypeOf<(...parameters: unknown[]) => Promise<unknown>>()
+  it('should build a function', () => {
+    type result = FunctionAsync<boolean, [number, string]>
+    expectTypeOf<result>().toEqualTypeOf<(a: number, b: string) => Promise<boolean>>()
   })
 
-  it('should build a promise factory with a return value', () => {
-    type result = FunctionAsync<number>
-    expectTypeOf<result>().toEqualTypeOf<(...parameters: unknown[]) => Promise<number>>()
+  it('should build a function with no parameters', () => {
+    type result = FunctionAsync<boolean>
+    expectTypeOf<result>().toEqualTypeOf<(...parameters: unknown[]) => Promise<boolean>>()
+  })
+
+  it('should build a function with no return value', () => {
+    type result = FunctionAsync<unknown, [number, string]>
+    expectTypeOf<result>().toEqualTypeOf<(a: number, b: string) => Promise<unknown>>()
   })
 }
