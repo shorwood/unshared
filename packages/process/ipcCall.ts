@@ -72,7 +72,11 @@ export async function ipcCall(path: string | URL, ...args: any[]) {
     throw new RangeError('Expected the timeout to be a positive number')
 
   // --- Add the TSX loader if the worker is a TypeScript file.
-  const execArgv = [...process.execArgv, '--no-warnings']
+  const execArgv = [
+    '--no-warnings',
+    ...process.execArgv,
+    ...workerOptions.execArgv ?? [],
+  ]
   // const hasLoader = execArgv.some(argument => argument.startsWith('--loader='))
   // const pathExtension = path.toString().split('.').pop()
   // if (pathExtension === 'ts' && !hasLoader) {
