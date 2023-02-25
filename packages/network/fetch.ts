@@ -1,33 +1,32 @@
 /* eslint-disable unicorn/no-null */
-import { parseJson } from '@unshared-dev/module'
+import { parseJson } from '@unshared/serial/parseJson'
 
 /**
- * Fetches a resource from the network using the same specification
- * as the browser's `fetch` API.
+ * Fetches a resource from the network using the same specification as the browser's
+ * [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) function.
+ * Can be used as a drop-in replacement for `fetch` in the browser. This function
+ * is heavily inspired by [unfetch](https://github.com/developit/unfetch/blob/master/src/index.mjs).
  *
- * This can be used as a drop-in
- * replacement for `fetch` in the browser.
- *
- * Original source: [developit/unfetch](https://github.com/developit/unfetch/blob/master/src/index.mjs)
- *
- * @param url The URL to fetch
- * @param options The options to use
- * @return The response
- * @see https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
- * @example
- * await fetch('https://example.com')
+ * @param url The URL to fetch.
+ * @param options The options to use.
+ * @returns A promise that resolves to a response object.
+ * @example await fetch('https://example.com') // Promise<Response>
  */
-export const fetch = (url: string, options: RequestInit = {}): Promise<Response> => {
-  const {
-    method = 'get',
-    headers = {},
-    credentials,
-    body = null,
-  } = options
+export function fetch(url: string, options: RequestInit = {}): Promise<Response> {
+  // --- Use the global `fetch` function if it exists.
+  if (typeof globalThis.fetch === 'function')
+    return globalThis.fetch(url, options)
 
+  // --- Wrap an `XMLHttpRequest` in a `Promise`.
   return new Promise((resolve, reject) => {
     const request = new XMLHttpRequest()
     const responseHeaders: Record<string, string> = {}
+    const {
+      method = 'get',
+      headers = {},
+      credentials,
+      body = null,
+    } = options
 
     // --- Initialize the response object.
     const response = () => ({
