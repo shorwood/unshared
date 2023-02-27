@@ -1,5 +1,6 @@
 import { NotPromise } from '@unshared/types/NotPromise'
 import { MaybePromise } from '@unshared/types/MaybePromise'
+import { Result } from '@unshared/types/Result'
 
 /**
  * Run a function and return a tuple with the value and the error if any.
@@ -8,9 +9,9 @@ import { MaybePromise } from '@unshared/types/MaybePromise'
  * @returns A tuple with the value and the error if any.
  * @example const [result, error] = attempt(() => true) // [true, undefined]
  */
-export function attempt<R>(fn: () => Promise<R>): Promise<[R | undefined, Error | undefined]>
-export function attempt<R>(fn: () => NotPromise<R>): [R | undefined, Error | undefined]
-export function attempt<R>(fn: () => MaybePromise<R>): MaybePromise<[R | undefined, Error | undefined]>
+export function attempt<R, E extends Error = Error>(fn: () => Promise<R>): Promise<Result<R, E>>
+export function attempt<R, E extends Error = Error>(fn: () => NotPromise<R>): Result<R, E>
+export function attempt<R, E extends Error = Error>(fn: () => MaybePromise<R>): MaybePromise<Result<R, E>>
 export function attempt(fn: Function): unknown {
   try {
     const result = fn()
