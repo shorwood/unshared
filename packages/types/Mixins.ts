@@ -75,7 +75,7 @@ if (import.meta.vitest) {
     class A {constructor(_a: number) {}}
     class B {constructor(_b: string) {}}
     type Result = Mixins<[typeof A, typeof B]>
-    type Expected = Constructor<[string]>
+    type Expected = Constructor<[number]>
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 }

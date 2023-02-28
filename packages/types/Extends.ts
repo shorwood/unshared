@@ -1,6 +1,7 @@
 /* eslint-disable unicorn/no-static-only-class */
 import { Constructor } from './Constructor'
 import { ConstructorStatics } from './ConstructorStatics'
+import { UnionMerge } from './UnionMerge'
 
 /**
  * Extends one class with another.
@@ -14,11 +15,12 @@ import { ConstructorStatics } from './ConstructorStatics'
  * type C = Extends<A, B> // { a: number, b: number }
  */
 export type Extends<T1 extends Constructor, T2 extends Constructor> =
-  T1 extends Constructor<any[], infer R1, infer S1>
-    ? T2 extends Constructor<infer P2, infer R2, infer S2>
-      ? Constructor<P2, R1 & Omit<R2, keyof R1>, S1 & Omit<S2, keyof S1>>
-      : never
-    : never
+  T1 extends Constructor ? T2 extends Constructor ? Constructor<
+  ConstructorParameters<T1>,
+  UnionMerge<InstanceType<T2> & Omit<InstanceType<T1>, keyof InstanceType<T2>>>,
+  UnionMerge<ConstructorStatics<T2> & Omit<ConstructorStatics<T1>, keyof ConstructorStatics<T2>>>
+  >
+    : never : never
 
 /** c8 ignore next */
 if (import.meta.vitest) {
@@ -42,7 +44,7 @@ if (import.meta.vitest) {
     class A { constructor(_a: number) {} }
     class B { constructor(_a: string) {} }
     type Result = Extends<typeof A, typeof B>
-    type Expected = Constructor<[string]>
+    type Expected = Constructor<[number]>
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 

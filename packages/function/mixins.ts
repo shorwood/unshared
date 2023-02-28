@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-static-only-class */
 import { Mixins } from '@unshared/types/Mixins'
 import { Constructor } from '@unshared/types/Constructor'
 
@@ -53,11 +54,21 @@ export function mixins<T extends [Constructor, ...Constructor[]]>(...mixins: T):
   }
 
   // --- Preserve static properties and return the mixed class.
-  return Object.assign(Mixed, ...mixins) as Mixins<T>
+  Object.assign(Mixed, ...mixins)
+  return Mixed as Mixins<T>
 }
 
 /** c8 ignore next */
 if (import.meta.vitest) {
+  it('should mix 2 classes into a single class', () => {
+    class ClassA { foo = 'foo' }
+    class ClassB { bar = 'bar' }
+    class Result extends mixins(ClassA, ClassB) {}
+    const result = new Result()
+    expect(result).toHaveProperty('foo', 'foo')
+    expect(result).toHaveProperty('bar', 'bar')
+  })
+
   it('should mix classes into a single class', () => {
     class ClassA { foo = 'foo' }
     class ClassB { bar = 'bar' }
@@ -154,39 +165,36 @@ if (import.meta.vitest) {
   })
 
   it('should preserve static properties', () => {
-    const ClassA = { FOO: 'foo' }
-    const ClassB = { BAR: 'bar' }
-    const ClassC = { BAZ: 'baz' }
+    class ClassA { static FOO = 'foo' }
+    class ClassB { static BAR = 'bar' }
+    class ClassC { static BAZ = 'baz' }
     class Result extends mixins(ClassA, ClassB, ClassC) {}
-    new Result()
     expect(Result.FOO).toEqual('foo')
     expect(Result.BAR).toEqual('bar')
     expect(Result.BAZ).toEqual('baz')
   })
 
   it('should preserve static getters and setters', () => {
-    const ClassA = { FOO: 'foo', get foo() { return this.FOO }, set foo(value) { this.FOO = value } }
-    const ClassB = { BAR: 'bar', get bar() { return this.BAR }, set bar(value) { this.BAR = value } }
-    const ClassC = { BAZ: 'baz', get baz() { return this.BAZ }, set baz(value) { this.BAZ = value } }
+    class ClassA { static _FOO = 'foo'; static get FOO() { return this._FOO } static set FOO(value) { this._FOO = value } }
+    class ClassB { static _BAR = 'bar'; static get BAR() { return this._BAR } static set BAR(value) { this._BAR = value } }
+    class ClassC { static _BAZ = 'baz'; static get BAZ() { return this._BAZ } static set BAZ(value) { this._BAZ = value } }
     class Result extends mixins(ClassA, ClassB, ClassC) {}
-    new Result()
-    Result.foo = 'FOO'
-    Result.bar = 'BAR'
-    Result.baz = 'BAZ'
-    expect(Result.foo).toEqual('FOO')
-    expect(Result.bar).toEqual('BAR')
-    expect(Result.baz).toEqual('BAZ')
+    Result.FOO = 'FOO'
+    Result.BAR = 'BAR'
+    Result.BAZ = 'BAZ'
+    expect(Result.FOO).toEqual('FOO')
+    expect(Result.BAR).toEqual('BAR')
+    expect(Result.BAZ).toEqual('BAZ')
   })
 
   it('should preserve statics when nesting mixins', () => {
-    const ClassA = { getFoo() { return 'foo' }, FOO: 'foo' }
-    const ClassB = { getBar() { return 'bar' }, BAR: 'bar' }
-    const ClassC = { getBaz() { return 'baz' }, BAZ: 'baz' }
+    class ClassA { static FOO = 'foo' }
+    class ClassB { static BAR = 'bar' }
+    class ClassC { static BAZ = 'baz' }
     class Result extends mixins(mixins(ClassA, ClassB), ClassC) {}
-    new Result()
-    expect(Result).toHaveProperty('FOO', 'foo')
-    expect(Result).toHaveProperty('BAR', 'bar')
-    expect(Result).toHaveProperty('BAZ', 'baz')
+    expect(Result.FOO).toEqual('foo')
+    expect(Result.BAR).toEqual('bar')
+    expect(Result.BAZ).toEqual('baz')
   })
 
   it('should throw if no class is passed', () => {
