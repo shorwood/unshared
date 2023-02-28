@@ -1,4 +1,4 @@
-import { MaybeArray } from '@unshared/types'
+import { MaybeArray } from '@unshared/types/MaybeArray'
 
 /**
  * Wrap a value into an array if it is not one already. If the value is
