@@ -4,6 +4,7 @@ export default defineConfig({
   test: {
     open: false,
     globals: true,
+    testTimeout: 100,
     reporters: ['dot'],
     typecheck: {
       checker: 'tsc',
