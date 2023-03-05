@@ -1,10 +1,11 @@
-import { nextTick } from 'node:process'
 import { awaitable } from './awaitable'
 
 export interface Resolvable<T> extends Promise<T> {
   /** Whether the promise has been resolved. */
   resolved: boolean
   /** Whether the promise has been rejected. */
+  rejected: boolean
+  /** Whether the promise is pending. */
   pending: boolean
   /** The resolvable promise. */
   promise: Promise<T>
@@ -29,28 +30,26 @@ export interface Resolvable<T> extends Promise<T> {
  * await state
  */
 export const resolvable = <T = void>(): Resolvable<T> => {
-  // --- Initialize state.
-  const state = <Resolvable<T>>{}
+  const state = {} as Resolvable<T>
 
   // --- Define lifecycle.
   state.reset = () => {
     state.resolved = false
+    state.rejected = false
     state.pending = true
 
-    // --- Init promise.
+    // --- Expose the `resolve` and `reject` functions.
     state.promise = new Promise<T>((resolve, reject) => {
-      // --- Wrap  resolve.
       state.resolve = (value) => {
         state.resolved = true
         state.pending = false
         resolve(value)
       }
 
-      // --- Wrap reject.
-      state.reject = (value) => {
-        state.resolved = false
+      state.reject = (reason) => {
+        state.rejected = true
         state.pending = false
-        reject(value)
+        reject(reason)
       }
     })
   }
@@ -65,53 +64,60 @@ export const resolvable = <T = void>(): Resolvable<T> => {
 /* c8 ignore next */
 if (import.meta.vitest) {
   it('should initialize a resolvable promise', () => {
-    const state = resolvable()
-    expect(state.pending).toEqual(true)
-    expect(state.resolved).toEqual(false)
-    expect(state.promise).toBeInstanceOf(Promise)
+    const result = resolvable()
+    expect(result.pending).toEqual(true)
+    expect(result.resolved).toEqual(false)
+    expect(result.promise).toBeInstanceOf(Promise)
   })
 
   it('should be resolved after resolve is called', () => {
     const value = 'test'
-    const state = resolvable<string>()
-    nextTick(() => state.resolve(value))
-    expect(state).resolves.toEqual(value)
-    expect(state.promise).resolves.toEqual(value)
-    expect(state).resolves.toHaveProperty('pending', false)
-    expect(state).resolves.toHaveProperty('resolved', true)
+    const result = resolvable<string>()
+    result.resolve(value)
+    expect(result.promise).resolves.toEqual(value)
+    expect(result.pending).toEqual(false)
+    expect(result.resolved).toEqual(true)
+    expect(result.rejected).toEqual(false)
   })
 
   it('should reject a value after reject is called', () => {
     const value = 'test'
-    const state = resolvable<string>()
-    nextTick(() => state.reject(value))
-    expect(state).rejects.toEqual(value)
-    expect(state.promise).rejects.toEqual(value)
-    expect(state).rejects.toHaveProperty('pending', false)
-    expect(state).rejects.toHaveProperty('resolved', false)
+    const result = resolvable<string>()
+    result.reject(value)
+    expect(result.promise).rejects.toEqual(value)
+    expect(result.pending).toEqual(false)
+    expect(result.resolved).toEqual(false)
+    expect(result.rejected).toEqual(true)
   })
 
   it('should be resolved after reset is called if already resolved', () => {
-    const state = resolvable()
-    state.resolve()
-    state.reset()
-    expect(state).resolves.toHaveProperty('pending', true)
-    expect(state).resolves.toHaveProperty('resolved', false)
+    const result = resolvable()
+    result.resolve()
+    result.reset()
+    expect(result.pending).toEqual(true)
+    expect(result.resolved).toEqual(false)
+    expect(result.rejected).toEqual(false)
   })
 
   it('should be pending after reset is called if already rejected', () => {
-    const state = resolvable()
-    state.reject()
-    state.reset()
-    expect(state).resolves.toHaveProperty('pending', true)
-    expect(state).resolves.toHaveProperty('resolved', false)
+    const result = resolvable()
+    result.reject()
+    result.reset()
+    expect(result.pending).toEqual(true)
+    expect(result.resolved).toEqual(false)
+    expect(result.rejected).toEqual(false)
   })
 
   it('should be awaitable', async() => {
     const value = 'test'
-    const state = resolvable<string>()
-    nextTick(() => state.resolve(value))
-    expect(state).resolves.toEqual(value)
-    expect(state.promise).resolves.toEqual(value)
+    const result = resolvable<string>()
+    result.resolve(value)
+    expect(result).resolves.toEqual(value)
+  })
+
+  it('should infer the type of the resolved type', async() => {
+    const result = resolvable<string>()
+    expectTypeOf(result).toEqualTypeOf<Resolvable<string>>()
+    expectTypeOf(result.promise).toEqualTypeOf<Promise<string>>()
   })
 }
