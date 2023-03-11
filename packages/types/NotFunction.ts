@@ -1,4 +1,4 @@
-import { Any } from './common'
+import { Any } from "./Any"
 
 /**
  * A type that is not a function.

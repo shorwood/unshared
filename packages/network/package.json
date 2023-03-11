@@ -1,55 +1,18 @@
 {
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
   "name": "@unshared/network",
-  "author": "Stanley Horwood <stanley@hsjm.io>",
-  "license": "MIT",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shorwood/unshared.git",
     "directory": "packages/network"
   },
-  "sideEffects": false,
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "exports": {
-    "./fetch": {
-      "import": "./dist/fetch.js",
-      "require": "./dist/fetch.cjs"
-    },
-    "./httpHeader": {
-      "import": "./dist/httpHeader.js",
-      "require": "./dist/httpHeader.cjs"
-    },
-    "./httpMethod": {
-      "import": "./dist/httpMethod.js",
-      "require": "./dist/httpMethod.cjs"
-    },
-    "./httpStatusCode": {
-      "import": "./dist/httpStatusCode.js",
-      "require": "./dist/httpStatusCode.cjs"
-    },
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    },
-    "./isPortInUse": {
-      "import": "./dist/isPortInUse.js",
-      "require": "./dist/isPortInUse.cjs"
-    },
-    "./parseUri": {
-      "import": "./dist/parseUri.js",
-      "require": "./dist/parseUri.cjs"
-    },
-    "./utils": {
-      "import": "./dist/utils.js",
-      "require": "./dist/utils.cjs"
-    }
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
-  "dependencies": {
-    "@unshared/predicate": "workspace:*"
-  }
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "license": "MIT"
 }

@@ -1,5 +1,5 @@
 import { Path } from '@unshared/types/Path'
-import { Value } from '@unshared/types/collection'
+import { Value } from "@unshared/types/Value"
 import { Default } from '@unshared/types/common'
 
 /**

@@ -1,4 +1,4 @@
-import { createList } from './createList'
+import { List as IList, createList } from './createList'
 import { listAt } from './listAt'
 import { listPop } from './listPop'
 import { listPush } from './listPush'
@@ -7,7 +7,6 @@ import { listReverse } from './listReverse'
 import { listShift } from './listShift'
 import { listSome } from './listSome'
 import { listUnshift } from './listUnshift'
-import { List as IList } from './types'
 
 export class List<T> {
   constructor(length: number) {

@@ -1,80 +1,76 @@
-/**
- * Utilities bellow are thanks to [Ryan Dabler](https://medium.com/@ryan.dabler)
- * and his [article about TypeScript Arithmetics](https://medium.com/itnext/implementing-arithmetic-within-typescripts-type-system-a1ef140a6f6f)
- */
 import { Tuple } from '../Tuple'
-import { MathAdd } from '../MathAdd'
 import { TupleLength } from '../TupleLength'
+import { BooleanAnd } from '../BooleanAnd'
+import { BooleanOr } from '../BooleanOr'
 
-/** Checks if both values are positive integers or zero */
-export type AllPositive<A extends number, B extends number> =
-  A extends `-${number}` ? false : B extends `-${number}` ? false : true
+// --- Predicate numbers
+export type IsZero<N extends number> = N extends 0 ? true : false
+export type IsNumber<N extends number> = number extends N ? true : false
+export type IsPositive<N extends number> = `${N}` extends `-${number}` ? false : true
+export type IsNegative<N extends number> = `${N}` extends `-${number}` ? true : false
+export type IsInteger<N extends number> = `${N}` extends `${number}.${number}` ? false : true
+export type IsDecimal<N extends number> = `${N}` extends `${number}.${number}` ? true : false
 
-/** Checks if all values are negative integers */
-export type AllNegative<A extends number, B extends number> =
-  `${A}` extends `-${number}` ? `${B}` extends `-${number}` ? true : false : false
+// --- Predicate combinations of numbers
+export type IsAllZero<A extends number, B extends number> = BooleanAnd<IsZero<A>, IsZero<B>>
+export type IsAllPositive<A extends number, B extends number> = BooleanAnd<IsPositive<A>, IsPositive<B>>
+export type IsAllNegative<A extends number, B extends number> = BooleanAnd<IsNegative<A>, IsNegative<B>>
+export type IsAnyZero<A extends number, B extends number> = BooleanOr<IsZero<A>, IsZero<B>>
+export type IsAnyNumber<A extends number, B extends number> = BooleanOr<IsNumber<A>, IsNumber<B>>
+export type IsAnyPositive<A extends number, B extends number> = BooleanOr<IsPositive<A>, IsPositive<B>>
+export type IsAnyNegative<A extends number, B extends number> = BooleanOr<IsNegative<A>, IsNegative<B>>
+export type IsAnyDecimal<A extends number, B extends number> = BooleanOr<IsDecimal<A>, IsDecimal<B>>
 
-/** Checks if any value is negative */
-export type AnyIsNegative<A extends number, B extends number> =
-  `${A}` extends `-${number}` ? true : `${B}` extends `-${number}` ? true : false
+// --- Arithmetics
+export type Add<A extends number, B extends number> = TupleLength<[...Tuple<A>, ...Tuple<B>]> extends infer U extends number ? U : never
+export type Substract<A extends number, B extends number> = Tuple<A> extends [...(infer U), ...Tuple<B>] ? TupleLength<U> : never
+export type Absolute<A extends number> = `${A}` extends `-${infer U extends number}` ? U : A
+export type Negative<A extends number> = `-${A}` extends `${infer U extends number}` ? U : `${A}` extends `-${infer V extends number}` ? V : never
 
-/** Are we at the end of the recursion? */
-export type AnyIsZero<A extends number, B extends number> =
-    A extends 0 ? true : B extends 0 ? true : false
+// --- Comparisons
+export type IsEqual<A, B> = A extends B ? B extends A ? true : false : false
 
-/** Are two numbers equal? */
-export type AreEquals<A, B> =
-    A extends B ? B extends A ? true : false : false
+export type IsGreaterOrEqualThan<A extends number, B extends number> = BooleanOr<IsEqual<A, B>, IsGreaterThan<A, B>>
+export type IsGreaterThan<A extends number, B extends number> =
+  IsEqual<A, B> extends true ? false
+    : IsZero<A> extends true ? false
+      : IsZero<B> extends true ? true
+        : IsGreaterThan<Substract<A, 1>, Substract<B, 1>>
 
-/** Checks if any value is `number` */
-export type AnyIsNumber<A extends number, B extends number> =
-  number extends A ? true : number extends B ? true : false
-
-/** Is `A` less than `B`? */
+export type IsLowerOrEqualThan<A extends number, B extends number> = BooleanOr<IsEqual<A, B>, IsLowerThan<A, B>>
 export type IsLowerThan<A extends number, B extends number> =
-  AnyIsZero<A, B> extends true
-    ? AreEquals<A, B> extends true ? false : (A extends 0 ? true : false)
-    : IsLowerThan<InternalSubtract<A, 1>, InternalSubtract<B, 1>>
-
-/** Sum of two integers using tuples */
-export type InternalAdd<A extends number, B extends number> =
-  TupleLength<[...Tuple<A>, ...Tuple<B>]> extends infer U ? U : never
-
-/** Subtracts two integers using tuples */
-export type InternalSubtract<A extends number, B extends number> =
-  Tuple<A> extends [...(infer U), ...Tuple<B>] ? TupleLength<U> : never
-
-/** Negates a positive */
-export type InternalNegate<A extends number> =
-  `-${A}` extends `${infer U extends number}` ? U : never
+  IsEqual<A, B> extends true ? false
+    : IsZero<A> extends true ? true
+      : IsZero<B> extends true ? false
+        : IsLowerThan<Substract<A, 1>, Substract<B, 1>>
 
 /** Adds two integers and handles negative numbers */
-export type InternalAddOneNegative<A extends number, B extends number> =
+export type AddOneNegative<A extends number, B extends number> =
   `${A}` extends `-${infer U extends number}`
-    ? IsLowerThan<U, B> extends true ? InternalSubtract<B, U>
-      : AreEquals<U, B> extends true ? 0
-        : InternalNegate<InternalSubtract<U, B>>
+    ? IsLowerThan<U, B> extends true ? Substract<B, U>
+      : IsEqual<U, B> extends true ? 0
+        : Absolute<Substract<U, B>>
     : `${B}` extends `-${number}`
-      ? InternalAddOneNegative<B, A>
+      ? AddOneNegative<B, A>
       : never
 
 /** Adds two integers and handles negative numbers */
-export type InternalAddAllNegative<A extends number, B extends number> =
+export type AddIsAllNegative<A extends number, B extends number> =
   `${A}` extends `-${infer U extends number}` ? `${B}` extends `-${infer V extends number}`
-    // @ts-expect-error: garanteed to be a number
-    ? InternalNegate<InternalAdd<U, V>>
+    ? Absolute<Add<U, V>>
     : never : never
 
-/** Recursively adds `N` to `A` `I` times */
-export type MultiAdd<N extends number, A extends number, I extends number> =
-  I extends 0 ? A
-    : MathAdd<N, A> extends number
-      ? MultiAdd<N, MathAdd<N, A>, InternalSubtract<I, 1>>
+export type Divide<A extends number, B extends number, Q extends number = 0> =
+  IsLowerThan<A, B> extends true ? Q
+    : Add<Q, 1> extends number ? Divide<Substract<A, B>, B, Add<Q, 1>>
       : never
 
-/** Multiplies two positive integers */
-export type MultiSub<N extends number, D extends number, Q extends number> =
-IsLowerThan<N, D> extends true ? Q
-  : InternalAdd<Q, 1> extends number
-    ? MultiSub<InternalSubtract<N, D>, D, InternalAdd<Q, 1>>
-    : never
+export type Multiply<A extends number, B extends number, P extends number = 0> =
+  IsZero<B> extends true ? P
+    :Add<A, P> extends number ? Multiply<A, Substract<B, 1>, Add<A, P>>
+      : never
+
+export type Modulo<A extends number, B extends number, R extends number = 0> =
+  IsLowerThan<A, B> extends true ? A
+    : Add<R, 1> extends number ? Modulo<Substract<A, B>, B, Add<R, 1>>
+      : never

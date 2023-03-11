@@ -1,5 +1,4 @@
-import { MathAdd } from './MathAdd'
-import { MathNegate } from './MathNegate'
+import { Add, IsInteger, IsNumber, Negative } from './utils/arithmetics'
 
 /**
  * Ceils a number to the nearest integer.
@@ -8,12 +7,12 @@ import { MathNegate } from './MathNegate'
  * @returns The ceiled number.
  * @example MathCeil<1.1> // 2
  */
-
 export type MathCeil<N extends number> =
-  number extends N ? number
-    : `${N}` extends `-${infer S extends number}.${number}` ? MathNegate<S>
-      : `${N}` extends `${infer S extends number}.${number}` ? MathAdd<S, 1>
-        : N extends number ? N : never
+  IsNumber<N> extends true ? number
+    :IsInteger<N> extends true ? N
+      : `${N}` extends `-${infer S extends number}.${number}` ? Negative<S>
+        : `${N}` extends `${infer S extends number}.${number}` ? Add<S, 1>
+          : never
 
 /** c8 ignore next */
 if (import.meta.vitest) {

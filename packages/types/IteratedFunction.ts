@@ -1,4 +1,4 @@
-import { Key } from './Collection'
+import { Key } from './Key'
 import { Values } from './Values'
 
 /**
@@ -15,23 +15,32 @@ export type IteratedFunction<T, R> = (value: Values<T>, key: Key<T>, object: T) 
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should infer the parameters from an object', () => {
-    interface collection { a: number; b: string }
-    type result = IteratedFunction<collection, boolean>
-    type expected = (value: number | string, key: 'a' | 'b', object: collection) => boolean
+    type result = IteratedFunction<{ a: number; b: string }, boolean>
+    type expected = (value: number | string, key: 'a' | 'b', object: { a: number; b: string }) => boolean
+    expectTypeOf<result>().toEqualTypeOf<expected>()
+  })
+
+  it('should infer the parameters from a tuple', () => {
+    type result = IteratedFunction<[number, string], boolean>
+    type expected = (value: number | string, key: number, object: [number, string]) => boolean
     expectTypeOf<result>().toEqualTypeOf<expected>()
   })
 
   it('should infer the parameters from an array', () => {
-    type collection = number[]
-    type result = IteratedFunction<collection, boolean>
-    type expected = (value: number, key: number, object: collection) => boolean
+    type result = IteratedFunction<number[], boolean>
+    type expected = (value: number, key: number, object: number[]) => boolean
+    expectTypeOf<result>().toEqualTypeOf<expected>()
+  })
+
+  it('should infer the parameters from a readonly array', () => {
+    type result = IteratedFunction<readonly number[], boolean>
+    type expected = (value: number, key: number, object: readonly number[]) => boolean
     expectTypeOf<result>().toEqualTypeOf<expected>()
   })
 
   it('should infer the parameters from a string', () => {
-    type collection = string
-    type result = IteratedFunction<collection, boolean>
-    type expected = (value: string, key: number, object: collection) => boolean
+    type result = IteratedFunction<string, boolean>
+    type expected = (value: string, key: number, object: string) => boolean
     expectTypeOf<result>().toEqualTypeOf<expected>()
   })
 }

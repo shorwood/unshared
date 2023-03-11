@@ -1,4 +1,4 @@
-import { Pixel, computePixel } from './computePixel'
+import { computePixel } from './computePixel'
 import { renderChar } from './renderChar'
 import { RenderOptions } from './renderLoop'
 

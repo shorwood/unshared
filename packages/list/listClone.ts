@@ -1,6 +1,5 @@
-import { createList } from './createList'
+import { List, createList } from './createList'
 import { isList } from './isList'
-import { List } from './types'
 
 /**
  * Copies the elements of a list into a new list.

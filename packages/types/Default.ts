@@ -49,4 +49,9 @@ if (import.meta.vitest) {
     type result = Default<number | undefined, string>
     expectTypeOf<result>().toEqualTypeOf<number | string>()
   })
+
+  it('should default non matching types from left to right', () => {
+    type result = Default<number | undefined, string[]>
+    expectTypeOf<result>().toEqualTypeOf<number | string[]>()
+  })
 }

@@ -1,4 +1,4 @@
-import { InternalSubtract } from './utils'
+import { Substract } from './utils/arithmetics'
 
 /**
  * Literal string constrained by character and length.
@@ -19,7 +19,7 @@ export type StringConstraint<C extends string, L extends number, P extends strin
         : L extends 0 ? P
 
           // --- Append character recursively
-          : `${P}${C}${StringConstraint<C, InternalSubtract<L, 1>>}`
+          : `${P}${C}${StringConstraint<C, Substract<L, 1>>}`
 
 /** c8 ignore next */
 if (import.meta.vitest) {

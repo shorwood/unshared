@@ -1,0 +1,5 @@
+export * from './extends'
+export * from './getPrototypeChain'
+export * from './isConstructor'
+export * from './mixins'
+export * from './setPrototypeChain'

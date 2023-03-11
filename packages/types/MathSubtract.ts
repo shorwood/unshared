@@ -1,6 +1,5 @@
 import { MathAdd } from './MathAdd'
-import { MathNegate } from './MathNegate'
-import { AnyIsNumber, AnyIsZero } from './utils'
+import { MathNegative } from './MathNegative'
 
 /**
  * Difference of two positive integers.
@@ -10,9 +9,7 @@ import { AnyIsNumber, AnyIsZero } from './utils'
  * @returns The difference of the two positive integers.
  */
 export type MathSubtract<A extends number, B extends number> =
-  AnyIsNumber<A, B> extends true ? number
-    : AnyIsZero<A, B> extends true ? 0
-      : MathAdd<A, MathNegate<B>>
+  MathAdd<A, MathNegative<B>>
 
 /** c8 ignore next */
 if (import.meta.vitest) {

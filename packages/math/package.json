@@ -1,128 +1,18 @@
 {
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
   "name": "@unshared/math",
-  "author": "Stanley Horwood <stanley@hsjm.io>",
-  "license": "MIT",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shorwood/unshared.git",
     "directory": "packages/math"
   },
-  "sideEffects": false,
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "exports": {
-    "./add": {
-      "import": "./dist/add.js",
-      "require": "./dist/add.cjs"
-    },
-    "./clamp": {
-      "import": "./dist/clamp.js",
-      "require": "./dist/clamp.cjs"
-    },
-    "./divide": {
-      "import": "./dist/divide.js",
-      "require": "./dist/divide.cjs"
-    },
-    "./factorial": {
-      "import": "./dist/factorial.js",
-      "require": "./dist/factorial.cjs"
-    },
-    "./fibonacci": {
-      "import": "./dist/fibonacci.js",
-      "require": "./dist/fibonacci.cjs"
-    },
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    },
-    "./isNumber": {
-      "import": "./dist/isNumber.js",
-      "require": "./dist/isNumber.cjs"
-    },
-    "./isNumberBetween": {
-      "import": "./dist/isNumberBetween.js",
-      "require": "./dist/isNumberBetween.cjs"
-    },
-    "./isNumberDecimal": {
-      "import": "./dist/isNumberDecimal.js",
-      "require": "./dist/isNumberDecimal.cjs"
-    },
-    "./isNumberEven": {
-      "import": "./dist/isNumberEven.js",
-      "require": "./dist/isNumberEven.cjs"
-    },
-    "./isNumberGreater": {
-      "import": "./dist/isNumberGreater.js",
-      "require": "./dist/isNumberGreater.cjs"
-    },
-    "./isNumberGreaterOrEq": {
-      "import": "./dist/isNumberGreaterOrEq.js",
-      "require": "./dist/isNumberGreaterOrEq.cjs"
-    },
-    "./isNumberInteger": {
-      "import": "./dist/isNumberInteger.js",
-      "require": "./dist/isNumberInteger.cjs"
-    },
-    "./isNumberLower": {
-      "import": "./dist/isNumberLower.js",
-      "require": "./dist/isNumberLower.cjs"
-    },
-    "./isNumberLowerOrEq": {
-      "import": "./dist/isNumberLowerOrEq.js",
-      "require": "./dist/isNumberLowerOrEq.cjs"
-    },
-    "./isNumberNegative": {
-      "import": "./dist/isNumberNegative.js",
-      "require": "./dist/isNumberNegative.cjs"
-    },
-    "./isNumberOdd": {
-      "import": "./dist/isNumberOdd.js",
-      "require": "./dist/isNumberOdd.cjs"
-    },
-    "./isNumberPositive": {
-      "import": "./dist/isNumberPositive.js",
-      "require": "./dist/isNumberPositive.cjs"
-    },
-    "./mean": {
-      "import": "./dist/mean.js",
-      "require": "./dist/mean.cjs"
-    },
-    "./modulo": {
-      "import": "./dist/modulo.js",
-      "require": "./dist/modulo.cjs"
-    },
-    "./multiply": {
-      "import": "./dist/multiply.js",
-      "require": "./dist/multiply.cjs"
-    },
-    "./native": {
-      "import": "./dist/native.js",
-      "require": "./dist/native.cjs"
-    },
-    "./normalize": {
-      "import": "./dist/normalize.js",
-      "require": "./dist/normalize.cjs"
-    },
-    "./pi": {
-      "import": "./dist/pi.js",
-      "require": "./dist/pi.cjs"
-    },
-    "./round": {
-      "import": "./dist/round.js",
-      "require": "./dist/round.cjs"
-    },
-    "./substract": {
-      "import": "./dist/substract.js",
-      "require": "./dist/substract.cjs"
-    },
-    "./toNumber": {
-      "import": "./dist/toNumber.js",
-      "require": "./dist/toNumber.cjs"
-    }
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ]
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "license": "MIT"
 }

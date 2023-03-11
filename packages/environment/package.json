@@ -1,107 +1,18 @@
 {
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
   "name": "@unshared/environment",
-  "author": "Stanley Horwood <stanley@hsjm.io>",
-  "license": "MIT",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shorwood/unshared.git",
     "directory": "packages/environment"
   },
-  "sideEffects": false,
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "exports": {
-    "./getEnvironment": {
-      "import": "./dist/getEnvironment.js",
-      "require": "./dist/getEnvironment.cjs"
-    },
-    "./getVariable": {
-      "import": "./dist/getVariable.js",
-      "require": "./dist/getVariable.cjs"
-    },
-    "./getVariables": {
-      "import": "./dist/getVariables.js",
-      "require": "./dist/getVariables.cjs"
-    },
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    },
-    "./isAws": {
-      "import": "./dist/isAws.js",
-      "require": "./dist/isAws.cjs"
-    },
-    "./isAzure": {
-      "import": "./dist/isAzure.js",
-      "require": "./dist/isAzure.cjs"
-    },
-    "./isBrowser": {
-      "import": "./dist/isBrowser.js",
-      "require": "./dist/isBrowser.cjs"
-    },
-    "./isCi": {
-      "import": "./dist/isCi.js",
-      "require": "./dist/isCi.cjs"
-    },
-    "./isCli": {
-      "import": "./dist/isCli.js",
-      "require": "./dist/isCli.cjs"
-    },
-    "./isDeno": {
-      "import": "./dist/isDeno.js",
-      "require": "./dist/isDeno.cjs"
-    },
-    "./isDevelopment": {
-      "import": "./dist/isDevelopment.js",
-      "require": "./dist/isDevelopment.cjs"
-    },
-    "./isDocker": {
-      "import": "./dist/isDocker.js",
-      "require": "./dist/isDocker.cjs"
-    },
-    "./isElectron": {
-      "import": "./dist/isElectron.js",
-      "require": "./dist/isElectron.cjs"
-    },
-    "./isGcp": {
-      "import": "./dist/isGcp.js",
-      "require": "./dist/isGcp.cjs"
-    },
-    "./isKubernetes": {
-      "import": "./dist/isKubernetes.js",
-      "require": "./dist/isKubernetes.cjs"
-    },
-    "./isMinikube": {
-      "import": "./dist/isMinikube.js",
-      "require": "./dist/isMinikube.cjs"
-    },
-    "./isNode": {
-      "import": "./dist/isNode.js",
-      "require": "./dist/isNode.cjs"
-    },
-    "./isNuxt": {
-      "import": "./dist/isNuxt.js",
-      "require": "./dist/isNuxt.cjs"
-    },
-    "./isProduction": {
-      "import": "./dist/isProduction.js",
-      "require": "./dist/isProduction.cjs"
-    },
-    "./isWebWorker": {
-      "import": "./dist/isWebWorker.js",
-      "require": "./dist/isWebWorker.cjs"
-    },
-    "./isWsl": {
-      "import": "./dist/isWsl.js",
-      "require": "./dist/isWsl.cjs"
-    }
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
-  "dependencies": {
-    "@unshared/function": "workspace:*"
-  }
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "license": "MIT"
 }

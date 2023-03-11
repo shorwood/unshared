@@ -1,26 +1,18 @@
 {
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
   "name": "@unshared/assert",
-  "author": "Stanley Horwood <stanley@hsjm.io>",
-  "license": "MIT",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shorwood/unshared.git",
     "directory": "packages/assert"
   },
-  "sideEffects": false,
-  "exports": {
-    "./assertIsArray": {
-      "import": "./dist/assertIsArray.js",
-      "require": "./dist/assertIsArray.cjs"
-    },
-    "./assertIsArrayEmpty": {
-      "import": "./dist/assertIsArrayEmpty.js",
-      "require": "./dist/assertIsArrayEmpty.cjs"
-    }
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ]
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "license": "MIT"
 }

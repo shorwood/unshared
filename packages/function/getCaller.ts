@@ -1,10 +1,20 @@
-import { resolveStack } from './getStack'
+import { getStack } from './getStack'
 
 /**
- * Resolve the file path where this function was called.
+ * Get the file path of the caller of the current function.
  *
  * @returns The file path where this function was called.
  * @example getCaller() // '/home/user/project/index.js'
  */
-export const getCaller = (): string =>
-  resolveStack()[2] ?? import.meta.url.slice(7)
+export function getCaller(): string {
+  const stack = getStack()
+  return stack[3] ?? stack[2] ?? stack[1] ?? stack[0]
+}
+
+/** c8 ignore next */
+if (import.meta.vitest) {
+  it('should resolve the caller', () => {
+    const result = getCaller()
+    expect(result).toMatch(/vitest/)
+  })
+}

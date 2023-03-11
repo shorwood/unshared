@@ -7,4 +7,4 @@
  * @returns The wrapped function.
  * @example
  */
-export function bottleneck<T extends Function>(fn: T, options: BottleneckOptions = {}): Bottlenecked<T>
+// export function bottleneck<T extends Function>(fn: T, options: BottleneckOptions = {}): Bottlenecked<T>

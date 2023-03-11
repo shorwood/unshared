@@ -29,6 +29,8 @@ export const debounce = <T extends Function>(fn: T, delay: number): Debounced<T>
     throw new TypeError('Expected delay to be a number.')
   if (delay < 0)
     throw new RangeError('Expected delay to be a positive number.')
+  if (delay === 0)
+    return fn as Debounced<T>
 
   // --- Initialize timeout.
   let timeout: NodeJS.Timeout
@@ -86,6 +88,12 @@ if (import.meta.vitest) {
     const debounced = debounce(async() => 1, 1000)
     const result = debounced()
     expect(result).resolves.toEqual(1)
+  })
+
+  it('should pass the function if the delay is 0', async() => {
+    const fn = () => 1
+    const debounced = debounce(fn, 0)
+    expect(debounced).toStrictEqual(fn)
   })
 
   it('should throw if delay is lower than 1', () => {

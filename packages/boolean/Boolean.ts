@@ -11,6 +11,7 @@ import { nand } from './nand'
 import { nor } from './nor'
 import { not } from './not'
 import { or } from './or'
+import { parseBoolean } from './parseBoolean'
 import { xnor } from './xnor'
 import { xor } from './xor'
 
@@ -31,6 +32,18 @@ export class Boolean<A extends boolean = boolean> {
   constructor(public value: A) {
     if (typeof value !== 'boolean')
       throw new Error('Expected value to be a boolean')
+  }
+
+  /**
+   * Create a new boolean instance from a string value.
+   *
+   * @param value The string value to parse.
+   * @returns A new boolean instance with the parsed value.
+   * @example Boolean.from(process.env.ENABLE_FEATURE) // Boolean { value: true }
+   */
+  static from(value: string): Boolean {
+    const parsed = parseBoolean(value)
+    return new Boolean(parsed)
   }
 
   /**
@@ -164,6 +177,12 @@ if (import.meta.vitest) {
     const result = new Boolean(true).value
     expect(result).toEqual(true)
     expectTypeOf(result).toEqualTypeOf<true>()
+  })
+
+  it('should create a Boolean from a string', () => {
+    const result = Boolean.from('true').value
+    expect(result).toEqual(true)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
   })
 
   it('should create a true Boolean instance', () => {

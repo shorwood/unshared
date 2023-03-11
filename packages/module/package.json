@@ -1,103 +1,18 @@
 {
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
   "name": "@unshared/module",
-  "author": "Stanley Horwood <stanley@hsjm.io>",
-  "license": "MIT",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shorwood/unshared.git",
     "directory": "packages/module"
   },
-  "sideEffects": false,
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "exports": {
-    "./getFileName": {
-      "import": "./dist/getFileName.js",
-      "require": "./dist/getFileName.cjs"
-    },
-    "./getPackageJson": {
-      "import": "./dist/getPackageJson.js",
-      "require": "./dist/getPackageJson.cjs"
-    },
-    "./getPackageJsonPath": {
-      "import": "./dist/getPackageJsonPath.js",
-      "require": "./dist/getPackageJsonPath.cjs"
-    },
-    "./getTsConfig": {
-      "import": "./dist/getTsConfig.js",
-      "require": "./dist/getTsConfig.cjs"
-    },
-    "./getTsConfigPath": {
-      "import": "./dist/getTsConfigPath.js",
-      "require": "./dist/getTsConfigPath.cjs"
-    },
-    "./importEval": {
-      "import": "./dist/importEval.js",
-      "require": "./dist/importEval.cjs"
-    },
-    "./importInline": {
-      "import": "./dist/importInline.js",
-      "require": "./dist/importInline.cjs"
-    },
-    "./importSafe": {
-      "import": "./dist/importSafe.js",
-      "require": "./dist/importSafe.cjs"
-    },
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    },
-    "./loadObject": {
-      "import": "./dist/loadObject.js",
-      "require": "./dist/loadObject.cjs"
-    },
-    "./moduleExists": {
-      "import": "./dist/moduleExists.js",
-      "require": "./dist/moduleExists.cjs"
-    },
-    "./requireSafe": {
-      "import": "./dist/requireSafe.js",
-      "require": "./dist/requireSafe.cjs"
-    },
-    "./resolveAlias": {
-      "import": "./dist/resolveAlias.js",
-      "require": "./dist/resolveAlias.cjs"
-    },
-    "./resolveAncestor": {
-      "import": "./dist/resolveAncestor.js",
-      "require": "./dist/resolveAncestor.cjs"
-    },
-    "./resolveAncestors": {
-      "import": "./dist/resolveAncestors.js",
-      "require": "./dist/resolveAncestors.cjs"
-    },
-    "./resolveDependencies": {
-      "import": "./dist/resolveDependencies.js",
-      "require": "./dist/resolveDependencies.cjs"
-    },
-    "./resolveImport": {
-      "import": "./dist/resolveImport.js",
-      "require": "./dist/resolveImport.cjs"
-    },
-    "./resolveModule": {
-      "import": "./dist/resolveModule.js",
-      "require": "./dist/resolveModule.cjs"
-    },
-    "./resolveTypes": {
-      "import": "./dist/resolveTypes.js",
-      "require": "./dist/resolveTypes.cjs"
-    },
-    "./saveObject": {
-      "import": "./dist/saveObject.js",
-      "require": "./dist/saveObject.cjs"
-    }
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
-  "dependencies": {
-    "@unshared/function": "workspace:*"
-  }
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "license": "MIT"
 }

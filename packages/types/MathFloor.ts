@@ -1,4 +1,4 @@
-import { InternalAdd, InternalNegate } from './utils'
+import { Add, IsInteger, IsNumber, Negative } from './utils/arithmetics'
 
 /**
  * Floors a number to the nearest integer.
@@ -8,11 +8,10 @@ import { InternalAdd, InternalNegate } from './utils'
  * @example MathFloor<1.1> // 1
  */
 export type MathFloor<N extends number> =
-  number extends N ? number
-    // @ts-expect-error: ignore
-    : `${N}` extends `-${infer S extends number}.${number}` ? InternalNegate<InternalAdd<S, 1>>
-      : `${N}` extends `${infer S extends number}.${number}` ? S
-        : N extends number ? N
+  IsNumber<N> extends true ? number
+    : IsInteger<N> extends true ? N
+      : `${N}` extends `-${infer S extends number}.${number}` ? Negative<Add<S, 1>>
+        : `${N}` extends `${infer S extends number}.${number}` ? S
           : never
 
 /** c8 ignore next */

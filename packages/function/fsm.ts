@@ -1,8 +1,7 @@
+
+
 /**
- * Creates a finite state machine from a set of states and transitions.
- *
- * @param states The states of the machine.
- * @param transitions The transitions of the machine.
- * @returns An i
+ * Creates a finite state machine from a set of states and transitions. The
+ * machine will start in the first state.
  */
-export function fsm
+export function fsm() {}

@@ -10,8 +10,8 @@
   "sideEffects": false,
   "module": "./dist/index.js",
   "exports": {
-    "./basic": "./dist/basic.js",
     ".": "./dist/index.js",
+    "./basic": "./dist/basic.js",
     "./typescript": "./dist/typescript.js",
     "./vue": "./dist/vue.js"
   },
@@ -50,5 +50,12 @@
   "devDependencies": {
     "eslint": "8.33.0",
     "typescript": "4.9.5"
-  }
+  },
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "type": "module"
 }

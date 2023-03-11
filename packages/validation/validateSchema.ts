@@ -1,6 +1,17 @@
 import { mapValues } from '@unshared/collection/mapValues'
 import { validateRuleSet } from './validateRuleSet'
-import { ValidateSchemaResult, ValidationSchema } from './types'
+import { ValidateSchemaResult, ValidationRules } from './types'
+
+/**
+ * A validation schema that maps field names to validation rules.
+ *
+ * @example
+ * const schema: ValidationSchema = {
+ *   foo: [isRequired, isEqToFoo],
+ *   bar: [isRequired, isGreater(10)],
+ * }
+ */
+export type ValidationSchema = Record<string, ValidationRules>
 
 /**
  * Validate an object against a validation schema.

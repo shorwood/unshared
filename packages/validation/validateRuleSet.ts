@@ -3,18 +3,15 @@ import { ValidateRulePipeResult, ValidateRuleSetResult, ValidationRule, Validati
 import { createRuleSet } from './utils/createRuleSet'
 
 /**
- * Validate a value against a ValidationRuleSet.
+ * Validate a value against a `ValidationRuleSet`.
  *
  * @param value The value to validate
  * @param ruleSet The ValidationRuleSet to validate against
  * @param context A context to pass through to the validation rules
  * @returns The result of the validation
  */
-export const validateRuleSet = async(value: any, ruleSet: ValidationRule | ValidationRulePipe | ValidationRuleSet, context?: Record<string, any>): Promise<ValidateRuleSetResult> => {
+export const validateRuleSet = async(value: any, ruleSet: ValidationRuleSet): Promise<ValidateRuleSetResult> => {
   const results: ValidateRulePipeResult[] = []
-
-  // --- Make sure it's a set of rules.
-  ruleSet = createRuleSet(ruleSet)
 
   // --- Validate and store results of each rules one by one.
   for (const rules of ruleSet) {

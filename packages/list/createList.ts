@@ -1,5 +1,31 @@
-import { createListNode } from './createListNode'
-import { List, ListNode, ListSymbol } from './types'
+import { ListNode, createListNode } from './createListNode'
+
+/**
+ * A symbol used to identify a list.
+ */
+export const ListSymbol = Symbol('List')
+
+/**
+ * A linked list.
+ *
+ * @template T The type of the list's values.
+ * @example type List = List<number> // { first?: ListNode<number>, last?: ListNode<number>, length: number }
+ */
+export interface List<T = unknown> {
+  readonly [ListSymbol]: true
+  /**
+   * The first element of the list.
+   */
+  first?: ListNode<T>
+  /**
+   * The last element of the list.
+   */
+  last?: ListNode<T>
+  /**
+   * The length of the list.
+   */
+  length: number
+}
 
 /**
  * Create a new linked list of N elements.

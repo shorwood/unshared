@@ -1,38 +1,30 @@
-/* eslint-disable jsdoc/require-param */
-/* eslint-disable jsdoc/check-param-names */
+import { Function } from '@unshared/types/Function'
+
+export type TriesResult<F extends Function[]> =
+  F extends Function<infer U>[]
+    ? Exclude<U, null | void>
+    : never
 
 /**
  * Try multiple functions and return the first one that does not throw or is not undefined.
+ * If all functions throw or return `undefined`, `undefined` is returned.
  *
  * @param functions The functions to try.
- * @returns The first stateful result. Returns `undefined` if all functions throw or return `undefined`.
- * @example
- * const noop = () => {}
- * const throws = () => { throw new Error }
- * tries(throws, noop, Date.now) // returns 1658682347132
+ * @returns A promise that resolves to the first non-undefined result.
+ * @example tries(throws, noop, Date.now) // 1658682347132
  */
-export function tries<R1, R2>(fn1: () => R1, fn2: () => R2): R1 | R2 | undefined
-export function tries<R1, R2, R3>(fn1: () => R1, fn2: () => R2, fn3: () => R3): R1 | R2 | R3 | undefined
-export function tries<R1, R2, R3, R4>(fn1: () => R1, fn2: () => R2, fn3: () => R3, fn4: () => R4): R1 | R2 | R3 | R4 | undefined
-export function tries<R1, R2, R3, R4, R5>(fn1: () => R1, fn2: () => R2, fn3: () => R3, fn4: () => R4, fn5: () => R5): R1 | R2 | R3 | R4 | R5 | undefined
-export function tries<R1, R2, R3, R4, R5, R6>(fn1: () => R1, fn2: () => R2, fn3: () => R3, fn4: () => R4, fn5: () => R5, fn6: () => R6): R1 | R2 | R3 | R4 | R5 | R6 | undefined
-export function tries<R>(...functions: Array<() => R>): R | undefined
-export function tries(...functions: Array<() => unknown>): unknown {
-  // --- Execute each function until one returns a value.
-  while (functions.length > 0) {
+export function tries<F extends [Function, ...Function[]]>(...functions: F): TriesResult<F> | undefined {
+  if (functions.length === 0)
+    throw new Error('Expected at least one function.')
+  if (functions.some(fn => typeof fn !== 'function'))
+    throw new TypeError('Expected all arguments to be functions.')
+
+  // --- Call each function until one returns a non-nil value.
+  for (const fn of functions) {
     try {
-      const fn = functions.shift()
-      const result = fn?.()
-
-      // --- If one of the functions returns a promise, recursively call `tries` until the promise is resolved.
-      if (result instanceof Promise) {
-        return result
-          .then(value => value ?? tries(...functions))
-          .catch(() => tries(...functions))
-      }
-
-      // --- If one of the functions returns a value, return it.
-      if (result !== undefined) return result
+      const result = fn()
+      if (result !== undefined && result !== null)
+        return result as TriesResult<F>
     }
     catch { /* Ignore errors */ }
   }
@@ -41,34 +33,30 @@ export function tries(...functions: Array<() => unknown>): unknown {
 /* c8 ignore next */
 if (import.meta.vitest) {
   const noop = () => {}
-  const noopAsync = async() => {}
   const throws = () => { throw new Error('Error') }
-  const throwsAsync = async() => { throw new Error('Error') }
-  const now = () => true
-  const nowAsync = async() => true
+  const returns = () => true
 
   it('should return the first non-undefined result', () => {
-    const result = tries(now, noop, throws)
+    const result = tries(noop, throws, returns)
     expect(result).toEqual(true)
+    expectTypeOf(result).toEqualTypeOf<boolean | undefined>()
   })
 
   it('should return undefined if all functions throw or return undefined', () => {
     const result = tries(throws, noop)
     expect(result).toEqual(undefined)
+    expectTypeOf(result).toEqualTypeOf<undefined>()
   })
 
-  it('should return the first non-undefined result (async)', async() => {
-    const result = await tries(noopAsync, throwsAsync, nowAsync)
-    expect(result).toEqual(true)
+  it('should throw if no functions are provided', () => {
+    // @ts-expect-error: Expected at least one function.
+    const shouldReject = () => tries()
+    expect(shouldReject).rejects.toThrowError(Error)
   })
 
-  it('should return undefined if all functions throw or return undefined (async)', async() => {
-    const result = await tries(throwsAsync, noopAsync)
-    expect(result).toEqual(undefined)
-  })
-
-  it('should return synchronous results before asynchronous results', async() => {
-    const result = tries(now, nowAsync)
-    expect(result).toEqual(true)
+  it('should throw if any argument is not a function', () => {
+    // @ts-expect-error: Expected all arguments to be functions.
+    const shouldReject = () => tries(noop, 'foo')
+    expect(shouldReject).rejects.toThrowError(TypeError)
   })
 }

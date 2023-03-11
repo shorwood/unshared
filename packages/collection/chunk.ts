@@ -1,4 +1,5 @@
 import { Vector } from '@unshared/types'
+// TODO: Improve type inference for tuple types.
 
 /**
  * Splits an array into smaller arrays of a specified size.

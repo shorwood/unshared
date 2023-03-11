@@ -1,7 +1,19 @@
 /* eslint-disable jsdoc/check-param-names */
 import { nextTick } from 'node:process'
-import { Awaitable } from '@unshared/types/Awaitable'
 import { FunctionAsync } from '@unshared/types/FunctionAsync'
+
+/**
+ * An object that is optionally asyncronous and can be awaited. By default, the
+ * promise resolves to the same type as the first argument.
+ *
+ * @template T The type of the object.
+ * @template U The type the promise resolves to.
+ * @example
+ * type ObjectA = { a: number }
+ * type ObjectB = { b: number }
+ * type AwaitableObject = Awaitable<ObjectA, ObjectB> // { a: number } & Promise<{ b: number }>
+ */
+export type Awaitable<T, U = T> = T & Promise<U extends void | undefined ? T : U>
 
 /**
  * Extend an object with a promise making it awaitable. If the promise resolves to a value,
@@ -41,7 +53,6 @@ export function awaitable(object: object, promise: Promise<unknown> | FunctionAs
           : promise.then(x => x ?? object)
 
         // --- Re-attach the `this` context to the promise.
-        // @ts-expect-error: `property` is garanteed to be a key of `Promise`.
         return promise[property].bind(promise)
       }
 
@@ -156,5 +167,33 @@ if (import.meta.vitest) {
     const factory = () => Promise.resolve('bar')
     const result = awaitable(object, factory)
     expectTypeOf(result).toEqualTypeOf<{ foo: string } & Promise<string>>()
+  })
+
+  it('should return an awaitable that resolves to the same type by default', () => {
+    type array = unknown[]
+    type result = Awaitable<array>
+    type expected = array & Promise<array>
+    expectTypeOf<result>().toEqualTypeOf<expected>()
+  })
+
+  it('should return an awaitable that resolves to the same type when void is specified', () => {
+    type array = unknown[]
+    type result = Awaitable<array, void>
+    type expected = array & Promise<array>
+    expectTypeOf<result>().toEqualTypeOf<expected>()
+  })
+
+  it('should return an awaitable that resolves to the same type when undefined is specified', () => {
+    type array = unknown[]
+    type result = Awaitable<array, undefined>
+    type expected = array & Promise<array>
+    expectTypeOf<result>().toEqualTypeOf<expected>()
+  })
+
+  it('should return an awaitable that resolves to a different type', () => {
+    type array = unknown[]
+    type result = Awaitable<array, { bar: number }>
+    type expected = array & Promise<{ bar: number }>
+    expectTypeOf<result>().toEqualTypeOf<expected>()
   })
 }

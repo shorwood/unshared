@@ -1,23 +1,18 @@
 {
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
   "name": "@unshared/unit",
-  "author": "Stanley Horwood <stanley@hsjm.io>",
-  "license": "MIT",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shorwood/unshared.git",
     "directory": "packages/unit"
   },
-  "sideEffects": false,
-  "exports": {
-    "./convertToUnit": {
-      "import": "./dist/convertToUnit.js",
-      "require": "./dist/convertToUnit.cjs",
-      "types": "./dist/convertToUnit.d.ts"
-    }
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ]
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "license": "MIT"
 }

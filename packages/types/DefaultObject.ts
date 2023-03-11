@@ -14,7 +14,7 @@ import { MathDecrease } from './MathDecrease'
  */
 export type DefaultObject<T extends object, U extends object, N extends number = 0> =
 {
-  [P in (keyof T | keyof U)]: P extends keyof T
+  [P in (keyof T | keyof U)]-?: P extends keyof T
     ? P extends keyof U
       ? 0 extends N
         ? DefaultValue<T[P], U[P]>
@@ -25,12 +25,17 @@ export type DefaultObject<T extends object, U extends object, N extends number =
 
 /** c8 ignore next */
 if (import.meta.vitest) {
-  it('should default object from undefined properties', () => {
+  it('should default undefined properties', () => {
     type result = DefaultObject<{ a: number | undefined }, { a: 1; b: 2 }>
     expectTypeOf<result>().toEqualTypeOf<{ a: number; b: 2 }>()
   })
 
-  it('should default object from null properties', () => {
+  it('should default optional properties', () => {
+    type result = DefaultObject<{ a?: number }, { a: 1; b: 2 }>
+    expectTypeOf<result>().toEqualTypeOf<{ a: number; b: 2 }>()
+  })
+
+  it('should default null properties', () => {
     type result = DefaultObject<{ a: number | null }, { a: 1; b: 2 }>
     expectTypeOf<result>().toEqualTypeOf<{ a: number; b: 2 }>()
   })

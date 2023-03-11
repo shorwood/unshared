@@ -1,21 +1,36 @@
-import { AllPositive, AnyIsNumber, AnyIsZero, MultiAdd } from './utils'
+import { Absolute, IsAllNegative, IsAllPositive, IsAnyDecimal, IsAnyNegative, IsAnyNumber, IsAnyZero, Multiply, Negative } from './utils/arithmetics'
 
 /**
  * Product of two positive integers.
  *
- * @template A The first positive integer.
- * @template B The second positive integer.
+ * @template A The multiplicand.
+ * @template B The multiplier.
  * @returns The product of the two positive integers.
+ * @example MathMultiply<4, 4> // 16
  */
 export type MathMultiply<A extends number, B extends number> =
-  AnyIsNumber<A, B> extends true ? number
-    : AnyIsZero<A, B> extends true ? 0
-      : MultiAdd<A, 0, B>
+  IsAnyNumber<A, B> extends true ? number
+    : IsAnyDecimal<A, B> extends true ? number
+      : IsAnyZero<A, B> extends true ? 0
+        : IsAllPositive<A, B> extends true ? Multiply<A, B>
+          : IsAllNegative<A, B> extends true ? Multiply<Absolute<A>, Absolute<B>>
+            : IsAnyNegative<A, B> extends true ? Negative<Multiply<Absolute<A>, Absolute<B>>>
+              : never
 
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should compute the product of 10 and 10 as 100', () => {
     type result = MathMultiply<5, 10>
+    expectTypeOf<result>().toEqualTypeOf<50>()
+  })
+
+  it('should return number when a negative integer is passed', () => {
+    type result = MathMultiply<5, -10>
+    expectTypeOf<result>().toEqualTypeOf<-50>()
+  })
+
+  it('should return number when two negative integer are passed', () => {
+    type result = MathMultiply<-5, -10>
     expectTypeOf<result>().toEqualTypeOf<50>()
   })
 
@@ -34,8 +49,8 @@ if (import.meta.vitest) {
     expectTypeOf<result>().toEqualTypeOf<0>()
   })
 
-  it('should return number when a negative integer is passed', () => {
-    type result = MathMultiply<5, -10>
-    expectTypeOf<result>().toEqualTypeOf<-50>()
+  it('should return number when a number is passed', () => {
+    type result = MathMultiply<10, number>
+    expectTypeOf<result>().toEqualTypeOf<number>()
   })
 }

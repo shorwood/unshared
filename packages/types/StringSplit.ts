@@ -5,12 +5,12 @@ import { MathDecrease } from './MathDecrease'
  *
  * @template S String to extract litteral types from.
  * @template D Delimiter to split string with.
- * @template N Maximum number of splits. (default: `128`)
+ * @template N Maximum number of splits. (default: `32`)
  * @returns Litteral types of strings separated by a delimiter.
  * @example StringSplit<'Hello,World'> // 'Hello' | 'World'
  */
 
-export type StringSplit<S extends string, D extends string = ',', N extends number = 128> =
+export type StringSplit<S extends string, D extends string = ',', N extends number = 32> =
   N extends 0
 
     // --- Cutoff recursion

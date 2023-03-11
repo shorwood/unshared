@@ -1,4 +1,4 @@
-import { fromBase64 } from './fromBase64'
+import { decodeBase64 } from '../encode/decodeBase64'
 import { fromHex } from './fromHex'
 import { fromUtf8 } from './fromUtf8'
 
@@ -22,7 +22,7 @@ export const toArrayBuffer = (value?: any, from?: BuffereableFrom): ArrayBuffer 
 
   // --- is a string.
   if (typeof value === 'string') {
-    if (from === 'base64') return fromBase64(value)
+    if (from === 'base64') return decodeBase64(value)
     if (from === 'hex') return fromHex(value)
     return fromUtf8(value)
   }

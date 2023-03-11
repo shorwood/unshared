@@ -4,14 +4,10 @@
  * @template T The object to extract the keys from
  * @returns The keys of the object
  */
-export type Key<T = any> =
-  // --- If iterable, return number
-  T extends string | any[] | readonly any[] ? Extract<keyof T, number>
-
-    // --- If object, return string
+// TODO: Extract tuple keys as literal numbers
+export type Key<T> =
+  T extends string | any[] | readonly any[] ? (keyof T & number)
     : T extends object ? keyof T
-
-      // --- Else, return string | number
       : never
 
 /** c8 ignore next */

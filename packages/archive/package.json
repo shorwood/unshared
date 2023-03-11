@@ -1,23 +1,18 @@
 {
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
   "name": "@unshared/archive",
-  "author": "Stanley Horwood <stanley@hsjm.io>",
-  "license": "MIT",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shorwood/unshared.git",
     "directory": "packages/archive"
   },
-  "sideEffects": false,
-  "exports": {
-    "./extractTar": {
-      "import": "./dist/extractTar.js",
-      "require": "./dist/extractTar.cjs",
-      "types": "./dist/extractTar.d.ts"
-    }
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ]
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "license": "MIT"
 }

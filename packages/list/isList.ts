@@ -1,5 +1,4 @@
-import { createList } from './createList'
-import { List, ListSymbol } from './types'
+import { List, ListSymbol, createList } from './createList'
 
 /**
  * Check if value is a linked list.

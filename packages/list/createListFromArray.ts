@@ -1,5 +1,4 @@
-import { createList } from './createList'
-import { List } from './types'
+import { List, createList } from './createList'
 
 /**
  * Creates a list from an array.

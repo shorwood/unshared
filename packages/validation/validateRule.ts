@@ -1,5 +1,5 @@
 import { ValidateRuleResult, ValidationRule } from './types'
-import { createRule } from './utils/createRule'
+import { createRule } from './createRule'
 
 /**
  * Validate a rule against a value.

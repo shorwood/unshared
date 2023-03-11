@@ -1,5 +1,5 @@
 
-import { AllNegative, AnyIsNegative, AnyIsNumber, AnyIsZero, InternalAdd, InternalAddAllNegative, InternalAddOneNegative } from './utils'
+import { Absolute, Add, AddOneNegative, IsAllNegative, IsAllPositive, IsAnyDecimal, IsAnyNegative, IsAnyNumber, IsZero, Negative } from './utils/arithmetics'
 
 /**
  * Sum of two integers.
@@ -10,11 +10,14 @@ import { AllNegative, AnyIsNegative, AnyIsNumber, AnyIsZero, InternalAdd, Intern
  * @example MathAdd<1, 2> // 3
  */
 export type MathAdd<A extends number, B extends number> =
-  AnyIsNumber<A, B> extends true ? number
-    : AnyIsZero<A, B> extends true ? 0
-      : AllNegative<A, B> extends true ? InternalAddAllNegative<A, B>
-        : AnyIsNegative<A, B> extends true ? InternalAddOneNegative<A, B>
-          : InternalAdd<A, B>
+  IsAnyNumber<A, B> extends true ? number
+    : IsAnyDecimal<A, B> extends true ? number
+      : IsZero<A> extends true ? B
+        : IsZero<B> extends true ? A
+          : IsAllPositive<A, B> extends true ? Add<A, B>
+            : IsAllNegative<A, B> extends true ? Negative<Add<Absolute<A>, Absolute<B>>>
+              : IsAnyNegative<A, B> extends true ? AddOneNegative<A, B>
+                : never
 
 /** c8 ignore next */
 if (import.meta.vitest) {
@@ -48,18 +51,28 @@ if (import.meta.vitest) {
     expectTypeOf<result>().toEqualTypeOf<0>()
   })
 
+  it('should compute the sum of 0 and 10 as 10', () => {
+    type result = MathAdd<0, 10>
+    expectTypeOf<result>().toEqualTypeOf<10>()
+  })
+
+  it('should compute the sum of 10 and 0 as 10', () => {
+    type result = MathAdd<10, 0>
+    expectTypeOf<result>().toEqualTypeOf<10>()
+  })
+
   it('should compute the sum of 0 and 0 as 0', () => {
     type result = MathAdd<0, 0>
     expectTypeOf<result>().toEqualTypeOf<0>()
   })
 
-  it('should return number the first argument is number', () => {
+  it('should return number the argument is number', () => {
     type result = MathAdd<number, 0>
     expectTypeOf<result>().toEqualTypeOf<number>()
   })
 
-  it('should return number the second argument is number', () => {
-    type result = MathAdd<0, number>
+  it('should return number the argument is decimal', () => {
+    type result = MathAdd<10, 3.14>
     expectTypeOf<result>().toEqualTypeOf<number>()
   })
 }

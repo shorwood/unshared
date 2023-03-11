@@ -1,87 +1,70 @@
 {
   "name": "@unshared/boolean",
   "type": "module",
-  "author": "Stanley Horwood <stanley@hsjm.io>",
   "license": "MIT",
+  "sideEffects": false,
+  "description": "Boolean logic functions",
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shorwood/unshared.git",
     "directory": "packages/boolean"
   },
-  "sideEffects": false,
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "types": "./index.d.ts",
   "exports": {
-    "./Boolean": {
-      "import": "./dist/Boolean.js",
+    "Boolean": {
       "require": "./dist/Boolean.cjs",
-      "types": "./dist/Boolean.d.ts"
+      "types": "./dist/Boolean.d.ts",
+      "import": "./dist/Boolean.js"
     },
-    "./and": {
-      "import": "./dist/and.js",
+    "and": {
       "require": "./dist/and.cjs",
-      "types": "./dist/and.d.ts"
+      "types": "./dist/and.d.ts",
+      "import": "./dist/and.js"
     },
-    ".": {
-      "import": "./dist/index.js",
+    "*": {
       "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
-    "./isBoolean": {
-      "import": "./dist/isBoolean.js",
-      "require": "./dist/isBoolean.cjs",
-      "types": "./dist/isBoolean.d.ts"
-    },
-    "./isFalse": {
-      "import": "./dist/isFalse.js",
-      "require": "./dist/isFalse.cjs",
-      "types": "./dist/isFalse.d.ts"
-    },
-    "./isFalsy": {
-      "import": "./dist/isFalsy.js",
-      "require": "./dist/isFalsy.cjs",
-      "types": "./dist/isFalsy.d.ts"
-    },
-    "./isTrue": {
-      "import": "./dist/isTrue.js",
-      "require": "./dist/isTrue.cjs",
-      "types": "./dist/isTrue.d.ts"
-    },
-    "./isTruthy": {
-      "import": "./dist/isTruthy.js",
-      "require": "./dist/isTruthy.cjs",
-      "types": "./dist/isTruthy.d.ts"
-    },
-    "./nand": {
-      "import": "./dist/nand.js",
+    "nand": {
       "require": "./dist/nand.cjs",
-      "types": "./dist/nand.d.ts"
+      "types": "./dist/nand.d.ts",
+      "import": "./dist/nand.js"
     },
-    "./nor": {
-      "import": "./dist/nor.js",
+    "nor": {
       "require": "./dist/nor.cjs",
-      "types": "./dist/nor.d.ts"
+      "types": "./dist/nor.d.ts",
+      "import": "./dist/nor.js"
     },
-    "./not": {
-      "import": "./dist/not.js",
+    "not": {
       "require": "./dist/not.cjs",
-      "types": "./dist/not.d.ts"
+      "types": "./dist/not.d.ts",
+      "import": "./dist/not.js"
     },
-    "./or": {
-      "import": "./dist/or.js",
+    "or": {
       "require": "./dist/or.cjs",
-      "types": "./dist/or.d.ts"
+      "types": "./dist/or.d.ts",
+      "import": "./dist/or.js"
     },
-    "./xnor": {
-      "import": "./dist/xnor.js",
+    "parseBoolean": {
+      "require": "./dist/parseBoolean.cjs",
+      "types": "./dist/parseBoolean.d.ts",
+      "import": "./dist/parseBoolean.js"
+    },
+    "xnor": {
       "require": "./dist/xnor.cjs",
-      "types": "./dist/xnor.d.ts"
+      "types": "./dist/xnor.d.ts",
+      "import": "./dist/xnor.js"
     },
-    "./xor": {
-      "import": "./dist/xor.js",
+    "xor": {
       "require": "./dist/xor.cjs",
-      "types": "./dist/xor.d.ts"
+      "types": "./dist/xor.d.ts",
+      "import": "./dist/xor.js"
     }
   },
   "files": [
@@ -89,7 +72,11 @@
     "README.md",
     "LICENSE"
   ],
-  "dependencies": {
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "devDependencies": {
     "@unshared/types": "workspace:*"
   }
 }

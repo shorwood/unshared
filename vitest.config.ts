@@ -1,4 +1,8 @@
+import { resolve } from 'node:path'
+import { cwd } from 'node:process'
 import { defineConfig } from 'vitest/config'
+
+const __dirname = new URL('.', import.meta.url).pathname
 
 export default defineConfig({
   test: {
@@ -9,7 +13,7 @@ export default defineConfig({
     typecheck: {
       checker: 'tsc',
       ignoreSourceErrors: false,
-      include: ['./packages/types/*.ts'],
+      include: ['./**/*.ts'],
     },
     coverage: {
       100: true,
@@ -19,18 +23,18 @@ export default defineConfig({
       excludeNodeModules: true,
       reporter: ['html'],
     },
-    setupFiles: './packages/setupTest.ts',
+    setupFiles: resolve(__dirname, './packages/setupTest.ts'),
     passWithNoTests: true,
     include: [
-      './packages/**/*.test.ts',
-      './packages/**/*.test.*.ts',
+      './**/*.test.ts',
+      './**/*.test.*.ts',
     ],
     includeSource: [
       './packages/**/*.ts',
     ],
     exclude: [
-      './packages/setupTest.ts',
-      './packages/**/node_modules/**',
+      resolve(__dirname, './packages/setupTest.ts'),
+      resolve(__dirname, './**/node_modules/**'),
     ],
   },
 })

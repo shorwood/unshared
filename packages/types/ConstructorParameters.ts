@@ -15,13 +15,13 @@ if (import.meta.vitest) {
   it('should return the parameters of a constructor', () => {
     class Foo { constructor(_a: number, _b: string) {} }
     type result = ConstructorParameters<typeof Foo>
-    expectTypeOf<result>().toEqualTypeOf<[number, string]>()
+    expectTypeOf<result>().toEqualTypeOf<[_a: number, _b: string]>()
   })
 
   it('should return the parameters of an abstract constructor', () => {
     abstract class Foo { constructor(_a: number, _b: string) {} }
     type result = ConstructorParameters<typeof Foo>
-    expectTypeOf<result>().toEqualTypeOf<[number, string]>()
+    expectTypeOf<result>().toEqualTypeOf<[_a: number, _b: string]>()
   })
 
   it('should return the parameters of a constructor with no parameters', () => {
@@ -33,6 +33,6 @@ if (import.meta.vitest) {
   it('should return the parameters of a constructor with a default parameter', () => {
     class Foo { constructor(_a = 1) {} }
     type result = ConstructorParameters<typeof Foo>
-    expectTypeOf<result>().toEqualTypeOf<[number?]>()
+    expectTypeOf<result>().toEqualTypeOf<[_a?: number]>()
   })
 }

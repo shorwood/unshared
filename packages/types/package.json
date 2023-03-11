@@ -1,19 +1,18 @@
 {
   "name": "@unshared/types",
-  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "type": "module",
   "license": "MIT",
+  "sideEffects": false,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shorwood/unshared.git",
     "directory": "packages/types"
   },
-  "sideEffects": false,
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
-  "tsup": {
-    "format": []
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
   }
 }

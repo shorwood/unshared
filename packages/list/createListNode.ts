@@ -1,5 +1,30 @@
 /* eslint-disable unicorn/prevent-abbreviations */
-import { ListNode, ListNodeSymbol } from './types'
+/**
+ * A symbol used to identify a list node.
+ */
+export const ListNodeSymbol = Symbol('isListNode')
+
+/**
+ * A linked list node.
+ *
+ * @template T The type of the node's value.
+ * @example type ListNode = ListNode<number> // { value?: number, next?: ListNode<number>, prev?: ListNode<number> }
+ */
+export interface ListNode<T = unknown> {
+  readonly [ListNodeSymbol]: true
+  /**
+   * The value of the node.
+   */
+  value?: T
+  /**
+   * The next node in the list.
+   */
+  next?: ListNode<T>
+  /**
+   * The previous node in the list.
+   */
+  prev?: ListNode<T>
+}
 
 /**
  * Creates a list node with the specified value.

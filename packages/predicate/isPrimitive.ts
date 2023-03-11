@@ -1,4 +1,4 @@
-import { Primitive } from '@unshared/types/common'
+import { Primitive } from "@unshared/types/Primitive"
 
 /**
  * Checks if the value is a primitive

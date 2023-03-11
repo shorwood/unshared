@@ -1,4 +1,4 @@
-import { InternalAddAllNegative, InternalAddOneNegative } from './utils'
+import { MathAdd } from './MathAdd'
 
 /**
  * Integer decreased by 1.
@@ -8,11 +8,7 @@ import { InternalAddAllNegative, InternalAddOneNegative } from './utils'
  * @example MathDecrease<2> // 1
  */
 export type MathDecrease<N extends number> =
-  number extends N ? number
-    : N extends 0 ? -1
-      : `${N}` extends `-${number}`
-        ? InternalAddAllNegative<N, -1>
-        : InternalAddOneNegative<N, -1>
+  MathAdd<N, -1>
 
 /** c8 ignore next */
 if (import.meta.vitest) {

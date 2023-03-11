@@ -1,6 +1,6 @@
 import { validateRule } from './validateRule'
 import { ValidateRulePipeResult, ValidateRuleResult, ValidationRule, ValidationRulePipe } from './types'
-import { createRulePipe } from './utils/createRulePipe'
+import { createRulePipe } from './createRulePipe'
 
 /**
  * Validate a list of rules and return the result
