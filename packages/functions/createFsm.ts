@@ -84,7 +84,7 @@ export interface FSM<D = unknown, S extends string = string> {
  *   doingStuff: () => 'final',
  *   final: () => true,
  * })
- * const result = await startRombaLogic(
+ * const result = await startRombaLogic()
  */
 export function createFsm<D = unknown, S extends string = string>(states: FSMTransitions<D, S>, initialData?: D): FSM<D, S> {
   const context: FSMContext<D, S> = { data: initialData }
@@ -148,13 +148,13 @@ if (import.meta.vitest) {
   })
 
   it('should create a finite state machine with initial data', async() => {
-    const fsm = createFsm({ init: (context) => { context.data += 10 } }, 5)
+    const fsm = createFsm({ init: (context) => { context.data! += 10 } }, 5)
     const result = await fsm()
     expect(result).toEqual({ data: 15, state: undefined, lastState: 'init' })
   })
 
   it('should start the machine with initial data', async() => {
-    const fsm = createFsm<number>({ init: (context) => { context.data += 10 } })
+    const fsm = createFsm<number>({ init: (context) => { context.data! += 10 } })
     const result = await fsm(5)
     expect(result).toEqual({ data: 15, state: undefined, lastState: 'init' })
   })
