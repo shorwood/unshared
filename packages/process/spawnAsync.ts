@@ -83,10 +83,26 @@ export async function spawnAsync(command: string, args: SpawnArgument[], encodin
     }
 
     // --- Collect the output.
-    const chunks: Buffer[] = []
-    process.stdout?.on('data', data => chunks.push(data))
-    process.stdout?.on('end', () => resolve(Buffer.concat(chunks)))
+    const stdoutChunks: Buffer[] = []
+    const stderrChunks: Buffer[] = []
+    process.stdout?.on('data', data => stdoutChunks.push(data))
+    process.stderr?.on('data', data => stderrChunks.push(data))
     process.stdout?.on('error', reject)
+    process.stderr?.on('error', reject)
+    process.on('error', reject)
+
+    // --- Handle the process exit.
+    process.on('exit', (code) => {
+      if (code === 0) {
+        const output = Buffer.concat(stdoutChunks)
+        return resolve(output)
+      }
+
+      // --- The process exited with an error.
+      const errorMessage = Buffer.concat(stderrChunks).toString('utf8')
+      const error = new Error(errorMessage)
+      reject(error)
+    })
   })
 
   // --- Return the output.
@@ -123,6 +139,11 @@ if (import.meta.vitest) {
     const expected = Buffer.from('Hello, world!')
     expect(result).toEqual(expected)
     expectTypeOf(result).toEqualTypeOf<Buffer>()
+  })
+
+  it('should reject if the process exits with a non-zero code', async() => {
+    const shouldReject = spawnAsync('false', [])
+    await expect(shouldReject).rejects.toThrow()
   })
 
   it('should kill the process if it takes too long', async() => {
