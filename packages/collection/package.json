@@ -1,125 +1,131 @@
 {
   "name": "@unshared/collection",
-  "version": "1.0.0",
-  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "type": "module",
   "license": "MIT",
+  "sideEffects": false,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shorwood/unshared.git",
     "directory": "packages/collection"
   },
-  "sideEffects": false,
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
   "exports": {
-    "./arrayify": {
-      "import": "./dist/arrayify.js",
-      "require": "./dist/arrayify.cjs"
+    "arrayify": {
+      "require": "./dist/arrayify.cjs",
+      "import": "./dist/arrayify.js"
     },
-    "./chunk": {
-      "import": "./dist/chunk.js",
-      "require": "./dist/chunk.cjs"
+    "chunk": {
+      "require": "./dist/chunk.cjs",
+      "import": "./dist/chunk.js"
     },
-    "./compact": {
-      "import": "./dist/compact.js",
-      "require": "./dist/compact.cjs"
+    "compact": {
+      "require": "./dist/compact.cjs",
+      "import": "./dist/compact.js"
     },
-    "./compare": {
-      "import": "./dist/compare.js",
-      "require": "./dist/compare.cjs"
+    "compare": {
+      "require": "./dist/compare.cjs",
+      "import": "./dist/compare.js"
     },
-    "./defaults": {
-      "import": "./dist/defaults.js",
-      "require": "./dist/defaults.cjs"
+    "defaults": {
+      "require": "./dist/defaults.cjs",
+      "import": "./dist/defaults.js"
     },
-    "./discard": {
-      "import": "./dist/discard.js",
-      "require": "./dist/discard.cjs"
+    "discard": {
+      "require": "./dist/discard.cjs",
+      "import": "./dist/discard.js"
     },
-    "./every": {
-      "import": "./dist/every.js",
-      "require": "./dist/every.cjs"
+    "every": {
+      "require": "./dist/every.cjs",
+      "import": "./dist/every.js"
     },
-    "./filter": {
-      "import": "./dist/filter.js",
-      "require": "./dist/filter.cjs"
+    "filter": {
+      "require": "./dist/filter.cjs",
+      "import": "./dist/filter.js"
     },
-    "./get": {
-      "import": "./dist/get.js",
-      "require": "./dist/get.cjs"
+    "get": {
+      "require": "./dist/get.cjs",
+      "import": "./dist/get.js"
     },
-    "./groupBy": {
-      "import": "./dist/groupBy.js",
-      "require": "./dist/groupBy.cjs"
+    "groupBy": {
+      "require": "./dist/groupBy.cjs",
+      "import": "./dist/groupBy.js"
     },
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+    "immutable": {
+      "require": "./dist/immutable.cjs",
+      "import": "./dist/immutable.js"
     },
-    "./map": {
-      "import": "./dist/map.js",
-      "require": "./dist/map.cjs"
+    "*": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
     },
-    "./mapKeys": {
-      "import": "./dist/mapKeys.js",
-      "require": "./dist/mapKeys.cjs"
+    "map": {
+      "require": "./dist/map.cjs",
+      "import": "./dist/map.js"
     },
-    "./mapValues": {
-      "import": "./dist/mapValues.js",
-      "require": "./dist/mapValues.cjs"
+    "mapKeys": {
+      "require": "./dist/mapKeys.cjs",
+      "import": "./dist/mapKeys.js"
     },
-    "./mergeDeep": {
-      "import": "./dist/mergeDeep.js",
-      "require": "./dist/mergeDeep.cjs"
+    "mapValues": {
+      "require": "./dist/mapValues.cjs",
+      "import": "./dist/mapValues.js"
     },
-    "./omit": {
-      "import": "./dist/omit.js",
-      "require": "./dist/omit.cjs"
+    "mergeDeep": {
+      "require": "./dist/mergeDeep.cjs",
+      "import": "./dist/mergeDeep.js"
     },
-    "./pick": {
-      "import": "./dist/pick.js",
-      "require": "./dist/pick.cjs"
+    "omit": {
+      "require": "./dist/omit.cjs",
+      "import": "./dist/omit.js"
     },
-    "./sample": {
-      "import": "./dist/sample.js",
-      "require": "./dist/sample.cjs"
+    "overwrite": {
+      "require": "./dist/overwrite.cjs",
+      "import": "./dist/overwrite.js"
     },
-    "./set": {
-      "import": "./dist/set.js",
-      "require": "./dist/set.cjs"
+    "pick": {
+      "require": "./dist/pick.cjs",
+      "import": "./dist/pick.js"
     },
-    "./shuffle": {
-      "import": "./dist/shuffle.js",
-      "require": "./dist/shuffle.cjs"
+    "sample": {
+      "require": "./dist/sample.cjs",
+      "import": "./dist/sample.js"
     },
-    "./some": {
-      "import": "./dist/some.js",
-      "require": "./dist/some.cjs"
+    "set": {
+      "require": "./dist/set.cjs",
+      "import": "./dist/set.js"
     },
-    "./sortBy": {
-      "import": "./dist/sortBy.js",
-      "require": "./dist/sortBy.cjs"
+    "shuffle": {
+      "require": "./dist/shuffle.cjs",
+      "import": "./dist/shuffle.js"
     },
-    "./uniq": {
-      "import": "./dist/uniq.js",
-      "require": "./dist/uniq.cjs"
+    "some": {
+      "require": "./dist/some.cjs",
+      "import": "./dist/some.js"
     },
-    "./uniqBy": {
-      "import": "./dist/uniqBy.js",
-      "require": "./dist/uniqBy.cjs"
+    "sortBy": {
+      "require": "./dist/sortBy.cjs",
+      "import": "./dist/sortBy.js"
     },
-    "./values": {
-      "import": "./dist/values.js",
-      "require": "./dist/values.cjs"
+    "uniq": {
+      "require": "./dist/uniq.cjs",
+      "import": "./dist/uniq.js"
+    },
+    "uniqBy": {
+      "require": "./dist/uniqBy.cjs",
+      "import": "./dist/uniqBy.js"
+    },
+    "values": {
+      "require": "./dist/values.cjs",
+      "import": "./dist/values.js"
     }
   },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
-  "dependencies": {
-    "@unshared/predicate": "workspace:*",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "devDependencies": {
     "@unshared/types": "workspace:*"
   }
 }

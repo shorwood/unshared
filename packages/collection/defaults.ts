@@ -13,6 +13,8 @@ import { Default } from '@unshared/types/Default'
  * @returns The object with the default values applied.
  * @example defaults({ a: 1 }, { b: 2 }) // { a: 1, b: 2 }
  */
+// TODO: Add `depth` options.
+// TODO: Add `mergeArrays` option.
 export function defaults<T extends object = object>(object: Partial<T>, defaults: T, depth?: number): T
 export function defaults<T extends object = object>(object: T, defaults: Partial<T>, depth?: number): T
 export function defaults<T1, T2, N extends number = 0>(object: T1, defaults: T2, depth?: N): Default<T1, T2, N>
