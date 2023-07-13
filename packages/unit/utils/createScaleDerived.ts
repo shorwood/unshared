@@ -48,7 +48,9 @@ function createDerivedFactor(scale1: UnitFactor, scale2: UnitFactor): UnitFactor
 }
 
 /**
- * Create a scale that derives two units into a third unit.
+ * Create a scale that derives two units into a third unit. This is useful for
+ * creating a scale that converts between two units. For example when converting
+ * `km/h` to `m/s`.
  *
  * @param scale1 The first scale.
  * @param scale2 The second scale.
