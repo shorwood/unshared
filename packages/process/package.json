@@ -1,5 +1,5 @@
 {
-  "name": "@unshared/thread",
+  "name": "@unshared/process",
   "type": "module",
   "license": "MIT",
   "sideEffects": false,
@@ -9,7 +9,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shorwood/unshared.git",
-    "directory": "packages/thread"
+    "directory": "packages/process"
   },
   "scripts": {
     "build": "tsup",
