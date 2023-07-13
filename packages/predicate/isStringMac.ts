@@ -1,7 +1,8 @@
 /**
  * Check if string matches a MAC address.
+ *
  * @param value The value to check
- * @return `true` if string matches a MAC address, `false` otherwise
+ * @returns `true` if string matches a MAC address, `false` otherwise
  * @example
  * isStringMac('AB:CD:EF') // false
  * isStringMac('01:AB:CD:EF:AB:CD') // true

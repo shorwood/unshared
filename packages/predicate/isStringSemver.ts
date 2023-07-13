@@ -1,7 +1,8 @@
 /**
  * Check if string matches Semantic Versioning version.
+ *
  * @param value The value to check
- * @return `true` if string matches a Semantic Versioning version, `false` otherwise
+ * @returns `true` if string matches a Semantic Versioning version, `false` otherwise
  * @see https://semver.org/
  * @example
  * isStringSemver('1.0.0-rc.3') // true

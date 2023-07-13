@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { isNumberEven } from './isNumberEven'
 
 it.each([

@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { isStringMac } from './isStringMac'
 
 it.each([

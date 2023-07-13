@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { isStringLatLong } from './isStringLatLong'
 
 it.each([

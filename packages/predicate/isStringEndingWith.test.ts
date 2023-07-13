@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { isStringEndingWith } from './isStringEndingWith'
 
 it.each([

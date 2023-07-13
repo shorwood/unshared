@@ -1,5 +1,4 @@
 /* eslint-disable unicorn/no-null */
-import { expect, it } from 'vitest'
 import { isNumber } from './isNumber'
 
 it.each([

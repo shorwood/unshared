@@ -1,7 +1,8 @@
 /**
  * Check if string matches an emoji character.
+ *
  * @param value The value to check
- * @return `true` if string matches an emoji character, `false` otherwise
+ * @returns `true` if string matches an emoji character, `false` otherwise
  * @see https://en.wikipedia.org/wiki/Emoji
  * @example
  * isStringEmoji('💩') // true

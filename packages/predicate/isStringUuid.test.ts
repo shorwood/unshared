@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { isStringUuid } from './isStringUuid'
 
 it.each([

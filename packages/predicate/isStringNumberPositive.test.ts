@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { isStringNumberPositive } from './isStringNumberPositive'
 
 it.each([

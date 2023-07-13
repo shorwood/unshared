@@ -1,7 +1,8 @@
 /**
  * Check if value is a string
+ *
  * @param value The value to check
- * @return `true` if value is a string, `false` otherwise
+ * @returns `true` if value is a string, `false` otherwise
  * @example
  * isString('foo') // true
  * isString(1) // false

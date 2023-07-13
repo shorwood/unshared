@@ -1,13 +1,34 @@
 /**
- * Check if value is a boolean or a `Boolean` object
+ * Check if value is a boolean.
+ *
  * @param value The value to check
- * @return `true` if value is a boolean or a `Boolean` object
- * @example
- * isBoolean(1) // false
- * isBoolean(true) // true
- * isBoolean('true') // false
- * isBoolean(new Boolean(true)) // true
+ * @returns `true` if value is a boolean.
+ * @example isBoolean(true) // true
  */
-export const isBoolean = (value: any): value is boolean =>
-  typeof value === 'boolean'
-  || value instanceof Boolean
+export function isBoolean(value: unknown): value is boolean {
+  return typeof value === 'boolean'
+}
+
+/* c8 ignore next */
+if (import.meta.vitest) {
+  it ('should return true when checking if true is a boolean', () => {
+    const result = isBoolean(true)
+    expect(result).toEqual(true)
+  })
+
+  it ('should return true when checking if false is a boolean', () => {
+    const result = isBoolean(false)
+    expect(result).toEqual(true)
+  })
+
+  it ('should return false when checking if "true" is a boolean', () => {
+    const result = isBoolean('true')
+    expect(result).toEqual(false)
+  })
+
+  it('should predicate the type of the value', () => {
+    const value = true as unknown
+    const result = isBoolean(value)
+    if (result) expectTypeOf(value).toEqualTypeOf<boolean>()
+  })
+}

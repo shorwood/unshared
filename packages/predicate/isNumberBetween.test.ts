@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { isNumberBetween } from './isNumberBetween'
 
 it.each([

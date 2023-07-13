@@ -2,10 +2,11 @@
  * Checks if an object's properties are equal to another object's properties.
  * - If the `depth` parameter, it will recusively check if the nested properties are equal.
  * - To avoid infinite recursion, the `depth` parameter can be set to a number.
+ *
  * @param object1 The first object
  * @param object2 The second object
  * @param depth The depth of the nested properties to compare
- * @return `true` if object1's properties are equal to object2's properties, `false` otherwise
+ * @returns `true` if object1's properties are equal to object2's properties, `false` otherwise
  * @example
  * isObjectEqual({ a: 1 }, { a: 1 }) // true
  * isObjectEqual({ a: 1 }, { a: 2 }) // false
@@ -43,4 +44,34 @@ export const isObjectEqual = <T1, T2>(object1: T1, object2: T2, depth?: number |
 
   // --- If we get to this point, object are equals
   return true
+}
+
+/** c8 ignore next */
+if (import.meta.vitest) {
+  it.each([
+
+    // --- Returns true
+    [true, {}, {}, undefined],
+    [true, { a: 1 }, { a: 1 }, undefined],
+    [true, { a: 1 }, { a: 1, b: undefined }, undefined],
+    [true, { a: 1, b: 2 }, { a: 1, b: 2 }, undefined],
+
+    // --- Nested objects
+    [true, { a: [1, 2, 3] }, { a: [1, 2, 3] }, true],
+    [true, { a: [1, 2, 3] }, { a: [1, 2, 3] }, 1],
+    [false, { a: [1, 2, 3] }, { a: [1, 2, 3] }, false],
+    [false, { a: [1, 2, 3] }, { a: [1, 2, 3] }, 0],
+
+    // --- Returns false
+    [false, {}, { a: 1 }, undefined],
+    [false, { a: 1, b: 1 }, { a: 1, b: 2 }, undefined],
+    [false, { a: [1, 2, 3] }, { a: [1, 2] }, undefined],
+
+    // --- Invalid values
+    [false, 'foobar', 'foobar', undefined],
+
+  ])('should return %s when checking if %s is equal to %s', (expected, value: any, other: any, depth: any) => {
+    const result = isObjectEqual(value, other, depth)
+    expect(result).toEqual(expected)
+  })
 }

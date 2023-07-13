@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { isStringStartingWith } from './isStringStartingWith'
 
 it.each([

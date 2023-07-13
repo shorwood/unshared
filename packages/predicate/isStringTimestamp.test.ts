@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { isStringTimestamp } from './isStringTimestamp'
 
 it.each([

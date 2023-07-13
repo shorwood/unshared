@@ -1,7 +1,8 @@
 /**
  * Check if string matches an ISO 8601 timestamp.
+ *
  * @param value The value to check
- * @return `true` if string matches an ISO 8601 timestamp, `false` otherwise
+ * @returns `true` if string matches an ISO 8601 timestamp, `false` otherwise
  * @see https://en.wikipedia.org/wiki/ISO_8601
  * @example
  * isStringTimestamp('2019-01-01') // false

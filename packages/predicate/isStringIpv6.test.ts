@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { isStringIpv6 } from './isStringIpv6'
 
 it.each([

@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { isStringSemver } from './isStringSemver'
 
 it.each([

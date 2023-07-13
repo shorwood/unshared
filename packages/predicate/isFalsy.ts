@@ -1,35 +1,30 @@
-import { isNoop } from './isNoop'
-
 /**
- * Check if value is "falsy" extended to `Boolean`, arrays, objects an functions
+ * Check if value is "falsy". A value is falsy if it is a primitive value that is
+ * false when coerced to a boolean, or an object that is empty.
  *
- * New falsy values are:
- * - a Boolean with a value of `false`
- * - an empty array `[]`
- * - an empty object `{}`
- * - a skippable function: `() => {}`
  * @param value The value to check
- * @return `true` if value is falsy, `false` otherwise
- * @example
- * isFalsy(false) // true
- * isFalsy(new Boolean(false)) // true
- * isFalsy([]) // true
- * isFalsy({}) // true
- * isFalsy(() => {}) // true
+ * @returns `true` if value is falsy.
+ * @example isFalsy([]) // true
  */
-export const isFalsy = (value: any): boolean => {
-  // --- If value is a Boolean, return true if it is false
-  if (value instanceof Boolean) return !value.valueOf()
+export function isFalsy(value: unknown): boolean {
+  return typeof value === 'object' && value !== null
+    ? Object.keys(value).length === 0
+    : !value
+}
 
-  // --- If value is an array, return true if it is empty
-  if (Array.isArray(value)) return value.length === 0
+/* c8 ignore next */
+if (import.meta.vitest) {
+  // eslint-disable-next-line unicorn/no-null
+  const falsyValues = [false, 0, '', null, undefined, [], {}, new Set(), new Map()]
+  const truthyValues = [true, 1, '1', { a: 1 }, ['1'], new Set([1]), new Map([['a', 1]])]
 
-  // --- If value is an object, return true if it is empty
-  if (typeof value === 'object' && value !== null) return Object.keys(value).length === 0
+  it.each(falsyValues)('should return true when checking if %s is falsy', (value) => {
+    const result = isFalsy(value)
+    expect(result).toEqual(true)
+  })
 
-  // --- If value is a function, return true if it is empty
-  if (typeof value === 'function') return isNoop(value)
-
-  // --- Fallback to default behavior
-  return !value
+  it.each(truthyValues)('should return false when checking if %s is falsy', (value) => {
+    const result = isFalsy(value)
+    expect(result).toEqual(false)
+  })
 }

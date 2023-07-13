@@ -1,35 +1,30 @@
-import { isNoop } from './isNoop'
-
 /**
- * Check if value is "truthy" extended to `Boolean`, arrays, objects an functions
+ * Check if value is "truthy". A value is truthy if it is a primitive value that is
+ * true when coerced to a boolean, or an object that is not empty.
  *
- * New non truthy values are:
- * - a Boolean with a value of `false`
- * - an empty array `[]`
- * - an empty object `{}`
- * - a skippable function: `() => {}`
  * @param value The value to check
- * @return `true` if value is truthy, `false` otherwise
- * @example
- * isTruthy(true) // true
- * isTruthy(new Boolean(false)) // false
- * isTruthy([]) // false
- * isTruthy({}) // false
- * isTruthy(() => {}) // false
+ * @returns `true` if value is truthy.
+ * @example isTruthy(['1']) // true
  */
-export const isTruthy = (value: any): boolean => {
-  // --- If value is a Boolean, return value
-  if (value instanceof Boolean) return value.valueOf()
+export function isTruthy(value: unknown): boolean {
+  return typeof value === 'object' && value !== null
+    ? Object.keys(value).length > 0
+    : !!value
+}
 
-  // --- If value is an array, return true if it is not empty
-  if (Array.isArray(value)) return value.length > 0
+/* c8 ignore next */
+if (import.meta.vitest) {
+  // eslint-disable-next-line unicorn/no-null
+  const falsyValues = [false, 0, '', null, undefined, [], {}, new Set(), new Map()]
+  const truthyValues = [true, 1, '1', { a: 1 }, ['1'], new Set([1]), new Map([['a', 1]])]
 
-  // --- If value is an object, return true if it is not empty
-  if (typeof value === 'object' && value !== null) return Object.keys(value).length > 0
+  it.each(truthyValues)('should return true when checking if %s is truthy', (value) => {
+    const result = isTruthy(value)
+    expect(result).toEqual(true)
+  })
 
-  // --- If value is a function, return true if it is not empty
-  if (typeof value === 'function') return !isNoop(value)
-
-  // --- Fallback to default behavior
-  return !!value
+  it.each(falsyValues)('should return false when checking if %s is truthy', (value) => {
+    const result = isTruthy(value)
+    expect(result).toEqual(false)
+  })
 }

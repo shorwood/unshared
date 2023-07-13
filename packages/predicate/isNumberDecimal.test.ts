@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { isNumberDecimal } from './isNumberDecimal'
 
 it.each([

@@ -2,8 +2,9 @@
 
 /**
  * Check if a function is skippable, meaning it is empty or returns undefined.
+ *
  * @param fn The function to check
- * @return `true` if the function is skippable, `false` otherwise
+ * @returns `true` if the function is skippable, `false` otherwise
  * @example
  * isNoop(() => {}) // true
  * isNoop(() => null) // false

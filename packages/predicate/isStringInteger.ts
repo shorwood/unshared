@@ -1,7 +1,8 @@
 /**
  * Check if the string represents an integer number
+ *
  * @param value The value to check
- * @return `true` if the string represents an integer number, `false` otherwise
+ * @returns `true` if the string represents an integer number, `false` otherwise
  * @example
  * isStringInteger('1') // true
  * isStringInteger('1.0') // false

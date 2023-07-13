@@ -1,4 +1,3 @@
-import { expect, it } from 'vitest'
 import { isStringEmoji } from './isStringEmoji'
 
 it.each([
