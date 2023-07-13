@@ -1,15 +1,15 @@
 /* eslint-disable unicorn/no-null */
-import { parseJson } from '@unshared/serial/parseJson'
+import { parseJson } from '@unshared/module'
 
 /**
- * Fetches a resource from the network using the same specification as the browser's
- * [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) function.
- * Can be used as a drop-in replacement for `fetch` in the browser. This function
- * is heavily inspired by [unfetch](https://github.com/developit/unfetch/blob/master/src/index.mjs).
+ * Fetches a resource from the network using the same specification as the browser's `fetch` function.
+ * Can be used as a drop-in replacement for `fetch` in the browser.
  *
- * @param url The URL to fetch.
- * @param options The options to use.
- * @returns A promise that resolves to a response object.
+ * @param url The URL to fetch
+ * @param options The options to use
+ * @returns The response
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
+ * @see https://github.com/developit/unfetch/blob/master/src/index.mjs
  * @example await fetch('https://example.com') // Promise<Response>
  */
 export function fetch(url: string, options: RequestInit = {}): Promise<Response> {

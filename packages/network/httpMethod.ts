@@ -12,18 +12,18 @@ export enum HttpMethod {
    *
    * `CONNECT` is a hop-by-hop method.
    */
-  CONNECT = 'CONNECT',
+  'CONNECT' = 'CONNECT',
   /**
    * The **HTTP `DELETE` request method** deletes the specified
    * resource.
    */
-  DELETE = 'DELETE',
+  'DELETE' = 'DELETE',
   /**
    * The **HTTP `GET` method** requests a representation of the specified resource. Requests using `GET` should only be used to request data (they shouldn't include data).
    *
    * > **Note:** Sending body/payload in a `GET` request may cause some existing implementations to reject the request — while not prohibited by the specification, the semantics are undefined. It is better to just avoid sending payloads in `GET` requests.
    */
-  GET = 'GET',
+  'GET' = 'GET',
   /**
    * The **HTTP `HEAD` method** requests the [headers](/en-US/docs/Web/HTTP/Headers) that would be returned if the `HEAD` request's URL was instead requested with the HTTP [GET](https://developer.mozilla.org/en-US/docs/Web/HTTP/Method/GET) method. For example, if a URL might produce a large download, a `HEAD` request could read its [Content-Length](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Length) header to check the filesize without actually downloading the file.
    *
@@ -31,11 +31,11 @@ export enum HttpMethod {
    *
    * If the response to a `HEAD` request shows that a cached URL response is now outdated, the cached copy is invalidated even if no `GET` request was made.
    */
-  HEAD = 'HEAD',
+  'HEAD' = 'HEAD',
   /**
    * The **HTTP `OPTIONS` method** requests permitted communication options for a given URL or server. A client can specify a URL with this method, or an asterisk (`*`) to refer to the entire server.
    */
-  OPTIONS = 'OPTIONS',
+  'OPTIONS' = 'OPTIONS',
   /**
    * The **HTTP `PATCH` request method** applies partial modifications to a resource.
    *
@@ -51,7 +51,7 @@ export enum HttpMethod {
    *
    * Another (implicit) indication that `PATCH` is allowed, is the presence of the [Accept-Patch](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Patch) header, which specifies the patch document formats accepted by the server.
    */
-  PATCH = 'PATCH',
+  'PATCH' = 'PATCH',
   /**
    * The **HTTP `POST` method** sends data to the server. The type of the body of the request is indicated by the [Content-Type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type) header.
    *
@@ -71,17 +71,17 @@ export enum HttpMethod {
    * - Providing a block of data, such as the result of submitting a form, to a data-handling process;
    * - Extending a database through an append operation.
    */
-  POST = 'POST',
+  'POST' = 'POST',
   /**
    * The **HTTP `PUT` request method** creates a new resource or replaces a representation of the target resource with the request payload.
    *
    * The difference between `PUT` and [POST](https://developer.mozilla.org/en-US/docs/Web/HTTP/Method/POST) is that `PUT` is idempotent: calling it once or several times successively has the same effect (that is no _side_ effect), whereas successive identical [POST](https://developer.mozilla.org/en-US/docs/Web/HTTP/Method/POST) requests may have additional effects, akin to placing an order several times.
    */
-  PUT = 'PUT',
+  'PUT' = 'PUT',
   /**
    * The **HTTP `TRACE` method** performs a message loop-back test along the path to the target resource, providing a useful debugging mechanism.
    *
    * The final recipient of the request should reflect the message received, excluding some fields described below, back to the client as the message body of a [200](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/200) (`OK`) response with a [Content-Type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type) of `message/http`. The final recipient is either the origin server or the first server to receive a [Max-Forwards](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Max-Forwards) value of 0 in the request.
    */
-  TRACE = 'TRACE',
+  'TRACE' = 'TRACE',
 }
