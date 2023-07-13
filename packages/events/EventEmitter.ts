@@ -9,9 +9,9 @@ export type EventEmitterOptions = ConstructorParameters<typeof EventEmitterNodeJ
 export type EventListenersInternal = EventListeners & { listener: EventListeners }
 
 /**
- * This class is a simple implementation of the Node.js `EventEmitter` class. It
- * is used to create event emitters that can be used to listen for and emit
- * events.
+ * This class is a light and simple browser-compatible implementation of the
+ * Node.js `EventEmitter` class. It is used to create event emitters that
+ * can be used to listen for and emit events.
  */
 export class EventEmitter implements NodeJS.EventEmitter {
   constructor(private options: EventEmitterOptions = {}) {}
