@@ -1,7 +1,0 @@
-- [x] Boolean
-- [x] Events
-- [x] Reactivity
-- [ ] Math
-- [ ] String
-- [ ] Collection
-- [ ] Function
