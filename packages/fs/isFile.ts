@@ -27,7 +27,8 @@ if (import.meta.vitest) {
   })
 
   it('should return false if the path points to a directory', async() => {
-    vol.fromJSON({ '/dir': undefined })
+    // eslint-disable-next-line unicorn/no-null
+    vol.fromJSON({ '/dir': null })
     const result = await isFile('/dir')
     expect(result).toEqual(false)
   })

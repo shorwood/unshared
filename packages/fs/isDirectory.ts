@@ -21,7 +21,8 @@ export async function isDirectory(path: PathLike): Promise<boolean> {
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should return true if the path points to a directory', async() => {
-    vol.fromJSON({ '/dir': undefined })
+    // eslint-disable-next-line unicorn/no-null
+    vol.fromJSON({ '/dir': null })
     const result = await isDirectory('/dir')
     expect(result).toEqual(true)
   })
