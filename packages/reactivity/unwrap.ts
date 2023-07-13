@@ -39,7 +39,7 @@ if (import.meta.vitest) {
     const value = reactive(source)
     const result = unwrap(value)
     expect(result).toStrictEqual(source)
-    expectTypeOf(result).toEqualTypeOf<typeof source>()
+    expectTypeOf(result).toEqualTypeOf<{ foo: string }>()
   })
 
   it('should unwrap reactive references', () => {
@@ -53,6 +53,6 @@ if (import.meta.vitest) {
     const value = { foo: 'bar' }
     const result = unwrap(value)
     expect(result).toStrictEqual(value)
-    expectTypeOf(result).toEqualTypeOf<typeof value>()
+    expectTypeOf(result).toEqualTypeOf<{ foo: string }>()
   })
 }
