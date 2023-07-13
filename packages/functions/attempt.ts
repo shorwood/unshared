@@ -8,9 +8,9 @@ import { NotPromise } from '@unshared/types/NotPromise'
  *
  * @template T The type of the value.
  * @template E The type of the error.
- * @example AttemptResult<string, Error> // [string | undefined, Error | undefined]
+ * @example Result<string, Error> // [string | undefined, Error | undefined]
  */
-export type AttemptResult<T = unknown, E extends Error = Error> = [T | undefined, E | undefined]
+export type Result<T = unknown, E extends Error = Error> = [T | undefined, E | undefined]
 
 /**
  * Run a function and return the result and error in an array. If the function
@@ -25,9 +25,9 @@ export type AttemptResult<T = unknown, E extends Error = Error> = [T | undefined
  * @returns A tuple with the value and the error if any.
  * @example const [result, error] = attempt(() => true) // [true, undefined]
  */
-export function attempt<R, E extends Error = Error>(fn: () => Promise<R>): Promise<AttemptResult<R, E>>
-export function attempt<R, E extends Error = Error>(fn: () => NotPromise<R>): AttemptResult<R, E>
-export function attempt<R, E extends Error = Error>(fn: () => MaybePromise<R>): MaybePromise<AttemptResult<R, E>>
+export function attempt<R, E extends Error = Error>(fn: () => Promise<R>): Promise<Result<R, E>>
+export function attempt<R, E extends Error = Error>(fn: () => NotPromise<R>): Result<R, E>
+export function attempt<R, E extends Error = Error>(fn: () => MaybePromise<R>): MaybePromise<Result<R, E>>
 export function attempt(fn: Function): unknown {
   try {
     const result = fn()
