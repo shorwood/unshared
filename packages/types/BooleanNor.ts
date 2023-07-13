@@ -1,9 +1,9 @@
 /**
- * The NOR of two booleans.
+ * The [NOR](https://en.wikipedia.org/wiki/NOR_gate) of two booleans.
  *
- * @param A The first boolean
- * @param B The second boolean
- * @returns The NOR of the two booleans
+ * @template A The first boolean
+ * @template B The second boolean
+ * @returns `true` if both booleans are `false`.
  * @example BooleanNor<true, false> // false
  */
 export type BooleanNor<A extends boolean, B extends boolean> =
@@ -12,47 +12,47 @@ export type BooleanNor<A extends boolean, B extends boolean> =
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should return false when [true, false] is passed', () => {
-    type result = BooleanNor<true, false>
-    expectTypeOf<result>().toEqualTypeOf<false>()
+    type Result = BooleanNor<true, false>
+    expectTypeOf<Result>().toEqualTypeOf<false>()
   })
 
   it('should return false when [false, true] is passed', () => {
-    type result = BooleanNor<false, true>
-    expectTypeOf<result>().toEqualTypeOf<false>()
+    type Result = BooleanNor<false, true>
+    expectTypeOf<Result>().toEqualTypeOf<false>()
   })
 
   it('should return true when [false, false] is passed', () => {
-    type result = BooleanNor<false, false>
-    expectTypeOf<result>().toEqualTypeOf<true>()
+    type Result = BooleanNor<false, false>
+    expectTypeOf<Result>().toEqualTypeOf<true>()
   })
 
   it('should return false when [true, true] is passed', () => {
-    type result = BooleanNor<true, true>
-    expectTypeOf<result>().toEqualTypeOf<false>()
+    type Result = BooleanNor<true, true>
+    expectTypeOf<Result>().toEqualTypeOf<false>()
   })
 
   it('should return false when [boolean, false] is passed', () => {
-    type result = BooleanNor<boolean, false>
-    expectTypeOf<result>().toEqualTypeOf<boolean>()
+    type Result = BooleanNor<boolean, false>
+    expectTypeOf<Result>().toEqualTypeOf<boolean>()
   })
 
   it('should return false when [false, boolean] is passed', () => {
-    type result = BooleanNor<false, boolean>
-    expectTypeOf<result>().toEqualTypeOf<boolean>()
+    type Result = BooleanNor<false, boolean>
+    expectTypeOf<Result>().toEqualTypeOf<boolean>()
   })
 
   it('should return false when [boolean, true] is passed', () => {
-    type result = BooleanNor<boolean, true>
-    expectTypeOf<result>().toEqualTypeOf<false>()
+    type Result = BooleanNor<boolean, true>
+    expectTypeOf<Result>().toEqualTypeOf<false>()
   })
 
   it('should return false when [true, boolean] is passed', () => {
-    type result = BooleanNor<true, boolean>
-    expectTypeOf<result>().toEqualTypeOf<false>()
+    type Result = BooleanNor<true, boolean>
+    expectTypeOf<Result>().toEqualTypeOf<false>()
   })
 
   it('should return boolean when [boolean, boolean] is passed', () => {
-    type result = BooleanNor<boolean, boolean>
-    expectTypeOf<result>().toEqualTypeOf<boolean>()
+    type Result = BooleanNor<boolean, boolean>
+    expectTypeOf<Result>().toEqualTypeOf<boolean>()
   })
 }

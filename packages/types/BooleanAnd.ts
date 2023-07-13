@@ -1,9 +1,10 @@
+
 /**
- * The AND of two booleans.
+ * The [AND](https://en.wikipedia.org/wiki/Logical_conjunction) of two booleans.
  *
- * @param A The first boolean
- * @param B The second boolean
- * @returns The AND of the two booleans
+ * @template A The first boolean
+ * @template B The second boolean
+ * @returns `true` if both booleans are `true`.
  * @example BooleanAnd<true, true> // true
  */
 export type BooleanAnd<A extends boolean, B extends boolean> =
@@ -12,47 +13,47 @@ export type BooleanAnd<A extends boolean, B extends boolean> =
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should return true when [true, true] is passed', () => {
-    type result = BooleanAnd<true, true>
-    expectTypeOf<result>().toEqualTypeOf<true>()
+    type Result = BooleanAnd<true, true>
+    expectTypeOf<Result>().toEqualTypeOf<true>()
   })
 
   it('should return false when [true, false] is passed', () => {
-    type result = BooleanAnd<false, true>
-    expectTypeOf<result>().toEqualTypeOf<false>()
+    type Result = BooleanAnd<false, true>
+    expectTypeOf<Result>().toEqualTypeOf<false>()
   })
 
   it('should return false when [false, true] is passed', () => {
-    type result = BooleanAnd<true, false>
-    expectTypeOf<result>().toEqualTypeOf<false>()
+    type Result = BooleanAnd<true, false>
+    expectTypeOf<Result>().toEqualTypeOf<false>()
   })
 
   it('should return false when [false, false] is passed', () => {
-    type result = BooleanAnd<false, false>
-    expectTypeOf<result>().toEqualTypeOf<false>()
+    type Result = BooleanAnd<false, false>
+    expectTypeOf<Result>().toEqualTypeOf<false>()
   })
 
   it('should return boolean when [boolean, true] is passed', () => {
-    type result = BooleanAnd<boolean, true>
-    expectTypeOf<result>().toEqualTypeOf<boolean>()
+    type Result = BooleanAnd<boolean, true>
+    expectTypeOf<Result>().toEqualTypeOf<boolean>()
   })
 
   it('should return boolean when [true, boolean] is passed', () => {
-    type result = BooleanAnd<true, boolean>
-    expectTypeOf<result>().toEqualTypeOf<boolean>()
+    type Result = BooleanAnd<true, boolean>
+    expectTypeOf<Result>().toEqualTypeOf<boolean>()
   })
 
   it('should return false when [boolean, false] is passed', () => {
-    type result = BooleanAnd<boolean, false>
-    expectTypeOf<result>().toEqualTypeOf<false>()
+    type Result = BooleanAnd<boolean, false>
+    expectTypeOf<Result>().toEqualTypeOf<false>()
   })
 
   it('should return false when [false, boolean] is passed', () => {
-    type result = BooleanAnd<false, boolean>
-    expectTypeOf<result>().toEqualTypeOf<false>()
+    type Result = BooleanAnd<false, boolean>
+    expectTypeOf<Result>().toEqualTypeOf<false>()
   })
 
   it('should return boolean when [boolean, boolean] is passed', () => {
-    type result = BooleanAnd<boolean, boolean>
-    expectTypeOf<result>().toEqualTypeOf<boolean>()
+    type Result = BooleanAnd<boolean, boolean>
+    expectTypeOf<Result>().toEqualTypeOf<boolean>()
   })
 }

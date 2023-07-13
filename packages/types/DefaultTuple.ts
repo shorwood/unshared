@@ -29,72 +29,72 @@ export type DefaultTuple<T extends unknown[], U extends unknown[], N extends num
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should default tuples from undefined properties', () => {
-    type result = DefaultTuple<[1, 2 | undefined, 3], [4, 5, 6]>
-    expectTypeOf<result>().toEqualTypeOf<[1, 2 | 5, 3]>()
+    type Result = DefaultTuple<[1, 2 | undefined, 3], [4, 5, 6]>
+    expectTypeOf<Result>().toEqualTypeOf<[1, 2 | 5, 3]>()
   })
 
   it('should default tuples from null properties', () => {
-    type result = DefaultTuple<[1, 2 | null, 3], [4, 5, 6]>
-    expectTypeOf<result>().toEqualTypeOf<[1, 2 | 5, 3]>()
+    type Result = DefaultTuple<[1, 2 | null, 3], [4, 5, 6]>
+    expectTypeOf<Result>().toEqualTypeOf<[1, 2 | 5, 3]>()
   })
 
   it('should default tuples null to undefined', () => {
-    type result = DefaultTuple<[1, 2 | null, 3], [4, undefined, 6]>
-    expectTypeOf<result>().toEqualTypeOf<[1, 2 | undefined, 3]>()
+    type Result = DefaultTuple<[1, 2 | null, 3], [undefined, '2', undefined]>
+    expectTypeOf<Result>().toEqualTypeOf<[1, 2 | '2', 3]>()
   })
 
   it('should default tuples undefined to null', () => {
-    type result = DefaultTuple<[1, 2 | undefined, 3], [4, null, 6]>
-    expectTypeOf<result>().toEqualTypeOf<[1, 2 | null, 3]>()
+    type Result = DefaultTuple<[1, 2 | undefined, 3], [4, null, 6]>
+    expectTypeOf<Result>().toEqualTypeOf<[1, 2 | null, 3]>()
   })
 
   it('should default nested objects in tuples', () => {
-    type result = DefaultTuple<[{ a: number | undefined }], [{ a: string }]>
-    expectTypeOf<result>().toEqualTypeOf<[{ a: number | string }]>()
+    type Result = DefaultTuple<[{ a: number | undefined }], [{ a: string }]>
+    expectTypeOf<Result>().toEqualTypeOf<[{ a: number | string }]>()
   })
 
   it('should default nested objects in tuples with depth', () => {
-    type result = DefaultTuple<[{ a: { b: number | undefined } }], [{ a: { b: string } }], 1>
-    expectTypeOf<result>().toEqualTypeOf<[{ a: { b: number | string } }]>()
+    type Result = DefaultTuple<[{ a: { b: number | undefined } }], [{ a: { b: string } }], 1>
+    expectTypeOf<Result>().toEqualTypeOf<[{ a: { b: number | string } }]>()
   })
 
   it('should not default nested objects in tuples with depth', () => {
-    type result = DefaultTuple<[{ a: { b: number | undefined } }], [{ a: { b: string } }], 0>
-    expectTypeOf<result>().toEqualTypeOf<[{ a: { b: number | undefined } }]>()
+    type Result = DefaultTuple<[{ a: { b: number | undefined } }], [{ a: { b: string } }], 0>
+    expectTypeOf<Result>().toEqualTypeOf<[{ a: { b: number | undefined } }]>()
   })
 
   it('should default arrays from undefined properties', () => {
-    type result = DefaultTuple<Array<number | undefined>, Array<string>>
-    expectTypeOf<result>().toEqualTypeOf<Array<number | string>>()
+    type Result = DefaultTuple<Array<number | undefined>, Array<string>>
+    expectTypeOf<Result>().toEqualTypeOf<Array<number | string>>()
   })
 
   it('should default arrays from null properties', () => {
-    type result = DefaultTuple<Array<number | null>, Array<string>>
-    expectTypeOf<result>().toEqualTypeOf<Array<number | string>>()
+    type Result = DefaultTuple<Array<number | null>, Array<string>>
+    expectTypeOf<Result>().toEqualTypeOf<Array<number | string>>()
   })
 
   it('should default arrays null to undefined', () => {
-    type result = DefaultTuple<Array<number | null>, Array<undefined>>
-    expectTypeOf<result>().toEqualTypeOf<Array<number | undefined>>()
+    type Result = DefaultTuple<Array<number | null>, Array<undefined>>
+    expectTypeOf<Result>().toEqualTypeOf<Array<number | undefined>>()
   })
 
   it('should default arrays undefined to null', () => {
-    type result = DefaultTuple<Array<number | undefined>, Array<null>>
-    expectTypeOf<result>().toEqualTypeOf<Array<number | null>>()
+    type Result = DefaultTuple<Array<number | undefined>, Array<null>>
+    expectTypeOf<Result>().toEqualTypeOf<Array<number | null>>()
   })
 
   it('should default nested objects in arrays', () => {
-    type result = DefaultTuple<Array<{ a: number | undefined }>, Array<{ a: string }>>
-    expectTypeOf<result>().toEqualTypeOf<Array<{ a: number | string }>>()
+    type Result = DefaultTuple<Array<{ a: number | undefined }>, Array<{ a: string }>>
+    expectTypeOf<Result>().toEqualTypeOf<Array<{ a: number | string }>>()
   })
 
   it('should default nested objects in arrays with depth', () => {
-    type result = DefaultTuple<Array<{ a: { b: number | undefined } }>, Array<{ a: { b: string } }>, 1>
-    expectTypeOf<result>().toEqualTypeOf<Array<{ a: { b: number | string } }>>()
+    type Result = DefaultTuple<Array<{ a: { b: number | undefined } }>, Array<{ a: { b: string } }>, 1>
+    expectTypeOf<Result>().toEqualTypeOf<Array<{ a: { b: number | string } }>>()
   })
 
   it('should not default nested objects in arrays with depth', () => {
-    type result = DefaultTuple<Array<{ a: { b: number | undefined } }>, Array<{ a: { b: string } }>, 0>
-    expectTypeOf<result>().toEqualTypeOf<Array<{ a: { b: number | undefined } }>>()
+    type Result = DefaultTuple<Array<{ a: { b: number | undefined } }>, Array<{ a: { b: string } }>, 0>
+    expectTypeOf<Result>().toEqualTypeOf<Array<{ a: { b: number | undefined } }>>()
   })
 }

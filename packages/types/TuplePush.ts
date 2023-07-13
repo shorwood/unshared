@@ -11,17 +11,17 @@ export type TuplePush<T extends unknown[], U> = T extends [...infer V] ? [...V, 
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should push a type to the end of a tuple', () => {
-    type result = TuplePush<[1, 2, 3], 4>
-    expectTypeOf<result>().toEqualTypeOf<[1, 2, 3, 4]>()
+    type Result = TuplePush<[1, 2, 3], 4>
+    expectTypeOf<Result>().toEqualTypeOf<[1, 2, 3, 4]>()
   })
 
-  it('should return a tuple with the pushed type if the tuple is empty', () => {
-    type result = TuplePush<[], 1>
-    expectTypeOf<result>().toEqualTypeOf<[1]>()
+  it('should push a type to an empty tuple', () => {
+    type Result = TuplePush<[], 1>
+    expectTypeOf<Result>().toEqualTypeOf<[1]>()
   })
 
-  it('should return a tuple with the pushed type if an array is passed', () => {
-    type result = TuplePush<number[], 1>
-    expectTypeOf<result>().toEqualTypeOf<[...number[], 1]>()
+  it('should push a type to an array', () => {
+    type Result = TuplePush<number[], 1>
+    expectTypeOf<Result>().toEqualTypeOf<[...number[], 1]>()
   })
 }

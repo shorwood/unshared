@@ -1,0 +1,436 @@
+{
+  "name": "@unshared/types",
+  "type": "module",
+  "version": "0.0.1+build.5f7bf5f",
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shorwood/unshared.git",
+    "directory": "packages/types"
+  },
+  "exports": {
+    "Any": {
+      "require": "./dist/Any.cjs",
+      "import": "./dist/Any.js"
+    },
+    "Array": {
+      "require": "./dist/Array.cjs",
+      "import": "./dist/Array.js"
+    },
+    "BooleanAnd": {
+      "require": "./dist/BooleanAnd.cjs",
+      "import": "./dist/BooleanAnd.js"
+    },
+    "BooleanNand": {
+      "require": "./dist/BooleanNand.cjs",
+      "import": "./dist/BooleanNand.js"
+    },
+    "BooleanNor": {
+      "require": "./dist/BooleanNor.cjs",
+      "import": "./dist/BooleanNor.js"
+    },
+    "BooleanNot": {
+      "require": "./dist/BooleanNot.cjs",
+      "import": "./dist/BooleanNot.js"
+    },
+    "BooleanOr": {
+      "require": "./dist/BooleanOr.cjs",
+      "import": "./dist/BooleanOr.js"
+    },
+    "BooleanXnor": {
+      "require": "./dist/BooleanXnor.cjs",
+      "import": "./dist/BooleanXnor.js"
+    },
+    "BooleanXor": {
+      "require": "./dist/BooleanXor.cjs",
+      "import": "./dist/BooleanXor.js"
+    },
+    "CaseInsensitive": {
+      "require": "./dist/CaseInsensitive.cjs",
+      "import": "./dist/CaseInsensitive.js"
+    },
+    "CharacterAlpha": {
+      "require": "./dist/CharacterAlpha.cjs",
+      "import": "./dist/CharacterAlpha.js"
+    },
+    "CharacterAscii": {
+      "require": "./dist/CharacterAscii.cjs",
+      "import": "./dist/CharacterAscii.js"
+    },
+    "CharacterDigit": {
+      "require": "./dist/CharacterDigit.cjs",
+      "import": "./dist/CharacterDigit.js"
+    },
+    "CharacterHex": {
+      "require": "./dist/CharacterHex.cjs",
+      "import": "./dist/CharacterHex.js"
+    },
+    "CharacterLetter": {
+      "require": "./dist/CharacterLetter.cjs",
+      "import": "./dist/CharacterLetter.js"
+    },
+    "CharacterLower": {
+      "require": "./dist/CharacterLower.cjs",
+      "import": "./dist/CharacterLower.js"
+    },
+    "CharacterSymbol": {
+      "require": "./dist/CharacterSymbol.cjs",
+      "import": "./dist/CharacterSymbol.js"
+    },
+    "CharacterUpper": {
+      "require": "./dist/CharacterUpper.cjs",
+      "import": "./dist/CharacterUpper.js"
+    },
+    "Collection": {
+      "require": "./dist/Collection.cjs",
+      "import": "./dist/Collection.js"
+    },
+    "Constructor": {
+      "require": "./dist/Constructor.cjs",
+      "import": "./dist/Constructor.js"
+    },
+    "ConstructorParameters": {
+      "require": "./dist/ConstructorParameters.cjs",
+      "import": "./dist/ConstructorParameters.js"
+    },
+    "ConstructorStatics": {
+      "require": "./dist/ConstructorStatics.cjs",
+      "import": "./dist/ConstructorStatics.js"
+    },
+    "Default": {
+      "require": "./dist/Default.cjs",
+      "import": "./dist/Default.js"
+    },
+    "DefaultObject": {
+      "require": "./dist/DefaultObject.cjs",
+      "import": "./dist/DefaultObject.js"
+    },
+    "DefaultTuple": {
+      "require": "./dist/DefaultTuple.cjs",
+      "import": "./dist/DefaultTuple.js"
+    },
+    "DefaultValue": {
+      "require": "./dist/DefaultValue.cjs",
+      "import": "./dist/DefaultValue.js"
+    },
+    "EventEmitterLike": {
+      "require": "./dist/EventEmitterLike.cjs",
+      "import": "./dist/EventEmitterLike.js"
+    },
+    "EventListener": {
+      "require": "./dist/EventListener.cjs",
+      "import": "./dist/EventListener.js"
+    },
+    "EventListeners": {
+      "require": "./dist/EventListeners.cjs",
+      "import": "./dist/EventListeners.js"
+    },
+    "EventMap": {
+      "require": "./dist/EventMap.cjs",
+      "import": "./dist/EventMap.js"
+    },
+    "EventNames": {
+      "require": "./dist/EventNames.cjs",
+      "import": "./dist/EventNames.js"
+    },
+    "Extends": {
+      "require": "./dist/Extends.cjs",
+      "import": "./dist/Extends.js"
+    },
+    "Fallback": {
+      "require": "./dist/Fallback.cjs",
+      "import": "./dist/Fallback.js"
+    },
+    "Function": {
+      "require": "./dist/Function.cjs",
+      "import": "./dist/Function.js"
+    },
+    "FunctionAsync": {
+      "require": "./dist/FunctionAsync.cjs",
+      "import": "./dist/FunctionAsync.js"
+    },
+    "FunctionOverloads": {
+      "require": "./dist/FunctionOverloads.cjs",
+      "import": "./dist/FunctionOverloads.js"
+    },
+    "Get": {
+      "require": "./dist/Get.cjs",
+      "import": "./dist/Get.js"
+    },
+    "Immutable": {
+      "require": "./dist/Immutable.cjs",
+      "import": "./dist/Immutable.js"
+    },
+    "IteratedFunction": {
+      "require": "./dist/IteratedFunction.cjs",
+      "import": "./dist/IteratedFunction.js"
+    },
+    "Key": {
+      "require": "./dist/Key.cjs",
+      "import": "./dist/Key.js"
+    },
+    "MapValues": {
+      "require": "./dist/MapValues.cjs",
+      "import": "./dist/MapValues.js"
+    },
+    "MathAbsolute": {
+      "require": "./dist/MathAbsolute.cjs",
+      "import": "./dist/MathAbsolute.js"
+    },
+    "MathAdd": {
+      "require": "./dist/MathAdd.cjs",
+      "import": "./dist/MathAdd.js"
+    },
+    "MathCeil": {
+      "require": "./dist/MathCeil.cjs",
+      "import": "./dist/MathCeil.js"
+    },
+    "MathDecrease": {
+      "require": "./dist/MathDecrease.cjs",
+      "import": "./dist/MathDecrease.js"
+    },
+    "MathDivide": {
+      "require": "./dist/MathDivide.cjs",
+      "import": "./dist/MathDivide.js"
+    },
+    "MathFloor": {
+      "require": "./dist/MathFloor.cjs",
+      "import": "./dist/MathFloor.js"
+    },
+    "MathIncrease": {
+      "require": "./dist/MathIncrease.cjs",
+      "import": "./dist/MathIncrease.js"
+    },
+    "MathModulo": {
+      "require": "./dist/MathModulo.cjs",
+      "import": "./dist/MathModulo.js"
+    },
+    "MathMultiply": {
+      "require": "./dist/MathMultiply.cjs",
+      "import": "./dist/MathMultiply.js"
+    },
+    "MathNegative": {
+      "require": "./dist/MathNegative.cjs",
+      "import": "./dist/MathNegative.js"
+    },
+    "MathSquare": {
+      "require": "./dist/MathSquare.cjs",
+      "import": "./dist/MathSquare.js"
+    },
+    "MathSubstract": {
+      "require": "./dist/MathSubstract.cjs",
+      "import": "./dist/MathSubstract.js"
+    },
+    "MathSum": {
+      "require": "./dist/MathSum.cjs",
+      "import": "./dist/MathSum.js"
+    },
+    "Matrix": {
+      "require": "./dist/Matrix.cjs",
+      "import": "./dist/Matrix.js"
+    },
+    "MaybeArray": {
+      "require": "./dist/MaybeArray.cjs",
+      "import": "./dist/MaybeArray.js"
+    },
+    "MaybePromise": {
+      "require": "./dist/MaybePromise.cjs",
+      "import": "./dist/MaybePromise.js"
+    },
+    "MaybeReadonly": {
+      "require": "./dist/MaybeReadonly.cjs",
+      "import": "./dist/MaybeReadonly.js"
+    },
+    "Mixins": {
+      "require": "./dist/Mixins.cjs",
+      "import": "./dist/Mixins.js"
+    },
+    "Nil": {
+      "require": "./dist/Nil.cjs",
+      "import": "./dist/Nil.js"
+    },
+    "NotAny": {
+      "require": "./dist/NotAny.cjs",
+      "import": "./dist/NotAny.js"
+    },
+    "NotArray": {
+      "require": "./dist/NotArray.cjs",
+      "import": "./dist/NotArray.js"
+    },
+    "NotFunction": {
+      "require": "./dist/NotFunction.cjs",
+      "import": "./dist/NotFunction.js"
+    },
+    "NotNil": {
+      "require": "./dist/NotNil.cjs",
+      "import": "./dist/NotNil.js"
+    },
+    "NotNull": {
+      "require": "./dist/NotNull.cjs",
+      "import": "./dist/NotNull.js"
+    },
+    "NotPrimitive": {
+      "require": "./dist/NotPrimitive.cjs",
+      "import": "./dist/NotPrimitive.js"
+    },
+    "NotPromise": {
+      "require": "./dist/NotPromise.cjs",
+      "import": "./dist/NotPromise.js"
+    },
+    "NotUndefined": {
+      "require": "./dist/NotUndefined.cjs",
+      "import": "./dist/NotUndefined.js"
+    },
+    "NumberDecimal": {
+      "require": "./dist/NumberDecimal.cjs",
+      "import": "./dist/NumberDecimal.js"
+    },
+    "NumberDecimalNegative": {
+      "require": "./dist/NumberDecimalNegative.cjs",
+      "import": "./dist/NumberDecimalNegative.js"
+    },
+    "NumberDecimalPositive": {
+      "require": "./dist/NumberDecimalPositive.cjs",
+      "import": "./dist/NumberDecimalPositive.js"
+    },
+    "NumberInteger": {
+      "require": "./dist/NumberInteger.cjs",
+      "import": "./dist/NumberInteger.js"
+    },
+    "NumberIntegerNegative": {
+      "require": "./dist/NumberIntegerNegative.cjs",
+      "import": "./dist/NumberIntegerNegative.js"
+    },
+    "NumberIntegerPositive": {
+      "require": "./dist/NumberIntegerPositive.cjs",
+      "import": "./dist/NumberIntegerPositive.js"
+    },
+    "NumberNegative": {
+      "require": "./dist/NumberNegative.cjs",
+      "import": "./dist/NumberNegative.js"
+    },
+    "NumberPositive": {
+      "require": "./dist/NumberPositive.cjs",
+      "import": "./dist/NumberPositive.js"
+    },
+    "Path": {
+      "require": "./dist/Path.cjs",
+      "import": "./dist/Path.js"
+    },
+    "Primitive": {
+      "require": "./dist/Primitive.cjs",
+      "import": "./dist/Primitive.js"
+    },
+    "PromiseFactory": {
+      "require": "./dist/PromiseFactory.cjs",
+      "import": "./dist/PromiseFactory.js"
+    },
+    "PromiseUnwrap": {
+      "require": "./dist/PromiseUnwrap.cjs",
+      "import": "./dist/PromiseUnwrap.js"
+    },
+    "PromiseWrap": {
+      "require": "./dist/PromiseWrap.cjs",
+      "import": "./dist/PromiseWrap.js"
+    },
+    "StringConstraint": {
+      "require": "./dist/StringConstraint.cjs",
+      "import": "./dist/StringConstraint.js"
+    },
+    "StringLiteral": {
+      "require": "./dist/StringLiteral.cjs",
+      "import": "./dist/StringLiteral.js"
+    },
+    "StringNumber": {
+      "require": "./dist/StringNumber.cjs",
+      "import": "./dist/StringNumber.js"
+    },
+    "StringSplit": {
+      "require": "./dist/StringSplit.cjs",
+      "import": "./dist/StringSplit.js"
+    },
+    "Tokenize": {
+      "require": "./dist/Tokenize.cjs",
+      "import": "./dist/Tokenize.js"
+    },
+    "Tuple": {
+      "require": "./dist/Tuple.cjs",
+      "import": "./dist/Tuple.js"
+    },
+    "TupleConcat": {
+      "require": "./dist/TupleConcat.cjs",
+      "import": "./dist/TupleConcat.js"
+    },
+    "TupleDiscard": {
+      "require": "./dist/TupleDiscard.cjs",
+      "import": "./dist/TupleDiscard.js"
+    },
+    "TupleFilter": {
+      "require": "./dist/TupleFilter.cjs",
+      "import": "./dist/TupleFilter.js"
+    },
+    "TupleLength": {
+      "require": "./dist/TupleLength.cjs",
+      "import": "./dist/TupleLength.js"
+    },
+    "TuplePop": {
+      "require": "./dist/TuplePop.cjs",
+      "import": "./dist/TuplePop.js"
+    },
+    "TuplePush": {
+      "require": "./dist/TuplePush.cjs",
+      "import": "./dist/TuplePush.js"
+    },
+    "TupleShift": {
+      "require": "./dist/TupleShift.cjs",
+      "import": "./dist/TupleShift.js"
+    },
+    "TupleSlice": {
+      "require": "./dist/TupleSlice.cjs",
+      "import": "./dist/TupleSlice.js"
+    },
+    "TupleUnshift": {
+      "require": "./dist/TupleUnshift.cjs",
+      "import": "./dist/TupleUnshift.js"
+    },
+    "UnionMerge": {
+      "require": "./dist/UnionMerge.cjs",
+      "import": "./dist/UnionMerge.js"
+    },
+    "UnionSplit": {
+      "require": "./dist/UnionSplit.cjs",
+      "import": "./dist/UnionSplit.js"
+    },
+    "Value": {
+      "require": "./dist/Value.cjs",
+      "import": "./dist/Value.js"
+    },
+    "Values": {
+      "require": "./dist/Values.cjs",
+      "import": "./dist/Values.js"
+    },
+    "*": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "peerDependencies": {
+    "@types/node": "18.15.5"
+  },
+  "devDependencies": {
+    "@types/node": ">=14.0.0"
+  }
+}

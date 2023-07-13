@@ -1,8 +1,8 @@
 /**
  * The XOR of two booleans.
  *
- * @param A The first boolean
- * @param B The second boolean
+ * @template A The first boolean
+ * @template B The second boolean
  * @returns The XOR of the two booleans
  * @example BooleanXor<true, false> // true
  */
@@ -12,47 +12,47 @@ export type BooleanXor<A extends boolean, B extends boolean> =
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should return true when [true, false] is passed', () => {
-    type result = BooleanXor<true, false>
-    expectTypeOf<result>().toEqualTypeOf<true>()
+    type Result = BooleanXor<true, false>
+    expectTypeOf<Result>().toEqualTypeOf<true>()
   })
 
   it('should return true when [false, true] is passed', () => {
-    type result = BooleanXor<false, true>
-    expectTypeOf<result>().toEqualTypeOf<true>()
+    type Result = BooleanXor<false, true>
+    expectTypeOf<Result>().toEqualTypeOf<true>()
   })
 
   it('should return false when [true, true] is passed', () => {
-    type result = BooleanXor<true, true>
-    expectTypeOf<result>().toEqualTypeOf<false>()
+    type Result = BooleanXor<true, true>
+    expectTypeOf<Result>().toEqualTypeOf<false>()
   })
 
   it('should return false when [false, false] is passed', () => {
-    type result = BooleanXor<false, false>
-    expectTypeOf<result>().toEqualTypeOf<false>()
+    type Result = BooleanXor<false, false>
+    expectTypeOf<Result>().toEqualTypeOf<false>()
   })
 
   it('should return boolean when [boolean, true] is passed', () => {
-    type result = BooleanXor<boolean, true>
-    expectTypeOf<result>().toEqualTypeOf<boolean>()
+    type Result = BooleanXor<boolean, true>
+    expectTypeOf<Result>().toEqualTypeOf<boolean>()
   })
 
   it('should return boolean when [true, boolean] is passed', () => {
-    type result = BooleanXor<true, boolean>
-    expectTypeOf<result>().toEqualTypeOf<boolean>()
+    type Result = BooleanXor<true, boolean>
+    expectTypeOf<Result>().toEqualTypeOf<boolean>()
   })
 
   it('should return boolean when [boolean, false] is passed', () => {
-    type result = BooleanXor<boolean, false>
-    expectTypeOf<result>().toEqualTypeOf<boolean>()
+    type Result = BooleanXor<boolean, false>
+    expectTypeOf<Result>().toEqualTypeOf<boolean>()
   })
 
   it('should return boolean when [false, boolean] is passed', () => {
-    type result = BooleanXor<false, boolean>
-    expectTypeOf<result>().toEqualTypeOf<boolean>()
+    type Result = BooleanXor<false, boolean>
+    expectTypeOf<Result>().toEqualTypeOf<boolean>()
   })
 
   it('should return boolean when [boolean, boolean] is passed', () => {
-    type result = BooleanXor<boolean, boolean>
-    expectTypeOf<result>().toEqualTypeOf<boolean>()
+    type Result = BooleanXor<boolean, boolean>
+    expectTypeOf<Result>().toEqualTypeOf<boolean>()
   })
 }

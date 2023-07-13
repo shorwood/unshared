@@ -1,46 +1,47 @@
+import { IsInteger, IsNegative, IsNumber } from './utils/predicate'
+
 /**
  * A negative integer.
  *
- * @param N Number to match.
+ * @template N Number to match.
  * @returns A number that is garanteed to be a negative integer.
- * @example NumberIntegerPositive<1> // 1
+ * @example NumberIntegerNegative<1> // 1
  */
-export type NumberIntegerPositive<N extends number> =
-  number extends N ? number
-    :`${N}` extends `${number}.${number}` ? never
-      :`${N}` extends `-${number}` ? never
-        : N extends 0 ? never
-          : N
+export type NumberIntegerNegative<N extends number> =
+  IsNumber<N> extends true ? number
+    : IsInteger<N> extends true
+      ? IsNegative<N> extends true ? N
+        : never : never
 
 /** c8 ignore next */
 if (import.meta.vitest) {
-  it('should match a positive integer', () => {
-    type result = NumberIntegerPositive<1>
-    expectTypeOf<result>().toEqualTypeOf<1>()
+  it('should match a negative integer', () => {
+    type Result = NumberIntegerNegative<-1>
+    expectTypeOf<Result>().toEqualTypeOf<-1>()
   })
 
-  it('should not match a positive decimal', () => {
-    type result = NumberIntegerPositive<1.1>
-    expectTypeOf<result>().toEqualTypeOf<never>()
-  })
-
-  it('should not match a negative integer', () => {
-    type result = NumberIntegerPositive<-1>
-    expectTypeOf<result>().toEqualTypeOf<never>()
+  it('should not match a positive integer', () => {
+    type Result = NumberIntegerNegative<1>
+    expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
   it('should not match a negative decimal', () => {
-    type result = NumberIntegerPositive<-1.1>
-    expectTypeOf<result>().toEqualTypeOf<never>()
+    type Result = NumberIntegerNegative<-1.1>
+    expectTypeOf<Result>().toEqualTypeOf<never>()
+  })
+
+  it('should not match a positive decimal', () => {
+    type Result = NumberIntegerNegative<1.1>
+    expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
   it('should not match zero', () => {
-    type result = NumberIntegerPositive<0>
-    expectTypeOf<result>().toEqualTypeOf<never>()
+    type Result = NumberIntegerNegative<0>
+    expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
   it('should match number', () => {
-    type result = NumberIntegerPositive<number>
-    expectTypeOf<result>().toEqualTypeOf<number>()
+    type Result = NumberIntegerNegative<number>
+    expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 }

@@ -1,6 +1,6 @@
-import { DefaultValue } from './DefaultValue'
 import { DefaultObject } from './DefaultObject'
 import { DefaultTuple } from './DefaultTuple'
+import { DefaultValue } from './DefaultValue'
 
 /**
  * Default a value or collection by another value or collection. Meaning that if
@@ -31,22 +31,27 @@ export type Default<T, U, N extends number = 0> =
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should default objects', () => {
-    type result = Default<{ a: number; b: string | undefined }, { a: number; b: string }>
-    expectTypeOf<result>().toEqualTypeOf<{ a: number; b: string }>()
+    type Result = Default<{ a: number; b: string | undefined }, { a: number; b: string }>
+    expectTypeOf<Result>().toEqualTypeOf<{ a: number; b: string }>()
   })
 
   it('should default tuples', () => {
-    type result = Default<[number, string | undefined], [number, string]>
-    expectTypeOf<result>().toEqualTypeOf<[number, string]>()
+    type Result = Default<[number, string | undefined], [number, string]>
+    expectTypeOf<Result>().toEqualTypeOf<[number, string]>()
   })
 
   it('should default arrays', () => {
-    type result = Default<(number | undefined)[], string[]>
-    expectTypeOf<result>().toEqualTypeOf<(number | string)[]>()
+    type Result = Default<(number | undefined)[], string[]>
+    expectTypeOf<Result>().toEqualTypeOf<(number | string)[]>()
   })
 
   it('should default primitives', () => {
-    type result = Default<number | undefined, string>
-    expectTypeOf<result>().toEqualTypeOf<number | string>()
+    type Result = Default<number | undefined, string>
+    expectTypeOf<Result>().toEqualTypeOf<number | string>()
+  })
+
+  it('should default non matching types from left to right', () => {
+    type Result = Default<number | undefined, string[]>
+    expectTypeOf<Result>().toEqualTypeOf<number | string[]>()
   })
 }

@@ -1,45 +1,47 @@
+import { IsNumber, IsPositive, IsZero } from './utils/predicate'
+
 /**
- * A strictly positive number. Excludes zero.
+ * A strictly positive number greater than zero.
  *
- * @param N Number to match.
+ * @template N Number to match.
  * @returns A number that is garanteed to be striclty positive.
  * @example NumberPositive<1> // 1
  */
 export type NumberPositive<N extends number> =
-  number extends N ? number
-    : `${N}` extends `-${number}` ? never
-      : N extends 0 ? never
-        : N
+  IsNumber<N> extends true ? number
+    : IsZero<N> extends true ? never
+      : IsPositive<N> extends true ? N
+        : never
 
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should match a positive integer', () => {
-    type result = NumberPositive<1>
-    expectTypeOf<result>().toEqualTypeOf<1>()
+    type Result = NumberPositive<1>
+    expectTypeOf<Result>().toEqualTypeOf<1>()
   })
 
   it('should match a positive decimal', () => {
-    type result = NumberPositive<1.1>
-    expectTypeOf<result>().toEqualTypeOf<1.1>()
+    type Result = NumberPositive<1.1>
+    expectTypeOf<Result>().toEqualTypeOf<1.1>()
   })
 
   it('should not match a negative integer', () => {
-    type result = NumberPositive<-1>
-    expectTypeOf<result>().toEqualTypeOf<never>()
+    type Result = NumberPositive<-1>
+    expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
   it('should not match a negative decimal', () => {
-    type result = NumberPositive<-1.1>
-    expectTypeOf<result>().toEqualTypeOf<never>()
+    type Result = NumberPositive<-1.1>
+    expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
   it('should not match zero', () => {
-    type result = NumberPositive<0>
-    expectTypeOf<result>().toEqualTypeOf<never>()
+    type Result = NumberPositive<0>
+    expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
   it('should match number', () => {
-    type result = NumberPositive<number>
-    expectTypeOf<result>().toEqualTypeOf<number>()
+    type Result = NumberPositive<number>
+    expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 }
