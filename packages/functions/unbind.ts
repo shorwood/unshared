@@ -18,7 +18,10 @@ export type UnboundFunction<T, K extends keyof T> =
  * @param prototype The prototype of the function to wrap.
  * @param property The property of the prototype to wrap.
  * @returns The wrapped function.
- * @example unbind(Number.prototype, 'toFixed') // (value: number, fractionDigits?: number | undefined) => string
+ * @example
+ * const toFixed = unbind(Number.prototype, 'toFixed')
+ * const result = toFixed(1, 2)
+ * assert(result === '1.00')
  */
 export function unbind<T, K extends keyof T>(prototype: T, property: K): UnboundFunction<T, K> {
   return function(value: T, ...args: unknown[]) {
@@ -35,9 +38,9 @@ if (import.meta.vitest) {
     expect(result).toEqual('1.00')
   })
 
-  it('should unbind the "upperCase" method', () => {
-    const upperCase = unbind(String.prototype, 'toUpperCase')
-    const result = upperCase('a')
+  it('should unbind the "toUpperCase" method', () => {
+    const toUpperCase = unbind(String.prototype, 'toUpperCase')
+    const result = toUpperCase('a')
     expect(result).toEqual('A')
   })
 }
