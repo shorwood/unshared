@@ -1,5 +1,4 @@
 import { fs, vol } from 'memfs'
-import { afterEach, beforeEach, vi } from 'vitest'
 
 beforeEach(() => {
   vi.mock('node:fs', () => fs)
@@ -9,4 +8,6 @@ beforeEach(() => {
 afterEach(() => {
   vol.reset()
   vi.clearAllMocks()
+  vi.unstubAllEnvs()
+  vi.unstubAllGlobals()
 })
