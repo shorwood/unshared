@@ -1,7 +1,4 @@
-import { resolve } from 'node:path'
 import { defineConfig } from 'vitest/config'
-
-const __dirname = new URL('.', import.meta.url).pathname
 
 export default defineConfig({
   test: {
@@ -22,7 +19,7 @@ export default defineConfig({
       excludeNodeModules: true,
       reporter: ['html'],
     },
-    setupFiles: resolve(__dirname, './packages/setupTest.ts'),
+    setupFiles: new URL('packages/setupTest.ts', import.meta.url).pathname,
     passWithNoTests: true,
     include: [
       './**/*.test.ts',
@@ -32,8 +29,8 @@ export default defineConfig({
       './packages/**/*.ts',
     ],
     exclude: [
-      resolve(__dirname, './packages/setupTest.ts'),
-      resolve(__dirname, './**/node_modules/**'),
+      new URL('packages/setupTest.ts', import.meta.url).pathname,
+      new URL('**/node_modules/**', import.meta.url).pathname,
     ],
   },
 })
