@@ -44,7 +44,9 @@ export interface EnumEntry {
 export const buildEnum = (exportName: string, entries: EnumEntry[]) => {
   const enumDeclarations: string[] = []
   for (const entry of entries) {
-    const declaration = `/**\n${entry.document ?? ''}\n */\n${entry.key} = ${entry.value},`
+    const key = entry.key.includes(' ') ? `'${entry.key}'` : entry.key
+    const document = entry.document?.replace(/^/gm, ' * ') ?? ''
+    const declaration = `/**\n${document}\n */\n${key} = ${entry.value},`
     enumDeclarations.push(declaration)
   }
 
