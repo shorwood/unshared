@@ -1,18 +1,19 @@
 {
   "name": "@unshared/eslint-config",
-  "version": "1.0.0",
-  "author": "Stanley Horwood <stanley@hsjm.io>",
   "license": "MIT",
+  "sideEffects": false,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shorwood/unshared.git",
     "directory": "packages/eslint-config"
   },
-  "sideEffects": false,
   "module": "./dist/index.js",
   "exports": {
-    "./basic": "./dist/basic.js",
     ".": "./dist/index.js",
+    "./basic": "./dist/basic.js",
     "./typescript": "./dist/typescript.js",
     "./vue": "./dist/vue.js"
   },
@@ -21,6 +22,10 @@
     "README.md",
     "LICENSE"
   ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
   "peerDependencies": {
     "eslint": ">=8.0.0",
     "typescript": ">=4.0.0"

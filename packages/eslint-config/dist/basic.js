@@ -9,7 +9,7 @@ module.exports = {
     'standard',
     'plugin:import/recommended',
     'plugin:eslint-comments/recommended',
-    'plugin:jsonc/recommended-with-jsonc',
+    "plugin:jsonc/recommended-with-jsonc",
     'plugin:yml/standard',
     'plugin:markdown/recommended',
     'plugin:unicorn/recommended',
@@ -30,7 +30,6 @@ module.exports = {
     'temp',
     'packages-lock.json',
     'pnpm-lock.yaml',
-    'pnpm-workspace.yaml',
     'yarn.lock',
     '__snapshots__',
     '!.vitepress',
@@ -76,16 +75,20 @@ module.exports = {
               'name',
               'type',
               'version',
-              'private',
-              'author',
-              'packageManager',
-              'description',
-              'keywords',
               'license',
+              'private',
+              'sideEffects',
+              
+              // --- Publishing
+              'description',
+              'author',
+              'keywords',
+              'bugs',
+              'funding',
               'homepage',
               'repository',
-              'funding',
-              'sideEffects',
+
+              // --- Distribution
               'bin',
               'main',
               'module',
@@ -94,14 +97,25 @@ module.exports = {
               'jsdelivr',
               'exports',
               'files',
+
+              // --- Package Manager
+              'packageManager',
+              'pnpm',
+
+              // --- Scripts
               'scripts',
+
+              // --- Dependencies
               'peerDependencies',
               'peerDependenciesMeta',
-              'dependencies',
               'optionalDependencies',
+              'dependencies',
               'devDependencies',
+              'bundledDependencies',
+              'bundleDependencies',
+
+              // --- Config
               'tsup',
-              'pnpm',
               'husky',
               'lint-staged',
               'eslintConfig',
@@ -158,11 +172,14 @@ module.exports = {
   ],
   rules: {
     // import
-    'import/order': 'error',
+    'import/order': ['error', {
+      alphabetize: { order: 'asc' },
+    }],
     'import/first': 'error',
     'import/no-mutable-exports': 'error',
     'import/no-unresolved': 'off',
     'import/no-absolute-path': 'off',
+    'import/no-useless-path-segments': 'error',
 
     // EsLint: Common
     'semi': ['error', 'never'],
