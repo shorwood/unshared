@@ -1,4 +1,4 @@
-import { Collection } from '@unshared/types/collection'
+import { Collection } from '@unshared/types/Collection'
 import { IteratedFunction } from '@unshared/types/IteratedFunction'
 
 interface Every {
