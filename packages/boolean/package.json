@@ -1,14 +1,21 @@
 {
   "name": "@unshared/boolean",
-  "version": "1.0.0",
-  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "type": "module",
+  "version": "0.0.1+build.4a8cafb",
   "license": "MIT",
+  "sideEffects": false,
+  "description": "Boolean logic functions",
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shorwood/unshared.git",
     "directory": "packages/boolean"
   },
-  "sideEffects": false,
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "types": "./index.d.ts",
   "exports": {
     "./Boolean": {
       "import": "./dist/Boolean.js",
@@ -51,7 +58,12 @@
     "README.md",
     "LICENSE"
   ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
   "dependencies": {
-    "@unshared/types": "workspace:1.0.0"
+    "@types/node": "18.14.6",
+    "@unshared/types": "workspace:*"
   }
 }
