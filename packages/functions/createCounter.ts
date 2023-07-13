@@ -37,12 +37,12 @@ export function createCounter(initialValue = 0, step = 1): Counter {
   return {
     step,
     value: initialValue,
-    increment(step = this.step) {
-      this.value += step
+    increment(step) {
+      this.value += step ?? this.step
       return this.value
     },
-    decrement(step = this.step) {
-      this.value -= step
+    decrement(step) {
+      this.value -= step ?? this.step
       return this.value
     },
   }
