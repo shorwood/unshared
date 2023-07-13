@@ -10,7 +10,7 @@ import { reference } from './reference'
  * @example isComputed(computed(() => 1)) // true
  */
 export function isComputed(value: unknown): value is Computed {
-  return typeof value === 'object' && value !== null && value[ComputedFlag] === true
+  return typeof value === 'object' && value !== null && ComputedFlag in value === true
 }
 
 /** c8 ignore next */
