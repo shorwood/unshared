@@ -1,4 +1,6 @@
+import { Array } from '@unshared/types/Array'
 import { MaybeArray } from '@unshared/types/MaybeArray'
+import { Nil } from '@unshared/types/Nil'
 
 /**
  * Wrap a value into an array if it is not one already. If the value is
@@ -8,14 +10,12 @@ import { MaybeArray } from '@unshared/types/MaybeArray'
  * @returns The arrayified value.
  * @example arrayify(1) // [1]
  */
-export function arrayify<T>(value?: MaybeArray<T>): Array<T> {
-  // --- Default nil values to empty array.
+export function arrayify(value?: Nil): []
+export function arrayify<U>(value?: Array<U>): Array<U>
+export function arrayify<U>(value?: MaybeArray<U>): Array<U>
+export function arrayify(value?: MaybeArray): unknown[] {
   if (value === undefined || value === null) return []
-
-  // --- Return value if it is an array.
   if (Array.isArray(value)) return value
-
-  // --- Wrap value in array.
   return [value]
 }
 
