@@ -1,4 +1,4 @@
-import { memoize } from '@unshared-dev/function/memoize'
+import { memoize } from '@unshared/functions/memoize'
 
 export interface GetEnvironmentOptions {
   /** Ignore environment variables from `process.env` */
@@ -9,6 +9,7 @@ export interface GetEnvironmentOptions {
   // ignoreDotEnv?: boolean
   /**
    * Environment namespace(s) to use for `.env` files
+   *
    * @example
    * getEnvironment({ namespace: 'staging' }) // Variables from `.env.staging` will be used.
    */
@@ -17,6 +18,7 @@ export interface GetEnvironmentOptions {
 
 /**
  * Get the environment variables.
+ *
  * @param options Options.
  * @returns The environment variables.
  * @example

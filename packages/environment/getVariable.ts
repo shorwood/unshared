@@ -2,6 +2,7 @@ import { getEnvironment } from './getEnvironment'
 
 /**
  * Get a variable from the environment.
+ *
  * @param name Name of the variable.
  * @param transform Transform function to apply to the variable.
  * @returns The variable's value.

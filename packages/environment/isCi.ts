@@ -2,6 +2,7 @@ import { getEnvironment } from './getEnvironment'
 
 /**
  * Check if the process is running in a CI environment.
+ *
  * @returns `true` if process is running in a CI environment
  */
 export const isCi = () => {

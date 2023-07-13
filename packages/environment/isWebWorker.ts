@@ -1,5 +1,6 @@
 /**
  * Check if process is running in a Worker environment
+ *
  * @returns `true` if process is running in a Worker
  */
 export const isWorker = () => {

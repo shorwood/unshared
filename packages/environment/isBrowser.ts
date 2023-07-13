@@ -1,5 +1,6 @@
 /**
  * Check if process is running in a browser environment
+ *
  * @returns `true` if process is running in a browser
  */
 export const isBrowser = () =>

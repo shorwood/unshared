@@ -1,5 +1,6 @@
 /**
  * Check if process is running in an Electron app.
+ *
  * @returns `true` if process is running in an Electron app
  */
 export const isElectron = () => {
