@@ -1,18 +1,17 @@
 {
   "name": "@unshared/monorepo",
   "type": "module",
-  "version": "1.0.0",
-  "author": "Stanley Horwood <stanley@hsjm.io>",
-  "description": "Opinionated collection of common components, composables and utils for Vue projects.",
   "license": "MIT",
+  "private": true,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
   "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shorwood/unshared.git"
   },
+  "packageManager": "pnpm@7.29.1",
   "scripts": {
-    "dev": "tsup --watch",
-    "build": "tsup",
+    "build": "pnpm -F @unshared/* build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest",
@@ -21,41 +20,28 @@
     "test:types": "vitest typecheck",
     "test:coverage": "vitest --coverage"
   },
-  "peerDependencies": {
-    "@types/node": ">=12.0.0",
-    "types-pkg-json": ">=1.0.0",
-    "types-tsconfig": ">=1.0.0"
-  },
   "devDependencies": {
-    "@babel/core": "7.20.12",
-    "@types/node": "18.13.0",
+    "@changesets/cli": "2.26.0",
+    "@chialab/esbuild-plugin-meta-url": "0.17.3",
+    "@chialab/esbuild-plugin-worker": "0.17.4",
+    "@types/eslint": "8.21.3",
+    "@types/node": "18.15.3",
     "@unshared/eslint-config": "workspace:*",
-    "@vitest/coverage-c8": "0.28.5",
-    "@vitest/ui": "0.28.5",
-    "axios": "1.3.3",
-    "c8": "7.12.0",
-    "esbuild": "0.17.8",
-    "esbuild-plugin-ifdef": "1.0.1",
-    "esbuild-plugin-polyfill-node": "0.1.4",
-    "esbuild-plugin-progress": "1.0.1",
-    "esbuild-plugins-node-modules-polyfill": "1.0.9",
-    "eslint": "8.34.0",
+    "@unshared/unplugin": "workspace:*",
+    "@vitest/coverage-c8": "0.29.5",
+    "@vitest/ui": "0.29.5",
+    "axios": "1.3.4",
+    "c8": "7.13.0",
+    "eslint": "8.36.0",
     "fast-glob": "3.2.12",
-    "happy-dom": "8.4.0",
+    "happy-dom": "8.9.0",
     "memfs": "3.4.13",
-    "tsup": "6.6.3",
+    "tsup": "6.7.0",
     "types-pkg-json": "1.2.1",
     "types-tsconfig": "2.0.2",
-    "typescript": "4.9.5",
-    "vite": "4.1.1",
-    "vitest": "0.28.5"
-  },
-  "pnpm": {
-    "overrides": {
-      "bl@<0.9.5": ">=0.9.5",
-      "bl@<1.2.3": ">=1.2.3",
-      "semver@<4.3.2": ">=4.3.2"
-    }
+    "typescript": "5.0.2",
+    "vite": "4.2.1",
+    "vitest": "0.29.5"
   },
   "eslintConfig": {
     "extends": [
