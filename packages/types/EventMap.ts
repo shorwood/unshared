@@ -3,7 +3,7 @@ import { ReadStream } from 'node:fs'
 import { Readable } from 'node:stream'
 import { EventEmitterLike } from './EventEmitterLike'
 import { Function } from './Function'
-import { FunctionOverloads } from './FunctionOverloads'
+import { Overloads } from './Overloads'
 import { TuplePop } from './TuplePop'
 import { UnionMerge } from './UnionMerge'
 
@@ -16,7 +16,7 @@ import { UnionMerge } from './UnionMerge'
  * @example EventMap<Readable> // { onData: (chunk: any) => void, onError: (error: Error) => void, onEnd: () => void, ... }
  */
 export type EventMap<T extends EventEmitterLike = EventEmitterLike> =
-  UnionMerge<Parameters<TuplePop<FunctionOverloads<T['on']>>[0][number]> extends infer V
+  UnionMerge<Parameters<TuplePop<Overloads<T['on']>>[0][number]> extends infer V
     ? V extends [string | symbol, Function]
       ? { [P in V[0] as `on${Capitalize<string & V[0]>}`]: V[1] }
       : never : never>

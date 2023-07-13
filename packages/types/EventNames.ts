@@ -2,7 +2,7 @@ import { ReadStream } from 'node:fs'
 import { EventEmitter, Readable } from 'node:stream'
 import { EventEmitterLike } from './EventEmitterLike'
 import { Fallback } from './Fallback'
-import { FunctionOverloads } from './FunctionOverloads'
+import { Overloads } from './Overloads'
 import { TuplePop } from './TuplePop'
 
 /**
@@ -13,7 +13,7 @@ import { TuplePop } from './TuplePop'
  * @example EventEmitterEvents<Readable> // 'data' | 'end' | 'error'
  */
 export type EventNames<T extends EventEmitterLike = EventEmitterLike> =
-  Fallback<Parameters<TuplePop<FunctionOverloads<T['on']>>[0][number]>[0], string | symbol>
+  Fallback<Parameters<TuplePop<Overloads<T['on']>>[0][number]>[0], string | symbol>
 
 /** c8 ignore next */
 if (import.meta.vitest) {

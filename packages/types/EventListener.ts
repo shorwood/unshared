@@ -4,7 +4,7 @@ import { Readable } from 'node:stream'
 import { EventEmitterLike } from './EventEmitterLike'
 import { EventNames } from './EventNames'
 import { Function } from './Function'
-import { FunctionOverloads } from './FunctionOverloads'
+import { Overloads } from './Overloads'
 
 /** Find the listener that matches the event name and return it. */
 type FindListenerByEventName<T extends Function[], E> =
@@ -21,7 +21,7 @@ type FindListenerByEventName<T extends Function[], E> =
  * @example EventListener<Readable, 'data'> // (chunk: any) => void
  */
 export type EventListener<T extends EventEmitterLike, E extends EventNames<T>> =
-  FindListenerByEventName<FunctionOverloads<T['on']>, E>
+  FindListenerByEventName<Overloads<T['on']>, E>
 
 /** c8 ignore next */
 if (import.meta.vitest) {

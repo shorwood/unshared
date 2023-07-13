@@ -153,9 +153,9 @@
       "require": "./dist/FunctionAsync.cjs",
       "import": "./dist/FunctionAsync.js"
     },
-    "FunctionOverloads": {
-      "require": "./dist/FunctionOverloads.cjs",
-      "import": "./dist/FunctionOverloads.js"
+    "Overloads": {
+      "require": "./dist/Overloads.cjs",
+      "import": "./dist/Overloads.js"
     },
     "Get": {
       "require": "./dist/Get.cjs",

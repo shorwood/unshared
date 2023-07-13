@@ -12,9 +12,9 @@ import { Function } from './Function'
  * @example
  * declare function foo(x: number): boolean
  * declare function foo(x: string): boolean
- * FunctionOverloads<typeof foo> // [(x: number) => boolean, (x: string) => boolean]
+ * Overloads<typeof foo> // [(x: number) => boolean, (x: string) => boolean]
  */
-export type FunctionOverloads<T extends Function> =
+export type Overloads<T extends Function> =
 T extends { (...p: infer P1): infer R1; (...p: infer P2): infer R2; (...p: infer P3): infer R3; (...p: infer P4): infer R4; (...p: infer P5): infer R5; (...p: infer P6): infer R6; (...p: infer P7): infer R7; (...p: infer P8): infer R8; (...p: infer P9): infer R9; (...p: infer P10): infer R10 }
   ? [(...p: P1) => R1, (...p: P2) => R2, (...p: P3) => R3, (...p: P4) => R4, (...p: P5) => R5, (...p: P6) => R6, (...p: P7) => R7, (...p: P8) => R8, (...p: P9) => R9, (...p: P10) => R10]
   : T extends { (...p: infer P1): infer R1; (...p: infer P2): infer R2; (...p: infer P3): infer R3; (...p: infer P4): infer R4; (...p: infer P5): infer R5; (...p: infer P6): infer R6; (...p: infer P7): infer R7; (...p: infer P8): infer R8; (...p: infer P9): infer R9 }
@@ -43,7 +43,7 @@ T extends { (...p: infer P1): infer R1; (...p: infer P2): infer R2; (...p: infer
 if (import.meta.vitest) {
   it('should return a single signature if function has no overloads', () => {
     type method = (a: number, b: string) => boolean
-    type Result = FunctionOverloads<method>
+    type Result = Overloads<method>
     expectTypeOf<Result>().toEqualTypeOf<[method]>()
   })
 
@@ -52,7 +52,7 @@ if (import.meta.vitest) {
       (a: number, b: string): boolean
       (a: string, b: number): boolean
     }
-    type Result = FunctionOverloads<method>
+    type Result = Overloads<method>
     type Expected = [
       (a: number, b: string) => boolean,
       (a: string, b: number) => boolean,
@@ -73,7 +73,7 @@ if (import.meta.vitest) {
       (a: number, b: string, c: string): boolean
       (a: string, b: number, c: string): boolean
     }
-    type Result = FunctionOverloads<method>
+    type Result = Overloads<method>
     type Expected = [
       (a: number, b: string) => boolean,
       (a: string, b: number) => boolean,

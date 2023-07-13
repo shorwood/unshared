@@ -3,7 +3,7 @@ import { EventEmitter, Readable } from 'node:stream'
 import { EventEmitterLike } from './EventEmitterLike'
 import { Fallback } from './Fallback'
 import { Function } from './Function'
-import { FunctionOverloads } from './FunctionOverloads'
+import { Overloads } from './Overloads'
 import { MaybePromise } from './MaybePromise'
 import { TuplePop } from './TuplePop'
 
@@ -15,7 +15,7 @@ import { TuplePop } from './TuplePop'
  * @example EventEmitterListeners<Readable> // (chunk: any) => void | (error: Error) => void | () => void
  */
 export type EventListeners<T extends EventEmitterLike = EventEmitterLike> =
-  Fallback<Parameters<TuplePop<FunctionOverloads<T['on' | 'addListener']>>[0][number]>[1], Function<MaybePromise>>
+  Fallback<Parameters<TuplePop<Overloads<T['on' | 'addListener']>>[0][number]>[1], Function<MaybePromise>>
 
 /** c8 ignore next */
 if (import.meta.vitest) {
