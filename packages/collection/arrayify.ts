@@ -24,21 +24,25 @@ if (import.meta.vitest) {
   it('should return the array if the value is an array', () => {
     const result = arrayify([1, 2, 3])
     expect(result).toEqual([1, 2, 3])
+    expectTypeOf(result).toEqualTypeOf<Array<number>>()
   })
 
   it('should return an array with the value if the value is not an array', () => {
     const result = arrayify(1)
     expect(result).toEqual([1])
+    expectTypeOf(result).toEqualTypeOf<Array<number>>()
   })
 
   it('should return an empty array if the value is undefined', () => {
     const result = arrayify()
     expect(result).toEqual([])
+    expectTypeOf(result).toEqualTypeOf<[]>
   })
 
   it('should return an empty array if the value is null', () => {
     // eslint-disable-next-line unicorn/no-null
     const result = arrayify(null)
     expect(result).toEqual([])
+    expectTypeOf(result).toEqualTypeOf<[]>
   })
 }
