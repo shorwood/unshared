@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { get } from '@unshared/collection/get'
-import { escapeRegExp } from './escapeRegExp'
+import { escapeRegex } from './escapeRegex'
 
 export interface TemplateOptions<T> {
   /**
@@ -57,8 +57,8 @@ export function template<T extends object>(template: string, data?: T, options: 
     throw new TypeError('Expected transform to be undefined or a function')
 
   // --- Escape delimiters and create regex.
-  const open = escapeRegExp(delimiterStart)
-  const close = escapeRegExp(delimiterEnd)
+  const open = escapeRegex(delimiterStart)
+  const close = escapeRegex(delimiterEnd)
   const regexp = new RegExp(`${open}(.+?)${close}`, 'g')
 
   // --- Replace, transform and return.

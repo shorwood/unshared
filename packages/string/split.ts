@@ -1,29 +1,20 @@
-/**
- * Split the string into an array of substrings
- *
- * @param value The string to split
- * @param separator
- * A string that identifies character or characters to use in separating the string.
- * If omitted, a single-element array containing the entire string is returned.
- * @param limit A value used to limit the number of elements returned in the array.
- * @returns
- * An array containing the substrings from the original string that are found
- * at the start of the string and are separated by the specified separator string.
- * @example
- * split('a,b,c', ',') // => ['a', 'b', 'c']
- * split('a,b,c', ',', 2) // => ['a', 'b']
- * split('a,b,c', ',', -2) // => ['b', 'c']
- */
-export const split = (value: string, separator: string | RegExp, limit?: number): string[] => {
-  if (typeof value !== 'string')
-    throw new TypeError('Expected a string')
-  if (typeof limit === 'number' && !Number.isInteger(limit))
-    throw new TypeError('Expected an integer')
+import { StringSplit } from '@unshared/types/StringSplit'
 
-  // --- Split the string.
-  if (!limit) return value.split(separator)
-  if (limit > 0) return value.split(separator, limit)
-  return value.split(separator).slice(limit)
+/**
+ * Split the string into an array of substrings using the specified delimiter.
+ *
+ * @param value The string to split.
+ * @param delimiter The character to use as a separator.
+ * @param limit A value used to limit the number of elements returned in the array.
+ * @returns An array of substrings.
+ * @example split('a,b,c', ',') // => ['a', 'b', 'c']
+ */
+export function split<S extends string, D extends string, N extends number = number>(value: S, delimiter: D, limit?: N): StringSplit<S, D, N>
+export function split(value: string, delimiter: string | RegExp, limit?: number): string[]
+export function split(value: string, delimiter: string | RegExp, limit?: number): string[] {
+  return limit > 0
+    ? value.split(delimiter, limit)
+    : value.split(delimiter).slice(limit)
 }
 
 /* c8 ignore next */
