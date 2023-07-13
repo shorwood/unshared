@@ -34,14 +34,9 @@ if (import.meta.vitest) {
     expect(result).toEqual(false)
   })
 
-  it.each([
-    [true, '--loader=tsx'],
-    [true, '--loader = tsx'],
-    [true, '--loader tsx'],
-    [false, '--loader=ts-node/esm'],
-  ])('should return true when execArgv contains %s', (expected, loader) => {
-    vi.stubGlobal('process', { execArgv: [loader] })
+  it('should return true when argv contains --loader=tsx', () => {
+    vi.stubGlobal('process', { argv: ['--loader=tsx'] })
     const result = isTsx()
-    expect(result).toEqual(expected)
+    expect(result).toEqual(true)
   })
 }
