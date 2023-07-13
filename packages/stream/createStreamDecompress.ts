@@ -8,6 +8,30 @@ const Z_DEFLATE_HEADER_1 = Buffer.from([0x78, 0x9C])
 const Z_DEFLATE_HEADER_2 = Buffer.from([0x78, 0xDA])
 
 /**
+ * Check if a `Buffer` starts with the Gzip header.
+ *
+ * @param chunk The chunk that may contain the header.
+ * @returns `true` if the chunk starts with the Gzip header.
+ */
+function isHeaderGzip(chunk: Buffer) {
+  const headers = Buffer.allocUnsafe(3)
+  chunk.copy(headers, 0, 0, 3)
+  return headers.equals(Z_GZIP_HEADER)
+}
+
+/**
+ * Check if a `Buffer` starts with a Deflate header.
+ *
+ * @param chunk The chunk that may contain the header.
+ * @returns `true` if the chunk starts with a Deflate header.
+ */
+function isHeaderDeflate(chunk: Buffer) {
+  const headers = Buffer.allocUnsafe(2)
+  chunk.copy(headers, 0, 0, 2)
+  return headers.equals(Z_DEFLATE_HEADER_1) || headers.equals(Z_DEFLATE_HEADER_2)
+}
+
+/**
  * A Transform stream that decompresses data only if it is compressed, otherwise
  * it is passed through.
  */
@@ -44,37 +68,13 @@ class Decompress extends Transform {
     if (this.decompressor) return this.decompressor.write(chunk, encoding, callback)
 
     // --- Auto-detect the decompressor or fallback to PassThrough.
-    if (this.isGzip(chunk)) this.decompressor = createGunzip(this.options)
-    else if (this.isDeflate(chunk)) this.decompressor = createInflate(this.options)
+    if (isHeaderGzip(chunk)) this.decompressor = createGunzip(this.options)
+    else if (isHeaderDeflate(chunk)) this.decompressor = createInflate(this.options)
     else this.decompressor = new PassThrough()
 
     // --- Pipe the decompressor to the transform stream.
     this.decompressor.on('data', chunk => this.push(chunk))
     this.decompressor.write(chunk, encoding, callback)
-  }
-
-  /**
-   * Check if the data is compressed using Gzip.
-   *
-   * @param chunk The chunk to check.
-   * @returns `true` if the data is compressed using Gzip.
-   */
-  private isGzip(chunk: Buffer) {
-    const headers = Buffer.allocUnsafe(3)
-    chunk.copy(headers, 0, 0, 3)
-    return headers.equals(Z_GZIP_HEADER)
-  }
-
-  /**
-   * Check if the data is compressed using Deflate.
-   *
-   * @param chunk The chunk to check.
-   * @returns `true` if the data is compressed using Deflate.
-   */
-  private isDeflate(chunk: Buffer) {
-    const headers = Buffer.allocUnsafe(2)
-    chunk.copy(headers, 0, 0, 2)
-    return headers.equals(Z_DEFLATE_HEADER_1) || headers.equals(Z_DEFLATE_HEADER_2)
   }
 }
 
