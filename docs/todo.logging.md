@@ -1,5 +1,5 @@
 # Stdin/Stdout Logging
-
+z
 ### Logging
 
 ```ts
@@ -18,9 +18,9 @@ export function logFormat(level: LogLevel, message: string, ...args: any[]): str
 ### Wrappers
 
 ```ts
-export function wrapStdout(): void
-export function wrapStderr(): void
-export function wrapStdin(): void
+export function wrapProcessStdout(): void
+export function wrapProcessStderr(): void
+export function wrapProcessStdin(): void
 ```
 
 ### User input
