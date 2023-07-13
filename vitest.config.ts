@@ -1,33 +1,39 @@
+import { resolve } from 'node:path'
 import { defineConfig } from 'vitest/config'
+
+const __dirname = new URL('.', import.meta.url).pathname
 
 export default defineConfig({
   test: {
+    open: false,
     globals: true,
     testTimeout: 100,
     reporters: ['dot'],
     typecheck: {
       checker: 'tsc',
       ignoreSourceErrors: false,
-      include: ['./packages/types/*.ts'],
+      include: ['./**/*.ts'],
     },
     coverage: {
       100: true,
-      enabled: true,
+      clean: true,
+      enabled: false,
+      cleanOnRerun: true,
       excludeNodeModules: true,
-      reporter: ['text', 'lcov', 'html'],
+      reporter: ['html'],
     },
-    setupFiles: './packages/setupTest.ts',
+    setupFiles: resolve(__dirname, './packages/setupTest.ts'),
     passWithNoTests: true,
     include: [
-      './packages/**/*.test.ts',
-      './packages/**/*.test.*.ts',
+      './**/*.test.ts',
+      './**/*.test.*.ts',
     ],
     includeSource: [
       './packages/**/*.ts',
     ],
     exclude: [
-      './packages/setupTest.ts',
-      './packages/**/node_modules/**',
+      resolve(__dirname, './packages/setupTest.ts'),
+      resolve(__dirname, './**/node_modules/**'),
     ],
   },
 })
