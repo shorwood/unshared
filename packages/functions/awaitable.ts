@@ -50,7 +50,7 @@ export function awaitable(object: object, promise: Promise<unknown> | FunctionAs
           : promise.then(x => x ?? object)
 
         // --- Re-attach the `this` context to the promise.
-        return promise[property].bind(promise)
+        return promise[<'then' | 'catch' | 'finally'>property].bind(promise)
       }
 
       // --- Pass through all other properties of the original object.
