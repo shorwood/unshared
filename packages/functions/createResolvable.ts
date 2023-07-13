@@ -2,15 +2,29 @@ export interface Resolvable<T> extends Promise<T> {
   /** Whether the promise has been resolved. */
   resolved: boolean
   /** Whether the promise has been rejected. */
+  rejected: boolean
+  /** Whether the promise is still pending. */
   pending: boolean
   /** The resolvable promise. */
   promise: Promise<T>
-  /** Resolve the promise with a value. */
+  /**
+   * Resolve the promise with a value.
+   *
+   * @param value The value to resolve the promise with.
+   */
   resolve: (value: T | PromiseLike<T>) => void
-  /** Reject the promise with a value. */
+  /**
+   * Reject the promise with a value.
+   *
+   * @param reason The reason for the rejection.
+   */
   reject: (reason?: any) => void
-  /** Reset the promise to its initial state. */
-  reset: () => void
+  /**
+   * Reset the promise to its initial state.
+   *
+   * @returns The `this` instance.
+   */
+  reset: () => this
 }
 
 /**
@@ -31,31 +45,32 @@ export function createResolvable<T = void>(): Resolvable<T> {
   // --- Define lifecycle.
   state.reset = () => {
     state.resolved = false
+    state.rejected = false
     state.pending = true
 
-    // --- Init promise.
+    // --- Create a new promise that can be resolved or rejected from outside.
+    // --- Before resolving or rejecting, update the internal state.
     state.promise = new Promise<T>((resolve, reject) => {
-      // --- Wrap  resolve.
       state.resolve = (value) => {
         state.resolved = true
+        state.rejected = false
         state.pending = false
         resolve(value)
       }
-
-      // --- Wrap reject.
       state.reject = (value) => {
         state.resolved = false
+        state.rejected = true
         state.pending = false
         reject(value)
       }
     })
+
+    // --- Return the state for chaining.
+    return state
   }
 
-  // --- Initalize instance.
-  state.reset()
-
-  // --- Return variable.
-  return state
+  // --- Initalize instance and return it.
+  return state.reset()
 }
 
 /* c8 ignore next */
@@ -96,6 +111,12 @@ if (import.meta.vitest) {
     expect(result.rejected).toEqual(false)
   })
 
+  it('should return the same object when reset is called', () => {
+    const result = createResolvable()
+    const resultReset = result.reset()
+    expect(result).toStrictEqual(resultReset)
+  })
+
   it('should be pending after reset is called if already rejected', () => {
     const result = createResolvable()
     result.reject()
@@ -105,7 +126,7 @@ if (import.meta.vitest) {
     expect(result.rejected).toEqual(false)
   })
 
-  it('should infer the type of the resolved type', async() => {
+  it('should type the promise', () => {
     const result = createResolvable<string>()
     expectTypeOf(result).toEqualTypeOf<Resolvable<string>>()
     expectTypeOf(result.promise).toEqualTypeOf<Promise<string>>()
