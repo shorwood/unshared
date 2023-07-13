@@ -1,0 +1,114 @@
+{
+  "name": "@unshared/fs",
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shorwood/unshared.git",
+    "directory": "packages/fs"
+  },
+  "exports": {
+    "capture": {
+      "require": "./dist/capture.cjs",
+      "import": "./dist/capture.js"
+    },
+    "findAncestor": {
+      "require": "./dist/findAncestor.cjs",
+      "import": "./dist/findAncestor.js"
+    },
+    "findAncestors": {
+      "require": "./dist/findAncestors.cjs",
+      "import": "./dist/findAncestors.js"
+    },
+    "getCharset": {
+      "require": "./dist/getCharset.cjs",
+      "import": "./dist/getCharset.js"
+    },
+    "getEncoding": {
+      "require": "./dist/getEncoding.cjs",
+      "import": "./dist/getEncoding.js"
+    },
+    "getMagicHeader": {
+      "require": "./dist/getMagicHeader.cjs",
+      "import": "./dist/getMagicHeader.js"
+    },
+    "getMimeType": {
+      "require": "./dist/getMimeType.cjs",
+      "import": "./dist/getMimeType.js"
+    },
+    "glob": {
+      "require": "./dist/glob.cjs",
+      "import": "./dist/glob.js"
+    },
+    "*": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
+    },
+    "isDirectory": {
+      "require": "./dist/isDirectory.cjs",
+      "import": "./dist/isDirectory.js"
+    },
+    "isFile": {
+      "require": "./dist/isFile.cjs",
+      "import": "./dist/isFile.js"
+    },
+    "loadObject": {
+      "require": "./dist/loadObject.cjs",
+      "import": "./dist/loadObject.js"
+    },
+    "loadPackageJson": {
+      "require": "./dist/loadPackageJson.cjs",
+      "import": "./dist/loadPackageJson.js"
+    },
+    "loadTsConfig": {
+      "require": "./dist/loadTsConfig.cjs",
+      "import": "./dist/loadTsConfig.js"
+    },
+    "resolveAlias": {
+      "require": "./dist/resolveAlias.cjs",
+      "import": "./dist/resolveAlias.js"
+    },
+    "resolveDependencies": {
+      "require": "./dist/resolveDependencies.cjs",
+      "import": "./dist/resolveDependencies.js"
+    },
+    "resolveImport": {
+      "require": "./dist/resolveImport.cjs",
+      "import": "./dist/resolveImport.js"
+    },
+    "resolveModule": {
+      "require": "./dist/resolveModule.cjs",
+      "import": "./dist/resolveModule.js"
+    },
+    "resolvePackageJson": {
+      "require": "./dist/resolvePackageJson.cjs",
+      "import": "./dist/resolvePackageJson.js"
+    },
+    "resolveTsConfig": {
+      "require": "./dist/resolveTsConfig.cjs",
+      "import": "./dist/resolveTsConfig.js"
+    },
+    "resolveTypes": {
+      "require": "./dist/resolveTypes.cjs",
+      "import": "./dist/resolveTypes.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "dependencies": {
+    "@unshared/functions": "workspace:*",
+    "@unshared/reactivity": "workspace:*",
+    "@unshared/string": "workspace:*"
+  }
+}
