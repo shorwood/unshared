@@ -10,7 +10,7 @@ import { reference } from './reference'
  * @example isReactive(reference({ foo: 'bar' })) // true
  */
 export function isReactive(value: unknown): value is Reactive<object> {
-  return typeof value === 'object' && value !== null && value[ReactiveFlag] === true
+  return typeof value === 'object' && value !== null && ReactiveFlag in value === true
 }
 
 /** c8 ignore next */
