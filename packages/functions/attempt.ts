@@ -1,17 +1,33 @@
-import { NotPromise } from '@unshared/types/NotPromise'
 import { MaybePromise } from '@unshared/types/MaybePromise'
-import { Result } from '@unshared/types/Result'
+import { NotPromise } from '@unshared/types/NotPromise'
 
 /**
- * Run a function and return a tuple with the value and the error if any.
+ * A result type that can be used to represent the result of an operation that
+ * can fail. This type is similar to the `Either` type in functional programming
+ * languages.
+ *
+ * @template T The type of the value.
+ * @template E The type of the error.
+ * @example AttemptResult<string, Error> // [string | undefined, Error | undefined]
+ */
+export type AttemptResult<T = unknown, E extends Error = Error> = [T | undefined, E | undefined]
+
+/**
+ * Run a function and return the result and error in an array. If the function
+ * throws an error, the error will be returned in the second element of the
+ * array. Otherwise, the result will be returned in the first element of the
+ * array.
+ *
+ * If the function is asynchronous, the result will be a promise that resolves
+ * to the result and error as an array.
  *
  * @param fn The function to run.
  * @returns A tuple with the value and the error if any.
  * @example const [result, error] = attempt(() => true) // [true, undefined]
  */
-export function attempt<R, E extends Error = Error>(fn: () => Promise<R>): Promise<Result<R, E>>
-export function attempt<R, E extends Error = Error>(fn: () => NotPromise<R>): Result<R, E>
-export function attempt<R, E extends Error = Error>(fn: () => MaybePromise<R>): MaybePromise<Result<R, E>>
+export function attempt<R, E extends Error = Error>(fn: () => Promise<R>): Promise<AttemptResult<R, E>>
+export function attempt<R, E extends Error = Error>(fn: () => NotPromise<R>): AttemptResult<R, E>
+export function attempt<R, E extends Error = Error>(fn: () => MaybePromise<R>): MaybePromise<AttemptResult<R, E>>
 export function attempt(fn: Function): unknown {
   try {
     const result = fn()
