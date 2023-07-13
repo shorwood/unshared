@@ -1,6 +1,13 @@
 import { EventEmitter as EventEmitterNodeJS } from 'node:events'
-import { EventListeners } from '@unshared/types/EventListeners'
-import { EventNames } from '@unshared/types/EventNames'
+import { Fallback } from '@unshared/types/Fallback'
+import { Function } from '@unshared/types/Function'
+import { MaybePromise } from '@unshared/types/MaybePromise'
+import { Overloads } from '@unshared/types/Overloads'
+import { TuplePop } from '@unshared/types/TuplePop'
+import { hook } from './hook'
+
+/** Matches both the constructor and the instance of the `EventEmitter` class. */
+export type EventEmitterLike = EventEmitterNodeJS | NodeJS.EventEmitter
 
 /** Options for the `EventEmitter` class. */
 export type EventEmitterOptions = ConstructorParameters<typeof EventEmitterNodeJS>[0]
@@ -9,11 +16,31 @@ export type EventEmitterOptions = ConstructorParameters<typeof EventEmitterNodeJ
 export type EventListenersInternal = EventListeners & { listener: EventListeners }
 
 /**
+ * The event listeners that can be registered on an EventEmitter.
+ *
+ * @template T The type of the EventEmitter.
+ * @returns The event listeners that can be registered on the EventEmitter.
+ * @example EventEmitterListeners<Readable> // (chunk: any) => void | (error: Error) => void | () => void
+ */
+export type EventListeners<T extends EventEmitterLike = EventEmitterLike> =
+  Fallback<Parameters<TuplePop<Overloads<T['on' | 'addListener']>>[0][number]>[1], Function<MaybePromise>>
+
+/**
+ * The event names that can be emitted by an EventEmitter.
+ *
+ * @template T The type of the EventEmitter.
+ * @returns The event names that can be emitted by the EventEmitter.
+ * @example EventEmitterEvents<Readable> // 'data' | 'end' | 'error'
+ */
+export type EventNames<T extends EventEmitterLike = EventEmitterLike> =
+  Fallback<Parameters<TuplePop<Overloads<T['on']>>[0][number]>[0], string | symbol>
+
+/**
  * This class is a light and simple browser-compatible implementation of the
  * Node.js `EventEmitter` class. It is used to create event emitters that
  * can be used to listen for and emit events.
  */
-export class EventEmitter implements NodeJS.EventEmitter {
+export class EventEmitter implements EventEmitterNodeJS {
   constructor(private options: EventEmitterOptions = {}) {}
 
   /** The default number of listeners that can be assigned to an event. */
@@ -58,7 +85,8 @@ export class EventEmitter implements NodeJS.EventEmitter {
   }
 
   public removeAllListeners(eventName?: EventNames): this {
-    delete this.internalListeners[eventName]
+    if (eventName) delete this.internalListeners[eventName]
+    else this.internalListeners = {}
     return this
   }
 
@@ -138,6 +166,25 @@ export class EventEmitter implements NodeJS.EventEmitter {
     handler.listener = listener
     return handler
   }
+}
+
+/**
+ * Creates a new EventEmitter instance and hook the given event handlers directly
+ * to the instance.
+ *
+ * @param handlers The event handlers to hook.
+ * @param options The options to use for the EventEmitter.
+ * @returns The created EventEmitter instance.
+ * @example
+ * const emitter = createEventEmitter({
+ *   onData: data => console.log(data),
+ *   onError: error => console.error(error)
+ * })
+ */
+export function createEventEmitter(handlers: EventListeners, options?: EventEmitterOptions): EventEmitter {
+  const emitter = new EventEmitter(options)
+  hook(handlers, emitter)
+  return emitter
 }
 
 /** c8 ignore next */
