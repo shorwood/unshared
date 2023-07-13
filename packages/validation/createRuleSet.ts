@@ -11,15 +11,16 @@ import { isRule } from './isRule'
  * const ruleSet = createRuleSet(Number.isNaN) // [[Number.isNaN]]
  */
 export const createRuleSet = (ruleSet: ValidationRule | ValidationRulePipe | ValidationRuleSet): ValidationRuleSet => {
-  // --- is rule set as array
+  // --- Might already be a RuleSet or a RulePipeline
   if (Array.isArray(ruleSet)) {
-    // @ts-expect-error: ignore
+    // --- Is a RuleSet
     if (ruleSet.every(x => Array.isArray(x) && x.every(isRule))) return ruleSet
-    // @ts-expect-error: ignore
+
+    // --- Is a RulePipeline, convert to RuleSet
     if (ruleSet.every(isRule)) return [ruleSet]
   }
 
-  // --- Is a single rule as rule set
+  // --- Is a single rule, convert to RuleSet
   if (isRule(ruleSet)) return [[ruleSet]]
 
   // --- Is not a ruleSet

@@ -1,56 +1,18 @@
 {
   "name": "@unshared/validation",
-  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "type": "module",
   "license": "MIT",
+  "sideEffects": false,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shorwood/unshared.git",
     "directory": "packages/validation"
   },
-  "sideEffects": false,
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "exports": {
-    "./createValidator": {
-      "import": "./dist/createValidator.js",
-      "require": "./dist/createValidator.cjs"
-    },
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    },
-    "./rules": {
-      "import": "./dist/rules.js",
-      "require": "./dist/rules.cjs"
-    },
-    "./types": {
-      "import": "./dist/types.js",
-      "require": "./dist/types.cjs"
-    },
-    "./validateRule": {
-      "import": "./dist/validateRule.js",
-      "require": "./dist/validateRule.cjs"
-    },
-    "./validateRulePipe": {
-      "import": "./dist/validateRulePipe.js",
-      "require": "./dist/validateRulePipe.cjs"
-    },
-    "./validateRuleSet": {
-      "import": "./dist/validateRuleSet.js",
-      "require": "./dist/validateRuleSet.cjs"
-    },
-    "./validateSchema": {
-      "import": "./dist/validateSchema.js",
-      "require": "./dist/validateSchema.cjs"
-    }
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
-  "dependencies": {
-    "@unshared/collection": "workspace:*",
-    "@unshared/types": "workspace:*"
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
   }
 }

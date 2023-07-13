@@ -2,25 +2,11 @@ import { NotFunction } from '@unshared/types/NotFunction'
 
 // TODO: Infer parameters anr return type from function
 
-export type ValidationSchema = Record<string, ValidationRuleSet>
-export type ValidatorFunction<R = any> = (value: any, ...parameters: any[]) => R
-export type Validator = ValidatorFunction | RegExp | boolean
-
-export interface ValidationRuleObject {
-  name: string
-  handler: ValidatorFunction
-  parameters: any[]
-  error: Error
-}
-
-export type ValidationRule =
-  | Validator
-  | ValidationRuleObject
-  | [handler: ValidatorFunction, ...parameters: NotFunction[]]
-  | [handler: RegExp, replacement: string]
-
 export type ValidationRulePipe = ValidationRule[]
 export type ValidationRuleSet = ValidationRule[][]
+
+export type ValidationRules = ValidationRuleSet | ValidationRulePipe | ValidationRule
+
 export interface ValidateRuleResult {
   name: string
   value: any

@@ -1,45 +1,77 @@
-import { ValidationRuleSet } from './types'
+import { ValidationRule, ValidationRulePipe, ValidationRuleSet, ValidationRules } from './types'
+import { createRuleSet } from './createRuleSet'
 import { validateRuleSet } from './validateRuleSet'
 
 /**
- * Instantiate a validator to validate a value against a validation rule set.
+ * A validator function that can be used to validate a value against a validation rule set.
  *
- * @param ruleSet The validation rule set to use.
- * @param defaultContext The default context to provide to the validation rules.
- * @returns A validation function that can be used with `vee-validate`.
- * @example
- * const validator = createValidator([Number.isNaN])
- * await validator(NaN) // true
- * await validator(1) // 'Failed rule: isNaN'
+ * @template T The type of the value to validate.
+ * @returns A function that can be used to validate a value.
+ * @example Validator<number> = (value?: number) => Promise<boolean | string>
  */
-export const createValidator = (ruleSet: ValidationRuleSet, defaultContext?: Record<string, any>) =>
-  async(value?: any, context?: Record<string, any>) => {
-    const { isValid, error } = await validateRuleSet(value, ruleSet, { ...defaultContext, ...context })
+export type Validator<T = unknown> = <U extends T>(value: U) => Promise<boolean | string>
+
+/**
+ * Instantiate a validator to validate a value against a validation rule set. This is a convenience
+ * function that can be used to create a validator function that can be used with well-known
+ * validation libraries such as `vee-validate` or `vuelidate`.
+ *
+ * @param this The context to pass through to the validation rules.
+ * @param rule The validation rule to use.
+ * @returns A validation function returning a boolean or an error message.
+ * @example
+ * const validator = createValidator.bind(context)(Number.isNaN)
+ * await validator(NaN) // true
+ */
+export function createValidator<U = unknown>(this: unknown, rule: ValidationRule): Validator<U>
+export function createValidator<U = unknown>(this: unknown, rulePipe: ValidationRulePipe): Validator<U>
+export function createValidator<U = unknown>(this: unknown, ruleSet: ValidationRuleSet): Validator<U>
+export function createValidator<U = unknown>(this: unknown, rules: ValidationRules): Validator<U>
+export function createValidator(this: unknown, rules: ValidationRules): Function {
+  // --- Normalize rules to a rule set.
+  const ruleSet = createRuleSet(rules)
+
+  // --- Return a validator function that wraps result.
+  return async function(this: object, value: unknown) {
+    const { isValid, error } = await validateRuleSet(value, ruleSet)
     return isValid ? true : error?.message
   }
+}
 
 /** c8 ignore next */
 if (import.meta.vitest) {
-  const isString = (value: any) => typeof value === 'string'
-  const isEqualToContext = function(this: any, value: any) { return this.foo === value }
+  const isBoolean = (value: any): value is boolean => typeof value === 'boolean'
+  // @ts-expect-error: ignore
+  const isEqualToContext = function<T>(this: T, value: unknown): value is T { return this.value === value }
 
-  it.each([
+  it('should create a validator with a single rule', async() => {
+    const validator = createValidator<boolean>(isBoolean)
+    const result = await validator(false)
+    expect(result).toEqual(true)
+  })
 
-    // --- Validate (passes).
-    [true, 'foo', isString, {}],
-    [true, 'foo', [isString], {}],
-    [true, 'foo', [[isString], [isEqualToContext]], {}],
+  it('should create a validator with a rule pipeline', async() => {
+    const validator = createValidator([isBoolean, isEqualToContext])
+    const result = await validator(false)
+    expect(result).toEqual(false)
+  })
 
-    // --- Validate (fails).
-    ['Failed rule: isString', 0, [[isString, isEqualToContext]], {}],
+  it('should create a validator with a rule set', async() => {
+    const validator = createValidator<boolean | undefined>([[isBoolean], [isEqualToContext]])
+    // eslint-disable-next-line unicorn/no-useless-undefined
+    const result = await validator(undefined)
+    expect(result).toEqual(true)
+  })
 
-    // --- Validate with context (passes).
-    [true, 'bar', isEqualToContext, {}],
-    [true, 'foo', isEqualToContext, { foo: 'foo' }],
+  it('should create a validator with a rule set and default context', async() => {
+    const validator = createValidator.bind({ value: 'context' })([[isBoolean], [isEqualToContext]])
+    const result = await validator('context')
+    expect(result).toEqual(true)
+  })
 
-  ])('should create a validator that returns %s when validating %s with %s', async(expected, value, rules, context) => {
-    const validator = createValidator(<any>rules, { foo: 'bar' })
-    const result = await validator(value, context)
-    expect(result).toEqual(expected)
+  it('should create a validator with a rule set and override context', async() => {
+    const validator = createValidator.bind({ value: 'context' })([[isBoolean], [isEqualToContext]])
+    const result = await validator.call({ value: 'override' }, 'override')
+    expect(result).toEqual(true)
   })
 }
