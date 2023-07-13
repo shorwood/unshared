@@ -27,10 +27,9 @@ export function concatStream(...streams: Readable[]): PassThrough {
 
   // --- Pipe the streams together.
   const result = new PassThrough()
-  const streamEntries = Object.entries(streams)
-  const streamLastIndex = streamEntries.length - 1
-  for (const [index, stream] of streamEntries)
-    stream.pipe(result, { end: Number(index) >= streamLastIndex })
+  const streamLastIndex = streams.length - 1
+  for (const index in streams)
+    streams[index].pipe(result, { end: Number(index) >= streamLastIndex })
 
   // --- Return the concatenated stream.
   return result

@@ -1,20 +1,18 @@
 /**
- * Get the endianness of the current runtime
+ * Get the endianness of the current runtime.
  *
- * @deprecated Prefer `endianness` over this function as the result won't change.
  * @returns The endianness of the runtime
  */
-export const getEndianness = (): 'LE' | 'BE' => {
+export function getEndianness(): 'LE' | 'BE' {
   const uint8Array = new Uint8Array([0x01, 0x02, 0x03, 0x04])
   const uint32Array = new Uint32Array(uint8Array.buffer)
   return uint32Array[0] === 0x04030201 ? 'LE' : 'BE'
 }
 
-/** Endianness of the current runtime. */
-export const endianness = getEndianness()
-
-/** Current runtime is little-endien. */
-export const isLittleEndian = endianness === 'LE'
-
-/** Current runtime is big-endien. */
-export const isBigEndian = endianness === 'BE'
+/* c8 ignore next */
+if (import.meta.vitest) {
+  it('should get the endianness of the runtime', () => {
+    const result = getEndianness()
+    expect(result).toEqual('LE')
+  })
+}

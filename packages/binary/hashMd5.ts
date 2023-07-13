@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/prevent-abbreviations */
-import { endianness } from '@unshared/binary/getEndianness'
+import { getEndianness } from '@unshared/binary/getEndianness'
 import { swapEndian } from '@unshared/binary/swapEndian'
 
 // --- Initialize and compute constants table based on sin(0...63)
@@ -29,7 +29,7 @@ const i = (a: number, b: number, c: number, d: number, x: number, s: number, t: 
 
 const process = (chunk: Uint32Array, words: Uint32Array) => {
   // --- Make sure chunk are little-endian.
-  if (endianness !== 'LE') chunk = chunk.slice(0, 15).map(swapEndian)
+  if (getEndianness() !== 'LE') chunk = chunk.slice(0, 15).map(swapEndian)
 
   // --- Initialize hash parts.
   let [a, b, c, d] = words
@@ -148,4 +148,16 @@ export const hashMd5 = (data: ArrayBufferLike): ArrayBuffer => {
 
   // --- Map as big-endian and return hashed output
   return hash.buffer
+}
+
+// c8 ignore next
+if (import.meta.vitest) {
+  it('should hash an ArrayBufferLike using the MD5 algorithm', () => {
+    const input = 'The quick brown fox jumps over the lazy dog'
+    const inputBuffer = Buffer.from(input, 'utf8')
+    const hash = hashMd5(inputBuffer)
+    const hashHex = Buffer.from(hash).toString('hex')
+    expect(hash).toBeInstanceOf(ArrayBuffer)
+    expect(hashHex).toEqual('9e107d9d372bb6826bd81d3542a419d6')
+  })
 }

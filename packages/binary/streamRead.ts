@@ -1,8 +1,9 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import { nextTick } from 'node:process'
 import { Readable } from 'node:stream'
+import { NumberPositive } from '@unshared/types'
 
-export interface ToBufferOptions<T extends BufferEncoding | undefined = BufferEncoding | undefined> {
+export interface ToBufferOptions<T extends BufferEncoding | undefined = BufferEncoding | undefined, N extends number = number> {
   /**
    * The encoding to use. If not specified, a `Buffer` is returned.
    *
@@ -17,7 +18,7 @@ export interface ToBufferOptions<T extends BufferEncoding | undefined = BufferEn
    *
    * @example 1024
    */
-  length?: number
+  length?: NumberPositive<N>
 }
 
 /**
@@ -45,7 +46,7 @@ export function streamRead(stream: Readable, encoding: BufferEncoding): Promise<
  * @returns A promise that resolves with the buffer.
  * @example streamRead(fs.createReadStream('file.txt'), 1024) // Promise<Buffer>
  */
-export function streamRead(stream: Readable, length: number): Promise<Buffer>
+export function streamRead<N extends number>(stream: Readable, length: NumberPositive<N>): Promise<Buffer>
 /**
  * Reads a stream into a buffer.
  *
@@ -54,7 +55,7 @@ export function streamRead(stream: Readable, length: number): Promise<Buffer>
  * @returns A promise that resolves with the buffer.
  * @example streamRead(fs.createReadStream('file.txt'), { length: 1024 }) // Promise<Buffer>
  */
-export async function streamRead(stream: Readable, options: ToBufferOptions<undefined>): Promise<Buffer>
+export async function streamRead<N extends number>(stream: Readable, options: ToBufferOptions<undefined, N>): Promise<Buffer>
 /**
  * Reads a stream into an encoded string.
  *
@@ -63,7 +64,7 @@ export async function streamRead(stream: Readable, options: ToBufferOptions<unde
  * @returns A promise that resolves with the encoded string.
  * @example streamRead(fs.createReadStream('file.txt'), { encoding: 'utf8' }) // Promise<string>
  */
-export async function streamRead(stream: Readable, options: ToBufferOptions<BufferEncoding>): Promise<string>
+export async function streamRead<N extends number>(stream: Readable, options: ToBufferOptions<BufferEncoding, N>): Promise<string>
 /**
  * Reads a stream into a buffer or an encoded string.
  *
@@ -72,19 +73,15 @@ export async function streamRead(stream: Readable, options: ToBufferOptions<Buff
  * @returns A promise that resolves with the buffer or encoded string.
  * @example streamRead(fs.createReadStream('file.txt'), { encoding: 'utf8' }) // Promise<string>
  */
-export async function streamRead(stream: Readable, options?: number | BufferEncoding | ToBufferOptions): Promise<Buffer | string>
-export async function streamRead(stream: Readable, options?: number | BufferEncoding | ToBufferOptions): Promise<Buffer | string> {
-  // --- Decompose the parameters and options.
+export async function streamRead<N extends number>(stream: Readable, options?: NumberPositive<N> | BufferEncoding | ToBufferOptions<any, N>): Promise<Buffer | string>
+export async function streamRead(stream: Readable, options: NumberPositive<number> | BufferEncoding | ToBufferOptions = {}): Promise<Buffer | string> {
+  // --- Normalize and destructure the options.
   if (typeof options === 'string') options = { encoding: options }
   if (typeof options === 'number') options = { length: options }
-  const { encoding, length } = options ?? {}
+  const { encoding, length } = options
 
-  if (stream instanceof Readable === false)
-    throw new TypeError('Expected a Readable stream.')
   if (stream.readableEnded)
     throw new Error('Readable has already ended.')
-  if (length !== undefined && typeof length !== 'number')
-    throw new TypeError('Expected a number for the length.')
   if (length !== undefined && length < 0)
     throw new RangeError('Received a negative length.')
 
