@@ -1,4 +1,4 @@
-import { fromBase64 } from './fromBase64'
+import { decodeBase64 } from '../encode/decodeBase64'
 import { fromHex } from './fromHex'
 import { fromUtf8 } from './fromUtf8'
 
@@ -6,13 +6,14 @@ export type BuffereableFrom = 'utf8' | 'base64' | 'binary' | 'hex' | 'uint8' | '
 
 /**
  * Convert a value to an `ArrayBuffer`
+ *
  * @param value The value to convert
  * @param from The encoding or integer type to convert from
  * @returns The value as an `ArrayBuffer`
  */
 export const toArrayBuffer = (value?: any, from?: BuffereableFrom): ArrayBuffer => {
   // --- is value Nil
-  if (typeof value === 'undefined' || value === null)
+  if (value === undefined || value === null)
     return new ArrayBuffer(0)
 
   // --- is or has an array buffer
@@ -21,7 +22,7 @@ export const toArrayBuffer = (value?: any, from?: BuffereableFrom): ArrayBuffer 
 
   // --- is a string.
   if (typeof value === 'string') {
-    if (from === 'base64') return fromBase64(value)
+    if (from === 'base64') return decodeBase64(value)
     if (from === 'hex') return fromHex(value)
     return fromUtf8(value)
   }
