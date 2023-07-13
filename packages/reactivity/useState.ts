@@ -1,7 +1,7 @@
 import { Reference, reference } from './reference'
 
 /** The return type of `useState`. */
-export type State<T> = [Reference<T>, (value: T) => void]
+export type State<T = unknown> = [() => T, (value: T) => void]
 
 /**
  * Creates a reactive state with a setter. Similar to `useState` from React.
@@ -9,25 +9,42 @@ export type State<T> = [Reference<T>, (value: T) => void]
  * @param value The initial value.
  * @returns A reactive state with a setter.
  * @example
- * const [state, setState] = useState(0)
+ * const [getState, setState] = useState(0)
  * setState(1)
- * state // 1
+ * getState() // 1
  */
-export function useState<T>(value: T): State<T> {
+export function useState<T>(): State<T | undefined>
+export function useState<T>(value: T): State<T>
+export function useState(value?: unknown): State {
   const valueReference = reference(value)
   return [
-    valueReference,
-    (value: T) => { valueReference.value = value },
+    () => valueReference.value,
+    (value) => { valueReference.value = value },
   ]
 }
 
 /** c8 ignore next */
 if (import.meta.vitest) {
-  it('should create a reactive state', () => {
-    const [state, setState] = useState(0)
-    expect(state.value).toEqual(0)
+  it('should create a state and get its value', () => {
+    const [getState] = useState(0)
+    const result = getState()
+    expect(result).toEqual(0)
+    expectTypeOf(result).toEqualTypeOf<number>()
+  })
+
+  it('should create a state and set its value', () => {
+    const [getState, setState] = useState(0)
     setState(1)
-    expect(state.value).toEqual(1)
-    expectTypeOf(state).toEqualTypeOf<Reference<number>>()
+    const result = getState()
+    expect(result).toEqual(1)
+    expectTypeOf(result).toEqualTypeOf<number>()
+  })
+
+  it('should allow generic types to be passed', () => {
+    const [getState, setState] = useState<number>()
+    setState(1)
+    const result = getState()
+    expect(result).toEqual(1)
+    expectTypeOf(result).toEqualTypeOf<number | undefined>()
   })
 }
