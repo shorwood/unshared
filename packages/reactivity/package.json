@@ -1,0 +1,80 @@
+{
+  "name": "@unshared/reactivity",
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shorwood/unshared.git",
+    "directory": "packages/reactivity"
+  },
+  "exports": {
+    "computed": {
+      "require": "./dist/computed.cjs",
+      "types": "./dist/computed.d.ts",
+      "import": "./dist/computed.js"
+    },
+    "*": {
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "isComputed": {
+      "require": "./dist/isComputed.cjs",
+      "types": "./dist/isComputed.d.ts",
+      "import": "./dist/isComputed.js"
+    },
+    "isReactive": {
+      "require": "./dist/isReactive.cjs",
+      "types": "./dist/isReactive.d.ts",
+      "import": "./dist/isReactive.js"
+    },
+    "isReference": {
+      "require": "./dist/isReference.cjs",
+      "types": "./dist/isReference.d.ts",
+      "import": "./dist/isReference.js"
+    },
+    "reactive": {
+      "require": "./dist/reactive.cjs",
+      "types": "./dist/reactive.d.ts",
+      "import": "./dist/reactive.js"
+    },
+    "reference": {
+      "require": "./dist/reference.cjs",
+      "types": "./dist/reference.d.ts",
+      "import": "./dist/reference.js"
+    },
+    "timeline": {
+      "require": "./dist/timeline.cjs",
+      "types": "./dist/timeline.d.ts",
+      "import": "./dist/timeline.js"
+    },
+    "unwrap": {
+      "require": "./dist/unwrap.cjs",
+      "types": "./dist/unwrap.d.ts",
+      "import": "./dist/unwrap.js"
+    },
+    "useState": {
+      "require": "./dist/useState.cjs",
+      "types": "./dist/useState.d.ts",
+      "import": "./dist/useState.js"
+    },
+    "watch": {
+      "require": "./dist/watch.cjs",
+      "types": "./dist/watch.d.ts",
+      "import": "./dist/watch.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  }
+}
