@@ -1,9 +1,9 @@
-import { createReadStream, openSync } from 'node:fs'
-import { type } from 'node:os'
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 import { emitKeypressEvents } from 'node:readline'
-import { ReadStream } from 'node:tty'
-import { render } from './render'
-import { renderBox } from './renderBox'
+import { ipcImport } from '@unshared/process/ipcImport'
+
+const { render } = ipcImport<typeof import('./render')>('./render')
+const { renderBox } = ipcImport<typeof import('./renderBox')>('./renderBox')
 
 export interface RenderOptions {
   width: number
@@ -47,7 +47,8 @@ export const renderLoop = async() => {
     if (key.name === 'e') zoomVel -= 0.01 * zoom
 
     // --- Exit (ctrl + c)
-    if (key.ctrl && key.name === 'c') process.exit()
+    // eslint-disable-next-line unicorn/no-process-exit
+    if (key.ctrl && key.name === 'c') process.exit(1)
   })
 
   let fps = 0
@@ -79,7 +80,7 @@ export const renderLoop = async() => {
     }
 
     // // --- Write the stats in the top left corner in a box.
-    const box = renderBox({
+    const box = await renderBox({
       'Elapsed': `${elapsed / 1000}s`,
       'FPS': `${fps}`,
       'Zoom': `${stats.zoom.toFixed(2)}`,
@@ -111,9 +112,3 @@ export const renderLoop = async() => {
     fps = Math.round(((1000 / (Date.now() - end)) + fps) / 2)
   }
 }
-
-class Test {
-  constructor(public x: number, public y: number) {}
-}
-
-type TestParameters = ConstructorParameters<typeof Test>
