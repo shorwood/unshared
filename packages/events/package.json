@@ -1,0 +1,49 @@
+{
+  "name": "@unshared/events",
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shorwood/unshared.git",
+    "directory": "packages/events"
+  },
+  "exports": {
+    "EventEmitter": {
+      "require": "./dist/EventEmitter.cjs",
+      "types": "./dist/EventEmitter.d.ts",
+      "import": "./dist/EventEmitter.js"
+    },
+    "eventIterate": {
+      "require": "./dist/eventIterate.cjs",
+      "types": "./dist/eventIterate.d.ts",
+      "import": "./dist/eventIterate.js"
+    },
+    "eventMap": {
+      "require": "./dist/eventMap.cjs",
+      "types": "./dist/eventMap.d.ts",
+      "import": "./dist/eventMap.js"
+    },
+    "*": {
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "dependencies": {
+    "@types/node": "18.14.6",
+    "@unshared/types": "workspace:*"
+  }
+}
