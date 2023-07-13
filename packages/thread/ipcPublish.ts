@@ -12,10 +12,6 @@ import { IPCChannelId } from './types'
  * ipcPublish("foo", { hello: "world" });
  */
 export function ipcPublish(channelId: IPCChannelId, payload?: unknown): void {
-  if (typeof channelId !== 'string')
-    throw new Error('Channel ID must be a string')
-
-  // --- Broadcast the payload to all workers listening on the channel.
   const channel = new BroadcastChannel(channelId)
   channel.postMessage(payload)
   channel.close()

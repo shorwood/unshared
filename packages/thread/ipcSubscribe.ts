@@ -10,16 +10,8 @@ import { IPCChannelId, IPCUnsubscribe } from './types'
  * @returns A function to unsubscribe from the channel.
  */
 export function ipcSubscribe<T>(channelId: IPCChannelId, callback: (data: T) => void): IPCUnsubscribe {
-  if (typeof channelId !== 'string')
-    throw new TypeError('Expected channel ID to be a string.')
-  if (typeof callback !== 'function')
-    throw new TypeError('Expected callback to be a function.')
-
-  // --- Create a new channel and subscribe to it.
   const channel = new BroadcastChannel(channelId)
   channel.addEventListener('message', (event: MessageEvent) => callback(event.data ?? undefined))
-
-  // --- Return an unsubscribe function.
   return () => channel.close()
 }
 
@@ -77,10 +69,9 @@ if (import.meta.vitest) {
     expect(shouldThrow).toThrow(TypeError)
   })
 
-  /** c8 ignore next */
-  // it('should infer the payload type', async() => {
-  //   ipcSubscribe<string>(channelId, (payload) => {
-  //     expectTypeOf(payload).toEqualTypeOf<string>()
-  //   })
-  // })
+  it('should infer the payload type', async() => {
+    ipcSubscribe<string>(channelId, (payload) => {
+      expectTypeOf(payload).toEqualTypeOf<string>()
+    })
+  })
 }

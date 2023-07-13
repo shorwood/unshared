@@ -36,16 +36,8 @@ export interface IPCRequestOptions {
  * ipcRequest('ERROR').catch(console.error); // 'Error: Error!'
  */
 export async function ipcRequest<T>(channelId: IPCChannelId, payload?: unknown, options: IPCRequestOptions = {}): Promise<T> {
-  // --- Destructure the options.
   const { timeout = 0, stealthy = false } = options
-
-  // --- Handle edge cases.
-  if (typeof channelId !== 'string')
-    throw new TypeError('Channel ID must be a string')
-  if (typeof timeout !== 'number')
-    throw new TypeError('Timeout must be a number')
-  if (timeout < 0)
-    throw new RangeError('Timeout must be a positive number')
+  if (timeout < 0) throw new RangeError('Timeout must be a positive number')
 
   // --- Subscribe to the response channel and unsubscribe when the response is received.
   return await new Promise<T>((resolve, reject) => {

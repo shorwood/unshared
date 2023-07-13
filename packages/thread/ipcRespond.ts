@@ -19,12 +19,6 @@ import { IPCChannelId, IPCRequestHandler, IPCUnsubscribe } from './types'
  * ipcRequest('ERROR').catch(console.error); // 'Error: Error!'
  */
 export function ipcRespond<T, R>(channelId: IPCChannelId, handler?: IPCRequestHandler<T, R>): IPCUnsubscribe {
-  if (typeof channelId !== 'string')
-    throw new TypeError('Channel ID must be a string')
-  if (typeof handler !== 'function')
-    throw new TypeError('Handler must be a function')
-
-  // --- Respond to a request with the result of the handler function.
   return ipcSubscribe(`${channelId}.request`,
     async(data: T) => {
       try { ipcPublish(channelId, { result: await handler(data) }) }
