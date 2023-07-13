@@ -10,51 +10,48 @@ export interface TemplateOptions<T> {
    */
   delimiterStart?: string
   /**
-   * String used to delimit the end of an interpolation.
+   * String used to delimit the end of an interpolation. This string must not
+   * contain the start delimiter otherwise it will be considered as part of the
+   * interpolation.
    *
    * @default '}}'
    */
   delimiterEnd?: string
   /**
-   * Function used to transform the interpolation.
-   *
-   * @see `get()`
-   * @default
-   * (key, data) => get(data, key)
+   * Function used to transform the value before it is inserted into the
+   * template. This function is called for each match and receives the value,
+   * the key and the data object. This is useful for serializing objects or
+   * formatting dates.
    */
   transform?: (value: string, key: string, data: T) => string
 }
 
 /**
- * Template a string by injecting values into it.
+ * Template a string using the given data and options. This function allows you
+ * to provide a string with placeholders and replace them with some dynamic
+ * data. The placeholders are defined should start and end with the given
+ * delimiters. By default, the delimiters are `{{` and `}}`.
  *
  * @param template The string to template.
- * @param data The data to inject into the string.
- * @param options Custom options.
+ * @param data The data to template with.
+ * @param options The template options.
  * @returns The templated string.
- * @throws If the template is not a string or the data is not an object.
- * @example template('Hello {{name}}', { name: 'World' }) // 'Hello World'
+ * @example
+ * const contact = { name: ['John', 'Doe'], email: 'jdoe@example.com' }
+ * const messageTemplate = 'Hello {{name.0}}. You can reach me at {{email}}.'
+ * const message = template(messageTemplate, contact)
+ * assert(message === 'Hello John. You can reach me at jdoe@example.com.')
  */
-export function template<T extends object>(template: string, data?: T, options: TemplateOptions<T> = {}): string {
-  if (typeof data !== 'object' || data === null)
-    throw new TypeError('Expected data to be an object')
-  if (typeof template !== 'string')
-    throw new TypeError('Expected template to be a string')
-
-  // --- Destructure options.
+export function template<T extends object>(template: string, data: T, options: TemplateOptions<T> = {}): string {
   const {
     delimiterStart = '{{',
     delimiterEnd = '}}',
-    transform,
+    transform = x => x,
   } = options
 
   // --- Validate options.
-  if (typeof delimiterStart !== 'string')
-    throw new TypeError('Expected delimiterStart to be a string')
-  if (typeof delimiterEnd !== 'string')
-    throw new TypeError('Expected delimiterEnd to be a string')
-  if (transform && typeof transform !== 'function')
-    throw new TypeError('Expected transform to be undefined or a function')
+  if (delimiterStart === delimiterEnd)
+    throw new Error('The start and end delimiters must be different.')
 
   // --- Escape delimiters and create regex.
   const open = escapeRegex(delimiterStart)
@@ -64,9 +61,7 @@ export function template<T extends object>(template: string, data?: T, options: 
   // --- Replace, transform and return.
   return template.replace(regexp, (_, key) => {
     const value = get(data, key)?.toString() ?? ''
-    return typeof transform === 'function'
-      ? transform(value, key, data)
-      : value
+    return transform(value, key, data)
   })
 }
 
