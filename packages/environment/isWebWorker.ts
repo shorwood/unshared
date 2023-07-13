@@ -19,10 +19,5 @@ export const isWorker = () => {
     return true
 
   // --- Detect on WebWorker
-  // @ts-expect-error: `importScripts` is not defined on Node.js
-  if (typeof importScripts === 'function')
-    return true
-
-  // --- Default to false
-  return false
+  return typeof importScripts === 'function'
 }
