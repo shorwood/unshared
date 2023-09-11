@@ -1,50 +1,55 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 /**
- * Normalize the indentation of a multi-line string. The indentation of the first
- * line is used as the base indentation for the whole string.
+ * Remove the leading tabs from a string. This is useful for removing the
+ * indentation from a multiline string literal. The indentation is determined
+ * by the first line that contains a non-whitespace character.
  *
- * @param string The string to dedent.
- * @returns The dedented string.
- * @throws If the value is not a string.
- * @example
- * dedent(`
- *   def write_hello_world():
- *     with open('hello_world.txt', 'w') as f:
- *       f.write('Hello world!')
- * `)
+ * @param string The string to remove leading tabs from.
+ * @returns The string with leading tabs removed.
+ * @example dedent('\tHello\n\tWorld') // 'Hello\nWorld'
  */
-export const dedent = (string: string): string => {
-  // --- Split the string into lines and remove empty lines.
-  const lines = string.split('\n').filter(x => x.trim() !== '')
+export function dedent(string: string): string {
+  // --- Find the first non-empty line and determine the indentation.
+  const lines = string.split('\n')
+  const firstLine = lines.find(line => line.trim() !== '')
 
-  // --- Return early if the string is empty or has only one line.
-  if (lines.length === 0) return string
-  if (lines.length === 1) return string.trim()
+  // --- If there is no first line, return the string as-is.
+  if (!firstLine) return string
 
-  // --- Get the minimum indentation of all lines.
-  const indentations = lines.map(line => line.length - line.trimStart().length)
-  const indentation = Math.min(...indentations)
-
-  // --- Dedent the string.
-  return string
-    .split('\n')
-    .map(line => line.slice(indentation))
-    .join('\n')
+  // --- Remove the indentation from each line.
+  const indent = firstLine.match(/^\s*/)?.[0] ?? ''
+  return lines.map(line => line.replace(indent, '')).join('\n')
 }
 
-/* c8 ignore next */
+/** c8 ignore next */
 if (import.meta.vitest) {
-  it('should dedent a string with space indent', () => {
-    const result = dedent('\n    Hello\n      World\n')
-    expect(result).toEqual('Hello\n  World\n')
+  it('removes leading tabs from a uniform string', () => {
+    const string = dedent('\tHello\n\tWorld')
+    expect(string).toBe('Hello\nWorld')
   })
 
-  it('should dedent a string with tab indent', () => {
-    const result = dedent('\n\t\tHello\n\t\t\tWorld')
-    expect(result).toEqual('Hello\n\tWorld')
+  it('removes leading tabs from a non-uniform string', () => {
+    const string = dedent('\tHello\n\t\tWorld')
+    expect(string).toBe('Hello\n\tWorld')
   })
 
-  it('should dedent a string with mixed indent', () => {
-    const result = dedent('\n\t\tHello\n      World')
-    expect(result).toEqual('Hello\n  World')
+  it('does not remove leading tabs from a string with no leading tabs', () => {
+    const string = dedent('Hello\n\tWorld')
+    expect(string).toBe('Hello\n\tWorld')
+  })
+
+  it('removes leading spaces from a uniform string', () => {
+    const string = dedent('  Hello\n  World')
+    expect(string).toBe('Hello\nWorld')
+  })
+
+  it('removes leading spaces from a non-uniform string', () => {
+    const string = dedent('  Hello\n    World')
+    expect(string).toBe('Hello\n  World')
+  })
+
+  it('does not remove leading spaces from a string with no leading spaces', () => {
+    const string = dedent('Hello\n  World')
+    expect(string).toBe('Hello\n  World')
   })
 }
