@@ -1,6 +1,7 @@
-import { Reactive, reactive } from './reactive'
-import { Reference, reference } from './reference'
-import { Unwraped, unwrap } from './unwrap'
+import { computed } from './computed'
+import { Reactive } from './reactive'
+import { reference } from './reference'
+import { Unwrapped, unwrap } from './unwrap'
 import { watch } from './watch'
 
 export interface TimelineOptions<T> {
@@ -12,7 +13,7 @@ export interface TimelineOptions<T> {
    * @returns The transformed value.
    * @example timeline(a, { transform: (value) => Object.assign({}, value) })
    */
-  transform?: (value: Unwraped<T>) => Unwraped<T>
+  transform?: (value: Unwrapped<T>) => Unwrapped<T>
   /**
    * The maximum number of changes to store.
    *
@@ -34,24 +35,25 @@ export interface TimelineOptions<T> {
  * @param options The options for the timeline.
  * @returns An array of changes.
  * @example
- * const a = reference(1)
+ * const ref = reference(1)
  * const changes = timeline(a)
- * a.value = 2
+ * ref.value = 2
  * expect(changes).toEqual([1, 2])
  */
-export function timeline<T extends Reactive | Reference>(value: T, options: TimelineOptions<T> = {}): Unwraped<T>[] {
+export function timeline<T extends Reactive<any>>(value: T, options: TimelineOptions<T> = {}): Unwrapped<T>[] {
   const { transform, limit = Number.POSITIVE_INFINITY } = options
-  const timeline: Unwraped<T>[] = []
+  const timeline: Unwrapped<T>[] = []
 
   // --- Register a change in the timeline.
-  const registerChange = (value: Unwraped<T>) => {
+  const registerChange = (value: Unwrapped<T>) => {
     const change = transform ? transform(value) : value
     timeline.push(change)
     if (timeline.length > limit) timeline.shift()
   }
 
   // --- Register the initial value and watch for changes.
-  registerChange(unwrap(value))
+  const initialValue = unwrap(value)
+  registerChange(initialValue)
   watch(value, registerChange)
 
   // --- Return the timeline.
@@ -60,24 +62,34 @@ export function timeline<T extends Reactive | Reference>(value: T, options: Time
 
 /** c8 ignore next */
 if (import.meta.vitest) {
-  it('should store changes in an array', () => {
-    const a = reference(1)
-    const changes = timeline(a)
-    a.value = 2
+  it('should store changes of a reactive', () => {
+    const value = reference(1)
+    const changes = timeline(value)
+    value.value = 2
     expect(changes).toEqual([1, 2])
   })
 
-  it('should work with reactive objects', () => {
-    const a = reactive({ value: 1 })
-    const changes = timeline(a)
+  it('should store changes of a reference', () => {
+    const value = reference(1)
+    const changes = timeline(value)
+    value.value = 2
+    expect(changes).toEqual([1, 2])
+  })
+
+  it('should store changes of a computed', async() => {
+    const a = reference(1)
+    const b = reference(2)
+    const sum = computed([a, b], (a, b) => a + b, { eager: true, immediate: true })
+    const changes = timeline(sum)
     a.value = 2
-    expect(changes).toEqual([{ value: 2 }, { value: 2 }])
+    await new Promise(resolve => setTimeout(resolve, 10))
+    expect(changes).toEqual([3, 4])
   })
 
   it('should transform values', () => {
-    const a = reference(1)
-    const changes = timeline(a, { transform: value => value + 1 })
-    a.value = 2
+    const value = reference(1)
+    const changes = timeline(value, { transform: value => value + 1 })
+    value.value = 2
     expect(changes).toEqual([2, 3])
   })
 
