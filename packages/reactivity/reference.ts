@@ -1,5 +1,5 @@
 import { isReference } from './isReference'
-import { Reactive, ReactiveOptions, reactive } from './reactive'
+import { Reactive, ReactiveFlag, ReactiveOptions, reactive } from './reactive'
 
 /** Symbol to identify reactive references. */
 export const ReferenceFlag = Symbol('Reference')
@@ -37,52 +37,68 @@ export type Reference<T = unknown> = Reactive<ReferenceObject<T>>
 export type MaybeReference<T = unknown> = T | Reference<T>
 
 /**
- * A reference to a reactive value. This is a wrapper around a primitive value
- * that allows it to be used in reactive expressions.
+ * Create a reference to a value. This is a wrapper around a primitive value
+ * that allows it to be used in reactive expressions. If the value is already
+ * a reactive reference, it is returned as-is.
  *
  * @returns A reactive reference to the value.
- * @example reference('foo') // { value: 'foo' }
+ * @example reference() // { value: undefined }
  */
 export function reference<T>(): Reference<T | undefined>
 /**
- * A reference to a reactive value. This is a wrapper around a primitive value
- * that allows it to be used in reactive expressions.
+ * Create a reference to a value. This is a wrapper around a primitive value
+ * that allows it to be used in reactive expressions. If the value is already
+ * a reactive reference, it is returned as-is.
  *
  * @param value The value to wrap.
  * @param options The reactive options.
  * @returns A reactive reference to the value.
  * @example reference('foo') // { value: 'foo' }
  */
+export function reference<T>(value: Reference<T>, options?: ReactiveOptions<ReferenceObject<T>>): Reference<T>
 export function reference<T>(value: T, options?: ReactiveOptions<ReferenceObject<T>>): Reference<T>
-export function reference(value?: unknown, options: ReactiveOptions<ReferenceObject> = {}): Reference {
-  return isReference(value)
-    ? value
-    : reactive({ value, [ReferenceFlag]: true }, options)
+export function reference(value?: unknown, options?: ReactiveOptions<any>): Reference {
+  // --- Prevent nested references.
+  if (isReference(value)) return value
+
+  // --- Create and return the reactive object that wraps a value.
+  return reactive({ [ReferenceFlag]: true, value }, options)
 }
 
 /** c8 ignore next */
 if (import.meta.vitest) {
-  it('should create a reactive reference', () => {
+  it('should create a reference', () => {
+    const callback = vi.fn()
+    const result = reference(1, { callbacks: [callback] })
+    expect(result[ReferenceFlag]).toEqual(true)
+    expect(result[ReactiveFlag]).toEqual(true)
+    expect(result.value).toEqual(1)
+  })
+
+  it('should create a reference with no value', () => {
+    const result = reference<number>()
+    expect(result[ReferenceFlag]).toEqual(true)
+    expect(result[ReactiveFlag]).toEqual(true)
+    expect(result.value).toEqual(undefined)
+  })
+
+  it('should call callbacks when the value changes', () => {
     const callback = vi.fn()
     const result = reference(1, { callbacks: [callback] })
     result.value = 2
     expect(callback).toHaveBeenCalledOnce()
     expect(callback).toHaveBeenCalledWith({ value: 2, [ReferenceFlag]: true })
-    expectTypeOf(result).toEqualTypeOf<Reference<number>>()
   })
 
-  it('should create a reactive reference with a default value', () => {
-    const callback = vi.fn()
-    const result = reference<number>(undefined, { callbacks: [callback] })
-    result.value = 1
-    expect(callback).toHaveBeenCalledOnce()
-    expect(callback).toHaveBeenCalledWith({ value: 1, [ReferenceFlag]: true })
-    expectTypeOf(result).toEqualTypeOf<Reference<number>>()
-  })
-
-  it('should return as-is if the value is a reactive reference', () => {
-    const value1 = reference()
+  it('should return as-is if the value is already reactive reference', () => {
+    const value1 = reference(1)
     const value2 = reference(value1)
     expect(value2).toBe(value1)
+    expectTypeOf(value2).toEqualTypeOf<Reference<number>>()
+  })
+
+  it('should infer the type of the value', () => {
+    const value = reference('foo')
+    expectTypeOf(value).toEqualTypeOf<Reference<string>>()
   })
 }
