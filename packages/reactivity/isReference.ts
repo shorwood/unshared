@@ -1,3 +1,4 @@
+import { computed } from './computed'
 import { reactive } from './reactive'
 import { Reference, ReferenceFlag, reference } from './reference'
 
@@ -9,6 +10,7 @@ import { Reference, ReferenceFlag, reference } from './reference'
  * @example isReference(reference('foo')) // true
  */
 export function isReference(value: unknown): value is Reference<unknown> {
+  // @ts-expect-error: Since `value` might be a Proxy, we need to access the internal property.
   return typeof value === 'object' && value !== null && value[ReferenceFlag] === true
 }
 
@@ -25,7 +27,7 @@ if (import.meta.vitest) {
   })
 
   it('should return false for computed', () => {
-    const result = isReference(reactive(() => 1))
+    const result = isReference(computed([], () => 1))
     expect(result).toEqual(false)
   })
 
@@ -35,7 +37,7 @@ if (import.meta.vitest) {
   })
 
   it('should predicate the type of a reference', () => {
-    const value = { [ReferenceFlag]: true } as unknown
+    const value = undefined as unknown
     const result = isReference(value)
     if (result) expectTypeOf(value).toEqualTypeOf<Reference<unknown>>()
   })

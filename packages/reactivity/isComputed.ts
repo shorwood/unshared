@@ -9,14 +9,15 @@ import { reference } from './reference'
  * @returns `true` if the value is a computed value.
  * @example isComputed(computed(() => 1)) // true
  */
-export function isComputed(value: unknown): value is Computed {
-  return typeof value === 'object' && value !== null && ComputedFlag in value === true
+export function isComputed(value: unknown): value is Computed<unknown> {
+  // @ts-expect-error: Since `value` might be a Proxy, we need to access the internal property.
+  return typeof value === 'object' && value !== null && value[ComputedFlag] === true
 }
 
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should return true for computed', () => {
-    const result = isComputed(computed(() => 1))
+    const result = isComputed(computed([], () => 1))
     expect(result).toEqual(true)
   })
 
@@ -36,8 +37,8 @@ if (import.meta.vitest) {
   })
 
   it('should predicate the type of a computed', () => {
-    const value = { [ComputedFlag]: true } as unknown
+    const value = undefined as unknown
     const result = isComputed(value)
-    if (result) expectTypeOf(value).toEqualTypeOf<Computed>()
+    if (result) expectTypeOf(value).toEqualTypeOf<Computed<unknown>>()
   })
 }
