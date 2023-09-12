@@ -1,5 +1,4 @@
-import { MaybePromise } from '@unshared/types/MaybePromise'
-import { NotPromise } from '@unshared/types/NotPromise'
+import type { MaybePromise, NotPromise } from '@unshared/types'
 
 /**
  * A result type that can be used to represent the result of an operation that
@@ -10,20 +9,26 @@ import { NotPromise } from '@unshared/types/NotPromise'
  * @template E The type of the error.
  * @example Result<string, Error> // [string | undefined, Error | undefined]
  */
-export type Result<T = unknown, E extends Error = Error> = [T | undefined, E | undefined]
+export type Result<T = unknown, E extends Error = Error> = [
+  value: T | undefined,
+  error: E | undefined,
+]
 
 /**
- * Run a function and return the result and error in an array. If the function
+ * Run a function and return the value or error in an array. If the function
  * throws an error, the error will be returned in the second element of the
- * array. Otherwise, the result will be returned in the first element of the
- * array.
+ * array. Otherwise, the value will be returned in the first element of the
+ * array. This allows for similar error handling to Rust's `Result` type.
  *
  * If the function is asynchronous, the result will be a promise that resolves
- * to the result and error as an array.
+ * to the result asynchronously. If the function is synchronous, the result will
+ * be returned immediately.
  *
  * @param fn The function to run.
  * @returns A tuple with the value and the error if any.
- * @example const [result, error] = attempt(() => true) // [true, undefined]
+ * @example
+ * const [result, error] = attempt(() => true) // [true, undefined]
+ * const [result, error] = attempt(() => { throw new Error('I am failing') }) // [undefined, Error('I am failing')]
  */
 export function attempt<R, E extends Error = Error>(fn: () => Promise<R>): Promise<Result<R, E>>
 export function attempt<R, E extends Error = Error>(fn: () => NotPromise<R>): Result<R, E>
@@ -31,10 +36,14 @@ export function attempt<R, E extends Error = Error>(fn: () => MaybePromise<R>): 
 export function attempt(fn: Function): unknown {
   try {
     const result = fn()
+
+    // --- Return a promise if the function is asynchronous.
     return result instanceof Promise
       ? result
         .then(value => [value, undefined])
         .catch(error => [undefined, error])
+
+      // --- Return the result immediately if the function is synchronous.
       : [result, undefined]
   }
 
