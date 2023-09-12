@@ -1,6 +1,7 @@
+import { computed } from './computed'
 import { Reactive, ReactiveData, reactive } from './reactive'
-import { Reference, reference } from './reference'
-import { Unwraped, unwrap } from './unwrap'
+import { reference } from './reference'
+import { Unwrapped, unwrap } from './unwrap'
 
 /** Stop watching a reactive object. */
 export type Unwatch = () => void
@@ -12,7 +13,7 @@ export type Unwatch = () => void
  * @template T The type of the reactive object or reference.
  * @example (value: string) => console.log(value)
  */
-export type WatchCallback<T extends Reactive | Reference> = (value: Unwraped<T>) => void
+export type WatchCallback<T> = (value: Unwrapped<T>) => void
 
 /**
  * Watch a reactive object for changes on a specific path, and invoke a callback
@@ -26,16 +27,19 @@ export type WatchCallback<T extends Reactive | Reference> = (value: Unwraped<T>)
  * const ref = reference('foo')
  * const stop = watch(ref, value => console.log(value))
  */
-export function watch<T extends Reactive | Reference>(value: T, callback: WatchCallback<T>): Unwatch {
-  const internalCallback = (value: T) => callback(<any>unwrap(value))
+export function watch<T extends Reactive<any>>(value: T, callback: WatchCallback<T>): Unwatch {
+  // @ts-expect-error: `unwrap(value)` is unknown but is garanteed to be `Unwrapped<T>`.
+  const watchCallback = (value: unknown) => callback(unwrap(value))
 
   // --- Add the callback to the reactive object.
-  value[ReactiveData].callbacks.push(internalCallback)
+  // @ts-expect-error: `value` is a `Reactive` object.
+  const reactiveData = value[ReactiveData]
+  reactiveData.callbacks.push(watchCallback)
 
   // --- Return a function to remove the callback.
   return () => {
-    const index = value[ReactiveData].callbacks.indexOf(internalCallback)
-    if (index !== -1) value[ReactiveData].callbacks.splice(index, 1)
+    const index = reactiveData.callbacks.indexOf(watchCallback)
+    if (index !== -1) reactiveData.callbacks.splice(index, 1)
   }
 }
 
@@ -49,12 +53,30 @@ if (import.meta.vitest) {
     expect(callback).toHaveBeenCalledWith({ foo: 'baz' })
   })
 
+  it('should watch nested properties', () => {
+    const callback = vi.fn()
+    const value = reactive({ foo: { bar: 'baz' } }, { deep: true })
+    watch(value, callback)
+    value.foo.bar = 'qux'
+    expect(callback).toHaveBeenCalledWith({ foo: { bar: 'qux' } })
+  })
+
   it('should watch a reactive reference', () => {
     const callback = vi.fn()
     const value = reference('foo')
     watch(value, callback)
     value.value = 'bar'
     expect(callback).toHaveBeenCalledWith('bar')
+  })
+
+  it('should watch a computed value', async() => {
+    const callback = vi.fn()
+    const a = reference(1)
+    const b = reference(2)
+    const sum = computed([a, b], (a, b) => a + b, { eager: true })
+    watch(sum, callback)
+    a.value = 2
+    expect(callback).toHaveBeenCalledWith(4)
   })
 
   it('should return a function to stop watching', () => {
