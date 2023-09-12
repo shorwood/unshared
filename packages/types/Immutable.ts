@@ -1,12 +1,3 @@
-/**
- * An immutable object where all nested properties are readonly.
- *
- * @template T The type of the object.
- * @example Immutable<{ a: number }> // { readonly a: number }
- */
-export type Immutable<T> = T extends object
-  ? { readonly [K in keyof T]: Immutable<T[K]> }
-  : T
 
 /** c8 ignore next */
 if (import.meta.vitest) {

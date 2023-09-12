@@ -1,4 +1,16 @@
-import { Immutable } from '@unshared/types/Immutable'
+import { Collection } from '@unshared/types'
+
+/**
+ * An immutable object where all nested properties are readonly.
+ *
+ * @template T The type of the object.
+ * @example Immutable<{ a: number }> // { readonly a: number }
+ */
+export type Immutable<T> = T extends object
+  ? { readonly [K in keyof T]: Immutable<T[K]> }
+  : T extends Array<infer U>
+    ? ReadonlyArray<Immutable<U>>
+    : T
 
 /**
  * Returns a deeply immutable proxy of the given object. This means that all
@@ -12,12 +24,7 @@ import { Immutable } from '@unshared/types/Immutable'
  * const immutableObject = immutable(object)
  * immutableObject.a = 2 // Error
  */
-export function immutable<T extends object>(object: T): Immutable<T> {
-  // --- Handle edge cases.
-  if (object === null || typeof object !== 'object')
-    throw new TypeError('Cannot make non-object immutable.')
-
-  // --- Recursively wrap object in a proxy that prevents setting properties.
+export function immutable<T extends Collection>(object: T): Immutable<T> {
   return new Proxy(object, {
     get(target, key) {
       const value = Reflect.get(target, key)
@@ -35,6 +42,7 @@ if (import.meta.vitest) {
     const result = immutable(object)
     expect(result).toStrictEqual(object)
     expect(result).not.toBe(object)
+    expectTypeOf(result).toEqualTypeOf<{ readonly a: number; readonly b: { readonly c: number } }>()
   })
 
   it('should return a copy of the given array', () => {
@@ -42,6 +50,7 @@ if (import.meta.vitest) {
     const result = immutable(array)
     expect(result).toStrictEqual(array)
     expect(result).not.toBe(array)
+    expectTypeOf(result).toEqualTypeOf<readonly number[]>()
   })
 
   it('should make all properties readonly', () => {
@@ -71,5 +80,22 @@ if (import.meta.vitest) {
     // eslint-disable-next-line unicorn/no-null
     const shouldThrow = () => immutable(null)
     expect(shouldThrow).toThrow()
+  })
+
+  it('should make all properties readonly', () => {
+    type Result = Immutable<{ a: number; b: number }>
+    interface Expected { readonly a: number; readonly b: number }
+    expectTypeOf<Result>().toEqualTypeOf<Expected>()
+  })
+
+  it('should make all nested properties readonly', () => {
+    type Result = Immutable<{ a: number; b: { c: number } }>
+    interface Expected { readonly a: number; readonly b: { readonly c: number } }
+    expectTypeOf<Result>().toEqualTypeOf<Expected>()
+  })
+
+  it('should passthrough primitives', () => {
+    type Result = Immutable<number>
+    expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 }
