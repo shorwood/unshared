@@ -1,5 +1,4 @@
 export * from './computed'
-export * from './index'
 export * from './isComputed'
 export * from './isReactive'
 export * from './isReference'
