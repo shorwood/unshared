@@ -1,8 +1,21 @@
-import { Reference, reference } from './reference'
+import { reference } from './reference'
 
 /** The return type of `useState`. */
-export type State<T = unknown> = [() => T, (value: T) => void]
+export type State<T = unknown> = [
+  getState: () => T,
+  setState: (value: T) => void,
+]
 
+/**
+ * Creates a reactive state with a setter. Similar to `useState` from React.
+ *
+ * @returns A reactive state with a setter.
+ * @example
+ * const [getState, setState] = useState()
+ * setState(1)
+ * getState() // 1
+ */
+export function useState<T>(): State<T | undefined>
 /**
  * Creates a reactive state with a setter. Similar to `useState` from React.
  *
@@ -13,13 +26,12 @@ export type State<T = unknown> = [() => T, (value: T) => void]
  * setState(1)
  * getState() // 1
  */
-export function useState<T>(): State<T | undefined>
-export function useState<T>(value: T): State<T>
-export function useState(value?: unknown): State {
+export function useState<T>(value?: T): State<T>
+export function useState<T>(value?: T): State<T> {
   const valueReference = reference(value)
   return [
-    () => valueReference.value,
-    (value) => { valueReference.value = value },
+    () => valueReference.value as T,
+    (value: T) => { valueReference.value = value },
   ]
 }
 
