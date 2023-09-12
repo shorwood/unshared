@@ -1,3 +1,5 @@
+import { Computed, computed } from './computed'
+import { isComputed } from './isComputed'
 import { isReactive } from './isReactive'
 import { isReference } from './isReference'
 import { Reactive, ReactiveData, reactive } from './reactive'
@@ -9,13 +11,14 @@ import { Reference, reference } from './reference'
  *
  * @template T The type of the value to unwrap.
  * @returns The unwrapd value.
- * @example Unwraped<Reactive<{ foo: 'bar' }>> // { foo: 'bar' }
- * @example Unwraped<Reference<'foo'>> // 'foo'
+ * @example Unwrapped<Reactive<{ foo: 'bar' }>> // { foo: 'bar' }
+ * @example Unwrapped<Reference<'foo'>> // 'foo'
  */
-export type Unwraped<T> =
+export type Unwrapped<T> =
   T extends Reference<infer U> ? U
-    : T extends Reactive<infer V> ? V
-      : T
+    : T extends Computed<infer U> ? U
+      : T extends Reactive<infer U> ? U
+        : T
 
 /**
  * Dereference a {@link reactive} object or unwrap a {@link reference}.
@@ -23,13 +26,14 @@ export type Unwraped<T> =
  *
  * @param value The value to unwrap.
  * @returns The unwrapd value.
- * @example unwrap(reactive({ foo: 'bar' })) // { foo: 'bar' }
- * @example unwrap(reference('foo')) // 'foo'
+ * const value = reference('foo')
+ * unwrap(value) // 'foo'
  */
-export function unwrap<T>(value: T): Unwraped<T> {
-  if (isReactive(value)) value = value[ReactiveData].source as T
-  if (isReference(value)) value = value.value as T
-  return value as Unwraped<T>
+export function unwrap<T>(value: T): Unwrapped<T> {
+  if (isComputed(value)) return value.value as Unwrapped<T>
+  if (isReference(value)) return value.value as Unwrapped<T>
+  if (isReactive(value)) return value[ReactiveData].source as Unwrapped<T>
+  return value as Unwrapped<T>
 }
 
 /** c8 ignore next */
@@ -38,21 +42,28 @@ if (import.meta.vitest) {
     const source = { foo: 'bar' }
     const value = reactive(source)
     const result = unwrap(value)
-    expect(result).toStrictEqual(source)
+    expect(result).toEqual(source)
     expectTypeOf(result).toEqualTypeOf<{ foo: string }>()
   })
 
-  it('should unwrap reactive references', () => {
-    const value = reference<'foo'>('foo')
+  it('should unwrap reactive value', () => {
+    const value = reference('foo')
     const result = unwrap(value)
     expect(result).toEqual('foo')
-    expectTypeOf(result).toEqualTypeOf<'foo'>()
+    expectTypeOf(result).toEqualTypeOf<string>()
+  })
+
+  it('should unwrap a computed value', () => {
+    const value = computed([], () => 'foo')
+    const result = unwrap(value)
+    expect(result).toEqual('foo')
+    expectTypeOf(result).toEqualTypeOf<string>()
   })
 
   it('should return non-reactive values as-is', () => {
-    const value = { foo: 'bar' }
+    const value = 'foo'
     const result = unwrap(value)
     expect(result).toStrictEqual(value)
-    expectTypeOf(result).toEqualTypeOf<{ foo: string }>()
+    expectTypeOf(result).toEqualTypeOf<string>()
   })
 }
