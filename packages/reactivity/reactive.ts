@@ -1,4 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
+import { NotUndefined } from '@unshared/types'
 
 /** The symbol used to identify reactive objects. */
 export const ReactiveFlag = Symbol('Reactive')
@@ -11,9 +12,9 @@ export const ReactiveData = Symbol('ReactiveData')
  *
  * @param object The object that was changed.
  */
-export type ReactiveCallback<T extends object> = (object: T) => void
+export type ReactiveCallback<T = unknown> = (object: T) => void
 
-export interface ReactiveOptions<T extends object = object> {
+export interface ReactiveOptions<T = unknown> {
   /**
    * Whether to recursively watch the nested objects and arrays. Be careful
    * when using this option, as it can cause performance issues if the object
@@ -65,7 +66,7 @@ export interface ReactiveOptions<T extends object = object> {
  * @returns A reactive object.
  * @example Reactive<{ foo: string }>
  */
-export type Reactive<T extends object = object> = T & {
+export type Reactive<T = unknown> = T & {
   [ReactiveFlag]: true
   [ReactiveData]: { callbacks: ReactiveCallback<T>[]; source: T }
 }
@@ -77,7 +78,7 @@ export type Reactive<T extends object = object> = T & {
  * @returns An object that might be reactive.
  * @example MaybeReactive<{ foo: string }>
  */
-export type MaybeReactive<T extends object = object> = T | Reactive<T>
+export type MaybeReactive<T = unknown> = T | Reactive<T>
 
 /**
  * Wrap a function in a function that will trigger a callback when the function
@@ -116,13 +117,14 @@ function wrapFunction(fn: Function, callback: Function, source: unknown, root: u
 function wrapOperation(operation: keyof ProxyHandler<object>, callback: Function, source: unknown, root: unknown) {
   return function(...args: unknown[]) {
     if (operation === 'defineProperty') {
-      const [target, property, descriptor] = args as Parameters<ProxyHandler<object>['defineProperty']>
+      const [target, property, descriptor] = args as Parameters<NotUndefined<ProxyHandler<object>['defineProperty']>>
       const newValue = descriptor.value
       const oldValue = Reflect.get(target, property, source)
       if (newValue === oldValue) return true
     }
 
-    // --- Call the operation, trigger the callback, and return the result.
+    // --- Apply the operation, trigger the callback, and return the operation result.
+    // @ts-expect-error: The `operation` is a valid key of `Reflect`.
     const result = Reflect[operation].apply(source, args)
     callback(root)
     return result
@@ -130,7 +132,7 @@ function wrapOperation(operation: keyof ProxyHandler<object>, callback: Function
 }
 
 /**
- * Wrap an object in a Proxy that will trigger a callback when a property is set.
+ * Wrap an object in a Proxy that will trigger a callback when a sub-property is set.
  * This is useful for watching objects and arrays for changes. You can set the
  * `deep` option to `true` to recursively watch nested objects and arrays.
  *
@@ -151,13 +153,14 @@ function wrapOperation(operation: keyof ProxyHandler<object>, callback: Function
  * const value = reactive({ foo: 'bar', { callbacks: [callback] })
  * value.foo = 'baz' // 'Object changed!'
  */
-export function reactive<T extends object>(source: T, options: ReactiveOptions<T> = {}): Reactive<T> {
+export function reactive<T>(source: T, options: ReactiveOptions<T> = {}): Reactive<T> {
   const { deep = false, root = source, hooks = [], callbacks = [] } = options
 
-  // --- If the source is already reactive, return it as-is.
-  if (source[ReactiveFlag]) return source as Reactive<T>
+  // --- Check if the source is an object.
+  if (typeof source !== 'object' || source === null)
+    throw new TypeError('The source must be an object or array.')
 
-  // --- Create the callback function.
+  // --- Assign the callback function.
   const callback = () => { for (const callback of callbacks) callback(root) }
 
   // --- Create the proxy.
@@ -226,7 +229,7 @@ if (import.meta.vitest) {
 
   it('should trigger when a property is deleted', () => {
     const callback = vi.fn() as () => {}
-    const object = { foo: 'bar' }
+    const object: { foo?: string } = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
     delete result.foo
     expect(callback).toHaveBeenCalledWith({})
@@ -304,12 +307,5 @@ if (import.meta.vitest) {
     const result = reactive(object, { callbacks: [callback] })
     result.foo = 'bar'
     expect(callback).not.toHaveBeenCalledOnce()
-  })
-
-  it('should return the source if it is already reactive', () => {
-    const object = { foo: 'bar' }
-    const result = reactive(object)
-    const result2 = reactive(result)
-    expect(result2).toBe(result)
   })
 }
