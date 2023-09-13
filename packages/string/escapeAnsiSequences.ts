@@ -4,7 +4,9 @@ const ANSI_REGEX = new RegExp([
 ].join('|'), 'g')
 
 /**
- * Escapes ANSI sequences from a string.
+ * Escapes ANSI sequences from a string. Namely, it removes ANSI escape codes
+ * and hyperlinks that are used in terminal emulators to display colors and
+ * links.
  *
  * @param text The string to escape.
  * @returns The escaped string.
