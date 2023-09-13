@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-/* eslint-disable @typescript-eslint/no-var-requires */
 import { PassThrough, Readable } from 'node:stream'
 import { streamRead } from './streamRead'
 
@@ -13,11 +11,8 @@ import { streamRead } from './streamRead'
  * const fileStreams = fileParts.map(createReadStream)
  * const fileStream = concatStream(...fileStreams)
  */
-export function concatStream(...streams: Readable[]): PassThrough {
-  const { Readable, PassThrough } = require('node:stream') as typeof import('node:stream')
-
-  if (streams.length === 0)
-    throw new Error('Expected at least one stream.')
+export function concatStream(...streams: Readable[]): Readable {
+  // --- Make sure the streams are readable.
   for (const stream of streams) {
     if (Readable.isReadable(stream) === false)
       throw new TypeError('Expected all items to be a Readable stream.')
