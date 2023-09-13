@@ -1,0 +1,121 @@
+export interface HexDumpOptions {
+  /** The string representation of the characters. */
+  encoding?: 'ascii' | 'utf8'
+  /** The number of bytes to dump per line. */
+  bytesPerLine?: number
+  /** Skip zero-filled lines. */
+  skipZeroLines?: boolean
+}
+
+/**
+ * Returns an hex dump of the given buffer.
+ *
+ * @param buffer The buffer to dump.
+ * @param options The options of the hex dump.
+ * @returns A hex dump of the given buffer.
+ * @example hexDump(buffer); // => string
+ */
+export function hexDump(buffer: Buffer, options: HexDumpOptions = {}): string {
+  const {
+    encoding = 'ascii',
+    bytesPerLine = 16,
+    skipZeroLines = true,
+  } = options
+
+  // --- Split the string into lines of N bytes.
+  const lines: string[] = []
+  for (let index = 0; index < buffer.length; index += bytesPerLine) {
+    const lineBuffer = buffer.subarray(index, index + bytesPerLine)
+    if (skipZeroLines && lineBuffer.every(x => x === 0)) continue
+
+    // --- Convert the line buffer to hex.
+    const hex = lineBuffer
+      .toString('hex')
+      .match(/.{1,2}/g)!
+      .join(' ')
+      .padEnd(bytesPerLine * 3 - 1, ' ')
+
+    // --- Replace non-printable characters with a dot.
+    const text = encoding === 'utf8'
+    // eslint-disable-next-line no-control-regex
+      ? lineBuffer.toString(encoding).replace(/[\u0000-\u001F\u007F-\u00FF]/g, '.')
+      : lineBuffer.toString(encoding).replace(/[^ -~]/g, '.')
+
+    // --- Add the line to the result.
+    const line = `${index.toString().padStart(8, '0')} | ${hex} | ${text}`
+    lines.push(line)
+  }
+
+  // --- Return the result.
+  return lines.join('\n')
+}
+
+/* c8 ignore next */
+if (import.meta.vitest) {
+  it('should dump the given buffer', () => {
+    const buffer = Buffer.from('Hello, world!')
+    const result = hexDump(buffer)
+    expect(result).toEqual('00000000 | 48 65 6c 6c 6f 2c 20 77 6f 72 6c 64 21          | Hello, world!')
+  })
+
+  it('should split into lines of 16 bytes', () => {
+    const buffer = Buffer.from('Hello, world! Hello, world!')
+    const result = hexDump(buffer)
+    const expected = [
+      '00000000 | 48 65 6c 6c 6f 2c 20 77 6f 72 6c 64 21 20 48 65 | Hello, world! He',
+      '00000016 | 6c 6c 6f 2c 20 77 6f 72 6c 64 21                | llo, world!',
+    ].join('\n')
+    expect(result).toEqual(expected)
+  })
+
+  it('should split it into lines of 8 bytes', () => {
+    const buffer = Buffer.from('Hello, world!')
+    const result = hexDump(buffer, { bytesPerLine: 8 })
+    const expected = [
+      '00000000 | 48 65 6c 6c 6f 2c 20 77 | Hello, w',
+      '00000008 | 6f 72 6c 64 21          | orld!',
+    ].join('\n')
+    expect(result).toEqual(expected)
+  })
+
+  it('should remove zero-filled lines', () => {
+    const buffer = Buffer.from([65, 65, 65, 65, 0, 0, 0, 0, 66, 66, 66, 66])
+    const result = hexDump(buffer, { bytesPerLine: 4 })
+    const expected = [
+      '00000000 | 41 41 41 41 | AAAA',
+      '00000008 | 42 42 42 42 | BBBB',
+    ].join('\n')
+    expect(result).toEqual(expected)
+  })
+
+  it('should not remove zero-filled lines', () => {
+    const buffer = Buffer.from([65, 65, 65, 65, 0, 0, 0, 0, 66, 66, 66, 66])
+    const result = hexDump(buffer, { skipZeroLines: false, bytesPerLine: 4 })
+    const expected = [
+      '00000000 | 41 41 41 41 | AAAA',
+      '00000004 | 00 00 00 00 | ....',
+      '00000008 | 42 42 42 42 | BBBB',
+    ].join('\n')
+    expect(result).toEqual(expected)
+  })
+
+  it('should dump the given buffer as ASCII', () => {
+    const buffer = Buffer.from('Hello, world! 你好，世界')
+    const result = hexDump(buffer)
+    const expected = [
+      '00000000 | 48 65 6c 6c 6f 2c 20 77 6f 72 6c 64 21 20 e4 bd | Hello, world! d=',
+      '00000016 | a0 e5 a5 bd ef bc 8c e4 b8 96 e7 95 8c          |  e%=o<.d8.g..',
+    ].join('\n')
+    expect(result).toEqual(expected)
+  })
+
+  it('should dump the given buffer as UTF-8', () => {
+    const buffer = Buffer.from('Hello, world! 你好，世界')
+    const result = hexDump(buffer, { encoding: 'utf8' })
+    const expected = [
+      '00000000 | 48 65 6c 6c 6f 2c 20 77 6f 72 6c 64 21 20 e4 bd | Hello, world! �',
+      '00000016 | a0 e5 a5 bd ef bc 8c e4 b8 96 e7 95 8c          | �好，世界',
+    ].join('\n')
+    expect(result).toEqual(expected)
+  })
+}
