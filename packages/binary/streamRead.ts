@@ -81,9 +81,9 @@ export async function streamRead(stream: Readable, options: NumberPositive<numbe
   const { encoding, length } = options
 
   if (stream.readableEnded)
-    throw new Error('Readable has already ended.')
+    throw new Error('Could not read stream: The stream has already ended.')
   if (length !== undefined && length < 0)
-    throw new RangeError('Received a negative length.')
+    throw new RangeError('Could not read stream: The length must be a positive number.')
 
   // --- Reads the stream into a buffer of fixed length.
   if (length) {
@@ -202,6 +202,7 @@ if (import.meta.vitest) {
 
   it('should throw if the length is negative', async() => {
     const stream = Readable.from(string)
+    // @ts-expect-error: invalid type
     const shouldReject = () => streamRead(stream, { length: -1 })
     await expect(shouldReject).rejects.toThrow(RangeError)
   })
