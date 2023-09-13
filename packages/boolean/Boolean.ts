@@ -1,11 +1,5 @@
 /* eslint-disable no-new-wrappers */
-import { BooleanAnd } from '@unshared/types/BooleanAnd'
-import { BooleanNand } from '@unshared/types/BooleanNand'
-import { BooleanNor } from '@unshared/types/BooleanNor'
-import { BooleanNot } from '@unshared/types/BooleanNot'
-import { BooleanOr } from '@unshared/types/BooleanOr'
-import { BooleanXnor } from '@unshared/types/BooleanXnor'
-import { BooleanXor } from '@unshared/types/BooleanXor'
+import type { BooleanAnd, BooleanNand, BooleanNor, BooleanNot, BooleanOr, BooleanXnor, BooleanXor } from '@unshared/types'
 
 /**
  * Class representing a mutable boolean value.

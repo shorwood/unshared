@@ -1,4 +1,4 @@
-import { BooleanNand } from '@unshared/types/BooleanNand'
+import type { BooleanNand } from '@unshared/types'
 
 /**
  * Computes the logical [NAND](https://en.wikipedia.org/wiki/NAND_gate) of two booleans.

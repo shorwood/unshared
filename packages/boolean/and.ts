@@ -1,4 +1,4 @@
-import { BooleanAnd } from '@unshared/types/BooleanAnd'
+import type { BooleanAnd } from '@unshared/types'
 
 /**
  * Computes the logical [AND](https://en.wikipedia.org/wiki/AND_gate) of the given booleans.

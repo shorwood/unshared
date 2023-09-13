@@ -1,4 +1,4 @@
-import { BooleanXor } from '@unshared/types/BooleanXor'
+import type { BooleanXor } from '@unshared/types'
 
 /**
  * Computes the logical [XOR](https://en.wikipedia.org/wiki/Exclusive_or) of the given booleans.
