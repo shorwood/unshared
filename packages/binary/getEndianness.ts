@@ -1,7 +1,8 @@
 /**
- * Get the endianness of the current runtime.
+ * Get the endianness of the current environment.
  *
- * @returns The endianness of the runtime
+ * @returns The endianness of the runtime.
+ * @example getEndianness() // 'LE'
  */
 export function getEndianness(): 'LE' | 'BE' {
   const uint8Array = new Uint8Array([0x01, 0x02, 0x03, 0x04])
