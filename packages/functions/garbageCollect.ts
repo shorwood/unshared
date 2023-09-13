@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+import { setFlagsFromString } from 'node:v8'
+import { runInNewContext } from 'node:vm'
 import { nextGarbageCollection } from './nextGarbageCollection'
 
 /**
@@ -17,8 +19,6 @@ export function garbageCollect(): void {
   if (typeof globalThis.gc === 'function') { globalThis.gc(); return }
 
   // --- Otherwise, use the `vm.runInNewContext()` function.
-  const { runInNewContext } = require('node:vm') as typeof import('node:vm')
-  const { setFlagsFromString } = require('node:v8') as typeof import('node:v8')
   setFlagsFromString('--expose_gc')
   runInNewContext('globalThis.gc()')
 }
