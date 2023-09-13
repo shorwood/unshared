@@ -34,11 +34,11 @@ export function awaitable<T extends object, U>(object: T, promise: Promise<U>): 
 export function awaitable<T extends object, U>(object: T, promise: FunctionAsync<U>): Awaitable<T, U>
 export function awaitable(object: object, promise: Promise<unknown> | FunctionAsync<unknown>): Awaitable<unknown> {
   return new Proxy<any>(object, {
-    get(target, property) {
+    get(target, property: string) {
       const value = Reflect.get(target, property)
 
       // --- Handle promise-like methods.
-      if (typeof property === 'string' && ['then', 'catch', 'finally'].includes(property)) {
+      if (['then', 'catch', 'finally'].includes(property)) {
         // --- If `promise` is an async function, call it and replace the result of the call.
         if (typeof promise === 'function')
           promise = promise()
