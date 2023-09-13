@@ -8,10 +8,6 @@
  * @example escapeHtml('foo<bar>baz') // 'foo&lt;bar&gt;baz'
  */
 export function escapeHtml(value: string): string {
-  if (typeof value !== 'string')
-    throw new TypeError('Expected a string')
-
-  // --- Escape the special HTML characters.
   return value.replace(/&(?!amp;|lt;|gt;|quot;|#39;)|<|>|"|'/g, (match) => {
     if (match === '&') return '&amp;'
     if (match === '<') return '&lt;'
