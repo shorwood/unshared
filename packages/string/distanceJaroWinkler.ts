@@ -1,15 +1,19 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /**
- * Calculates the Jaro-Winkler distance between two strings.
+ * Compute the [Jaro-Winkler](https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance)
+ * distance between two strings. The Jaro-Winkler distance is a measure of
+ * similarity between two strings. The higher the Jaro-Winkler distance for
+ * two strings is, the more similar the strings are.
  *
  * @param a The first string.
  * @param b The second string.
  * @returns The Jaro-Winkler distance between the strings.
- * @throws If `a` or `b` is not a string.
- * @example distance('foo', 'bar') // returns 0.3333333333333333
- * @see https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance
+ * @example distanceJaroWinkler('bar', 'baz') // 0.822
  */
-// eslint-disable-next-line sonarjs/cognitive-complexity
 export function distanceJaroWinkler(a: string, b: string): number {
+  // --- Early exit if the strings are equal.
+  if (a === b) return 1
+
   // --- Determining the length of each string
   const aLength = a.length
   const bLength = b.length
@@ -76,7 +80,7 @@ export function distanceJaroWinkler(a: string, b: string): number {
 if (import.meta.vitest) {
   it('should return the distance between two empty strings', () => {
     const result = distanceJaroWinkler('', '')
-    expect(result).toEqual(0)
+    expect(result).toEqual(1)
   })
 
   it('should return the distance between Potato and Tomato', () => {
