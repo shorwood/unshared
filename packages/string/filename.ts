@@ -5,9 +5,9 @@
  *
  * @param path The path to extract the file name from.
  * @returns The file name without the extension.
- * @example getFileName('/path/to/file.ext') // 'file'
+ * @example filename('/path/to/file.ext') // 'file'
  */
-export const filename = (path: string): string => {
+export function filename(path: string): string {
   const name = path.match(/([^/]+?)(?=\.[^.]*$|$)/)?.[0]
   if (!name) throw new Error('File name not found.')
   return name
@@ -45,9 +45,8 @@ if (import.meta.vitest) {
     expect(result).toEqual('file')
   })
 
-  it('should throw if the path is not a string', () => {
-    // @ts-expect-error: invalid type
-    const shouldThrow = () => filename(123)
-    expect(shouldThrow).toThrow(TypeError)
+  it('should throw if no file name is found', () => {
+    const shouldThrow = () => filename('http://')
+    expect(shouldThrow).toThrow(Error)
   })
 }
