@@ -1,13 +1,13 @@
-/**
- * Sementic Versioning RegExp as recommended by the [official website](https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string).
- */
+
+import { NumberIntegerPositive } from '@unshared/types'
+
 // eslint-disable-next-line unicorn/no-unsafe-regex
 const semverRegExp = /^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[A-Za-z-][\dA-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][\dA-Za-z-]*))*))?(?:\+(?<buildmetadata>[\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*))?$/
 
 /**
- * A class that represents a Sementic Version. This class is meant to be used
- * as a type-safe alternative to the native `string` type for representing
- * versions.
+ * A class that represents a Sementic Version. This class is meant to be used as a type-safe
+ * alternative to the native `string` type for representing versions. The implementation of
+ * this class is based on the [semver.org](https://semver.org/) recommendation.
  */
 export class Semver {
   /**
@@ -91,19 +91,32 @@ export class Semver {
 
   /**
    * Bump one of the components of a semver version. This method returns a new
-   * `Semver` instance with the bumped component.
+   * `Semver` instance with the bumped component. Be aware that bumping the
+   * `patch`, `minor` or `major` component will reset the smaller components
+   * to 0. For example, bumping the `minor` component of `1.2.3-alpha+build`
+   * will return a `Semver` instance with the version `1.3.0`.
    *
    * @param component The component to bump.
+   * @param value Optionally set the component to the given value.
    * @returns The bumped semver version.
    * @example new Semver({ major: 1 }).bump('minor') // Semver { major: 1, minor: 1, patch: 0 }
    */
-  bump(component: 'major' | 'minor' | 'patch'): Semver {
+  bump(component: 'prerelease' | 'build', value: string): Semver
+  bump<N extends number>(component: 'major' | 'minor' | 'patch', value?: NumberIntegerPositive<N>): Semver
+  bump(component: string, value?: number | string): Semver {
     let { major, minor, patch, prerelease, build } = this
+
+    // --- If a value is provided, set the component to the given value.
+    if (value !== undefined) return new Semver({ major, minor, patch, prerelease, build, [component]: value })
 
     // --- Bump the component.
     if (component === 'major') { major += 1; minor = 0; patch = 0; prerelease = undefined; build = undefined }
     if (component === 'minor') { minor += 1; patch = 0; prerelease = undefined; build = undefined }
     if (component === 'patch') { patch += 1; prerelease = undefined; build = undefined }
+
+    // --- If the component is the prerelease or build and no value is provided, throw an error.
+    if (component === 'prerelease' || component === 'build')
+      throw new Error(`You must provide a value when bumping the ${component} component.`)
 
     // --- Return the bumped semver.
     return new Semver({ major, minor, patch, prerelease, build })
@@ -181,11 +194,21 @@ export class Semver {
 }
 
 /**
- * Create a semver instance from the given semver components or semver string.
+ * Create a semver instance from the given semver components or semver string. The implementation of
+ * this function is based on the [semver.org](https://semver.org/) recommendation.
  *
  * @param semver A semver string or object that defines the components of a sementic version.
  * @returns A semver instance.
- * @example createSemver('1.2.3-alpha+build') // Semver { ... }
+ * @example
+ *
+ * // Create a semver instance from the given string.
+ * const version = createSemver('1.2.3-alpha4+build5')
+ *
+ * // Bump the major component.
+ * version.bump('major') // Semver { major: 2, minor: 0, patch: 0 }
+ *
+ * // Check if the version satisfies the given range.
+ * version.satisfies('>=2.0.0') // true
  */
 export function createSemver(semver?: string | Partial<Semver>): Semver {
   return typeof semver === 'string' ? Semver.parse(semver) : new Semver(semver)
@@ -230,6 +253,11 @@ if (import.meta.vitest) {
   it('should bump the patch component', () => {
     const version = createSemver(semverString).bump('patch')
     expect(version).toEqual({ major: 1, minor: 2, patch: 4, prerelease: undefined, build: undefined })
+  })
+
+  it('should set a component to the given value', () => {
+    const version = createSemver(semverString).bump('prerelease', 'beta')
+    expect(version).toEqual({ major: 1, minor: 2, patch: 3, prerelease: 'beta', build: 'build5' })
   })
 
   it('should stringify the semver', () => {
