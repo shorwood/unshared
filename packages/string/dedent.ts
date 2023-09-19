@@ -1,11 +1,11 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 /**
- * Remove the leading tabs from a string. This is useful for removing the
+ * Remove the leading indents from a string. This is useful for removing the
  * indentation from a multiline string literal. The indentation is determined
  * by the first line that contains a non-whitespace character.
  *
- * @param string The string to remove leading tabs from.
- * @returns The string with leading tabs removed.
+ * @param string The string to remove leading indents from.
+ * @returns The string with leading indents removed.
  * @example dedent('\tHello\n\tWorld') // 'Hello\nWorld'
  */
 export function dedent(string: string): string {
@@ -23,17 +23,17 @@ export function dedent(string: string): string {
 
 /** c8 ignore next */
 if (import.meta.vitest) {
-  it('removes leading tabs from a uniform string', () => {
+  it('removes leading indents from a uniform string', () => {
     const string = dedent('\tHello\n\tWorld')
     expect(string).toBe('Hello\nWorld')
   })
 
-  it('removes leading tabs from a non-uniform string', () => {
+  it('removes leading indents from a non-uniform string', () => {
     const string = dedent('\tHello\n\t\tWorld')
     expect(string).toBe('Hello\n\tWorld')
   })
 
-  it('does not remove leading tabs from a string with no leading tabs', () => {
+  it('does not remove leading indents from a string with no leading indents', () => {
     const string = dedent('Hello\n\tWorld')
     expect(string).toBe('Hello\n\tWorld')
   })
