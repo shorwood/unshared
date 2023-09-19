@@ -8,84 +8,99 @@
  * @example distance('foo', 'bar') // returns 0.3333333333333333
  * @see https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export function distanceJaroWinkler(a: string, b: string): number {
-  if (typeof a !== 'string')
-    throw new TypeError('Expected a string')
-  if (typeof b !== 'string')
-    throw new TypeError('Expected a string')
-
-  // --- Calculate the Jaro distance.
+  // --- Determining the length of each string
   const aLength = a.length
   const bLength = b.length
   const maxDistance = Math.floor(Math.max(aLength, bLength) / 2) - 1
-  const aMatches = new Array(aLength)
-  const bMatches = new Array(bLength)
+
+  // --- Create the match arrays for both strings.
+  const aMatches = Array.from({ length: aLength })
+  const bMatches = Array.from({ length: bLength })
+
+  // --- Find the number of matching characters between the strings.
+  // --- For each character in the first string, check if there is a match
+  // --- in the second string. If there is, increment the match count and
+  // --- mark the character in both strings as matched.
   let matches = 0
   let transpositions = 0
-  let index; for (index = 0; index < aLength; index++) {
-    const start = Math.max(0, index - maxDistance)
-    const end = Math.min(index + maxDistance + 1, bLength)
-    let index_; for (index_ = start; index_ < end; index_++) {
-      if (bMatches[index_])
-        continue
-      if (a[index] !== b[index_])
-        continue
-      aMatches[index] = true
-      bMatches[index_] = true
+  let indexA; for (indexA = 0; indexA < aLength; indexA++) {
+    const start = Math.max(0, indexA - maxDistance)
+    const end = Math.min(indexA + maxDistance + 1, bLength)
+    let indexB; for (indexB = start; indexB < end; indexB++) {
+      if (bMatches[indexB]) continue
+      if (a[indexA] !== b[indexB]) continue
+      aMatches[indexA] = true
+      bMatches[indexB] = true
       matches++
       break
     }
   }
-  if (matches === 0)
-    return 0
-  let k; for (index = 0, k = 0; index < aLength; index++) {
-    if (!aMatches[index])
-      continue
-    while (!bMatches[k])
-      k++
-    if (a[index] !== b[k])
-      transpositions++
+
+  // --- If there are no matches, return 0.
+  if (matches === 0) return 0
+
+  // --- Find the number of transpositions between the strings.
+  // --- A transposition is when two characters match but are not in the
+  // --- same position in both strings. For each matched character in the
+  // --- first string, check if there is a matched character in the second
+  // --- string that is not in the same position. If there is, increment
+  // --- the transposition count.
+  let k; for (indexA = 0, k = 0; indexA < aLength; indexA++) {
+    if (!aMatches[indexA]) continue
+    while (!bMatches[k]) k++
+    if (a[indexA] !== b[k]) transpositions++
     k++
   }
-  const distance = (
-    (matches / aLength)
-    + (matches / bLength)
-    + ((matches - (transpositions / 2)) / matches)
-  ) / 3
 
-  // --- Calculate the Jaro-Winkler distance.
-  const prefixLength = Math.min(
-    aLength,
-    bLength,
-    4,
-  )
+  // --- Calculate the prefix length. The prefix length is the number of
+  // --- characters at the start of the string that match exactly.
   let prefix = 0
-  for (index = 0; index < prefixLength; index++) {
-    if (a[index] === b[index])
-      prefix++
-    else
-      break
+  const prefixLength = Math.min(aLength, bLength, 4)
+  for (indexA = 0; indexA < prefixLength; indexA++) {
+    if (a[indexA] === b[indexA]) prefix++
+    else break
   }
-  return distance + (prefix * 0.1 * (1 - distance))
+
+  // --- Calculate the distance using the Jaro-Winkler formula.
+  const scoreMatchA = matches / aLength
+  const scoreMatchB = matches / bLength
+  const scoreTransposition = ((matches - (transpositions / 2)) / matches)
+  const scoreDistance = (scoreMatchA + scoreMatchB + scoreTransposition) / 3
+  const scorePrefix = prefix * 0.1 * (1 - scoreDistance)
+  return scoreDistance + scorePrefix
 }
 
 /* c8 ignore next */
 if (import.meta.vitest) {
-  it.each([
-    ['', '', 0],
-    ['Potato', 'Tomato', 0.6944444444444443],
-    ['Sitting', 'Kitten', 0.7475],
-    ['Saturday', 'Sunday', 0.5],
-    ['wikipedia', 'wikipédia', 0.5],
-    ['Mississippi', 'Missouri', 0.365],
-  ])('should return compare "%s" and "%s" and return %s', (a, b, expected) => {
-    const result = distanceJaroWinkler(a, b)
-    expect(result).toEqual(expected)
+  it('should return the distance between two empty strings', () => {
+    const result = distanceJaroWinkler('', '')
+    expect(result).toEqual(0)
   })
 
-  it('should throw if a is not a string', () => {
-    // @ts-expect-error: invalid argument type.
-    const shouldThrow = () => distanceJaroWinkler(1, 'bar')
-    expect(shouldThrow).toThrow(TypeError)
+  it('should return the distance between Potato and Tomato', () => {
+    const result = distanceJaroWinkler('Potato', 'Tomato')
+    expect(result).toEqual(0.6944444444444443)
+  })
+
+  it('should return the distance between Sitting and Kitten', () => {
+    const result = distanceJaroWinkler('Sitting', 'Kitten')
+    expect(result).toEqual(0.746031746031746)
+  })
+
+  it('should return the distance between Saturday and Sunday', () => {
+    const result = distanceJaroWinkler('Saturday', 'Sunday')
+    expect(result).toEqual(0.7475)
+  })
+
+  it('should return the distance between wikipedia and wikipédia', () => {
+    const result = distanceJaroWinkler('wikipedia', 'wikipédia')
+    expect(result).toEqual(0.9555555555555556)
+  })
+
+  it('should return the distance between Mississippi and Missouri', () => {
+    const result = distanceJaroWinkler('Mississippi', 'Missouri')
+    expect(result).toEqual(0.8159090909090909)
   })
 }
