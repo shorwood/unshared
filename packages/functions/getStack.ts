@@ -1,5 +1,8 @@
 /**
- * Get the call stack of the current function.
+ * Get the call stack of the current function. This function is useful for
+ * debugging and logging but should not be used in production code as it uses
+ * an hacky way to get the stack by throwing an error and parsing the stack
+ * from the error.
  *
  * @returns The file paths of the stack frames.
  * @example resolveStack() // ['/home/user/project/foo.js', '/home/user/project/index.js']
