@@ -1,69 +1,72 @@
-/* eslint-disable unicorn/prevent-abbreviations */
 /**
- * Calculates the Levenshtein distance between two strings.
+ * Compute the [Levenshtein](https://en.wikipedia.org/wiki/Levenshtein_distance)
+ * distance between two strings. The Levenshtein distance is a measure of
+ * similarity between two strings. The higher the Levenshtein distance for
+ * two strings is, the more different the strings are.
  *
  * @param a The first string.
  * @param b The second string.
  * @returns The Levenshtein distance between the strings.
- * @throws If `a` or `b` is not a string.
- * @example distance('foo', 'bar') // returns 3
- * @see https://en.wikipedia.org/wiki/Levenshtein_distance
+ * @example distanceLevenshtein('bar', 'baz') // 1
  */
 export function distanceLevenshtein(a: string, b: string): number {
-  if (typeof a !== 'string')
-    throw new TypeError('Expected a string')
-  if (typeof b !== 'string')
-    throw new TypeError('Expected a string')
+  // --- Early exit if the strings are equal.
+  if (a === b) return 0
 
-  // --- Initialize the matrix.
+  // --- Initialize a matrix of distances between substrings. This
+  // --- matrix will be used to store the Levenshtein distance between
+  // --- all positions of the two strings.
   const matrix = []
-  let i; for (i = 0; i <= b.length; i++)
-    matrix[i] = [i]
-  let j; for (j = 0; j <= a.length; j++)
-    matrix[0][j] = j
+  let k; for (k = 0; k <= b.length; k++) matrix[k] = [k]
+  let v; for (v = 0; v <= a.length; v++) matrix[0][v] = v
 
-  // --- Calculate the Levenshtein distance.
-  for (i = 1; i <= b.length; i++) {
-    for (j = 1; j <= a.length; j++) {
-      matrix[i][j] = b.charAt(i - 1) === a.charAt(j - 1)
-        ? matrix[i - 1][j - 1]
-        : Math.min(
-          matrix[i - 1][j - 1] + 1,
-          Math.min(
-            matrix[i][j - 1] + 1,
-            matrix[i - 1][j] + 1,
+  // --- Compute the distance between all positions of the
+  // --- two strings using the Levenshtein algorithm.
+  for (k = 1; k <= b.length; k++) {
+    for (v = 1; v <= a.length; v++) {
+      matrix[k][v] = b.charAt(k - 1) === a.charAt(v - 1)
+        ? matrix[k - 1][v - 1]
+        : Math.min(matrix[k - 1][v - 1] + 1,
+          Math.min(matrix[k][v - 1] + 1,
+            matrix[k - 1][v] + 1,
           ),
         )
     }
   }
 
-  // --- Return the Levenshtein distance.
+  // --- Return the last value of the matrix.
   return matrix[b.length][a.length]
 }
 
 /* c8 ignore next */
 if (import.meta.vitest) {
-  it.each([
-    ['', '', 0],
-    ['Potato', 'Tomato', 2],
-    ['Sitting', 'Kitten', 3],
-    ['Saturday', 'Sunday', 3],
-    ['wikipedia', 'wikipédia', 1],
-    ['Algorithms', 'Algorithm', 1],
-  ])('should return compare "%s" and "%s" and return %s', (a, b, expected) => {
-    const result = distanceLevenshtein(a, b)
-    expect(result).toEqual(expected)
+  it('should return the distance between two empty strings', () => {
+    const result = distanceLevenshtein('', '')
+    expect(result).toEqual(0)
   })
 
-  it('should throw if a is not a string', () => {
-    // @ts-expect-error: invalid argument type.
-    const shouldThrow = () => distanceLevenshtein(1, 'bar')
-    expect(shouldThrow).toThrow(TypeError)
+  it('should return the distance between Potato and Tomato', () => {
+    const result = distanceLevenshtein('Potato', 'Tomato')
+    expect(result).toEqual(2)
   })
 
-  it('should throw if b is not a string', () => {
-    // @ts-expect-error: invalid argument type.
-    const shouldThrow = () => distanceLevenshtein('foo', 1)
-    expect(shouldThrow).toThrow(TypeError)
+  it('should return the distance between Sitting and Kitten', () => {
+    const result = distanceLevenshtein('Sitting', 'Kitten')
+    expect(result).toEqual(3)
+  })
+
+  it('should return the distance between Saturday and Sunday', () => {
+    const result = distanceLevenshtein('Saturday', 'Sunday')
+    expect(result).toEqual(3)
+  })
+
+  it('should return the distance between wikipedia and wikipédia', () => {
+    const result = distanceLevenshtein('wikipedia', 'wikipédia')
+    expect(result).toEqual(1)
+  })
+
+  it('should return the distance between Mississippi and Missouri', () => {
+    const result = distanceLevenshtein('Mississippi', 'Missouri')
+    expect(result).toEqual(6)
   })
 }
