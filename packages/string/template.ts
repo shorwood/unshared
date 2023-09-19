@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { get } from '@unshared/collection/get'
+import { Collection } from '@unshared/types'
 import { escapeRegex } from './escapeRegex'
 
 export interface TemplateOptions<T> {
@@ -37,12 +38,17 @@ export interface TemplateOptions<T> {
  * @param options The template options.
  * @returns The templated string.
  * @example
+ *
+ * // Create the data object.
  * const contact = { name: ['John', 'Doe'], email: 'jdoe@example.com' }
+ *
+ * // Create the template.
  * const messageTemplate = 'Hello {{name.0}}. You can reach me at {{email}}.'
- * const message = template(messageTemplate, contact)
- * assert(message === 'Hello John. You can reach me at jdoe@example.com.')
+ *
+ * // Template the string.
+ * const message = template(messageTemplate, contact) // 'Hello John. You can reach me at jdoe@example.com.'
  */
-export function template<T extends object>(template: string, data: T, options: TemplateOptions<T> = {}): string {
+export function template<T extends Collection>(template: string, data: T, options: TemplateOptions<T> = {}): string {
   const {
     delimiterStart = '{{',
     delimiterEnd = '}}',
@@ -59,7 +65,7 @@ export function template<T extends object>(template: string, data: T, options: T
   const regexp = new RegExp(`${open}(.+?)${close}`, 'g')
 
   // --- Replace, transform and return.
-  return template.replace(regexp, (_, key) => {
+  return template.replace(regexp, (_, key: string) => {
     const value = get(data, key)?.toString() ?? ''
     return transform(value, key, data)
   })

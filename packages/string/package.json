@@ -14,5 +14,8 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch"
+  },
+  "dependencies": {
+    "@unshared/collection": "workspace:*"
   }
 }
