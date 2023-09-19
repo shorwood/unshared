@@ -1,6 +1,4 @@
-import { MathDecrease } from './MathDecrease'
-import { MathIncrease } from './MathIncrease'
-import { IsDecimal, IsEmptyString, IsPositive, IsString, IsZero } from './utils/predicate'
+import { IsDecimal, IsEmptyString, IsPositive, IsString, IsZero, Substract } from './utils'
 
 /**
  * Extract litteral types of strings separated by a delimiter.
@@ -20,11 +18,15 @@ export type StringSplit<S extends string, D extends string = ',', N extends numb
 
           // --- Split string.
           : S extends `${infer A extends string}${D}${infer Rest extends string}`
-            ? IsPositive<N> extends true
-              ? [...R, A, ...StringSplit<Rest, D, MathDecrease<N>>]
-              : [...R, A, ...StringSplit<Rest, D, MathIncrease<N>>]
 
-            // --- Last split
+            // --- Skip empty strings.
+            ? IsEmptyString<A> extends true ? StringSplit<Rest, D, N, R>
+
+              // --- Recurse.
+              : IsPositive<N> extends true
+                ? [...R, A, ...StringSplit<Rest, D, Substract<N, 1>>]
+                : never
+
             : [...R, S]
 
 /** c8 ignore next */
@@ -55,7 +57,7 @@ if (import.meta.vitest) {
 
   it('should handle separator at the start of the string', () => {
     type Result = StringSplit<',Hello,World'>
-    type Expected = ['', 'Hello', 'World']
+    type Expected = ['Hello', 'World']
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
