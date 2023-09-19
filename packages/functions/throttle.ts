@@ -1,4 +1,4 @@
-import { Function } from '@unshared/types/Function'
+import { Function, NumberPositive } from '@unshared/types'
 
 export type Throttled<T extends Function> =
   (...parameters: Parameters<T>) => ReturnType<T> extends Promise<unknown>
@@ -20,14 +20,8 @@ export type Throttled<T extends Function> =
  * getUser('123') // Will be ignored.
  * getUser('123') // Will be ignored.
  */
-export const throttle = <T extends Function>(fn: T, delay: number): Throttled<T> => {
-  // --- Handle edge cases.
-  if (typeof fn !== 'function')
-    throw new TypeError('Expected first argument to be a function.')
-  if (typeof delay !== 'number')
-    throw new TypeError('Expected delay to be a number.')
-  if (delay < 0)
-    throw new RangeError('Expected delay to be a positive number.')
+export const throttle = <T extends Function, N extends number>(fn: T, delay: NumberPositive<N>): Throttled<T> => {
+  if (delay < 0) throw new RangeError('Expected delay to be a positive number.')
 
   // --- Initialize timeout.
   let timeout: NodeJS.Timeout | undefined
@@ -90,6 +84,7 @@ if (import.meta.vitest) {
 
   it('should throw if delay is lower than 1', () => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
+    // @ts-expect-error: invalid parameter type.
     const shouldThrow = () => throttle(() => {}, 0)
     expect(shouldThrow).toThrow(RangeError)
   })
