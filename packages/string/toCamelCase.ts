@@ -1,19 +1,15 @@
 import { tokenize } from './tokenize'
 
 /**
- * Converts a string to camel case.
+ * Convert a string to camel case.
  *
- * @param value The string to convert
- * @returns The converted string
- * @throws If `value` is not a string
- * @example toCamelCase('foo_bar') // returns 'fooBar'
+ * @param values The string(s) to convert.
+ * @returns The converted string in camel case.
+ * @example toCamelCase('FOO_BAR', 'Baz') // 'fooBarBaz'
  */
-export function toCamelCase(value: string): string {
-  if (typeof value !== 'string')
-    throw new TypeError('Expected a string')
-
-  // --- Tokenize, capitalize from the second token and join.
-  return tokenize(value)
+export function toCamelCase(...values: string[]): string {
+  return values
+    .flatMap(tokenize)
     .map((token, index) => (
       index > 0
         ? token.charAt(0).toUpperCase() + token.slice(1).toLowerCase()
@@ -24,22 +20,58 @@ export function toCamelCase(value: string): string {
 
 /* c8 ignore next */
 if (import.meta.vitest) {
-  it.each([
-    ['camelCase', 'camelCase'],
-    ['PascalCase', 'pascalCase'],
-    ['snake_case', 'snakeCase'],
-    ['kebab-case', 'kebabCase'],
-    ['Title Case', 'titleCase'],
-    ['UPPER CASE', 'upperCase'],
-    ['lower case', 'lowerCase'],
-  ])('should convert %s to %s', (input, expected) => {
-    const result = toCamelCase(input)
-    expect(result).toEqual(expected)
+  it('should convert camel-case to camel-case', () => {
+    const result = toCamelCase('camelCase')
+    expect(result).toEqual('camelCase')
   })
 
-  it('should throw if value is not a string', () => {
-    // @ts-expect-error: invalid argument type.
-    const shouldThrow = () => toCamelCase(1)
-    expect(shouldThrow).toThrow(TypeError)
+  it('should convert constant-case to camel-case', () => {
+    const result = toCamelCase('CONSTANT_CASE')
+    expect(result).toEqual('constantCase')
+  })
+
+  it('should convert dot-case to camel-case', () => {
+    const result = toCamelCase('dot.case')
+    expect(result).toEqual('dotCase')
+  })
+
+  it('should convert header-case to camel-case', () => {
+    const result = toCamelCase('Header-Case')
+    expect(result).toEqual('headerCase')
+  })
+
+  it('should convert kebab-case to camel-case', () => {
+    const result = toCamelCase('kebab-case')
+    expect(result).toEqual('kebabCase')
+  })
+
+  it('should convert pascal-case to camel-case', () => {
+    const result = toCamelCase('PascalCase')
+    expect(result).toEqual('pascalCase')
+  })
+
+  it('should convert path-case to camel-case', () => {
+    const result = toCamelCase('path/case')
+    expect(result).toEqual('pathCase')
+  })
+
+  it('should convert snake_case to camel-case', () => {
+    const result = toCamelCase('snake_case')
+    expect(result).toEqual('snakeCase')
+  })
+
+  it('should convert title-case to camel-case', () => {
+    const result = toCamelCase('Title Case')
+    expect(result).toEqual('titleCase')
+  })
+
+  it('should convert lower-case to camel-case', () => {
+    const result = toCamelCase('lower case')
+    expect(result).toEqual('lowerCase')
+  })
+
+  it('should convert multiple strings to camel-case', () => {
+    const result = toCamelCase('foo', 'bar', 'baz')
+    expect(result).toEqual('fooBarBaz')
   })
 }
