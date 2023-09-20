@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { get } from '@unshared/collection/get'
 import { Collection } from '@unshared/types'
-import { escapeRegex } from './escapeRegex'
+import { escapeRegexp } from './escapeRegexp'
 
 export interface TemplateOptions<T> {
   /**
@@ -60,8 +60,8 @@ export function template<T extends Collection>(template: string, data: T, option
     throw new Error('The start and end delimiters must be different.')
 
   // --- Escape delimiters and create regex.
-  const open = escapeRegex(delimiterStart)
-  const close = escapeRegex(delimiterEnd)
+  const open = escapeRegexp(delimiterStart)
+  const close = escapeRegexp(delimiterEnd)
   const regexp = new RegExp(`${open}(.+?)${close}`, 'g')
 
   // --- Replace, transform and return.

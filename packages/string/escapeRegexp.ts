@@ -11,9 +11,9 @@ export const regExpSpecialCharacters: RegExpSpecialCharacters[] = ['\\', '^', '$
  * @param value The string to escape the special characters in.
  * @param escaped The characters to escape. By default all `RegExp` special characters are escaped.
  * @returns The escaped string.
- * @example escapeRegex('Hello-World!?') // returns 'Hello-World\\!\\?'
+ * @example escapeRegexp('Hello-World!?') // returns 'Hello-World\\!\\?'
  */
-export function escapeRegex(value: string, escaped = regExpSpecialCharacters): string {
+export function escapeRegexp(value: string, escaped = regExpSpecialCharacters): string {
   const replacementExpString = escaped.map(char => `\\${char}`).join('|')
   const replacementExp = new RegExp(replacementExpString, 'g')
   return value.replace(replacementExp, '\\$&')
@@ -22,14 +22,14 @@ export function escapeRegex(value: string, escaped = regExpSpecialCharacters): s
 /* c8 ignore next */
 if (import.meta.vitest) {
   it('should escape RegExp special characters', () => {
-    const result = escapeRegex('foo$foo(foo)foo*foo+foo.foo?foo[foo]foo^foo{foo}foo|foo')
+    const result = escapeRegexp('foo$foo(foo)foo*foo+foo.foo?foo[foo]foo^foo{foo}foo|foo')
     const expected = 'foo\\$foo\\(foo\\)foo\\*foo\\+foo\\.foo\\?foo\\[foo\\]foo\\^foo\\{foo\\}foo\\|foo'
     expect(result).toEqual(expected)
   })
 
-  it('should ignore characters when escaping', () => {
-    const result = escapeRegex('foo$foo(foo)foo*foo+foo.foo?foo[foo]foo^foo{foo}foo|foo', ['$'])
-    const expected = 'foo$foo\\(foo\\)foo\\*foo\\+foo\\.foo\\?foo\\[foo\\]foo\\^foo\\{foo\\}foo\\|foo'
+  it('should only escape the specified RegExp special characters', () => {
+    const result = escapeRegexp('foo$foo(foo)foo*foo+foo.foo?foo[foo]foo^foo{foo}foo|foo', ['*'])
+    const expected = 'foo$foo(foo)foo\\*foo+foo.foo?foo[foo]foo^foo{foo}foo|foo'
     expect(result).toEqual(expected)
   })
 }

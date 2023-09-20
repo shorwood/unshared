@@ -1,4 +1,4 @@
-import { escapeRegex } from './escapeRegex'
+import { escapeRegexp } from './escapeRegexp'
 
 /**
  * Create a RegExp from a string pattern.
@@ -8,7 +8,7 @@ import { escapeRegex } from './escapeRegex'
  * @example createPatternRegexp('foo*') // /^foo.*$/
  */
 export function createPatternRegexp(pattern: string): RegExp {
-  const patternExp = escapeRegex(pattern, ['\\', '^', '$', '.', '|', '+', '(', ')'])
+  const patternExp = escapeRegexp(pattern, ['\\', '^', '$', '.', '|', '+', '(', ')'])
     // --- Globstar(s)
     .replace(/(\*+)(\/)?/g, (_, asterisk) => (asterisk.length === 1 ? '[^/]+' : '.*?/?'))
 
