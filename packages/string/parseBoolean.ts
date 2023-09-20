@@ -1,23 +1,29 @@
+import { Trimmed } from './trim'
+
 /**
- * Extract the boolean value from a string.
+ * Parse a string into a boolean. "true" and "1" are considered true and the
+ * comparaison is case insensitive. Any other value is considered false. This
+ * function is useful for converting environment variables into booleans. If
+ * the input string is a literal, the return type can be infered.
  *
  * @template S The string type.
  * @returns The boolean value.
  * @example ParseBoolean<'true'> // true
  */
-export type ParseBoolean<S extends string> = Lowercase<S> extends 'true' | '1' ? true : false
+export type ParseBoolean<S extends string> = Trimmed<Lowercase<S>> extends 'true' | '1' ? true : false
 
 /**
- * Parse a string into a boolean. "true" and "1" are considered true. Any other
- * value is considered false. This function is useful for converting environment
- * variables into booleans.
+ * Parse a string into a boolean. "true" and "1" are considered true and the
+ * comparaison is case insensitive. Any other value is considered false. This
+ * function is useful for converting environment variables into booleans. If
+ * the input string is a literal, the return type can be infered.
  *
- * @param value The value to parse.
- * @returns The parsed boolean.
+ * @param string The string to parse.
+ * @returns The parsed boolean value.
  * @example parseBoolean(process.env.ENABLE_FEATURE) // true
  */
-export function parseBoolean<S extends string>(value: S): ParseBoolean<S> {
-  return /^1|true$/i.test(value) as ParseBoolean<S>
+export function parseBoolean<S extends string>(string: S): ParseBoolean<S> {
+  return /^\s*1|true\s*$/i.test(string) as ParseBoolean<S>
 }
 
 /* c8 ignore next */
@@ -46,7 +52,13 @@ if (import.meta.vitest) {
     expectTypeOf(result).toEqualTypeOf<true>()
   })
 
-  it('should return false if the value is "false"', () => {
+  it('should return true even if the value is padded with spaces', () => {
+    const result = parseBoolean(' 1 ')
+    expect(result).toEqual(true)
+    expectTypeOf(result).toEqualTypeOf<true>()
+  })
+
+  it('should return false if the value is not one of the above', () => {
     const result = parseBoolean('false')
     expect(result).toEqual(false)
     expectTypeOf(result).toEqualTypeOf<false>()
