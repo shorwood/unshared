@@ -1,40 +1,68 @@
 import { tokenize } from './tokenize'
 
 /**
- * Converts a string to pascal case.
+ * Convert a string to pascal case.
  *
- * @param value The string to convert
- * @returns The converted string
- * @example toCamelCase('fooBar') // returns 'FooBar'
+ * @param values The string(s) to convert.
+ * @returns The converted string to pascal case.
+ * @example toConstantCase('FOO_BAR', 'Baz') // 'FooBarBaz'
  */
-export function toPascalCase(value: string): string {
-  if (typeof value !== 'string')
-    throw new TypeError('Expected a string')
-
-  // --- Tokenize, capitalize the first letter of each token and join.
-  return tokenize(value)
+export function toPascalCase(...values: string[]): string {
+  return values
+    .flatMap(tokenize)
     .map(token => token.charAt(0).toUpperCase() + token.slice(1).toLowerCase())
     .join('')
 }
 
 /* c8 ignore next */
 if (import.meta.vitest) {
-  it.each([
-    ['camelCase', 'CamelCase'],
-    ['PascalCase', 'PascalCase'],
-    ['snake_case', 'SnakeCase'],
-    ['kebab-case', 'KebabCase'],
-    ['Title Case', 'TitleCase'],
-    ['UPPER CASE', 'UpperCase'],
-    ['lower case', 'LowerCase'],
-  ])('should convert %s to %s', (input, expected) => {
-    const result = toPascalCase(input)
-    expect(result).toEqual(expected)
+  it('should convert camel-case to pascal-case', () => {
+    const result = toPascalCase('camelCase')
+    expect(result).toEqual('CamelCase')
   })
 
-  it('should throw if value is not a string', () => {
-    // @ts-expect-error: invalid argument type.
-    const shouldThrow = () => toPascalCase(1)
-    expect(shouldThrow).toThrow(TypeError)
+  it('should convert constant-case to pascal-case', () => {
+    const result = toPascalCase('CONSTANT_CASE')
+    expect(result).toEqual('ConstantCase')
+  })
+
+  it('should convert dot-case to pascal-case', () => {
+    const result = toPascalCase('dot.case')
+    expect(result).toEqual('DotCase')
+  })
+
+  it('should convert header-case to pascal-case', () => {
+    const result = toPascalCase('Header-Case')
+    expect(result).toEqual('HeaderCase')
+  })
+
+  it('should convert kebab-case to pascal-case', () => {
+    const result = toPascalCase('kebab-case')
+    expect(result).toEqual('KebabCase')
+  })
+
+  it('should convert pascal-case to pascal-case', () => {
+    const result = toPascalCase('PascalCase')
+    expect(result).toEqual('PascalCase')
+  })
+
+  it('should convert path-case to pascal-case', () => {
+    const result = toPascalCase('path/case')
+    expect(result).toEqual('PathCase')
+  })
+
+  it('should convert snake_case to pascal-case', () => {
+    const result = toPascalCase('snake_case')
+    expect(result).toEqual('SnakeCase')
+  })
+
+  it('should convert title-case to pascal-case', () => {
+    const result = toPascalCase('Title Case')
+    expect(result).toEqual('TitleCase')
+  })
+
+  it('should convert multiple strings to pascal-case', () => {
+    const result = toPascalCase('foo', 'bar', 'baz')
+    expect(result).toEqual('FooBarBaz')
   })
 }
