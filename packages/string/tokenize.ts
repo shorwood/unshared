@@ -48,6 +48,16 @@ if (import.meta.vitest) {
     expect(result).toEqual(['foo', 'bar', '123'])
   })
 
+  it('should tokenize header case', () => {
+    const result = tokenize('Foo-Bar-123')
+    expect(result).toEqual(['Foo', 'Bar', '123'])
+  })
+
+  it('should tokenize path case', () => {
+    const result = tokenize('foo/bar/123')
+    expect(result).toEqual(['foo', 'bar', '123'])
+  })
+
   it('should tokenize constant case', () => {
     const result = tokenize('FOO_BAR_123')
     expect(result).toEqual(['FOO', 'BAR', '123'])
