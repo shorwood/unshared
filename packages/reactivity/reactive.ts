@@ -143,7 +143,6 @@ function wrapOperation(operation: keyof ProxyHandler<object>, callback: Function
  * When watching arrays, prototype methods that modify the array will not trigger
  * the callback. You can use the `hooks` option to register the names of methods
  * that will trigger the callback.
- * that will.
  *
  * @param source The source object.
  * @param options The options.
