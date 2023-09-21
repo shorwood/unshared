@@ -7,7 +7,7 @@
  * @example isUpper('A'.charCodeAt(0)) // true
  */
 export function isUpper(value: number): boolean {
-  return value >= 97 && value <= 122
+  return value >= 65 && value <= 90
 }
 
 /* c8 ignore next */
