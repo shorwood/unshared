@@ -58,9 +58,8 @@ export function encodeBase64(buffer: ArrayBuffer): string {
 /* c8 ignore next */
 if (import.meta.vitest) {
   it('should use the standard Base64 alphabet', () => {
-    const buffer = Buffer.from([0x00, 0x0F, 0xBF])
-    const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)
-    const result = encodeBase64(arrayBuffer)
+    const buffer = new Uint8Array([0x00, 0x0F, 0xBF]).buffer
+    const result = encodeBase64(buffer)
     expect(result).toEqual('AA+/')
   })
 
