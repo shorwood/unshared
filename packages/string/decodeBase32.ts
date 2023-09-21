@@ -53,9 +53,8 @@ export function decodeBase32(base32: string): ArrayBuffer {
     bytes[v++] = ((c6 << 5) & 0b11100000) | (c7 & 0b00011111)
   }
 
-  // --- Copy the bytes into a new buffer.
-  const bufferView = new Uint8Array(bytes)
-  return bufferView.buffer
+  // --- Return as ArrayBuffer
+  return new Uint8Array(bytes).buffer
 }
 
 /** c8 ignore next */

@@ -45,9 +45,8 @@ export function decodeBase64(base64: string): ArrayBuffer {
     bytes[v++] = ((c2 << 6) & 0b11000000) | (c3 & 0b00111111)
   }
 
-  // --- Copy the bytes into a new buffer.
-  const bufferView = new Uint8Array(bytes)
-  return bufferView.buffer
+  // --- Return as ArrayBuffer
+  return new Uint8Array(bytes).buffer
 }
 
 /** c8 ignore next */
