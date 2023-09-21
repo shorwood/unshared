@@ -12,8 +12,8 @@ import { NumberInteger } from '@unshared/types'
  * @returns An array of substrings.
  * @example split('a,b,c', ',') // => ['a', 'b', 'c']
  */
-export function split<N extends number = number>(value: string, delimiter: string | RegExp, limit?: NumberInteger<N>): string[] {
-  return limit !== undefined && limit < 0
+export function split<N extends number>(value: string, delimiter: string | RegExp, limit = Number.POSITIVE_INFINITY as NumberInteger<N>): string[] {
+  return limit < 0
     ? value.split(delimiter).slice(limit)
     : value.split(delimiter, limit)
 }
@@ -33,5 +33,10 @@ if (import.meta.vitest) {
   it('should split a string with a negative limit', () => {
     const result = split('a,b,c', ',', -2)
     expect(result).toEqual(['b', 'c'])
+  })
+
+  it('should expose a type error when the limit is not an integer', () => {
+    // @ts-expect-error: invalid argument type.
+    split('a,b,c', ',', 2.5)
   })
 }
