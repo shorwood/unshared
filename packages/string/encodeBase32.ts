@@ -18,45 +18,48 @@ export const base32Alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
  * encodeBase32(buffer) // 'E5KGQZJAOF2WSY3LEBRHE33XNYQGM33YEBVHK3LQOMQG65TFOIQHI2DFEBWGC6TZEBSG6ZZH'
  */
 export function encodeBase32(buffer: ArrayBuffer): string {
-  if (buffer.byteLength === 0) return ''
   const view = new DataView(buffer)
-  const result: string[] = []
+  const bytes: number[] = []
   const remainder = view.byteLength % 5
 
   // --- Loop over every 5 byte in the ArrayBuffer.
   for (let offset = 4; offset < view.byteLength + 5; offset += 5) {
     const inBounds = offset < view.byteLength
-    const byte0 = (inBounds || remainder > 0) ? view.getUint8(offset - 4) : 0
+
+    // --- Exit the loop if the remainder is 0 and the offset is out of bounds.
+    if (remainder === 0 && !inBounds) break
+
+    // --- Get 5 bytes from the buffer.
+    const byte0 = view.getUint8(offset - 4)
     const byte1 = (inBounds || remainder > 1) ? view.getUint8(offset - 3) : 0
     const byte2 = (inBounds || remainder > 2) ? view.getUint8(offset - 2) : 0
     const byte3 = (inBounds || remainder > 3) ? view.getUint8(offset - 1) : 0
     const byte4 = (inBounds || remainder > 4) ? view.getUint8(offset) : 0
 
     // --- Encode the 5 bytes into 8 Base32 characters.
-    const c1 = ((byte0 >> 3) & 0b00011111)
-    const c2 = ((byte0 << 2) & 0b00011100) | ((byte1 >> 6) & 0b00000011)
-    const c3 = ((byte1 >> 1) & 0b00011111)
-    const c4 = ((byte1 << 4) & 0b00010000) | ((byte2 >> 4) & 0b00001111)
-    const c5 = ((byte2 << 1) & 0b00011110) | ((byte3 >> 7) & 0b00000001)
-    const c6 = ((byte3 >> 2) & 0b00011111)
-    const c7 = ((byte3 << 3) & 0b00011000) | ((byte4 >> 5) & 0b00000111)
-    const c8 = byte4 & 0b00011111
+    const c0 = ((byte0 >> 3) & 0b00011111)
+    const c1 = ((byte0 << 2) & 0b00011100) | ((byte1 >> 6) & 0b00000011)
+    const c2 = ((byte1 >> 1) & 0b00011111)
+    const c3 = ((byte1 << 4) & 0b00010000) | ((byte2 >> 4) & 0b00001111)
+    const c4 = ((byte2 << 1) & 0b00011110) | ((byte3 >> 7) & 0b00000001)
+    const c5 = ((byte3 >> 2) & 0b00011111)
+    const c6 = ((byte3 << 3) & 0b00011000) | ((byte4 >> 5) & 0b00000111)
+    const c7 = byte4 & 0b00011111
 
     // --- Append the 8 Base32 characters to the result.
-    const groupLength = inBounds ? 8 : Math.ceil(remainder * 8 / 5)
-    const group = [c1, c2, c3, c4, c5, c6, c7, c8].slice(0, groupLength).map(c => base32Alphabet[c])
-    result.push(...group)
+    bytes.push(c0, c1, c2, c3, c4, c5, c6, c7)
   }
 
-  // --- Pad the rest of the string with `=` characters.
+  // --- If there is a remainder, clip to length and pad the result with '='.
   if (remainder > 0) {
-    const paddingLength = 8 - Math.ceil(remainder * 8 / 5)
-    const padding = '='.repeat(paddingLength)
-    result.push(...padding)
+    const bytesLength = Math.ceil(view.byteLength * 8 / 5)
+    const bytesClipped = bytes.slice(0, bytesLength)
+    const lengthPadding = 8 - bytesLength % 8
+    return bytesClipped.map(byte => base32Alphabet[byte]).join('') + '='.repeat(lengthPadding)
   }
 
   // --- Return the result.
-  return result.join('')
+  return bytes.map(byte => base32Alphabet[byte]).join('')
 }
 
 /* c8 ignore next */

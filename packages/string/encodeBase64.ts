@@ -18,46 +18,41 @@ export const base64Alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvw
  */
 export function encodeBase64(buffer: ArrayBuffer): string {
   const view = new DataView(buffer)
-
-  // --- Initialize result variable
-  const result: string[] = []
+  const bytes: number[] = []
+  const remainder = view.byteLength % 3
 
   // --- Loop over every byte in the ArrayArrayBuffer
-  for (let index = 2; index < view.byteLength; index += 3) {
-    // --- Get the 3 bytes as an 8-bit integer
-    const byte1 = view.getUint8(index - 2)
-    const byte2 = view.getUint8(index - 1)
-    const byte3 = view.getUint8(index)
+  for (let offset = 2; offset < view.byteLength + 3; offset += 3) {
+    const inBounds = offset < view.byteLength
+
+    // --- Exit the loop if the remainder is 0 and the offset is out of bounds.
+    if (remainder === 0 && !inBounds) break
+
+    // --- Get 3 bytes from the buffer.
+    const byte1 = (inBounds || remainder > 0) ? view.getUint8(offset - 2) : 0
+    const byte2 = (inBounds || remainder > 1) ? view.getUint8(offset - 1) : 0
+    const byte3 = (inBounds || remainder > 2) ? view.getUint8(offset) : 0
 
     // --- Convert the 3 bytes into 4 Base64 characters
-    const char1 = ((byte1 >> 2) & 0b00111111)
-    const char2 = ((byte1 << 4) & 0b00110000) | ((byte2 >> 4) & 0b00001111)
-    const char3 = ((byte2 << 2) & 0b00111100) | ((byte3 >> 6) & 0b00000011)
-    const char4 = byte3 & 0b00111111
+    const c0 = ((byte1 >> 2) & 0b00111111)
+    const c1 = ((byte1 << 4) & 0b00110000) | ((byte2 >> 4) & 0b00001111)
+    const c2 = ((byte2 << 2) & 0b00111100) | ((byte3 >> 6) & 0b00000011)
+    const c3 = byte3 & 0b00111111
 
     // --- Append the 4 Base64 characters to the result
-    result.push(base64Alphabet[char1], base64Alphabet[char2], base64Alphabet[char3], base64Alphabet[char4])
+    bytes.push(c0, c1, c2, c3)
   }
 
-  // --- If there are 1 or 2 bytes left, handle them separately.
-  const remainder = view.byteLength % 3
-  if (remainder === 1) {
-    const byte1 = view.getUint8(view.byteLength - 1)
-    const char1 = (byte1 >> 2) & 0b00111111
-    const char2 = (byte1 << 4) & 0b00110000
-    result.push(base64Alphabet[char1], base64Alphabet[char2], '==')
-  }
-  else if (remainder === 2) {
-    const byte1 = view.getUint8(view.byteLength - 2)
-    const byte2 = view.getUint8(view.byteLength - 1)
-    const char1 = ((byte1 >> 2) & 0b00111111)
-    const char2 = ((byte1 << 4) & 0b00110000) | ((byte2 >> 4) & 0b00001111)
-    const char3 = ((byte2 << 2) & 0b00111100)
-    result.push(base64Alphabet[char1], base64Alphabet[char2], base64Alphabet[char3], '=')
+  // --- If there is a remainder, clip to length and pad the result with '='.
+  if (remainder > 0) {
+    const bytesLength = Math.ceil(view.byteLength * 4 / 3)
+    const bytesClipped = bytes.slice(0, bytesLength)
+    const lengthPadding = 4 - bytesLength % 4
+    return bytesClipped.map(byte => base64Alphabet[byte]).join('') + '='.repeat(lengthPadding)
   }
 
-  // --- Return the result
-  return result.join('')
+  // --- Return the result.
+  return bytes.map(byte => base64Alphabet[byte]).join('')
 }
 
 /* c8 ignore next */
