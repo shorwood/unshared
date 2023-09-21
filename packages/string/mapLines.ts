@@ -1,3 +1,6 @@
+/** Iterator function for `mapLines`. */
+export type MapLinesIterator = (line: string, index: number, lines: string[]) => string
+
 /**
  * Map each line of a string to a new string.
  *
@@ -7,14 +10,14 @@
  * @throws If `value` is not a string or `iterator` is not a function.
  * @example mapLines('foo\nbar\nbaz', (str, i) => `${i}:${str}`) // => '0:foo\n1:bar\n2:baz'
  */
-export function mapLines(value: string, iterator: (line: string, index: number, lines: string[]) => string): string {
+export function mapLines(value: string, iterator: MapLinesIterator): string {
   return value.split('\n').map(iterator).join('\n')
 }
 
 /* c8 ignore next */
 if (import.meta.vitest) {
   it('should map each line of a string to a new string', () => {
-    const result = mapLines('foo\nbar\nbaz', (line, index, lines) => `${index}/${lines.length}:${line}`)
-    expect(result).toEqual('0/3:foo\n1/3:bar\n2/3:baz')
+    const result = mapLines('foo\nbar\nbaz', (line, index, lines) => `${index + 1}/${lines.length}:${line}`)
+    expect(result).toEqual('1/3:foo\n2/3:bar\n3/3:baz')
   })
 }
