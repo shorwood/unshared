@@ -23,7 +23,7 @@ export function decodeBase64(base64: string): ArrayBuffer {
     throw new Error('Could not decode string as Base64: Length is not a multiple of 4')
 
   // --- Remove padding.
-  base64 = base64.replace(/=/g, '')
+  base64 = base64.replace(/=+$/, '')
 
   // --- Assert alphabet is base64.
   if (![...base64].every(x => base64Alphabet.includes(x)))
