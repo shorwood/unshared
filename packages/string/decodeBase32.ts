@@ -1,4 +1,7 @@
-import { base32Alphabet } from './encodeBase32'
+import { BASE_32_ALPHABET } from './encodeBase32'
+
+/** Regular expression to test if a string is a valid Base32 string. */
+const BASE_32_REGEXP = /^[2-7a-z]+=*$/i
 
 /**
  * Decode a Base32-encoded string into an `ArrayBuffer`. Since this implementation is
@@ -21,25 +24,20 @@ import { base32Alphabet } from './encodeBase32'
 export function decodeBase32(base32: string): ArrayBuffer {
   if (base32.length % 8 !== 0)
     throw new Error('Could not decode string as Base32: Length is not a multiple of 8')
-
-  // --- Remove padding.
-  base32 = base32.replace(/=/g, '')
-
-  // --- Assert alphabet is base64.
-  if (![...base32].every(x => base32Alphabet.includes(x)))
+  if (BASE_32_REGEXP.test(base32) === false)
     throw new Error('Could not decode string as Base32: Invalid characters')
 
   // --- Handle decode of every 4 characters into 3 bytes.
   const bytes: number[] = []
   for (let k = 0, v = 0; k < base32.length; k += 8) {
-    const c0 = base32Alphabet.indexOf(base32[k])
-    const c1 = base32Alphabet.indexOf(base32[k + 1])
-    const c2 = base32Alphabet.indexOf(base32[k + 2])
-    const c3 = base32Alphabet.indexOf(base32[k + 3])
-    const c4 = base32Alphabet.indexOf(base32[k + 4])
-    const c5 = base32Alphabet.indexOf(base32[k + 5])
-    const c6 = base32Alphabet.indexOf(base32[k + 6])
-    const c7 = base32Alphabet.indexOf(base32[k + 7])
+    const c0 = BASE_32_ALPHABET.indexOf(base32[k])
+    const c1 = BASE_32_ALPHABET.indexOf(base32[k + 1])
+    const c2 = BASE_32_ALPHABET.indexOf(base32[k + 2])
+    const c3 = BASE_32_ALPHABET.indexOf(base32[k + 3])
+    const c4 = BASE_32_ALPHABET.indexOf(base32[k + 4])
+    const c5 = BASE_32_ALPHABET.indexOf(base32[k + 5])
+    const c6 = BASE_32_ALPHABET.indexOf(base32[k + 6])
+    const c7 = BASE_32_ALPHABET.indexOf(base32[k + 7])
 
     // --- Set the bytes in the buffer.
     bytes[v++] = ((c0 << 3) & 0b11111000) | ((c1 >> 2) & 0b00000111)

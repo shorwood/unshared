@@ -1,5 +1,5 @@
 /** The Base16 alphabet table as defined in [RFC 4648](https://tools.ietf.org/html/rfc4648#section-8). */
-export const base16Alphabet = '0123456789abcdef'
+export const BASE_16_ALPHABET = '0123456789abcdef'
 
 /**
  * Encode a `ArrayBuffer` to a Base16-encoded string. Since this implementation is
@@ -29,7 +29,7 @@ export function encodeBase16(buffer: ArrayBuffer): string {
   }
 
   // --- Return result
-  return bytes.map(byte => base16Alphabet[byte]).join('')
+  return bytes.map(byte => BASE_16_ALPHABET[byte]).join('')
 }
 
 /* c8 ignore next */

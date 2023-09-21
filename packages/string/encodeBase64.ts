@@ -1,5 +1,5 @@
 /** The Base64 alphabet table as defined in [RFC 4648](https://tools.ietf.org/html/rfc4648#section-4). */
-export const base64Alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+export const BASE_64_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 
 /**
  * Encode a `ArrayBuffer` to a Base64-encoded string. Since this implementation is
@@ -48,11 +48,11 @@ export function encodeBase64(buffer: ArrayBuffer): string {
     const bytesLength = Math.ceil(view.byteLength * 4 / 3)
     const bytesClipped = bytes.slice(0, bytesLength)
     const lengthPadding = 4 - bytesLength % 4
-    return bytesClipped.map(byte => base64Alphabet[byte]).join('') + '='.repeat(lengthPadding)
+    return bytesClipped.map(byte => BASE_64_ALPHABET[byte]).join('') + '='.repeat(lengthPadding)
   }
 
   // --- Return the result.
-  return bytes.map(byte => base64Alphabet[byte]).join('')
+  return bytes.map(byte => BASE_64_ALPHABET[byte]).join('')
 }
 
 /* c8 ignore next */

@@ -1,4 +1,7 @@
-import { base64Alphabet } from './encodeBase64'
+import { BASE_64_ALPHABET } from './encodeBase64'
+
+/** Regular expression to test if a string is a valid Base64 string. */
+const BASE_64_REGEXP = /^[\d+/a-z]+=*$/i
 
 /**
  * Decode a Base64-encoded string into an `ArrayBuffer`. Since this implementation is
@@ -21,21 +24,16 @@ import { base64Alphabet } from './encodeBase64'
 export function decodeBase64(base64: string): ArrayBuffer {
   if (base64.length % 4 !== 0)
     throw new Error('Could not decode string as Base64: Length is not a multiple of 4')
-
-  // --- Remove padding.
-  base64 = base64.replace(/=+$/, '')
-
-  // --- Assert alphabet is base64.
-  if (![...base64].every(x => base64Alphabet.includes(x)))
+  if (BASE_64_REGEXP.test(base64) === false)
     throw new Error('Could not decode string as Base64: Invalid characters')
 
   // --- Handle decode of every 4 characters into 3 bytes.
   const bytes: number[] = []
   for (let k = 0, v = 0; k < base64.length; k += 4) {
-    const c0 = base64Alphabet.indexOf(base64[k])
-    const c1 = base64Alphabet.indexOf(base64[k + 1])
-    const c2 = base64Alphabet.indexOf(base64[k + 2])
-    const c3 = base64Alphabet.indexOf(base64[k + 3])
+    const c0 = BASE_64_ALPHABET.indexOf(base64[k])
+    const c1 = BASE_64_ALPHABET.indexOf(base64[k + 1])
+    const c2 = BASE_64_ALPHABET.indexOf(base64[k + 2])
+    const c3 = BASE_64_ALPHABET.indexOf(base64[k + 3])
 
     // --- Set the bytes in the buffer.
     bytes[v++] = ((c0 << 2) & 0b11111100) | ((c1 >> 4) & 0b00000011)

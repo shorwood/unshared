@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 
 /** The Base32 alphabet table as defined in [RFC 4648](https://tools.ietf.org/html/rfc4648#section-6). */
-export const base32Alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
+export const BASE_32_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
 
 /**
  * Encode a `ArrayBuffer` to a Base32-encoded string. Since this implementation is
@@ -56,11 +56,11 @@ export function encodeBase32(buffer: ArrayBuffer): string {
     const bytesLength = Math.ceil(view.byteLength * 8 / 5)
     const bytesClipped = bytes.slice(0, bytesLength)
     const lengthPadding = 8 - bytesLength % 8
-    return bytesClipped.map(byte => base32Alphabet[byte]).join('') + '='.repeat(lengthPadding)
+    return bytesClipped.map(byte => BASE_32_ALPHABET[byte]).join('') + '='.repeat(lengthPadding)
   }
 
   // --- Return the result.
-  return bytes.map(byte => base32Alphabet[byte]).join('')
+  return bytes.map(byte => BASE_32_ALPHABET[byte]).join('')
 }
 
 /* c8 ignore next */
