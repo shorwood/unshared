@@ -32,17 +32,17 @@ export function decodeBase64(base64: string): ArrayBuffer {
   // --- Handle decode of every 4 characters into 3 bytes.
   const bytes: number[] = []
   for (let k = 0, v = 0; k < base64.length; k += 4) {
-    const byte0 = base64Alphabet.indexOf(base64[k])
-    const byte1 = base64Alphabet.indexOf(base64[k + 1])
-    const byte2 = base64Alphabet.indexOf(base64[k + 2])
-    const byte3 = base64Alphabet.indexOf(base64[k + 3])
+    const c0 = base64Alphabet.indexOf(base64[k])
+    const c1 = base64Alphabet.indexOf(base64[k + 1])
+    const c2 = base64Alphabet.indexOf(base64[k + 2])
+    const c3 = base64Alphabet.indexOf(base64[k + 3])
 
     // --- Set the bytes in the buffer.
-    bytes[v++] = ((byte0 << 2) & 0b11111100) | ((byte1 >> 4) & 0b00000011)
-    if (byte2 === -1) continue
-    bytes[v++] = ((byte1 << 4) & 0b11110000) | ((byte2 >> 2) & 0b00001111)
-    if (byte3 === -1) continue
-    bytes[v++] = ((byte2 << 6) & 0b11000000) | (byte3 & 0b00111111)
+    bytes[v++] = ((c0 << 2) & 0b11111100) | ((c1 >> 4) & 0b00000011)
+    if (c2 === -1) continue
+    bytes[v++] = ((c1 << 4) & 0b11110000) | ((c2 >> 2) & 0b00001111)
+    if (c3 === -1) continue
+    bytes[v++] = ((c2 << 6) & 0b11000000) | (c3 & 0b00111111)
   }
 
   // --- Copy the bytes into a new buffer.
