@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 /**
- * Escape the HTML special characters.
+ * Escape the special characters in HTML strings. This allows you to display text that
+ * contains HTML characters without the browser interpreting them as HTML elements.
  *
  * @param value The string to escape.
  * @returns The escaped string.
