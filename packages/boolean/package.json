@@ -1,7 +1,7 @@
 {
   "name": "@unshared/boolean",
   "type": "module",
-  "version": "0.0.1+build.4a8cafb",
+  "version": "0.0.1+4cbd23e",
   "license": "MIT",
   "sideEffects": false,
   "description": "Boolean logic functions",
@@ -13,44 +13,48 @@
     "url": "git+https://github.com/shorwood/unshared.git",
     "directory": "packages/boolean"
   },
-  "main": "./index.cjs",
-  "module": "./index.js",
-  "types": "./index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "exports": {
-    "./Boolean": {
-      "import": "./dist/Boolean.js",
+    "Boolean": {
       "require": "./dist/Boolean.cjs",
-      "types": "./dist/Boolean.d.ts"
+      "import": "./dist/Boolean.js"
     },
-    "./and": {
-      "import": "./dist/and.js",
+    "and": {
       "require": "./dist/and.cjs",
-      "types": "./dist/and.d.ts"
+      "import": "./dist/and.js"
     },
-    "./nand": {
-      "import": "./dist/nand.js",
+    "createBoolean": {
+      "require": "./dist/createBoolean.cjs",
+      "import": "./dist/createBoolean.js"
+    },
+    "*": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
+    },
+    "nand": {
       "require": "./dist/nand.cjs",
-      "types": "./dist/nand.d.ts"
+      "import": "./dist/nand.js"
     },
-    "./nor": {
-      "import": "./dist/nor.js",
+    "nor": {
       "require": "./dist/nor.cjs",
-      "types": "./dist/nor.d.ts"
+      "import": "./dist/nor.js"
     },
-    "./not": {
-      "import": "./dist/not.js",
+    "not": {
       "require": "./dist/not.cjs",
-      "types": "./dist/not.d.ts"
+      "import": "./dist/not.js"
     },
-    "./or": {
-      "import": "./dist/or.js",
+    "or": {
       "require": "./dist/or.cjs",
-      "types": "./dist/or.d.ts"
+      "import": "./dist/or.js"
     },
-    "./xor": {
-      "import": "./dist/xor.js",
+    "xnor": {
+      "require": "./dist/xnor.cjs",
+      "import": "./dist/xnor.js"
+    },
+    "xor": {
       "require": "./dist/xor.cjs",
-      "types": "./dist/xor.d.ts"
+      "import": "./dist/xor.js"
     }
   },
   "files": [
@@ -61,9 +65,5 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch"
-  },
-  "dependencies": {
-    "@types/node": "18.14.6",
-    "@unshared/types": "workspace:*"
   }
 }
