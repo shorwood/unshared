@@ -33,25 +33,43 @@ export interface TruncateOptions<N extends number = number> {
 }
 
 /**
- * Truncate a string to a specified length. If the string is longer than the
- * specified length, the string is truncated and the last three characters are
- * replaced with the ellipsis character sequence.
+ * Truncate a string to a specified length. By default, if the string is longer
+ * than the specified length, the string is cut-off at the nearest word boundary.
+ * You can change this behavior by setting the `breakWords` option to `true`.
+ *
+ * You can provide a custom ellipsis character sequence to replace the last
+ * characters of the string when it is truncated.
  *
  * @param string The string to truncate.
  * @param length The length at which to truncate the string.
  * @returns The truncated string.
- * @example truncate('Hello, world!', 5) // 'Hello'
+ * @example truncate('Hello, world!', 10) // 'Hello'
  */
 export function truncate<N extends number>(string: string, length: NumberIntegerPositive<N>): string
 /**
- * Truncate a string to a specified length. If the string is longer than the
- * specified length, the string is truncated and the last three characters are
- * replaced with the ellipsis character sequence.
+ * Truncate a string to a specified length. By default, if the string is longer
+ * than the specified length, the string is cut-off at the nearest word boundary.
+ * You can change this behavior by setting the `breakWords` option to `true`.
+ *
+ * You can provide a custom ellipsis character sequence to replace the last
+ * characters of the string when it is truncated.
  *
  * @param string The string to truncate.
  * @param options The truncate options.
  * @returns The truncated string.
- * @example truncate('Hello, world!', { length: 5 }) // 'Hello'
+ * @example
+ *
+ * // Truncate a string to a specified length without breaking words.
+ * truncate('Hello, world!', { length: 10 }) // 'Hello'
+ *
+ * // Truncate a string to a specified length and break words.
+ * truncate('Hello, world!', { length: 10, breakWords: true }) // 'Hello...'
+ *
+ * // Truncate a string to a specified length with an ellipsis.
+ * truncate('Hello, world!', { length: 10, ellipsis: '...' }) // 'Hello...'
+ *
+ * // Truncate a single word with an ellipsis.
+ * truncate('Hello', { length: 5, ellipsis: '...' }) // 'He...'
  */
 export function truncate<N extends number>(string: string, options: TruncateOptions<N>): string
 export function truncate(string: string, optionsOrLength: number | TruncateOptions = {}): string {
