@@ -3,8 +3,8 @@
 /**
  * Decode an UTF8-encoded string into an `ArrayBuffer`. Since this implementation is
  * using the native `ArrayBuffer` API, it does not rely on Node.js, this makes it ideal
- * for use in cross-platform libraries. This function serves the same purpose as
- * `new TextEncoder().encode()`, but it is a tiny bit faster.
+ * for use in cross-platform libraries. This function is the same as `TextEncoder.encode()`
+ * but was included for homogeneity with the other encoding functions.
  *
  * @param utf8 The UTF8 string to decode.
  * @returns The decoded `ArrayBuffer`.
