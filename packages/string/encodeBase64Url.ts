@@ -9,10 +9,10 @@ import { encodeBase64 } from './encodeBase64'
  * @returns The Base64 URL-safe encoded string.
  * @example
  *
- * // Create a buffer from a string
+ * // Create an ArrayBuffer from a string.
  * const buffer = new TextEncoder().encode('The quick brown fox jumps over the lazy dog')
  *
- * // Encode a string to Base64
+ * // Encode the ArrayBuffer into an URL-safe Base64 string.
  * encodeBase64Url(buffer) // 'VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZw'
  */
 export function encodeBase64Url(buffer: ArrayBuffer): string {

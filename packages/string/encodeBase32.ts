@@ -12,10 +12,10 @@ export const BASE_32_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
  * @returns The Base32-encoded string.
  * @example
  *
- * // Create a buffer from a string
+ * // Create an ArrayBuffer from a string.
  * const buffer = new TextEncoder().encode('The quick brown fox jumps over the lazy dog')
  *
- * // Encode a string to Base32
+ * // Encode the ArrayBuffer into a Base32 string.
  * encodeBase32(buffer) // 'E5KGQZJAOF2WSY3LEBRHE33XNYQGM33YEBVHK3LQOMQG65TFOIQHI2DFEBWGC6TZEBSG6ZZH'
  */
 export function encodeBase32(buffer: ArrayBuffer): string {
