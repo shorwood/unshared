@@ -1,4 +1,36 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import { NumberIntegerPositive } from '@unshared/types'
+
+export interface TruncateOptions<N extends number = number> {
+  /**
+   * The maximum length of the string. If the string is longer than this value,
+   * (including the ellipsis) the string will be truncated and the last characters
+   * will be replaced with the ellipsis.
+   *
+   * @default Number.MAX_SAFE_INTEGER
+   * @example truncate('Hello, world!', { length: 5 }) // 'Hello'
+   */
+  length?: NumberIntegerPositive<N>
+  /**
+   * If defined, the ellipsis character sequence that will be used to replace the
+   * last characters of the string when it is truncated. This means that the final
+   * length of the string will be still be less than or equal to `length`.
+   *
+   * @default ''
+   * @example truncate('Hello, world!', { length: 6, ellipsis: '…' }) // 'Hello…'
+   */
+  ellipsis?: string
+  /**
+   * Allow words to be broken if they exceed the `length` option. If `true`,
+   * the word will be broken at the `length` option. If `false`, the entire
+   * word will be excluded from the result. This option is ignored if the result
+   * contains a single word.
+   *
+   * @default false
+   * @example truncate('Hello, world!', { length: 10, breakWords: true }) // 'Hello...'
+   */
+  breakWords?: boolean
+}
 
 /**
  * Truncate a string to a specified length. If the string is longer than the
@@ -6,38 +38,89 @@ import { NumberIntegerPositive } from '@unshared/types'
  * replaced with the ellipsis character sequence.
  *
  * @param string The string to truncate.
- * @param maxLength The length at which to truncate the string.
- * @param [elipsis="..."] The ellipsis character sequence to use.
- * @returns The truncated string
- * @example truncate('foo bar baz', 7) // returns 'foo b…'
+ * @param length The length at which to truncate the string.
+ * @returns The truncated string.
+ * @example truncate('Hello, world!', 5) // 'Hello'
  */
-export function truncate<N extends number>(string: string, maxLength: NumberIntegerPositive<N>, elipsis = '...'): string {
-  return string.length > maxLength
-    ? string.slice(0, maxLength - elipsis.length) + elipsis
-    : string
+export function truncate<N extends number>(string: string, length: NumberIntegerPositive<N>): string
+/**
+ * Truncate a string to a specified length. If the string is longer than the
+ * specified length, the string is truncated and the last three characters are
+ * replaced with the ellipsis character sequence.
+ *
+ * @param string The string to truncate.
+ * @param options The truncate options.
+ * @returns The truncated string.
+ * @example truncate('Hello, world!', { length: 5 }) // 'Hello'
+ */
+export function truncate<N extends number>(string: string, options: TruncateOptions<N>): string
+export function truncate(string: string, optionsOrLength: number | TruncateOptions = {}): string {
+  const options = typeof optionsOrLength === 'number'
+    ? { length: optionsOrLength }
+    : optionsOrLength
+
+  // --- Destructure the options.
+  const {
+    length = Number.MAX_SAFE_INTEGER,
+    ellipsis = '',
+    breakWords = false,
+  } = options
+
+  // --- Throw an error if the ellipsis is longer or equal to the length.
+  if (ellipsis.length >= length)
+    throw new RangeError('The ellipsis must be shorter than the length.')
+
+  // --- If the string is shorter than the maximum length, return early.
+  if (string.length <= length) return string
+
+  // --- Otherwise, truncate the string at the last space. (If possible)
+  const index = string.lastIndexOf(' ', length - ellipsis.length)
+  return (index > length) || (index === -1) || breakWords
+    ? string.slice(0, length - ellipsis.length) + ellipsis
+    : string.slice(0, index) + ellipsis
 }
 
 /* c8 ignore next */
 if (import.meta.vitest) {
-  const text = 'The quick brown fox jumps over the lazy dog'
+  it('should not truncate a string that is shorter than the specified length', () => {
+    const result = truncate('Hello, world!', 100)
+    expect(result).toEqual('Hello, world!')
+  })
 
-  it('should truncate a string to a specified length', () => {
-    const result = truncate(text, 10)
-    expect(result).toEqual('The quick…')
+  it('should truncate a string to a specified length without breaking words', () => {
+    const result = truncate('Hello, world!', 10)
+    expect(result).toEqual('Hello,')
+  })
+
+  it('should truncate a string to a specified length and break words', () => {
+    const result = truncate('Hello, world!', { length: 10, breakWords: true })
+    expect(result).toEqual('Hello, wor')
   })
 
   it('should truncate a string to a specified length with a custom ellipsis', () => {
-    const result = truncate(text, 10, ' .et cetera')
-    expect(result).toEqual('The quick .et cetera')
+    const result = truncate('Hello, world!', { length: 10, ellipsis: '_' })
+    expect(result).toEqual('Hello,_')
   })
 
-  it('should return the string if it is shorter than the specified length', () => {
-    const result = truncate(text, 100)
-    expect(result).toEqual(text)
+  it('should truncate a single word with a custom ellipsis', () => {
+    const result = truncate('Hello', { length: 3, ellipsis: '_' })
+    expect(result).toEqual('He_')
+  })
+
+  it('should throw and error when the ellipsis is longer than the length', () => {
+    const shouldThrow = () => truncate('Hello, world!', { length: 5, ellipsis: '.....' })
+    expect(shouldThrow).toThrow(RangeError)
   })
 
   it('should throw a type error when the length is not a positive integer', () => {
     // @ts-expect-error: Invalid argument.
-    truncate(text, -1)
+    // eslint-disable-next-line no-unused-expressions
+    () => truncate('Hello, World!', -1)
+  })
+
+  it('should throw a type error when the length is not a positive integer', () => {
+    // @ts-expect-error: Invalid argument.
+    // eslint-disable-next-line no-unused-expressions
+    () => truncate('Hello, World!', -1)
   })
 }
