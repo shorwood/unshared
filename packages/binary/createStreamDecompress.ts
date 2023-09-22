@@ -14,9 +14,7 @@ const Z_DEFLATE_HEADER_2 = Buffer.from([0x78, 0xDA])
  * @returns `true` if the chunk starts with the Gzip header.
  */
 function isHeaderGzip(chunk: Buffer) {
-  const headers = Buffer.allocUnsafe(3)
-  chunk.copy(headers, 0, 0, 3)
-  return headers.equals(Z_GZIP_HEADER)
+  return chunk.subarray(0, 3).equals(Z_GZIP_HEADER)
 }
 
 /**
@@ -26,16 +24,15 @@ function isHeaderGzip(chunk: Buffer) {
  * @returns `true` if the chunk starts with a Deflate header.
  */
 function isHeaderDeflate(chunk: Buffer) {
-  const headers = Buffer.allocUnsafe(2)
-  chunk.copy(headers, 0, 0, 2)
-  return headers.equals(Z_DEFLATE_HEADER_1) || headers.equals(Z_DEFLATE_HEADER_2)
+  return chunk.subarray(0, 2).equals(Z_DEFLATE_HEADER_1)
+      || chunk.subarray(0, 2).equals(Z_DEFLATE_HEADER_2)
 }
 
 /**
  * A Transform stream that decompresses data only if it is compressed, otherwise
  * it is passed through.
  */
-class Decompress extends Transform {
+export class Decompress extends Transform {
   /**
    * Create a Transform stream that decompresses data if it is compressed. If
    * the data is not compressed, it is passed through. This functions allows,
@@ -104,7 +101,7 @@ if (import.meta.vitest) {
   const string = buffer.toString('hex')
 
   it('should not decompress raw data', async() => {
-    const decompress = new Decompress()
+    const decompress = createStreamDecompress()
     const result = Readable.from(buffer).pipe(decompress)
     const data = await streamRead(result, 'hex')
     expect(data).toEqual(string)
@@ -112,7 +109,7 @@ if (import.meta.vitest) {
 
   it('should decompress gzip data', async() => {
     const compress = createGzip()
-    const decompress = new Decompress()
+    const decompress = createStreamDecompress()
     const result = Readable.from(buffer).pipe(compress).pipe(decompress)
     const data = await streamRead(result, 'hex')
     expect(data).toEqual(string)
@@ -120,7 +117,7 @@ if (import.meta.vitest) {
 
   it('should decompress deflate data', async() => {
     const compress = createDeflate()
-    const decompress = new Decompress()
+    const decompress = createStreamDecompress()
     const result = Readable.from(buffer).pipe(compress).pipe(decompress)
     const data = await streamRead(result, 'hex')
     expect(data).toEqual(string)
