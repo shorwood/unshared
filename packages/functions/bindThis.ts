@@ -1,12 +1,4 @@
-/**
- * A function where the first parameter is already bound to `this`.
- *
- * @template F The function to bind.
- * @example BoundThis<(x: number, y: string) => boolean> // (this: number, y: string) => boolean
- */
-export type BoundThis<F extends Function> = F extends (...parameters: infer P) => infer U
-  ? P extends [infer T, ...infer R] ? (this: T, ...parameters: R) => U : F
-  : never
+import type { BoundThis } from '@unshared/types'
 
 /**
  * Wrap a function that binds it's first argument to `this`. This is useful when you want to
@@ -19,7 +11,7 @@ export type BoundThis<F extends Function> = F extends (...parameters: infer P) =
  * add.call(1, 2) // 3
  */
 export const bindThis = <T extends Function>(fn: T): BoundThis<T> =>
-  function(...parameters: unknown[]) { return fn(this, ...parameters) } as BoundThis<T>
+  function(this: unknown, ...parameters: unknown[]) { return fn(this, ...parameters) } as BoundThis<T>
 
 /* c8 ignore next */
 if (import.meta.vitest) {
