@@ -10,6 +10,13 @@ import { IsZero, Substract } from './utils'
  * @template N Number of nested keys to explore
  * @template P Current path
  * @returns List of possible paths.
+ * @example
+ * interface Contact {
+ *  name: { first: string; last: string }
+ *  email: string
+ * }
+ *
+ * type Result = Path<Contact> // 'name' | 'name.first' | 'name.last' | 'email' | (string & {})
  */
 export type Path<T, N extends number = 8, P extends string = ''> =
   // --- If T is a string or an array, return loose path.
@@ -32,7 +39,7 @@ export type Path<T, N extends number = 8, P extends string = ''> =
         : P extends '' ? K : never
 
       // --- Extract keys only.
-      }[keyof T] | string & {}
+      }[keyof T] | (string & {})
 
 /** c8 ignore next */
 if (import.meta.vitest) {
