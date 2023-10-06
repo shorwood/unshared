@@ -4,6 +4,9 @@ import { NumberIntegerPositive } from '@unshared/types'
 // eslint-disable-next-line unicorn/no-unsafe-regex
 const semverRegExp = /^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[A-Za-z-][\dA-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][\dA-Za-z-]*))*))?(?:\+(?<buildmetadata>[\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*))?$/
 
+/** The components of a semver version. */
+export type SemverComponents = 'major' | 'minor' | 'patch' | 'prerelease' | 'build'
+
 /**
  * A class that represents a Sementic Version. This class is meant to be used as a type-safe
  * alternative to the native `string` type for representing versions. The implementation of
@@ -103,6 +106,7 @@ export class Semver {
    */
   bump(component: 'prerelease' | 'build', value: string): Semver
   bump<N extends number>(component: 'major' | 'minor' | 'patch', value?: NumberIntegerPositive<N>): Semver
+  bump<N extends number>(component: SemverComponents, value?: NumberIntegerPositive<N>): Semver
   bump(component: string, value?: number | string): Semver {
     let { major, minor, patch, prerelease, build } = this
 
