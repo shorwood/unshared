@@ -1,6 +1,6 @@
 import { Default } from './Default'
 import { DefaultValue } from './DefaultValue'
-import { MathDecrease } from './MathDecrease'
+import { Substract } from './utils'
 import { IsZero } from './utils/predicate'
 
 /**
@@ -19,7 +19,7 @@ export type DefaultObject<T extends object, U extends object, N extends number =
     ? P extends keyof U
       ? IsZero<N> extends true
         ? DefaultValue<T[P], U[P]>
-        : Default<T[P], U[P], MathDecrease<N>>
+        : Default<T[P], U[P], Substract<N, 1>>
       : T[P]
     : P extends keyof U ? U[P] : never
 }
