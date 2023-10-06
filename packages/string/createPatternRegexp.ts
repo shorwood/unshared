@@ -1,7 +1,8 @@
 import { escapeRegexp } from './escapeRegexp'
 
 /**
- * Create a RegExp from a string pattern.
+ * Create a RegExp from a [globstar](https://en.wikipedia.org/wiki/Glob_(programming)) pattern.
+ * The pattern can contain POSIX bracket expressions, wildcards, globstars, and negations.
  *
  * @param pattern The pattern to create a RegExp from.
  * @returns The RegExp.
