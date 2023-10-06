@@ -14,7 +14,7 @@ export function createPatternRegexp(pattern: string): RegExp {
     .replace(/(\*+)(\/)?/g, (_, asterisk) => (asterisk.length === 1 ? '[^/]+' : '.*?/?'))
 
     // --- Wildcard
-    .replace(/{(.+?)}/g, (_, p1) => `(?:${p1.replace(',', '|')})`)
+    .replace(/{(.+?)}/g, (_, p1) => `(?:${p1.replace(/,/g, '|')})`)
 
     // --- Remove leading !
     .replace(/^!/, '')
@@ -70,6 +70,11 @@ if (import.meta.vitest) {
   it('should create RegExp with wildcard', () => {
     const result = createPatternRegexp('{foo,bar}')
     expect(result).toEqual(/^(?:foo|bar)$/)
+  })
+
+  it('should create RegExp with multiple wildcards', () => {
+    const result = createPatternRegexp('{foo,bar,baz,qux}')
+    expect(result).toEqual(/^(?:foo|bar|baz|qux)$/)
   })
 
   it('should create RegExp with [[:alnum:]] POSIX bracket expressions', () => {
