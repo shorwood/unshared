@@ -2,7 +2,7 @@ import { Function } from './Function'
 import { Primitive } from './Primitive'
 
 /**
- * Matches all values exept `unknown`.
+ * Matches all types except `unknown`.
  */
 export type Any = Primitive | object | Function
 
