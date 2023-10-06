@@ -6,8 +6,8 @@ import { readdir, stat } from 'node:fs/promises'
 import { join, relative } from 'node:path'
 import { cwd as getCwd } from 'node:process'
 import { Awaitable, awaitable } from '@unshared/functions/awaitable'
-import { patternRegex } from '@unshared/string/patternRegex'
-import { MaybeArray } from '@unshared/types/MaybeArray'
+import { createPatternRegexp } from '@unshared/string/createPatternRegexp'
+import type { MaybeArray } from '@unshared/types'
 import { vol } from 'memfs'
 
 /**
@@ -20,8 +20,8 @@ export type GlobEntry = Stats | string
  * array of file stats. Otherwise the result will be an array of file paths.
  */
 export type GlobResult<T extends boolean> = T extends true
-  ? Awaitable<AsyncGenerator<Stats, Stats[], Stats>, Stats[]>
-  : Awaitable<AsyncGenerator<string, string[], string>, string[]>
+  ? Awaitable<AsyncIterableIterator<Stats>, Stats[]>
+  : Awaitable<AsyncIterableIterator<string>, string[]>
 
 export interface GlobOptions<Stat extends boolean> {
   /**
@@ -82,7 +82,7 @@ export function glob<Stat extends boolean = false>(pattern: MaybeArray<string>, 
 
   // --- Convert the pattern to an array of RegExp.
   const patterns = Array.isArray(pattern) ? pattern : [pattern]
-  const regexps = patterns.map(patternRegex)
+  const regexps = patterns.map(createPatternRegexp)
 
   // --- Create an iterator that will yield the matching paths.
   const searchPool: string[] = [cwd]
@@ -106,7 +106,7 @@ export function glob<Stat extends boolean = false>(pattern: MaybeArray<string>, 
         if (onlyDirectories && !isDirectory) continue
 
         // --- Check if the path matches the pattern(s).
-        const isMatch = regexps.every(regexp => regexp.test(pathRelative))
+        const isMatch = regexps.some(regexp => regexp.test(pathRelative))
         if (!isMatch) continue
 
         // --- Return the result.
@@ -122,15 +122,18 @@ export function glob<Stat extends boolean = false>(pattern: MaybeArray<string>, 
     return results
   }
 
+  // --- Instantiate the iterator.
+  const iterator = createIterator()
+
   // --- Create a function that will return the result as an array.
   async function createResult() {
     const result: GlobEntry[] = []
-    for await (const path of createIterator()) result.push(path)
+    for await (const path of iterator) result.push(path)
     return result
   }
 
   // --- Return the iterator or the result as an array.
-  return awaitable(createIterator(), createResult) as GlobResult<Stat>
+  return awaitable(iterator, createResult) as GlobResult<Stat>
 }
 
 /** c8 ignore next */
