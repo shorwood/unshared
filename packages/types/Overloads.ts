@@ -42,17 +42,17 @@ T extends { (...p: infer P1): infer R1; (...p: infer P2): infer R2; (...p: infer
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should return a single signature if function has no overloads', () => {
-    type method = (a: number, b: string) => boolean
-    type Result = Overloads<method>
-    expectTypeOf<Result>().toEqualTypeOf<[method]>()
+    type Method = (a: number, b: string) => boolean
+    type Result = Overloads<Method>
+    expectTypeOf<Result>().toEqualTypeOf<[Method]>()
   })
 
   it('should return a union of signatures if function has 2 overloads', () => {
-    interface method {
+    interface Method {
       (a: number, b: string): boolean
       (a: string, b: number): boolean
     }
-    type Result = Overloads<method>
+    type Result = Overloads<Method>
     type Expected = [
       (a: number, b: string) => boolean,
       (a: string, b: number) => boolean,
@@ -61,7 +61,7 @@ if (import.meta.vitest) {
   })
 
   it('should return a union of signatures if function has 10 overloads', () => {
-    interface method {
+    interface Method {
       (a: number, b: string): boolean
       (a: string, b: number): boolean
       (a: number, b: number): boolean
@@ -73,7 +73,7 @@ if (import.meta.vitest) {
       (a: number, b: string, c: string): boolean
       (a: string, b: number, c: string): boolean
     }
-    type Result = Overloads<method>
+    type Result = Overloads<Method>
     type Expected = [
       (a: number, b: string) => boolean,
       (a: string, b: number) => boolean,
