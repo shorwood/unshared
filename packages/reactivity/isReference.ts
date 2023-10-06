@@ -17,17 +17,20 @@ export function isReference(value: unknown): value is Reference<unknown> {
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should return true for references', () => {
-    const result = isReference(reference())
+    const value = reference()
+    const result = isReference(value)
     expect(result).toEqual(true)
   })
 
   it('should return false for reactive', () => {
-    const result = isReference(reactive({}))
+    const value = reactive({})
+    const result = isReference(value)
     expect(result).toEqual(false)
   })
 
   it('should return false for computed', () => {
-    const result = isReference(computed([], () => 1))
+    const value = computed([], () => 1)
+    const result = isReference(value)
     expect(result).toEqual(false)
   })
 
