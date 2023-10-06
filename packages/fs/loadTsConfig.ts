@@ -1,5 +1,3 @@
-/* eslint-disable sonarjs/no-duplicate-string */
-import { cwd } from 'node:process'
 import { vol } from 'memfs'
 import { TSConfigJSON } from 'types-tsconfig'
 import { FSObjectOptions, loadObject } from './loadObject'
@@ -15,9 +13,9 @@ import { resolveTsConfig } from './resolveTsConfig'
  * @param options The options to pass to the {@link loadObject} function.
  * @returns A reactive `TSConfig` object.
  */
-export const loadTsConfigJson = async(path: string = cwd(), options?: FSObjectOptions<TSConfigJSON>): Promise<TSConfigJSON> => {
-  const TSConfigJSONPath = await resolveTsConfig(path)
-  return loadObject<TSConfigJSON>(TSConfigJSONPath, options)
+export async function loadTsConfigJson(path: string, options?: FSObjectOptions<TSConfigJSON>): Promise<TSConfigJSON> {
+  const tsConfigJSONPath = await resolveTsConfig(path)
+  return loadObject<TSConfigJSON>(tsConfigJSONPath, options)
 }
 
 /** c8 ignore next */

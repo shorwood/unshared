@@ -1,9 +1,7 @@
-/* eslint-disable sonarjs/no-duplicate-string */
-import { cwd } from 'node:process'
 import { vol } from 'memfs'
 import { PackageJSON } from 'types-pkg-json'
-import { FSObjectOptions, loadObject } from '@unshared/fs/loadObject'
-import { resolvePackageJson } from '@unshared/fs/resolvePackageJson'
+import { FSObjectOptions, loadObject } from './loadObject'
+import { resolvePackageJson } from './resolvePackageJson'
 
 /**
  * Get a reactive `PackageJSON` object from a context directory or a package name.
@@ -15,7 +13,7 @@ import { resolvePackageJson } from '@unshared/fs/resolvePackageJson'
  * @param options The options to pass to the {@link loadObject} function.
  * @returns A reactive `PackageJSON` object.
  */
-export const loadPackageJson = async(path: string = cwd(), options?: FSObjectOptions<PackageJSON>): Promise<PackageJSON> => {
+export async function loadPackageJson(path: string, options?: FSObjectOptions<PackageJSON>): Promise<PackageJSON> {
   const packageJsonPath = await resolvePackageJson(path)
   return loadObject<PackageJSON>(packageJsonPath, options)
 }
