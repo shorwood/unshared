@@ -1,6 +1,7 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 // eslint-disable-next-line import/no-named-default
-import { FSWatcher, PathLike, Stats, WatchOptions, default as fs, readFileSync, renameSync, writeFileSync } from 'node:fs'
+import * as fs from 'node:fs'
+import { FSWatcher, PathLike, Stats, WatchOptions, readFileSync, renameSync, writeFileSync } from 'node:fs'
 import { Awaitable, awaitable } from '@unshared/functions/awaitable'
 import { debounce } from '@unshared/functions/debounce'
 import { ReactiveOptions, reactive } from '@unshared/reactivity/reactive'
@@ -57,6 +58,9 @@ export class FSObject<T extends object> {
   private object: T
   /** Flag to disable file synchronization. */
   private pauseSync = false
+
+  // TODO: Add a Promise property that resolves when the file is synchronized.
+  // TODO: Add a boolean property that indicates if the file is synchronized.
 
   /**
    * Load a JSON file and keep it synchronized with it's source file.
@@ -116,6 +120,7 @@ export class FSObject<T extends object> {
 
     // --- Create the file if `temporary` is set to `true`.
     catch (error) {
+      // @ts-expect-error: `error` is garanteed to be an `Error` object.
       if (error.code === 'ENOENT' && this.options.temporary)
         fs.writeFileSync(this.path, '{}')
     }
