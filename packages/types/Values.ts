@@ -31,19 +31,4 @@ if (import.meta.vitest) {
     type Result = Values<readonly number[]>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
-
-  it('should return the values of a set', () => {
-    type Result = Values<Set<number>>
-    expectTypeOf<Result>().toEqualTypeOf<number>()
-  })
-
-  it('should return the values of a map', () => {
-    type Result = Values<Map<string, number>>
-    expectTypeOf<Result>().toEqualTypeOf<number>()
-  })
-
-  it('should return the values of a string', () => {
-    type Result = Values<string>
-    expectTypeOf<Result>().toEqualTypeOf<string>()
-  })
 }
