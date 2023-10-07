@@ -20,6 +20,7 @@ module.exports = {
     }],
     '@typescript-eslint/member-delimiter-style': ['error', { multiline: { delimiter: 'none' } }],
     '@typescript-eslint/type-annotation-spacing': ['error', {}],
+    "@typescript-eslint/consistent-type-imports": ['error', { prefer: 'type-imports' }],
     '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
     '@typescript-eslint/consistent-indexed-object-style': ['error', 'record'],
     '@typescript-eslint/prefer-ts-expect-error': 'error',
