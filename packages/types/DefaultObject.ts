@@ -1,7 +1,6 @@
 import { Default } from './Default'
 import { DefaultValue } from './DefaultValue'
-import { Substract } from './utils'
-import { IsZero } from './utils/predicate'
+import { IsZero, Substract } from './utils'
 
 /**
  * Default the properties of an object by the properties of another object.
