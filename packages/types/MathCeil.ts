@@ -10,7 +10,7 @@ import { IsInteger, IsNumber } from './utils/predicate'
  */
 export type MathCeil<N extends number> =
   IsNumber<N> extends true ? number
-    :IsInteger<N> extends true ? N
+    : IsInteger<N> extends true ? N
       : `${N}` extends `-${infer S extends number}.${number}` ? Negative<S>
         : `${N}` extends `${infer S extends number}.${number}` ? Add<S, 1>
           : never
