@@ -1,9 +1,11 @@
 /**
- * Extract value of an object.
+ * Extract value of an object at a given key. This is useful for creating a type
+ * that can be used to access nested properties of an object allowing
+ * comprehensive autocompletion and type checking.
  *
- * @template T Object type
- * @template K Key to get value from
- * @returns Value at key.
+ * @template T Object type to extract value from.
+ * @template K Key of the value to extract.
+ * @returns The value at the key.
  * @example Get<{ foo: 'bar' }, 'foo'> // 'bar'
  */
 export type Get<T, K extends string | number | symbol> =
@@ -27,18 +29,18 @@ if (import.meta.vitest) {
   })
 
   it('should extract the value in an object with a string number key', () => {
-    type Result = Get<{ foo: 'bar'; [x: number]: 'x' }, '0'>
-    expectTypeOf<Result>().toEqualTypeOf<'x'>()
+    type Result = Get<['a', 'b', 'c'], '1'>
+    expectTypeOf<Result>().toEqualTypeOf<'b'>()
   })
 
   it('should extract the value in an object with a number key', () => {
-    type Result = Get<{ foo: 'bar'; [x: number]: 'x' }, 0>
-    expectTypeOf<Result>().toEqualTypeOf<'x'>()
+    type Result = Get<['a', 'b', 'c'], 1>
+    expectTypeOf<Result>().toEqualTypeOf<'b'>()
   })
 
   it('should extract the value in an object with a symbol key', () => {
-    const foo = Symbol('foo')
-    type Result = Get<{ foo: 'bar'; [foo]: 'x' }, typeof foo>
+    const symbol = Symbol('foo')
+    type Result = Get<{ [symbol]: 'x' }, typeof symbol>
     expectTypeOf<Result>().toEqualTypeOf<'x'>()
   })
 
