@@ -6,14 +6,20 @@ import type { Collection } from './Collection'
  * @template T The collection to get the values from
  * @returns The values of the collection
  */
-export type Values<T = unknown> =
+export type Values<T> =
   T extends string ? string
-    : T extends Collection<infer U> ? U : unknown
+    : T extends Collection<infer U> ? U
+      : unknown
 
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should return the values of an object', () => {
     type Result = Values<{ a: 1; b: 2; c: 3 }>
+    expectTypeOf<Result>().toEqualTypeOf<1 | 2 | 3>()
+  })
+
+  it('should return the values of a readonly object', () => {
+    type Result = Values<Readonly<{ a: 1; b: 2; c: 3 }>>
     expectTypeOf<Result>().toEqualTypeOf<1 | 2 | 3>()
   })
 
