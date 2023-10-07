@@ -1,4 +1,4 @@
-import { IsArray } from './utils/predicate'
+import type { IsArray } from './utils'
 
 /**
  * Shifts a tuple to the left by one. If the tuple is empty or has one element,

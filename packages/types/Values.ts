@@ -1,4 +1,4 @@
-import { Collection } from './Collection'
+import type { Collection } from './Collection'
 
 /**
  * Values of an array or object

@@ -1,4 +1,4 @@
-import { IsInteger, IsNumber } from './utils/predicate'
+import type { IsInteger, IsNumber } from './utils'
 
 /**
  * An integer number.

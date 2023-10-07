@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/no-static-only-class */
-import { Constructor } from './Constructor'
-import { ConstructorStatics } from './ConstructorStatics'
-import { Extends } from './Extends'
+import type { Constructor } from './Constructor'
+import type { ConstructorStatics } from './ConstructorStatics'
+import type { Extends } from './Extends'
 
 /**
  * Mixes multiple classes into a single class from left to right.

@@ -1,5 +1,5 @@
-import { Function } from './Function'
-import { Overloads } from './Overloads'
+import type { Function } from './Function'
+import type { Overloads } from './Overloads'
 
 /**
  * Extract the parameters of all functions in a tuple.

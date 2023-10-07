@@ -1,5 +1,5 @@
-import { Tuple } from './Tuple'
-import { IsDecimal, IsNumber, IsZero } from './utils/predicate'
+import type { Tuple } from './Tuple'
+import type { IsDecimal, IsNumber, IsZero } from './utils'
 
 /**
  * A 2-dimensional square matrix size `D` of elements of type `U`.

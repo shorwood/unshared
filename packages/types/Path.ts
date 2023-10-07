@@ -1,4 +1,4 @@
-import { IsZero, Substract } from './utils'
+import type { IsZero, Substract } from './utils'
 
 /**
  * Extract all of the nested keys of an object. The keys are returned as a

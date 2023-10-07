@@ -1,8 +1,8 @@
-import { CharacterDigit } from './CharacterDigit'
-import { CharacterLetter } from './CharacterLetter'
-import { CharacterLower } from './CharacterLower'
-import { CharacterSymbol } from './CharacterSymbol'
-import { CharacterUpper } from './CharacterUpper'
+import type { CharacterDigit } from './CharacterDigit'
+import type { CharacterLetter } from './CharacterLetter'
+import type { CharacterLower } from './CharacterLower'
+import type { CharacterSymbol } from './CharacterSymbol'
+import type { CharacterUpper } from './CharacterUpper'
 
 /**
  * A character that is either a letter or a digit.

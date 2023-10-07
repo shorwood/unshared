@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/no-static-only-class */
-import { ConstructorStatics } from './ConstructorStatics'
+import type { ConstructorStatics } from './ConstructorStatics'
 
 /**
  * A constructor with parameters, instance properties and static properties. This is a type that

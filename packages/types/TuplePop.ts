@@ -1,4 +1,4 @@
-import { IsArray } from './utils/predicate'
+import type { IsArray } from './utils'
 
 /**
  * Pop the last element of a tuple type. If the tuple is empty or has one element,

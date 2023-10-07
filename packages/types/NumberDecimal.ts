@@ -1,4 +1,4 @@
-import { IsDecimal, IsNumber } from './utils/predicate'
+import type { IsDecimal, IsNumber } from './utils'
 
 /**
  * A decimal number.

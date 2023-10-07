@@ -1,5 +1,4 @@
-import { Absolute, Divide, IsDivisibleBy, Negative } from './utils/arithmetics'
-import { IsAllNegative, IsAllPositive, IsAnyDecimal, IsAnyNegative, IsAnyNumber, IsZero } from './utils/predicate'
+import type { Absolute, Divide, IsAllNegative, IsAllPositive, IsAnyDecimal, IsAnyNegative, IsAnyNumber, IsDivisibleBy, IsZero, Negative } from './utils'
 
 /**
  * Quotient of two positive integers.

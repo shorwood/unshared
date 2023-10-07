@@ -1,5 +1,4 @@
-import { Add, Negative } from './utils/arithmetics'
-import { IsInteger, IsNumber } from './utils/predicate'
+import type { Add, IsInteger, IsNumber, Negative } from './utils'
 
 /**
  * Ceils a number to the nearest integer.

@@ -1,5 +1,4 @@
-import { Absolute, Modulo, Negative } from './utils/arithmetics'
-import { IsAllNegative, IsAllPositive, IsAnyDecimal, IsAnyNegative, IsAnyNumber, IsZero } from './utils/predicate'
+import type { Absolute, IsAllNegative, IsAllPositive, IsAnyDecimal, IsAnyNegative, IsAnyNumber, IsZero, Modulo, Negative } from './utils'
 
 /**
  * Remainder of the division of two positive integers.

@@ -1,5 +1,5 @@
-import { Tuple } from './Tuple'
-import { IsDecimal, IsNumber } from './utils/predicate'
+import type { Tuple } from './Tuple'
+import type { IsDecimal, IsNumber } from './utils/predicate'
 
 /**
  * An array of elements of type `U`.

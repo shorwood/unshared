@@ -1,6 +1,6 @@
-import { Default } from './Default'
-import { DefaultValue } from './DefaultValue'
-import { IsZero, Substract } from './utils'
+import type { Default } from './Default'
+import type { DefaultValue } from './DefaultValue'
+import type { IsZero, Substract } from './utils'
 
 /**
  * Default the properties of an object by the properties of another object.

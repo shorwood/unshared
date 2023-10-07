@@ -1,5 +1,5 @@
-import { Any } from './Any'
-import { IsUnknown } from './utils/predicate'
+import type { Any } from './Any'
+import type { IsUnknown } from './utils'
 
 /**
  * Matches anything that is not a function. If a generic is provided, it will

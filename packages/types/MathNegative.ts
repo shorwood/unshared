@@ -1,5 +1,4 @@
-import { Negative } from './utils/arithmetics'
-import { IsNumber, IsZero } from './utils/predicate'
+import type { IsNumber, IsZero, Negative } from './utils'
 
 /**
  * The negative of a number.

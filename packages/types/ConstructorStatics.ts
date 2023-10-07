@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/no-static-only-class */
-import { Constructor } from './Constructor'
+import type { Constructor } from './Constructor'
 
 /**
  * Extract static properties from a class constructor.

@@ -1,4 +1,4 @@
-import { Substract } from './utils/arithmetics'
+import type { Substract } from './utils'
 
 /**
  * Literal string constrained by character and length.

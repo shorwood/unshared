@@ -1,5 +1,5 @@
-import { Key } from './Key'
-import { Values } from './Values'
+import type { Key } from './Key'
+import type { Values } from './Values'
 
 /**
  * Function that is used to iterate over a collection.

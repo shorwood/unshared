@@ -1,6 +1,6 @@
-import { Get } from './Get'
-import { MathDecrease } from './MathDecrease'
-import { Values } from './Values'
+import type { Get } from './Get'
+import type { MathDecrease } from './MathDecrease'
+import type { Values } from './Values'
 
 /**
  * Extract nested value of an object recursively.

@@ -1,4 +1,4 @@
-import { MathMultiply } from './MathMultiply'
+import type { MathMultiply } from './MathMultiply'
 
 /**
  * The square of a number.
