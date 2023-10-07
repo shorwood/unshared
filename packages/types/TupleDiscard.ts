@@ -1,4 +1,3 @@
-import type { Array } from './Array'
 import type { MaybeReadonly } from './MaybeReadonly'
 import type { IsArray } from './utils/predicate'
 
@@ -10,7 +9,7 @@ import type { IsArray } from './utils/predicate'
  * @returns The array or tuple without the elements matching the given type.
  * @example TupleDiscard<[1, "a", 2, "b", 3], number> // ["a", "b"]
  */
-export type TupleDiscard<T extends MaybeReadonly<Array>, U = unknown> =
+export type TupleDiscard<T extends MaybeReadonly<Array<any>>, U = unknown> =
   IsArray<T> extends true
 
     // --- If T is an array, extract the elements matching the given type.

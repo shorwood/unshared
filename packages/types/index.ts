@@ -1,6 +1,5 @@
 export * from './utils'
 export * from './Any'
-export * from './Array'
 export * from './BooleanAnd'
 export * from './BooleanNand'
 export * from './BooleanNor'
