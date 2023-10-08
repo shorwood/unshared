@@ -1,17 +1,4 @@
-import type { CharacterWhitespace } from '@unshared/types'
-
-/**
- * Removes the leading and trailing white space and line terminator
- * characters from a string.
- *
- * @template S The string to trim.
- * @returns The trimmed string.
- * @example trim(' Hello world ') // 'Hello world'
- */
-export type Trimmed<S extends string> =
-  S extends `${CharacterWhitespace}${infer R}` ? Trimmed<R> :
-    S extends `${infer L}${CharacterWhitespace}` ? Trimmed<L> :
-      S
+import { Trim } from '@unshared/types'
 
 /**
  * Removes the leading and trailing white space and line terminator
@@ -23,8 +10,8 @@ export type Trimmed<S extends string> =
  * @returns The trimmed string.
  * @example trim(' Hello world ') // 'Hello world'
  */
-export function trim<S extends string>(string: S): Trimmed<S> {
-  return string.trim() as Trimmed<S>
+export function trim<S extends string>(string: S): Trim<S> {
+  return string.trim() as Trim<S>
 }
 
 /* c8 ignore next */
