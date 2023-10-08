@@ -1,4 +1,4 @@
-import type { BooleanNor } from '@unshared/types'
+import { BooleanNor } from '@unshared/types'
 
 /**
  * Computes the logical [NOR](https://en.wikipedia.org/wiki/NOR_gate) of two booleans.

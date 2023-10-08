@@ -1,4 +1,4 @@
-import type { BooleanXnor } from '@unshared/types'
+import { BooleanXnor } from '@unshared/types'
 
 /**
  * Computes the logical [XNOR](https://en.wikipedia.org/wiki/XNOR_gate) of the given booleans.

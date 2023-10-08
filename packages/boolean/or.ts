@@ -1,4 +1,4 @@
-import type { BooleanOr } from '@unshared/types'
+import { BooleanOr } from '@unshared/types'
 
 /**
  * Computes the logical [OR](https://en.wikipedia.org/wiki/OR_gate) of two booleans.
