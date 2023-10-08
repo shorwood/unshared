@@ -13,9 +13,10 @@
     "url": "git@github.com:shorwood/unshared.git",
     "directory": "packages/boolean"
   },
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "browser": "./dist/index.iife.js",
   "exports": {
     "Boolean": {
       "require": "./dist/Boolean.cjs",
@@ -31,11 +32,6 @@
       "require": "./dist/createBoolean.cjs",
       "types": "./dist/createBoolean.d.ts",
       "import": "./dist/createBoolean.js"
-    },
-    "index": {
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
     },
     "nand": {
       "require": "./dist/nand.cjs",
@@ -66,6 +62,12 @@
       "require": "./dist/xor.cjs",
       "types": "./dist/xor.d.ts",
       "import": "./dist/xor.js"
+    },
+    "*": {
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts",
+      "browser": "./dist/index.iife.js",
+      "import": "./dist/index.js"
     }
   },
   "files": [
@@ -74,7 +76,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "pnpm build:bundle && pnpm build:indexes && pnpm build:packageJson",
+    "build:bundle": "tsx ../../scripts/build.ts",
     "build:indexes": "tsx ../../scripts/buildIndexes.ts",
     "build:packageJson": "tsx ../../scripts/buildPackageJson.ts",
     "dev": "tsup --watch"
