@@ -1,48 +1,97 @@
-import { Collection } from '@unshared/types/Collection'
-import { IteratedFunction } from '@unshared/types/IteratedFunction'
-
-interface Every {
-  <T, U>(array: T, iterator: IteratedFunction<T, U>): boolean
-  <T>(array: Collection<T>, value: T): boolean
-}
+import { Collection, IteratedFunction, Values } from '@unshared/types'
 
 /**
- * Checks if every object or array values predicates a function
+ * Checks if every value passes the given test. If the iterator is a
+ * value, it will be compared to each value in the collection.
  *
- * @param object The object or array to check
- * @param iterator A function that returns true if the value should be included
- * @returns True if there is at least one value, false otherwise
+ * @param collection The collection to iterate over.
+ * @param iterator The iterator function or value to compare.
+ * @returns `true` if every value passes the test, otherwise `false`.
+ * @example every([1, 2, 3, 4], value => value < 10) // => true
  */
-export const every: Every = (object: any, iterator: any): boolean => {
+export function every<T extends Collection>(collection: T, iterator: IteratedFunction<T, boolean>): boolean
+/**
+ * Checks if every value is equal to the given value. If the iterator is a
+ * value, it will be compared to each value in the collection.
+ *
+ * @param collection The collection to iterate over.
+ * @param value The value to compare to each value in the collection.
+ * @returns `true` if every value passes the test, otherwise `false`.
+ * @example every([1, 2, 3, 4], 1) // => true
+ */
+export function every<T extends Collection>(collection: T, value: Values<T>): boolean
+export function every(collection: Collection, iteratorOrValue: any): boolean {
   // --- If iterator is a path, cast as getter function.
-  if (typeof iterator !== 'function') {
-    const value = iterator
-    iterator = (v: any) => v === value
+  if (typeof iteratorOrValue !== 'function') {
+    const value = iteratorOrValue
+    iteratorOrValue = (x: unknown) => x === value
   }
 
-  // --- Every values.
-  return Array.isArray(object)
-    ? object.every(iterator)
-    : Object.entries(object).every(([key, value]) => iterator(value, key, object))
+  // --- Some values.
+  return Object
+    .entries(collection)
+    .every(([key, value]) => iteratorOrValue(value, key, collection))
 }
 
 /** c8 ignore next */
 if (import.meta.vitest) {
-  it('should work on arrays', () => {
-    expect(every([1, 2, 3, 4], value => value < 10)).toEqual(true)
-    expect(every([1, 2, 3, 4], value => value % 2 === 0)).toEqual(false)
-    expect(every([1, 1, 1, 1], 1)).toEqual(true)
-    expect(every([1, 1, 1, 2], 1)).toEqual(false)
+  it('should return true if every value of an array passes the test', () => {
+    const result = every([1, 10, 20, 30], value => value > 0)
+    expect(result).toEqual(true)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
   })
 
-  it('should work on objects', () => {
-    expect(every({ a: 1, b: 2, c: 3, d: 4 }, value => value < 10)).toEqual(true)
-    expect(every({ a: 1, b: 2, c: 3, d: 4 }, value => value % 2 === 0)).toEqual(false)
-    expect(every({ a: { b: 1 }, c: { b: 2 } }, value => 'b' in value)).toEqual(true)
+  it('should return false if not every value of an array passes the test', () => {
+    const result = every([1, 10, 20, 30], value => value < 10)
+    expect(result).toEqual(false)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
   })
 
-  it('should return false if object is empty', () => {
-    expect(every({}, () => {})).toEqual(true)
-    expect(every([], () => {})).toEqual(true)
+  it('should return true if every value of an array equals the value', () => {
+    const result = every([1, 1, 1, 1], 1)
+    expect(result).toEqual(true)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
+  })
+
+  it('should return false if not every value of an array equal the value', () => {
+    const result = every([1, 1, 1, 5], 1)
+    expect(result).toEqual(false)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
+  })
+
+  it('should return true if every value of an object passes the test', () => {
+    const result = every({ a: 1, b: 10, c: 20, d: 30 }, value => value > 0)
+    expect(result).toEqual(true)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
+  })
+
+  it('should return false if not every value of an object pass the test', () => {
+    const result = every({ a: 1, b: 10, c: 20, d: 30 }, value => value < 10)
+    expect(result).toEqual(false)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
+  })
+
+  it('should return true if every value of an object equals the value', () => {
+    const result = every({ a: 1, b: 1, c: 1, d: 1 }, 1)
+    expect(result).toEqual(true)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
+  })
+
+  it('should return false if not every value of an object equal the value', () => {
+    const result = every({ a: 1, b: 1, c: 1, d: 5 }, 1)
+    expect(result).toEqual(false)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
+  })
+
+  it('should return true for empty arrays', () => {
+    const result = every([], () => true)
+    expect(result).toEqual(true)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
+  })
+
+  it('should return true for empty objects', () => {
+    const result = every({}, () => true)
+    expect(result).toEqual(true)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
   })
 }
