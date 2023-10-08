@@ -1,5 +1,5 @@
 {
-  "name": "@unshared/reactivity",
+  "name": "@unshared/reactive",
   "type": "module",
   "license": "MIT",
   "sideEffects": false,
@@ -9,7 +9,7 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:shorwood/unshared.git",
-    "directory": "packages/reactivity"
+    "directory": "packages/reactive"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
