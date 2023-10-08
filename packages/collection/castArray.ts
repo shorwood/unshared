@@ -1,4 +1,4 @@
-import { Array, MaybeArray, Nil } from '@unshared/types'
+import type { MaybeArray, Nil } from '@unshared/types'
 
 /**
  * Wrap a value into an array if it is not one already. If the value is
@@ -15,7 +15,7 @@ export function castArray(value?: unknown): unknown[] {
   if (value === undefined || value === null) return []
 
   // --- Return array as-is.
-  if (Array.isArray(value)) return value
+  if (Array.isArray(value)) return value as unknown[]
 
   // --- Wrap primitive value in an array.
   return [value]
