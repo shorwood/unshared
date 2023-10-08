@@ -14,8 +14,8 @@ import type { Immutable } from '@unshared/types'
  */
 export function immutable<T extends object>(object: T): Immutable<T> {
   return new Proxy(object, {
-    get(target, key) {
-      const value = Reflect.get(target, key) as unknown
+    get(target, key, receiver) {
+      const value = Reflect.get(target, key, receiver) as unknown
       return typeof value === 'object' && value !== null
         ? immutable(value)
         : value
