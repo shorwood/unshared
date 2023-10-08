@@ -17,8 +17,11 @@ export function dedent(string: string): string {
   if (!firstLine) return string
 
   // --- Remove the indentation from each line.
-  const indent = firstLine.match(/^\s*/)?.[0] ?? ''
-  return lines.map(line => line.replace(indent, '')).join('\n')
+  const indentMatch = firstLine.match(/^\s*/)
+  const indent = indentMatch ? indentMatch[0] : undefined
+  return indent
+    ? lines.map(line => line.replace(indent, '')).join('\n')
+    : lines.join('\n')
 }
 
 /** c8 ignore next */
