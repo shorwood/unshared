@@ -1,24 +1,32 @@
-import type { Collection, Get, Path } from '@unshared/types'
+import type { Get, Path } from '@unshared/types'
 
 /**
- * Get a value from a nested object's property by a path of keys.
+ * Get the value of a nested property in an object safely. If the path does not exist,
+ * the function will return `undefined`. It can be useful when you want to get a nested
+ * property in an object without having to check if the path exists first.
+ *
+ * The path is a string of keys separated by a `.`
  *
  * @param object The object to get the value from.
- * @param path The path to the value.
- * @returns The value at the path or the default value.
- * @throws If the object is `undefined` or `null` or if the path is invalid.
- * @example get({ a: { b: [true] } }, 'a.b[0]') // true
+ * @param path The path to the value to get.
+ * @returns The value at the path of the object.
+ * @example
+ *
+ * // Create the object.
+ * const object = { foo: { bar: ['baz'] } }
+ *
+ * // Get the value.
+ * get(object, 'foo.bar.0') // 'baz'
  */
-export function get<T extends Collection, K extends Path<T>>(object: T, path: K): Get<T, K>
+export function get<T extends object, K extends Path<T>>(object: T, path: K): Get<T, K>
 export function get(object: unknown, path: string): unknown
 export function get(object: unknown, path: string): unknown {
-  // --- Split the path into keys.
   const keys = path.split('.')
 
   // --- Loop through the path and get the object.
-  let result: any = object
+  let result = object
   for (const key of keys) {
-    if (key === '') throw new SyntaxError(`Invalid path "${path}"`)
+    // @ts-expect-error: The operation is wrapped in a try/catch.
     try { result = result[key] }
     catch { return undefined }
   }
@@ -29,7 +37,7 @@ export function get(object: unknown, path: string): unknown {
 
 /* c8 ignore next */
 if (import.meta.vitest) {
-  const data = {
+  const object = {
     firstName: 'John',
     lastName: 'Doe',
     emails: [
@@ -43,25 +51,26 @@ if (import.meta.vitest) {
   } as const
 
   it('should return value at the path of an object', () => {
-    const result = get(data, 'firstName')
-    expect(result).toEqual(data.firstName)
+    const result = get(object, 'firstName')
+    expect(result).toEqual(object.firstName)
     expectTypeOf(result).toEqualTypeOf<'John'>()
   })
 
   it('should return value at the path of a nested object with array index', () => {
-    const result = get(data, 'friends.0.firstName')
-    expect(result).toEqual(data.friends[0].firstName)
+    const result = get(object, 'friends.0.firstName')
+    expect(result).toEqual(object.friends[0].firstName)
     expectTypeOf(result).toEqualTypeOf<'Jane'>()
   })
 
   it('should return undefined if the path does not exist', () => {
-    const result = get(data, 'invalid-path')
+    const result = get(object, 'invalid.path')
     expect(result).toEqual(undefined)
     expectTypeOf(result).toEqualTypeOf<unknown>()
   })
 
-  it('should throw an error if the path contains ".."', () => {
-    const shouldThrow = () => get(data, 'a..b')
-    expect(shouldThrow).toThrow(SyntaxError)
+  it('should return the value of a Proxied property', () => {
+    const object = new Proxy({}, { get(_, property) { return property } })
+    const result = get(object, 'foo')
+    expect(result).toEqual('foo')
   })
 }
