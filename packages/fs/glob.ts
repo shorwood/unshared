@@ -7,7 +7,7 @@ import { join, relative } from 'node:path'
 import { cwd as getCwd } from 'node:process'
 import { Awaitable, awaitable } from '@unshared/functions/awaitable'
 import { createPatternRegexp } from '@unshared/string/createPatternRegexp'
-import type { MaybeArray } from '@unshared/types'
+import { MaybeArray } from '@unshared/types'
 import { vol } from 'memfs'
 
 /**
