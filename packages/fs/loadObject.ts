@@ -4,7 +4,7 @@ import * as fs from 'node:fs'
 import { FSWatcher, PathLike, Stats, WatchOptions, readFileSync, renameSync, writeFileSync } from 'node:fs'
 import { Awaitable, awaitable } from '@unshared/functions/awaitable'
 import { debounce } from '@unshared/functions/debounce'
-import { ReactiveOptions, reactive } from '@unshared/reactivity/reactive'
+import { ReactiveOptions, reactive } from '@unshared/reactive/reactive'
 import { vol } from 'memfs'
 
 export interface FSObjectOptions<T extends object> extends ReactiveOptions<T>, WatchOptions {
