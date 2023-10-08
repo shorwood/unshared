@@ -10,22 +10,18 @@
     "url": "git+https://github.com/shorwood/unshared.git",
     "directory": "packages/eslint-config"
   },
-  "module": "./dist/index.js",
+  "module": "./lib/index.js",
   "exports": {
-    ".": "./dist/index.js",
-    "./basic": "./dist/basic.js",
-    "./typescript": "./dist/typescript.js",
-    "./vue": "./dist/vue.js"
+    ".": "./lib/index.js",
+    "./basic": "./lib/basic.js",
+    "./typescript": "./lib/typescript.js",
+    "./vue": "./lib/vue.js"
   },
   "files": [
-    "dist",
+    "lib",
     "README.md",
     "LICENSE"
   ],
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch"
-  },
   "peerDependencies": {
     "eslint": ">=8.0.0",
     "typescript": ">=4.0.0"
