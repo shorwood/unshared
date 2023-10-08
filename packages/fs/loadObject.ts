@@ -174,9 +174,14 @@ export class FSObject<T extends object> {
  * @param options Options for the watcher.
  * @returns The loaded JSON file.
  * @example
- * const config = loadFile('config.json')
+ *
+ * // Load the config file.
+ * const config = await loadFile('config.json')
+ *
+ * // Update the config file.
  * config.foo = 'bar'
  *
+ * // Check the content of the config file.
  * await readFile('config.json', 'utf8') // { "foo": "bar" }
  */
 export function loadObject<T extends object>(path: PathLike, options: FSObjectOptions<T> = {}): Awaitable<FSObject<T>, T> {
