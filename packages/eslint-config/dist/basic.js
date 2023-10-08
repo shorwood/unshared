@@ -93,8 +93,8 @@ module.exports = {
               'main',
               'module',
               'types',
-              'unpkg',
-              'jsdelivr',
+              'typings',
+              'browser',
               'exports',
               'files',
 
