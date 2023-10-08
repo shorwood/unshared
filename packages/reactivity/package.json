@@ -8,19 +8,18 @@
   "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shorwood/unshared.git",
+    "url": "git@github.com:shorwood/unshared.git",
     "directory": "packages/reactivity"
   },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "browser": "./dist/index.iife.js",
   "exports": {
     "computed": {
       "require": "./dist/computed.cjs",
       "types": "./dist/computed.d.ts",
       "import": "./dist/computed.js"
-    },
-    "*": {
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
     },
     "isComputed": {
       "require": "./dist/isComputed.cjs",
@@ -66,6 +65,12 @@
       "require": "./dist/watch.cjs",
       "types": "./dist/watch.d.ts",
       "import": "./dist/watch.js"
+    },
+    "*": {
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts",
+      "browser": "./dist/index.iife.js",
+      "import": "./dist/index.js"
     }
   },
   "files": [
@@ -74,7 +79,9 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch"
+    "build": "pnpm build:indexes && pnpm build:bundle && pnpm build:packageJson",
+    "build:bundle": "tsx ../../scripts/build.ts",
+    "build:indexes": "tsx ../../scripts/buildIndexes.ts",
+    "build:packageJson": "tsx ../../scripts/buildPackageJson.ts"
   }
 }
