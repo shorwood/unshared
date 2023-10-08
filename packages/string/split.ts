@@ -1,4 +1,4 @@
-import { NumberInteger } from '@unshared/types'
+import type { NumberInteger } from '@unshared/types'
 
 /**
  * Split the string into an array of substrings using the specified delimiter. This

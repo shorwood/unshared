@@ -1,4 +1,4 @@
-import { Trimmed } from './trim'
+import type { Trimmed } from './trim'
 
 /**
  * Parse a string into a boolean. "true" and "1" are considered true and the
