@@ -1,4 +1,4 @@
-import type { IsNumber, IsPositive, IsZero } from './utils'
+import { IsNumber, IsPositive, IsZero } from './utils'
 
 /**
  * A strictly positive number greater than zero.

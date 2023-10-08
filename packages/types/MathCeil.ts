@@ -1,4 +1,4 @@
-import type { Add, IsInteger, IsNumber, Negative } from './utils'
+import { Add, IsInteger, IsNumber, Negative } from './utils'
 
 /**
  * Ceils a number to the nearest integer.

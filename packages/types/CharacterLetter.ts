@@ -1,7 +1,7 @@
-import type { CharacterDigit } from './CharacterDigit'
-import type { CharacterLower } from './CharacterLower'
-import type { CharacterSymbol } from './CharacterSymbol'
-import type { CharacterUpper } from './CharacterUpper'
+import { CharacterDigit } from './CharacterDigit'
+import { CharacterLower } from './CharacterLower'
+import { CharacterSymbol } from './CharacterSymbol'
+import { CharacterUpper } from './CharacterUpper'
 
 /**
  * A character letter that is either a lowercase or an uppercase letter.

@@ -1,4 +1,4 @@
-import type { Get } from './Get'
+import { Get } from './Get'
 
 /**
  * Map nested properties to top-level properties. Allows for easier access to nested

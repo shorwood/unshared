@@ -1,4 +1,4 @@
-import type { Default } from './Default'
+import { Default } from './Default'
 
 /**
  * Default the values of a tuple or array with the values of another tuple or array.

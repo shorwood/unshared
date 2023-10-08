@@ -1,5 +1,5 @@
-import type { Any } from './Any'
-import type { Primitive } from './Primitive'
+import { Any } from './Any'
+import { Primitive } from './Primitive'
 
 /**
  * Exclude primitive types from a type.

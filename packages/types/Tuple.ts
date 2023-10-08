@@ -1,4 +1,4 @@
-import type { IsDecimal, IsNegative, IsNumber, IsZero } from './utils'
+import { IsDecimal, IsNegative, IsNumber, IsZero } from './utils'
 
 /** Private type to build tuple */
 type BuildTuple<L extends number, U = unknown, T extends U[] = []> =

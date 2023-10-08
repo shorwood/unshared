@@ -1,4 +1,4 @@
-import type { IsDecimal, IsNegative, IsNumber } from './utils'
+import { IsDecimal, IsNegative, IsNumber } from './utils'
 
 /**
  * A negative decimal number.

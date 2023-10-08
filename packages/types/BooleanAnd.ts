@@ -1,4 +1,3 @@
-
 /**
  * The [AND](https://en.wikipedia.org/wiki/Logical_conjunction) of two booleans.
  *

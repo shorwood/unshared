@@ -1,4 +1,4 @@
-import type { Function } from './Function'
+import { Function } from './Function'
 
 /**
  * Tuple of all possible overloads of a function. This is useful when you want to

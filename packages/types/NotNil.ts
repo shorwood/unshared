@@ -1,6 +1,6 @@
-import type { Any } from './Any'
-import type { Nil } from './Nil'
-import type { IsUnknown } from './utils'
+import { Any } from './Any'
+import { Nil } from './Nil'
+import { IsUnknown } from './utils'
 
 /**
  * Matches anything that is not `null`, `undefined` or `void`. If a generic is

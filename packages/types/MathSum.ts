@@ -1,4 +1,4 @@
-import type { MathAdd } from './MathAdd'
+import { MathAdd } from './MathAdd'
 
 /**
  * Computes the sum of a tuple of numbers.

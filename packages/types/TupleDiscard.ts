@@ -1,5 +1,5 @@
-import type { MaybeReadonly } from './MaybeReadonly'
-import type { IsArray } from './utils/predicate'
+import { MaybeReadonly } from './MaybeReadonly'
+import { IsArray } from './utils/predicate'
 
 /**
  * Discard the elements of an array or tuple that match the given type.

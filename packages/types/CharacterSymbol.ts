@@ -1,6 +1,6 @@
-import type { CharacterDigit } from './CharacterDigit'
-import type { CharacterLower } from './CharacterLower'
-import type { CharacterUpper } from './CharacterUpper'
+import { CharacterDigit } from './CharacterDigit'
+import { CharacterLower } from './CharacterLower'
+import { CharacterUpper } from './CharacterUpper'
 
 /**
  * A character symbol that is not a letter or a digit.

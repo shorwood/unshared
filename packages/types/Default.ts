@@ -1,6 +1,6 @@
-import type { DefaultObject } from './DefaultObject'
-import type { DefaultTuple } from './DefaultTuple'
-import type { DefaultValue } from './DefaultValue'
+import { DefaultObject } from './DefaultObject'
+import { DefaultTuple } from './DefaultTuple'
+import { DefaultValue } from './DefaultValue'
 
 /**
  * Default a value or collection by another value or collection. Meaning that if

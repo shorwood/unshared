@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/no-static-only-class */
-import type { Constructor } from './Constructor'
-import type { ConstructorStatics } from './ConstructorStatics'
-import type { DefaultObject } from './DefaultObject'
+import { Constructor } from './Constructor'
+import { ConstructorStatics } from './ConstructorStatics'
+import { DefaultObject } from './DefaultObject'
 
 /**
  * Extends one class with another. The first class will be extended with the

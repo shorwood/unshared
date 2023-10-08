@@ -1,4 +1,4 @@
-import type { Absolute, IsAllNegative, IsAllPositive, IsAnyDecimal, IsAnyNegative, IsAnyNumber, IsAnyZero, Multiply, Negative } from './utils'
+import { Absolute, IsAllNegative, IsAllPositive, IsAnyDecimal, IsAnyNegative, IsAnyNumber, IsAnyZero, Multiply, Negative } from './utils'
 
 /**
  * Product of two positive integers.

@@ -1,6 +1,6 @@
-import type { CharacterDigit } from './CharacterDigit'
-import type { CharacterSymbol } from './CharacterSymbol'
-import type { CharacterUpper } from './CharacterUpper'
+import { CharacterDigit } from './CharacterDigit'
+import { CharacterSymbol } from './CharacterSymbol'
+import { CharacterUpper } from './CharacterUpper'
 
 /**
  * A lowercase characters from the [ASCII character set](https://www.wikiwand.com/en/ASCII#Printable_characters)

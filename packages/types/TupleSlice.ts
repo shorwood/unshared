@@ -1,6 +1,6 @@
-import type { MathSubstract } from './MathSubstract'
-import type { TupleLength } from './TupleLength'
-import type { IsNumber, IsZero } from './utils'
+import { MathSubstract } from './MathSubstract'
+import { TupleLength } from './TupleLength'
+import { IsNumber, IsZero } from './utils'
 
 /**
  * Extract a slice of a tuple type.

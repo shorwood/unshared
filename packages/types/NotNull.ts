@@ -1,5 +1,5 @@
-import type { Any } from './Any'
-import type { IsUnknown } from './utils'
+import { Any } from './Any'
+import { IsUnknown } from './utils'
 
 /**
  * Matches anything that is not `null`. If a generic is provided, it will

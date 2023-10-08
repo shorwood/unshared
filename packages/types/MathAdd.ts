@@ -1,4 +1,4 @@
-import type { Absolute, Add, IsAllNegative, IsAllPositive, IsAnyDecimal, IsAnyNumber, IsEqual, IsLower, IsNegative, IsZero, Negative, Substract } from './utils'
+import { Absolute, Add, IsAllNegative, IsAllPositive, IsAnyDecimal, IsAnyNumber, IsEqual, IsLower, IsNegative, IsZero, Negative, Substract } from './utils'
 
 /**
  * Sum of two integers.

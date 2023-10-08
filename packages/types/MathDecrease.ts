@@ -1,4 +1,4 @@
-import type { MathAdd } from './MathAdd'
+import { MathAdd } from './MathAdd'
 
 /**
  * Integer decreased by 1.

@@ -1,4 +1,4 @@
-import type { Nil } from './Nil'
+import { Nil } from './Nil'
 
 /**
  * Default a value by another value. Meaning that if the first value is

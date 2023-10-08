@@ -1,4 +1,4 @@
-import type { IsInteger, IsNumber } from './utils'
+import { IsInteger, IsNumber } from './utils'
 
 /**
  * An integer number.

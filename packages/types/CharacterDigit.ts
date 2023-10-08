@@ -1,6 +1,6 @@
-import type { CharacterLower } from './CharacterLower'
-import type { CharacterSymbol } from './CharacterSymbol'
-import type { CharacterUpper } from './CharacterUpper'
+import { CharacterLower } from './CharacterLower'
+import { CharacterSymbol } from './CharacterSymbol'
+import { CharacterUpper } from './CharacterUpper'
 
 /**
  * A character digit.
