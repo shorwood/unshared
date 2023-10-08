@@ -1,6 +1,5 @@
 import { access, constants } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
-import { cwd } from 'node:process'
 import { vol } from 'memfs'
 
 /**
@@ -11,10 +10,9 @@ import { vol } from 'memfs'
  * @param name The file name to find.
  * @param path The path to start from.
  * @returns The absolute path of the file found.
- * @throws {Error} If the file was not found.
- * @example findAncestor('.npmrc') // '/home/user/.npmrc'
+ * @example findAncestor('.npmrc', cwd()) // '/home/user/.npmrc'
  */
-export const findAncestor = async(name: string, path: string = cwd()): Promise<string> => {
+export async function findAncestor(name: string, path: string): Promise<string> {
   while (path !== '/') {
     const absolutePath = resolve(path, name)
     try {
@@ -24,7 +22,7 @@ export const findAncestor = async(name: string, path: string = cwd()): Promise<s
     catch {}
     path = dirname(path)
   }
-  throw new Error(`Could not find "${name}" in the parent directories of "${path}".`)
+  throw new Error(`Could not find any file named "${name}" in the parent directories of "${path}".`)
 }
 
 /** c8 ignore next */

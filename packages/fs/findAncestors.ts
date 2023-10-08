@@ -1,6 +1,5 @@
 import { access, constants } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
-import { cwd } from 'node:process'
 import { vol } from 'memfs'
 
 /**
@@ -11,9 +10,9 @@ import { vol } from 'memfs'
  * @param name The file name to find.
  * @param path The path to start from.
  * @returns The absolute paths of the files found.
- * @example findAncestors('.npmrc') // ['/home/user/project/.npmrc', '/home/user/.npmrc']
+ * @example findAncestors('.npmrc', cwd()) // ['/home/user/project/.npmrc', '/home/user/.npmrc']
  */
-export async function findAncestors(name: string, path: string = cwd()): Promise<string[]> {
+export async function findAncestors(name: string, path: string): Promise<string[]> {
   const paths: string[] = []
   while (path !== '/') {
     const absolutePath = resolve(path, name)
