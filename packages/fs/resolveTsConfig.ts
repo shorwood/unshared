@@ -1,15 +1,14 @@
-import { cwd } from 'node:process'
-import { findAncestor } from '@unshared/fs/findAncestor'
 import { vol } from 'memfs'
+import { findAncestor } from './findAncestor'
 
 /**
  * Resolve the path of the `tsconfig.json` file from a context directory.
  *
- * @param path The path to start from. Defaults to the current working directory.
+ * @param path The path to start from.
  * @returns The path of the `tsconfig.json` file.
  * @example resolvePackageJson('/home/user/project') // '/home/user/project/tsconfig.json'
  */
-export async function resolveTsConfig(path: string = cwd()): Promise<string> {
+export async function resolveTsConfig(path: string): Promise<string> {
   return findAncestor('tsconfig.json', path)
 }
 

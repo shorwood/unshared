@@ -1,15 +1,14 @@
-import { cwd } from 'node:process'
-import { findAncestor } from '@unshared/fs/findAncestor'
 import { vol } from 'memfs'
+import { findAncestor } from './findAncestor'
 
 /**
- * Resolve the path of the `package.json` file from a context directory.
+ * Resolve the path of the `package.json` file from a directory.
  *
- * @param path The path to start from. Defaults to the current working directory.
+ * @param path The path to start from.
  * @returns The path of the `package.json` file.
  * @example resolvePackageJson('/home/user/project') // '/home/user/project/package.json'
  */
-export async function resolvePackageJson(path: string = cwd()): Promise<string> {
+export async function resolvePackageJson(path: string): Promise<string> {
   return findAncestor('package.json', path)
 }
 
