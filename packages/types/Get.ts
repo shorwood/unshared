@@ -16,7 +16,10 @@ export type Get<T, P extends string> =
       ? K extends keyof T ? Get<T[K], N> : never
 
       // --- Otherwise, return the value at the current path.
-      : P extends keyof T ? T[P] : never
+      : P extends keyof T ? T[P]
+
+        // ---  Maybe the object is an array, if so, return the item type.
+        : T extends Array<infer U> ? U : never
 
 /** c8 ignore next */
 if (import.meta.vitest) {
@@ -32,10 +35,16 @@ if (import.meta.vitest) {
     expectTypeOf<Result>().toEqualTypeOf<'foo'>()
   })
 
-  it('should extract the value of a nested array in an object', () => {
-    interface Object { foo: { bar: { baz: [true] } } }
+  it('should extract the value of a nested tuple in an object', () => {
+    interface Object { foo: { bar: { baz: [boolean] } } }
     type Result = Get<Object, 'foo.bar.baz.0'>
-    expectTypeOf<Result>().toEqualTypeOf<true>()
+    expectTypeOf<Result>().toEqualTypeOf<boolean>()
+  })
+
+  it('should extract the value of a nested array in an object', () => {
+    interface Object { foo: { bar: { baz: boolean[] } } }
+    type Result = Get<Object, 'foo.bar.baz.0'>
+    expectTypeOf<Result>().toEqualTypeOf<boolean>()
   })
 
   it('should extract the value of a nested readonly array', () => {
