@@ -1,4 +1,20 @@
+import { Fallback } from './Fallback'
 import { Get } from './Get'
+
+/**
+ * A map of aliases. The key is the aliased property name, and the value is the
+ * path to a nested property in the collection. This type is used to constrain
+ * the `alias` function and provide auto-completion for the various paths in the
+ * collection.
+ *
+ * @template T The type of the collection.
+ * @returns A map of aliases.
+ * @example AliasMap<{ fooBar: 'foo.bar' }> // { readonly fooBar: 'foo.bar' }
+ */
+// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+export interface AliasMap {
+  [x: string]: string
+}
 
 /**
  * Map nested properties to top-level properties. Allows for easier access to nested
@@ -33,9 +49,9 @@ import { Get } from './Get'
  *   firstFriend: User
  * }
  */
-export type Alias<T extends object, A extends Record<string, string>> =
+export type Alias<T extends object, A extends AliasMap> =
   T & {
-    -readonly [K in keyof A]: Get<T, A[K]>
+    -readonly [K in keyof A]-?: Fallback<Get<T, A[K]>, unknown>
   }
 
 /** c8 ignore next */
@@ -56,5 +72,11 @@ if (import.meta.vitest) {
     interface Source { foo: { bar: string } }
     type Result = Alias<Source, { readonly fooBar: 'foo.bar' }>
     expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: string }>()
+  })
+
+  it('should alias as uknown if the path does not exist', () => {
+    interface Source { foo: { bar: string } }
+    type Result = Alias<Source, { fooBar: 'foo.baz' }>
+    expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: unknown }>()
   })
 }
