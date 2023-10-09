@@ -35,7 +35,7 @@ import { Get } from './Get'
  */
 export type Alias<T extends object, A extends Record<string, string>> =
   T & {
-    [K in keyof A]: Get<T, A[K]>
+    -readonly [K in keyof A]: Get<T, A[K]>
   }
 
 /** c8 ignore next */
@@ -49,6 +49,12 @@ if (import.meta.vitest) {
   it('should alias a nested array index', () => {
     interface Source { foo: { bar: [string] } }
     type Result = Alias<Source, { fooBar: 'foo.bar.0' }>
+    expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: string }>()
+  })
+
+  it('should alias new properties as mutable', () => {
+    interface Source { foo: { bar: string } }
+    type Result = Alias<Source, { readonly fooBar: 'foo.bar' }>
     expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: string }>()
   })
 }
