@@ -10,7 +10,8 @@
       "vitest/importMeta"
     ],
     "paths": {
-      "@unshared/*": ["./packages/*"]
+      "@unshared/*": ["./packages/*"],
+      "@/*": ["./scripts/*"]
     }
   },
   "include": [
