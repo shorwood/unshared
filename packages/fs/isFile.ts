@@ -14,8 +14,9 @@ export async function isFile(path: PathLike): Promise<boolean> {
     const stats = await stat(path)
     return stats.isFile()
   }
-  catch { /** Ignore */ }
-  return false
+  catch {
+    return false
+  }
 }
 
 /** c8 ignore next */
