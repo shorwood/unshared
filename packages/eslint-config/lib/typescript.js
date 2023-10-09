@@ -17,6 +17,18 @@ module.exports = {
     '@typescript-eslint/consistent-indexed-object-style': ['error', 'record'],
 
     /**
+     * Enforce consistent Array types. This rule aims to standardize the usage of
+     * `Array<T>` over `T[]`, and `ReadonlyArray<T>` over `readonly T[]`. Allows
+     * for reduced cognitive load when reading code that uses arrays.
+     *
+     * @see https://typescript-eslint.io/rules/array-type
+     */
+    '@typescript-eslint/array-type': ['error', {
+      default: 'generic',
+      readonly: 'generic',
+    }],
+
+    /**
      * Enforce the use of `@ts-expect-error` over `@ts-ignore` to silence TypeScript
      * errors. This rule aims to ensure that TypeScript errors are never silenced
      * without explanation or justification. And that when an error is fixed, the
