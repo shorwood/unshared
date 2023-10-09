@@ -1,4 +1,4 @@
-import type { NotNil } from '@unshared/types'
+import { NotNil } from '@unshared/types'
 
 /**
  * Filters out `undefined` and `null` values from an array.

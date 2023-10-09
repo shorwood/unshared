@@ -1,4 +1,4 @@
-import type { NumberIntegerPositive } from '@unshared/types'
+import { NumberIntegerPositive } from '@unshared/types'
 
 /**
  * Splits an array into smaller arrays of a specified size.

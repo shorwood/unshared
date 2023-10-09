@@ -1,4 +1,4 @@
-import type { Collection, NumberIntegerPositive } from '@unshared/types'
+import { Collection, NumberIntegerPositive } from '@unshared/types'
 
 /**
  * Clones a collection by creating a new collection with the same elements. Allows

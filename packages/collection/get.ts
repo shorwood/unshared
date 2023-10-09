@@ -1,4 +1,4 @@
-import type { Get, Path } from '@unshared/types'
+import { Get, Path } from '@unshared/types'
 
 /**
  * Get the value of a nested property in an object safely. If the path does not exist,
@@ -26,7 +26,7 @@ export function get(object: unknown, path: string): unknown {
   // --- Loop through the path and get the object.
   let result = object
   for (const key of keys) {
-    // @ts-expect-error: The operation is wrapped in a try/catch.
+    // @ts-expect-error: Invalid keys will be caught by the try/catch.
     try { result = result[key] }
     catch { return undefined }
   }

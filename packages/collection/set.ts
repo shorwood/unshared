@@ -1,4 +1,4 @@
-import { Path } from '@unshared/types/Path'
+import { Path } from '@unshared/types'
 
 /**
  * Set a value of a nested object's property by a path of keys.
