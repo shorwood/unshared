@@ -1,6 +1,6 @@
 import { memoize } from '@unshared/functions/memoize'
 
-const generateCharMap = (): string[] => {
+const generateCharMap = (): Array<string> => {
   // --- Generate a color map using the hue.
   const charMap = []
   for (let index = 0; index < 256; index++) {
