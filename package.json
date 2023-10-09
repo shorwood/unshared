@@ -12,13 +12,14 @@
   "packageManager": "pnpm@7.29.1",
   "scripts": {
     "build": "pnpm -F @unshared/* build",
-        "lint": "eslint .",
+    "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:watch": "vitest --watch",
     "test:types": "vitest typecheck",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "preinstall": "node ./scripts/forcePnpm.js"
   },
   "devDependencies": {
     "@changesets/cli": "2.26.2",
