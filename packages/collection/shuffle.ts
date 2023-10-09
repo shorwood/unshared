@@ -1,15 +1,22 @@
 /**
- * Shuffle an array randomly or with a seed.
+ * Shuffles an array using the [Fisher-Yates algorithm](https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle).
+ * The original array is not modified and a new shuffled array is returned.
  *
- * @param array An array
- * @param seed A seed value
- * @returns A new shuffled array
+ * @param array The array to shuffle.
+ * @param seed The seed to use for the shuffle.
+ * @returns The shuffled array.
+ * @example shuffle([1, 2, 3, 4]) // => [3, 1, 4, 2]
  */
-export const shuffle = <T>(array: Array<T>, seed: number = Math.random()): Array<T> => {
+export function shuffle<T>(array: Array<T>, seed?: number): Array<T> {
   const newArray = [...array]
   let currentIndex = array.length
   let valueBuffer
   let randomIndex
+
+  // --- Normalize the seed from 0 to 1.
+  seed = seed === undefined
+    ? Math.random()
+    : Math.abs(Math.sin(seed))
 
   // --- While there remain elements to shuffle
   while (currentIndex-- !== 0) {
@@ -29,14 +36,18 @@ export const shuffle = <T>(array: Array<T>, seed: number = Math.random()): Array
 /* c8 ignore next */
 if (import.meta.vitest) {
   it('shuffles an array with a seed', () => {
-    expect(shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 0.5)).toEqual([9, 1, 7, 2, 6, 3, 8, 4, 10, 5])
+    const result = shuffle([1, 2, 3, 4], 0.5)
+    const expected = [4, 3, 1, 2]
+    expect(result).toEqual(expected)
   })
 
   it('shuffles an empty array', () => {
-    expect(shuffle([])).toEqual([])
+    const result = shuffle([])
+    expect(result).toEqual([])
   })
 
   it('shuffles an empty array with a single item', () => {
-    expect(shuffle([1])).toEqual([1])
+    const result = shuffle([1])
+    expect(result).toEqual([1])
   })
 }
