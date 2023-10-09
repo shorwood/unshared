@@ -12,20 +12,42 @@ module.exports = {
 
     // TS
     '@typescript-eslint/semi': ['error', 'never'],
+    '@typescript-eslint/member-delimiter-style': ['error', { multiline: { delimiter: 'none' } }],
+    '@typescript-eslint/type-annotation-spacing': ['error', {}],
+    '@typescript-eslint/consistent-indexed-object-style': ['error', 'record'],
+
+    /**
+     * Enforce the use of `@ts-expect-error` over `@ts-ignore` to silence TypeScript
+     * errors. This rule aims to ensure that TypeScript errors are never silenced
+     * without explanation or justification. And that when an error is fixed, the
+     * `@ts-expect-error` forces the developer to remove the comment.
+     *
+     * @see https://typescript-eslint.io/rules/prefer-ts-expect-error
+     * @see https://typescript-eslint.io/rules/ban-ts-comment
+     */
+    '@typescript-eslint/prefer-ts-expect-error': 'error',
     '@typescript-eslint/ban-ts-comment': ['error', {
       'ts-expect-error': 'allow-with-description',
       'ts-ignore': false,
       'ts-nocheck': false,
       'ts-check': false,
     }],
-    '@typescript-eslint/member-delimiter-style': ['error', { multiline: { delimiter: 'none' } }],
-    '@typescript-eslint/type-annotation-spacing': ['error', {}],
-    '@typescript-eslint/consistent-indexed-object-style': ['error', 'record'],
-    '@typescript-eslint/prefer-ts-expect-error': 'error',
-    
-    // --- Type imports
+
+    /**
+     * Enforces `interface` usage over `type` usage. This allows for better consistency
+     * and identification of objects that can be augmented while favoring separation
+     * between interfaces describing objects and types describing primitives and/or unions.
+     *
+     * @see https://typescript-eslint.io/rules/consistent-type-definitions
+     */
     '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
-    "@typescript-eslint/consistent-type-imports": ['error', { prefer: 'no-type-imports' }],
+
+    /**
+     * Enforces consistent usage of type imports. This rule will disallow the use of
+     * `import type` or `import { type }` to reduce the cognitive load of reasoning
+     * about imports.
+     */
+    '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'no-type-imports' }],
 
     // Override JS
     'no-useless-constructor': 'off',
