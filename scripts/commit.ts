@@ -24,7 +24,7 @@ export async function commit() {
   const promptPath = new URL('commitPrompt.yaml', import.meta.url)
   const promptYaml = await readFile(promptPath, 'utf8')
   const prompt = parseYaml(promptYaml) as Record<string, unknown>
-  const promptMessages = prompt.messages as Prompt[]
+  const promptMessages = prompt.messages as Array<Prompt>
   const input = process.argv.slice(2).join(' ')
 
   const diff = execFileSync('git', ['diff', '--cached', '--staged'], { encoding: 'utf8' }).slice(0, 7000)
@@ -64,7 +64,7 @@ export async function commit() {
   })
 
   // --- Write the response token by token.
-  const completionTokens: string[] = []
+  const completionTokens: Array<string> = []
   for await (const chunks of stream) {
     const results = chunks.toString('utf8').split('\n')
     for (const result of results) {

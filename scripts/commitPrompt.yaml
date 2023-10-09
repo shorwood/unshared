@@ -19,7 +19,7 @@ messages:
       The body should be used to explain what and why vs how.
       If the change is small enough, the body can be omitted.
       Do not use `refactor` or `perf` in the type/scope.
-  
+
   - role: user
     content: |
       chore improve type
@@ -30,11 +30,11 @@ messages:
       +++ b/packages/reactivity/useState.ts
       @@ -1,7 +1,7 @@
       import { Reference, reference } from './reference'
-      
+
       /** The return type of `useState`. */
       -export type State<T> = [Reference<T>, (value: T) => void]
       +export type State<T = unknown> = [() => T, (value: T) => void]
-      
+
       /**
         * Creates a reactive state with a setter. Similar to `useState` from React.
       @@ -9,25 +9,42 @@ export type State<T> = [Reference<T>, (value: T) => void]
