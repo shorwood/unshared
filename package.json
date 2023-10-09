@@ -20,6 +20,7 @@
     "test:watch": "vitest --watch",
     "test:types": "vitest typecheck",
     "test:coverage": "vitest --coverage",
+    "commit": "tsx ./scripts/commit.ts",
     "preinstall": "node ./scripts/forcePnpm.js"
   },
   "devDependencies": {
@@ -42,6 +43,7 @@
     "@vitest/utils": "0.34.5",
     "axios": "1.5.0",
     "c8": "8.0.1",
+    "dotenv": "16.3.1",
     "esbuild": "0.19.4",
     "eslint": "8.49.0",
     "fast-glob": "3.3.1",
