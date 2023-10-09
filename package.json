@@ -9,9 +9,10 @@
     "type": "git",
     "url": "git+https://github.com/shorwood/unshared.git"
   },
-  "packageManager": "pnpm@7.29.1",
   "scripts": {
     "build": "pnpm -F @unshared/* build",
+    "build:indexes": "pnpm -F @unshared/* build:indexes",
+    "build:packageJson": "pnpm -F @unshared/* build:packageJson",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest",
