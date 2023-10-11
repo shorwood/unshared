@@ -10,7 +10,7 @@ import { load as parseYaml } from 'js-yaml'
 const OPENAI_APIKEY = process.env.OPENAI_APIKEY
 
 interface Prompt {
-  role: 'user' | 'system' | 'assistant'
+  role: 'assistant' | 'system' | 'user'
   content: string
 }
 
@@ -24,7 +24,7 @@ export async function commit() {
   const promptPath = new URL('commitPrompt.yaml', import.meta.url)
   const promptYaml = await readFile(promptPath, 'utf8')
   const prompt = parseYaml(promptYaml) as Record<string, unknown>
-  const promptMessages = prompt.messages as Array<Prompt>
+  const promptMessages = prompt.messages as Prompt[]
   const input = process.argv.slice(2).join(' ')
 
   const diff = execFileSync('git', ['diff', '--cached', '--staged'], { encoding: 'utf8' }).slice(0, 7000)
@@ -44,7 +44,7 @@ export async function commit() {
     body: JSON.stringify({
       model: 'gpt-4',
       messages: promptMessages,
-      max_tokens: 128,
+      max_tokens: 256,
       stream: true,
     }),
   })
@@ -64,7 +64,7 @@ export async function commit() {
   })
 
   // --- Write the response token by token.
-  const completionTokens: Array<string> = []
+  const completionTokens: string[] = []
   for await (const chunks of stream) {
     const results = chunks.toString('utf8').split('\n')
     for (const result of results) {
@@ -75,7 +75,9 @@ export async function commit() {
         completionTokens.push(completion)
         process.stdout.write(completion)
       }
-      catch {}
+      catch {
+        /** Ignore. */
+      }
     }
   }
 
