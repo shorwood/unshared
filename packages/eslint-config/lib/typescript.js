@@ -182,6 +182,14 @@ module.exports = {
     'object-curly-spacing': 'off',
 
     /**
+     * Removes the `const` before an `enum` keyword. This rule aims to reduce
+     * the cognitive load of reasoning about code by enforcing a consistent style.
+     *
+     * @see https://github.com/antfu/eslint-plugin-antfu/blob/main/src/rules/no-const-enum.ts
+     */
+    'antfu/no-const-enum': 'error',
+
+    /**
      * Since we are using TypeScript, we don't need to enforce types in JSDoc.
      *
      * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/.README/rules/require-param-type.md
