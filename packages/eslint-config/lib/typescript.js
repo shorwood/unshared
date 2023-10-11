@@ -8,12 +8,41 @@ module.exports = {
   ],
   overrides: basic.overrides,
   rules: {
-    'import/named': 'off',
 
-    // TS
+    /**
+     * Enforce no semi-colons. This rule aims to maintain consistency around the
+     * use or omission of trailing semicolons. Helps reduce the visual noise in
+     * the codebase. Also helps to prevent errors when refactoring and adding
+     * new lines.
+     *
+     * @see https://typescript-eslint.io/rules/semi
+     */
     '@typescript-eslint/semi': ['error', 'never'],
+
+    /**
+     * Enforce no comma/semi-columns in interfaces. This rule aims to maintain
+     * consistency around the use or omission of trailing semicolons. Helps
+     * reduce the visual noise in the codebase. Also helps to prevent errors
+     * when refactoring and adding new lines.
+     *
+     * @see https://typescript-eslint.io/rules/member-delimiter-style
+     */
     '@typescript-eslint/member-delimiter-style': ['error', { multiline: { delimiter: 'none' } }],
+
+    /**
+     * Enforce spacing around the `:` in type annotations. This rule aims to
+     * maintain consistency and reduce visual noise in the codebase.
+     *
+     * @see https://typescript-eslint.io/rules/type-annotation-spacing
+     */
     '@typescript-eslint/type-annotation-spacing': ['error', {}],
+
+    /**
+     * Enforce `Record<K, T>` instead of `{ [K]: T }`. This rule aims to standardize
+     * the declaration of Record types and helps prevent bugs caused by typos.
+     *
+     * @see https://typescript-eslint.io/rules/consistent-indexed-object-style
+     */
     '@typescript-eslint/consistent-indexed-object-style': ['error', 'record'],
 
     /**
@@ -65,26 +94,96 @@ module.exports = {
      */
     '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'no-type-imports' }],
 
-    // Override JS
-    'no-useless-constructor': 'off',
+    /**
+     * Enforce an indent of 2 spaces. Aims to reduce visual noise and maintain
+     * readability of code when viewed on GitHub or GitLab.
+     *
+     * @see https://typescript-eslint.io/rules/indent
+     */
     'indent': 'off',
     '@typescript-eslint/indent': ['error', 2],
+
+    /**
+     * Enforce no unused variables. Helps keep the codebase clean and reduces
+     * the chance of bugs from side-effects.
+     *
+     * @see https://typescript-eslint.io/rules/@typescript-eslint/no-unused-vars
+     */
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+
+    /**
+     * In JavaScript, it’s possible to redeclare the same variable name using var.
+     * This can lead to confusion as to where the variable is actually declared and initialized.
+     *
+     * @see https://typescript-eslint.io/rules/no-redeclare
+     */
     'no-redeclare': 'off',
     '@typescript-eslint/no-redeclare': 'error',
+
+    /**
+     * Enforce sequential declarations in the same block. This rule aims to
+     * enforce a top to bottom ordering of variable and type declarations.
+     * This reduces the likelihood of a developer skipping over a declaration
+     * when modifying code.
+     *
+     * @see https://typescript-eslint.io/rules/no-use-before-define
+     */
     'no-use-before-define': 'off',
-    '@typescript-eslint/no-use-before-define': ['error', { functions: false, classes: false, variables: true }],
+    '@typescript-eslint/no-use-before-define': ['error', {
+      functions: false,
+      classes: false,
+      variables: true,
+      type: true,
+      interface: true,
+      enum: true,
+    }],
+
+    /**
+     * Age-old debate over how to style braces. This rule aims to reduce the
+     * cognitive load of reasoning about code by enforcing a consistent style.
+     * 
+     * @see https://typescript-eslint.io/rules/brace-style
+     */
     'brace-style': 'off',
-    '@typescript-eslint/brace-style': ['error', 'stroustrup', { allowSingleLine: true }],
+    '@typescript-eslint/brace-style': ['error', '1tbs'],
+
+    /**
+     * Enforce standard comma-spacing. Normalizes the codebase and reduces
+     * cognitive load when reasoning about code.
+     *
+     * @see https://typescript-eslint.io/rules/comma-spacing
+     */
     'comma-spacing': 'off',
     '@typescript-eslint/comma-spacing': ['error'],
-    'comma-dangle': 'off',
-    '@typescript-eslint/comma-dangle': ['error', 'always-multiline'],
-    'object-curly-spacing': 'off',
-    '@typescript-eslint/object-curly-spacing': ['error', 'always'],
 
-    // off
+    /**
+     * Enforce a trailing comma after the last element or property in a multiline
+     * list of properties or elements. This rule improves the clarity of diffs
+     * when an item is added or removed from an object or array.
+     * 
+     * @see https://typescript-eslint.io/rules/comma-dangle
+     */
+    '@typescript-eslint/comma-dangle': ['error', 'always-multiline'],
+    'comma-dangle': 'off',
+
+    /**
+     * Enforce consistent spacing inside braces. This rule aims to reduce the
+     * cognitive load of reasoning about code by enforcing a consistent style.
+     * 
+     * @see https://typescript-eslint.io/rules/object-curly-spacing
+     */
+    '@typescript-eslint/object-curly-spacing': ['error', 'always'],
+    'object-curly-spacing': 'off',
+
+    /**
+     * Since we are using TypeScript, we don't need to enforce types in JSDoc.
+     *
+     * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/.README/rules/require-param-type.md
+     */
+    'jsdoc/require-param-type': 'off',
+    'jsdoc/require-returns-type': 'off',
+
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-member-accessibility': 'off',
@@ -97,9 +196,7 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/ban-types': 'off',
     '@typescript-eslint/no-namespace': 'off',
-
-    // --- Disabled JsDoc rules
-    'jsdoc/require-param-type': 'off',
-    'jsdoc/require-returns-type': 'off',
+    'no-useless-constructor': 'off',
+    'import/named': 'off',
   },
 }
