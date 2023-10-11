@@ -9,7 +9,7 @@ module.exports = {
     'standard',
     'plugin:import/recommended',
     'plugin:eslint-comments/recommended',
-    "plugin:jsonc/recommended-with-jsonc",
+    'plugin:jsonc/recommended-with-jsonc',
     'plugin:yml/standard',
     'plugin:markdown/recommended',
     'plugin:unicorn/recommended',
@@ -78,7 +78,7 @@ module.exports = {
               'license',
               'private',
               'sideEffects',
-              
+
               // --- Publishing
               'description',
               'author',
@@ -171,11 +171,24 @@ module.exports = {
     },
   ],
   rules: {
-    // import
-    'import/order': ['error', {
-      alphabetize: { order: 'asc' },
-    }],
+    /**
+     * Impose a consistent ordering for `require()`/`import` statements. Removing the
+     * task of ordering imports and requires and avoid unnecessary merge conflicts
+     * when working on the same file with multiple people.
+     *
+     * @see https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/first.md
+     * @see https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/order.md
+     */
     'import/first': 'error',
+    'import/order': ['error', {
+      'newlines-between': 'never',
+      'alphabetize': {
+        order: 'asc',
+        orderImportKind: 'asc',
+        caseInsensitive: true,
+      },
+    }],
+
     'import/no-mutable-exports': 'error',
     'import/no-unresolved': 'off',
     'import/no-absolute-path': 'off',
@@ -254,16 +267,6 @@ module.exports = {
     'no-return-assign': 'off',
     'one-var-declaration-per-line': 'error',
     'operator-linebreak': ['error', 'before'],
-    'sort-imports': [
-      'error',
-      {
-        ignoreCase: false,
-        ignoreDeclarationSort: true,
-        ignoreMemberSort: false,
-        memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
-        allowSeparatedGroups: false,
-      },
-    ],
 
     // --- Unicorn: https://github.com/sindresorhus/eslint-plugin-unicorn
     'unicorn/better-regex': 'error',
