@@ -95,6 +95,14 @@ module.exports = {
     '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'no-type-imports' }],
 
     /**
+     * Enforce alphabetical ordering of type union members. This rule aims to
+     * reduce the cognitive load of reasoning about the order of union types.
+     *
+     * @see https://typescript-eslint.io/rules/sort-type-constituents
+     */
+    '@typescript-eslint/sort-type-constituents': 'error',
+
+    /**
      * Enforce an indent of 2 spaces. Aims to reduce visual noise and maintain
      * readability of code when viewed on GitHub or GitLab.
      *
@@ -134,15 +142,12 @@ module.exports = {
       functions: false,
       classes: false,
       variables: true,
-      type: true,
-      interface: true,
-      enum: true,
     }],
 
     /**
      * Age-old debate over how to style braces. This rule aims to reduce the
      * cognitive load of reasoning about code by enforcing a consistent style.
-     * 
+     *
      * @see https://typescript-eslint.io/rules/brace-style
      */
     'brace-style': 'off',
@@ -161,7 +166,7 @@ module.exports = {
      * Enforce a trailing comma after the last element or property in a multiline
      * list of properties or elements. This rule improves the clarity of diffs
      * when an item is added or removed from an object or array.
-     * 
+     *
      * @see https://typescript-eslint.io/rules/comma-dangle
      */
     '@typescript-eslint/comma-dangle': ['error', 'always-multiline'],
@@ -170,7 +175,7 @@ module.exports = {
     /**
      * Enforce consistent spacing inside braces. This rule aims to reduce the
      * cognitive load of reasoning about code by enforcing a consistent style.
-     * 
+     *
      * @see https://typescript-eslint.io/rules/object-curly-spacing
      */
     '@typescript-eslint/object-curly-spacing': ['error', 'always'],
