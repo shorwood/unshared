@@ -317,5 +317,13 @@ module.exports = {
      * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/tag-lines.md#readme
      */
     'jsdoc/tag-lines': ['error', 'any', { startLines: 1 }],
+
+    /**
+     * Checks for multi-line-style comments which fail to meet the criteria of a jsdoc block,
+     * namely that it should begin with two and only two asterisks.
+     *
+     * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/no-bad-blocks.md#readme
+     */
+    'jsdoc/no-bad-blocks': 'error',
   },
 }
