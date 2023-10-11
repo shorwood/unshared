@@ -334,5 +334,14 @@ module.exports = {
      * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/require-hyphen-before-param-description#readme
      */
     'jsdoc/require-hyphen-before-param-description': ['error', 'never'],
+
+    /**
+     * Devs sometimes write JSDoc descriptions that add no additional information just to fill
+     * out the doc. Those "uninformative" docs comments take up space without being helpful.
+     * This rule requires all docs comments contain at least one word not already in the code.
+     *
+     * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/informative-docs.md
+     */
+    'jsdoc/informative-docs': 'error',
   },
 }
