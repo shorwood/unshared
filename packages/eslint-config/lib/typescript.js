@@ -19,13 +19,14 @@ module.exports = {
     /**
      * Enforce consistent Array types. This rule aims to standardize the usage of
      * `Array<T>` over `T[]`, and `ReadonlyArray<T>` over `readonly T[]`. Allows
-     * for reduced cognitive load when reading code that uses arrays.
+     * for reduced cognitive load when reading code that uses arrays. Exceptions
+     * are allowed for primitive or simple types.
      *
      * @see https://typescript-eslint.io/rules/array-type
      */
     '@typescript-eslint/array-type': ['error', {
-      default: 'generic',
-      readonly: 'generic',
+      default: 'array-simple',
+      readonly: 'array-simple',
     }],
 
     /**
@@ -57,7 +58,10 @@ module.exports = {
     /**
      * Enforces consistent usage of type imports. This rule will disallow the use of
      * `import type` or `import { type }` to reduce the cognitive load of reasoning
-     * about imports.
+     * about imports. Typically, the bundler will know which imports are types and
+     * strip them out.
+     *
+     * @see https://typescript-eslint.io/rules/consistent-type-imports
      */
     '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'no-type-imports' }],
 
