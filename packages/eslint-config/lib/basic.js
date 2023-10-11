@@ -325,5 +325,14 @@ module.exports = {
      * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/no-bad-blocks.md#readme
      */
     'jsdoc/no-bad-blocks': 'error',
+
+    /**
+     * It is common practice to prefix a hyphen to parameters in JSDoc. But this
+     * is sometimes forgotten and has no real purpose. This rule aims to enforce
+     * that no hyphen is used.
+     *
+     * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/require-hyphen-before-param-description#readme
+     */
+    'jsdoc/require-hyphen-before-param-description': ['error', 'never'],
   },
 }
