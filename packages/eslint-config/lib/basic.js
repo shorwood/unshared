@@ -6,7 +6,7 @@ module.exports = {
     node: true,
   },
   extends: [
-    'standard',
+    'eslint:recommended',
     'plugin:import/recommended',
     'plugin:eslint-comments/recommended',
     'plugin:jsonc/recommended-with-jsonc',
@@ -308,6 +308,14 @@ module.exports = {
 
     // --- JSDOC
     'jsdoc/require-jsdoc': 'off',
-    'jsdoc/check-alignment': 'error',
+    // 'jsdoc/check-alignment': 'error',
+
+    /**
+     * Enforce a new-line between the JSDoc summary and tags. Aims to improve
+     * readability by separating the summary and tags.
+     *
+     * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/tag-lines.md#readme
+     */
+    'jsdoc/tag-lines': ['error', 'any', { startLines: 1 }],
   },
 }
