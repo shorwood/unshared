@@ -151,7 +151,7 @@ module.exports = {
      * @see https://typescript-eslint.io/rules/brace-style
      */
     'brace-style': 'off',
-    '@typescript-eslint/brace-style': ['error', '1tbs'],
+    '@typescript-eslint/brace-style': ['error', 'stroustrup', { allowSingleLine: true }],
 
     /**
      * Enforce standard comma-spacing. Normalizes the codebase and reduces
