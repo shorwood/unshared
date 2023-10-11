@@ -340,8 +340,15 @@ module.exports = {
      * out the doc. Those "uninformative" docs comments take up space without being helpful.
      * This rule requires all docs comments contain at least one word not already in the code.
      *
-     * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/informative-docs.md
+     * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/informative-docs.md#readme
      */
     'jsdoc/informative-docs': 'error',
+
+    /**
+     * Normalize the indentation in the JSdoc comment to improve readability.
+     *
+     * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/check-indentation.md#readme
+     */
+    'jsdoc/check-indentation': 'error',
   },
 }
