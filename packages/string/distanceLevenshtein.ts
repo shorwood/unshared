@@ -24,13 +24,25 @@ export function distanceLevenshtein(a: string, b: string): number {
   // --- two strings using the Levenshtein algorithm.
   for (k = 1; k <= b.length; k++) {
     for (v = 1; v <= a.length; v++) {
-      matrix[k][v] = b.charAt(k - 1) === a.charAt(v - 1)
-        ? matrix[k - 1][v - 1]
-        : Math.min(matrix[k - 1][v - 1] + 1,
-          Math.min(matrix[k][v - 1] + 1,
-            matrix[k - 1][v] + 1,
-          ),
-        )
+      const kChar = b.charAt(k - 1)
+      const vChar = a.charAt(v - 1)
+
+      // --- If the characters are equal, the distance is the same as
+      // --- the distance between the substrings without the last
+      // --- characters.
+      if (kChar === vChar) {
+        matrix[k][v] = matrix[k - 1][v - 1]
+        continue
+      }
+
+      // --- If the characters are different, the distance is the
+      // --- minimum distance between the substrings without the last
+      // --- character plus one.
+      const deletion = matrix[k - 1][v] + 1
+      const insertion = matrix[k][v - 1] + 1
+      const substitution = matrix[k - 1][v - 1] + 1
+      matrix[k][v] = Math.min(deletion, insertion, substitution)
+
     }
   }
 
