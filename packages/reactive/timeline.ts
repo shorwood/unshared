@@ -40,9 +40,9 @@ export interface TimelineOptions<T> {
  * ref.value = 2
  * expect(changes).toEqual([1, 2])
  */
-export function timeline<T extends Reactive<any>>(value: T, options: TimelineOptions<T> = {}): Unwrapped<T>[] {
+export function timeline<T extends Reactive<any>>(value: T, options: TimelineOptions<T> = {}): Array<Unwrapped<T>> {
   const { transform, limit = Number.POSITIVE_INFINITY } = options
-  const timeline: Unwrapped<T>[] = []
+  const timeline: Array<Unwrapped<T>> = []
 
   // --- Register a change in the timeline.
   const registerChange = (value: Unwrapped<T>) => {

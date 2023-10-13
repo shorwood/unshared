@@ -54,7 +54,7 @@ export interface ReactiveOptions<T = unknown> {
    *
    * @internal
    */
-  callbacks?: ReactiveCallback<T>[]
+  callbacks?: Array<ReactiveCallback<T>>
 }
 
 /**
@@ -68,7 +68,7 @@ export interface ReactiveOptions<T = unknown> {
  */
 export type Reactive<T = unknown> = T & {
   [ReactiveFlag]: true
-  [ReactiveData]: { callbacks: ReactiveCallback<T>[]; source: T }
+  [ReactiveData]: { callbacks: Array<ReactiveCallback<T>>; source: T }
 }
 
 /**

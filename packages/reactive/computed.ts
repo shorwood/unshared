@@ -33,7 +33,7 @@ export type Computed<T = unknown> = Reactive<{
 
 /** The computed getter function. */
 export type ComputedGetter<D, T> =
-  D extends (infer U)[] ? (...dependencies: Unwrapped<U>[]) => T
+  D extends Array<infer U> ? (...dependencies: Array<Unwrapped<U>>) => T
     : D extends infer U ? (dependency: Unwrapped<U>) => T
       : () => T
 
@@ -73,7 +73,7 @@ export interface ComputedOptions extends ReactiveOptions {
  * const b = reference(2)
  * const sum = computed(() => a.value + b.value)
  */
-export function computed<T, D extends Array<unknown> = []>(dependencies: D, getter: ComputedGetter<D, T>, options: ComputedOptions = {}): Computed<T> {
+export function computed<T, D extends unknown[] = []>(dependencies: D, getter: ComputedGetter<D, T>, options: ComputedOptions = {}): Computed<T> {
   const { eager = false, immediate = false, ...reactiveOptions } = options
 
   // --- Create the computed value.
