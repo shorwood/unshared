@@ -1,4 +1,17 @@
-import { FunctionAsync, Awaitable } from '@unshared/types'
+import { FunctionAsync } from '@unshared/types'
+
+/**
+ * An object that is optionally asyncronous and can be awaited. By default, the
+ * promise resolves to the same type as the first argument.
+ *
+ * @template T The type of the object.
+ * @template U The type the promise resolves to.
+ * @example
+ * type ObjectA = { a: number }
+ * type ObjectB = { b: number }
+ * type AwaitableObject = Awaitable<ObjectA, ObjectB> // { a: number } & Promise<{ b: number }>
+ */
+export type Awaitable<T, U = T> = Promise<U extends undefined | void ? T : U> & T
 
 /**
  * Wraps an `AsyncIterable` or `AsyncIterator` with a promise making it awaitable.
