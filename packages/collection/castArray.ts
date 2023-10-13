@@ -9,7 +9,7 @@ import { MaybeArray, Nil } from '@unshared/types'
  * @example castArray(1) // [1]
  */
 export function castArray(value?: Nil): []
-export function castArray<U>(value?: MaybeArray<U>): Array<U>
+export function castArray<U>(value?: MaybeArray<U>): U[]
 export function castArray(value?: unknown): unknown[] {
   // --- If the value is undefined or null, return an empty array.
   if (value === undefined || value === null) return []
@@ -26,13 +26,13 @@ if (import.meta.vitest) {
   it('should return the array if the value is an array', () => {
     const result = castArray([1, 2, 3])
     expect(result).toEqual([1, 2, 3])
-    expectTypeOf(result).toEqualTypeOf<Array<number>>()
+    expectTypeOf(result).toEqualTypeOf<number[]>()
   })
 
   it('should return an array with the value if the value is not an array', () => {
     const result = castArray(1)
     expect(result).toEqual([1])
-    expectTypeOf(result).toEqualTypeOf<Array<number>>()
+    expectTypeOf(result).toEqualTypeOf<number[]>()
   })
 
   it('should return an empty array if the value is undefined', () => {

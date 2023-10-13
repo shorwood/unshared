@@ -8,7 +8,7 @@ import { NumberIntegerPositive } from '@unshared/types'
  * @returns An array of chunks of the original array.
  * @example chunk([1, 2, 3, 4, 5], 2) // [[1, 2], [3, 4], [5]]
  */
-export function chunk<T, N extends number>(array: Array<T>, size: NumberIntegerPositive<N>): Array<T>[] {
+export function chunk<T, N extends number>(array: T[], size: NumberIntegerPositive<N>): T[][] {
   const chunks = []
   for (let index = 0; index < array.length; index += size) {
     const chunk = array.slice(index, index + size)
