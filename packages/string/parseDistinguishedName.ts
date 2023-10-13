@@ -33,7 +33,7 @@ export function parseDistinguishedName(name: string): DistinguishedName {
   for (const part of parts) {
     const parts = part.split(/(?<!\\)=/)
     const key = parts[0].trim()
-    const value = parts[1].replace(/\\(,)|\\(=)/g, '$1$2').trim()
+    const value = parts[1].replaceAll(/\\(,)|\\(=)/g, '$1$2').trim()
 
     if (attributes[key] === undefined) attributes[key] = value
     else if (typeof attributes[key] === 'string') attributes[key] = [attributes[key] as string, value]

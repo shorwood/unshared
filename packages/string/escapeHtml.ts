@@ -9,7 +9,7 @@
  * @example escapeHtml('foo<bar>baz') // 'foo&lt;bar&gt;baz'
  */
 export function escapeHtml(value: string): string {
-  return value.replace(/&(?!amp;|lt;|gt;|quot;|#39;)|<|>|"|'/g, (match) => {
+  return value.replaceAll(/&(?!amp;|lt;|gt;|quot;|#39;)|<|>|"|'/g, (match) => {
     if (match === '&') return '&amp;'
     if (match === '<') return '&lt;'
     if (match === '>') return '&gt;'
