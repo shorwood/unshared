@@ -1,11 +1,11 @@
 
-import type { NumberIntegerPositive } from '@unshared/types'
+import { NumberIntegerPositive } from '@unshared/types'
 
 // eslint-disable-next-line unicorn/no-unsafe-regex
-const semverRegExp = /^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[A-Za-z-][\dA-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][\dA-Za-z-]*))*))?(?:\+(?<buildmetadata>[\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*))?$/
+export const semverRegExp = /^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[A-Za-z-][\dA-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][\dA-Za-z-]*))*))?(?:\+(?<buildmetadata>[\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*))?$/
 
 /** The components of a semver version. */
-export type SemverComponents = 'major' | 'minor' | 'patch' | 'prerelease' | 'build'
+export type SemverComponents = 'build' | 'major' | 'minor' | 'patch' | 'prerelease'
 
 /**
  * A class that represents a Sementic Version. This class is meant to be used as a type-safe
@@ -104,7 +104,7 @@ export class Semver {
    * @returns The bumped semver version.
    * @example new Semver({ major: 1 }).bump('minor') // Semver { major: 1, minor: 1, patch: 0 }
    */
-  bump(component: 'prerelease' | 'build', value: string): Semver
+  bump(component: 'build' | 'prerelease', value: string): Semver
   bump<N extends number>(component: 'major' | 'minor' | 'patch', value?: NumberIntegerPositive<N>): Semver
   bump<N extends number>(component: SemverComponents, value?: NumberIntegerPositive<N>): Semver
   bump(component: string, value?: number | string): Semver {
@@ -214,7 +214,7 @@ export class Semver {
  * // Check if the version satisfies the given range.
  * version.satisfies('>=2.0.0') // true
  */
-export function createSemver(semver?: string | Partial<Semver>): Semver {
+export function createSemver(semver?: Partial<Semver> | string): Semver {
   return typeof semver === 'string' ? Semver.parse(semver) : new Semver(semver)
 }
 
