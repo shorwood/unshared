@@ -41,8 +41,8 @@ export interface EnumEntry {
  *   ...
  * }
  */
-export function buildEnum(exportName: string, entries: Array<EnumEntry>) {
-  const enumDeclarations: Array<string> = []
+export function buildEnum(exportName: string, entries: EnumEntry[]) {
+  const enumDeclarations: string[] = []
   for (const entry of entries) {
     const key = entry.key.includes(' ') ? `'${entry.key}'` : entry.key
     const document = entry.document?.replace(/^/gm, ' * ') ?? ''

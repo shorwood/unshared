@@ -32,7 +32,7 @@ export async function buildIndex(path: string, options: BuildIndexOptions = {}):
 
   // --- List all subdirectories and files in the directory.
   const directoryEntities = await readdir(path, { withFileTypes: true })
-  const directoryImports: Array<string> = []
+  const directoryImports: string[] = []
 
   // --- Iterate over the directory entities.
   for (const entity of directoryEntities) {

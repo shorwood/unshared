@@ -13,7 +13,7 @@ import { IndexFile, buildIndex } from './buildIndex'
  */
 export async function buildIndexes(directory: string = cwd()) {
   // --- Build the index file for the current directory.
-  const indexFiles: Array<IndexFile> = [await buildIndex(directory)]
+  const indexFiles: IndexFile[] = [await buildIndex(directory)]
 
   // --- Read the directory and recursively build indexes for subdirectories.
   const directoryEntities = await readdir(directory, { withFileTypes: true })
