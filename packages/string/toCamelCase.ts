@@ -1,4 +1,4 @@
-import { tokenize } from './tokenize'
+import { toPascalCase } from './toPascalCase'
 
 /**
  * Convert a string to camel case.
@@ -8,14 +8,7 @@ import { tokenize } from './tokenize'
  * @example toCamelCase('FOO_BAR', 'Baz') // 'fooBarBaz'
  */
 export function toCamelCase(...values: string[]): string {
-  return values
-    .flatMap(tokenize)
-    .map((token, index) => (
-      index > 0
-        ? token.charAt(0).toUpperCase() + token.slice(1).toLowerCase()
-        : token.toLowerCase()
-    ))
-    .join('')
+  return toPascalCase(...values).replace(/^[A-Z]/, char => char.toLowerCase())
 }
 
 /* c8 ignore next */
