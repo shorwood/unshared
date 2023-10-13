@@ -1,18 +1,30 @@
-import { FunctionAsync } from '@unshared/types/FunctionAsync'
+import { FunctionAsync, Awaitable } from '@unshared/types'
 
 /**
- * An object that is optionally asyncronous and can be awaited. By default, the
- * promise resolves to the same type as the first argument.
+ * Wraps an `AsyncIterable` or `AsyncIterator` with a promise making it awaitable.
+ * The resolved value of the promise will be a list of all the items yielded by the
+ * `AsyncIterable` or `AsyncIterator`.
  *
- * @template T The type of the object.
- * @template U The type the promise resolves to.
+ * @param iterable The iterable to wrap.
+ * @returns The awaitable object.
  * @example
- * type ObjectA = { a: number }
- * type ObjectB = { b: number }
- * type AwaitableObject = Awaitable<ObjectA, ObjectB> // { a: number } & Promise<{ b: number }>
+ * // Declare a function that resolves to the accumulation of an async iterable.
+ * async function getItems() {
+ *   const items = []
+ *   function *createIterator() {
+ *     let id = 0
+ *     while (true) {
+ *       try { yield fetchItem(id++) }
+ *       catch { return }
+ *     }
+ *   }
+ *   return awaitable(createIterator())
+ * }
+ *
+ * const itemsSync = getItems() // []
+ * await itemsSync() // [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]
  */
-export type Awaitable<T, U = T> = T & Promise<U extends void | undefined ? T : U>
-
+export function awaitable<T>(iterable: AsyncIterable<T>): Awaitable<AsyncIterable<T>, T[]>
 /**
  * Extend an object with a promise making it awaitable. If the promise resolves to a value,
  * then this value will be returned when the object is awaited. If the promise resolves to
@@ -20,55 +32,81 @@ export type Awaitable<T, U = T> = T & Promise<U extends void | undefined ? T : U
  * awaited.
  *
  * You can also pass a function that returns a promise. Allowing you to lazily create the
- * promise when and only when it is needed.
+ * promise when and only when it is accessed.
  *
  * @param object The object to wrap.
  * @param promise The promise or promise factory to wrap the object with.
  * @returns The awaitable object.
  * @example
- * const result = await awaitable({ foo: 'bar' }, Promise.resolve({ baz: 'qux' }))
- * result // { foo: 'bar' }
- * await result // { baz: 'qux' }
+ * // Declare a function that resolves to a different value.
+ * function getItems() {
+ *   const items = [{ id: 1 }, { id: 2 }, { id: 3 }]
+ *   const promise = fetchItems()
+ *   return awaitable(items, fetchItems)
+ * }
+ *
+ * const itemsSync = getItems() // [{ id: 1 }, { id: 2 }, { id: 3 }]
+ * await itemsSync() // [{ id: 4 }, { id: 5 }]
  */
-export function awaitable<T extends object, U>(object: T, promise: Promise<U>): Awaitable<T, U>
-export function awaitable<T extends object, U>(object: T, promise: FunctionAsync<U>): Awaitable<T, U>
-export function awaitable(object: object, promise: Promise<unknown> | FunctionAsync<unknown>): Awaitable<unknown> {
-  return new Proxy<any>(object, {
-    get(target, property: string) {
+export function awaitable<T extends object, U>(object: T, promise: FunctionAsync<U> | Promise<U>): Awaitable<T, U>
+export function awaitable(object: object, promiseOrFactory?: FunctionAsync<unknown> | Promise<unknown>): Awaitable {
+  let createPromise: FunctionAsync<unknown> | undefined
+
+  // --- If `object` is an async iterable, then wrap it in a promise that resolves to an array.
+  if (Symbol.asyncIterator in object){
+    createPromise = async() => {
+      const result = []
+      for await (const item of <AsyncIterable<unknown>>object) result.push(item)
+      return result
+    }
+  }
+
+  // --- If `promise` is actually a promise, then wrap it in a promise factory.
+  else if (promiseOrFactory instanceof Promise) {
+    const resolved = promiseOrFactory
+    createPromise = () => resolved
+  }
+
+  // --- If `promise` is a function, then use it as the promise factory.
+  else if (typeof promiseOrFactory === 'function') {
+    createPromise = promiseOrFactory
+  }
+
+  // --- Otherwise, if `promise` is not a function, throw an error.
+  else {
+    throw new TypeError('Cannot create awaitable object: Promise must be a promise or a promise factory')
+  }
+
+  // --- Wrap the object in a proxy that handles the promise.
+  return new Proxy(object, {
+    get(target, property, receiver) {
       const value = Reflect.get(target, property)
 
-      // --- Handle promise-like methods.
-      if (['then', 'catch', 'finally'].includes(property)) {
-        // --- If `promise` is an async function, call it and replace the result of the call.
-        if (typeof promise === 'function')
-          promise = promise()
-
-        // --- Assert that the promise is a promise. If it is, wrap it in a promise that
-        // --- defaults the result to the original object.
-        promise = promise instanceof Promise === false
-          ? Promise.reject(new TypeError('The promise factory must return a promise'))
-          : promise.then(x => x ?? object)
-
-        // --- Re-attach the `this` context to the promise.
-        return promise[<'then' | 'catch' | 'finally'>property].bind(promise)
+      // --- Handle non-promises properties.
+      const isPromiseMethod = ['then', 'catch', 'finally'].includes(<string>property)
+      if (!isPromiseMethod) {
+        return typeof value === 'function'
+          ? Reflect.get(target, property, receiver).bind(target)
+          : Reflect.get(target, property, receiver)
       }
 
-      // --- Pass through all other properties of the original object.
-      return typeof value === 'function'
-        ? value.bind(target)
-        : value
+      // --- Create the promise and return the bound promise method.
+      const promise = createPromise!()
+      if (promise instanceof Promise === false)
+        throw new TypeError('Cannot create awaitable object: Promise factory must return a promise')
+      return promise[<'catch' | 'finally' | 'then'>property].bind(promise)
     },
-  })
+  }) as Awaitable
 }
 
 /* c8 ignore next */
 if (import.meta.vitest) {
-  it('should wrap an object with a promise that resolves to the same object', async() => {
+  it('should wrap an object with a promise that resolves to undefined', async() => {
     const object = { foo: 'bar' }
     const promise = new Promise<void>(resolve => setTimeout(() => { object.foo = 'baz'; resolve() }, 1))
     const result = awaitable(object, promise)
     expect(result).toEqual(object)
-    expect(result).resolves.toEqual(object)
+    expect(result).resolves.toEqual(undefined)
   })
 
   it('should wrap an object with a promise that resolves to a value', async() => {
@@ -110,87 +148,43 @@ if (import.meta.vitest) {
     expect(result.value).toEqual('bar')
   })
 
-  it('should preserve the `this` context of the result promise', async() => {
-    const object = { _value: 'bar', get value() { return this._value } }
-    const result = await awaitable(object, Promise.resolve())
-    expect(result._value).toEqual('bar')
-    expect(result.value).toEqual('bar')
-  })
-
-  it('should preserve the `this` context of the result promise factory', async() => {
-    const object = { _value: 'bar', get value() { return this._value } }
-    const result = await awaitable(object, () => Promise.resolve())
-    expect(result._value).toEqual('bar')
-    expect(result.value).toEqual('bar')
-  })
-
   it('should throw an error if the promise is not a promise or a promise factory', () => {
-    const object = { foo: 'bar' }
     // @ts-expect-error: invalid parameter.
-    const shouldThrow = () => awaitable(object, 'foo')
+    const shouldThrow = () => awaitable({ foo: 'bar' }, 'foo')
     expect(shouldThrow).toThrow(TypeError)
   })
 
   it('should reject an error if the promise factory does not resolve a promise', () => {
-    const object = { foo: 'bar' }
     // @ts-expect-error: invalid parameter return type.
-    const shouldReject = awaitable(object, () => 'foo')
-    expect(shouldReject).resolves.toThrow(TypeError)
+    const shouldReject = awaitable({ foo: 'bar' }, () => 'foo')
+    expect(shouldReject).toThrow(TypeError)
   })
 
   it('should type the result of the awaitable object from a promise without a value', async() => {
     const object = { foo: 'bar' }
     const promise = Promise.resolve()
     const result = awaitable(object, promise)
-    expectTypeOf(result).toEqualTypeOf<{ foo: string } & Promise<{ foo: string }>>()
+    expectTypeOf(result).toEqualTypeOf<Promise<{ foo: string }> & { foo: string }>()
   })
 
   it('should type the result of the awaitable object from a promise with a value', async() => {
     const object = { foo: 'bar' }
     const promise = Promise.resolve('bar')
     const result = awaitable(object, promise)
-    expectTypeOf(result).toEqualTypeOf<{ foo: string } & Promise<string>>()
+    expectTypeOf(result).toEqualTypeOf<Promise<string> & { foo: string }>()
   })
 
   it('should type the result of the awaitable object from a promise factory without a value', async() => {
     const object = { foo: 'bar' }
     const factory = () => Promise.resolve()
     const result = awaitable(object, factory)
-    expectTypeOf(result).toEqualTypeOf<{ foo: string } & Promise<{ foo: string }>>()
+    expectTypeOf(result).toEqualTypeOf<Promise<{ foo: string }> & { foo: string }>()
   })
 
   it('should type the result of the awaitable object from a promise factory with a value', async() => {
     const object = { foo: 'bar' }
     const factory = () => Promise.resolve('bar')
     const result = awaitable(object, factory)
-    expectTypeOf(result).toEqualTypeOf<{ foo: string } & Promise<string>>()
-  })
-
-  it('should return an awaitable that resolves to the same type by default', () => {
-    type array = unknown[]
-    type result = Awaitable<array>
-    type expected = array & Promise<array>
-    expectTypeOf<result>().toEqualTypeOf<expected>()
-  })
-
-  it('should return an awaitable that resolves to the same type when void is specified', () => {
-    type array = unknown[]
-    type result = Awaitable<array, void>
-    type expected = array & Promise<array>
-    expectTypeOf<result>().toEqualTypeOf<expected>()
-  })
-
-  it('should return an awaitable that resolves to the same type when undefined is specified', () => {
-    type array = unknown[]
-    type result = Awaitable<array, undefined>
-    type expected = array & Promise<array>
-    expectTypeOf<result>().toEqualTypeOf<expected>()
-  })
-
-  it('should return an awaitable that resolves to a different type', () => {
-    type array = unknown[]
-    type result = Awaitable<array, { bar: number }>
-    type expected = array & Promise<{ bar: number }>
-    expectTypeOf<result>().toEqualTypeOf<expected>()
+    expectTypeOf(result).toEqualTypeOf<Promise<string> & { foo: string }>()
   })
 }
