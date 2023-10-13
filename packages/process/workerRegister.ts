@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { MessagePort, TransferListItem, parentPort } from 'node:worker_threads'
-import { Function } from './types'
+import { Function } from '@unshared/types'
 import { WorkerRequest } from './workerRequest'
 
 /** Unregister a function from being called using worker threads messaging. */
