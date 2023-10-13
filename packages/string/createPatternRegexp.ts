@@ -11,34 +11,34 @@ import { escapeRegexp } from './escapeRegexp'
 export function createPatternRegexp(pattern: string): RegExp {
   const patternExp = escapeRegexp(pattern, ['\\', '^', '$', '.', '|', '+', '(', ')'])
     // --- Globstar(s)
-    .replace(/(\*+)(\/)?/g, (_, asterisk) => (asterisk.length === 1 ? '[^/]+' : '.*?/?'))
+    .replaceAll(/(\*+)(\/)?/g, (_, asterisk) => (asterisk.length === 1 ? '[^/]+' : '.*?/?'))
 
     // --- Wildcard
-    .replace(/{(.+?)}/g, (_, p1) => `(?:${p1.replace(/,/g, '|')})`)
+    .replaceAll(/{(.+?)}/g, (_, p1) => `(?:${p1.replaceAll(',', '|')})`)
 
     // --- Remove leading !
     .replace(/^!/, '')
 
     // --- Normalize paths
     .replace(/^\\.\//, '')
-    .replace(/\/+/g, '/')
+    .replaceAll(/\/+/g, '/')
     .replace(/\/$/, '')
 
     // --- POSIX bracket expressions
-    .replace(/\[\[:alnum:]]/g, '[\\dA-Za-z]')
-    .replace(/\[\[:alpha:]]/g, '[A-Za-z]')
-    .replace(/\[\[:ascii:]]/g, '[\\u0000-\\u007F]')
-    .replace(/\[\[:blank:]]/g, '[\\t ]')
-    .replace(/\[\[:cntrl:]]/g, '[\\u0000-\\u001F\\u007F]')
-    .replace(/\[\[:digit:]]/g, '\\d')
-    .replace(/\[\[:graph:]]/g, '[\\u0021-\\u007E]')
-    .replace(/\[\[:lower:]]/g, '[a-z]')
-    .replace(/\[\[:print:]]/g, '[\\u0020-\\u007E]')
-    .replace(/\[\[:punct:]]/g, '[\\u0021-\\u002F\\u003A-\\u0040\\u005B-\\u0060\\u007B-\\u007E]')
-    .replace(/\[\[:space:]]/g, '[\\t\\n\\v\\f\\r ]')
-    .replace(/\[\[:upper:]]/g, '[A-Z]')
-    .replace(/\[\[:word:]]/g, '\\w')
-    .replace(/\[\[:xdigit:]]/g, '[\\dA-Fa-f]')
+    .replaceAll('[[:alnum:]]', '[\\dA-Za-z]')
+    .replaceAll('[[:alpha:]]', '[A-Za-z]')
+    .replaceAll('[[:ascii:]]', '[\\u0000-\\u007F]')
+    .replaceAll('[[:blank:]]', '[\\t ]')
+    .replaceAll('[[:cntrl:]]', '[\\u0000-\\u001F\\u007F]')
+    .replaceAll('[[:digit:]]', '\\d')
+    .replaceAll('[[:graph:]]', '[\\u0021-\\u007E]')
+    .replaceAll('[[:lower:]]', '[a-z]')
+    .replaceAll('[[:print:]]', '[\\u0020-\\u007E]')
+    .replaceAll('[[:punct:]]', '[\\u0021-\\u002F\\u003A-\\u0040\\u005B-\\u0060\\u007B-\\u007E]')
+    .replaceAll('[[:space:]]', '[\\t\\n\\v\\f\\r ]')
+    .replaceAll('[[:upper:]]', '[A-Z]')
+    .replaceAll('[[:word:]]', '\\w')
+    .replaceAll('[[:xdigit:]]', '[\\dA-Fa-f]')
 
   // --- Return the RegExp.
   const regexp = new RegExp(`^${patternExp}$`)
