@@ -20,17 +20,16 @@ export function every<T extends Collection>(collection: T, iterator: IteratedFun
  * @example every([1, 2, 3, 4], 1) // => true
  */
 export function every<T extends Collection>(collection: T, value: Values<T>): boolean
-export function every(collection: Collection, iteratorOrValue: any): boolean {
-  // --- If iterator is a path, cast as getter function.
-  if (typeof iteratorOrValue !== 'function') {
-    const value = iteratorOrValue
-    iteratorOrValue = (x: unknown) => x === value
-  }
+export function every(collection: Collection, iteratorOrValue: unknown): boolean {
+  // --- If iterator is a value, cast as iterator function.
+  const iterator = typeof iteratorOrValue === 'function'
+    ? iteratorOrValue
+    : (value: unknown) => value === iteratorOrValue
 
-  // --- Some values.
+  // --- Check if every value passes the test.
   return Object
     .entries(collection)
-    .every(([key, value]) => iteratorOrValue(value, key, collection))
+    .every(([key, value]) => iterator(value, key, collection))
 }
 
 /** c8 ignore next */
