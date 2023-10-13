@@ -10,6 +10,6 @@ if (import.meta.vitest) {
   })
 
   it('should not match non-nil', () => {
-    expectTypeOf<number | string | boolean>().not.toMatchTypeOf<Nil>()
+    expectTypeOf<boolean | number | string>().not.toMatchTypeOf<Nil>()
   })
 }

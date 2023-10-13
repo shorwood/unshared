@@ -41,8 +41,8 @@ if (import.meta.vitest) {
   })
 
   it('should default arrays', () => {
-    type Result = Default<(number | undefined)[], string[]>
-    expectTypeOf<Result>().toEqualTypeOf<(number | string)[]>()
+    type Result = Default<Array<number | undefined>, string[]>
+    expectTypeOf<Result>().toEqualTypeOf<Array<number | string>>()
   })
 
   it('should default primitives', () => {
@@ -52,6 +52,6 @@ if (import.meta.vitest) {
 
   it('should default non matching types from left to right', () => {
     type Result = Default<number | undefined, string[]>
-    expectTypeOf<Result>().toEqualTypeOf<number | string[]>()
+    expectTypeOf<Result>().toEqualTypeOf<string[] | number>()
   })
 }

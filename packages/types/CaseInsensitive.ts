@@ -13,13 +13,13 @@ export type CaseInsensitive<S extends string> =
 if (import.meta.vitest) {
   it('should match case-insensitive strings', () => {
     type Result = CaseInsensitive<'foo'>
-    type Expected = 'foo' | 'Foo' | 'fOO' | 'FOO' | 'foO' | 'FoO' | 'fOo' | 'FOo'
+    type Expected = 'FOO' | 'FOo' | 'FoO' | 'Foo' | 'fOO' | 'fOo' | 'foO' | 'foo'
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
   it('should match case-insensitive strings with numbers', () => {
     type Result = CaseInsensitive<'foo123'>
-    type Expected = 'foo123' | 'Foo123' | 'fOO123' | 'FOO123' | 'foO123' | 'FoO123' | 'fOo123' | 'FOo123'
+    type Expected = 'FOO123' | 'FOo123' | 'FoO123' | 'Foo123' | 'fOO123' | 'fOo123' | 'foO123' | 'foo123'
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 

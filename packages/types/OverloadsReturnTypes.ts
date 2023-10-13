@@ -33,6 +33,6 @@ if (import.meta.vitest) {
       (a: string, b: number): number
     }
     type Result = OverloadsReturnTypes<Method>
-    expectTypeOf<Result>().toEqualTypeOf<string | number>()
+    expectTypeOf<Result>().toEqualTypeOf<number | string>()
   })
 }

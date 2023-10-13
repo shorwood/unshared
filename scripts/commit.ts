@@ -14,6 +14,14 @@ interface Prompt {
   content: string
 }
 
+const OPENAI_URL = 'https://api.openai.com/v1/chat/completions'
+const OPENAI_MODEL = 'gpt-4'
+
+const LOCALAI_URL = 'http://localhost:8000/v1/chat/completions'
+const LOCALAI_MODEL = 'ggml-gpt4all-j.bin'
+
+const USE_LOCALAI = true
+
 /**
  * Generate a commit message for the currently staged changes.
  *
@@ -35,14 +43,17 @@ export async function commit() {
     { role: 'user', content: `[${input}]\n\n${diff}` },
   )
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const url = USE_LOCALAI ? LOCALAI_URL : OPENAI_URL
+  const model = USE_LOCALAI ? LOCALAI_MODEL : OPENAI_MODEL
+
+  const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${OPENAI_APIKEY}`,
     },
     body: JSON.stringify({
-      model: 'gpt-4',
+      model,
       messages: promptMessages,
       max_tokens: 256,
       stream: true,

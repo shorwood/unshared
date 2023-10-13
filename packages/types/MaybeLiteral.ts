@@ -18,7 +18,7 @@ if (import.meta.vitest) {
   })
 
   it('should match a literal string', () => {
-    type Result = MaybeLiteral<'foo' | 'bar'>
-    expectTypeOf<Result>().toEqualTypeOf<'foo' | 'bar' | (string & {})>()
+    type Result = MaybeLiteral<'bar' | 'foo'>
+    expectTypeOf<Result>().toEqualTypeOf<'bar' | 'foo' | string & {}>()
   })
 }

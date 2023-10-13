@@ -17,7 +17,7 @@ import { ConstructorStatics } from './ConstructorStatics'
  * type Foo = Constructor<P, R, S> // (new (a: number, b: string) => { a: number; b?: string }) & { c: number }
  */
 export type Constructor<P extends any[] = any[], R extends object = {}, S extends object = {}> =
-  (new (...parameters: P) => R) & S
+  S & (new (...parameters: P) => R)
 
 /** c8 ignore next */
 if (import.meta.vitest) {

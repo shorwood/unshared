@@ -9,7 +9,7 @@ export type NotPrimitive<U = Any> = U extends Primitive ? never : U
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should exclude primitives', () => {
-    type Result = NotPrimitive<string | number | {}>
+    type Result = NotPrimitive<number | string | {}>
     expectTypeOf<Result>().toEqualTypeOf<{}>()
   })
 

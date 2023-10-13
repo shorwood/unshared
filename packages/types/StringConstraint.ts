@@ -40,7 +40,7 @@ if (import.meta.vitest) {
 
   it('should return a literal constrained with multiple characters and variable length', () => {
     type Result = StringConstraint<'a' | 'b', 1 | 2>
-    expectTypeOf<Result>().toEqualTypeOf<'a' | 'b' | 'aa' | 'ab' | 'ba' | 'bb'>()
+    expectTypeOf<Result>().toEqualTypeOf<'a' | 'aa' | 'ab' | 'b' | 'ba' | 'bb'>()
   })
 
   it('should return "" if length is 0', () => {

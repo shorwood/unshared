@@ -24,11 +24,12 @@ export type Path<T extends object, N extends number = 10, P extends string = ''>
 
     // --- If T is an Array and its items are objects, recurse.
     : T extends Array<infer U>
-      ? U extends object ? Path<U, Substract<N, 1>, `${P}${number}.`>
+      ? U extends object
+        ? Path<U, Substract<N, 1>, `${P}${number}.`>
         : (P extends '' ? `${number}` : `${P}${number}`)
 
       // --- For each key of T, collect the path.
-      : Extract<{ [K in keyof T]-?: K extends string | number
+      : Extract<{ [K in keyof T]-?: K extends number | string
 
         // --- Collect the path and prepend the current path.
         ? (P extends '' ? `${K}` : `${P}${K}`)
@@ -45,7 +46,7 @@ export type Path<T extends object, N extends number = 10, P extends string = ''>
 if (import.meta.vitest) {
   it('should infer the path of a nested object', () => {
     type Result = Path<{ foo: { bar: { baz: string } } }>
-    type Expected = 'foo' | 'foo.bar' | 'foo.bar.baz' | 'foo.bar.baz'
+    type Expected = 'foo.bar.baz' | 'foo.bar.baz' | 'foo.bar' | 'foo'
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
@@ -57,7 +58,7 @@ if (import.meta.vitest) {
 
   it('should infer the path of a nested array', () => {
     type Result = Path<{ foo: { bar: { baz: string[] } } }>
-    type Expected = 'foo' | 'foo.bar' | 'foo.bar.baz' | `foo.bar.baz.${number}`
+    type Expected = 'foo.bar.baz' | 'foo.bar' | 'foo' | `foo.bar.baz.${number}`
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 

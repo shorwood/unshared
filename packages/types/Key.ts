@@ -6,8 +6,8 @@
  */
 // TODO: Extract tuple keys as literal numbers
 export type Key<T> =
-  T extends string ? (keyof T & number)
-    : T extends readonly unknown[] ? (keyof T & number)
+  T extends string ? (number & keyof T)
+    : T extends readonly unknown[] ? (number & keyof T)
       : T extends object ? keyof T
         : never
 

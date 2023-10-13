@@ -4,4 +4,4 @@
  *
  * @example Primitive // null | undefined | number | string | boolean | symbol | bigint
  */
-export type Primitive = null | undefined | number | string | boolean | symbol | bigint
+export type Primitive = bigint | boolean | number | string | symbol | null | undefined

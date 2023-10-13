@@ -10,7 +10,7 @@ export type Any = Primitive | object | Function
 if (import.meta.vitest) {
   it('should match all values exept unknown', () => {
     type Result = Any
-    type Expected = number | string | boolean | bigint | symbol | undefined | null | object | Function
+    type Expected = Function | bigint | boolean | number | object | string | symbol | null | undefined
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 

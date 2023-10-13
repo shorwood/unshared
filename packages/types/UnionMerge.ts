@@ -32,12 +32,12 @@ if (import.meta.vitest) {
   })
 
   it('should merge a union of objects with overlapping property types', () => {
-    type Result = UnionMerge<{ a: number } | { a: string | number }>
+    type Result = UnionMerge<{ a: number } | { a: number | string }>
     expectTypeOf<Result>().toEqualTypeOf<{ a: number }>()
   })
 
   it('should merge a union of objects with one optional properties', () => {
-    type Result = UnionMerge<{ a?: number } | { a: number }>
+    type Result = UnionMerge<{ a: number } | { a?: number }>
     expectTypeOf<Result>().toEqualTypeOf<{ a: number }>()
   })
 

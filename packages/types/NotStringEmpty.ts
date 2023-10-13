@@ -17,8 +17,8 @@ if (import.meta.vitest) {
   })
 
   it('should match a literal string', () => {
-    type Result = NotStringEmpty<'foo' | 'bar'>
-    expectTypeOf<Result>().toEqualTypeOf<'foo' | 'bar'>()
+    type Result = NotStringEmpty<'bar' | 'foo'>
+    expectTypeOf<Result>().toEqualTypeOf<'bar' | 'foo'>()
   })
 
   it('should exclude an empty string', () => {

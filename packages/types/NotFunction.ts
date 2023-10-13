@@ -17,7 +17,7 @@ export type NotFunction<T = unknown> =
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should exclude functions', () => {
-    type Result = NotFunction<string | {} | (() => void)>
+    type Result = NotFunction<string | (() => void) | {}>
     expectTypeOf<Result>().toEqualTypeOf<string | {}>()
   })
 

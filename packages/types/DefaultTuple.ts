@@ -21,9 +21,9 @@ export type DefaultTuple<T extends unknown[], U extends unknown[], N extends num
     : T extends [] ? U
 
       // --- Default arrays.
-      : T extends (infer V)[]
-        ? U extends (infer W)[]
-          ? Default<V, W, N>[]
+      : T extends Array<infer V>
+        ? U extends Array<infer W>
+          ? Array<Default<V, W, N>>
           : never : never
 
 /** c8 ignore next */
@@ -40,7 +40,7 @@ if (import.meta.vitest) {
 
   it('should default tuples null to undefined', () => {
     type Result = DefaultTuple<[1, 2 | null, 3], [undefined, '2', undefined]>
-    expectTypeOf<Result>().toEqualTypeOf<[1, 2 | '2', 3]>()
+    expectTypeOf<Result>().toEqualTypeOf<[1, '2' | 2, 3]>()
   })
 
   it('should default tuples undefined to null', () => {
@@ -64,22 +64,22 @@ if (import.meta.vitest) {
   })
 
   it('should default arrays from undefined properties', () => {
-    type Result = DefaultTuple<Array<number | undefined>, Array<string>>
+    type Result = DefaultTuple<Array<number | undefined>, string[]>
     expectTypeOf<Result>().toEqualTypeOf<Array<number | string>>()
   })
 
   it('should default arrays from null properties', () => {
-    type Result = DefaultTuple<Array<number | null>, Array<string>>
+    type Result = DefaultTuple<Array<number | null>, string[]>
     expectTypeOf<Result>().toEqualTypeOf<Array<number | string>>()
   })
 
   it('should default arrays null to undefined', () => {
-    type Result = DefaultTuple<Array<number | null>, Array<undefined>>
+    type Result = DefaultTuple<Array<number | null>, undefined[]>
     expectTypeOf<Result>().toEqualTypeOf<Array<number | undefined>>()
   })
 
   it('should default arrays undefined to null', () => {
-    type Result = DefaultTuple<Array<number | undefined>, Array<null>>
+    type Result = DefaultTuple<Array<number | undefined>, null[]>
     expectTypeOf<Result>().toEqualTypeOf<Array<number | null>>()
   })
 

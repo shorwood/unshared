@@ -29,6 +29,6 @@ if (import.meta.vitest) {
   })
 
   it('should match a whitespace character', () => {
-    expectTypeOf<' ' | '\n' | '\t' | '\r' | '\v'>().toMatchTypeOf<CharacterWhitespace>()
+    expectTypeOf<' ' | '\n' | '\r' | '\t' | '\v'>().toMatchTypeOf<CharacterWhitespace>()
   })
 }

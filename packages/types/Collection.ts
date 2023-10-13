@@ -6,19 +6,19 @@
  * @example Collection<number> // { [key: string | symbol]: number } | ...
  */
 export type Collection<T = unknown> =
-  T[] | readonly T[] | Record<string | number | symbol, T>
+  T[] | readonly T[] | Record<number | string | symbol, T>
 
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should return a collection of numbers', () => {
     type Result = Collection<number>
-    type Expected = number[] | readonly number[] | Record<string | number | symbol, number>
+    type Expected = number[] | Record<number | string | symbol, number> | readonly number[]
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
   it('should return a collection of unknowns', () => {
     type Result = Collection
-    type Expected = unknown[] | readonly unknown[] | Record<string | number | symbol, unknown>
+    type Expected = Record<number | string | symbol, unknown> | unknown[] | readonly unknown[]
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 }

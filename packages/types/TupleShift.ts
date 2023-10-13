@@ -10,7 +10,7 @@ import { IsArray } from './utils'
  */
 export type TupleShift<T extends unknown[]> =
   IsArray<T> extends true
-    ? T extends (infer U)[] ? [T, U] : never
+    ? T extends Array<infer U> ? [T, U] : never
     : T extends [infer U, ...infer V] ? [V, U] : [[], undefined]
 
 /** c8 ignore next */

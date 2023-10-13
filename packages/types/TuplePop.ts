@@ -1,4 +1,4 @@
-import type { IsArray } from './utils'
+import { IsArray } from './utils'
 
 /**
  * Pop the last element of a tuple type. If the tuple is empty or has one element,
@@ -10,7 +10,7 @@ import type { IsArray } from './utils'
  */
 export type TuplePop<T extends unknown[]> =
   IsArray<T> extends true
-    ? T extends (infer U)[] ? [T, U] : never
+    ? T extends Array<infer U> ? [T, U] : never
     : T extends [...infer U, infer V] ? [U, V] : [[], undefined]
 
 /** c8 ignore next */

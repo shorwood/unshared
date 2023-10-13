@@ -24,7 +24,7 @@ if (import.meta.vitest) {
   })
 
   it('should split an object with overlapping properties into a union', () => {
-    type Result = UnionSplit<{ a: number; b: string | number }>
-    expectTypeOf<Result>().toEqualTypeOf<{ a: number } | { b: string | number }>()
+    type Result = UnionSplit<{ a: number; b: number | string }>
+    expectTypeOf<Result>().toEqualTypeOf<{ a: number } | { b: number | string }>()
   })
 }
