@@ -11,14 +11,8 @@ import { MaybeArray, Nil } from '@unshared/types'
 export function castArray(value?: Nil): []
 export function castArray<U>(value?: MaybeArray<U>): U[]
 export function castArray(value?: unknown): unknown[] {
-  // --- If the value is undefined or null, return an empty array.
   if (value === undefined || value === null) return []
-
-  // --- Return array as-is.
-  if (Array.isArray(value)) return value as unknown[]
-
-  // --- Wrap primitive value in an array.
-  return [value]
+  return Array.isArray(value) ? value : [value]
 }
 
 /* c8 ignore next */
