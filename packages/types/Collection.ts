@@ -6,7 +6,9 @@
  * @example Collection<number> // { [key: string | symbol]: number } | ...
  */
 export type Collection<T = unknown> =
-  T[] | readonly T[] | Record<number | string | symbol, T>
+  Record<number | string | symbol, T>
+  | T[]
+  | readonly T[]
 
 /** c8 ignore next */
 if (import.meta.vitest) {
