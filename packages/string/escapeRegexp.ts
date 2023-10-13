@@ -1,8 +1,8 @@
 /** The special characters of a regular expression. */
-export type RegExpSpecialCharacters = '$' | '(' | ')' | '*' | '+' | '.' | '?' | '[' | '\\' | ']' | '^' | '{' | '|' | '}'
+export type RegExpSpecialCharacters = '?' | '.' | '(' | ')' | '[' | ']' | '{' | '}' | '*' | '\\' | '^' | '+' | '|' | '$'
 
 /** The special characters of a regular expression. */
-export const regExpSpecialCharacters: RegExpSpecialCharacters[] = ['\\', '^', '$', '.', '|', '?', '*', '+', '(', ')', '[', ']', '{', '}']
+export const regExpSpecialCharacters: RegExpSpecialCharacters[] = ['?', '.', '(', ')', '[', ']', '{', '}', '*', '\\', '^', '+', '|', '$']
 
 /**
  * Escape the special characters of Regular Expressions in a string. Allowing you to use the string in a RegExp

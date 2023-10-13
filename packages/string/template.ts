@@ -1,6 +1,7 @@
+/* eslint-disable jsdoc/informative-docs */
 /* eslint-disable sonarjs/no-duplicate-string */
 import { get } from '@unshared/collection/get'
-import type { Collection } from '@unshared/types'
+import { Collection } from '@unshared/types'
 import { escapeRegexp } from './escapeRegexp'
 
 export interface TemplateOptions<T> {

@@ -10,7 +10,7 @@ import { Trim } from '@unshared/types'
  * @returns The boolean value.
  * @example ParseBoolean<'true'> // true
  */
-export type ParseBoolean<S extends string> = Trim<Lowercase<S>> extends 'true' | '1' ? true : false
+export type ParseBoolean<S extends string> = Trim<Lowercase<S>> extends '1' | 'true' ? true : false
 
 /**
  * Parse a string into a boolean. "true" and "1" are considered true and the

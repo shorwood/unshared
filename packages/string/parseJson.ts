@@ -35,7 +35,7 @@ export function parseJson<T>(json: string): T | undefined {
 
   // --- If the input is surrounded by (single) quotes, it's a string.
   const firstChar = json[0]
-  const lastChar = json[json.length - 1]
+  const lastChar = json.at(-1)
   if (firstChar === '"' && lastChar === '"') return json.slice(1, -1) as T
   if (firstChar === '\'' && lastChar === '\'') return json.slice(1, -1) as T
 

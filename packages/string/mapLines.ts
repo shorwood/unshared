@@ -1,4 +1,11 @@
-/** Iterator function for `mapLines`. */
+/**
+ * Iterator for the {@link mapLines} function. Receives the current line, its index and the array of lines.
+ *
+ * @param line The current line.
+ * @param index The index of the current line.
+ * @param lines The array of lines.
+ * @returns The mapped line.
+ */
 export type MapLinesIterator = (line: string, index: number, lines: string[]) => string
 
 /**
