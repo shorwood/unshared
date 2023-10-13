@@ -6,7 +6,9 @@
  * @example deburr('José piña') // => 'Jose pina'
  */
 export function deburr(value: string): string {
-  return value.normalize('NFD').replace(/[\u0300-\u036F]/g, '')
+  return value
+    .normalize('NFD')
+    .replaceAll(/[\u0300-\u036F]/g, '')
 }
 
 /* c8 ignore next */
