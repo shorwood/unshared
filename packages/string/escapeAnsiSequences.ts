@@ -13,7 +13,7 @@ const ANSI_REGEX = new RegExp([
  * @example escapeAnsiSequences('\u001B[1mHello\u001B[22m') // 'Hello'
  */
 export function escapeAnsiSequences(text: string): string {
-  return text.replace(ANSI_REGEX, '')
+  return text.replaceAll(ANSI_REGEX, '')
 }
 
 /** c8 ignore next */
