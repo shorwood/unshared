@@ -1,31 +1,45 @@
-import { Key } from '@unshared/types/Key'
-import { Collection } from '@unshared/types/Collection'
+import { Collection } from '@unshared/types'
 
 /**
- * Cast a collection into an array.
+ * The return type of the {@link values} function.
  *
- * @param object The collection to cast as an array.
- * @returns An array of items.
- * @example values({ key1: { foo: 'bar' }}) // [{ foo: 'bar'}]
+ * @template T The type of the values.
+ * @template K The type of the key property.
+ * @example ValuesReturnType<{ foo: 'bar' }> // ['bar']
  */
-export function values<T>(object: Collection<T>): Array<T>
+type ValuesReturnType<T, K extends string | undefined> =
+  T extends object
+    ? K extends string
+      ? Array<T & { [P in K]: string }>
+      : T[]
+    : never
+
 /**
- * Cast a collection into an array and keep store the original key in the properties of each item.
+ * Extract the values of an object into an array. Optionally, you can specify
+ * a property name to store the original key of each value.
  *
  * @param object The collection to cast as an array.
- * @param key The name of the property to store the original key.
+ * @param keyProperty The name of the property to store the original key.
  * @returns An array of items.
  * @example values({ key1: { foo: 'bar' }}) // [{ foo: 'bar', key: 'key1' }]
  */
-export function values<U, K1 extends Key, K2 extends Key>(object: Record<K1, U>, key?: K2): Array<U & Record<K2, K1>>
-export function values(object: object, key?: string | number | symbol): unknown[] {
-  // --- If no key was provided, just return values.
-  if (key === undefined) return Object.values(object)
+export function values<T, K extends string>(object: Collection<T>, keyProperty?: K): ValuesReturnType<T, K> {
+  // @ts-expect-error: TS can't infer the type of the return value.
+  return keyProperty === undefined
+    ? Object.values(object)
+    : Object.entries(object).map(([originalKey, value]) => ({ [keyProperty]: originalKey, ...value }))
+}
 
-  // --- If key is provided but of invalid type, throw error.
-  if (typeof key !== 'string' && typeof key !== 'number' && typeof key !== 'symbol')
-    throw new TypeError('Cannot use a non-string/number/symbol value as key name.')
+/** c8 ignore next */
+if (import.meta.vitest) {
+  it('should extract the values of an object into an array', () => {
+    const result = Object.values({ foo: 'bar' })
+    expect(result).toEqual(['bar'])
+    expectTypeOf(result).toEqualTypeOf<string[]>()
+  })
 
-  // --- Iterate over value's keys.
-  return Object.entries(object).map(([originalKey, value]) => ({ [key]: originalKey, ...value }))
+  it('should extract the values of an object into an array with the original key', () => {
+    const result = values({ foo: { bar: 'baz' } }, 'key')
+    expect(result).toEqual([{ key: 'foo', value: 'bar' }])
+  })
 }
