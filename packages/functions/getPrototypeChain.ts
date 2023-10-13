@@ -2,7 +2,7 @@
 /**
  * Returns the prototype chain of an object.
  *
- * @param  target The object to get the prototype chain of.
+ * @param target The object to get the prototype chain of.
  * @returns The prototype chain of the object.
  * @example
  * class Foo {}
