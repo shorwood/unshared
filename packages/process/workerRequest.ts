@@ -69,8 +69,8 @@ if (import.meta.vitest) {
   // eslint-disable-next-line @typescript-eslint/consistent-type-imports
   const workerHandlerUrl = new URL('__fixtures__/handlers.ts', import.meta.url).pathname
   const workerModuleUrl = new URL('__fixtures__/module.ts', import.meta.url).pathname
-  const workerHandler = new Worker(workerHandlerUrl, { execArgv: ['--loader', 'tsx'] })
-  const workerModule = new Worker(workerModuleUrl, { execArgv: ['--loader', 'tsx'] })
+  const workerHandler = new Worker(workerHandlerUrl, { execArgv: ['--loader', 'tsx', '--no-warnings'] })
+  const workerModule = new Worker(workerModuleUrl, { execArgv: ['--loader', 'tsx', '--no-warnings'] })
 
   // --- Wait for the worker to start.
   await new Promise(resolve => setTimeout(resolve, 100))
