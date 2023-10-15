@@ -75,12 +75,6 @@
     "README.md",
     "LICENSE"
   ],
-  "scripts": {
-    "build": "pnpm build:indexes && pnpm build:bundle && pnpm build:packageJson",
-    "build:bundle": "tsx ../../scripts/build.ts",
-    "build:indexes": "tsx ../../scripts/buildIndexes.ts",
-    "build:packageJson": "tsx ../../scripts/buildPackageJson.ts"
-  },
   "dependencies": {
     "@unshared/types": "workspace:*"
   }
