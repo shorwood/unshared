@@ -87,7 +87,6 @@ export function glob<Stat extends boolean = false>(pattern: MaybeArray<string>, 
   // --- Create an iterator that will yield the matching paths.
   const searchPool: string[] = [cwd]
   async function* createIterator() {
-    const results: GlobEntry[] = []
     while (searchPool.length > 0) {
       const directory = searchPool.shift()!
       const entities = await readdir(directory, { withFileTypes: true }).catch(() => [])
@@ -113,13 +112,9 @@ export function glob<Stat extends boolean = false>(pattern: MaybeArray<string>, 
         let result: GlobEntry = pathAbsolute
         if (getRelative) result = `./${pathRelative}`
         if (getStats) result = await stat(pathAbsolute)
-        results.push(result)
         yield result
       }
     }
-
-    // --- Return the result as an array.
-    return results
   }
 
   // --- Instantiate the iterator.
