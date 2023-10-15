@@ -74,6 +74,12 @@ importers:
       tsx:
         specifier: 3.12.10
         version: 3.12.10
+      types-pkg-json:
+        specifier: 1.2.1
+        version: 1.2.1
+      types-tsconfig:
+        specifier: 2.0.2
+        version: 2.0.2
       typescript:
         specifier: 5.2.2
         version: 5.2.2
@@ -5210,6 +5216,11 @@ packages:
     resolution: {integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==}
     engines: {node: '>=8'}
 
+  /type-fest@3.13.1:
+    resolution: {integrity: sha512-tLq3bSNx+xSpwvAJnzrK0Ep5CLNWjvFTOp71URMaAEWBfRb9nnJiBoUe0tF8bI4ZFO3omgBR6NvnbzVUT3Ly4g==}
+    engines: {node: '>=14.16'}
+    dev: true
+
   /typed-array-buffer@1.0.0:
     resolution: {integrity: sha512-Y8KTSIglk9OZEr8zywiIHG/kmQ7KWyjseXs1CbSo8vC42w7hg2HgYTxSWwP0+is7bWDc1H+Fo026CpHFwm8tkw==}
     engines: {node: '>= 0.4'}
@@ -5246,6 +5257,31 @@ packages:
       call-bind: 1.0.2
       for-each: 0.3.3
       is-typed-array: 1.1.10
+
+  /types-eslintrc@1.0.3:
+    resolution: {integrity: sha512-zKTR6aKHEudQpl+JoZjS3qh0B5IzSpQK/BCpYBECujcnKtqL87DJJ1sJKe5B8k/y8/UJ5sukq42QDvlaJyCO2w==}
+    dependencies:
+      types-json: 1.2.2
+    dev: true
+
+  /types-json@1.2.2:
+    resolution: {integrity: sha512-VfVLISHypS7ayIHvhacOESOTib4Sm4mAhnsgR8fzQdGp89YoBwMqvGmqENjtYehUQzgclT+7NafpEXkK/MHKwA==}
+    dev: true
+
+  /types-pkg-json@1.2.1:
+    resolution: {integrity: sha512-Wj75lCkPwfj1BhmaJxMPpTQj9YGpihjs3WICigt1IjTAswr7zPXP0iJYPZjU0Rw/IriODhMJjAImkCIxt9KeuQ==}
+    dependencies:
+      types-eslintrc: 1.0.3
+      types-json: 1.2.2
+    dev: true
+
+  /types-tsconfig@2.0.2:
+    resolution: {integrity: sha512-La7awO5Ge1y9Ew/puVOtm7uZW9hLAGCTSY1F/7guQ7t6oaOvPmeKOcfdVVctjeVj+5S2J6esH8qwVW0eI7rQyQ==}
+    engines: {node: ^14.13.1 || >=16.0.0}
+    dependencies:
+      type-fest: 3.13.1
+      zod: 3.22.4
+    dev: true
 
   /typescript@5.2.2:
     resolution: {integrity: sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==}
@@ -5655,4 +5691,8 @@ packages:
   /yocto-queue@1.0.0:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
+    dev: true
+
+  /zod@3.22.4:
+    resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
     dev: true

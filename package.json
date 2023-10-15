@@ -44,6 +44,8 @@
     "rollup-plugin-dts": "6.1.0",
     "rollup-plugin-esbuild": "6.1.0",
     "tsx": "3.12.10",
+    "types-pkg-json": "1.2.1",
+    "types-tsconfig": "2.0.2",
     "typescript": "5.2.2",
     "vitest": "0.34.5"
   },
