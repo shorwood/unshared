@@ -10,9 +10,9 @@
     "url": "git+https://github.com/shorwood/unshared.git"
   },
   "scripts": {
-    "build": "pnpm -F @unshared/* build",
-    "build:indexes": "pnpm -F @unshared/* build:indexes",
-    "build:packageJson": "pnpm -F @unshared/* build:packageJson",
+    "build:bundle": "tsx ./scripts/build.ts",
+    "build:indexes": "tsx ./scripts/buildIndexes.ts",
+    "build:packageJson": "tsx ./scripts/buildPackageJson.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest",
@@ -25,10 +25,7 @@
   },
   "devDependencies": {
     "@changesets/cli": "2.26.2",
-    "@rollup/plugin-replace": "5.0.3",
-    "@rollup/plugin-sucrase": "5.0.2",
     "@rollup/plugin-terser": "0.4.4",
-    "@rollup/plugin-typescript": "11.1.5",
     "@types/eslint": "8.44.2",
     "@types/js-yaml": "4.0.6",
     "@types/node": "20.6.3",
@@ -46,11 +43,8 @@
     "js-yaml": "4.1.0",
     "memfs": "4.3.0",
     "rollup": "4.0.2",
-    "rollup-plugin-analyzer": "4.0.0",
-    "rollup-plugin-define": "1.0.1",
     "rollup-plugin-dts": "6.1.0",
     "rollup-plugin-esbuild": "6.1.0",
-    "rollup-plugin-progress": "1.1.2",
     "tsx": "3.12.10",
     "typescript": "5.2.2",
     "vitest": "0.34.5"

@@ -1,45 +1,50 @@
 import { rm } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { cwd as getCwd } from 'node:process'
-import RollupReplace from '@rollup/plugin-replace'
-import RollupSucrase from '@rollup/plugin-sucrase'
+import { argv } from 'node:process'
 import RollupTerser from '@rollup/plugin-terser'
 import { glob } from '@unshared/fs'
-import { toPascalCase } from '@unshared/string'
+import { toPascalCase } from '@unshared/string/toPascalCase'
 import { RollupOptions, rollup } from 'rollup'
 import RollupDts from 'rollup-plugin-dts'
-import { TSCONFIG_PATH } from './constants'
+import RollupEsbuild from 'rollup-plugin-esbuild'
+import { ROOT_PATH, TSCONFIG_PATH } from './constants'
 
 /**
  * Build a single package in the current working directory. This will generate
  * CommonJS, ESM, IIFE, UMD, and Typescript declaration files. The IIFE and UMD
  * bundles will be named after the package name.
+ *
+ * @param packageName The name of the package to build. If not specified, all packages will be built.
+ * @example node scripts/build.ts string
+ * @returns A promise that resolves when the build is complete.
  */
-async function build() {
-  const cwd = getCwd()
-  const packageName = cwd.split('/').pop()!
+async function build(packageName: string) {
   const globalName = toPascalCase('Unshared', packageName)
-  const outDirectory = resolve(cwd, './dist')
+  const inputDirectory = resolve(ROOT_PATH, 'packages', packageName)
+  const outputDirectory = resolve(ROOT_PATH, 'packages', packageName, 'dist')
+  const inputPaths = await glob(['./**/index.ts', './*.ts'], { cwd: inputDirectory })
+  const inputIife = inputPaths.find(path => path.endsWith(`/${packageName}/index.ts`))
 
   // --- Clean the output directory.
-  await rm(outDirectory, { recursive: true, force: true })
+  await rm(outputDirectory, { recursive: true, force: true })
 
   /** Base configuration. */
   const baseConfig = {
-    input: await glob(['./*.ts', './utils/index.ts'], { cwd, getRelative: true }),
-    treeshake: 'recommended',
+    input: inputPaths,
     external: [
-      '@unshared/types',
+      /^node:.*/,
+      /^@unshared\/.*/,
     ],
 
     plugins: [
-      RollupReplace({
-        preventAssignment: true,
-        values: { 'import.meta.vitest': 'false' },
-      }),
-      RollupSucrase({
-        production: true,
-        transforms: ['typescript'],
+      RollupEsbuild({
+        target: 'esnext',
+        platform: 'node',
+        treeShaking: true,
+        sourceMap: true,
+        // minify: true,
+        tsconfig: TSCONFIG_PATH,
+        define: { 'import.meta.vitest': 'false' },
       }),
       RollupTerser({
         mangle: false,
@@ -53,7 +58,7 @@ async function build() {
 
     output: [
       {
-        dir: outDirectory,
+        dir: outputDirectory,
         format: 'esm',
         sourcemap: true,
         entryFileNames: '[name].js',
@@ -61,7 +66,7 @@ async function build() {
         chunkFileNames: 'chunks/[hash].js',
       },
       {
-        dir: outDirectory,
+        dir: outputDirectory,
         format: 'cjs',
         sourcemap: true,
         entryFileNames: '[name].cjs',
@@ -74,16 +79,16 @@ async function build() {
   /** IIFE and UMD configuration. */
   const iifeConfig = {
     ...baseConfig,
-    input: './index.ts',
+    input: inputIife,
     output: [
       {
-        dir: outDirectory,
+        dir: outputDirectory,
         format: 'iife',
         name: globalName,
         entryFileNames: '[name].iife.js',
       },
       {
-        dir: outDirectory,
+        dir: outputDirectory,
         format: 'umd',
         name: globalName,
         entryFileNames: '[name].umd.js',
@@ -94,7 +99,6 @@ async function build() {
   /** Typescript declaration configuration. */
   const dtsConfig = {
     ...baseConfig,
-
     plugins: [
       RollupDts({
         tsconfig: TSCONFIG_PATH,
@@ -106,7 +110,7 @@ async function build() {
     ],
 
     output: [{
-      dir: outDirectory,
+      dir: outputDirectory,
       format: 'esm',
       entryFileNames: '[name].d.ts',
       chunkFileNames: 'chunks/[hash].d.ts',
@@ -127,4 +131,6 @@ async function build() {
   }
 }
 
-await build()
+// --- Run the build script for each package specified in the command line arguments.
+for (const packageName of argv.slice(2))
+  await build(packageName)
