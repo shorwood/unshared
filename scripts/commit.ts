@@ -17,10 +17,10 @@ interface Prompt {
 const OPENAI_URL = 'https://api.openai.com/v1/chat/completions'
 const OPENAI_MODEL = 'gpt-4'
 
-const LOCALAI_URL = 'http://localhost:8000/v1/chat/completions'
+const LOCALAI_URL = 'http://localhost:8080/v1/chat/completions'
 const LOCALAI_MODEL = 'ggml-gpt4all-j.bin'
 
-const USE_LOCALAI = true
+const USE_LOCALAI = false
 
 /**
  * Generate a commit message for the currently staged changes.
@@ -36,10 +36,12 @@ export async function commit() {
   const input = process.argv.slice(2).join(' ')
 
   const diff = execFileSync('git', ['diff', '--cached', '--staged'], { encoding: 'utf8' }).slice(0, 7000)
-  const lastCommits = execFileSync('git', ['log', '-10', '--pretty=%B'], { encoding: 'utf8' })
+  const diffStat = execFileSync('git', ['diff', '--stat', '--cached', '--staged'], { encoding: 'utf8' }).slice(0, 7000)
+  const lastCommits = execFileSync('git', ['log', '-2', '--pretty=%B'], { encoding: 'utf8' })
 
   promptMessages.push(
     { role: 'user', content: `[LAST_COMMITS]\n\n${lastCommits}\n\n` },
+    { role: 'user', content: `[STAGED_STATS]\n\n${diffStat}\n\n` },
     { role: 'user', content: `[${input}]\n\n${diff}` },
   )
 
