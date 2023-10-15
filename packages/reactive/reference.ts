@@ -34,7 +34,7 @@ export type Reference<T = unknown> = Reactive<ReferenceObject<T>>
  * @returns Maybe a reactive reference to the value.
  * @example MaybeReference<string> // Reactive<{ value: string }> | string
  */
-export type MaybeReference<T = unknown> = T | Reference<T>
+export type MaybeReference<T = unknown> = Reference<T> | T
 
 /**
  * Create a reference to a value. This is a wrapper around a primitive value
