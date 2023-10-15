@@ -1,19 +1,6 @@
 import { join, relative } from 'node:path'
-import { glob, loadPackageJson } from '@unshared/fs'
-import { SemverComponents, createSemver } from '@unshared/string'
-import { ROOT_PATH } from './constants'
-import { getGitHash } from './getGitHash'
-import { getGitRemoteUrl } from './getGitRemoteUrl'
-
-async function computePackageVersion(currentVersion = '0.0.1', bumpType: SemverComponents = 'build') {
-  const semver = createSemver(currentVersion)
-  if (bumpType === 'build') {
-    const gitHash = await getGitHash()
-    semver.build = gitHash.slice(0, 7)
-  }
-  else { semver.bump(bumpType) }
-  return semver.toString()
-}
+import { glob } from '@unshared/fs/glob'
+import { getGitRemoteUrl, getPackageMetadata } from './utils'
 
 async function computePackageExports(outPath: string, packagePath: string) {
   const packageOutFiles = glob('*.{js,mjs,cjs,d.ts}', { cwd: outPath, getRelative: true, onlyFiles: true })
@@ -49,22 +36,18 @@ async function computePackageExports(outPath: string, packagePath: string) {
 /**
  * Define the version of the package at the given path based on the release type.
  *
- * @param packagePath The path to the package directory.
+ * @param packageName The name of the package to build.
  */
-export async function buildPackage(packagePath: string) {
+export async function buildPackageJson(packageName: string) {
+  const { packagePath, packageJson, packageJsonFS, packageRelativePath } = await getPackageMetadata(packageName)
   const outPath = join(packagePath, 'dist')
 
   // --- Load the root and current package.json files.
-  const packageJsonPath = join(packagePath, 'package.json')
-  const packageJsonFs = await loadPackageJson(packageJsonPath)
-  const packageJson = await packageJsonFs
-  const packageRelativePath = relative(ROOT_PATH, packagePath)
   const packageRemoteUrl = await getGitRemoteUrl(packagePath)
   const packageRemoteUrlHttps = packageRemoteUrl?.replace(/^git@(.+):(.+).git$/, 'https://$1/$2')
   const packageExports = await computePackageExports(outPath, packagePath)
 
   // --- Update the package.json file.
-  packageJson.version = await computePackageVersion(packageJson.version, 'build')
   packageJson.exports = packageExports
   packageJson.files = ['dist', 'README.md', 'LICENSE.md']
   packageJson.main = packageExports['*']?.require
@@ -83,5 +66,5 @@ export async function buildPackage(packagePath: string) {
   }
 
   // --- Save the package.json file.
-  await packageJsonFs.commit()
+  await packageJsonFS.commit()
 }
