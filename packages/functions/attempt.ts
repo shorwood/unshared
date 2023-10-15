@@ -1,4 +1,4 @@
-import type { MaybePromise, NotPromise } from '@unshared/types'
+import { MaybePromise, NotPromise } from '@unshared/types'
 
 /**
  * A result type that can be used to represent the result of an operation that
@@ -98,6 +98,6 @@ if (import.meta.vitest) {
 
   it('should type the return value if a maybe asyncronous function is passed', async() => {
     const result = attempt(returns as () => MaybePromise<string>)
-    expectTypeOf(result).toEqualTypeOf<[string | undefined, Error | undefined] | Promise<[string | undefined, Error | undefined]>>()
+    expectTypeOf(result).toEqualTypeOf<Promise<[string | undefined, Error | undefined]> | [string | undefined, Error | undefined]>()
   })
 }
