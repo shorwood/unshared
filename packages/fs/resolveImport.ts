@@ -1,30 +1,32 @@
-import { cwd } from 'node:process'
 import { resolve } from 'node:path'
+import { cwd } from 'node:process'
 import { tries } from '@unshared/functions/tries'
 import { vol } from 'memfs'
 
 /**
- * Resolve the absolute path of a relative or package module.
+ * Resolve the absolute path of a relative or package module. This function
+ * will try to resolve as a package module first, then as an absolute or
+ * relative module from the current working directory.
  *
- * @param moduleId The import path.
- * @param path The base path.
- * @returns If the import was found, returns it's absolute path.
- * @throws If the import was not found.
+ * @param specifier The import specifier to resolve.
+ * @param from If the `moduleId` is a relative import, the path to resolve it from.
+ * @returns If the import was found, returns it's absolute path, otherwise `undefined`.
+ * @example
+ * // Resolve an absolute import.
+ * resolveImport('/home/user/project/src/utils') // '/home/user/project/src/utils.ts'
+ *
+ * // Resolve a relative import.
+ * resolveImport('./utils', __dirname) // '/home/user/project/src/utils.ts'
+ *
+ * // Resolve a package import.
+ * resolveImport('lodash') // '/home/user/project/node_modules/lodash/index.js'
  */
-export const resolveImport = (moduleId: string, path: string = cwd()): string => {
-  // --- Try to resolve import's absolute path.
-  // --- If the path is a package import.
-  // --- If the path is a relative import.
-  const resolvedPath = tries(
-    () => require.resolve(moduleId, { paths: [path] }),
-    () => require.resolve(resolve(path, moduleId)),
+export function resolveImport(specifier: string, from: string = cwd()): string | undefined {
+  // TODO: Conditional code path depending on the `from` argument so that `cwd` is not default anymore.
+  return tries(
+    () => require.resolve(specifier, { paths: [from] }),
+    () => require.resolve(resolve(from, specifier)),
   )
-
-  // --- Throw if the import was not found.
-  if (!resolvedPath) throw new Error(`Could not resolve import "${moduleId}" from "${path}".`)
-
-  // --- Return the absolute path.
-  return resolvedPath
 }
 
 /** c8 ignore next */
@@ -35,6 +37,24 @@ if (import.meta.vitest) {
       '/src/utils.ts': '',
     })
     const result = resolveImport('./utils', '/src')
+    expect(result).toEqual('/src/utils.ts')
+  })
+
+  it('should resolve the index of a relative import', () => {
+    vol.fromJSON({
+      '/src/index.ts': '',
+      '/src/utils/index.ts': '',
+    })
+    const result = resolveImport('./utils', '/src')
+    expect(result).toEqual('/src/utils/index.ts')
+  })
+
+  it('should resolve an absolute import', () => {
+    vol.fromJSON({
+      '/src/index.ts': '',
+      '/src/utils.ts': '',
+    })
+    const result = resolveImport('/src/utils')
     expect(result).toEqual('/src/utils.ts')
   })
 }
