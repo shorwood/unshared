@@ -2,9 +2,11 @@ messages:
   - role: system
     content: |
       Generate a commit message for the given git diff.
-        - <type>(<scope>): <subject>
-        - <BLANK LINE>
-        - <body>
+
+      Example:
+        [<issue> -] <type>(<scope>): <subject>
+        <BLANK LINE>
+        <body>
 
       Type can ONLY be one of the following:
         chore:   Changes that don't affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
@@ -19,46 +21,28 @@ messages:
       The body should be used to explain what and why vs how.
       If the change is small enough, the body can be omitted.
       Do not use `refactor` or `perf` in the type/scope.
+      If the branche name contains an issue number, it will be added to the commit message.
 
   - role: user
     content: |
-      chore improve type
+      [LAST COMMITS]
+      ...
 
+      [STAGED_STATS]
+      ...
+
+      [BRANCH NAME]
+      feat/US-1234-foo-bar
+
+      [DIFF]
       diff --git a/packages/reactivity/useState.ts b/packages/reactivity/useState.ts
       index 521f6e6..f758f4f 100644
       --- a/packages/reactivity/useState.ts
       +++ b/packages/reactivity/useState.ts
-      @@ -1,7 +1,7 @@
-      import { Reference, reference } from './reference'
+      ...
 
-      /** The return type of `useState`. */
-      -export type State<T> = [Reference<T>, (value: T) => void]
-      +export type State<T = unknown> = [() => T, (value: T) => void]
-
-      /**
-        * Creates a reactive state with a setter. Similar to `useState` from React.
-      @@ -9,25 +9,42 @@ export type State<T> = [Reference<T>, (value: T) => void]
-        * @param value The initial value.
-        * @returns A reactive state with a setter.
-        * @example
-      - * const [state, setState] = useState(0)
-      + * const [getState, setState] = useState(0)
-        * setState(1)
-      - * state // 1
-      + * getState() // 1
-        */
-      -export function useState<T>(value: T): State<T> {
-      +export function useState<T>(): State<T | undefined>
-      +export function useState<T>(value: T): State<T>
-      +export function useState(value?: unknown): State {
-        const valueReference = reference(value)
-        return [
-      -    valueReference,
-      -    (value: T) => { valueReference.value = value },
-      +    () => valueReference.value,
-      +    (value) => { valueReference.value = value },
-        ]
-      }
+      [INPUT]
+      improved typing
 
   - role: assistant
     content: |

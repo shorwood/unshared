@@ -38,11 +38,14 @@ export async function commit() {
   const diff = execFileSync('git', ['diff', '--cached', '--staged'], { encoding: 'utf8' }).slice(0, 7000)
   const diffStat = execFileSync('git', ['diff', '--stat', '--cached', '--staged'], { encoding: 'utf8' }).slice(0, 7000)
   const lastCommits = execFileSync('git', ['log', '-2', '--pretty=%B'], { encoding: 'utf8' })
+  const branchName = execFileSync('git', ['branch', '--show-current'], { encoding: 'utf8' })
 
   promptMessages.push(
-    { role: 'user', content: `[LAST_COMMITS]\n\n${lastCommits}\n\n` },
-    { role: 'user', content: `[STAGED_STATS]\n\n${diffStat}\n\n` },
-    { role: 'user', content: `[${input}]\n\n${diff}` },
+    { role: 'user', content: `[LAST_COMMITS]\n${lastCommits}\n\n` },
+    { role: 'user', content: `[STAGED_STATS]\n${diffStat}\n\n` },
+    { role: 'user', content: `[BRANCH_NAME]\n${branchName}\n\n` },
+    { role: 'user', content: `[DIFF}]\n${diff}` },
+    { role: 'user', content: `[INPUT]\n${input}` },
   )
 
   const url = USE_LOCALAI ? LOCALAI_URL : OPENAI_URL
