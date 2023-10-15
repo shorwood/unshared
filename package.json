@@ -10,9 +10,7 @@
     "url": "git+https://github.com/shorwood/unshared.git"
   },
   "scripts": {
-    "build:bundle": "tsx ./scripts/build.ts",
-    "build:indexes": "tsx ./scripts/buildIndexes.ts",
-    "build:packageJson": "tsx ./scripts/buildPackageJson.ts",
+    "build": "tsx ./scripts/build.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest",

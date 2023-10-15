@@ -7,6 +7,8 @@ import { toPascalCase } from '@unshared/string/toPascalCase'
 import { RollupOptions, rollup } from 'rollup'
 import RollupDts from 'rollup-plugin-dts'
 import RollupEsbuild from 'rollup-plugin-esbuild'
+import { buildIndexes } from './buildIndexes'
+import { buildPackage } from './buildPackageJson'
 import { ROOT_PATH, TSCONFIG_PATH } from './constants'
 
 /**
@@ -22,11 +24,16 @@ async function build(packageName: string) {
   const globalName = toPascalCase('Unshared', packageName)
   const inputDirectory = resolve(ROOT_PATH, 'packages', packageName)
   const outputDirectory = resolve(ROOT_PATH, 'packages', packageName, 'dist')
-  const inputPaths = await glob(['./**/index.ts', './*.ts'], { cwd: inputDirectory })
-  const inputIife = inputPaths.find(path => path.endsWith(`/${packageName}/index.ts`))
 
   // --- Clean the output directory.
   await rm(outputDirectory, { recursive: true, force: true })
+
+  // --- Build the indexes for the package.
+  await buildIndexes(inputDirectory)
+
+  // --- Find the input files.
+  const inputPaths = await glob(['./**/index.ts', './*.ts'], { cwd: inputDirectory })
+  const inputIife = inputPaths.find(path => path.endsWith(`/${packageName}/index.ts`))
 
   /** Base configuration. */
   const baseConfig = {
@@ -129,6 +136,9 @@ async function build(packageName: string) {
     for (const output of config.output)
       await bundle.write(output)
   }
+
+  // --- Update the package.json file.
+  await buildPackage(inputDirectory)
 }
 
 // --- Run the build script for each package specified in the command line arguments.

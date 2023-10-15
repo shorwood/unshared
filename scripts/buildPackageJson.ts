@@ -1,28 +1,9 @@
 import { join, relative } from 'node:path'
-import { cwd } from 'node:process'
-import { glob } from '@unshared/fs'
-import { loadObject } from '@unshared/fs/loadObject'
+import { glob, loadPackageJson } from '@unshared/fs'
 import { SemverComponents, createSemver } from '@unshared/string'
-import { PackageJSON } from 'types-pkg-json'
 import { ROOT_PATH } from './constants'
 import { getGitHash } from './getGitHash'
 import { getGitRemoteUrl } from './getGitRemoteUrl'
-
-interface BuildPackageJsonOptions {
-  /**
-   * If defined, the semver component to bump. By default, it will set the build
-   * component to the current git hash.
-   *
-   * @default 'build'
-   */
-  bumpType?: SemverComponents
-  /**
-   * The path to the output directory. Defaults to `dist`.
-   *
-   * @default 'dist'
-   */
-  outDirectory?: string
-}
 
 async function computePackageVersion(currentVersion = '0.0.1', bumpType: SemverComponents = 'build') {
   const semver = createSemver(currentVersion)
@@ -34,8 +15,8 @@ async function computePackageVersion(currentVersion = '0.0.1', bumpType: SemverC
   return semver.toString()
 }
 
-async function computePackageExports(outDirectory: string) {
-  const packageOutFiles = glob('*.{js,mjs,cjs,d.ts}', { cwd: outDirectory, getRelative: true, onlyFiles: true })
+async function computePackageExports(outPath: string, packagePath: string) {
+  const packageOutFiles = glob('*.{js,mjs,cjs,d.ts}', { cwd: outPath, getRelative: true, onlyFiles: true })
   const packageExports: Record<string, Record<string, string>> = {}
 
   // --- Set the exports for each file depending on the file extension.
@@ -43,7 +24,8 @@ async function computePackageExports(outDirectory: string) {
     if (path.includes('.min.')) continue
     if (path.includes('.map')) continue
 
-    const importPath = `./${join(outDirectory, path)}`
+    const outPathRelative = relative(packagePath, outPath)
+    const importPath = `./${join(outPathRelative, path)}`
     const importName = path.split('/').pop()!.replace(/\..+$/, '')
     packageExports[importName] = packageExports[importName] ?? {}
 
@@ -67,28 +49,24 @@ async function computePackageExports(outDirectory: string) {
 /**
  * Define the version of the package at the given path based on the release type.
  *
- * @param directory The path to the package directory.
- * @param options The plugin options.
+ * @param packagePath The path to the package directory.
  */
-export async function buildPackage(directory: string = cwd(), options: BuildPackageJsonOptions = {}) {
-  const {
-    bumpType,
-    outDirectory = 'dist',
-  } = options
+export async function buildPackage(packagePath: string) {
+  const outPath = join(packagePath, 'dist')
 
   // --- Load the root and current package.json files.
-  const packageJsonPath = join(directory, 'package.json')
-  const packageJsonFs = loadObject<PackageJSON>(packageJsonPath)
+  const packageJsonPath = join(packagePath, 'package.json')
+  const packageJsonFs = await loadPackageJson(packageJsonPath)
   const packageJson = await packageJsonFs
-  const packageRelativePath = relative(ROOT_PATH, directory)
-  const packageRemoteUrl = await getGitRemoteUrl(directory)
+  const packageRelativePath = relative(ROOT_PATH, packagePath)
+  const packageRemoteUrl = await getGitRemoteUrl(packagePath)
   const packageRemoteUrlHttps = packageRemoteUrl?.replace(/^git@(.+):(.+).git$/, 'https://$1/$2')
-  const packageExports = await computePackageExports(outDirectory)
+  const packageExports = await computePackageExports(outPath, packagePath)
 
   // --- Update the package.json file.
-  if (bumpType) packageJson.version = await computePackageVersion(packageJson.version, bumpType)
+  packageJson.version = await computePackageVersion(packageJson.version, 'build')
   packageJson.exports = packageExports
-  packageJson.files = [outDirectory, 'README.md', 'LICENSE.md']
+  packageJson.files = ['dist', 'README.md', 'LICENSE.md']
   packageJson.main = packageExports['*']?.require
   packageJson.module = packageExports['*']?.import
   packageJson.types = packageExports['*']?.types
@@ -107,6 +85,3 @@ export async function buildPackage(directory: string = cwd(), options: BuildPack
   // --- Save the package.json file.
   await packageJsonFs.commit()
 }
-
-// --- Run the script.
-await buildPackage(...process.argv.slice(2))
