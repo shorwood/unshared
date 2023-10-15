@@ -5,7 +5,7 @@ import { Stats } from 'node:fs'
 import { readdir, stat } from 'node:fs/promises'
 import { join, relative } from 'node:path'
 import { cwd as getCwd } from 'node:process'
-import { Awaitable, awaitable } from '@unshared/functions/awaitable'
+import { awaitable, Awaitable } from '@unshared/functions/awaitable'
 import { createPatternRegexp } from '@unshared/string/createPatternRegexp'
 import { MaybeArray } from '@unshared/types'
 import { vol } from 'memfs'
@@ -20,8 +20,8 @@ export type GlobEntry = Stats | string
  * array of file stats. Otherwise the result will be an array of file paths.
  */
 export type GlobResult<T extends boolean> = T extends true
-  ? Awaitable<AsyncIterableIterator<Stats>, Stats[]>
-  : Awaitable<AsyncIterableIterator<string>, string[]>
+  ? Awaitable<AsyncIterable<Stats>, Stats[]>
+  : Awaitable<AsyncIterable<string>, string[]>
 
 export interface GlobOptions<Stat extends boolean> {
   /**
@@ -125,15 +125,8 @@ export function glob<Stat extends boolean = false>(pattern: MaybeArray<string>, 
   // --- Instantiate the iterator.
   const iterator = createIterator()
 
-  // --- Create a function that will return the result as an array.
-  async function createResult() {
-    const result: GlobEntry[] = []
-    for await (const path of iterator) result.push(path)
-    return result
-  }
-
   // --- Return the iterator or the result as an array.
-  return awaitable(iterator, createResult) as GlobResult<Stat>
+  return awaitable(iterator) as GlobResult<Stat>
 }
 
 /** c8 ignore next */
