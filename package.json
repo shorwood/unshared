@@ -19,10 +19,15 @@
     "test:types": "vitest typecheck",
     "test:coverage": "vitest --coverage",
     "commit": "tsx ./scripts/commit.ts",
-    "preinstall": "node ./scripts/forcePnpm.js"
+    "commit:lint": "commitlint --edit",
+    "preinstall": "node ./scripts/forcePnpm.js",
+    "postinstall": "husky install"
   },
   "devDependencies": {
     "@changesets/cli": "2.26.2",
+    "@commitlint/config-angular": "17.8.0",
+    "@commitlint/config-conventional": "17.8.0",
+    "@commitlint/config-pnpm-scopes": "17.7.0",
     "@rollup/plugin-terser": "0.4.4",
     "@types/eslint": "8.44.2",
     "@types/js-yaml": "4.0.6",
@@ -35,9 +40,11 @@
     "@vitest/ui": "0.34.5",
     "@vitest/utils": "0.34.5",
     "axios": "1.5.0",
+    "commitlint": "17.8.0",
     "dotenv": "16.3.1",
     "eslint": "8.49.0",
     "happy-dom": "12.1.5",
+    "husky": "8.0.3",
     "js-yaml": "4.1.0",
     "memfs": "4.3.0",
     "rollup": "4.0.2",
@@ -54,5 +61,13 @@
       "@unshared/eslint-config/basic",
       "@unshared/eslint-config/typescript"
     ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-pnpm-scopes"
+    ],
+    "rules": {
+      "body-max-length": [2, "always", "Infinity"]
+    }
   }
 }
