@@ -13,7 +13,7 @@
     "build": "tsx ./scripts/build.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "vitest",
+    "test": "vitest --run",
     "test:ui": "vitest --ui",
     "test:watch": "vitest --watch",
     "test:types": "vitest typecheck",
