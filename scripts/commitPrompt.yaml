@@ -8,20 +8,17 @@ messages:
         <BLANK LINE>
         <body>
 
-      Type can ONLY be one of the following:
+      Allowed scopes:
         chore:   Changes that don't affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
         docs:    Documentation only changes
         feat:    A new feature
         fix:     A bug fix
 
       If there is a breaking change, add a "!" after the type/scope, e.g. "feat(<scope>)!:"
-      Avoid unecessary informations in the body.
-      Body should not be longer than 200 characters.
-      Keep the body short and concise.
-      The body should be used to explain what and why vs how.
-      If the change is small enough, the body can be omitted.
-      Do not use `refactor` or `perf` in the type/scope.
-      If the branche name contains an issue number, it will be added to the commit message.
+      Dont talk about the how, but the what and why.
+      If the branch name contains an issue number, it will be added to the commit message.
+      If the branch does not contain an issue number, do not add one.
+      Use imperative mood.
 
   - role: user
     content: |
@@ -46,7 +43,7 @@ messages:
 
   - role: assistant
     content: |
-      fix(reactivity): improved typing of `useState` function
+      US-1234 - fix(reactivity): improved typing of `useState` function
 
       The `useState` function was not correctly typed. This commit fixes
       that by allowing the `value` parameter to be optional and by

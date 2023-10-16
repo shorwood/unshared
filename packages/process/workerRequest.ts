@@ -3,6 +3,13 @@ import { Function } from '@unshared/types'
 import { WorkerResponse } from './workerRegister'
 
 /**
+ * The time in milliseconds to wait for a response from the worker.
+ * If the worker does not respond within this time, the request will
+ * be rejected.
+ */
+const WORKER_HEALTHCHECK_TIMEOUT = 500
+
+/**
  * A common interface for the request passed to a `workerRegister` callback. This is
  * the payload of the IPC message received from the port specified in the request.
  */
@@ -49,14 +56,12 @@ export async function workerRequest<T extends Function>(worker: Worker, name: st
   // --- Wait for the response and resolve with the result or reject with the error.
   return await new Promise((resolve, reject) => {
     const timeoutError = new Error('No registered handler is listening for messages.')
-    const timeout = setTimeout(() => reject(timeoutError), 10)
+    const timeout = setTimeout(() => reject(timeoutError), WORKER_HEALTHCHECK_TIMEOUT)
 
     port2.once('close', reject)
     port2.once('messageerror', reject)
     port2.on('message', (response: WorkerResponse | 'heartbeat') => {
       if (response === 'heartbeat') return clearTimeout(timeout)
-
-      // --- Handle the response.
       const { error, value } = response
       if (error) reject(error)
       else resolve(value as Awaited<ReturnType<T>>)
@@ -73,7 +78,17 @@ if (import.meta.vitest) {
   const workerModule = new Worker(workerModuleUrl, { execArgv: ['--loader', 'tsx', '--no-warnings'] })
 
   // --- Wait for the worker to start.
-  await new Promise(resolve => setTimeout(resolve, 100))
+  beforeAll(async() => {
+    await new Promise((resolve) => {
+      workerHandler.once('online', resolve)
+      workerModule.once('online', resolve)
+    })
+  })
+
+  afterAll(() => {
+    workerHandler.terminate()
+    workerModule.terminate()
+  })
 
   it('should call a function if the name matches and return the result', () => {
     const result = workerRequest<(n: number) => number>(workerHandler, 'factorial', 10)
