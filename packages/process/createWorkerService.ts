@@ -1,5 +1,4 @@
 /* eslint-disable sonarjs/no-duplicate-string */
-import { EventEmitter } from 'node:events'
 import { Worker, WorkerOptions } from 'node:worker_threads'
 import { Function } from '@unshared/types/Function'
 import { WORKER_SERVICE_FUNCTION_NAME, WORKER_SERVICE_URL } from './createWorkerService.constants'
@@ -53,7 +52,7 @@ export interface WorkerServiceOptions extends WorkerOptions {
 
 export interface WorkerServiceRequest {
   /** The path or URL to the module to import. */
-  id: string | URL
+  id: URL | string
   /** The name of the export to get from the module. */
   name: string
   /** The parameters to pass to the target function. */
@@ -69,7 +68,7 @@ export interface WorkerServiceRequest {
  * business logic without having to worry about the implementation details of the
  * worker thread.
  */
-export class WorkerService extends EventEmitter {
+export class WorkerService {
   /**
    * Create a `Worker` instance with the specified options and return a `WorkerService`
    * instance that can be used to call functions in the worker thread.
@@ -80,9 +79,7 @@ export class WorkerService extends EventEmitter {
    * const service = new WorkerService()
    * const result = await service.spawn('node:crypto', 'randomBytes', 128) // Uint8Array { ... }
    */
-  constructor(private workerOptions: WorkerServiceOptions = {}) {
-    super()
-  }
+  constructor(private workerOptions: WorkerServiceOptions = {}) {}
 
   /**
    * The `Worker` instance that is used to execute the functions. This property can
@@ -118,7 +115,7 @@ export class WorkerService extends EventEmitter {
    * // Terminate the worker thread.
    * await workerService.terminate()
    */
-  private async createWorker(): Promise<this> {
+  public async initialize(): Promise<this> {
     if (this.worker) return this
 
     // --- Destructure and default options.
@@ -178,7 +175,7 @@ export class WorkerService extends EventEmitter {
    * const result = await workerService.spawn('node:crypto', 'randomBytes', 128) // Uint8Array { ... }
    */
   public async spawn<T extends Function>(id: URL | string, name: string, ...parameters: Parameters<T>): Promise<Awaited<ReturnType<T>>> {
-    if (!this.worker) await this.createWorker()
+    if (!this.worker) await this.initialize()
 
     // --- Send the message to the worker thread and wait for the response.
     this.running++
@@ -226,4 +223,57 @@ export class WorkerService extends EventEmitter {
  */
 export function createWorkerService(options: WorkerServiceOptions = {}): WorkerService {
   return new WorkerService(options)
+}
+
+/** c8 ignore next */
+if (import.meta.vitest) {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  type Fixture = typeof import('./__fixtures__/module')
+  const workerUrl = new URL('__fixtures__/module', import.meta.url).pathname
+  const workerOptions = { execArgv: ['--loader', 'tsx'] }
+
+  it('should spawn a function in a worker thread and return the result', async() => {
+    const service = createWorkerService(workerOptions)
+    const result = await service.spawn<Fixture['factorial']>(workerUrl, 'factorial', 5)
+    expect(result).toEqual(120)
+    await service.terminate()
+  })
+
+  it('should wrap a module in a worker thread', async() => {
+    const service = createWorkerService(workerOptions)
+    const { factorial } = service.wrap<Fixture>(workerUrl)
+    const result = await factorial(5)
+    expect(result).toEqual(120)
+    await service.terminate()
+  })
+
+  it('should not initialize the worker thread', async() => {
+    const service = createWorkerService(workerOptions)
+    expect(service.worker).toBeUndefined()
+    await service.terminate()
+  })
+
+  it('should terminate and return -1 when no worker is running', async() => {
+    const service = createWorkerService(workerOptions)
+    const result = await service.terminate()
+    expect(service.worker).toBeUndefined()
+    expect(result).toEqual(-1)
+    await service.terminate()
+  })
+
+  it('should terminate and return the exit code when a worker is running', async() => {
+    const service = createWorkerService(workerOptions)
+    await service.spawn(workerUrl, 'factorial', 5)
+    const result = await service.terminate()
+    expect(service.worker).toBeUndefined()
+    expect(result).toEqual(1)
+    await service.terminate()
+  })
+
+  it('should create the worker manually', async() => {
+    const service = createWorkerService(workerOptions)
+    await service.initialize()
+    expect(service.worker).toBeDefined()
+    await service.terminate()
+  })
 }
