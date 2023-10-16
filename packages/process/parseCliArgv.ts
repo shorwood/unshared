@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/prevent-abbreviations */
 import { parseOption } from './parseCliOption'
 
-export interface ParseArgvReturnType<T extends Record<string, any> = any> {
+export interface ParseArgvReturnType<T extends object> {
   /**
    * Extracted options.
    *
@@ -34,7 +34,7 @@ export interface ParseArgvReturnType<T extends Record<string, any> = any> {
  * @example
  * parseArgv(['-f', '-bq', '--foo', 'bar', 'baz']) // returns { f: true, b: true, q: true, foo: 'bar' }
  */
-export function parseArgv <T extends Record<string, any>>(argv: NodeJS.Process['argv']): ParseArgvReturnType<T> {
+export function parseArgv <T extends object>(argv: NodeJS.Process['argv']): ParseArgvReturnType<T> {
   const parsedArgs = [] as string[]
   const parsedOptions = {} as T
   const [nodePath, scriptPath, ...parameters] = argv
