@@ -150,11 +150,11 @@ export class Semver {
    */
   // eslint-disable-next-line sonarjs/cognitive-complexity
   satisfies(range: string): boolean {
-    // --- Get the comparaison operator and the version to compare.
+    // --- Get the comparison operator and the version to compare.
     const rangeMatch = range.match(/^(>=|<=|>|<|=|\^|~)?\s*(.*)$/) as RegExpMatchArray
     if (!rangeMatch) throw new Error(`Invalid semver range: ${range}`)
 
-    // --- Get the comparaison operator and the version to compare.
+    // --- Get the comparison operator and the version to compare.
     const [, operator, version] = rangeMatch
     const rangeSemver = Semver.parse(version)
     const { major, minor, patch } = this
@@ -331,7 +331,7 @@ if (import.meta.vitest) {
     ['0.9.9', '~1.0.0', false],
     ['0.0.0', '~1.0.0', false],
 
-  ])('should check if %s is %s and return %s', (version, range, expected) => {
+  ])('should check if %s is %s and return %s', (version: string, range: string, expected: boolean) => {
     const result = createSemver(version).satisfies(range)
     expect(result).toEqual(expected)
   })
