@@ -1,4 +1,4 @@
-import type { BoundThis } from '@unshared/types'
+import { BoundThis } from '@unshared/types'
 
 /**
  * Wrap a function that binds it's first argument to `this`. This is useful when you want to
@@ -10,8 +10,9 @@ import type { BoundThis } from '@unshared/types'
  * const add = bindThis((a: number, b: number) => a + b) // (this: number, b: number) => number
  * add.call(1, 2) // 3
  */
-export const bindThis = <T extends Function>(fn: T): BoundThis<T> =>
-  function(this: unknown, ...parameters: unknown[]) { return fn(this, ...parameters) } as BoundThis<T>
+export function bindThis <T extends Function>(fn: T): BoundThis<T> {
+  return function(this: unknown, ...parameters: unknown[]) { return fn(this, ...parameters) } as BoundThis<T>
+}
 
 /* c8 ignore next */
 if (import.meta.vitest) {
