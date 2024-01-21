@@ -11,7 +11,7 @@ import { FunctionAsync } from '@unshared/types'
  * type ObjectB = { b: number }
  * type AwaitableObject = Awaitable<ObjectA, ObjectB> // { a: number } & Promise<{ b: number }>
  */
-export type Awaitable<T, U = T> = Promise<U extends undefined | void ? T : U> & T
+export type Awaitable<T = unknown, U = T> = Promise<U extends undefined | void ? T : U> & T
 
 /**
  * Wraps an `AsyncIterable` or `AsyncIterator` with a promise making it awaitable.
