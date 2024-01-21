@@ -1,3 +1,6 @@
+/** A function that returns the next number in a sequence. */
+export type GetNextIndex = () => number
+
 /**
  * Creates a function that returns the next number in a sequence. Once the sequence
  * reaches the given maximum value, it will start over from the initial value. By
@@ -8,20 +11,15 @@
  * @param maxValue The maximum value of the sequence. Defaults to the maximum safe integer.
  * @returns The function that returns the next number in the sequence.
  * @example
- * const index = createIndex(1)
- * index() // 1
- * index() // 2
+ * const nextIndex = createIndex(1)
+ * nextIndex() // 1
+ * nextIndex() // 2
  */
-export function createIndex(initialValue = 0, maxValue = Number.MAX_SAFE_INTEGER): () => number {
-  let index = initialValue
+export function createIndex(initialValue = 0, maxValue = Number.MAX_SAFE_INTEGER): GetNextIndex {
+  let index = Math.floor(initialValue)
   return () => {
     const result = index
-
-    // --- Roll over to the initial value once the sequence reaches the maximum safe integer.
-    index = index >= maxValue
-      ? initialValue
-      : index + 1
-
+    index = index >= maxValue ? initialValue : index + 1
     return result
   }
 }
