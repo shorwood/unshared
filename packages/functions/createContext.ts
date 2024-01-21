@@ -1,4 +1,4 @@
-import type { AsyncLocalStorageOptions } from 'node:async_hooks'
+import { AsyncLocalStorage } from 'node:async_hooks'
 
 export interface Context<T> {
   /**
@@ -32,19 +32,16 @@ export interface Context<T> {
  * that provides a simpler and safer API.
  *
  * @param initialValue The context value to store.
- * @param options The options to pass to the `AsyncLocalStorage` constructor.
  * @returns A unique context identifier.
  * @example
  * const context = createContext({ foo: 'bar' })
  * context.runInContext(asl, (value) => setTimeout(() => console.log(value.foo), 1000)) // 'bar'
  * context.runInContext(asl, (value) => value.foo = 'baz') // 'baz'
  */
-export function createContext<T = unknown>(initialValue: NonNullable<T>, options?: AsyncLocalStorageOptions<T>): Context<T> {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { AsyncLocalStorage } = require('node:async_hooks') as typeof import('node:async_hooks')
+export function createContext<T = unknown>(initialValue: NonNullable<T>): Context<T> {
 
   // --- Create a new AsyncLocalStorage instance.
-  const asl = new AsyncLocalStorage<T>(options)
+  const asl = new AsyncLocalStorage<T>()
   let internalValue = initialValue
 
   // --- Create a function that can be used to run a function in the context.
