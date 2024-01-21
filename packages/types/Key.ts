@@ -5,11 +5,11 @@
  * @returns The keys of the object
  */
 // TODO: Extract tuple keys as literal numbers
-export type Key<T> =
+export type Key<T = unknown> =
   T extends string ? (number & keyof T)
     : T extends readonly unknown[] ? (number & keyof T)
       : T extends object ? keyof T
-        : never
+        : number | string | symbol
 
 /** c8 ignore next */
 if (import.meta.vitest) {
@@ -33,13 +33,8 @@ if (import.meta.vitest) {
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
-  it('should return never when given a number', () => {
-    type Result = Key<number>
-    expectTypeOf<Result>().toEqualTypeOf<never>()
-  })
-
-  it('should return never when given a boolean', () => {
-    type Result = Key<boolean>
-    expectTypeOf<Result>().toEqualTypeOf<never>()
+  it('should fallback to number | string | symbol', () => {
+    type Result = Key
+    expectTypeOf<Result>().toEqualTypeOf<number | string | symbol>()
   })
 }
