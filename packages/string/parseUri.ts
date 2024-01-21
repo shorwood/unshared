@@ -492,7 +492,7 @@ if (import.meta.vitest) {
       hostName: '-',
     }],
 
-  ])('should extract the components of "%s"', (url, expected: any) => {
+  ])('should extract the components of "%s"', (url: string, expected: any) => {
     const result = parseUri(url)
     for (const [key, value] of Object.entries(expected))
       expect(result).toHaveProperty(key, value)
