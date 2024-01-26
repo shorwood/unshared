@@ -62,7 +62,7 @@ function createUnitValue<U extends UnitFactor>(multiplier = 1, baseValue: U): U 
 export function createScale<
   S extends string,
   P extends string,
-  K extends string = `${P}${S}` | S,
+  K extends string = S | `${P}${S}`,
 // @ts-expect-error: ignore
 >(units: MaybeArray<S>, options: CreateScaleOptions<S, P, K> = {}): UnitMap<K> {
   const {
