@@ -35,9 +35,7 @@ async function buildIndex(path: string): Promise<IndexFile> {
       if (isDirectory) {
         const directoryPath = join(path, entity.name)
         const directoryFiles = await readdir(directoryPath, { withFileTypes: true })
-        const hasIndexFile = directoryFiles
-          .filter(file => file.isFile())
-          .some(file => patternMatch(file.name, pattern))
+        const hasIndexFile = directoryFiles.some(file => file.name === 'index.ts')
         if (hasIndexFile) imports.push(entity.name)
         continue
       }
