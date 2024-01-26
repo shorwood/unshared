@@ -17,7 +17,7 @@ import { getPackageMetadata } from './utils'
  * @returns A promise that resolves when the build is complete.
  */
 export async function buildBundle(packageName: string) {
-  const { globalName, packagePath, outputPath } = await getPackageMetadata(packageName)
+  const { packagePath, outputPath } = await getPackageMetadata(packageName)
 
   console.log(`Building ${packageName} bundle...`)
   console.log(`  - Package path: ${packagePath}`)
@@ -28,7 +28,6 @@ export async function buildBundle(packageName: string) {
 
   // --- Find the input files.
   const inputPaths = await glob(['./**/index.ts', './*.ts'], { cwd: packagePath })
-  const inputIife = inputPaths.find(path => path.endsWith(`/${packageName}/index.ts`))
 
   /** Base configuration. */
   const baseConfig = {
@@ -44,17 +43,13 @@ export async function buildBundle(packageName: string) {
         platform: 'node',
         treeShaking: true,
         sourceMap: true,
-        // minify: true,
         tsconfig: TSCONFIG_PATH,
         define: { 'import.meta.vitest': 'false' },
       }),
       RollupTerser({
         mangle: false,
         compress: false,
-        format: {
-          beautify: true,
-          indent_level: 2,
-        },
+        format: { indent_level: 2 },
       }),
     ],
 
@@ -74,26 +69,6 @@ export async function buildBundle(packageName: string) {
         entryFileNames: '[name].cjs',
         assetFileNames: 'assets/[name].cjs',
         chunkFileNames: 'chunks/[hash].cjs',
-      },
-    ],
-  } satisfies RollupOptions
-
-  /** IIFE and UMD configuration. */
-  const iifeConfig = {
-    ...baseConfig,
-    input: inputIife,
-    output: [
-      {
-        dir: outputPath,
-        format: 'iife',
-        name: globalName,
-        entryFileNames: '[name].iife.js',
-      },
-      {
-        dir: outputPath,
-        format: 'umd',
-        name: globalName,
-        entryFileNames: '[name].umd.js',
       },
     ],
   } satisfies RollupOptions
@@ -123,7 +98,7 @@ export async function buildBundle(packageName: string) {
   // --- Conditionally define the config.
   const configs = packageName === 'types'
     ? [dtsConfig]
-    : [baseConfig, iifeConfig, dtsConfig]
+    : [baseConfig, dtsConfig]
 
   // --- Generate the bundles and write them to disk.
   for (const config of configs) {
