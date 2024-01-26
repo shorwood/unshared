@@ -99,13 +99,13 @@ export function createStreamDecompress(options: ZlibOptions = {}) {
 /** c8 ignore next */
 if (import.meta.vitest) {
   const buffer = randomBytes(2048)
-  const string = buffer.toString('hex')
+  const expected = buffer.toString('hex')
 
   it('should not decompress raw data', async() => {
     const decompress = createStreamDecompress()
     const result = Readable.from(buffer).pipe(decompress)
     const data = await streamRead(result, 'hex')
-    expect(data).toEqual(string)
+    expect(data).toEqual(expected)
   })
 
   it('should decompress gzip data', async() => {
@@ -113,7 +113,7 @@ if (import.meta.vitest) {
     const decompress = createStreamDecompress()
     const result = Readable.from(buffer).pipe(compress).pipe(decompress)
     const data = await streamRead(result, 'hex')
-    expect(data).toEqual(string)
+    expect(data).toEqual(expected)
   })
 
   it('should decompress deflate data', async() => {
@@ -121,6 +121,6 @@ if (import.meta.vitest) {
     const decompress = createStreamDecompress()
     const result = Readable.from(buffer).pipe(compress).pipe(decompress)
     const data = await streamRead(result, 'hex')
-    expect(data).toEqual(string)
+    expect(data).toEqual(expected)
   })
 }
