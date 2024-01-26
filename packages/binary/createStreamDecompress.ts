@@ -59,8 +59,9 @@ export class Decompress extends Transform {
    * @param chunk The chunk to transform.
    * @param encoding The encoding of the chunk.
    * @param callback The callback to call when done.
+   * @returns The transformed chunk.
    */
-  override async _transform(chunk: Buffer, encoding: BufferEncoding, callback: (error?: Error | null, data?: any) => void) {
+  override _transform(chunk: Buffer, encoding: BufferEncoding, callback: (error?: Error | null, data?: any) => void) {
     // --- If we already have a decompressor, write to it.
     if (this.decompressor) return this.decompressor.write(chunk, encoding, callback)
 
