@@ -1,4 +1,4 @@
-export const PREFIX_BASE10_SHORT_BIG = {
+export const FACTOR_BASE10_SHORT_BIG = {
   da: 1e+1,
   h: 1e+2,
   k: 1e+3,
@@ -11,9 +11,9 @@ export const PREFIX_BASE10_SHORT_BIG = {
   Y: 1e+24,
   R: 1e+27,
   Q: 1e+30,
-}
+} as const
 
-export const PREFIX_BASE10_SHORT_SMALL = {
+export const FACTOR_BASE10_SHORT_SMALL = {
   d: 1e-1,
   c: 1e-2,
   m: 1e-3,
@@ -26,9 +26,9 @@ export const PREFIX_BASE10_SHORT_SMALL = {
   y: 1e-24,
   r: 1e-27,
   q: 1e-30,
-}
+} as const
 
-export const PREFIX_BASE10_LONG_BIG = {
+export const FACTOR_BASE10_LONG_BIG = {
   deca: 1e+1,
   hecto: 1e+2,
   kilo: 1e+3,
@@ -41,9 +41,9 @@ export const PREFIX_BASE10_LONG_BIG = {
   yotta: 1e+24,
   ron: 1e+27,
   quin: 1e+30,
-}
+} as const
 
-export const PREFIX_BASE10_LONG_SMALL = {
+export const FACTOR_BASE10_LONG_SMALL = {
   deci: 1e-1,
   centi: 1e-2,
   milli: 1e-3,
@@ -56,9 +56,9 @@ export const PREFIX_BASE10_LONG_SMALL = {
   yocto: 1e-24,
   rondo: 1e-27,
   quinto: 1e-30,
-}
+} as const
 
-export const PREFIX_BASE2_SHORT = {
+export const FACTOR_BASE2_SHORT = {
   k: 2 ** 10,
   M: 2 ** 20,
   G: 2 ** 30,
@@ -69,9 +69,9 @@ export const PREFIX_BASE2_SHORT = {
   Y: 2 ** 80,
   R: 2 ** 90,
   Q: 2 ** 100,
-}
+} as const
 
-export const PREFIX_BASE2_LONG = {
+export const FACTOR_BASE2_LONG = {
   kibi: 2 ** 10,
   mebi: 2 ** 20,
   gibi: 2 ** 30,
@@ -82,9 +82,9 @@ export const PREFIX_BASE2_LONG = {
   yobi: 2 ** 80,
   ribi: 2 ** 90,
   quibi: 2 ** 100,
-}
+} as const
 
-export const PREFIX_YEAR_SHORT = {
+export const FACTOR_YEAR_SHORT = {
   s: 1,
   sec: 1,
   min: 60,
@@ -93,9 +93,9 @@ export const PREFIX_YEAR_SHORT = {
   w: 60 * 60 * 24 * 7,
   m: 60 * 60 * 24 * 30,
   y: 60 * 60 * 24 * 365,
-}
+} as const
 
-export const PREFIX_YEAR_LONG = {
+export const FACTOR_YEAR_LONG = {
   second: 1,
   minute: 60,
   hour: 60 * 60,
@@ -108,11 +108,11 @@ export const PREFIX_YEAR_LONG = {
   decade: 60 * 60 * 24 * 365 * 10,
   century: 60 * 60 * 24 * 365 * 100,
   millennium: 60 * 60 * 24 * 365 * 1000,
-}
+} as const
 
-export const PREFIX_BASE10_SHORT = { ...PREFIX_BASE10_SHORT_BIG, ...PREFIX_BASE10_SHORT_SMALL }
-export const PREFIX_BASE10_LONG = { ...PREFIX_BASE10_LONG_BIG, ...PREFIX_BASE10_LONG_SMALL }
-export const PREFIX_BASE10_SMALL = { ...PREFIX_BASE10_SHORT_SMALL, ...PREFIX_BASE10_LONG_SMALL }
-export const PREFIX_BASE10_BIG = { ...PREFIX_BASE10_SHORT_BIG, ...PREFIX_BASE10_LONG_BIG }
-export const PREFIX_BASE10 = { ...PREFIX_BASE10_SHORT, ...PREFIX_BASE10_LONG }
-export const PREFIX_BASE2 = { ...PREFIX_BASE2_SHORT, ...PREFIX_BASE2_LONG }
+export const FACTOR_BASE10_SHORT = { ...FACTOR_BASE10_SHORT_BIG, ...FACTOR_BASE10_SHORT_SMALL }
+export const FACTOR_BASE10_LONG = { ...FACTOR_BASE10_LONG_BIG, ...FACTOR_BASE10_LONG_SMALL }
+export const FACTOR_BASE10_SMALL = { ...FACTOR_BASE10_SHORT_SMALL, ...FACTOR_BASE10_LONG_SMALL }
+export const FACTOR_BASE10_BIG = { ...FACTOR_BASE10_SHORT_BIG, ...FACTOR_BASE10_LONG_BIG }
+export const FACTOR_BASE10 = { ...FACTOR_BASE10_SHORT, ...FACTOR_BASE10_LONG }
+export const FACTOR_BASE2 = { ...FACTOR_BASE2_SHORT, ...FACTOR_BASE2_LONG }
