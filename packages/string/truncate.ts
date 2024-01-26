@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/no-duplicate-string */
-import type { NumberIntegerPositive } from '@unshared/types'
+import { NumberIntegerPositive } from '@unshared/types'
 
 export interface TruncateOptions<N extends number = number> {
   /**
@@ -72,7 +72,7 @@ export function truncate<N extends number>(string: string, length: NumberInteger
  * truncate('Hello', { length: 5, ellipsis: '...' }) // 'He...'
  */
 export function truncate<N extends number>(string: string, options: TruncateOptions<N>): string
-export function truncate(string: string, optionsOrLength: number | TruncateOptions = {}): string {
+export function truncate(string: string, optionsOrLength: TruncateOptions | number = {}): string {
   const options = typeof optionsOrLength === 'number'
     ? { length: optionsOrLength }
     : optionsOrLength
@@ -109,6 +109,7 @@ if (import.meta.vitest) {
     const result = truncate('Hello, world!', 10)
     expect(result).toEqual('Hello,')
   })
+
 
   it('should truncate a string to a specified length and break words', () => {
     const result = truncate('Hello, world!', { length: 10, breakWords: true })
