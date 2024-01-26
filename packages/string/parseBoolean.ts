@@ -2,7 +2,7 @@ import { Trim } from '@unshared/types'
 
 /**
  * Parse a string into a boolean. "true" and "1" are considered true and the
- * comparaison is case insensitive. Any other value is considered false. This
+ * comparison is case insensitive. Any other value is considered false. This
  * function is useful for converting environment variables into booleans. If
  * the input string is a literal, the return type can be infered.
  *
@@ -14,7 +14,7 @@ export type ParseBoolean<S extends string> = Trim<Lowercase<S>> extends '1' | 't
 
 /**
  * Parse a string into a boolean. "true" and "1" are considered true and the
- * comparaison is case insensitive. Any other value is considered false. This
+ * comparison is case insensitive. Any other value is considered false. This
  * function is useful for converting environment variables into booleans. If
  * the input string is a literal, the return type can be infered.
  *
