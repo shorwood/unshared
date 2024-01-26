@@ -4,23 +4,13 @@ import 'dotenv/config'
 import { execFileSync, spawn } from 'node:child_process'
 import { readFile } from 'node:fs/promises'
 import { createInterface } from 'node:readline/promises'
-import { Readable } from 'node:stream'
 import { load as parseYaml } from 'js-yaml'
-
-const OPENAI_APIKEY = process.env.OPENAI_APIKEY
+import { OpenAI } from 'openai'
 
 interface Prompt {
   role: 'assistant' | 'system' | 'user'
   content: string
 }
-
-const OPENAI_URL = 'https://api.openai.com/v1/chat/completions'
-const OPENAI_MODEL = 'gpt-4'
-
-const LOCALAI_URL = 'http://localhost:8080/v1/chat/completions'
-const LOCALAI_MODEL = 'ggml-gpt4all-j.bin'
-
-const USE_LOCALAI = false
 
 /**
  * Generate a commit message for the currently staged changes.
@@ -31,70 +21,37 @@ const USE_LOCALAI = false
 export async function commit() {
   const promptPath = new URL('commitPrompt.yaml', import.meta.url)
   const promptYaml = await readFile(promptPath, 'utf8')
-  const prompt = parseYaml(promptYaml) as Record<string, unknown>
-  const promptMessages = prompt.messages as Prompt[]
+  const promptSystem = parseYaml(promptYaml) as Record<string, unknown>
   const input = process.argv.slice(2).join(' ')
 
-  const diff = execFileSync('git', ['diff', '--cached', '--staged'], { encoding: 'utf8' }).slice(0, 7000)
-  const diffStat = execFileSync('git', ['diff', '--stat', '--cached', '--staged'], { encoding: 'utf8' }).slice(0, 7000)
+  const diff = execFileSync('git', ['diff', '--cached', '--staged'], { encoding: 'utf8' })
+  const diffStat = execFileSync('git', ['diff', '--stat', '--cached', '--staged'], { encoding: 'utf8' })
   const lastCommits = execFileSync('git', ['log', '-2', '--pretty=%B'], { encoding: 'utf8' })
   const branchName = execFileSync('git', ['branch', '--show-current'], { encoding: 'utf8' })
 
-  promptMessages.push(
-    { role: 'user', content: `[LAST_COMMITS]\n${lastCommits}\n\n` },
-    { role: 'user', content: `[STAGED_STATS]\n${diffStat}\n\n` },
-    { role: 'user', content: `[BRANCH_NAME]\n${branchName}\n\n` },
-    { role: 'user', content: `[DIFF}]\n${diff}` },
-    { role: 'user', content: `[INPUT]\n${input}` },
-  )
-
-  const url = USE_LOCALAI ? LOCALAI_URL : OPENAI_URL
-  const model = USE_LOCALAI ? LOCALAI_MODEL : OPENAI_MODEL
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${OPENAI_APIKEY}`,
-    },
-    body: JSON.stringify({
-      model,
-      messages: promptMessages,
-      max_tokens: 256,
-      stream: true,
-    }),
-  })
-
-  // --- Handle status code.
-  if (!response.ok || !response.body) {
-    console.error(response.statusText)
-    process.exit(1)
-  }
-
-  // --- Handle errors.
-  // @ts-expect-error: types are compatible.
-  const stream = Readable.fromWeb(response.body)
-  stream.on('error', (error) => {
-    console.error(error)
-    process.exit(1)
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+  const response = await openai.chat.completions.create({
+    model: 'gpt-4-1106-preview',
+    stream: true,
+    max_tokens: 1024,
+    temperature: 0.7,
+    messages: [
+      ...promptSystem.messages as Prompt[],
+      { role: 'user', content: `[LAST_COMMITS]\n${lastCommits}\n\n` },
+      { role: 'user', content: `[BRANCH_NAME]\n${branchName}\n\n` },
+      { role: 'user', content: `[DIFF_STAGED_STATS]\n${diffStat}\n\n` },
+      { role: 'user', content: `[DIFF}]\n${diff}` },
+      { role: 'user', content: `[INPUT]\n${input}` },
+    ],
   })
 
   // --- Write the response token by token.
   const completionTokens: string[] = []
-  for await (const chunks of stream) {
-    const results = chunks.toString('utf8').split('\n')
-    for (const result of results) {
-      try {
-        const responseJson = result.slice(6)
-        const response = JSON.parse(responseJson)
-        const completion = response.choices[0].delta.content
-        completionTokens.push(completion)
-        process.stdout.write(completion)
-      }
-      catch {
-        /** Ignore. */
-      }
-    }
+  for await (const chunks of response) {
+    const completion = chunks.choices[0].delta.content
+    if (!completion) continue
+    completionTokens.push(completion)
+    process.stdout.write(completion)
   }
 
   process.stdout.write([
