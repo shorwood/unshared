@@ -73,8 +73,8 @@ export async function streamRead<N extends number>(stream: Readable, options: To
  * @returns A promise that resolves with the buffer or encoded string.
  * @example streamRead(fs.createReadStream('file.txt'), { encoding: 'utf8' }) // Promise<string>
  */
-export async function streamRead<N extends number>(stream: Readable, options?: NumberPositive<N> | BufferEncoding | ToBufferOptions<any, N>): Promise<Buffer | string>
-export async function streamRead(stream: Readable, options: NumberPositive<number> | BufferEncoding | ToBufferOptions = {}): Promise<Buffer | string> {
+export async function streamRead<N extends number>(stream: Readable, options?: BufferEncoding | NumberPositive<N> | ToBufferOptions<any, N>): Promise<Buffer | string>
+export async function streamRead(stream: Readable, options: BufferEncoding | NumberPositive<number> | ToBufferOptions = {}): Promise<Buffer | string> {
   // --- Normalize and destructure the options.
   if (typeof options === 'string') options = { encoding: options }
   if (typeof options === 'number') options = { length: options }
@@ -121,9 +121,9 @@ export async function streamRead(stream: Readable, options: NumberPositive<numbe
   let index = 0
   const chunks: Buffer[] = []
   for await (const chunk of stream) {
-    const chunkBuffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)
+    const chunkBuffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk as string)
     chunks.push(chunkBuffer)
-    index += chunk.length
+    index += chunkBuffer.length
   }
   const buffer = Buffer.concat(chunks, index)
   return encoding ? buffer.toString(encoding) : buffer
