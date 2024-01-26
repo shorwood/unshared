@@ -9,7 +9,7 @@ export type Key<T = unknown> =
   T extends string ? (number & keyof T)
     : T extends readonly unknown[] ? (number & keyof T)
       : T extends object ? keyof T
-        : number | string | symbol
+        : PropertyKey
 
 /** c8 ignore next */
 if (import.meta.vitest) {
@@ -33,8 +33,8 @@ if (import.meta.vitest) {
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
-  it('should fallback to number | string | symbol', () => {
+  it('should fallback to PropertyKey', () => {
     type Result = Key
-    expectTypeOf<Result>().toEqualTypeOf<number | string | symbol>()
+    expectTypeOf<Result>().toEqualTypeOf<PropertyKey>()
   })
 }
