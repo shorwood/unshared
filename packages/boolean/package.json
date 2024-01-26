@@ -1,7 +1,7 @@
 {
   "name": "@unshared/boolean",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "license": "MIT",
   "sideEffects": false,
   "description": "Boolean logic functions",
@@ -13,67 +13,62 @@
     "url": "git@github.com:shorwood/unshared.git",
     "directory": "packages/boolean"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "browser": "./dist/index.iife.js",
   "exports": {
-    "Boolean": {
+    "./Boolean": {
       "require": "./dist/Boolean.cjs",
       "types": "./dist/Boolean.d.ts",
       "import": "./dist/Boolean.js"
     },
-    "and": {
+    "./and": {
       "require": "./dist/and.cjs",
       "types": "./dist/and.d.ts",
       "import": "./dist/and.js"
     },
-    "createBoolean": {
+    "./createBoolean": {
       "require": "./dist/createBoolean.cjs",
       "types": "./dist/createBoolean.d.ts",
       "import": "./dist/createBoolean.js"
     },
-    "nand": {
+    "./nand": {
       "require": "./dist/nand.cjs",
       "types": "./dist/nand.d.ts",
       "import": "./dist/nand.js"
     },
-    "nor": {
+    "./nor": {
       "require": "./dist/nor.cjs",
       "types": "./dist/nor.d.ts",
       "import": "./dist/nor.js"
     },
-    "not": {
+    "./not": {
       "require": "./dist/not.cjs",
       "types": "./dist/not.d.ts",
       "import": "./dist/not.js"
     },
-    "or": {
+    "./or": {
       "require": "./dist/or.cjs",
       "types": "./dist/or.d.ts",
       "import": "./dist/or.js"
     },
-    "xnor": {
+    "./xnor": {
       "require": "./dist/xnor.cjs",
       "types": "./dist/xnor.d.ts",
       "import": "./dist/xnor.js"
     },
-    "xor": {
+    "./xor": {
       "require": "./dist/xor.cjs",
       "types": "./dist/xor.d.ts",
       "import": "./dist/xor.js"
     },
-    "*": {
+    ".": {
       "require": "./dist/index.cjs",
       "types": "./dist/index.d.ts",
-      "browser": "./dist/index.iife.js",
       "import": "./dist/index.js"
     }
   },
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE.md"
   ],
   "dependencies": {
     "@unshared/types": "workspace:*"
