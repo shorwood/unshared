@@ -22,10 +22,13 @@ export interface TemplateOptions<T> {
   /**
    * Function used to transform the value before it is inserted into the
    * template. This function is called for each match and receives the value,
-   * the key and the data object. This is useful for serializing objects or
-   * formatting dates.
+   * the key and the data object. This is useful for serializing non-string
+   * values. By default, the value is converted to a string using the
+   * `toString()` method.
+   *
+   * @default String
    */
-  transform?: (value: string, key: string, data: T) => string
+  transform?: (value: unknown, key: string, data: T) => string
 }
 
 /**
@@ -53,7 +56,7 @@ export function template<T extends Collection>(template: string, data: T, option
   const {
     delimiterStart = '{{',
     delimiterEnd = '}}',
-    transform = x => x,
+    transform = String,
   } = options
 
   // --- Validate options.
@@ -67,7 +70,7 @@ export function template<T extends Collection>(template: string, data: T, option
 
   // --- Replace, transform and return.
   return template.replace(regexp, (_, key: string) => {
-    const value = get(data, key)?.toString() ?? ''
+    const value = get(data, key)
     return transform(value, key, data)
   })
 }
@@ -76,13 +79,13 @@ export function template<T extends Collection>(template: string, data: T, option
 if (import.meta.vitest) {
   it('should template a string with default options', () => {
     const result = template('Hello {{name}}', { name: 'World' })
-    expect(result).toBe('Hello World')
+    expect(result).toEqual('Hello World')
   })
 
   it('should template a string with nested data', () => {
     const data = { name: { first: 'John', last: 'Doe' } }
     const result = template('Hello {{name.first}} {{name.last}}', data)
-    expect(result).toBe('Hello John Doe')
+    expect(result).toEqual('Hello John Doe')
   })
 
   it('should template a string with custom delimiters', () => {
@@ -90,25 +93,18 @@ if (import.meta.vitest) {
       delimiterStart: '<%',
       delimiterEnd: '%>',
     })
-    expect(result).toBe('Hello World')
+    expect(result).toEqual('Hello World')
   })
 
   it('should template a string with a custom transform', () => {
     const result = template('Hello {{name}}', { name: 'World' }, {
-      transform: value => value.toUpperCase(),
+      transform: value => (value as string).toUpperCase(),
     })
-    expect(result).toBe('Hello WORLD')
+    expect(result).toEqual('Hello WORLD')
   })
 
-  it('should throw if data is not an object', () => {
-    // @ts-expect-error: invalid argument type.
-    const shouldThrow = () => template('Hello {{name}}', 1)
-    expect(shouldThrow).toThrow(TypeError)
-  })
-
-  it('should throw if template is not a string', () => {
-    // @ts-expect-error: invalid argument type.
-    const shouldThrow = () => template(1)
-    expect(shouldThrow).toThrow(TypeError)
+  it('should template a value and transform it into a string by default', () => {
+    const result = template('Hello {{name}}', { name: { toString: () => 'World' } })
+    expect(result).toEqual('Hello World')
   })
 }
