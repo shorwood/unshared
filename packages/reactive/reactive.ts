@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import { NotUndefined } from '@unshared/types'
+import { NotUndefined, Function } from '@unshared/types'
 
 /** The symbol used to identify reactive objects. */
 export const ReactiveFlag = Symbol('Reactive')
@@ -78,7 +78,7 @@ export type Reactive<T = unknown> = T & {
  * @returns An object that might be reactive.
  * @example MaybeReactive<{ foo: string }>
  */
-export type MaybeReactive<T = unknown> = T | Reactive<T>
+export type MaybeReactive<T = unknown> = Reactive<T> | T
 
 /**
  * Wrap a function in a function that will trigger a callback when the function
@@ -96,7 +96,7 @@ function wrapFunction(fn: Function, callback: Function, source: unknown, root: u
 
     // --- If the result is a promise, wait for it to resolve before calling
     if (result instanceof Promise)
-      return result.then((value) => { callback(root); return value })
+      return result.then((value: unknown) => { callback(root); return value })
 
     // --- the callback. Otherwise, call the callback immediately.
     callback(root)
@@ -118,14 +118,14 @@ function wrapOperation(operation: keyof ProxyHandler<object>, callback: Function
   return function(...args: unknown[]) {
     if (operation === 'defineProperty') {
       const [target, property, descriptor] = args as Parameters<NotUndefined<ProxyHandler<object>['defineProperty']>>
-      const newValue = descriptor.value
-      const oldValue = Reflect.get(target, property, source)
+      const newValue: unknown = descriptor.value
+      const oldValue: unknown = Reflect.get(target, property, source)
       if (newValue === oldValue) return true
     }
 
     // --- Apply the operation, trigger the callback, and return the operation result.
     // @ts-expect-error: The `operation` is a valid key of `Reflect`.
-    const result = Reflect[operation].apply(source, args)
+    const result = Reflect[operation].apply(source, args) as boolean
     callback(root)
     return result
   }
@@ -170,19 +170,19 @@ export function reactive<T>(source: T, options: ReactiveOptions<T> = {}): Reacti
       if (property === ReactiveData) return { callbacks, source }
 
       // --- Get the value.
-      let value = Reflect.get(target, property, source)
+      let value: unknown = Reflect.get(target, property, source)
 
       // --- Bind functions to the target.
       // --- If the function is registered as a hook, wrap it.
       if (typeof value === 'function') {
-        return hooks.includes(<string>property)
-          ? wrapFunction(value, callback, source, root)
-          : value.bind(target)
+        return hooks.includes(property as string)
+          ? wrapFunction(value as Function, callback, source, root)
+          : value.bind(target) as unknown
       }
 
       // --- If deep and the value is an object, watch it.
       if (deep && typeof value === 'object' && value !== null)
-        value = reactive(value, { deep, root, hooks, callbacks })
+        value = reactive(value as T, { deep, root, hooks, callbacks })
 
       // --- Return the value.
       return value
