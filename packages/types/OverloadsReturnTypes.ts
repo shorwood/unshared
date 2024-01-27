@@ -4,7 +4,7 @@ import { Overloads } from './Overloads'
 /**
  * Extract the return types of all functions in a tuple.
  */
-type ExtractTupleReturnTypes<T extends Function[]> = {
+type ExtractTupleReturnTypes<T extends Array<Function<any, any[]>>> = {
   [K in keyof T]: T[K] extends (...args: any[]) => infer P ? P : never
 }[number]
 
@@ -17,7 +17,7 @@ type ExtractTupleReturnTypes<T extends Function[]> = {
  * function add(a: string, b: string): string
  * type Result = OverloadsParameters<typeof add> // [number, number] | [string, string]
  */
-export type OverloadsReturnTypes<T extends Function> = ExtractTupleReturnTypes<Overloads<T>>
+export type OverloadsReturnTypes<T extends Function<any, any[]>> = ExtractTupleReturnTypes<Overloads<T>>
 
 /** c8 ignore next */
 if (import.meta.vitest) {
