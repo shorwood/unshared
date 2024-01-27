@@ -12,312 +12,317 @@
     "url": "git@github.com:shorwood/unshared.git",
     "directory": "packages/types"
   },
-  "types": "./dist/index.d.ts",
   "exports": {
-    "Alias": {
+    "./Alias": {
       "types": "./dist/Alias.d.ts"
     },
-    "Any": {
+    "./Any": {
       "types": "./dist/Any.d.ts"
     },
-    "BooleanAnd": {
+    "./BooleanAnd": {
       "types": "./dist/BooleanAnd.d.ts"
     },
-    "BooleanNand": {
+    "./BooleanNand": {
       "types": "./dist/BooleanNand.d.ts"
     },
-    "BooleanNor": {
+    "./BooleanNor": {
       "types": "./dist/BooleanNor.d.ts"
     },
-    "BooleanNot": {
+    "./BooleanNot": {
       "types": "./dist/BooleanNot.d.ts"
     },
-    "BooleanOr": {
+    "./BooleanOr": {
       "types": "./dist/BooleanOr.d.ts"
     },
-    "BooleanXnor": {
+    "./BooleanXnor": {
       "types": "./dist/BooleanXnor.d.ts"
     },
-    "BooleanXor": {
+    "./BooleanXor": {
       "types": "./dist/BooleanXor.d.ts"
     },
-    "BoundThis": {
+    "./BoundThis": {
       "types": "./dist/BoundThis.d.ts"
     },
-    "CaseInsensitive": {
+    "./CaseInsensitive": {
       "types": "./dist/CaseInsensitive.d.ts"
     },
-    "CharacterAlpha": {
+    "./CharacterAlpha": {
       "types": "./dist/CharacterAlpha.d.ts"
     },
-    "CharacterAscii": {
+    "./CharacterAscii": {
       "types": "./dist/CharacterAscii.d.ts"
     },
-    "CharacterDigit": {
+    "./CharacterDigit": {
       "types": "./dist/CharacterDigit.d.ts"
     },
-    "CharacterHex": {
+    "./CharacterHex": {
       "types": "./dist/CharacterHex.d.ts"
     },
-    "CharacterLetter": {
+    "./CharacterLetter": {
       "types": "./dist/CharacterLetter.d.ts"
     },
-    "CharacterLower": {
+    "./CharacterLower": {
       "types": "./dist/CharacterLower.d.ts"
     },
-    "CharacterSymbol": {
+    "./CharacterSymbol": {
       "types": "./dist/CharacterSymbol.d.ts"
     },
-    "CharacterUpper": {
+    "./CharacterUpper": {
       "types": "./dist/CharacterUpper.d.ts"
     },
-    "CharacterWhitespace": {
+    "./CharacterWhitespace": {
       "types": "./dist/CharacterWhitespace.d.ts"
     },
-    "Collection": {
+    "./Collection": {
       "types": "./dist/Collection.d.ts"
     },
-    "Constructor": {
+    "./Constructor": {
       "types": "./dist/Constructor.d.ts"
     },
-    "ConstructorParameters": {
+    "./ConstructorParameters": {
       "types": "./dist/ConstructorParameters.d.ts"
     },
-    "ConstructorStatics": {
+    "./ConstructorStatics": {
       "types": "./dist/ConstructorStatics.d.ts"
     },
-    "Default": {
+    "./Default": {
       "types": "./dist/Default.d.ts"
     },
-    "DefaultObject": {
+    "./DefaultObject": {
       "types": "./dist/DefaultObject.d.ts"
     },
-    "DefaultTuple": {
+    "./DefaultTuple": {
       "types": "./dist/DefaultTuple.d.ts"
     },
-    "DefaultValue": {
+    "./DefaultValue": {
       "types": "./dist/DefaultValue.d.ts"
     },
-    "Extends": {
+    "./Extends": {
       "types": "./dist/Extends.d.ts"
     },
-    "Fallback": {
+    "./Fallback": {
       "types": "./dist/Fallback.d.ts"
     },
-    "Function": {
+    "./Function": {
       "types": "./dist/Function.d.ts"
     },
-    "FunctionAsync": {
+    "./FunctionAsync": {
       "types": "./dist/FunctionAsync.d.ts"
     },
-    "Get": {
+    "./Get": {
       "types": "./dist/Get.d.ts"
     },
-    "Immutable": {
+    "./Immutable": {
       "types": "./dist/Immutable.d.ts"
     },
-    "IteratedFunction": {
+    "./IteratedFunction": {
       "types": "./dist/IteratedFunction.d.ts"
     },
-    "Key": {
+    "./Key": {
       "types": "./dist/Key.d.ts"
     },
-    "MapValues": {
+    "./MapValues": {
       "types": "./dist/MapValues.d.ts"
     },
-    "MathAbsolute": {
+    "./MathAbsolute": {
       "types": "./dist/MathAbsolute.d.ts"
     },
-    "MathAdd": {
+    "./MathAdd": {
       "types": "./dist/MathAdd.d.ts"
     },
-    "MathCeil": {
+    "./MathCeil": {
       "types": "./dist/MathCeil.d.ts"
     },
-    "MathDecrease": {
+    "./MathDecrease": {
       "types": "./dist/MathDecrease.d.ts"
     },
-    "MathDivide": {
+    "./MathDivide": {
       "types": "./dist/MathDivide.d.ts"
     },
-    "MathFloor": {
+    "./MathFloor": {
       "types": "./dist/MathFloor.d.ts"
     },
-    "MathIncrease": {
+    "./MathIncrease": {
       "types": "./dist/MathIncrease.d.ts"
     },
-    "MathModulo": {
+    "./MathModulo": {
       "types": "./dist/MathModulo.d.ts"
     },
-    "MathMultiply": {
+    "./MathMultiply": {
       "types": "./dist/MathMultiply.d.ts"
     },
-    "MathNegative": {
+    "./MathNegative": {
       "types": "./dist/MathNegative.d.ts"
     },
-    "MathSquare": {
+    "./MathSquare": {
       "types": "./dist/MathSquare.d.ts"
     },
-    "MathSubstract": {
+    "./MathSubstract": {
       "types": "./dist/MathSubstract.d.ts"
     },
-    "MathSum": {
+    "./MathSum": {
       "types": "./dist/MathSum.d.ts"
     },
-    "Matrix": {
+    "./Matrix": {
       "types": "./dist/Matrix.d.ts"
     },
-    "MaybeArray": {
+    "./MaybeArray": {
       "types": "./dist/MaybeArray.d.ts"
     },
-    "MaybeLiteral": {
+    "./MaybeLiteral": {
       "types": "./dist/MaybeLiteral.d.ts"
     },
-    "MaybePromise": {
+    "./MaybePromise": {
       "types": "./dist/MaybePromise.d.ts"
     },
-    "MaybeReadonly": {
+    "./MaybeReadonly": {
       "types": "./dist/MaybeReadonly.d.ts"
     },
-    "Mixins": {
+    "./Mixins": {
       "types": "./dist/Mixins.d.ts"
     },
-    "Nil": {
+    "./Nil": {
       "types": "./dist/Nil.d.ts"
     },
-    "NotAny": {
+    "./NotAny": {
       "types": "./dist/NotAny.d.ts"
     },
-    "NotArray": {
+    "./NotArray": {
       "types": "./dist/NotArray.d.ts"
     },
-    "NotFunction": {
+    "./NotFunction": {
       "types": "./dist/NotFunction.d.ts"
     },
-    "NotNil": {
+    "./NotNil": {
       "types": "./dist/NotNil.d.ts"
     },
-    "NotNull": {
+    "./NotNull": {
       "types": "./dist/NotNull.d.ts"
     },
-    "NotPrimitive": {
+    "./NotPrimitive": {
       "types": "./dist/NotPrimitive.d.ts"
     },
-    "NotPromise": {
+    "./NotPromise": {
       "types": "./dist/NotPromise.d.ts"
     },
-    "NotStringEmpty": {
+    "./NotStringEmpty": {
       "types": "./dist/NotStringEmpty.d.ts"
     },
-    "NotUndefined": {
+    "./NotUndefined": {
       "types": "./dist/NotUndefined.d.ts"
     },
-    "NumberDecimal": {
+    "./NumberDecimal": {
       "types": "./dist/NumberDecimal.d.ts"
     },
-    "NumberDecimalNegative": {
+    "./NumberDecimalNegative": {
       "types": "./dist/NumberDecimalNegative.d.ts"
     },
-    "NumberDecimalPositive": {
+    "./NumberDecimalPositive": {
       "types": "./dist/NumberDecimalPositive.d.ts"
     },
-    "NumberInteger": {
+    "./NumberInteger": {
       "types": "./dist/NumberInteger.d.ts"
     },
-    "NumberIntegerNegative": {
+    "./NumberIntegerNegative": {
       "types": "./dist/NumberIntegerNegative.d.ts"
     },
-    "NumberIntegerPositive": {
+    "./NumberIntegerPositive": {
       "types": "./dist/NumberIntegerPositive.d.ts"
     },
-    "NumberNegative": {
+    "./NumberNegative": {
       "types": "./dist/NumberNegative.d.ts"
     },
-    "NumberPositive": {
+    "./NumberPositive": {
       "types": "./dist/NumberPositive.d.ts"
     },
-    "Overloads": {
+    "./Overloads": {
       "types": "./dist/Overloads.d.ts"
     },
-    "OverloadsParameters": {
+    "./OverloadsParameters": {
       "types": "./dist/OverloadsParameters.d.ts"
     },
-    "OverloadsReturnTypes": {
+    "./OverloadsReturnTypes": {
       "types": "./dist/OverloadsReturnTypes.d.ts"
     },
-    "Path": {
+    "./Path": {
       "types": "./dist/Path.d.ts"
     },
-    "Primitive": {
+    "./Primitive": {
       "types": "./dist/Primitive.d.ts"
     },
-    "PromiseFactory": {
+    "./PromiseFactory": {
       "types": "./dist/PromiseFactory.d.ts"
     },
-    "PromiseUnwrap": {
+    "./PromiseUnwrap": {
       "types": "./dist/PromiseUnwrap.d.ts"
     },
-    "PromiseWrap": {
+    "./PromiseWrap": {
       "types": "./dist/PromiseWrap.d.ts"
     },
-    "StringConstraint": {
+    "./ResolveTypeof": {
+      "types": "./dist/ResolveTypeof.d.ts"
+    },
+    "./StringConstraint": {
       "types": "./dist/StringConstraint.d.ts"
     },
-    "StringLiteral": {
+    "./StringLiteral": {
       "types": "./dist/StringLiteral.d.ts"
     },
-    "StringNumber": {
+    "./StringNumber": {
       "types": "./dist/StringNumber.d.ts"
     },
-    "StringSplit": {
+    "./StringSplit": {
       "types": "./dist/StringSplit.d.ts"
     },
-    "Tokenize": {
+    "./Tokenize": {
       "types": "./dist/Tokenize.d.ts"
     },
-    "Trim": {
+    "./Trim": {
       "types": "./dist/Trim.d.ts"
     },
-    "Tuple": {
+    "./Tuple": {
       "types": "./dist/Tuple.d.ts"
     },
-    "TupleConcat": {
+    "./TupleConcat": {
       "types": "./dist/TupleConcat.d.ts"
     },
-    "TupleDiscard": {
+    "./TupleDiscard": {
       "types": "./dist/TupleDiscard.d.ts"
     },
-    "TupleFilter": {
+    "./TupleFilter": {
       "types": "./dist/TupleFilter.d.ts"
     },
-    "TupleLength": {
+    "./TupleLength": {
       "types": "./dist/TupleLength.d.ts"
     },
-    "TuplePop": {
+    "./TuplePop": {
       "types": "./dist/TuplePop.d.ts"
     },
-    "TuplePush": {
+    "./TuplePush": {
       "types": "./dist/TuplePush.d.ts"
     },
-    "TupleShift": {
+    "./TupleShift": {
       "types": "./dist/TupleShift.d.ts"
     },
-    "TupleSlice": {
+    "./TupleSlice": {
       "types": "./dist/TupleSlice.d.ts"
     },
-    "TupleUnshift": {
+    "./TupleUnshift": {
       "types": "./dist/TupleUnshift.d.ts"
     },
-    "UnionMerge": {
+    "./UnionMerge": {
       "types": "./dist/UnionMerge.d.ts"
     },
-    "UnionSplit": {
+    "./UnionSplit": {
       "types": "./dist/UnionSplit.d.ts"
     },
-    "Values": {
+    "./Unique": {
+      "types": "./dist/Unique.d.ts"
+    },
+    "./Values": {
       "types": "./dist/Values.d.ts"
     },
-    "*": {
+    ".": {
       "types": "./dist/index.d.ts"
     }
   },
@@ -326,16 +331,10 @@
     "README.md",
     "LICENSE.md"
   ],
-  "scripts": {
-    "build": "pnpm build:indexes && pnpm build:bundle && pnpm build:packageJson",
-    "build:bundle": "tsx ../../scripts/build.ts",
-    "build:indexes": "tsx ../../scripts/buildIndexes.ts",
-    "build:packageJson": "tsx ../../scripts/buildPackageJson.ts"
-  },
   "peerDependencies": {
-    "@types/node": "18.15.5"
+    "@types/node": ">=14.0.0"
   },
   "devDependencies": {
-    "@types/node": ">=14.0.0"
+    "@types/node": "20.11.6"
   }
 }
