@@ -4,16 +4,17 @@ import { reference } from './reference'
 import { Unwrapped, unwrap } from './unwrap'
 import { watch } from './watch'
 
-export interface TimelineOptions<T> {
+export interface TimelineOptions<T, U> {
   /**
    * The function to transform the value before storing it in the timeline.
-   * This is useful if you want to store a clone of the value.
+   * This is useful if you want to store a clone of the value instead of
+   * the value itself.
    *
    * @param value The value to transform.
    * @returns The transformed value.
    * @example timeline(a, { transform: (value) => Object.assign({}, value) })
    */
-  transform?: (value: Unwrapped<T>) => Unwrapped<T>
+  transform?: (value: Unwrapped<T>) => U
   /**
    * The maximum number of changes to store.
    *
@@ -40,13 +41,13 @@ export interface TimelineOptions<T> {
  * ref.value = 2
  * expect(changes).toEqual([1, 2])
  */
-export function timeline<T extends Reactive<any>>(value: T, options: TimelineOptions<T> = {}): Array<Unwrapped<T>> {
+export function timeline<T extends Reactive, U = Unwrapped<T>>(value: T, options: TimelineOptions<T, U> = {}): U[] {
   const { transform, limit = Number.POSITIVE_INFINITY } = options
-  const timeline: Array<Unwrapped<T>> = []
+  const timeline: U[] = []
 
   // --- Register a change in the timeline.
   const registerChange = (value: Unwrapped<T>) => {
-    const change = transform ? transform(value) : value
+    const change = transform ? transform(value) : (value as U)
     timeline.push(change)
     if (timeline.length > limit) timeline.shift()
   }
@@ -88,9 +89,9 @@ if (import.meta.vitest) {
 
   it('should transform values', () => {
     const value = reference(1)
-    const changes = timeline(value, { transform: value => value + 1 })
+    const changes = timeline(value, { transform: String })
     value.value = 2
-    expect(changes).toEqual([2, 3])
+    expect(changes).toEqual(['1', '2'])
   })
 
   it('should limit the number of changes', () => {
@@ -100,5 +101,17 @@ if (import.meta.vitest) {
     a.value = 3
     a.value = 4
     expect(changes).toEqual([3, 4])
+  })
+
+  it('should infer the type of the timeline if no transform is provided', () => {
+    const value = reference(1)
+    const changes = timeline(value)
+    expectTypeOf(changes).toEqualTypeOf<number[]>()
+  })
+
+  it('should infer the type of the timeline if a transform is provided', () => {
+    const value = reference(1)
+    const changes = timeline(value, { transform: String })
+    expectTypeOf(changes).toEqualTypeOf<string[]>()
   })
 }
