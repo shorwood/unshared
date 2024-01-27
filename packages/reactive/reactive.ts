@@ -68,7 +68,10 @@ export interface ReactiveOptions<T = unknown> {
  */
 export type Reactive<T = unknown> = T & {
   [ReactiveFlag]: true
-  [ReactiveData]: { callbacks: Array<ReactiveCallback<T>>; source: T }
+  [ReactiveData]: {
+    callbacks: Array<ReactiveCallback<T extends unknown ? any : T>>
+    source: T extends unknown ? any : T
+  }
 }
 
 /**
