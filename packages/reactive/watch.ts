@@ -27,12 +27,10 @@ export type WatchCallback<T> = (value: Unwrapped<T>) => void
  * const ref = reference('foo')
  * const stop = watch(ref, value => console.log(value))
  */
-export function watch<T extends Reactive<any>>(value: T, callback: WatchCallback<T>): Unwatch {
-  // @ts-expect-error: `unwrap(value)` is unknown but is garanteed to be `Unwrapped<T>`.
-  const watchCallback = (value: unknown) => callback(unwrap(value))
+export function watch<T extends Reactive>(value: T, callback: WatchCallback<T>): Unwatch {
+  const watchCallback = (value: T) => callback(unwrap(value))
 
   // --- Add the callback to the reactive object.
-  // @ts-expect-error: `value` is a `Reactive` object.
   const reactiveData = value[ReactiveData]
   reactiveData.callbacks.push(watchCallback)
 
@@ -69,7 +67,7 @@ if (import.meta.vitest) {
     expect(callback).toHaveBeenCalledWith('bar')
   })
 
-  it('should watch a computed value', async() => {
+  it('should watch a computed value', () => {
     const callback = vi.fn()
     const a = reference(1)
     const b = reference(2)
