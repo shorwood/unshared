@@ -1,0 +1,22 @@
+{
+  "name": "@unshared/parse",
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:shorwood/unshared.git",
+    "directory": "packages/parse"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "devDependencies": {
+    "openai": "4.26.0"
+  }
+}
