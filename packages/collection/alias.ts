@@ -1,4 +1,4 @@
-import { Alias, AliasMap } from '@unshared/types'
+import { AliasMap, Alias } from '@unshared/types'
 import { deleteProperty } from './deleteProperty'
 import { get } from './get'
 import { set } from './set'
@@ -81,7 +81,7 @@ if (import.meta.vitest) {
 
   it('should get the reference of an aliased property', () => {
     const aliased = alias(object, { fooBar: 'foo.bar' } as const)
-    expect(aliased.fooBar).toBe(object.foo!.bar)
+    expect(aliased.fooBar).toBe(object.foo.bar)
     expectTypeOf(aliased.fooBar).toEqualTypeOf<typeof object.foo.bar>()
   })
 
