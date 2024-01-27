@@ -4,7 +4,6 @@ export default defineConfig({
   test: {
     open: false,
     globals: true,
-    useAtomics: true,
     testTimeout: 100,
     reporters: ['basic'],
     setupFiles: './packages/setupTest.ts',
@@ -22,7 +21,6 @@ export default defineConfig({
     // --- V8 coverage configuration.
     coverage: {
       enabled: false,
-      100: true,
       clean: true,
       cleanOnRerun: true,
       reporter: ['html'],
