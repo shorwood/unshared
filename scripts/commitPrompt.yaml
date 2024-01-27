@@ -8,7 +8,7 @@ messages:
         <BLANK LINE>
         <body>
 
-      Allowed scopes:
+      Allowed types:
         chore:   Changes that don't affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
         docs:    Documentation only changes
         feat:    A new feature
