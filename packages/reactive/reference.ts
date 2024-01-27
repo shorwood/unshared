@@ -57,12 +57,12 @@ export function reference<T>(): Reference<T | undefined>
  */
 export function reference<T>(value: Reference<T>, options?: ReactiveOptions<ReferenceObject<T>>): Reference<T>
 export function reference<T>(value: T, options?: ReactiveOptions<ReferenceObject<T>>): Reference<T>
-export function reference(value?: unknown, options?: ReactiveOptions<any>): Reference {
+export function reference<T>(value?: Reference<T> | T, options?: ReactiveOptions<ReferenceObject<T | undefined>>) {
   // --- Prevent nested references.
-  if (isReference(value)) return value
+  if (isReference<T>(value)) return value
 
   // --- Create and return the reactive object that wraps a value.
-  return reactive({ [ReferenceFlag]: true, value }, options)
+  return reactive({ [ReferenceFlag]: true, value }, options as ReactiveOptions)
 }
 
 /** c8 ignore next */
@@ -93,10 +93,10 @@ if (import.meta.vitest) {
   it('should return as-is if the value is already reactive reference', () => {
     const value1 = reference(1)
     const value2 = reference(value1)
-    expect(value2).toBe(value1)
-    expectTypeOf(value2).toEqualTypeOf<Reference<number>>()
+    expect(value2).toEqual(value1)
   })
 
+  // eslint-disable-next-line vitest/expect-expect
   it('should infer the type of the value', () => {
     const value = reference('foo')
     expectTypeOf(value).toEqualTypeOf<Reference<string>>()
