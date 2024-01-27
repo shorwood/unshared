@@ -32,7 +32,7 @@ if (import.meta.vitest) {
     expectTypeOf(result).toEqualTypeOf<false>()
   })
 
-  it('should return false if the first parameter is false', () => {
+  it('should return false if the first parameter is true', () => {
     const result = and(false, true)
     expect(result).toEqual(false)
     expectTypeOf(result).toEqualTypeOf<false>()
