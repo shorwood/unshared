@@ -4,7 +4,7 @@ import { Primitive } from './Primitive'
 /**
  * Matches all types except `unknown`.
  */
-export type Any = Primitive | object | Function
+export type Any = Function | Primitive | object
 
 /** c8 ignore next */
 if (import.meta.vitest) {

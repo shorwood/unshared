@@ -7,7 +7,7 @@ import { CharacterUpper } from './CharacterUpper'
 /**
  * A character that is either a letter or a digit.
  */
-export type CharacterAlpha = CharacterLetter | CharacterDigit
+export type CharacterAlpha = CharacterDigit | CharacterLetter
 
 /** c8 ignore next */
 if (import.meta.vitest) {

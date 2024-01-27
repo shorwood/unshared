@@ -8,7 +8,7 @@ import { CharacterUpper } from './CharacterUpper'
  * the line feed character, the carriage return character, and the vertical
  * tab character.
  */
-export type CharacterWhitespace = ' ' | '\n' | '\t' | '\r' | '\v'
+export type CharacterWhitespace = ' ' | '\n' | '\r' | '\t' | '\v'
 
 /** c8 ignore next */
 if (import.meta.vitest) {
