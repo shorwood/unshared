@@ -9,7 +9,7 @@ import { IsEmptyString, IsString } from './utils'
  * @returns Litteral types of strings separated by a delimiter.
  * @example StringSplit<'Hello,World'> // ['Hello', 'World']
  */
-export type StringSplit<T extends string, S extends string = ',', R extends string[] = []> =
+export type StringSplit<T extends string, S extends string = '', R extends string[] = []> =
   IsString<T> extends true ? string[]
     : IsEmptyString<T> extends true ? []
 
@@ -25,8 +25,14 @@ export type StringSplit<T extends string, S extends string = ',', R extends stri
 
 /** c8 ignore next */
 if (import.meta.vitest) {
+  it('should return each character of literral as litterals', () => {
+    type Result = StringSplit<'Hello'>
+    type Expected = ['H', 'e', 'l', 'l', 'o']
+    expectTypeOf<Result>().toEqualTypeOf<Expected>()
+  })
+
   it('should return literrals split by a comma', () => {
-    type Result = StringSplit<'Hello,World'>
+    type Result = StringSplit<'Hello,World', ','>
     type Expected = ['Hello', 'World']
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
@@ -38,20 +44,14 @@ if (import.meta.vitest) {
   })
 
   it('should handle separator at the end of the string', () => {
-    type Result = StringSplit<'Hello,World,'>
+    type Result = StringSplit<'Hello,World,', ','>
     type Expected = ['Hello', 'World']
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
   it('should handle separator at the start of the string', () => {
-    type Result = StringSplit<',Hello,World'>
+    type Result = StringSplit<',Hello,World', ','>
     type Expected = ['Hello', 'World']
-    expectTypeOf<Result>().toEqualTypeOf<Expected>()
-  })
-
-  it('should return each character of literral as litterals', () => {
-    type Result = StringSplit<'Hello', ''>
-    type Expected = ['H', 'e', 'l', 'l', 'o']
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
