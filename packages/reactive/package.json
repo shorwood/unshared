@@ -11,77 +11,66 @@
     "url": "git@github.com:shorwood/unshared.git",
     "directory": "packages/reactive"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "browser": "./dist/index.iife.js",
   "exports": {
-    "computed": {
+    "./computed": {
       "require": "./dist/computed.cjs",
       "types": "./dist/computed.d.ts",
       "import": "./dist/computed.js"
     },
-    "isComputed": {
+    "./isComputed": {
       "require": "./dist/isComputed.cjs",
       "types": "./dist/isComputed.d.ts",
       "import": "./dist/isComputed.js"
     },
-    "isReactive": {
+    "./isReactive": {
       "require": "./dist/isReactive.cjs",
       "types": "./dist/isReactive.d.ts",
       "import": "./dist/isReactive.js"
     },
-    "isReference": {
+    "./isReference": {
       "require": "./dist/isReference.cjs",
       "types": "./dist/isReference.d.ts",
       "import": "./dist/isReference.js"
     },
-    "reactive": {
+    "./reactive": {
       "require": "./dist/reactive.cjs",
       "types": "./dist/reactive.d.ts",
       "import": "./dist/reactive.js"
     },
-    "reference": {
+    "./reference": {
       "require": "./dist/reference.cjs",
       "types": "./dist/reference.d.ts",
       "import": "./dist/reference.js"
     },
-    "timeline": {
+    "./timeline": {
       "require": "./dist/timeline.cjs",
       "types": "./dist/timeline.d.ts",
       "import": "./dist/timeline.js"
     },
-    "unwrap": {
+    "./unwrap": {
       "require": "./dist/unwrap.cjs",
       "types": "./dist/unwrap.d.ts",
       "import": "./dist/unwrap.js"
     },
-    "useState": {
+    "./useState": {
       "require": "./dist/useState.cjs",
       "types": "./dist/useState.d.ts",
       "import": "./dist/useState.js"
     },
-    "watch": {
+    "./watch": {
       "require": "./dist/watch.cjs",
       "types": "./dist/watch.d.ts",
       "import": "./dist/watch.js"
     },
-    "*": {
+    ".": {
       "require": "./dist/index.cjs",
       "types": "./dist/index.d.ts",
-      "browser": "./dist/index.iife.js",
       "import": "./dist/index.js"
     }
   },
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
-  ],
-  "scripts": {
-    "build": "pnpm build:indexes && pnpm build:bundle && pnpm build:packageJson",
-    "build:bundle": "tsx ../../scripts/build.ts",
-    "build:indexes": "tsx ../../scripts/buildIndexes.ts",
-    "build:packageJson": "tsx ../../scripts/buildPackageJson.ts"
-  }
+    "LICENSE.md"
+  ]
 }
