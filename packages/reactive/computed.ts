@@ -32,10 +32,10 @@ export type Computed<T = unknown> = Reactive<{
 }>
 
 /** The computed getter function. */
-export type ComputedGetter<D, T> =
-  D extends Array<infer U> ? (...dependencies: Array<Unwrapped<U>>) => T
-    : D extends infer U ? (dependency: Unwrapped<U>) => T
-      : () => T
+export type ComputedGetter<U, T> =
+  U extends readonly unknown[]
+    ? (...parameters: { [K in keyof U]: Unwrapped<U[K]> }) => T
+    : never
 
 /** The options for creating a computed value. */
 export interface ComputedOptions extends ReactiveOptions {
@@ -73,7 +73,7 @@ export interface ComputedOptions extends ReactiveOptions {
  * const b = reference(2)
  * const sum = computed(() => a.value + b.value)
  */
-export function computed<T, D extends unknown[] = []>(dependencies: D, getter: ComputedGetter<D, T>, options: ComputedOptions = {}): Computed<T> {
+export function computed<T, D extends ReadonlyArray<Reactive<any>> = []>(dependencies: D, getter: ComputedGetter<D, T>, options: ComputedOptions = {}): Computed<T> {
   const { eager = false, immediate = false, ...reactiveOptions } = options
 
   // --- Create the computed value.
@@ -86,7 +86,7 @@ export function computed<T, D extends unknown[] = []>(dependencies: D, getter: C
     get value() {
       const data = computed[ComputedData]
       if (!eager && !data.dirty) return data.value
-      data.value = getter(...dependencies.map(unwrap))
+      data.value = getter(...dependencies.map(unwrap) as unknown[])
       data.dirty = false
       return data.value
     },
@@ -124,24 +124,41 @@ if (import.meta.vitest) {
     const a = reference(1)
     const b = reference(2)
     const sum = computed([a, b], (a, b) => a + b)
-    expect (sum[ComputedFlag]).toEqual(true)
-    expect (sum[ReactiveFlag]).toEqual(true)
-    expect (sum.value).toEqual(3)
+    expect(sum[ComputedFlag]).toEqual(true)
+    expect(sum[ReactiveFlag]).toEqual(true)
+    expect(sum.value).toEqual(3)
   })
 
   it('should create a computed value with no dependencies', () => {
     const sum = computed([], () => 1)
-    expect (sum[ComputedFlag]).toEqual(true)
-    expect (sum[ReactiveFlag]).toEqual(true)
-    expect (sum.value).toEqual(1)
+    expect(sum[ComputedFlag]).toEqual(true)
+    expect(sum[ReactiveFlag]).toEqual(true)
+    expect(sum.value).toEqual(1)
   })
 
-  it('should flag the value as dirty when a dependency changes', () => {
+  it('should flag the value as dirty when a reactive dependency changes', () => {
+    const a = reactive({ foo: 1 })
+    const b = reactive({ bar: 2 })
+    const sum = computed([a, b] as const, (a, b) => a.foo + b.bar)
+    a.foo = 2
+    expect(sum[ComputedData].dirty).toEqual(true)
+  })
+
+  it('should flag the value as dirty when a reference dependency changes', () => {
     const a = reference(1)
     const b = reference(2)
     const sum = computed([a, b], (a, b) => a + b)
     a.value = 2
-    expect (sum[ComputedData].dirty).toEqual(true)
+    expect(sum[ComputedData].dirty).toEqual(true)
+  })
+
+  it('should flag the value as dirty when a computed dependency changes', () => {
+    const a = reference(1)
+    const b = reference(2)
+    const sum = computed([a, b], (a, b) => a + b)
+    const double = computed([sum], sum => sum * 2)
+    a.value = 2
+    expect(double[ComputedData].dirty).toEqual(true)
   })
 
   it('should not recomputed the value when a dependency changes until accessed', () => {
