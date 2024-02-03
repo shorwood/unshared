@@ -1,9 +1,9 @@
 import { execFile } from 'node:child_process'
 import { relative, resolve } from 'node:path'
 import { cwd as getCwd } from 'node:process'
-import { loadObject } from '@unshared/fs/loadObject'
-import { toPascalCase } from '@unshared/string/toPascalCase'
 import { PackageJSON } from 'types-pkg-json'
+import { loadObject } from '../packages/fs/loadObject'
+import { toPascalCase } from '../packages/string/toPascalCase'
 import { ROOT_PATH } from './constants'
 
 /** The current working directory. */
