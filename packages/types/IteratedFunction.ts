@@ -10,7 +10,7 @@ import { Values } from './Values'
  * type Collection = { a: number, b: string }
  * type Iteratee = IteratedFunction<Collection, boolean> // (value: number | string, key: 'a' | 'b', object: Collection) => boolean
  */
-export type IteratedFunction<T, R> = (value: Values<T>, key: Key<T>, object: T) => R
+export type IteratedFunction<T = unknown, R = unknown> = (value: Values<T>, key: Key<T>, object: T) => R
 
 /** c8 ignore next */
 if (import.meta.vitest) {
