@@ -1,5 +1,4 @@
 node_modules/
-dist/
 docs/api
 docs/**/metadata.json
 *.log
@@ -11,3 +10,7 @@ docs/**/metadata.json
 # Vitest
 coverage/
 tsconfig.vitest-temp.json
+
+# Dist
+packages/*/LICENSE.md
+dist/
