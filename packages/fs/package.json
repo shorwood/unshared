@@ -108,7 +108,7 @@
   },
   "dependencies": {
     "@unshared/functions": "workspace:*",
-    "@unshared/reactivity": "workspace:*",
+    "@unshared/reactive": "workspace:*",
     "@unshared/string": "workspace:*"
   }
 }
