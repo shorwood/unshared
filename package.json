@@ -20,6 +20,7 @@
     "test:coverage": "vitest --coverage",
     "commit": "tsx ./scripts/commit.ts",
     "commit:lint": "commitlint --edit",
+    "publish:ci": "tsx ./scripts/publish.ts",
     "preinstall": "node ./scripts/forcePnpm.js",
     "postinstall": "husky install"
   },
