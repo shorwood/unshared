@@ -11,16 +11,10 @@
     "directory": "packages/eslint-config"
   },
   "module": "./lib/index.js",
-  "exports": {
-    ".": "./lib/index.js",
-    "./basic": "./lib/basic.js",
-    "./typescript": "./lib/typescript.js",
-    "./vue": "./lib/vue.js"
-  },
   "files": [
     "lib",
     "README.md",
-    "LICENSE"
+    "LICENSE.md"
   ],
   "peerDependencies": {
     "eslint": ">=8.0.0",
@@ -32,26 +26,29 @@
     }
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "6.7.5",
-    "@typescript-eslint/parser": "6.7.5",
+    "@typescript-eslint/eslint-plugin": "6.19.1",
+    "@typescript-eslint/parser": "6.19.1",
     "eslint-config-standard": "17.1.0",
-    "eslint-plugin-antfu": "1.0.0-beta.12",
+    "eslint-plugin-antfu": "2.1.2",
     "eslint-plugin-eslint-comments": "3.2.0",
     "eslint-plugin-html": "7.1.0",
-    "eslint-plugin-import": "2.28.1",
-    "eslint-plugin-jsdoc": "46.8.2",
-    "eslint-plugin-jsonc": "2.10.0",
+    "eslint-plugin-import": "2.29.1",
+    "eslint-plugin-jsdoc": "48.0.3",
+    "eslint-plugin-jsonc": "2.13.0",
     "eslint-plugin-markdown": "3.0.1",
-    "eslint-plugin-n": "16.2.0",
+    "eslint-plugin-n": "16.6.2",
+    "eslint-plugin-perfectionist": "2.5.0",
     "eslint-plugin-promise": "6.1.1",
-    "eslint-plugin-sonarjs": "0.21.0",
-    "eslint-plugin-unicorn": "48.0.1",
-    "eslint-plugin-vue": "9.17.0",
-    "eslint-plugin-yml": "1.10.0",
-    "jsonc-eslint-parser": "2.3.0"
+    "eslint-plugin-sonarjs": "0.23.0",
+    "eslint-plugin-unicorn": "50.0.1",
+    "eslint-plugin-vitest": "0.3.20",
+    "eslint-plugin-vue": "9.20.1",
+    "eslint-plugin-yml": "1.12.2",
+    "jsonc-eslint-parser": "2.4.0"
   },
   "devDependencies": {
-    "eslint": "8.51.0",
-    "typescript": "5.2.2"
+    "@types/eslint": "8.56.2",
+    "eslint": "8.56.0",
+    "typescript": "5.3.3"
   }
 }
