@@ -49,7 +49,7 @@ jobs:
       # Run tests and lint
       - run: pnpm install
       # - run: pnpm lint # Disabled until linting issues are resolved
-      - run: pnpm test
+      - run: pnpm test:ci
 
       # Publish to NPM
       - name: Publish development version to NPM
