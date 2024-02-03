@@ -1,9 +1,8 @@
 import { rm } from 'node:fs/promises'
-import RollupTerser from '@rollup/plugin-terser'
-import { glob } from '@unshared/fs/glob'
 import { RollupOptions, rollup } from 'rollup'
 import RollupDts from 'rollup-plugin-dts'
 import RollupEsbuild from 'rollup-plugin-esbuild'
+import { glob } from '../packages/fs/glob'
 import { TSCONFIG_PATH } from './constants'
 import { getPackageMetadata } from './utils'
 
@@ -19,17 +18,13 @@ import { getPackageMetadata } from './utils'
 export async function buildBundle(packageName: string) {
   const { packagePath, outputPath } = await getPackageMetadata(packageName)
 
-  console.log(`Building ${packageName} bundle...`)
-  console.log(`  - Package path: ${packagePath}`)
-  console.log(`  - Output path: ${outputPath}`)
-
   // --- Clean the output directory.
   await rm(outputPath, { recursive: true, force: true })
 
   // --- Find the input files.
   const inputPaths = await glob(['./**/index.ts', './*.ts'], { cwd: packagePath })
 
-  /** Base configuration. */
+  // --- Base Rollup configuration.
   const baseConfig = {
     input: inputPaths,
     external: [
@@ -45,11 +40,6 @@ export async function buildBundle(packageName: string) {
         sourceMap: true,
         tsconfig: TSCONFIG_PATH,
         define: { 'import.meta.vitest': 'false' },
-      }),
-      RollupTerser({
-        mangle: false,
-        compress: false,
-        format: { indent_level: 2 },
       }),
     ],
 
@@ -73,7 +63,7 @@ export async function buildBundle(packageName: string) {
     ],
   } satisfies RollupOptions
 
-  /** Typescript declaration configuration. */
+  // --- Rollup configuration for `.d.ts` files.
   const dtsConfig = {
     ...baseConfig,
     plugins: [
@@ -95,7 +85,8 @@ export async function buildBundle(packageName: string) {
     }],
   } satisfies RollupOptions
 
-  // --- Conditionally define the config.
+  // --- Since the `types` package only contains type definitions, we only
+  // --- generate the `.d.ts` files for this package.
   const configs = packageName === 'types'
     ? [dtsConfig]
     : [baseConfig, dtsConfig]
@@ -105,5 +96,16 @@ export async function buildBundle(packageName: string) {
     const bundle = await rollup(config)
     for (const output of config.output)
       await bundle.write(output)
+    await bundle.close()
   }
+
+  // --- Log the generated files.
+  const files = await glob(['./**/*.{cjs,js}', './**/*.d.ts'], { cwd: outputPath })
+  const filesRelative = files.map(file => file.replace(outputPath, ''))
+  console.log(`Generated bundle for ${packageName}`)
+  console.log(filesRelative.map(file => `  - ${file}`).join('\n'))
+
+  // --- Wait 5 seconds for the file system to catch up.
+  console.log('Waiting for the file system to catch up...')
+  await new Promise(resolve => setTimeout(resolve, 10000))
 }

@@ -1,8 +1,8 @@
 import { join, relative } from 'node:path'
-import { glob } from '@unshared/fs/glob'
+import { glob } from '../packages/fs/glob'
 import { getGitRemoteUrl, getPackageMetadata } from './utils'
 
-async function computePackageExports(outPath: string, packagePath: string) {
+async function createPackageExports(outPath: string, packagePath: string) {
   const packageOutFiles = glob('*.{js,mjs,cjs,d.ts}', { cwd: outPath, getRelative: true, onlyFiles: true })
   const packageExports: Record<string, Record<string, string>> = {}
 
@@ -13,7 +13,7 @@ async function computePackageExports(outPath: string, packagePath: string) {
 
     const outPathRelative = relative(packagePath, outPath)
     const importPath = `./${join(outPathRelative, path)}`
-    const importName = path.split('/').pop()!.replace(/\..+$/, '')
+    const importName = `./${path.split('/').pop()!.replace(/\..+$/, '')}`
     packageExports[importName] = packageExports[importName] ?? {}
 
     if (path.endsWith('.d.ts')) packageExports[importName].types = importPath
@@ -25,9 +25,9 @@ async function computePackageExports(outPath: string, packagePath: string) {
   }
 
   // --- If there is an `index` key, rename it to `*`.
-  if (packageExports.index) {
-    packageExports['*'] = { ...packageExports.index }
-    delete packageExports.index
+  if (packageExports['./index']) {
+    packageExports['.'] = { ...packageExports['./index'] }
+    delete packageExports['./index']
   }
 
   return packageExports
@@ -45,7 +45,7 @@ export async function buildPackageJson(packageName: string) {
   // --- Load the root and current package.json files.
   const packageRemoteUrl = await getGitRemoteUrl(packagePath)
   const packageRemoteUrlHttps = packageRemoteUrl?.replace(/^git@(.+):(.+).git$/, 'https://$1/$2')
-  const packageExports = await computePackageExports(outPath, packagePath)
+  const packageExports = await createPackageExports(outPath, packagePath)
 
   // --- Update the package.json file.
   packageJson.exports = packageExports
