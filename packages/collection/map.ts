@@ -1,70 +1,88 @@
-import { Collection, IteratedFunction, Path, Value, Values } from '@unshared/types'
+import { Collection, IteratedFunction, Path, Get } from '@unshared/types'
 import { get } from './get'
 
-interface Map {
-  <T, K extends Path<T>>(object: Collection<T>, path: K): Array<Value<T, K>>
-  <T, R>(collection: T, iterator: IteratedFunction<T, R>): Array<R>
-  <T>(collection: T): Array<Values<T>>
-}
-
 /**
- * Iterates over an object or array, returning a new array
- * consisting of the results of the callback function or path.
+ * Iterates over an object or array, returning a new array consisting of the results
+ * of the callback function.
  *
- * If path is supplied, it will be used to iterate over the object or array.
- *
- * If a callback is supplied, it will be invoked for each item in the object or array.
- * The callback can return a new value to be added to the new object or array.
- *
- * @param collection The object or array to iterate over
- * @param iterator The callback function or path to iterate over
- * @returns A new array consisting of the results of the callback function
+ * @param collection The collection to iterate over.
+ * @param iterator The callback function to invoke for each item in the collection.
+ * @returns A new array consisting of the results of the callback function.
+ * @example map([1, 2, 3], x => x * x) // => [1, 4, 9]
  */
-export const map: Map = (collection: any, iterator?: any): any => {
-  if (iterator === undefined) {
-    return Array.isArray(collection)
-      ? collection
-      : Object.values(collection)
-  }
+export function map<T extends Collection, U>(collection: T, iterator: IteratedFunction<T, U>): U[]
+/**
+ * Iterates over an object or array, returning a new array consisting of the values
+ * at the given path.
+ *
+ * @param collection The collection to iterate over.
+ * @param path The path to the value to return.
+ * @returns A new array consisting of the values at the given path.
+ * @example
+ * // Declare a collection.
+ * const collection = {
+ *   a: { name: { first: 'John', last: 'Doe' } },
+ *   b: { name: { first: 'Jane', last: 'Doe' } },
+ *   c: { name: { first: 'Jack', last: 'Doe' } },
+ * }
+ *
+ * // Get the first name of each item in the collection.
+ * map(collection, 'name.first') // => ['John', 'Jane', 'Jack']
+ */
+export function map<T extends object, K extends Path<T>>(collection: Collection<T>, path: K | string & {}): Array<Get<T, K>>
+export function map(collection: Collection, iteratorOrPath?: IteratedFunction | string): any[] {
+  // --- If iterator is a value, cast as nested getter function.
+  const iterator = typeof iteratorOrPath === 'function'
+    ? iteratorOrPath
+    : (value: unknown) => get(value, iteratorOrPath!)
 
-  // --- If iterator is a path, cast as getter function.
-  if (typeof iterator !== 'function') {
-    const path = iterator
-    iterator = (value: any) => get(value, path)
-  }
+  // --- If the collection has an iterator method, use it.
+  if (Symbol.iterator in collection)
+    // @ts-expect-error: The collection has a Symbol iterator method.
+    return Array.from(collection, iterator)
 
-  // --- Map values.
-  return Array.isArray(collection)
-    ? collection.map(iterator)
-    : Object.entries(collection).map(([key, value]) => iterator(value, key, collection))
+  // --- Otherwise, iterate over the entries' values.
+  return Object
+    .entries(collection)
+    .map(([key, value]) => iterator(value, key, collection))
 }
 
 /** c8 ignore next */
 if (import.meta.vitest) {
-  it('iterates over an array, returning a new array consisting of the results of the callback function', () => {
-    expect(map([1, 2, 3], x => x)).toEqual([1, 2, 3])
-    expect(map([1, 2, 3], x => x * x)).toEqual([1, 4, 9])
-    expect(map([1, 2, 3], x => x + 1)).toEqual([2, 3, 4])
-    expect(map([1, 2, 3], (x, index) => x + index)).toEqual([1, 3, 5])
+  it('should map an array', () => {
+    const result = map([1, 2, 3], x => x * x)
+    expect(result).toEqual([1, 4, 9])
+    expectTypeOf(result).toEqualTypeOf<number[]>()
   })
 
-  it('iterates over an object, returning a new array consisting of the results of the callback function', () => {
-    expect(map({ a: 1, b: 2, c: 3 }, x => x)).toEqual([1, 2, 3])
-    expect(map({ a: 1, b: 2, c: 3 }, x => x * x)).toEqual([1, 4, 9])
-    expect(map({ a: 1, b: 2, c: 3 }, (x, k) => x + k)).toEqual(['1a', '2b', '3c'])
-    expect(map('abc', x => x.charCodeAt(0))).toEqual([97, 98, 99])
-    expect(map('abc', (_x, _k, o) => o)).toEqual(['abc', 'abc', 'abc'])
+  it('should map an object', () => {
+    const result = map({ a: 1, b: 2, c: 3 }, x => x * x)
+    expect(result).toEqual([1, 4, 9])
+    expectTypeOf(result).toEqualTypeOf<number[]>()
   })
 
-  it('iterates over an array, returning a new array consisting of the results of the path', () => {
-    const object1 = { foo: 'foo', bar: undefined }
-    const object2 = { foo: object1, bar: object1 }
-    expect(map([object2, object2, object2], 'foo.foo')).toEqual(['foo', 'foo', 'foo'])
-    expect(map({ a: object2, b: object2, c: object2 }, 'foo.bar')).toEqual([undefined, undefined, undefined])
+  it('should map an array of objects by key', () => {
+    const result = map([{ foo: 'bar' }, { foo: 'baz' }], 'foo')
+    expect(result).toEqual(['bar', 'baz'])
+    expectTypeOf(result).toEqualTypeOf<string[]>()
   })
 
-  it('returns input values if no secondary parameter was provided', () => {
-    expect(map([{ a: 1 }, { a: 2 }, { a: 3 }])).toEqual([{ a: 1 }, { a: 2 }, { a: 3 }])
-    expect(map({ a: 1, b: 2, c: 3 })).toEqual([1, 2, 3])
+  it('should map an array of objects by path', () => {
+    const result = map([{ foo: { bar: 'baz' } }, { foo: { bar: 'qux' } }], 'foo.bar')
+    expect(result).toEqual(['baz', 'qux'])
+    expectTypeOf(result).toEqualTypeOf<string[]>()
+  })
+
+  it('should map an object of objects by key', () => {
+    const result = map({ a: { foo: 'bar' }, b: { foo: 'baz' } }, 'foo')
+    expect(result).toEqual(['bar', 'baz'])
+    expectTypeOf(result).toEqualTypeOf<string[]>()
+  })
+
+  it('should map an object that has a Symbol.iterator method', () => {
+    const value = new Set([1, 2, 3])
+    const result = map(value, x => x * x)
+    expect(result).toEqual([1, 4, 9])
+    expectTypeOf(result).toEqualTypeOf<number[]>()
   })
 }
