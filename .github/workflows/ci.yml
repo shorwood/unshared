@@ -1,35 +1,61 @@
 name: Continuous Integration
 
+permissions:
+  id-token: write
+  contents: write
+
 on:
-  - push
-  - pull_request
+  push:
+    tags:
+      - v*
+    branches:
+      - main
+      - next
+  pull_request:
+    branches:
+      - main
+      - next
+  merge_group: {}
 
 jobs:
   ci:
-    name: Node.js ${{ matrix.node-version }} on ${{ matrix.os }}
+    name: Node.js ${{ matrix.node }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+
     strategy:
       fail-fast: true
       matrix:
-        node-version: [18, 16, 14]
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [18.x]
+        os: [ubuntu-latest]
+        # node: [18.x, 16.x, 14.x]
+        # os: [ubuntu-latest, windows-latest, macos-latest]
+
     steps:
 
-      # Install environment and dependencies
+      # Set up Node.js and PNPM
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
       - uses: pnpm/action-setup@v2
         with:
-          version: 7
+          version: 8
       - uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node }}
+          registry-url: https://registry.npmjs.org/
           cache: "pnpm"
-      - run: pnpm install
 
-      # Run tests
+      # Run tests and lint
+      - run: pnpm install
       - run: pnpm lint
       - run: pnpm test
 
-      # Publish dev version to NPM
-      # - run: pnpm version "$(jq -r '.version' package.json)-$(git rev-parse HEAD)"
-      # - run: pnpm recursive publish --tag dev --access public
+      # Publish to NPM
+      - name: Publish development version to NPM
+        if: github.ref == 'refs/heads/main' && matrix.node == 18
+        run: pnpm publish:ci
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NPM_CONFIG_PROVENANCE: true
+          NODE_OPTIONS: --max-old-space-size=6144
