@@ -5,7 +5,7 @@ import { Substract } from './utils'
  *
  * @template C Character constraint.
  * @template L Length constraint.
- * @template P Prepended string (optional and used for recursion).
+ * @template P Prepended string. Used internally for recursion.
  * @returns String constrained by character and length.
  * @example StringConstraint<'a' | 'b', 1 | 2> // 'a' | 'b' | 'aa' | 'ab' | 'ba' | 'bb'
  */
