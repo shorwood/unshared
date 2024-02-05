@@ -1,4 +1,3 @@
-export * from './Alias'
 export * from './Any'
 export * from './BooleanAnd'
 export * from './BooleanNand'

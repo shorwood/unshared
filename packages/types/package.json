@@ -13,9 +13,6 @@
     "directory": "packages/types"
   },
   "exports": {
-    "./Alias": {
-      "types": "./dist/Alias.d.ts"
-    },
     "./Any": {
       "types": "./dist/Any.d.ts"
     },
@@ -235,6 +232,9 @@
     "./NumberPositive": {
       "types": "./dist/NumberPositive.d.ts"
     },
+    "./Optional": {
+      "types": "./dist/Optional.d.ts"
+    },
     "./Overloads": {
       "types": "./dist/Overloads.d.ts"
     },
@@ -267,6 +267,9 @@
     },
     "./StringLiteral": {
       "types": "./dist/StringLiteral.d.ts"
+    },
+    "./StringMaybeLitteral": {
+      "types": "./dist/StringMaybeLitteral.d.ts"
     },
     "./StringNumber": {
       "types": "./dist/StringNumber.d.ts"
