@@ -11,8 +11,14 @@ import { MaybeArray, Nil } from '@unshared/types'
 export function toArray(value?: Nil): []
 export function toArray<U>(value?: MaybeArray<U>): U[]
 export function toArray(value?: unknown): unknown[] {
+
+  // --- Return an empty array if the value is undefined or null.
   if (value === undefined || value === null) return []
-  return Array.isArray(value) ? value : [value]
+
+  // --- Return the array if the value is already an array.
+  return Array.isArray(value)
+    ? value as unknown[]
+    : [value]
 }
 
 /* c8 ignore next */
@@ -32,13 +38,13 @@ if (import.meta.vitest) {
   it('should return an empty array if the value is undefined', () => {
     const result = toArray()
     expect(result).toEqual([])
-    expectTypeOf(result).toEqualTypeOf<[]>
+    expectTypeOf(result).toEqualTypeOf<[]>()
   })
 
   it('should return an empty array if the value is null', () => {
     // eslint-disable-next-line unicorn/no-null
     const result = toArray(null)
     expect(result).toEqual([])
-    expectTypeOf(result).toEqualTypeOf<[]>
+    expectTypeOf(result).toEqualTypeOf<[]>()
   })
 }
