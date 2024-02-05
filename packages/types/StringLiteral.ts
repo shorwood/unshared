@@ -16,7 +16,7 @@ export type StringLiteral<T extends string> = string extends T ? T extends strin
 if (import.meta.vitest) {
   it('should not match a string type', () => {
     type Result = StringLiteral<string>
-    expectTypeOf<Result>().toEqualTypeOf<never>
+    expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
   it('should match a literal string', () => {
