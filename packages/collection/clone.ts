@@ -1,28 +1,31 @@
-import { Collection, NumberIntegerPositive } from '@unshared/types'
+import { NumberIntegerPositive } from '@unshared/types'
 
 /**
  * Clones a collection by creating a new collection with the same elements. Allows
  * you to specify the depth to clone nested collections.
  *
  * @param collection The collection to clone.
- * @param depth The depth to clone nested collections. (Default: `Number.POSITIVE_INFINITY`)
+ * @param depth If specified, the depth to clone nested collections.
  * @returns A new collection with the same elements but a different reference.
  * @example clone([1, 2, 3]) // [1, 2, 3]
  */
-export function clone<T extends Collection, N extends number = number>(collection: T, depth: NumberIntegerPositive<N> = Number.POSITIVE_INFINITY as NumberIntegerPositive<N>): T {
+export function clone<T, N extends number = number>(
+  collection: T,
+  depth: NumberIntegerPositive<N> = Number.POSITIVE_INFINITY as NumberIntegerPositive<N>,
+): T {
   if (depth === 0) return collection
 
   // --- Clone arrays
   if (Array.isArray(collection))
-    return collection.map(element => clone(element, depth - 1)) as T
+    return collection.map((element: unknown) => clone(element, depth - 1)) as T
 
   // --- Clone objects
   if (typeof collection === 'object' && collection !== null) {
     const result = {} as T
     for (const key in collection) {
       const value = collection[key]
-      const cloned = clone(<any>value, depth - 1)
-      result[<keyof T>key] = cloned
+      const cloned = clone(value, depth - 1)
+      result[(key as keyof T)] = cloned
     }
     return result
   }
