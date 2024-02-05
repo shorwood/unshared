@@ -7,18 +7,20 @@ import { Collection, Path } from '@unshared/types'
  *
  * @param object The object to delete the property from.
  * @param path The path to the property to delete.
- * @returns The mutated object.
  * @example
  *
  * // Create the object.
  * const object = { foo: { bar: ['baz'] } }
  *
  * // Delete the property.
- * deleteProperty(object, 'foo.bar.0') // { foo: { bar: [] } }
+ * deleteProperty(object, 'foo.bar')
+ *
+ * // Log the object.
+ * console.log(object) // => { foo: {} }
  */
-export function deleteProperty<T extends Collection, K extends Path<T>>(object: T, path: K): T
-export function deleteProperty(object: unknown, path: string): unknown
-export function deleteProperty(object: unknown, path: string): unknown {
+export function deleteProperty<T extends Collection, K extends Path<T>>(object: T, path: K): void
+export function deleteProperty(object: unknown, path: string): void
+export function deleteProperty(object: unknown, path: string): void {
   const keys = path.split('.')
   const lastKey = keys.pop()!
 
@@ -30,51 +32,80 @@ export function deleteProperty(object: unknown, path: string): unknown {
     catch { return undefined }
   }
 
-  // --- Delete the property.
+  // --- Delete the property from an Iterable.
+
+  if (typeof result === 'object'
+  && result !== null
+  && 'delete' in result
+  && typeof result.delete === 'function') {
+    result.delete(lastKey)
+    return
+  }
+
   // @ts-expect-error: Invalid keys will be caught by the try/catch.
   try { delete result[lastKey] }
-  catch {}
-
-  // --- Return the mutated object.
-  return object
+  catch { /* Do nothing */ }
 }
 
 /* c8 ignore next */
 if (import.meta.vitest) {
   const createObject = () => ({
-    firstName: 'John',
-    lastName: 'Doe',
-    emails: [
-      'jdoe@example.com',
-      'jdoe@acme.com',
-    ],
     friends: [
       { firstName: 'Jane', lastName: 'Doe' },
       { firstName: 'Jack', lastName: 'Doe' },
     ],
+    emails: [
+      'jdoe@example.com',
+      'jdoe@acme.com',
+    ],
+    firstName: 'John',
+    lastName: 'Doe',
   } as const)
 
-  it('should return the reference of the mutated object', () => {
-    const object = createObject()
-    const result = deleteProperty(object, 'firstName')
-    expect(result).toBe(object)
+  it('should return undefined', () => {
+    const object = { foo: 'bar' }
+    const result = deleteProperty(object, 'foo')
+    expect(result).toBeUndefined()
   })
 
   it('should delete a property at the path of an object', () => {
-    const object = createObject()
-    const result = deleteProperty(object, 'firstName')
-    expect(result).not.toHaveProperty('firstName')
+    const object = { foo: 'bar' }
+    deleteProperty(object, 'foo')
+    expect(object).toStrictEqual({})
+  })
+
+  it('should delete an element at the path of an array', () => {
+    const array = ['foo', 'bar', 'baz']
+    deleteProperty(array, '1')
+    expect(array).toEqual(['foo', undefined, 'baz'])
+  })
+
+  it('should delete a property of a Map', () => {
+    const map = new Map()
+    map.set('foo', 'bar')
+    deleteProperty(map, 'foo')
+    const expected = new Map()
+    expect(map).toEqual(expected)
+  })
+
+  it('should delete a property of a Set', () => {
+    const set = new Set()
+    set.add('foo')
+    deleteProperty(set, 'foo')
+    const expected = new Set()
+    expect(set).toEqual(expected)
   })
 
   it('should delete a property at the path of a nested object with array index', () => {
     const object = createObject()
-    const result = deleteProperty(object, 'friends.0.firstName')
-    expect(result.friends[0]).not.toHaveProperty('firstName')
+    deleteProperty(object, 'friends.0.firstName')
+    expect(object.friends[0]).not.toHaveProperty('firstName')
   })
 
   it('should not mutate the object if the path does not exist', () => {
     const object = createObject()
-    const result = deleteProperty(object, 'invalid.path')
-    expect(result).toEqual(object)
+    const expected = createObject()
+    deleteProperty(object, 'invalid.path')
+    expect(object).toStrictEqual(expected)
   })
 }
