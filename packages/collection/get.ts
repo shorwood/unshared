@@ -26,9 +26,9 @@ export function get(object: unknown, path: string): unknown {
   // --- Loop through the path and get the object.
   let result = object
   for (const key of keys) {
+    if (result === undefined || result === null) return undefined
     // @ts-expect-error: Invalid keys will be caught by the try/catch.
-    try { result = result[key] }
-    catch { return undefined }
+    result = result[key]
   }
 
   // --- Return result.
@@ -68,9 +68,21 @@ if (import.meta.vitest) {
     expectTypeOf(result).toEqualTypeOf<unknown>()
   })
 
+  it('should return undefined if one of the path segment is null', () => {
+    // eslint-disable-next-line unicorn/no-null
+    const result = get({ foo: null }, 'foo.bar')
+    expect(result).toEqual(undefined)
+    expectTypeOf(result).toEqualTypeOf<unknown>()
+  })
+
   it('should return the value of a Proxied property', () => {
     const object = new Proxy({}, { get(_, property) { return property } })
     const result = get(object, 'foo')
     expect(result).toEqual('foo')
+  })
+
+  it('should infer the type of the returned value at the path', () => {
+    const result = get(object, 'friends.1.firstName')
+    expectTypeOf(result).toEqualTypeOf<'Jack'>()
   })
 }
