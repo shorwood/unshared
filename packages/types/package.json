@@ -1,7 +1,7 @@
 {
   "name": "@unshared/types",
   "type": "module",
-  "version": "0.0.1+05625bc",
+  "version": "0.0.1",
   "license": "MIT",
   "sideEffects": false,
   "author": "Stanley Horwood <stanley@hsjm.io>",
