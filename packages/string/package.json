@@ -13,10 +13,10 @@
     "directory": "packages/string"
   },
   "exports": {
-    "./createPatternRegexp": {
-      "require": "./dist/createPatternRegexp.cjs",
-      "types": "./dist/createPatternRegexp.d.ts",
-      "import": "./dist/createPatternRegexp.js"
+    "./createPattern": {
+      "require": "./dist/createPattern.cjs",
+      "types": "./dist/createPattern.d.ts",
+      "import": "./dist/createPattern.js"
     },
     "./createSemver": {
       "require": "./dist/createSemver.cjs",
@@ -102,16 +102,6 @@
       "require": "./dist/parseUri.cjs",
       "types": "./dist/parseUri.d.ts",
       "import": "./dist/parseUri.js"
-    },
-    "./patternMatch": {
-      "require": "./dist/patternMatch.cjs",
-      "types": "./dist/patternMatch.d.ts",
-      "import": "./dist/patternMatch.js"
-    },
-    "./patternMatches": {
-      "require": "./dist/patternMatches.cjs",
-      "types": "./dist/patternMatches.d.ts",
-      "import": "./dist/patternMatches.js"
     },
     "./split": {
       "require": "./dist/split.cjs",
