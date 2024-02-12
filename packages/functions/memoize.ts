@@ -1,8 +1,10 @@
+import { Function } from '@unshared/types'
+
 export type Memoized<T extends Function> = T & {
   /**
    * The cache of the arguments and their results
    */
-  cache: Record<string, any>
+  cache: Map<string, unknown>
 }
 
 /**
@@ -11,19 +13,17 @@ export type Memoized<T extends Function> = T & {
  * @param fn The function to be cached
  * @returns The memoized function
  */
-export const memoize = <T extends Function>(fn: T): Memoized<T> => {
+export function memoize<T extends Function>(fn: T): Memoized<T> {
   // --- Instantiate a cache
-  const cache = new Map<unknown[], unknown>()
+  const cache = new Map<string, unknown>()
 
   // --- Wrap the function
   const memoized = (...parameters: unknown[]) => {
-    const cacheHit = cache.get(parameters)
+    const parametersKey = JSON.stringify(parameters)
+    const cacheHit = cache.get(parametersKey)
     if (cacheHit) return cacheHit
     const result = fn(...parameters)
-    cache.set(parameters, result)
-
-    if (cache.size > 1000) cache.clear()
-
+    cache.set(parametersKey, result)
     return result
   }
 
@@ -32,6 +32,33 @@ export const memoize = <T extends Function>(fn: T): Memoized<T> => {
 
   // --- Return the wrapped function
   return memoized as unknown as Memoized<T>
+}
+
+/**
+ * Decorate a class method to memoize the result of the method.
+ *
+ * @param target The class prototype
+ * @param propertyName The name of the method.
+ * @param descriptor The method descriptor.
+ * @returns The method descriptor.
+ * @example
+ * // Declare a class with a memoized method.
+ * class MyClass {
+ *   \@Memoize()
+ *   getId() { return Math.random() }
+ * }
+ *
+ * // Use the class.
+ * const instance = new MyClass()
+ *
+ * // The first call to the method will be executed.
+ * instance.getId() // 0.123456789
+ * instance.getId() // 0.123456789
+ */
+export function Memoize<T extends Function>(target: unknown, propertyName: string, descriptor: TypedPropertyDescriptor<T>): TypedPropertyDescriptor<T> {
+  const originalMethod = descriptor.value!
+  descriptor.value = memoize(originalMethod).bind(target) as unknown as T
+  return descriptor
 }
 
 /* c8 ignore next */
@@ -62,6 +89,31 @@ if (import.meta.vitest) {
     memoized(10)
     const result = memoized(11)
     expect(result).toEqual(12)
+  })
+
+  it('should memoize the result of a method', () => {
+    class MyClass {
+      @Memoize
+      getId() { return Math.random() }
+    }
+
+    const instance = new MyClass()
+    const first = instance.getId()
+    const second = instance.getId()
+    expect(first).toEqual(second)
+  })
+
+  it('should keep the context of the method', () => {
+    class MyClass {
+      private id = Math.random()
+      @Memoize
+      getId() { return this }
+    }
+
+    const instance = new MyClass()
+    const first = instance.getId()
+    const second = instance.getId()
+    expect(first).toEqual(second)
   })
 
   it('should expose the cache', async() => {

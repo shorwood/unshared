@@ -4,7 +4,7 @@
  * @param array The array to get unique values from
  * @returns A new array with unique values
  */
-export const uniq = <T>(array: Array<T>): Array<T> => [...new Set(array)]
+export const uniq = <T>(array: T[]): T[] => [...new Set(array)]
 
 /** c8 ignore next */
 if (import.meta.vitest) {

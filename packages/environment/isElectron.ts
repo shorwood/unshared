@@ -3,7 +3,7 @@
  *
  * @returns `true` if process is running in an Electron app
  */
-export const isElectron = () => {
+export function isElectron() {
   // --- Detect on Node.js
   if (typeof process !== 'undefined' && process.versions?.electron)
     return true

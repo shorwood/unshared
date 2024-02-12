@@ -1,6 +1,7 @@
 {
   "name": "@unshared/fs",
   "type": "module",
+  "version": "0.0.1+4cbd23e",
   "license": "MIT",
   "sideEffects": false,
   "author": "Stanley Horwood <stanley@hsjm.io>",
@@ -24,21 +25,17 @@
       "require": "./dist/findAncestors.cjs",
       "import": "./dist/findAncestors.js"
     },
-    "getCharset": {
-      "require": "./dist/getCharset.cjs",
-      "import": "./dist/getCharset.js"
+    "getFileMime": {
+      "require": "./dist/getFileMime.cjs",
+      "import": "./dist/getFileMime.js"
     },
-    "getEncoding": {
-      "require": "./dist/getEncoding.cjs",
-      "import": "./dist/getEncoding.js"
+    "getFileName": {
+      "require": "./dist/getFileName.cjs",
+      "import": "./dist/getFileName.js"
     },
-    "getMagicHeader": {
-      "require": "./dist/getMagicHeader.cjs",
-      "import": "./dist/getMagicHeader.js"
-    },
-    "getMimeType": {
-      "require": "./dist/getMimeType.cjs",
-      "import": "./dist/getMimeType.js"
+    "getFileType": {
+      "require": "./dist/getFileType.cjs",
+      "import": "./dist/getFileType.js"
     },
     "glob": {
       "require": "./dist/glob.cjs",
@@ -95,6 +92,18 @@
     "resolveTypes": {
       "require": "./dist/resolveTypes.cjs",
       "import": "./dist/resolveTypes.js"
+    },
+    "touch": {
+      "require": "./dist/touch.cjs",
+      "import": "./dist/touch.js"
+    },
+    "updateFile": {
+      "require": "./dist/updateFile.cjs",
+      "import": "./dist/updateFile.js"
+    },
+    "updateObject": {
+      "require": "./dist/updateObject.cjs",
+      "import": "./dist/updateObject.js"
     }
   },
   "files": [

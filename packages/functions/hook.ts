@@ -1,8 +1,9 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { ReadStream, createReadStream } from 'node:fs'
-import { EventEmitter, Readable } from 'node:stream'
-import { EventEmitterLike, Function, Overloads, TuplePop, UnionMerge } from '@unshared/types'
+import { Readable } from 'node:stream'
+import { Function, Overloads, TuplePop, UnionMerge } from '@unshared/types'
 import { vol } from 'memfs'
+import { EventEmitter, EventEmitterLike } from './createEventEmitter'
 
 /**
  * Removes all event listeners that were added.
@@ -26,7 +27,7 @@ type RemoveListeners = () => void
 export type EventMap<T extends EventEmitterLike = EventEmitterLike> =
   UnionMerge<Parameters<TuplePop<Overloads<T['on']>>[0][number]> extends infer V
     ? V extends [string | symbol, Function]
-      ? { [P in V[0] as `on${Capitalize<string & V[0]>}`]: V[1] }
+      ? { [P in V[0] as `on${Capitalize<V[0] & string>}`]: V[1] }
       : never : never>
 
 /**
@@ -53,7 +54,7 @@ export type EventMap<T extends EventEmitterLike = EventEmitterLike> =
  * removeListeners()
  */
 export function hook<T extends EventEmitterLike>(emitter: T, events: Partial<EventMap<T>>): RemoveListeners {
-  const listeners: [string, Function][] = []
+  const listeners: Array<[string, Function]> = []
 
   // --- Add the event listeners.
   for (const key in events) {

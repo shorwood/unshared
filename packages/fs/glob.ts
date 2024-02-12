@@ -1,12 +1,11 @@
-/* eslint-disable unicorn/no-null */
-/* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable sonarjs/cognitive-complexity */
 import { Stats } from 'node:fs'
 import { readdir, stat } from 'node:fs/promises'
 import { join, relative } from 'node:path'
 import { cwd as getCwd } from 'node:process'
 import { awaitable, Awaitable } from '@unshared/functions/awaitable'
-import { createPatternRegexp } from '@unshared/string/createPatternRegexp'
+import { createPattern } from '@unshared/string/createPattern'
+import { toArray } from '@unshared/collection/toArray'
 import { MaybeArray } from '@unshared/types'
 import { vol } from 'memfs'
 
@@ -81,8 +80,7 @@ export function glob<Stat extends boolean = false>(pattern: MaybeArray<string>, 
   } = options
 
   // --- Convert the pattern to an array of RegExp.
-  const patterns = Array.isArray(pattern) ? pattern : [pattern]
-  const regexps = patterns.map(createPatternRegexp)
+  const patterns = toArray(pattern).map(createPattern)
 
   // --- Create an iterator that will yield the matching paths.
   const searchPool: string[] = [cwd]
@@ -105,7 +103,7 @@ export function glob<Stat extends boolean = false>(pattern: MaybeArray<string>, 
         if (onlyDirectories && !isDirectory) continue
 
         // --- Check if the path matches the pattern(s).
-        const isMatch = regexps.some(regexp => regexp.test(pathRelative))
+        const isMatch = patterns.some(pattern => pattern.test(pathRelative))
         if (!isMatch) continue
 
         // --- Return the result.
@@ -128,16 +126,13 @@ export function glob<Stat extends boolean = false>(pattern: MaybeArray<string>, 
 if (import.meta.vitest) {
   beforeEach(() => {
     vol.fromJSON({
-      '/project': null,
       '/project/foo.ts': '',
       '/project/bar.ts': '',
       '/project/baz.ts': '',
       '/project/README.md': '',
-      '/project/dist': null,
       '/project/dist/foo.js': '',
       '/project/dist/bar.js': '',
       '/project/dist/baz.js': '',
-      '/project/dist/docs': null,
       '/project/dist/docs/README.md': '',
       '/project/dist/docs/CHANGELOG.md': '',
     })

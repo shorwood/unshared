@@ -1,0 +1,74 @@
+import { Collection, Path } from '@unshared/types'
+import { get } from './get'
+
+/**
+ * Returns a new collection containing only unique values. If a property path
+ * is provided, the values will be compared based on that property. Otherwise,
+ * the values will be compared directly.
+ *
+ * Note that the return type will be the same as the input type. Meaning that
+ * if the `collection` parameter is an array, the return type will be an array,
+ * if the `collection` parameter is an object, the return type will be an object.
+ *
+ * @param collection The collection to get unique values from.
+ * @param uniqueBy If provided, the key to use to determine uniqueness.
+ * @returns An array with unique values.
+ * @example
+ *
+ * // Create source collection.
+ * const input = [
+ *   { id: 1, name: { first: 'John', last: 'Doe' } },
+ *   { id: 2, name: { first: 'Jane', last: 'Doe' } },
+ *   { id: 3, name: { first: 'John', last: 'Doe' } },
+ * ]
+ *
+ * // Get unique values.
+ * const result = unique(input, 'name.first')
+ *
+ * // Assert result.
+ * expect(result).toEqual([
+ *   { id: 1, name: { first: 'John', last: 'Doe' } },
+ *   { id: 2, name: { first: 'Jane', last: 'Doe' } },
+ * ])
+ */
+export function unique<T extends object, P extends Path<T>>(collection: Collection<T>, uniqueBy: P): T[]
+export function unique<T extends Collection>(collection: T): T
+export function unique<T extends Collection>(collection: T, uniqueBy?: string): T {
+  const seen: Set<T> = new Set()
+  const result: T[] = []
+
+  // --- Pick unseen elements.
+  for (const key in collection) {
+    const item = collection[key]
+    const value = uniqueBy ? get(item, uniqueBy) : item
+    const isSeen = seen.has(value)
+    if (!isSeen) {
+      seen.add(value)
+      result.push(item)
+    }
+  }
+
+  // --- Return unique results.
+  return result
+}
+
+/** c8 ignore next */
+if (import.meta.vitest) {
+  const collectionObject = {
+    first: { id: 1, name: { first: 'John', last: 'Doe' } },
+    second: { id: 2, name: { first: 'Jane', last: 'Doe' } },
+    third: { id: 3, name: { first: 'John', last: 'Doe' } },
+  }
+  const collectionArray = Object.values(collectionObject)
+
+  it('returns a new array with unique values', () => {
+    const value = [1, 1, 2, 2, 3, 3, 4, 4]
+    const result = unique(value)
+    expect(result).toEqual([1, 2, 3, 4])
+  })
+
+  it('returns a new array with unique values based on a property', () => {
+    const result = unique(collectionArray, 'name.first')
+    expect(result).toEqual([collectionObject.first, collectionObject.second])
+  })
+}

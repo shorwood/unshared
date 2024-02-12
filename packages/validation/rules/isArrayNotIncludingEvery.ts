@@ -10,10 +10,11 @@
  * isArrayNotIncludingEvery([1, 2, 3], [1, 2, 3, 4]) // true
  * isArrayNotIncludingEvery([1, 2, 3], []) // true
  */
-export const isArrayNotIncludingEvery = <T>(array: T[], items: T[]): boolean =>
-  Array.isArray(array)
+export function isArrayNotIncludingEvery <T>(array: T[], items: T[]): boolean {
+  return Array.isArray(array)
   && Array.isArray(items)
   && items.every(item => !array.includes(item))
+}
 
 /** c8 ignore next */
 if (import.meta.vitest) {

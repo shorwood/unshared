@@ -5,13 +5,13 @@
  * @template P The type of the parameters.
  * @example Function<boolean, [number, string]> // (a: number, b: string) => boolean
  */
-export type Function<U = unknown, P extends unknown[] = unknown[]> = (...args: P) => U
+export type Function<U = any, P extends any[] = any[]> = (...args: P) => U
 
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should return a function type with no parameters', () => {
     type Result = Function<boolean>
-    expectTypeOf<Result>().toEqualTypeOf<(...args: unknown[]) => boolean>()
+    expectTypeOf<Result>().toEqualTypeOf<(...args: any[]) => boolean>()
   })
 
   it('should build a function with 2 parameters', () => {

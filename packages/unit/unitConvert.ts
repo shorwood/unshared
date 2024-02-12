@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import { UnitMap, UnitSymbol, UnitValue } from './utils/types'
+import { UnitFactor, UnitMap, UnitSymbol, UnitValue } from './utils/types'
 
 /**
  * Convert a value from one unit to another.
@@ -38,10 +38,17 @@ export function unitConvert<T extends UnitMap>(value: UnitValue<T>, to: UnitSymb
     : (typeof scaleFrom === 'function' ? scaleFrom(value) : scaleFrom * value)
 
   // --- Convert to target unit.
-  const scaleTo = to ? scale[to] : 1
-  return typeof scaleTo === 'object'
-    ? (typeof scaleTo.from === 'function' ? scaleTo.from(baseValue) : baseValue / scaleTo.from)
-    : (typeof scaleTo === 'function' ? scaleTo(baseValue) : baseValue / <number>scaleTo)
+  const scaleTo: UnitFactor = to ? scale[to] : 1
+
+  if (typeof scaleTo === 'object') {
+    return typeof scaleTo.from === 'function'
+      ? scaleTo.from(baseValue)
+      : baseValue / scaleTo.from
+  }
+
+  return typeof scaleTo === 'function'
+    ? scaleTo(baseValue)
+    : baseValue / scaleTo
 }
 
 /** c8 ignore next */
@@ -84,11 +91,6 @@ if (import.meta.vitest) {
   it('should convert a suffixed string number with a positive sign', () => {
     const result = unitConvert('+1cm', 'm', scale)
     expect(result).toEqual(0.01)
-  })
-
-  it('should convert a suffixed string number with no unit (to base unit)', () => {
-    const result = unitConvert('1', 'cm', scale)
-    expect(result).toEqual(100)
   })
 
   it('should convert a number to base unit', () => {

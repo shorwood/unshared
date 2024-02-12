@@ -1,4 +1,4 @@
-export * from './prefixes'
+export * from './factors'
 export * from './scaleDataRate'
 export * from './scaleDataVolume'
 export * from './scaleElectricCurrent'

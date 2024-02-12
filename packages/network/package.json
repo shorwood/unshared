@@ -16,7 +16,7 @@
     "dev": "tsup --watch"
   },
   "dependencies": {
-    "@types/node": "18.15.5",
-    "openapi-types": "12.1.0"
+    "@types/node": "20.11.6",
+    "openapi-types": "12.1.3"
   }
 }

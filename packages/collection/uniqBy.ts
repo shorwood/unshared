@@ -10,14 +10,14 @@
  * @param key The key to use for filtering
  * @returns The filtered array
  */
-export const uniqBy = <T>(array: Array<T>, key: keyof T): Array<T> => {
-  const seen: Set<T> = new Set()
-  const result: Array<T> = []
+export function uniqBy <T>(array: T[], key: keyof T): T[] {
+  const seen = new Set<T>()
+  const result: T[] = []
 
   // --- Pick unseen elements.
   for (const item of array) {
-    if (!seen.has(<any>item[key])) {
-      seen.add(<any>item[key])
+    if (!seen.has((item[key] as any))) {
+      seen.add((item[key] as any))
       result.push(item)
     }
   }

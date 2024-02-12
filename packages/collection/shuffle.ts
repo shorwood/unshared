@@ -7,21 +7,14 @@
  * @returns The shuffled array.
  * @example shuffle([1, 2, 3, 4]) // => [3, 1, 4, 2]
  */
-export function shuffle<T>(array: Array<T>, seed?: number): Array<T> {
+export function shuffle<T>(array: T[]): T[] {
   const newArray = [...array]
   let currentIndex = array.length
   let valueBuffer
-  let randomIndex
-
-  // --- Normalize the seed from 0 to 1.
-  seed = seed === undefined
-    ? Math.random()
-    : Math.abs(Math.sin(seed))
 
   // --- While there remain elements to shuffle
   while (currentIndex-- !== 0) {
-    // --- Pick a remaining element randomly.
-    randomIndex = Math.floor(seed * currentIndex)
+    const randomIndex = Math.floor(Math.random() * (currentIndex + 1))
 
     // --- Swap it with the current element.
     valueBuffer = newArray[currentIndex]
@@ -35,18 +28,21 @@ export function shuffle<T>(array: Array<T>, seed?: number): Array<T> {
 
 /* c8 ignore next */
 if (import.meta.vitest) {
-  it('shuffles an array with a seed', () => {
-    const result = shuffle([1, 2, 3, 4], 0.5)
-    const expected = [4, 3, 1, 2]
-    expect(result).toEqual(expected)
+  it('should shuffle an array without a seed', () => {
+    const array = Array.from({ length: 100 }, (_, index) => index)
+    const result = shuffle(array)
+    expect(result).not.toEqual(array)
+    expect(result).toHaveLength(100)
+    for (let index = 0; index < 100; index++)
+      expect(result).toContain(index)
   })
 
-  it('shuffles an empty array', () => {
+  it('should shuffle an empty array', () => {
     const result = shuffle([])
     expect(result).toEqual([])
   })
 
-  it('shuffles an empty array with a single item', () => {
+  it('should shuffle an empty array with a single item', () => {
     const result = shuffle([1])
     expect(result).toEqual([1])
   })

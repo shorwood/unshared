@@ -1,6 +1,6 @@
 interface MapValues {
-  <T, K extends keyof T>(object: Array<T>, path: K): Record<string, T[K]>
-  <T, U>(object: Array<T>, iterator: (value: T, key: keyof T, array: Array<T>) => U): Record<string, U>
+  <T, K extends keyof T>(object: T[], path: K): Record<string, T[K]>
+  <T, U>(object: T[], iterator: (value: T, key: keyof T, array: T[]) => U): Record<string, U>
   <T, K extends keyof T>(object: Record<string, T>, path: keyof T): Record<string, T[K]>
   <T, U>(object: Record<string, T>, iterator: (value: T, key: keyof T, object: Record<string, T>) => U): Record<string, U>
 }

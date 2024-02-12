@@ -8,7 +8,8 @@
  * isStringLongerOrEq('foo', 3) // true
  * isStringLongerOrEq('foobar', 3) // true
  */
-export const isStringLongerOrEq = (value: string, length: number): value is string =>
-  typeof value === 'string'
+export function isStringLongerOrEq(value: string, length: number): value is string {
+  return typeof value === 'string'
   && typeof length === 'number'
   && value.length >= length
+}

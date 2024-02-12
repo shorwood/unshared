@@ -1,16 +1,18 @@
 import { createScale } from '../utils/createScale'
 import { createScaleAlias } from '../utils/createScaleAlias'
 import { createScaleDerived } from '../utils/createScaleDerived'
-import { PREFIX_BASE10_LONG, PREFIX_BASE10_SHORT } from './prefixes'
-import { SCALE_TIME } from './scaleTime'
+import { FACTOR_BASE10_LONG, FACTOR_BASE10_SHORT } from './factors'
+import { SCALE_TIME_SI_LONG, SCALE_TIME_SI_SHORT } from './scaleTime'
 
 /** A map of length units relative to 1 [meter](https://en.wikipedia.org/wiki/Meter). */
 export const SCALE_LENGTH = {
-  ...createScale('m', { prefixes: PREFIX_BASE10_SHORT }),
-  ...createScale(['metre', 'meter'], { prefixes: PREFIX_BASE10_LONG }),
+  // --- SI units.
+  ...createScale('m', { factors: FACTOR_BASE10_SHORT }),
+  ...createScale(['metre', 'meter'], { factors: FACTOR_BASE10_LONG }),
 
   // --- Astronomical units (Unicode).
-  ...createScaleDerived({ 'l': 299792458, 'light-': 299792458 }, SCALE_TIME, { separator: '' }),
+  ...createScaleDerived({ light: 299792458 }, SCALE_TIME_SI_LONG, { separator: '-' }),
+  ...createScaleDerived({ L: 299792458 }, SCALE_TIME_SI_SHORT, { separator: '' }),
   ...createScaleAlias(['au', 'ua', 'astronomical unit'], 1.495978707e11),
   ...createScaleAlias(['pc', 'parsec'], 3.0856775814672e16),
 

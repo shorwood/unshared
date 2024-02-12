@@ -3,6 +3,7 @@
  *
  * @returns `true` if the current environment is Node.js
  */
-export const isNode = () =>
-  typeof process === 'object'
+export function isNode() {
+  return typeof process === 'object'
    && typeof require === 'function'
+}

@@ -1,18 +1,156 @@
 {
-  "type": "module",
-  "sideEffects": false,
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch"
-  },
   "name": "@unshared/math",
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
   "bugs": "https://github.com/shorwood/unshared/issues",
   "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shorwood/unshared.git",
+    "url": "git@github.com:shorwood/unshared.git",
     "directory": "packages/math"
   },
-  "author": "Stanley Horwood <stanley@hsjm.io>",
-  "license": "MIT"
+  "exports": {
+    "./absolute": {
+      "require": "./dist/absolute.cjs",
+      "types": "./dist/absolute.d.ts",
+      "import": "./dist/absolute.js"
+    },
+    "./bernstein": {
+      "require": "./dist/bernstein.cjs",
+      "types": "./dist/bernstein.d.ts",
+      "import": "./dist/bernstein.js"
+    },
+    "./ceil": {
+      "require": "./dist/ceil.cjs",
+      "types": "./dist/ceil.d.ts",
+      "import": "./dist/ceil.js"
+    },
+    "./clamp": {
+      "require": "./dist/clamp.cjs",
+      "types": "./dist/clamp.d.ts",
+      "import": "./dist/clamp.js"
+    },
+    "./createComplex": {
+      "require": "./dist/createComplex.cjs",
+      "types": "./dist/createComplex.d.ts",
+      "import": "./dist/createComplex.js"
+    },
+    "./createVector2": {
+      "require": "./dist/createVector2.cjs",
+      "types": "./dist/createVector2.d.ts",
+      "import": "./dist/createVector2.js"
+    },
+    "./curveBezier": {
+      "require": "./dist/curveBezier.cjs",
+      "types": "./dist/curveBezier.d.ts",
+      "import": "./dist/curveBezier.js"
+    },
+    "./difference": {
+      "require": "./dist/difference.cjs",
+      "types": "./dist/difference.d.ts",
+      "import": "./dist/difference.js"
+    },
+    "./divide": {
+      "require": "./dist/divide.cjs",
+      "types": "./dist/divide.d.ts",
+      "import": "./dist/divide.js"
+    },
+    "./factorial": {
+      "require": "./dist/factorial.cjs",
+      "types": "./dist/factorial.d.ts",
+      "import": "./dist/factorial.js"
+    },
+    "./fibonacci": {
+      "require": "./dist/fibonacci.cjs",
+      "types": "./dist/fibonacci.d.ts",
+      "import": "./dist/fibonacci.js"
+    },
+    "./floor": {
+      "require": "./dist/floor.cjs",
+      "types": "./dist/floor.d.ts",
+      "import": "./dist/floor.js"
+    },
+    "./index": {
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./mean": {
+      "require": "./dist/mean.cjs",
+      "types": "./dist/mean.d.ts",
+      "import": "./dist/mean.js"
+    },
+    "./median": {
+      "require": "./dist/median.cjs",
+      "types": "./dist/median.d.ts",
+      "import": "./dist/median.js"
+    },
+    "./mode": {
+      "require": "./dist/mode.cjs",
+      "types": "./dist/mode.d.ts",
+      "import": "./dist/mode.js"
+    },
+    "./modulo": {
+      "require": "./dist/modulo.cjs",
+      "types": "./dist/modulo.d.ts",
+      "import": "./dist/modulo.js"
+    },
+    "./multiply": {
+      "require": "./dist/multiply.cjs",
+      "types": "./dist/multiply.d.ts",
+      "import": "./dist/multiply.js"
+    },
+    "./normalize": {
+      "require": "./dist/normalize.cjs",
+      "types": "./dist/normalize.d.ts",
+      "import": "./dist/normalize.js"
+    },
+    "./percentile": {
+      "require": "./dist/percentile.cjs",
+      "types": "./dist/percentile.d.ts",
+      "import": "./dist/percentile.js"
+    },
+    "./power": {
+      "require": "./dist/power.cjs",
+      "types": "./dist/power.d.ts",
+      "import": "./dist/power.js"
+    },
+    "./range": {
+      "require": "./dist/range.cjs",
+      "types": "./dist/range.d.ts",
+      "import": "./dist/range.js"
+    },
+    "./round": {
+      "require": "./dist/round.cjs",
+      "types": "./dist/round.d.ts",
+      "import": "./dist/round.js"
+    },
+    "./sqrt": {
+      "require": "./dist/sqrt.cjs",
+      "types": "./dist/sqrt.d.ts",
+      "import": "./dist/sqrt.js"
+    },
+    "./sum": {
+      "require": "./dist/sum.cjs",
+      "types": "./dist/sum.d.ts",
+      "import": "./dist/sum.js"
+    },
+    "./toSafeNumber": {
+      "require": "./dist/toSafeNumber.cjs",
+      "types": "./dist/toSafeNumber.d.ts",
+      "import": "./dist/toSafeNumber.js"
+    },
+    "./variance": {
+      "require": "./dist/variance.cjs",
+      "types": "./dist/variance.d.ts",
+      "import": "./dist/variance.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md"
+  ]
 }

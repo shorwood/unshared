@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import { getEnvironment } from './getEnvironment'
 
 /**
@@ -11,9 +12,9 @@ import { getEnvironment } from './getEnvironment'
  * getVariable('MY_VARIABLE_DEFAULTED', 'Hello World!') // => 'Hello World!'
  */
 export function getVariable(name: string): string | undefined
-export function getVariable<U>(name: string, transform?: U): string | U | undefined
-export function getVariable<U>(name: string, transform?: (value?: string | boolean, name?: string) => U): U | undefined
-export function getVariable(name: string, transform?: unknown | Function): unknown {
+export function getVariable<U>(name: string, transform?: U): U | string | undefined
+export function getVariable<U>(name: string, transform?: (value?: boolean | string, name?: string) => U): U | undefined
+export function getVariable(name: string, transform?: Function): unknown {
   const environment = getEnvironment()
   const value = environment[name]
     ?? environment[`VITE_${name}`]
@@ -28,4 +29,24 @@ export function getVariable(name: string, transform?: unknown | Function): unkno
   return typeof transform === 'function'
     ? transform(value, name)
     : value ?? transform
+}
+
+// TODO:
+
+/** c8 ignore next */
+if (import.meta.vitest) {
+  it('should return undefined if the variable does not exist', () => {
+    const result = getVariable('NOT_A_REAL_VARIABLE')
+    expect(result).toEqual(undefined)
+  })
+
+  it('should return the default value if the variable does not exist', () => {
+    const result = getVariable('NOT_A_REAL_VARIABLE', 'Hello World!')
+    expect(result).toEqual('Hello World!')
+  })
+
+  it('should return the default value if the variable is undefined', () => {
+    const result = getVariable('UNDEFINED', 'Hello World!')
+    expect(result).toEqual('Hello World!')
+  })
 }

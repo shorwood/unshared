@@ -6,7 +6,7 @@
  * @returns The hashed number
  * @See https://github.com/bryc
  */
-export const hashCyrb53 = (data: ArrayBufferLike, seed = 0): ArrayBuffer => {
+export function hashCyrb53(data: ArrayBufferLike, seed = 0): ArrayBuffer {
   const bytes = new Uint32Array(data)
 
   let h1 = 0xDEADBEEF ^ seed

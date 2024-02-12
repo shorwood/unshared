@@ -1,5 +1,5 @@
 import { EventEmitter } from 'node:events'
-import { FSWatcher, Stats, WatchFileOptions, WatchListener, existsSync, statSync, watch } from 'node:fs'
+import { FSWatcher, Stats, existsSync, statSync, watch } from 'node:fs'
 
 export interface CaptureEvent extends Stats {
   /**
@@ -16,7 +16,7 @@ export interface CaptureEvent extends Stats {
    *     console.log(await content)
    *   })
    */
-  type: 'file' | 'directory' | 'fifo'
+  type: 'directory' | 'fifo' | 'file'
 }
 
 export type CaptureEventHandler = (stats: Stats) => boolean | void

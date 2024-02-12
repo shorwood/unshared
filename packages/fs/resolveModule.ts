@@ -8,7 +8,7 @@ import { findAncestors } from './findAncestors'
  * @throws If the module was not found.
  * @returns If the module was found, returns it's absolute path.
  */
-export const resolveModule = async(moduleName: string, from?: string): Promise<string> => {
+export async function resolveModule(moduleName: string, from?: string): Promise<string> {
   const { cwd } = await import('node:process')
   const { access } = await import('node:fs/promises')
   const { resolve, dirname } = await import('node:path')

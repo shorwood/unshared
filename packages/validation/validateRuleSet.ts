@@ -1,6 +1,6 @@
-import { validateRulePipe } from './validateRulePipe'
 import { ValidateRulePipeResult, ValidateRuleSetResult, ValidationRule, ValidationRulePipe, ValidationRuleSet } from './types'
 import { createRuleSet } from './utils/createRuleSet'
+import { validateRulePipe } from './validateRulePipe'
 
 /**
  * Validate a value against a `ValidationRuleSet`.
@@ -10,7 +10,7 @@ import { createRuleSet } from './utils/createRuleSet'
  * @param context A context to pass through to the validation rules
  * @returns The result of the validation
  */
-export const validateRuleSet = async(value: any, ruleSet: ValidationRuleSet): Promise<ValidateRuleSetResult> => {
+export async function validateRuleSet(value: any, ruleSet: ValidationRuleSet): Promise<ValidateRuleSetResult> {
   const results: ValidateRulePipeResult[] = []
 
   // --- Validate and store results of each rules one by one.

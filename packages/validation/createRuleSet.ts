@@ -10,7 +10,7 @@ import { isRule } from './isRule'
  * @example
  * const ruleSet = createRuleSet(Number.isNaN) // [[Number.isNaN]]
  */
-export const createRuleSet = (ruleSet: ValidationRule | ValidationRulePipe | ValidationRuleSet): ValidationRuleSet => {
+export function createRuleSet(ruleSet: ValidationRule | ValidationRulePipe | ValidationRuleSet): ValidationRuleSet {
   // --- Might already be a RuleSet or a RulePipeline
   if (Array.isArray(ruleSet)) {
     // --- Is a RuleSet

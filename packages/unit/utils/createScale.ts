@@ -10,11 +10,11 @@ export interface CreateScaleOptions<S extends string, P extends string, K extend
    */
   baseValue?: UnitFactor
   /**
-   * A map of prefixes and their scale. (Defaults to SI prefixes.)
+   * A map of unit prefixes and their factors.
    *
-   * @example createMultiples('m', { prefixes: PREFIX_BASE10 }) // { m: 1, cm: 0.01, mm: 0.001, ... }
+   * @example createMultiples('m', { prefixes: FACTOR_BASE10 }) // { m: 1, cm: 0.01, mm: 0.001, ... }
    */
-  prefixes: Record<P, number>
+  factors: Record<P, number>
   /**
    * A function to compute the key of a prefix.
    */
@@ -67,7 +67,7 @@ export function createScale<
 >(units: MaybeArray<S>, options: CreateScaleOptions<S, P, K> = {}): UnitMap<K> {
   const {
     baseValue = 1,
-    prefixes,
+    factors: factors,
     key: createKey = (unit, prefix) => `${prefix}${unit}` as K,
   } = options
 
@@ -77,8 +77,8 @@ export function createScale<
   for (const unit of units) result[unit] = baseValue
 
   // --- Compute the unit scale.
-  for (const prefix in prefixes) {
-    const multiplier = prefixes[prefix]
+  for (const prefix in factors) {
+    const multiplier = factors[prefix]
     for (const unit of units) {
       const key = createKey(unit, prefix)
       result[key] = createUnitValue(multiplier, baseValue)

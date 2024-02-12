@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable unicorn/no-null */
-import { Optional } from "@unshared/types"
+import { Optional } from '@unshared/types'
 
 export interface CollapseOptions {
   /**
@@ -70,8 +70,6 @@ export type Collapsed<T, O extends CollapseOptions = {}> =
           : T
           : T
 
-
-export function collapse(): void
 /**
  * Recursively delete `null`, `undefined` and empty objects and arrays
  * from a collection. You can configure the behavior using the options.

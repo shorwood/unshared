@@ -8,7 +8,8 @@
  * isNumberEven(1) // false
  * isNumberEven(2.5) // false
  */
-export const isNumberEven = (value: number): boolean =>
-  typeof value === 'number'
+export function isNumberEven(value: number): boolean {
+  return typeof value === 'number'
   && Number.isInteger(value)
   && (value & 0x1) === 0
+}

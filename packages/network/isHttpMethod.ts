@@ -28,7 +28,7 @@ if (import.meta.vitest) {
   })
 
   it('should predicate the method is an `HttpMethod`', () => {
-    const method = 'GET'
+    const method = 'GET' as string
     const result = isHttpMethod(method)
     if (result) expectTypeOf(method).toMatchTypeOf<HttpMethod>()
   })

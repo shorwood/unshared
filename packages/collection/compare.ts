@@ -35,7 +35,7 @@ const typeOrder = [
  * compare({ a: 1 }, { a: 1, b: 2 }) // => -1
  * compare({ a: 1, b: 2 }, { a: 1, b: 2 }) // => 0
  */
-export const compare = (a: any, b: any): number => {
+export function compare(a: any, b: any): number {
   // --- Handle strict equality.
   if (a === b) return 0
 

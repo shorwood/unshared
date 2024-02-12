@@ -5,7 +5,7 @@
  * @param regex The regex to match
  * @returns `true` if string matches regex, `false` otherwise
  */
-export const isStringMatching = (value: string, regex: string | RegExp): boolean => {
+export function isStringMatching(value: string, regex: RegExp | string): boolean {
   // --- Handle edge cases
   if (typeof value !== 'string') return false
   if (typeof regex === 'string') regex = new RegExp(regex)

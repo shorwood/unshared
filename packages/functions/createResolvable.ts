@@ -12,7 +12,7 @@ export interface Resolvable<T> extends Promise<T> {
    *
    * @param value The value to resolve the promise with.
    */
-  resolve: (value: T | PromiseLike<T>) => void
+  resolve: T extends void ? () => void : (value: PromiseLike<T> | T) => void
   /**
    * Reject the promise with a value.
    *
@@ -30,7 +30,7 @@ export interface Resolvable<T> extends Promise<T> {
 /**
  * Creates a new resolvable `Promise` object that can be resolved or rejected
  * manually from outside the promise. This is useful for creating a promise
- * that can be resolved or rejected from an unknown context without having to
+ * that can be resolved or rejected from an external scope without having to
  * wrap the whole logic in a promise.
  *
  * @returns A new resolvable object
@@ -51,7 +51,8 @@ export function createResolvable<T = void>(): Resolvable<T> {
     // --- Create a new promise that can be resolved or rejected from outside.
     // --- Before resolving or rejecting, update the internal state.
     state.promise = new Promise<T>((resolve, reject) => {
-      state.resolve = (value) => {
+      // @ts-expect-error: Type inference is not smart enough to know that `value` is of type `T`.
+      state.resolve = (value: T) => {
         state.resolved = true
         state.rejected = false
         state.pending = false
@@ -82,21 +83,21 @@ if (import.meta.vitest) {
     expect(result.promise).toBeInstanceOf(Promise)
   })
 
-  it('should be resolved after resolve is called', () => {
+  it('should be resolved after resolve is called', async () => {
     const value = 'test'
     const result = createResolvable<string>()
     result.resolve(value)
-    expect(result.promise).resolves.toEqual(value)
+    await expect(result.promise).resolves.toEqual(value)
     expect(result.pending).toEqual(false)
     expect(result.resolved).toEqual(true)
     expect(result.rejected).toEqual(false)
   })
 
-  it('should reject a value after reject is called', () => {
+  it('should reject a value after reject is called', async () => {
     const value = 'test'
     const result = createResolvable<string>()
     result.reject(value)
-    expect(result.promise).rejects.toEqual(value)
+    await expect(result.promise).rejects.toEqual(value)
     expect(result.pending).toEqual(false)
     expect(result.resolved).toEqual(false)
     expect(result.rejected).toEqual(true)

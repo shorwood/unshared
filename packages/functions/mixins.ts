@@ -1,6 +1,5 @@
 /* eslint-disable unicorn/no-static-only-class */
-import { Constructor } from '@unshared/types/Constructor'
-import { Mixins } from '@unshared/types/Mixins'
+import { Constructor, Mixins } from '@unshared/types'
 
 /**
  * Mixes multiple classes into a single class. The resulting class will have all properties and methods
@@ -23,11 +22,11 @@ import { Mixins } from '@unshared/types/Mixins'
  * class Baz { baz = 'baz' }
  * class FooBarBaz extends mixins(Foo, Bar, Baz) {}
  */
-export function mixins<T extends [Constructor, ...Constructor[]]>(...mixins: T): Mixins<T> {
-  if (mixins.length === 0) throw new TypeError('No mixins were provided.')
+export function mixins< T extends [Constructor, ...Constructor[]]>(...mixins: T): Mixins<T> {
+  if (mixins.length === 0) throw new TypeError('Cannot mix classes: no classes were passed')
   if (mixins.length === 1) return mixins[0] as Mixins<T>
 
-  // --- Reverse the mixins to preserve the prototype chain.
+  // --- Reverse the mixins to preserve the prototype chain order.
   mixins.reverse()
 
   // --- Create a new class extending all the mixins.

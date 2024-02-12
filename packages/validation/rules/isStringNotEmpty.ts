@@ -7,6 +7,7 @@
  * isStringNotEmpty('foo') // true
  * isStringNotEmpty('\n\n') // false
  */
-export const isStringNotEmpty = (value: string): boolean =>
-  typeof value === 'string'
+export function isStringNotEmpty(value: string): boolean {
+  return typeof value === 'string'
   && value.trim().length > 0
+}

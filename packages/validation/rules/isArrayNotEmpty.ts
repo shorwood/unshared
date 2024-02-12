@@ -7,9 +7,10 @@
  * isArrayNotEmpty([]) // false
  * isArrayNotEmpty([1, 2, 3]) // true
  */
-export const isArrayNotEmpty = (array: any[]): boolean =>
-  Array.isArray(array)
+export function isArrayNotEmpty(array: any[]): boolean {
+  return Array.isArray(array)
   && array.length > 0
+}
 
 /** c8 ignore next */
 if (import.meta.vitest) {

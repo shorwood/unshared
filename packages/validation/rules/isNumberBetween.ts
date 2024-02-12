@@ -11,7 +11,8 @@
  * isNumberBetween(1, { max: 1 }) // true
  * isNumberBetween(2, { min: 0, max: 1 }) // false
  */
-export const isNumberBetween = (value: number, { min, max }: { min?: number; max?: number } = {}): boolean =>
-  typeof value === 'number'
+export function isNumberBetween(value: number, { min, max }: { min?: number; max?: number } = {}): boolean {
+  return typeof value === 'number'
   && (typeof min === 'number' ? value >= min : true)
   && (typeof max === 'number' ? value <= max : true)
+}

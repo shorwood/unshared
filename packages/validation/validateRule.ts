@@ -1,20 +1,31 @@
-import { ValidateRuleResult, ValidationRule } from './types'
 import { createRule } from './createRule'
+import { ValidationRule } from './types'
+
+export interface RuleResult<T = unknown> {
+  /**
+   * The value that was validated. If the rule was a transformer, this will be the transformed value.
+   * If the rule was a validator, this will be the original value.
+   */
+  value: T
+  /**
+   * The error that was thrown by the rule. If no error was thrown, this will be `undefined`.
+   */
+  error: Error | undefined
+}
 
 /**
  * Validate a rule against a value.
  *
+ * @param this Any context to pass on to the validator
  * @param value The value to validate
  * @param rule The validation rule
- * @param context Any context to pass on to the validator
  * @returns The validation result
  * @throws If the rule is not valid
  * @example
  * const result = validateRule(1, Number.isNaN) // { isValid: true, value: 1, name: 'isNaN' }
  */
-export const validateRule = async(value: any, rule: ValidationRule, context?: Record<string, any>): Promise<ValidateRuleResult> => {
-  // --- Initialize rule object.
-  const result = { value, isValid: true } as ValidateRuleResult
+export async function validateRule<T>(this: T, value: U, rule: ValidationRule): Promise<RuleResult> {
+  const result = { value, error: undefined } as RuleResult
 
   try {
     // --- Format rule object and try validating or transforming.

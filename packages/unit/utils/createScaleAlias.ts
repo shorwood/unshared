@@ -14,6 +14,6 @@ import { UnitFactor, UnitMap } from './types'
 export function createScaleAlias<K extends string>(aliases: MaybeArray<K>, unit: UnitFactor): UnitMap<K> {
   const result = {} as UnitMap<K>
   aliases = Array.isArray(aliases) ? aliases : [aliases]
-  for (const alias of <K[]>aliases) result[alias] = unit
+  for (const alias of aliases) result[alias] = unit
   return result
 }

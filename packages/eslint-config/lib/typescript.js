@@ -11,7 +11,6 @@ module.exports = {
       ],
       files: [
         '*.{ts,mts,cts,tsx,d.ts}',
-        '*.vue',
       ],
       rules: {
 

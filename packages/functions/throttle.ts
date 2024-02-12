@@ -20,7 +20,7 @@ export type Throttled<T extends Function> =
  * getUser('123') // Will be ignored.
  * getUser('123') // Will be ignored.
  */
-export const throttle = <T extends Function, N extends number>(fn: T, delay: NumberPositive<N>): Throttled<T> => {
+export function throttle<T extends Function, N extends number>(fn: T, delay: NumberPositive<N>): Throttled<T> {
   if (delay < 0) throw new RangeError('Expected delay to be a positive number.')
 
   // --- Initialize timeout.
@@ -29,7 +29,7 @@ export const throttle = <T extends Function, N extends number>(fn: T, delay: Num
 
   // --- Instantiate and return a throttled function.
   // @ts-expect-error: override the return type.
-  return (...parameters: Parameters<T>[]) =>
+  return (...parameters: Array<Parameters<T>>) =>
     new Promise((resolve) => {
       if (timeout) return
       timeout = setTimeout(() => {
@@ -49,9 +49,9 @@ if (import.meta.vitest) {
   it('should throttle a function so it is only called once every delay', async() => {
     let count = 0
     const throttled = throttle(() => count++, 1000)
-    throttled()
-    throttled()
-    throttled()
+    void throttled()
+    void throttled()
+    void throttled()
     vi.advanceTimersByTime(1000)
     expect(count).toEqual(1)
   })
@@ -60,26 +60,26 @@ if (import.meta.vitest) {
     let count = 0
     const throttled = throttle((value: number) => (count += value), 1000)
     const result = throttled(10)
-    expect(result).resolves.toEqual(10)
+    void expect(result).resolves.toEqual(10)
   })
 
   it('should return an async function that resolves once the delay has passed', async() => {
     let count = 0
     const throttled = throttle(() => count++, 1000)
     const result = Promise.all([throttled(), throttled(), throttled()])
-    expect(result).resolves.toEqual([1, 1, 1])
+    void expect(result).resolves.toEqual([1, 1, 1])
   })
 
   it('should wrap the function result in a promise', async() => {
     const throttled = throttle(() => 1, 1000)
     const result = throttled()
-    expect(result).resolves.toEqual(1)
+    void expect(result).resolves.toEqual(1)
   })
 
   it('should wrap the function result in a promise if it is async', async() => {
     const throttled = throttle(async() => 1, 1000)
     const result = throttled()
-    expect(result).resolves.toEqual(1)
+    void expect(result).resolves.toEqual(1)
   })
 
   it('should throw if delay is lower than 1', () => {

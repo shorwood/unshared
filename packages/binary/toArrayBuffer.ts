@@ -1,46 +1,53 @@
-import { decodeBase64 } from '../encode/decodeBase64'
-import { fromHex } from './fromHex'
-import { fromUtf8 } from './fromUtf8'
-
-export type BuffereableFrom = 'utf8' | 'base64' | 'binary' | 'hex' | 'uint8' | 'uint16' | 'uint32' | 'uint64' | 'uint8clamped'
+import { MaybePromise } from '@unshared/types'
+import { BinaryLike } from './isBinaryLike'
 
 /**
- * Convert a value to an `ArrayBuffer`
+ * Cast a `BinaryLike` value into an `ArrayBuffer`. Since this implementation is
+ * using the `ArrayBuffer` API and does not rely on Node.js, this makes it ideal
+ * for use in cross-platform libraries.
  *
- * @param value The value to convert
- * @param from The encoding or integer type to convert from
+ * @param value The value to cast.
  * @returns The value as an `ArrayBuffer`
+ * @example toArrayBuffer('Hello, World!') // <ArrayBuffer 48 65 6c 6c 6f 2c 20 57 6f 72 6c 64 21>
  */
-export const toArrayBuffer = (value?: any, from?: BuffereableFrom): ArrayBuffer => {
-  // --- is value Nil
+export function toArrayBuffer(value: Blob): Promise<ArrayBuffer>
+export function toArrayBuffer(value: Exclude<BinaryLike, Blob>): MaybePromise<ArrayBuffer>
+export function toArrayBuffer(value: BinaryLike): MaybePromise<ArrayBuffer>
+export function toArrayBuffer(value: BinaryLike): MaybePromise<ArrayBuffer> {
+  // --- If it's undefined or null, return an empty ArrayBuffer.
   if (value === undefined || value === null)
     return new ArrayBuffer(0)
 
-  // --- is or has an array buffer
-  if (typeof value === 'object' && 'buffer' in value) return value.buffer
-  if (value instanceof ArrayBuffer) return value
+  // --- If it's an ArrayBuffer or SharedArrayBuffer, return it.
+  if (value instanceof ArrayBuffer || value instanceof SharedArrayBuffer)
+    return value
 
-  // --- is a string.
+  if (value instanceof Blob)
+    return value.arrayBuffer()
+
+  // --- If it's a string, cast it to an ArrayBuffer.
   if (typeof value === 'string') {
-    if (from === 'base64') return decodeBase64(value)
-    if (from === 'hex') return fromHex(value)
-    return fromUtf8(value)
+    const buffer = new ArrayBuffer(value.length)
+    const bufferView = new Uint8Array(buffer)
+    for (let k = 0; k < value.length; k++)
+      bufferView[k] = value.charCodeAt(k)
+    return buffer
   }
 
-  // --- is an array of integer-like values.
-  if (from && ['uint8', 'uint16', 'uint32', 'uint64', 'uint8clamped'].includes(from)) {
-    if (!Array.isArray(value)) value = [value]
-    if (from === 'uint8') return new Uint8Array(value).buffer
-    if (from === 'uint16') return new Uint16Array(value).buffer
-    if (from === 'uint32') return new Uint32Array(value).buffer
-    if (from === 'uint64') return new BigUint64Array(value).buffer
-    return new Uint8ClampedArray(value).buffer
+  // --- If it's a Buffer, return it's underlying ArrayBuffer.
+  if (typeof value === 'object' && 'buffer' in value)
+    return value.buffer.slice(value.byteOffset, value.byteOffset + value.byteLength)
+
+  // --- If it's an Iterator, cast it to an ArrayBuffer so it can be cast in the next step.
+  if (typeof value === 'object' && Symbol.iterator in value)
+    value = [...value]
+
+  // --- If it's an array-like object, cast it to an ArrayBuffer.
+  if (typeof value === 'object' && 'length' in value) {
+    const buffer = new ArrayBuffer(value.length)
+    const bufferView = new Uint8Array(buffer)
+    for (let k = 0; k < value.length; k++)
+      bufferView[k] = value[k]
+    return buffer
   }
-
-  // --- is a function, return the stringified version.
-  if (typeof value === 'function') return fromUtf8(value.toString())
-
-  // --- anything else, stringify and return.
-  try { return fromUtf8(JSON.stringify(value)) }
-  catch { throw new Error('Value type not supported') }
 }

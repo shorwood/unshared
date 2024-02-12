@@ -1,8 +1,11 @@
 
+import { isBuiltin } from 'node:module'
+import { dirname, resolve } from 'node:path'
+import { cwd } from 'node:process'
 import { tries } from '@unshared/functions/tries'
 import { PackageJSON } from 'types-pkg-json'
-import { loadObject } from '../fs/loadObject'
 import { findAncestor } from './findAncestor'
+import { loadObject } from './loadObject'
 import { resolveImport } from './resolveImport'
 import { resolveModule } from './resolveModule'
 
@@ -13,14 +16,7 @@ import { resolveModule } from './resolveModule'
  * @param from The base path to resolve from.
  * @returns The path of the type definition.
  */
-export const resolveTypes = async(path: string, from?: string): Promise<string> => {
-  const { dirname, resolve } = await import('node:path')
-  const { cwd } = await import('node:process')
-  // @ts-expect-error: `isBuiltIn` is not in `@types/node` yet.
-  const { isBuiltin } = await import('node:module')
-  if (!from) from = cwd()
-
-  // --- If the path is a builtin module, return types from `@types/node`.
+export async function resolveTypes(path: string): Promise<string> {
   if (isBuiltin(path)) return resolveTypes('@types/node')
 
   const result = await tries(

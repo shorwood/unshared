@@ -13,7 +13,7 @@ import { validateSchema } from './validateSchema'
  * @param schema The validation schema
  * @returns True if the object passes a validation schema
  */
-export const isObjectValid = async(object: Record<string, any>, schema: ValidationSchema): Promise<boolean> => {
+export async function isObjectValid(object: Record<string, any>, schema: ValidationSchema): Promise<boolean> {
   const result = await validateSchema(object, schema)
   return result.isValid
 }
@@ -25,7 +25,7 @@ export const isObjectValid = async(object: Record<string, any>, schema: Validati
  * @param ruleSet The validation rule set
  * @returns True if every items of the array passes the validation rule set
  */
-export const isArrayValid = async(array: any[], ruleSet: ValidationRuleSet): Promise<boolean> => {
+export async function isArrayValid(array: any[], ruleSet: ValidationRuleSet): Promise<boolean> {
   const promises = array.map(item => validateRuleSet(item, ruleSet))
   const results = await Promise.all(promises)
   return results.every(result => result.isValid)

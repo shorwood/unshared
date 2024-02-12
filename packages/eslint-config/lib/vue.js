@@ -4,6 +4,7 @@ module.exports = {
       parser: 'vue-eslint-parser',
       parserOptions: {
         parser: '@typescript-eslint/parser',
+        extraFileExtensions: ['.vue'],
         project: true,
       },
       extends: [
@@ -25,9 +26,10 @@ module.exports = {
          * @see https://vuejs.github.io/vetur/guide/FAQ.html#why-does-vetur-show-cannot-find-module-xxx
          */
         '@typescript-eslint/consistent-type-imports': ['error', {
+          disallowTypeAnnotations: false,
+          fixStyle: 'inline-type-imports',
           prefer: 'type-imports',
         }],
-
 
         'vue/max-attributes-per-line': 'off',
         'vue/no-v-html': 'off',

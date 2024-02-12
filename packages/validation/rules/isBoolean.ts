@@ -21,8 +21,8 @@ if (import.meta.vitest) {
     expect(result).toEqual(true)
   })
 
-  it ('should return false when checking if "true" is a boolean', () => {
-    const result = isBoolean('true')
+  it ('should return false when checking if "1" is a boolean', () => {
+    const result = isBoolean(1)
     expect(result).toEqual(false)
   })
 

@@ -13,9 +13,6 @@ export async function build() {
     ? args.filter(argument => PACKAGES_NAMES.includes(argument))
     : PACKAGES_NAMES
 
-  // --- Log the packages to build.
-  console.log('Building packages:', packageNames.join(', '))
-
   // --- Build all packages.
   for (const packageName of packageNames) {
     await buildIndexes(packageName)

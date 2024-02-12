@@ -1,4 +1,3 @@
-import { EventEmitter } from 'node:events'
 import { cpus } from 'node:os'
 import { Function } from '@unshared/types'
 import { WorkerService, WorkerServiceOptions, Workerized } from './createWorkerService'
@@ -17,13 +16,6 @@ export interface WorkerPoolOptions extends WorkerServiceOptions {
    * @default os.cpus().length - 1
    */
   size?: number
-  /**
-   * Instantiate the worker pool immediately. If set to `false`, the worker pool will
-   * only be instantiated when the first function is called.
-   *
-   * @default false
-   */
-  coldStart?: boolean
 }
 
 /**
@@ -40,11 +32,8 @@ export interface WorkerPoolOptions extends WorkerServiceOptions {
  * const mathUrl = new URL('./math.js', import.meta.url);
  * const math = await pool.wrapModule(moduleUrl)
  */
-export class WorkerPool extends EventEmitter {
-  constructor(private options: WorkerPoolOptions = {}) {
-    super()
-    if (options.coldStart) this.createWorkers()
-  }
+export class WorkerPool {
+  constructor(private options: WorkerPoolOptions = {}) {}
 
   /** The `WorkerService` instances that are used to execute the functions. */
   public workers: WorkerService[] = []
@@ -73,7 +62,7 @@ export class WorkerPool extends EventEmitter {
    * @returns This worker pool instance.
    * @example workerPool.createWorkers()
    */
-  public createWorkers(): this {
+  public initialize(): this {
     const { size = cpus().length - 1 } = this.options
     for (let index = 0; index < size; index++) {
       const worker = new WorkerService(this.options)
@@ -97,15 +86,15 @@ export class WorkerPool extends EventEmitter {
   }
 
   /**
-   * Get the worker with the least amount of running tasks. If no workers exist, the
-   * {@link createWorkers} method will be called to create the workers.
+   * Get the worker with the least amount of running tasks. If no workers exist,
+   * the `createWorkers` method will be called to create the workers.
    *
    * @returns The worker with the least amount of running tasks.
    * @example const worker = new WorkerPool().getWorker()
    */
-  public getWorker(): WorkerService {
+  private getWorker(): WorkerService {
     // --- Create the workers if they don't exist.
-    if (this.workers.length === 0) this.createWorkers()
+    if (this.workers.length === 0) this.initialize()
 
     // --- Find the worker with the least amount of running tasks.
     return [...this.workers].sort((a, b) => a.running - b.running).shift()!
@@ -170,4 +159,11 @@ export class WorkerPool extends EventEmitter {
  */
 export function createWorkerPool(options?: WorkerPoolOptions): WorkerPool {
   return new WorkerPool(options)
+}
+
+/** c8 ignore next */
+if (import.meta.vitest) {
+  it('should create a worker pool', async() => {})
+
+  it('should spawn a function in a worker thread', async() => {})
 }

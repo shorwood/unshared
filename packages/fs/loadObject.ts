@@ -1,8 +1,6 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-// eslint-disable-next-line import/no-named-default
-import * as fs from 'node:fs'
-import { FSWatcher, PathLike, Stats, WatchOptions, readFileSync, renameSync, writeFileSync } from 'node:fs'
-import { Awaitable, awaitable } from '@unshared/functions/awaitable'
+import { FSWatcher, PathLike, Stats, WatchOptions, constants, readFileSync, renameSync, watch, writeFileSync } from 'node:fs'
+import { access, readFile, rm, stat, writeFile } from 'node:fs/promises'
+import { awaitable, Awaitable } from '@unshared/functions/awaitable'
 import { debounce } from '@unshared/functions/debounce'
 import { ReactiveOptions, reactive } from '@unshared/reactive/reactive'
 import { vol } from 'memfs'
@@ -40,13 +38,6 @@ export interface FSObjectOptions<T extends object> extends ReactiveOptions<T>, W
    * @default false
    */
   temporary?: boolean
-  /**
-   * The `node:fs` module instance to use. This is useful if you want to use
-   * `memfs` for testing. If not set, the default `node:fs` module will be used.
-   *
-   * @example const fs = require('memfs').fs
-   */
-  fs?: Partial<typeof fs>
 }
 
 export class FSObject<T extends object> {
@@ -70,8 +61,6 @@ export class FSObject<T extends object> {
    * @throws If the file is not a JSON object.
    */
   constructor(public path: PathLike, private options: FSObjectOptions<T> = {}) {
-    if (!options.fs) options.fs = fs
-
     // --- The callback that will be called when the object changes.
     const callback = debounce(() => {
       if (this.pauseSync) return
@@ -80,7 +69,7 @@ export class FSObject<T extends object> {
     }, options.debounceWrite ?? 1)
 
     // --- Create the reactive object.
-    this.object = reactive(<T>{}, {
+    this.object = reactive(({} as T), {
       deep: true,
       hooks: ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse'],
       callbacks: [callback],
@@ -88,7 +77,7 @@ export class FSObject<T extends object> {
     })
 
     // --- Watch the file for changes.
-    this.watcher = fs.watch(this.path, { persistent: false, ...options }, (event) => {
+    this.watcher = watch(this.path, { persistent: false, ...options }, (event) => {
       if (this.pauseSync) return
       if (this.options.ignoreFileChanges) return
       if (event === 'change') setImmediate(this.load.bind(this))
@@ -105,7 +94,7 @@ export class FSObject<T extends object> {
   public async commit(writeObject = this.object): Promise<void> {
     this.pauseSync = true
     const writeJson = JSON.stringify(writeObject, undefined, 2)
-    await fs.promises.writeFile(this.path, `${writeJson}\n`, 'utf8')
+    await writeFile(this.path, `${writeJson}\n`, 'utf8')
     this.pauseSync = false
   }
 
@@ -115,18 +104,17 @@ export class FSObject<T extends object> {
    * @returns The loaded object.
    */
   public async load(): Promise<T> {
-    // --- Assert the file exists.
-    try { await fs.promises.access(this.path, fs.constants.R_OK) }
-
-    // --- Create the file if `temporary` is set to `true`.
+    try {
+      await access(this.path, constants.R_OK)
+    }
     catch (error) {
       // @ts-expect-error: `error` is garanteed to be an `Error` object.
       if (error.code === 'ENOENT' && this.options.temporary)
-        fs.writeFileSync(this.path, '{}')
+        writeFileSync(this.path, '{}')
     }
 
     // --- Assert the path points to a file.
-    const readStats = await fs.promises.stat(this.path)
+    const readStats = await stat(this.path)
     const readIsFile = readStats.isFile()
     if (!readIsFile) throw new Error(`Expected ${this.path} to be a file`)
 
@@ -134,7 +122,7 @@ export class FSObject<T extends object> {
     if (this.object && this.stats && readStats.mtimeMs < this.stats.mtimeMs) return this.object
 
     // --- Read and parse the file.
-    const readJson = await fs.promises.readFile(this.path, 'utf8')
+    const readJson = await readFile(this.path, 'utf8')
     const readObject: T = JSON.parse(readJson)
 
     // --- Assert JSON is an object.
@@ -148,7 +136,7 @@ export class FSObject<T extends object> {
     this.pauseSync = true
 
     // --- Return the reactive object.
-    return this.object as T
+    return this.object
   }
 
   /**
@@ -159,7 +147,7 @@ export class FSObject<T extends object> {
     this.watcher.close()
     this.pauseSync = true
     if (!this.options.temporary) return
-    await fs.promises.rm(this.path)
+    await rm(this.path)
   }
 }
 

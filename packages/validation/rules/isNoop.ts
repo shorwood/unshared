@@ -10,7 +10,7 @@
  * isNoop(() => null) // false
  * isNoop(() => undefined) // true
  */
-export const isNoop = (fn: Function): fn is () => {} => {
+export function isNoop(fn: Function): fn is () => {} {
   // --- Make sure it is a function
   if (typeof fn !== 'function') return false
 

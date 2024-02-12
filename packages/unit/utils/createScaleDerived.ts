@@ -43,8 +43,8 @@ function createDerivedFactor(scale1: UnitFactor, scale2: UnitFactor): UnitFactor
 
   // --- Derive if one is a function and the other is a number
   return typeof scale1 === 'function'
-    ? (value: number) => (<Function>scale1)(value) / <number>scale2
-    : (value: number) => <number>scale1 / (<Function>scale2)(value)
+    ? (value: number) => (scale1 as Function)(value) / (scale2 as number)
+    : (value: number) => (scale1 as number) / (scale2 as Function)(value)
 }
 
 /**
@@ -76,12 +76,12 @@ export function createScaleDerived<
   for (const unit1 in scale1) {
     for (const unit2 in scale2) {
       if (!unit1 || !unit2) continue
-      const key = createKey(<any>unit1, <any>unit2, suffix, separator)
+      const key = createKey(unit1, unit2, suffix, separator)
       const scale = createDerivedFactor(scale1[unit1], scale2[unit2])
       result[key] = scale
     }
   }
 
   // --- Return derived.
-  return result as UnitMap<K>
+  return result
 }

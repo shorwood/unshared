@@ -7,6 +7,7 @@
  * @example
  * isStringUuid('12345678-1234-1234-1234-123456789012') // true
  */
-export const isStringUuid = (value: string): boolean =>
-  typeof value === 'string'
+export function isStringUuid(value: unknown): value is string {
+  return typeof value === 'string'
   && /^(?:[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}|0{8}-(?:0{4}-){3}0{12})$/i.test(value)
+}

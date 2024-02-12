@@ -5,9 +5,7 @@
  * @returns The number with swapped endian
  */
 export function swapEndian(n: number): number {
-  if (typeof n !== 'number')
-    throw new TypeError('Expected a number.')
-  if (Number.isInteger(n) === false)
+  if (Number.isSafeInteger(n) === false)
     throw new TypeError('Expected an integer.')
   if (n < 0 || n > 0xFFFFFFFF)
     throw new RangeError('Expected a 32-bit number.')

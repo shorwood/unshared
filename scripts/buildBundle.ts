@@ -18,6 +18,9 @@ import { getPackageMetadata } from './utils'
 export async function buildBundle(packageName: string) {
   const { packagePath, outputPath } = await getPackageMetadata(packageName)
 
+  // --- Skip the `eslint-config` package since it does not need to be built.
+  if (packageName === 'eslint-config') return
+
   // --- Clean the output directory.
   await rm(outputPath, { recursive: true, force: true })
 

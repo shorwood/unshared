@@ -4,22 +4,24 @@ import { Server as HttpsServer, createServer as createHttpsServer } from 'node:h
 import { AddressInfo, Server } from 'node:net'
 
 /**
- * Get the URL of a `Server` instance.
+ * Get the URL of a NodeJS `Server` instance. The protocol is inferred by the instance
+ * type while the host and port are inferred from the `address()` method. If the server
+ * is not listening an error will be thrown.
  *
- * @param server The server.
- * @returns The URL.
+ * @param server The server instance to get the URL of.
+ * @returns The URL of the server.
  * @example getServerAddress(server) // 'http://0.0.0.0:8080' or '/tmp/server.sock'
  */
 export function getServerAddress(server: Server): string {
   if (server instanceof Server === false)
-    throw new TypeError('Expected a Server instance.')
+    throw new TypeError('Cannot get the address of the server: Expected a Server instance.')
   if (!server.listening)
-    throw new Error('Server is not listening.')
+    throw new Error('Cannot get the address of the server: Server is not listening.')
 
   // --- Get the address and port.
   const address = server.address()
   if (typeof address === 'string') return address
-  const { address: host, port } = address as AddressInfo
+  const { address: host, port } = address!
 
   // --- Get the protocol.
   let protocol = ''

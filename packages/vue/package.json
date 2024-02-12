@@ -1,0 +1,27 @@
+{
+  "name": "@unshared/vue",
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shorwood/unshared.git",
+    "directory": "packages/vue"
+  },
+  "peerDependencies": {
+    "vue-demi": "0.14.6"
+  },
+  "dependencies": {
+    "@iconify/iconify": "3.1.1",
+    "@types/node": "20.11.6",
+    "@vueuse/core": "10.7.2",
+    "markdown-it": "14.0.0",
+    "vue-router": "4.2.5"
+  },
+  "devDependencies": {
+    "vue-demi": "0.14.6"
+  }
+}

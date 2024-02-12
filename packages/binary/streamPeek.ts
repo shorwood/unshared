@@ -69,8 +69,8 @@ export async function streamPeek(stream: Readable, options: ToBufferOptions<Buff
  * @returns A promise that resolves with the buffer.
  * @example streamPeek(fs.createReadStream('file.txt'), { length: 1024 }) // Promise<Buffer>
  */
-export async function streamPeek(stream: Readable, options?: number | BufferEncoding | ToBufferOptions): Promise<Buffer | string>
-export async function streamPeek(stream: Readable, options?: number | BufferEncoding | ToBufferOptions): Promise<Buffer | string> {
+export async function streamPeek(stream: Readable, options?: BufferEncoding | ToBufferOptions | number): Promise<Buffer | string>
+export async function streamPeek(stream: Readable, options?: BufferEncoding | ToBufferOptions | number): Promise<Buffer | string> {
   // --- Decompose the parameters and options.
   if (typeof options === 'string') options = { encoding: options }
   if (typeof options === 'number') options = { length: options }

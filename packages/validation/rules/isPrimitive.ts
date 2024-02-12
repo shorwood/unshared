@@ -1,4 +1,4 @@
-import { Primitive } from "@unshared/types/Primitive"
+import { Primitive } from '@unshared/types/Primitive'
 
 /**
  * Checks if the value is a primitive
@@ -8,11 +8,12 @@ import { Primitive } from "@unshared/types/Primitive"
  * @returns `true` if the value is a primitive, `false` otherwise
  * @example isPrimitive(1) // true
  */
-export const isPrimitive = (value: unknown): value is Primitive =>
-  value === undefined
+export function isPrimitive(value: unknown): value is Primitive {
+  return value === undefined
   || typeof value === 'number'
   || typeof value === 'string'
   || typeof value === 'boolean'
   || typeof value === 'symbol'
   || typeof value === 'bigint'
   || value === null
+}

@@ -1,7 +1,8 @@
 import { readdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { patternMatch } from '../packages/string/patternMatch'
+import { isMatchingPattern } from '../packages/string/isMatchingPattern'
 import { getPackageMetadata } from './utils'
+import { createPattern } from '@unshared/string'
 
 interface IndexFile {
   /** The path to the index file. */
@@ -18,9 +19,9 @@ interface IndexFile {
  * @example await buildIndex('/foo') // [{ path: '/foo/index.ts', content: '...' }]
  */
 async function buildIndex(path: string): Promise<IndexFile> {
-  const pattern = '*.{ts,tsx,js,jsx}'
   const entities = await readdir(path, { withFileTypes: true })
   const imports: string[] = []
+  const pattern = createPattern('*.{ts,tsx,js,jsx}')
 
   // --- Iterate over the directory entities.
   for (const entity of entities) {
@@ -28,7 +29,7 @@ async function buildIndex(path: string): Promise<IndexFile> {
       // --- Find subdirectories containing an index file.
       const isDirectory = entity.isDirectory()
       const isFile = entity.isFile()
-      const isPatternMath = patternMatch(pattern, entity.name)
+      const isPatternMath = pattern.test(entity.name)
       const isIndexFile = entity.name.startsWith('index.')
 
       // --- If subdirectory contains an index file, add it to the imports.

@@ -1,15 +1,15 @@
 /**
- * Check if an array is empty
+ * Check if a value is an empty array.
  *
- * @param array The array to check
+ * @param value The value to check.
  * @returns `true` if the array is empty, `false` otherwise
  * @example
  * isArrayEmpty([]) // true
  * isArrayEmpty([1, 2, 3]) // false
  */
-export const isArrayEmpty = (array: unknown[]): array is [] =>
-  Array.isArray(array)
-  && array.length === 0
+export function isArrayEmpty(value: unknown[]): value is [] {
+  return value.length === 0
+}
 
 /** c8 ignore next */
 if (import.meta.vitest) {

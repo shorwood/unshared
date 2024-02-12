@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import { MaybePromise } from '@unshared/types/MaybePromise'
-import { Awaitable, awaitable } from './awaitable'
+import { MaybePromise } from '@unshared/types'
+import { awaitable, Awaitable } from './awaitable'
 import { createResolvable } from './createResolvable'
 
 /**
@@ -80,12 +80,14 @@ export interface FSM<D = unknown, S extends string = string> {
  * @returns The machine.
  * @example
  * const startRombaLogic = createFsm({
- *   init: () => 'doingStuff',
- *   doingStuff: () => 'final',
- *   final: () => true,
+ *   init: () => 'scan',
+ *   scan: () => 'moveToDust',
+ *   moveToDust: () => 'vacuum',
+ *   vacuum: () => 'scan',
  * })
  * const result = await startRombaLogic()
  */
+// TODO: Extend return type to make it lazily awaitable and synchroneously return the context.
 export function createFsm<D = unknown, S extends string = string>(states: FSMTransitions<D, S>, initialData?: D): FSM<D, S> {
   const context: FSMContext<D, S> = { data: initialData }
   const resolvable = createResolvable<typeof context>()
@@ -121,7 +123,8 @@ export function createFsm<D = unknown, S extends string = string>(states: FSMTra
 
   // --- Create the machine function.
   const fsm = (initialData?: D, initialState?: S) => {
-    run(initialData, initialState)
+    // eslint-disable-next-line no-void
+    void run(initialData, initialState)
     return awaitable(contextProxy, resolvable.promise)
   }
 

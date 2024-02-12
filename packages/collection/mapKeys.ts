@@ -8,8 +8,8 @@
  * @param path
  * @returns The new object with mapped keys
  */
-export function mapKeys<T>(object: Array<T>, path: keyof T): Record<string, T>
-export function mapKeys<T>(object: Array<T>, iterator: (value: T, key: keyof T, array: Array<T>) => string): Record<string, T>
+export function mapKeys<T>(object: T[], path: keyof T): Record<string, T>
+export function mapKeys<T>(object: T[], iterator: (value: T, key: keyof T, array: T[]) => string): Record<string, T>
 export function mapKeys<T>(object: Record<string, T>, path: keyof T): Record<string, T>
 export function mapKeys<T>(object: Record<string, T>, iterator: (value: T, key: keyof T, object: Record<string, T>) => string): Record<string, T>
 export function mapKeys(object: any, iterator: any): any {

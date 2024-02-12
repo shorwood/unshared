@@ -8,4 +8,7 @@ export const PACKAGES_NAMES = [
   'boolean',
   'string',
   'types',
+  'collection',
+  'functions',
+  'validation',
 ]

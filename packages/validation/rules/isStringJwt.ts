@@ -7,6 +7,7 @@
  * @example
  * isStringJwt('eyJhbGciOiJIUz.eyJzdWIiOiIxMjM0NTY3O.SflKxwRJSM6POk6yJV_adQssw5c') // true
  */
-export const isStringJwt = (value: string): boolean =>
-  typeof value === 'string'
+export function isStringJwt(value: string): boolean {
+  return typeof value === 'string'
   && /^[\w=-]+\.[\w=-]+\.?[\w+./=-]*$/.test(value)
+}

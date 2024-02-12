@@ -10,7 +10,7 @@ import { Function } from '@unshared/types/Function'
  * @returns A function that will be executed at most one time.
  * @example const initializeOnce = once(initialize)
  */
-export const once = <T extends Function>(fn: T): T => {
+export function once<T extends Function>(fn: T): T {
   let called = false
   let result: unknown
 
@@ -48,7 +48,7 @@ if (import.meta.vitest) {
 
   it('should preserve the function context', () => {
     const context = { foo: 'foo', getFOO() { return this.foo.toUpperCase() } }
-    const wrapped = once(context.getFOO)
+    const wrapped = once(context.getFOO.bind(context))
     const result = wrapped()
     expect(result).toEqual('FOO')
   })

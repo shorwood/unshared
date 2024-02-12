@@ -20,7 +20,7 @@ import { decodeBase64 } from './decodeBase64'
  */
 export function decodeBase64Url(base64url: string): ArrayBuffer {
   const padding = base64url.length % 4
-  const base64 = base64url.replace(/[_-]/g, (match) => {
+  const base64 = base64url.replaceAll(/[_-]/g, (match) => {
     if (match === '-') return '+'
     if (match === '_') return '/'
     return ''

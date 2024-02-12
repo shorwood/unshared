@@ -35,7 +35,7 @@ export interface ParseArgvReturnType<T extends object> {
  * parseArgv(['-f', '-bq', '--foo', 'bar', 'baz']) // returns { f: true, b: true, q: true, foo: 'bar' }
  */
 export function parseArgv <T extends object>(argv: NodeJS.Process['argv']): ParseArgvReturnType<T> {
-  const parsedArgs = [] as string[]
+  const parsedArgs: string[] = []
   const parsedOptions = {} as T
   const [nodePath, scriptPath, ...parameters] = argv
 

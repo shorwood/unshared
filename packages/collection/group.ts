@@ -1,5 +1,10 @@
-import { Collection, IteratedFunction, Key, Literal, Path, Value, Values } from '@unshared/types'
+import { IteratedFunction, Collection, Path, Key, Get } from '@unshared/types'
 import { get } from './get'
+
+export type Grouped<T extends object, K extends IteratedFunction | Path<T>> =
+  K extends ((...args: any[]) => infer R extends string) ? { [P in R]: T[] }
+    : K extends Path<T> ? { [P in Get<T, K> & string]: T[] }
+      : never
 
 /**
  * Groups a collection by the value of a property at a given path.
@@ -8,7 +13,7 @@ import { get } from './get'
  * @param path The path to the property to group by.
  * @returns An object with the grouped values.
  */
-export function groupBy<T, K extends Path<T>>(object: Collection<T>, path: K): Record<Literal<Value<T, K>>, Array<T>>
+export function group<T extends object, K extends Path<T>>(object: Collection<T>, path: K): Grouped<T, K>
 /**
  * Groups a collection by the result of an iterator function.
  *
@@ -16,25 +21,25 @@ export function groupBy<T, K extends Path<T>>(object: Collection<T>, path: K): R
  * @param iterator The iterator function.
  * @returns An object with the grouped values.
  */
-export function groupBy<T, R extends Key>(object: T, iterator: IteratedFunction<T, R>): Record<R, Array<Values<T>>>
-export function groupBy(object: any, iterator: any): any {
-  // --- If iterator is a path, cast as getter function.
+export function group<T, R extends Key>(object: T, iterator: IteratedFunction<T, R>): Grouped<T, R>
+export function group(object: object, iterator: Function | string) {
+  // --- If iterator is a path, generate a function that will get the value at the path.
   if (typeof iterator !== 'function') {
     const path = iterator
-    iterator = (value: any) => get(value, path)
+    iterator = (value: any) => get(value, path) as unknown
   }
 
   // --- Iterate over object properties and push them in the correct group.
-  const result: any = {}
+  const result: Record<string, unknown[]> = {}
   for (const key in object) {
-    const value = object[key]
+    const value = object[(key as keyof typeof object)]
     const groupKey = iterator(value, key, object)
     if (groupKey in result) result[groupKey].push(value)
     else result[groupKey] = [value]
   }
 
   // --- Return result.
-  return result
+  return result as unknown
 }
 
 /* c8 ignore next */
@@ -42,10 +47,10 @@ if (import.meta.vitest) {
   it('groups array by iterator function', () => {
     const object = [1, 2, 3, 4, 5] as const
     const iterator = (value: number) => (value % 2 === 0 ? 'even' : 'odd')
-    const result = groupBy(object, iterator)
+    const result = group(object, iterator)
     expect(result).toEqual({
-      even: [2, 4],
       odd: [1, 3, 5],
+      even: [2, 4],
     })
   })
 
@@ -54,11 +59,11 @@ if (import.meta.vitest) {
       { name: 'one', value: 1 },
       { name: 'two', value: 2 },
       { name: 'two', value: 3 },
-    ] as const
-    const result = groupBy(object, 'name')
+    ]
+    const result = group(object, 'name')
     expect(result).toEqual({
-      one: [{ name: 'one', value: 1 }],
       two: [{ name: 'two', value: 2 }, { name: 'two', value: 3 }],
+      one: [{ name: 'one', value: 1 }],
     })
   })
 
@@ -68,10 +73,10 @@ if (import.meta.vitest) {
       2: { name: 'two', value: 2 },
       3: { name: 'two', value: 3 },
     } as const
-    const result = groupBy(object, value => value.name)
+    const result = group(object, value => value.name)
     expect(result).toEqual({
-      one: [{ name: 'one', value: 1 }],
       two: [{ name: 'two', value: 2 }, { name: 'two', value: 3 }],
+      one: [{ name: 'one', value: 1 }],
     })
   })
 }

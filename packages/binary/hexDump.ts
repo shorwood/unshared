@@ -38,8 +38,8 @@ export function hexDump(buffer: Buffer, options: HexDumpOptions = {}): string {
     // --- Replace non-printable characters with a dot.
     const text = encoding === 'utf8'
     // eslint-disable-next-line no-control-regex
-      ? lineBuffer.toString(encoding).replace(/[\u0000-\u001F\u007F-\u00FF]/g, '.')
-      : lineBuffer.toString(encoding).replace(/[^ -~]/g, '.')
+      ? lineBuffer.toString(encoding).replaceAll(/[\u0000-\u001F\u007F-\u00FF]/g, '.')
+      : lineBuffer.toString(encoding).replaceAll(/[^ -~]/g, '.')
 
     // --- Add the line to the result.
     const line = `${index.toString().padStart(8, '0')} | ${hex} | ${text}`

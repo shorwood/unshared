@@ -5,7 +5,7 @@
  * @param sources The prototype chain to set.
  * @returns The object with the new prototype chain.
  */
-export function setPrototypeChain<T>(target: T, ...sources: object[]): T {
+export function setPrototypeChain<T>(target: T, ...sources: any[]): T {
   let instance = target
 
   // --- Set the prototype chain

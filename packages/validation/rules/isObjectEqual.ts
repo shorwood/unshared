@@ -11,7 +11,7 @@
  * isObjectEqual({ a: 1 }, { a: 1 }) // true
  * isObjectEqual({ a: 1 }, { a: 2 }) // false
  */
-export const isObjectEqual = <T1, T2>(object1: T1, object2: T2, depth?: number | boolean): object1 is T1 & T2 => {
+export function isObjectEqual <T1, T2>(object1: T1, object2: T2, depth?: boolean | number): object1 is T1 & T2 {
   // --- Makre sure values are objects
   if (typeof object1 !== 'object' || object1 === null) return false
   if (typeof object2 !== 'object' || object2 === null) return false

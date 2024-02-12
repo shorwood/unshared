@@ -8,6 +8,7 @@
  * isStringNumberPositive('1.0') // true
  * isStringNumberPositive('1n') // false
  */
-export const isStringNumberPositive = (value: string): value is `${number}` =>
-  typeof value === 'string'
+export function isStringNumberPositive(value: string): value is `${number}` {
+  return typeof value === 'string'
   && /^\d+(\.\d+)?$/.test(value)
+}

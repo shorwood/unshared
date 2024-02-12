@@ -1,7 +1,7 @@
-import { Function } from '@unshared/types/Function'
+import { Function } from '@unshared/types'
 
 export type TriesResult<F extends Function[]> =
-  F extends Function<infer U>[]
+  F extends Array<Function<infer U>>
     ? Exclude<U, null | void>
     : never
 

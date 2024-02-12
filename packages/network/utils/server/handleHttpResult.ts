@@ -1,8 +1,8 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { Readable } from 'node:stream'
-import { AttemptResult } from '@unshared/functions/attempt'
-import { HttpError } from '../../HttpError'
+import { Result } from '@unshared/functions/attempt'
 import { RequestContext } from '../../createServerRoute'
+import { HttpError } from '../../HttpError'
 
 /**
  * Handle the result of an HTTP/2 route handler and interact with the response object.
@@ -10,7 +10,7 @@ import { RequestContext } from '../../createServerRoute'
  * @param context The request context.
  * @param result The result of the route handler.
  */
-export function handleHttpResult(context: RequestContext, result: AttemptResult<unknown, HttpError>): void {
+export function handleHttpResult(context: RequestContext, result: Result<unknown, HttpError>): void {
   const [data, error] = result
   const { response } = context
 

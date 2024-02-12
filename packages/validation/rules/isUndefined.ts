@@ -7,5 +7,6 @@
  * isUndefined(null) // false
  * isUndefined(undefined) // true
  */
-export const isUndefined = (value: any): value is undefined =>
-  value === undefined
+export function isUndefined(value: any): value is undefined {
+  return value === undefined
+}

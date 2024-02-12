@@ -3,7 +3,7 @@
  *
  * @returns `true` if process is running in a Docker container
  */
-export const isDocker = async() => {
+export async function isDocker() {
   const { readFile } = await import('node:fs/promises')
   try {
     const cgroupContent = await readFile('/proc/self/cgroup', 'utf8')

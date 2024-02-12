@@ -21,11 +21,11 @@ export type UpdateFileCallback<T extends Buffer | string = any> = (content: T) =
  * @param encoding The encoding to use when reading the file.
  * @returns A promise that resolves when the file is updated.
  * @example
- * /// Create a file.
+ * // Create a file.
  * await writeFile('/path/to/file.txt', 'foo')
  *
- * // Update a file's contents.
- * await updateFile('/path/to/file.txt', toUpperCase)
+ * // Update a file's contents using a transform function.
+ * await updateFile('/path/to/file.txt', toUpperCase, 'utf8')
  *
  * // Check the file's contents.
  * await readFile('/path/to/file.txt', 'utf8') // 'FOO'
@@ -43,17 +43,18 @@ export async function updateFile(path: PathLike, callback: UpdateFileCallback, e
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should update a file with a callback using utf8 encoding', async() => {
-    vol.fromJSON({ '/foo.txt': 'foo' })
+    vol.fromJSON({ '/foo.txt': 'Hello, world!' })
     await updateFile('/foo.txt', content => content.toUpperCase(), 'utf8')
     const result = await readFile('/foo.txt', 'utf8')
-    expect(result).toEqual('FOO')
+    expect(result).toEqual('HELLO, WORLD!')
   })
 
   it('should update a file with a callback using no encoding', async() => {
-    vol.fromJSON({ '/foo.txt': 'foo' })
-    await updateFile('/foo.txt', content => content.toString().toUpperCase())
+    const content = new TextEncoder().encode('Hello, world!').toString()
+    vol.fromJSON({ '/foo.txt': content })
+    await updateFile('/foo.txt', content => content.toString('base64'))
     const result = await readFile('/foo.txt', 'utf8')
-    expect(result).toEqual('FOO')
+    expect(result).toEqual('Hello, world!')
   })
 
   it('should throw an error if the file does not exist', async() => {

@@ -10,7 +10,7 @@ import { isHttpMethod } from './isHttpMethod'
  *
  * @example 'GET /random'
  */
-export type RouteName = `${HttpMethod} /${string}` | `/${string}`
+export type RouteName = `/${string}` | `${HttpMethod} /${string}`
 
 /**
  * A function that can be used as a route handler. The `this` context is an object
@@ -136,11 +136,6 @@ export interface Route {
  * @example createHttpRoute('GET /random', Math.random)
  */
 export function createHttpRoute(route: RouteName, ...handlers: RouteHandler[]): Route {
-  if (typeof route !== 'string')
-    throw new TypeError('Expected routeName to be a string')
-  if (!handlers.every(handler => typeof handler === 'function'))
-    throw new TypeError('Expected middlewares to be an array of functions')
-
   // --- Parse the route name.
   const routeParts = route.split(' ')
   if (routeParts.length === 1) routeParts.unshift('GET')

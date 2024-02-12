@@ -198,7 +198,7 @@ export const postalCodePatterns = {
  * isPostalCode('90210', 'DE'); // false
  * isPostalCode('90210', 'ZZ'); // throws
  */
-export const isStringPostalCode = (value: string, country: keyof typeof postalCodePatterns): boolean => {
+export function isStringPostalCode(value: string, country: keyof typeof postalCodePatterns): boolean {
   // --- Make sure the value is a string
   if (typeof value !== 'string') return false
 

@@ -69,7 +69,7 @@ export function awaitable(object: object, promiseOrFactory?: FunctionAsync<unkno
   if (Symbol.asyncIterator in object){
     createPromise = async() => {
       const result = []
-      for await (const item of <AsyncIterable<unknown>>object) result.push(item)
+      for await (const item of object as AsyncIterable<unknown>) result.push(item)
       return result
     }
   }
@@ -96,7 +96,7 @@ export function awaitable(object: object, promiseOrFactory?: FunctionAsync<unkno
       const value = Reflect.get(target, property)
 
       // --- Handle non-promises properties.
-      const isPromiseMethod = ['then', 'catch', 'finally'].includes(<string>property)
+      const isPromiseMethod = ['then', 'catch', 'finally'].includes((property as string))
       if (!isPromiseMethod) {
         return typeof value === 'function'
           ? Reflect.get(target, property, receiver).bind(target)
@@ -107,7 +107,7 @@ export function awaitable(object: object, promiseOrFactory?: FunctionAsync<unkno
       const promise = createPromise!()
       if (promise instanceof Promise === false)
         throw new TypeError('Cannot create awaitable object: Promise factory must return a promise')
-      return promise[<'catch' | 'finally' | 'then'>property].bind(promise)
+      return promise[(property as 'catch' | 'finally' | 'then')].bind(promise)
     },
   }) as Awaitable
 }

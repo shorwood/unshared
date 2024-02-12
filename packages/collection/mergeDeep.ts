@@ -9,7 +9,7 @@ export interface MergeDeep {
  * @param objects Objects to merge
  * @returns Merged object
  */
-export const mergeDeep: MergeDeep = (...objects: Record<string, any>[]): Record<string, any> => {
+export const mergeDeep: MergeDeep = (...objects: Array<Record<string, any>>): Record<string, any> => {
   const result = { ...objects[0] }
 
   // --- Iterate over each objects and their properties.

@@ -37,7 +37,7 @@ export interface ClientOptions extends RequestInit {
    *
    * @example `Zm9vOmJhcg==`
    */
-  auth?: string | ClientOptionsAuth
+  auth?: ClientOptionsAuth | string
   /**
    * The headers to use for all requests. These headers will be merged with the
    * headers provided in the `options` parameter of the `fetch` method.

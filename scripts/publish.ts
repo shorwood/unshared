@@ -2,7 +2,7 @@ import { cp } from 'node:fs/promises'
 import { argv } from 'node:process'
 import { execute as $ } from '../packages/process/execute'
 import { parseArgv } from '../packages/process/parseCliArgv'
-import { SemverComponents, createSemver } from '../packages/string/createSemver'
+import { createSemver } from '../packages/string/createSemver'
 import { PACKAGES_NAMES } from './constants'
 import { getPackageMetadata } from './utils'
 

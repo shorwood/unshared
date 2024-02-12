@@ -1,4 +1,5 @@
 /* eslint-disable unicorn/prefer-switch */
+import { rejects } from 'node:assert'
 import {
   Http2Server,
   Http2ServerRequest,
@@ -11,7 +12,6 @@ import {
   createSecureServer as createHttpsServer,
 } from 'node:http2'
 import { Agent } from 'node:https'
-import { rejects } from 'node:assert'
 import { MaybeArray } from '@unshared/types/MaybeArray'
 import { RouteHandler, RouteName } from './createServerRoute'
 import { getServerAddress } from './getServerAddress'
