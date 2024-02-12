@@ -79,15 +79,15 @@ function stringify(object: any, options?: StringifyOptions): string
  * @example
  * base64Encode("hello") // "aGVsbG8="
  */
-function encodeBase64(string: string | Buffer, encoding?: BufferEncoding): string
-function encodeBase32(string: string | Buffer, encoding?: BufferEncoding): string
-function encodeBase16(string: string | Buffer, encoding?: BufferEncoding): string
-function encodeBase85(string: string | Buffer, encoding?: BufferEncoding): string
-function encodeHex(string: string | Buffer, encoding?: BufferEncoding): string
-function encodeBinary(string: string | Buffer, encoding?: BufferEncoding): string
-function encodeOctal(string: string | Buffer, encoding?: BufferEncoding): string
-function encodeASCII(string: string | Buffer, encoding?: BufferEncoding): string
-function encodeUTF8(string: string | Buffer, encoding?: BufferEncoding): string
+function encodeBase64(string: Buffer | string, encoding?: BufferEncoding): string
+function encodeBase32(string: Buffer | string, encoding?: BufferEncoding): string
+function encodeBase16(string: Buffer | string, encoding?: BufferEncoding): string
+function encodeBase85(string: Buffer | string, encoding?: BufferEncoding): string
+function encodeHex(string: Buffer | string, encoding?: BufferEncoding): string
+function encodeBinary(string: Buffer | string, encoding?: BufferEncoding): string
+function encodeOctal(string: Buffer | string, encoding?: BufferEncoding): string
+function encodeASCII(string: Buffer | string, encoding?: BufferEncoding): string
+function encodeUTF8(string: Buffer | string, encoding?: BufferEncoding): string
 ```
 
 ### Decoding

@@ -38,10 +38,10 @@ interface YIQ { y: number; i: number; q: number }
 interface YCallbackCr { y: number; cb: number; cr: number }
 interface YDatabaseDr { y: number; db: number; dr: number }
 interface YPbPr { y: number; pb: number; pr: number }
-type ColorObject = HSL | HSLA | RGB | RGBA | CMYK | CMYKA | XYZ | LAB | LCH | LUV | YUV | YIQ | YCallbackCr | YDatabaseDr | YPbPr
-type ColorString = RGBHex | RGBString | RGBAString | HSLString | HSLAString | CMYKString | CMYKAString | XYZString | LABString | LCHString | LUVString | YUVString | YIQString | YCallbackCrString | YDatabaseDrString | YPbPrString
+type ColorObject = CMYK | CMYKA | HSL | HSLA | LAB | LCH | LUV | RGB | RGBA | XYZ | YCallbackCr | YDatabaseDr | YIQ | YPbPr | YUV
+type ColorString = CMYKAString | CMYKString | HSLAString | HSLString | LABString | LCHString | LUVString | RGBAString | RGBHex | RGBString | XYZString | YCallbackCrString | YDatabaseDrString | YIQString | YPbPrString | YUVString
 type Color = ColorObject | ColorString
-type ColorSpace = 'hsl' | 'hsla' | 'rgb' | 'rgba' | 'cmyk' | 'cmyka' | 'xyz' | 'lab' | 'lch' | 'luv' | 'yuv' | 'yiq' | 'ycbcr' | 'ydbdr' | 'ypbpr'
+type ColorSpace = 'cmyk' | 'cmyka' | 'hsl' | 'hsla' | 'lab' | 'lch' | 'luv' | 'rgb' | 'rgba' | 'xyz' | 'ycbcr' | 'ydbdr' | 'yiq' | 'ypbpr' | 'yuv'
 ```
 
 ### Converting colors

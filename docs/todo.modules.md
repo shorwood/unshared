@@ -79,7 +79,7 @@ function isWorkspaceYarn(directory: string): Promise<boolean>
 function isWorkspaceYarnPnp(directory: string): Promise<boolean>
 function isWorkspacePnpm(directory: string): Promise<boolean>
 function isWorkspaceNpm(directory: string): Promise<boolean>
-function getPackageManager(directory: string): Promise<'yarn' | 'yarn-pnp' | 'pnpm' | 'npm' | undefined>
+function getPackageManager(directory: string): Promise<'npm' | 'pnpm' | 'yarn-pnp' | 'yarn' | undefined>
 ```
 
 ### Adding dependencies
@@ -105,7 +105,7 @@ interface AddDependencyOptions {
   /**
    * Package manager to use.
    */
-  packageManager?: 'yarn' | 'yarn-pnp' | 'pnpm' | 'npm'
+  packageManager?: 'npm' | 'pnpm' | 'yarn-pnp' | 'yarn'
 }
 
 /**

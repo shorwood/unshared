@@ -4,6 +4,10 @@
 /**
  * Run a kernel on the GPU. This is a low-level function that is not
  * intended to be used directly. Instead, use the `@kernel` decorator.
+ *
+ * @param kernel
+ * @param args
+ * @param options
  */
 export function runKernel(kernel: string, args: any[], options: KernelOptions = {}): unknown
 export function createKernel(kernel: string, options: KernelOptions): Kernel
@@ -40,14 +44,14 @@ layout (location = 1) in vec3 aColor;
 
 ```ts
 // main.ts
-import { createWindow } from "@unshared/opengl";
+import { createWindow } from '@unshared/opengl'
 
 const window = createWindow({
   width: 800,
   height: 600,
-  title: "Hello, OpenGL!",
-});
+  title: 'Hello, OpenGL!',
+})
 
-window.addEventListener("load", () => {
-  console.log("Window loaded!");
-});
+window.addEventListener('load', () => {
+  console.log('Window loaded!')
+})

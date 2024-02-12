@@ -107,16 +107,16 @@ function maxComplex(...numbers: Complex[]): Complex
  * @example
  * isPrime(1) // false
  */
-function isNumberPrime(n: number | bigint): boolean
-function isNumberEven(n: number | bigint): boolean
-function isNumberOdd(n: number | bigint): boolean
-function isNumberPositive(n: number | bigint): boolean
-function isNumberNegative(n: number | bigint): boolean
-function isNumberZero(n: number | bigint): boolean
-function isNumberInteger(n: number | bigint): boolean
-function isNumberSafe(n: number | bigint): boolean
-function isNumberInfinite(n: number | bigint): boolean
-function isNumberFinite(n: number | bigint): boolean
-function isNumberNaN(n: number | bigint): boolean
-function isNumberDivisibleBy(n: number | bigint, divisor: number | bigint): boolean
+function isNumberPrime(n: bigint | number): boolean
+function isNumberEven(n: bigint | number): boolean
+function isNumberOdd(n: bigint | number): boolean
+function isNumberPositive(n: bigint | number): boolean
+function isNumberNegative(n: bigint | number): boolean
+function isNumberZero(n: bigint | number): boolean
+function isNumberInteger(n: bigint | number): boolean
+function isNumberSafe(n: bigint | number): boolean
+function isNumberInfinite(n: bigint | number): boolean
+function isNumberFinite(n: bigint | number): boolean
+function isNumberNaN(n: bigint | number): boolean
+function isNumberDivisibleBy(n: bigint | number, divisor: bigint | number): boolean
 ```

@@ -28,8 +28,8 @@ export function getPrinterDevices(): PrinterDevice[]
 
 ```ts
 // Handle keyboard events
-const keyboard = getKeyboardDevices()[0];
-keyboard.on("keydown", (event) => {
-  console.log(event);
-});
+const keyboard = getKeyboardDevices()[0]
+keyboard.on('keydown', (event) => {
+  console.log(event)
+})
 ```
