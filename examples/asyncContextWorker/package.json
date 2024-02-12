@@ -1,0 +1,20 @@
+{
+  "name": "@example/async-context-worker",
+  "type": "module",
+  "version": "1.0.0",
+  "license": "ISC",
+  "description": "",
+  "author": "",
+  "keywords": [],
+  "main": "index.js",
+  "dependencies": {
+    "@unshared/functions": "workspace:*",
+    "@unshared/process": "workspace:*"
+  },
+  "devDependencies": {
+    "@chialab/esbuild-plugin-meta-url": "0.18.0",
+    "@chialab/esbuild-plugin-worker": "0.18.0",
+    "tsup": "8.0.1",
+    "tsx": "4.7.0"
+  }
+}

@@ -1,4 +1,3 @@
-import { Worker } from 'node:worker_threads'
 import { renderLoop } from './renderLoop'
 
 renderLoop()

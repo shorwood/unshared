@@ -3,14 +3,14 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "tsup-node --watch",
+    "dev": "tsup-node --watch --onSuccess \"pnpm start\"",
     "build": "tsup-node",
-    "start": "node dist/index.mjs"
+    "start": "node dist/index.js"
   },
   "devDependencies": {
-    "@chialab/esbuild-plugin-meta-url": "0.17.2",
-    "@chialab/esbuild-plugin-worker": "0.17.3",
-    "tsup": "6.6.3",
-    "tsx": "3.12.3"
+    "@chialab/esbuild-plugin-meta-url": "0.18.0",
+    "@chialab/esbuild-plugin-worker": "0.18.0",
+    "tsup": "8.0.1",
+    "tsx": "4.7.0"
   }
 }
