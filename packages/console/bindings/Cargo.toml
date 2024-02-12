@@ -1,0 +1,12 @@
+[package]
+name = "unshared-console"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "index"
+path = "index.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = { version = "0.2.78", features = ["serde-serialize"] }
