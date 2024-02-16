@@ -10,6 +10,7 @@
     "url": "git+https://github.com/shorwood/unshared.git",
     "directory": "packages/eslint-config"
   },
+  "main": "./lib/index.js",
   "module": "./lib/index.js",
   "files": [
     "lib",
