@@ -1,0 +1,24 @@
+{
+  "name": "@unshared/archive",
+  "type": "module",
+  "version": "0.0.0",
+  "license": "MIT",
+  "sideEffects": false,
+  "description": "Boolean logic functions",
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:shorwood/unshared.git",
+    "directory": "packages/archive"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "dependencies": {
+    "@unshared/types": "workspace:*"
+  }
+}
