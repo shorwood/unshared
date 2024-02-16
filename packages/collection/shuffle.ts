@@ -3,50 +3,52 @@
  * The original array is not modified and a new shuffled array is returned.
  *
  * @param array The array to shuffle.
- * @param seed The seed to use for the shuffle.
- * @returns The shuffled array.
+ * @returns A new array with the elements shuffled.
  * @example shuffle([1, 2, 3, 4]) // => [3, 1, 4, 2]
  */
-export function shuffle<T>(array: Array<T>, seed?: number): Array<T> {
-  const newArray = [...array]
+export function shuffle<T>(array: T[]): T[] {
+  const result = [...array]
   let currentIndex = array.length
-  let valueBuffer
-  let randomIndex
-
-  // --- Normalize the seed from 0 to 1.
-  seed = seed === undefined
-    ? Math.random()
-    : Math.abs(Math.sin(seed))
+  let buffer
 
   // --- While there remain elements to shuffle
   while (currentIndex-- !== 0) {
-    // --- Pick a remaining element randomly.
-    randomIndex = Math.floor(seed * currentIndex)
+    const randomIndex = Math.floor(Math.random() * (currentIndex + 1))
 
     // --- Swap it with the current element.
-    valueBuffer = newArray[currentIndex]
-    newArray[currentIndex] = newArray[randomIndex]
-    newArray[randomIndex] = valueBuffer
+    buffer = result[currentIndex]
+    result[currentIndex] = result[randomIndex]
+    result[randomIndex] = buffer
   }
 
   // --- Return the new array.
-  return newArray
+  return result
 }
 
 /* c8 ignore next */
 if (import.meta.vitest) {
-  it('shuffles an array with a seed', () => {
-    const result = shuffle([1, 2, 3, 4], 0.5)
-    const expected = [4, 3, 1, 2]
-    expect(result).toEqual(expected)
+  it('should shuffle an array', () => {
+    const array = Array.from({ length: 100 }, (_, index) => index)
+    const result = shuffle(array)
+    expect(result).toHaveLength(100)
+    for (let index = 0; index < 100; index++)
+      expect(result).toContain(index)
   })
 
-  it('shuffles an empty array', () => {
+  it('should not modify the original array', () => {
+    const array = [1, 2, 3, 4]
+    const result = shuffle(array)
+    expect(result).not.toBe(array)
+    expect(result).not.toStrictEqual(array)
+    expect(array).toEqual([1, 2, 3, 4])
+  })
+
+  it('should shuffle an empty array', () => {
     const result = shuffle([])
     expect(result).toEqual([])
   })
 
-  it('shuffles an empty array with a single item', () => {
+  it('should shuffle an empty array with a single item', () => {
     const result = shuffle([1])
     expect(result).toEqual([1])
   })
