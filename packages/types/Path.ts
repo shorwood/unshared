@@ -46,7 +46,7 @@ export type Path<T extends object, N extends number = 10, P extends string = ''>
 if (import.meta.vitest) {
   it('should infer the path of a nested object', () => {
     type Result = Path<{ foo: { bar: { baz: string } } }>
-    type Expected = 'foo.bar.baz' | 'foo.bar.baz' | 'foo.bar' | 'foo'
+    type Expected = 'foo.bar.baz' | 'foo.bar' | 'foo'
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
