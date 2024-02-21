@@ -124,27 +124,34 @@ export function alias<T extends object, A extends AliasMap<T>>(object: T, aliase
 /** c8 ignore next */
 if (import.meta.vitest) {
   describe('alias', () => {
-
     it('should get the value of a nested aliased property', () => {
       const result = alias({ a: { b: { c: 1 } } }, { abc: 'a.b.c' } as const)
       expect(result.abc).toEqual(1)
       expectTypeOf(result.abc).toEqualTypeOf<number>()
     })
 
-    it('should get the value of an optional aliased property', () => {
+    it('should get the value of a nested aliased property in an array', () => {
+      const result = alias([1, 2, 3], { first: '0', last: '2' } as const)
+      expect(result.first).toEqual(1)
+      expect(result.last).toEqual(3)
+      expectTypeOf(result.first).toEqualTypeOf<number>()
+      expectTypeOf(result.last).toEqualTypeOf<number>()
+    })
+
+    it('should get the value of an optional aliased property in an object', () => {
       const result = alias({ a: 1 } as { a?: number }, { abc: 'a' } as const)
       expect(result.abc).toEqual(1)
       expectTypeOf(result.abc).toEqualTypeOf<number | undefined>()
     })
 
-    it('should set the value of an aliased property', () => {
+    it('should set the value of an aliased property in an object', () => {
       const result = alias({ a: 1 }, { abc: 'a' } as const)
       result.abc = 2
       expect(result.abc).toEqual(2)
       expectTypeOf(result.abc).toEqualTypeOf<number>()
     })
 
-    it('should delete the value of an aliased property', () => {
+    it('should delete the value of an aliased property in an object', () => {
       const result = alias({ a: 1 } as { a?: number }, { abc: 'a' } as const)
       delete result.abc
       expect(result.abc).toBeUndefined()
