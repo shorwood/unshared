@@ -63,7 +63,7 @@ if (import.meta.vitest) {
     expect(shouldThrow).toThrow()
   })
 
-  it('should throw an error if the given object is not an object', () => {
+  it('should throw an error if the first parameter is not an object', () => {
     // @ts-expect-error: invalid parameter type
     const shouldThrow = () => immutable(1)
     expect(shouldThrow).toThrow()
