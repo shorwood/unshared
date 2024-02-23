@@ -2,7 +2,8 @@ import { IteratedFunction, MaybeLiteral, Path } from '@unshared/types'
 import { get } from './get'
 
 /**
- * Returns a new array containing only unique values.
+ * Returns a new array containing only unique values. The uniqueness is
+ * based on strict equality comparison.
  *
  * @param array The array to make unique.
  * @returns A new array containing only unique values.
@@ -40,6 +41,12 @@ if (import.meta.vitest) {
     const result = toUnique([1, 2, 3, 2, 1, 3])
     expect(result).toEqual([1, 2, 3])
     expectTypeOf(result).toEqualTypeOf<number[]>()
+  })
+
+  it('should use strict equality comparison', () => {
+    const result = toUnique([1, 2, 3, '1', '2', '3'])
+    expect(result).toEqual([1, 2, 3, '1', '2', '3'])
+    expectTypeOf(result).toEqualTypeOf<Array<number | string>>()
   })
 
   it('returns a new array containing only unique items, based on a given key', () => {
