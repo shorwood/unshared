@@ -8,7 +8,7 @@ import { Collection } from './Collection'
  */
 export type Values<T = unknown> =
   T extends string ? string
-    : T extends Map<any, infer U> ? U
+    : T extends Map<infer K, infer V> ? [K, V]
       : T extends Collection<infer U> ? U
         : unknown
 
