@@ -69,8 +69,8 @@ export type Aliased<T extends object, A extends AliasMap<T>> =
  *
  * // Create aliased object.
  * const aliased = alias(source, {
- *  fooBar: 'foo.bar',
- *  fooBaz: 'foo.baz',
+ *   fooBar: 'foo.bar',
+ *   fooBaz: 'foo.baz',
  * } as const)
  *
  * // Access nested properties using top-level properties.
