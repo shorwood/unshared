@@ -12,7 +12,7 @@ import { Values } from './Values'
  */
 export type IteratedFunction<T = unknown, R = unknown> = (value: Values<T>, key: Key<T>, object: T) => R
 
-/** c8 ignore next */
+/** v8 ignore start */
 if (import.meta.vitest) {
   it('should infer the parameters from an object', () => {
     type Result = IteratedFunction<{ a: number; b: string }, boolean>
@@ -20,9 +20,21 @@ if (import.meta.vitest) {
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
+  it('should infer the parameters from a Record', () => {
+    type Result = IteratedFunction<Record<string, number>, boolean>
+    type Expected = (value: number, key: string, object: Record<string, number>) => boolean
+    expectTypeOf<Result>().toEqualTypeOf<Expected>()
+  })
+
   it('should infer the parameters from a tuple', () => {
-    type Result = IteratedFunction<[number, string], boolean>
-    type Expected = (value: number | string, key: number, object: [number, string]) => boolean
+    type Result = IteratedFunction<[1, 2], boolean>
+    type Expected = (value: 1 | 2, key: number, object: [1, 2]) => boolean
+    expectTypeOf<Result>().toEqualTypeOf<Expected>()
+  })
+
+  it('should infer the parameters from a readonly tuple', () => {
+    type Result = IteratedFunction<readonly [1, 2], boolean>
+    type Expected = (value: 1 | 2, key: number, object: readonly [1, 2]) => boolean
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
@@ -41,6 +53,18 @@ if (import.meta.vitest) {
   it('should infer the parameters from a string', () => {
     type Result = IteratedFunction<string, boolean>
     type Expected = (value: string, key: number, object: string) => boolean
+    expectTypeOf<Result>().toEqualTypeOf<Expected>()
+  })
+
+  it('should infer the parameters from a Set', () => {
+    type Result = IteratedFunction<Set<number>, boolean>
+    type Expected = (value: number, key: number, object: Set<number>) => boolean
+    expectTypeOf<Result>().toEqualTypeOf<Expected>()
+  })
+
+  it('should infer the parameters from a Map', () => {
+    type Result = IteratedFunction<Map<boolean, number>, boolean>
+    type Expected = (value: [boolean, number], key: boolean, object: Map<boolean, number>) => boolean
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 }
