@@ -24,10 +24,12 @@ export default defineConfig({
 
     // --- V8 coverage configuration.
     coverage: {
-      enabled: false,
+      enabled: true,
       clean: true,
       cleanOnRerun: true,
-      reporter: ['lcovonly'],
+      reporter: ['lcovonly', 'html-spa'],
+      reportsDirectory: './coverage',
+      reportOnFailure: true,
     },
   },
 })
