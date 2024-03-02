@@ -1,4 +1,4 @@
-import { Fallback, Get, Path, StringMaybeLitteral } from '@unshared/types'
+import { Fallback, Get, Path, MaybeLiteral } from '@unshared/types'
 import { deleteProperty } from './deleteProperty'
 import { get } from './get'
 import { set } from './set'
@@ -10,7 +10,7 @@ import { set } from './set'
  * @returns A map of aliases to use for the collection.
  * @example AliasMap<{ abc: 'a.b.c' }> // { abc: 'a.b.c' }
  */
-export type AliasMap<T extends object> = Record<string, StringMaybeLitteral<Path<T>>>
+export type AliasMap<T extends object> = Record<string, MaybeLiteral<Path<T>>>
 
 /**
  * Map nested properties to top-level properties. Allows for easier access to nested
