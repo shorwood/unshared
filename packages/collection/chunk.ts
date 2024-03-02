@@ -9,12 +9,17 @@ import { NumberIntegerPositive } from '@unshared/types'
  * @example chunk([1, 2, 3, 4, 5], 2) // [[1, 2], [3, 4], [5]]
  */
 export function chunk<T, N extends number>(array: T[], size: NumberIntegerPositive<N>): T[][] {
-  const chunks = []
+  const chunksLength = Math.ceil(array.length / size)
+  const chunks = Array.from({ length: chunksLength })
+
+  // --- Split the array into chunks.
   for (let index = 0; index < array.length; index += size) {
-    const chunk = array.slice(index, index + size)
-    chunks.push(chunk)
+    const chunkIndex = Math.floor(index / size)
+    chunks[chunkIndex] = array.slice(index, index + size)
   }
-  return chunks
+
+  // --- Return the chunks.
+  return chunks as T[][]
 }
 
 /* c8 ignore next */
