@@ -1,55 +1,170 @@
-interface MapValues {
-  <T, K extends keyof T>(object: Array<T>, path: K): Record<string, T[K]>
-  <T, U>(object: Array<T>, iterator: (value: T, key: keyof T, array: Array<T>) => U): Record<string, U>
-  <T, K extends keyof T>(object: Record<string, T>, path: keyof T): Record<string, T[K]>
-  <T, U>(object: Record<string, T>, iterator: (value: T, key: keyof T, object: Record<string, T>) => U): Record<string, U>
-}
+import { IteratorFunction, Get, Values, IteratorPath } from '@unshared/types'
+import { get } from './get'
 
-// TODO: Implements `get` path iterator
+type MappedValuesByPath<T, P extends string> =
+  T extends readonly unknown[] ? { -readonly [K in keyof T]: Get<T[K], P> }
+    : T extends Iterable<unknown> ? Array<Get<Values<T>, P>>
+      : { -readonly [K in keyof T]: Get<T[K], P> }
+
+type MappedValuesByIterator<T, R> =
+  T extends readonly unknown[] ? { -readonly [K in keyof T]: R }
+    : T extends Iterable<unknown> ? R[]
+      : { -readonly [K in keyof T]: R }
 
 /**
- * Maps values of an object or array according to an iterator function or a key path.
+ * Iterates over a object, returning a new object consisting of values
+ * at the given path. If the object is an array, the results will be an array.
+ * If the object is an object, the results will be an object.
  *
- * @param object The object to map
- * @param iterator The iterator function or key path
- * @returns A new object or array
+ * This function also supports iterables, such as Set and Map but will always return
+ * an array of the results.
+ *
+ * @param object The object to iterate over.
+ * @param path The path to the value to return.
+ * @returns A new array consisting of the values at the given path.
+ * @example
+ * // Declare a object.
+ * const object = {
+ *   a: { name: { first: 'John', last: 'Doe' } },
+ *   b: { name: { first: 'Jane', last: 'Doe' } },
+ *   c: { name: { first: 'Jack', last: 'Doe' } },
+ * }
+ *
+ * // Get the first name of each item in the object.
+ * mapValues(object, 'name.first') // => ['John', 'Jane', 'Jack']
  */
-export const mapValues: MapValues = (object: any, iterator: any) => {
-  // --- If iterator is a path, cast as getter function.
-  if (typeof iterator !== 'function') {
-    const path = iterator
-    iterator = (value: any) => value[path]
-  }
+export function mapValues<T, P extends string = string>(object: T, path: IteratorPath<T> & P): MappedValuesByPath<T, P>
+/**
+ * Iterates over an object or array, returning a new array consisting of the results
+ * of the callback function.
+ *
+ * @param object The object to iterate over.
+ * @param iterator The callback function to invoke for each item in the object.
+ * @returns A new array consisting of the results of the callback function.
+ * @example map([1, 2, 3], x => x * x) // => [1, 4, 9]
+ */
+export function mapValues<T, R>(object: T, iterator: IteratorFunction<T, R>): MappedValuesByIterator<T, R>
+export function mapValues(object: object, iteratorOrPath?: IteratorFunction | string) {
+  // --- If iterator is a value, cast as nested getter function.
+  const iterator = typeof iteratorOrPath === 'function'
+    ? iteratorOrPath
+    : (value: unknown) => get(value, iteratorOrPath!)
 
-  // --- Map entries.
-  return Array.isArray(object)
-    ? object.map(iterator)
-    : Object.fromEntries(Object.entries(object).map(([key, value]) => [key, iterator(value, key, object)]))
+  // --- If the object has an iterator method, use it.
+  if (Symbol.iterator in object)
+    // @ts-expect-error: Predicate is not detected by TypeScript.
+    return [...object].map((value, key) => iterator(value, key, object))
+
+  // --- Otherwise, iterate over the entries' values.
+  const entries = Object
+    .entries(object)
+    .map(([key, value]) => [key, iterator(value, key, object)] as const)
+  return Object.fromEntries(entries)
 }
 
 /** c8 ignore next */
 if (import.meta.vitest) {
-  it('should map values of an array', () => {
-    expect(mapValues([1, 2, 3], value => value * 2)).toEqual([2, 4, 6])
+  describe('objects', () => {
+    it('should map a readonly object by key', () => {
+      const object = { a: { foo: 'bar' }, b: { foo: 'baz' } } as const
+      const result = mapValues(object, 'foo')
+      expect(result).toEqual({ a: 'bar', b: 'baz' })
+      expectTypeOf(result).toEqualTypeOf<{ a: 'bar'; b: 'baz' }>()
+    })
+
+    it('should map a readonly object by path', () => {
+      const object = { a: { foo: { bar: 'baz' } }, b: { foo: { bar: 'qux' } } } as const
+      const result = mapValues(object, 'foo.bar')
+      expect(result).toEqual({ a: 'baz', b: 'qux' })
+      expectTypeOf(result).toEqualTypeOf<{ a: 'baz'; b: 'qux' }>()
+    })
+
+    it('should map a readonly object using an predicator function', () => {
+      const object = { foo: 1, bar: 2, baz: 3 } as const
+      const callback = vi.fn(v => v.toString()) as <N extends number>(value: N) => `${N}`
+      const result = mapValues({ foo: 1, bar: 2, baz: 3 } as const, callback)
+      expect(result).toEqual({ foo: '1', bar: '2', baz: '3' })
+      expect(callback).toHaveBeenCalledTimes(3)
+      expect(callback).toHaveBeenCalledWith(1, 'foo', object)
+      expect(callback).toHaveBeenCalledWith(2, 'bar', object)
+      expect(callback).toHaveBeenCalledWith(3, 'baz', object)
+      expectTypeOf(result).toEqualTypeOf<{
+        foo: '1' | '2' | '3'
+        bar: '1' | '2' | '3'
+        baz: '1' | '2' | '3'
+      }>()
+    })
   })
 
-  it('should map values of an object', () => {
-    expect(mapValues({ a: 1, b: 2, c: 3 }, value => value * 2)).toEqual({ a: 2, b: 4, c: 6 })
+  describe('arrays', () => {
+    it('should map a tuple of objects by key', () => {
+      const array = [{ foo: 'bar' }, { foo: 'baz' }] as const
+      const result = mapValues(array, 'foo')
+      expect(result).toEqual(['bar', 'baz'])
+      expectTypeOf(result).toEqualTypeOf<['bar', 'baz']>()
+    })
+
+    it('should map a tuple of objects by path', () => {
+      const array = [{ foo: { bar: 'baz' } }, { foo: { bar: 'qux' } }] as const
+      const result = mapValues(array, 'foo.bar')
+      expect(result).toEqual(['baz', 'qux'])
+      expectTypeOf(result).toEqualTypeOf<['baz', 'qux']>()
+    })
+
+    it('should a tuple of objects using an predicator function', () => {
+      const array = [1, 2, 3] as const
+      const callback = vi.fn(v => v.toString()) as <N extends number>(value: N) => `${N}`
+      const result = mapValues(array, callback)
+      expect(result).toEqual(['1', '2', '3'])
+      expect(callback).toHaveBeenCalledTimes(3)
+      expect(callback).toHaveBeenCalledWith(1, 0, array)
+      expect(callback).toHaveBeenCalledWith(2, 1, array)
+      expect(callback).toHaveBeenCalledWith(3, 2, array)
+      expectTypeOf(result).toEqualTypeOf<[
+        '1' | '2' | '3',
+        '1' | '2' | '3',
+        '1' | '2' | '3',
+      ]>()
+    })
   })
 
-  it('should map values of an array according to a key path', () => {
-    expect(mapValues([{ name: 'John' }, { name: 'Jane' }, { name: 'Joe' }], 'name')).toEqual([
-      'John',
-      'Jane',
-      'Joe',
-    ])
-  })
+  describe('iterables', () => {
+    it('should map a Set using a path', () => {
+      const set = new Set([{ foo: 'bar' }, { foo: 'baz' }])
+      const result = mapValues(set, 'foo')
+      expect(result).toEqual(['bar', 'baz'])
+      expectTypeOf(result).toEqualTypeOf<string[]>()
+    })
 
-  it('should map values of an object according to a key path', () => {
-    expect(mapValues({ 1: { name: 'John' }, 2: { name: 'Jane' }, 3: { name: 'Joe' } }, 'name')).toEqual({
-      1: 'John',
-      2: 'Jane',
-      3: 'Joe',
+    it('should map a Set using a predicator function', () => {
+      const set = new Set([1, 2, 3])
+      const callback = vi.fn((v: number) => v.toString()) as <N extends number>(value: N) => `${N}`
+      const result = mapValues(set, callback)
+      expect(result).toEqual(['1', '2', '3'])
+      expect(callback).toHaveBeenCalledTimes(3)
+      expect(callback).toHaveBeenCalledWith(1, 0, set)
+      expect(callback).toHaveBeenCalledWith(2, 1, set)
+      expect(callback).toHaveBeenCalledWith(3, 2, set)
+      expectTypeOf(result).toEqualTypeOf<Array<`${number}`>>()
+    })
+
+    it('should map a Map using a path', () => {
+      const map = new Map([['a', { foo: 'bar' }], ['b', { foo: 'baz' }]])
+      const result = mapValues(map, '1.foo')
+      expect(result).toEqual(['bar', 'baz'])
+      expectTypeOf(result).toEqualTypeOf<string[]>()
+    })
+
+    it('should map a Map using a predicator function', () => {
+      const map = new Map([['a', 1], ['b', 2], ['c', 3]])
+      const callback = vi.fn(([,v]) => v.toString()) as <N extends number>(value: [string, N]) => `${N}`
+      const result = mapValues(map, callback)
+      expect(result).toEqual(['1', '2', '3'])
+      expect(callback).toHaveBeenCalledTimes(3)
+      expect(callback).toHaveBeenCalledWith(['a', 1], 0, map)
+      expect(callback).toHaveBeenCalledWith(['b', 2], 1, map)
+      expect(callback).toHaveBeenCalledWith(['c', 3], 2, map)
+      expectTypeOf(result).toEqualTypeOf<Array<`${number}`>>()
     })
   })
 }

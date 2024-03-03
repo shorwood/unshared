@@ -1,4 +1,4 @@
-import { Collection, IteratedFunction, Key, Values } from '@unshared/types'
+import { Collection, IteratorFunction } from '@unshared/types'
 
 /**
  * Maps the entries in an object or array and returns a new object with the
@@ -10,50 +10,69 @@ import { Collection, IteratedFunction, Key, Values } from '@unshared/types'
  * @param iterator An iterator function that returns the new key for each entry.
  * @returns The new object with mapped keys
  */
-export function mapEntries<T extends Collection, U, K extends PropertyKey>(object: T, iterator: IteratedFunction<T, readonly [K, U]>): Record<K, U> {
-  if (Array.isArray(object) || object instanceof Set) {
-    const entries = [...object].map((value, key) => iterator(value as Values<T>, key as Key<T>, object))
-    return Object.fromEntries(entries) as Record<K, U>
+export function mapEntries<T, K extends PropertyKey, R>(object: T, iterator: IteratorFunction<T, readonly [K, R]>): Record<K, R>
+export function mapEntries(object: Collection, iterator: IteratorFunction) {
+  if (Symbol.iterator in object) {
+    // @ts-expect-error: Predicate is not detected by TypeScript.
+    const entries = [...object].map((value, key) => iterator(value, key, object))
+    return Object.fromEntries(entries as Array<[PropertyKey, unknown]>)
   }
 
   const entries = Object
-    .entries(object)
-    .map(([key, value]) => iterator(value as Values<T>, key as Key<T>, object))
+    .entries(object )
+    .map(([key, value]) => iterator(value, key, object))
 
   // --- Cast as object.
-  return Object.fromEntries(entries) as Record<K, U>
+  return Object.fromEntries(entries as Array<[PropertyKey, unknown]>)
 }
 
-/** c8 ignore next */
+/** v8 ignore start */
 if (import.meta.vitest) {
-  const iteratorArray = (value: number, key: number) => [key * 2, value * 2] as const
-  const iteratorObject = <T extends string>(value: number, key: T) => [key.toUpperCase(), value * 2] as [Uppercase<T>, number]
-
   it('should map entries in an object', () => {
-    const object = { foo: 1, bar: 2, baz: 3 }
-    const result = mapEntries(object, iteratorObject)
-    expect(result).toEqual({ FOO: 2, BAR: 4, BAZ: 6 })
-    expectTypeOf(result).toEqualTypeOf<Record<'BAR' | 'BAZ' | 'FOO', number>>()
+    const object = { foo: 1, bar: 2, baz: 3 } as const
+    const callback = vi.fn((v: number, k: string) => [k.toUpperCase(), v % 2 ? 'odd' : 'even']) as <K extends string>(value: number, key: K) => readonly [Uppercase<K>, 'even' | 'odd']
+    const result = mapEntries(object, callback)
+    expect(result).toEqual({ FOO: 'odd', BAR: 'even', BAZ: 'odd' })
+    expect(callback).toHaveBeenCalledTimes(3)
+    expect(callback).toHaveBeenCalledWith(1, 'foo', object)
+    expect(callback).toHaveBeenCalledWith(2, 'bar', object)
+    expect(callback).toHaveBeenCalledWith(3, 'baz', object)
+    expectTypeOf(result).toEqualTypeOf<Record<'BAR' | 'BAZ' | 'FOO', 'even' | 'odd'>>()
   })
 
   it('should map entries in an array', () => {
-    const array = [1, 2, 3]
-    const result = mapEntries(array, iteratorArray)
-    expect(result).toEqual({ 0: 2, 1: 4, 2: 6 })
-    expectTypeOf(result).toEqualTypeOf<Record<number, number>>()
+    const array = [1, 2, 3] as const
+    const callback = vi.fn((v: number) => [v.toString(), v % 2 ? 'odd' : 'even']) as <V extends number>(value: V) => readonly [`${V}`, 'even' | 'odd']
+    const result = mapEntries(array, callback)
+    expect(result).toEqual({ 1: 'odd', 2: 'even', 3: 'odd' })
+    expect(callback).toHaveBeenCalledTimes(3)
+    expect(callback).toHaveBeenCalledWith(1, 0, array)
+    expect(callback).toHaveBeenCalledWith(2, 1, array)
+    expect(callback).toHaveBeenCalledWith(3, 2, array)
+    expectTypeOf(result).toEqualTypeOf<Record<'1' | '2' | '3', 'even' | 'odd'>>()
   })
 
   it('should map entries in a set', () => {
-    const set = new Set([1, 2, 3])
-    const result = mapEntries(set, (value, key) => [key * 2, value * 2] as const)
-    expect(result).toEqual({ 0: 2, 2: 4, 4: 6 })
-    expectTypeOf(result).toEqualTypeOf<Record<number, number>>()
+    const set = new Set([1, 2, 3] as const)
+    const callback = vi.fn((v: number) => [v.toString(), v % 2 ? 'odd' : 'even']) as <V extends number>(value: V) => readonly [`${V}`, 'even' | 'odd']
+    const result = mapEntries(set, callback)
+    expect(result).toEqual({ 1: 'odd', 2: 'even', 3: 'odd' })
+    expect(callback).toHaveBeenCalledTimes(3)
+    expect(callback).toHaveBeenCalledWith(1, 0, set)
+    expect(callback).toHaveBeenCalledWith(2, 1, set)
+    expect(callback).toHaveBeenCalledWith(3, 2, set)
+    expectTypeOf(result).toEqualTypeOf<Record<'1' | '2' | '3', 'even' | 'odd'>>()
   })
 
   it('should map entries in a map', () => {
     const map = new Map([['foo', 1], ['bar', 2], ['baz', 3]] as const)
-    const result = mapEntries(map, iteratorObject)
-    expect(result).toEqual({ FOO: 2, BAR: 4, BAZ: 6 })
-    expectTypeOf(result).toEqualTypeOf<Record<'BAR' | 'BAZ' | 'FOO', number>>()
+    const callback = vi.fn(([k, v]: [string, number]) => [k.toUpperCase(), v % 2 ? 'odd' : 'even']) as <K extends string>(value: [K, number]) => readonly [Uppercase<K>, 'even' | 'odd']
+    const result = mapEntries(map, callback)
+    expect(result).toEqual({ FOO: 'odd', BAR: 'even', BAZ: 'odd' })
+    expect(callback).toHaveBeenCalledTimes(3)
+    expect(callback).toHaveBeenCalledWith(['foo', 1], 0, map)
+    expect(callback).toHaveBeenCalledWith(['bar', 2], 1, map)
+    expect(callback).toHaveBeenCalledWith(['baz', 3], 2, map)
+    expectTypeOf(result).toEqualTypeOf<Record<'BAR' | 'BAZ' | 'FOO', 'even' | 'odd'>>()
   })
 }
