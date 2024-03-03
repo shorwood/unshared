@@ -1,7 +1,7 @@
 {
   "name": "@unshared/boolean",
   "type": "module",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "license": "MIT",
   "sideEffects": false,
   "description": "Boolean logic functions",
@@ -10,7 +10,7 @@
   "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
-    "url": "git@github.com:shorwood/unshared.git",
+    "url": "git+ssh://git@github.com:shorwood/unshared.git",
     "directory": "packages/boolean"
   },
   "exports": {
