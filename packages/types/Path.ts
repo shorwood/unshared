@@ -18,29 +18,34 @@ import { IsZero, Substract } from './utils'
  *
  * type Result = Path<Contact> // 'name' | 'name.first' | 'name.last' | 'email'
  */
-export type Path<T extends object, N extends number = 10, P extends string = ''> =
-  // --- On recursion threshold, return the current path(s) without the trailing dot.
-  IsZero<N> extends true ? P extends `${infer P1}.` ? P1 : P
+export type Path<T, N extends number = 10, P extends string = ''> =
+  T extends object
 
-    // --- If T is an Array and its items are objects, recurse.
-    : T extends Array<infer U>
-      ? U extends object
-        ? Path<U, Substract<N, 1>, `${P}${number}.`>
-        : (P extends '' ? `${number}` : `${P}${number}`)
+    // --- On recursion threshold, return the collected paths so far.
+    ? IsZero<N> extends true ? P extends `${infer P1}.` ? P1 : P
 
-      // --- For each key of T, collect the path.
-      : Extract<{ [K in keyof T]-?: K extends number | string
+      // --- If T is an Array and its items are objects, recurse.
+      : T extends Array<infer U>
+        ? U extends object
+          ? Path<U, Substract<N, 1>, `${P}${number}.`>
+          : (P extends '' ? `${number}` : `${P}${number}`)
 
-        // --- Collect the path and prepend the current path.
-        ? (P extends '' ? `${K}` : `${P}${K}`)
+        // --- For each key of T, collect the path.
+        : Extract<{ [K in keyof T]-?: K extends number | string
 
-        // --- If the value is an object, recurse.
-        | (T[K] extends object ? Path<T[K], Substract<N, 1>, `${P}${K}.`> : `${P}${K}`)
+          // --- Collect the path and prepend the current path.
+          ? (P extends '' ? `${K}` : `${P}${K}`)
 
-        // --- Ignore symbols.
-        : never
+          // --- If the value is an object, recurse.
+          | (T[K] extends object ? Path<T[K], Substract<N, 1>, `${P}${K}.`> : `${P}${K}`)
 
-      }[keyof T], string>
+          // --- Ignore symbols.
+          : never
+
+        }[keyof T], string>
+
+    // --- If T is not an object, return never.
+    : never
 
 /** c8 ignore next */
 if (import.meta.vitest) {
@@ -84,5 +89,20 @@ if (import.meta.vitest) {
     type Result = Path<string[]>
     type Expected = `${number}`
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
+  })
+
+  it('should infer the path of a string to never', () => {
+    type Result = Path<string>
+    expectTypeOf<Result>().toEqualTypeOf<never>()
+  })
+
+  it('should infer the path of a number to never', () => {
+    type Result = Path<number>
+    expectTypeOf<Result>().toEqualTypeOf<never>()
+  })
+
+  it('should infer the path of a boolean to never', () => {
+    type Result = Path<boolean>
+    expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 }
