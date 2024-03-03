@@ -1,4 +1,3 @@
-// @vitest-environment happy-dom
 import { mount } from '@vue/test-utils'
 import { expect, it } from 'vitest'
 import { ComponentInternalInstance, getCurrentInstance, nextTick, h } from 'vue-demi'
@@ -27,6 +26,7 @@ export function exposeToDevtool<T>(object: T, componentInstance?: ComponentInter
 
 /* v8 ignore start */
 if (import.meta.vitest) {
+  // @vitest-environment happy-dom
   it('should expose an object to the Vue Devtools', async() => {
     const wrapper = mount({ render: () => h('div') })
     const instance = wrapper.getCurrentComponent()
