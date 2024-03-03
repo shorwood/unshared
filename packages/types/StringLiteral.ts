@@ -1,5 +1,5 @@
 /**
- * A type that only matches literal string types and not string types.
+ * Matches a literal string type or never.
  *
  * @template T Type to match.
  * @returns The literal type.
@@ -10,7 +10,10 @@
  * // Matches a literal string.
  * StringLiteral<'foo'> // 'foo'
  */
-export type StringLiteral<T extends string> = string extends T ? T extends string ? never : T : T
+export type StringLiteral<T extends string> =
+  string extends T
+    ? T extends string ? never
+      : T : T
 
 /** c8 ignore next */
 if (import.meta.vitest) {
