@@ -1,4 +1,4 @@
-import { IteratedFunction, MaybeLiteral, Path } from '@unshared/types'
+import { IteratorFunction, MaybeLiteral, Path } from '@unshared/types'
 import { get } from './get'
 
 /**
@@ -10,14 +10,14 @@ import { get } from './get'
  * @example toUnique([1, 2, 3])
  */
 export function toUnique<T>(array: T[]): T[]
-export function toUnique<T>(array: T[], iterator: IteratedFunction<T[], string>): T[]
+export function toUnique<T>(array: T[], iterator: IteratorFunction<T[], string>): T[]
 export function toUnique<T extends object, P extends Path<T>>(array: T[], path: MaybeLiteral<P>): T[]
-export function toUnique(array: unknown[], iteratorOrPath?: IteratedFunction<unknown[]> | string) {
+export function toUnique(array: unknown[], iteratorOrPath?: IteratorFunction<unknown[]> | string) {
   const seen = new Set<unknown>()
   const result: unknown[] = []
 
   // --- Compute iterator function.
-  let iterator: IteratedFunction<unknown[]> = value => value
+  let iterator: IteratorFunction<unknown[]> = value => value
   if (typeof iteratorOrPath === 'function') iterator = iteratorOrPath
   if (typeof iteratorOrPath === 'string') iterator = value => get(value, iteratorOrPath)
 
