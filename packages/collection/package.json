@@ -1,6 +1,7 @@
 {
   "name": "@unshared/collection",
   "type": "module",
+  "version": "1.0.0",
   "license": "MIT",
   "sideEffects": false,
   "author": "Stanley Horwood <stanley@hsjm.io>",
@@ -8,7 +9,7 @@
   "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
-    "url": "git@github.com:shorwood/unshared.git",
+    "url": "git+ssh://git@github.com:shorwood/unshared.git",
     "directory": "packages/collection"
   },
   "exports": {
@@ -133,6 +134,11 @@
       "import": "./dist/index.js"
     }
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md"
+  ],
   "scripts": {
     "build": "pnpm build:indexes && pnpm build:bundle && pnpm build:packageJson",
     "build:bundle": "tsx ../../scripts/build.ts",
@@ -141,10 +147,5 @@
   },
   "devDependencies": {
     "@unshared/types": "workspace:*"
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE.md"
-  ]
+  }
 }
