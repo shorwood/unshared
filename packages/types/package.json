@@ -88,9 +88,6 @@
     "./DefaultObject": {
       "types": "./dist/DefaultObject.d.ts"
     },
-    "./DefaultTuple": {
-      "types": "./dist/DefaultTuple.d.ts"
-    },
     "./DefaultValue": {
       "types": "./dist/DefaultValue.d.ts"
     },
@@ -99,6 +96,9 @@
     },
     "./Fallback": {
       "types": "./dist/Fallback.d.ts"
+    },
+    "./FromEntries": {
+      "types": "./dist/FromEntries.d.ts"
     },
     "./Function": {
       "types": "./dist/Function.d.ts"
@@ -112,8 +112,11 @@
     "./Immutable": {
       "types": "./dist/Immutable.d.ts"
     },
-    "./IteratedFunction": {
-      "types": "./dist/IteratedFunction.d.ts"
+    "./IteratorFunction": {
+      "types": "./dist/IteratorFunction.d.ts"
+    },
+    "./IteratorPath": {
+      "types": "./dist/IteratorPath.d.ts"
     },
     "./Key": {
       "types": "./dist/Key.d.ts"
@@ -247,6 +250,12 @@
     "./Path": {
       "types": "./dist/Path.d.ts"
     },
+    "./Predicated": {
+      "types": "./dist/Predicated.d.ts"
+    },
+    "./Predicator": {
+      "types": "./dist/Predicator.d.ts"
+    },
     "./Primitive": {
       "types": "./dist/Primitive.d.ts"
     },
@@ -259,17 +268,11 @@
     "./PromiseWrap": {
       "types": "./dist/PromiseWrap.d.ts"
     },
-    "./ResolveTypeof": {
-      "types": "./dist/ResolveTypeof.d.ts"
-    },
     "./StringConstraint": {
       "types": "./dist/StringConstraint.d.ts"
     },
     "./StringLiteral": {
       "types": "./dist/StringLiteral.d.ts"
-    },
-    "./StringMaybeLitteral": {
-      "types": "./dist/StringMaybeLitteral.d.ts"
     },
     "./StringNumber": {
       "types": "./dist/StringNumber.d.ts"
@@ -312,6 +315,9 @@
     },
     "./TupleUnshift": {
       "types": "./dist/TupleUnshift.d.ts"
+    },
+    "./TypeOf": {
+      "types": "./dist/TypeOf.d.ts"
     },
     "./UnionMerge": {
       "types": "./dist/UnionMerge.d.ts"
