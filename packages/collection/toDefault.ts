@@ -94,7 +94,7 @@ if (import.meta.vitest) {
       const target = { a: 1 }
       const source = { b: 2 }
       const result = toDefault(target, source)
-      expect(result).toEqual({ a: 1, b: 2 })
+      expect(result).toStrictEqual({ a: 1, b: 2 })
       expectTypeOf(result).toEqualTypeOf<{ a: number; b: number }>()
     })
 
@@ -102,7 +102,7 @@ if (import.meta.vitest) {
       const target = { a: undefined }
       const source = { a: 1 }
       const result = toDefault(target, source)
-      expect(result).toEqual({ a: 1 })
+      expect(result).toStrictEqual({ a: 1 })
       expectTypeOf(result).toEqualTypeOf<{ a: number }>()
     })
 
@@ -111,7 +111,7 @@ if (import.meta.vitest) {
       const target = { a: null }
       const source = { a: 1 }
       const result = toDefault(target, source)
-      expect(result).toEqual({ a: 1 })
+      expect(result).toStrictEqual({ a: 1 })
       expectTypeOf(result).toEqualTypeOf<{ a: number }>()
     })
   })
@@ -121,7 +121,7 @@ if (import.meta.vitest) {
       const target = [1, 2] as const
       const source = [3, 4] as const
       const result = toDefault(target, source, { concat: true })
-      expect(result).toEqual([3, 4, 1, 2])
+      expect(result).toStrictEqual([3, 4, 1, 2])
       expectTypeOf(result).toEqualTypeOf<[3, 4, 1, 2]>()
     })
 
@@ -129,7 +129,7 @@ if (import.meta.vitest) {
       const target = [1, 2]
       const source = [3, 4]
       const result = toDefault(target, source, { concat: true })
-      expect(result).toEqual([3, 4, 1, 2])
+      expect(result).toStrictEqual([3, 4, 1, 2])
       expectTypeOf(result).toEqualTypeOf<number[]>()
     })
 
@@ -137,7 +137,7 @@ if (import.meta.vitest) {
       const target = undefined
       const source = [3, 4]
       const result = toDefault(target, source)
-      expect(result).toEqual([1, 2])
+      expect(result).toStrictEqual([3, 4])
       expectTypeOf(result).toEqualTypeOf<number[]>()
     })
   })
@@ -179,12 +179,12 @@ if (import.meta.vitest) {
   })
 
   describe('nested', () => {
-    it('should default nested properties', () => {
+    it('should default nested properties at the specified depth', () => {
       // eslint-disable-next-line unicorn/no-null
       const target = { a: { a: undefined, b: null } } as const
       const source = { a: { a: 1, b: 2, c: 3 } } as const
-      const result = toDefault(target, source)
-      expect(result).toEqual({ a: { a: 1, b: 2, c: 3 } })
+      const result = toDefault(target, source, { depth: 2 })
+      expect(result).toStrictEqual({ a: { a: 1, b: 2, c: 3 } })
       expectTypeOf(result).toEqualTypeOf<{ a: { a: 1; b: 2; c: 3 } }>()
     })
 
@@ -192,7 +192,7 @@ if (import.meta.vitest) {
       const target = { a: [1, 2] } as const
       const source = { a: [3, 4] } as const
       const result = toDefault(target, source, { concat: true, depth: 2 })
-      expect(result).toEqual({ a: [3, 4, 1, 2] })
+      expect(result).toStrictEqual({ a: [3, 4, 1, 2] })
       expectTypeOf(result).toEqualTypeOf<{ a: [1, 2] }>()
     })
 
@@ -200,7 +200,7 @@ if (import.meta.vitest) {
       const target = { a: { b: { c: { d: 1 } } } }
       const source = { a: { b: { c: { d: 2 } } } }
       const result = toDefault(target, source, { depth: 2 })
-      expect(result).toEqual({ a: { b: { c: { d: 1 } } } })
+      expect(result).toStrictEqual({ a: { b: { c: { d: 1 } } } })
       expectTypeOf(result).toEqualTypeOf<{ a: { b: { c: { d: number } } } }>()
     })
 
@@ -208,7 +208,7 @@ if (import.meta.vitest) {
       const target = { a: [1, [2, [3]]] }
       const source = { a: [4, [5, [6]]] }
       const result = toDefault(target, source, { depth: 2 })
-      expect(result).toEqual({ a: [1, [2, [3]]] })
+      expect(result).toStrictEqual({ a: [1, [2, [3]]] })
       expectTypeOf(result).toEqualTypeOf<{ a: Array<Array<number[] | number> | number> }>()
     })
   })
