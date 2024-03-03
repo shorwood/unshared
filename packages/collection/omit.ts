@@ -73,7 +73,7 @@ if (import.meta.vitest) {
 
   it('should omit the properties using a predicator function', () => {
     const object = { foo: 1, bar: 2, baz: '3' } as const
-    const callback = vi.fn(v => typeof v === 'number') as unknown as (value: unknown) => value is number
+    const callback = vi.fn((v: unknown) => typeof v === 'number') as unknown as (value: unknown) => value is number
     const result = omit(object, callback)
     expect(result).toEqual({ baz: '3' })
     expect(callback).toHaveBeenCalledTimes(3)

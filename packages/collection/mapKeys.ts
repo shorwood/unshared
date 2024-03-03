@@ -107,7 +107,7 @@ if (import.meta.vitest) {
 
     it('should map the keys of an object using an iterator', () => {
       const object = { a: 'foo', b: 'bar', c: 'baz' } as const
-      const callback = vi.fn(v => v.toUpperCase()) as <T extends string>(value: T) => Uppercase<T>
+      const callback = vi.fn((v: string) => v.toUpperCase()) as <T extends string>(value: T) => Uppercase<T>
       const result = mapKeys(object, callback)
       expect(result).toEqual({ FOO: 'foo', BAR: 'bar', BAZ: 'baz' })
       expect(callback).toHaveBeenCalledTimes(3)
@@ -151,7 +151,7 @@ if (import.meta.vitest) {
 
     it('should map the keys of an array using an iterator', () => {
       const array = ['foo', 'bar', 'baz'] as const
-      const callback = vi.fn(v => v.toUpperCase()) as <T extends string>(value: T) => Uppercase<T>
+      const callback = vi.fn((v: string) => v.toUpperCase()) as <T extends string>(value: T) => Uppercase<T>
       const result = mapKeys(array, callback)
       expect(result).toEqual({ FOO: 'foo', BAR: 'bar', BAZ: 'baz' })
       expect(callback).toHaveBeenCalledTimes(3)
@@ -179,7 +179,7 @@ if (import.meta.vitest) {
 
     it('should map the keys of a Set using an iterator', () => {
       const set = new Set(['foo', 'bar', 'baz'] as const)
-      const callback = vi.fn(v => v.toUpperCase()) as <T extends string>(value: T) => Uppercase<T>
+      const callback = vi.fn((v: string) => v.toUpperCase()) as <T extends string>(value: T) => Uppercase<T>
       const result = mapKeys(set, callback)
       expect(result).toEqual({ FOO: 'foo', BAR: 'bar', BAZ: 'baz' })
       expect(callback).toHaveBeenCalledTimes(3)
@@ -208,7 +208,7 @@ if (import.meta.vitest) {
 
     it('should map the keys of a Map using an iterator', () => {
       const map = new Map([['a', 'foo'], ['b', 'bar'], ['c', 'baz']] as const)
-      const callback = vi.fn(v => v[1].toUpperCase()) as <T extends string>(value: [string, T]) => Uppercase<T>
+      const callback = vi.fn((v: [string, string]) => v[1].toUpperCase()) as <T extends string>(value: [string, T]) => Uppercase<T>
       const result = mapKeys(map, callback)
       expect(result).toEqual({ FOO: ['a', 'foo'], BAR: ['b', 'bar'], BAZ: ['c', 'baz'] })
       expect(callback).toHaveBeenCalledTimes(3)

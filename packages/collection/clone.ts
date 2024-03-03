@@ -1,3 +1,5 @@
+import { isIterable } from './isIterable'
+
 /**
  * Clones a collection by creating a new collection with the same elements. You can
  * also specify the depth at which to clone nested collections. By default, it will
@@ -14,8 +16,7 @@ export function clone<T>(collection: T, depth = 1): T {
     return collection
 
   // --- Clone iterables
-  if (Symbol.iterator in collection)
-    // @ts-expect-error: Predicate is not detected by TypeScript.
+  if (isIterable(collection))
     return [...collection].map((element: unknown) => clone(element, depth - 1)) as T
 
   // --- Clone objects

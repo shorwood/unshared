@@ -81,7 +81,7 @@ if (import.meta.vitest) {
 
     it('should map a readonly object using an predicator function', () => {
       const object = { foo: 1, bar: 2, baz: 3 } as const
-      const callback = vi.fn(v => v.toString()) as <N extends number>(value: N) => `${N}`
+      const callback = vi.fn((v: number) => v.toString()) as <N extends number>(value: N) => `${N}`
       const result = mapValues({ foo: 1, bar: 2, baz: 3 } as const, callback)
       expect(result).toEqual({ foo: '1', bar: '2', baz: '3' })
       expect(callback).toHaveBeenCalledTimes(3)
@@ -113,7 +113,7 @@ if (import.meta.vitest) {
 
     it('should a tuple of objects using an predicator function', () => {
       const array = [1, 2, 3] as const
-      const callback = vi.fn(v => v.toString()) as <N extends number>(value: N) => `${N}`
+      const callback = vi.fn((v: number) => v.toString()) as <N extends number>(value: N) => `${N}`
       const result = mapValues(array, callback)
       expect(result).toEqual(['1', '2', '3'])
       expect(callback).toHaveBeenCalledTimes(3)
@@ -157,7 +157,7 @@ if (import.meta.vitest) {
 
     it('should map a Map using a predicator function', () => {
       const map = new Map([['a', 1], ['b', 2], ['c', 3]])
-      const callback = vi.fn(([,v]) => v.toString()) as <N extends number>(value: [string, N]) => `${N}`
+      const callback = vi.fn((v: [string, number]) => v[1].toString()) as <N extends number>(v: [string, N]) => `${N}`
       const result = mapValues(map, callback)
       expect(result).toEqual(['1', '2', '3'])
       expect(callback).toHaveBeenCalledTimes(3)
