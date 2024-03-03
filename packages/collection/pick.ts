@@ -1,23 +1,53 @@
-import { MaybeArray } from '@unshared/types/MaybeArray'
-import { IteratedFunction } from '@unshared/types/IteratedFunction'
+import { IteratorFunction, MaybeArray, Predicator } from '@unshared/types'
 
-interface IPick {
-  <T, K extends keyof T>(object: T, path: MaybeArray<K>): Pick<T, K>
-  <T>(object: T, iterator: IteratedFunction<T, boolean>): Partial<T>
-}
+type PickByKey<T, K extends PropertyKey> =
+  { [P in Extract<keyof T, K>]: T[P] } extends infer U
+    ? { -readonly [K in keyof U]: U[K] }
+    : never
+
+type PickByIterator<T, I extends IteratorFunction<T, boolean>> =
+  I extends Predicator<infer P>
+    ? { -readonly [K in keyof T as T[K] extends P ? K : never]: T[K] }
+    : Partial<T>
 
 /**
- * Returns a new object with the specified properties filtered.
+ * Returns a new object with the specified properties pickted.
  *
- * @param object The source object
- * @param iterator The property path(s) to pick
- * @returns A new object with the picked properties
+ * @param collection The collection to iterate over.
+ * @param keys The keys to pick.
+ * @returns A new object with the pickied properties
+ * @example
+ * // Declare an object.
+ * const object = { foo: 1, bar: 2, baz: 3 }
+ *
+ * // Pick the `foo` property.
+ * pick(object, 'foo') // => { foo: 1 }
+ *
+ * // Pick the `foo` and `bar` properties.
+ * pick(object, ['foo', 'bar']) // => { foo: 1, bar: 2 }
  */
-export const pick: IPick = (object: any, iterator?: any): any => {
+export function pick<T, K extends keyof T>(collection: T, keys: MaybeArray<K>): PickByKey<T, K>
+/**
+ * Returns a new object with the properties pickted by the iterator function.
+ *
+ * @param collection The collection to iterate over.
+ * @param iterator The iterator function to invoke for each item in the object.
+ * @returns A new object with the pickied properties
+ * @example
+ * // Declare an object.
+ * const object = { foo: 1, bar: 2 }
+ *
+ * // Pick propeties that have an even value.
+ * pick(object, value => value % 2 === 0) // => { bar: 2 }
+ */
+export function pick<T, I extends IteratorFunction<T, boolean>>(collection: T, iterator: I): PickByIterator<T, I>
+export function pick(object: object, pathOrIterator: IteratorFunction<object, boolean> | MaybeArray<string>) {
+  let iterator = pathOrIterator as IteratorFunction
+
   // --- If iterator is a path, cast as getter function.
-  if (typeof iterator !== 'function') {
-    const paths = Array.isArray(iterator) ? iterator : [iterator]
-    iterator = (value: any, key: any) => paths.includes(key)
+  if (typeof pathOrIterator !== 'function') {
+    const keys = Array.isArray(pathOrIterator) ? pathOrIterator : [pathOrIterator]
+    iterator = (_, key) => keys.includes(key as string)
   }
 
   // --- Filter entries.
@@ -28,17 +58,28 @@ export const pick: IPick = (object: any, iterator?: any): any => {
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should pick the specified property', () => {
-    const object = { foo: 1, bar: 2 }
-    expect(pick(object, 'foo')).toEqual({ foo: 1 })
+    const object = { foo: 1, bar: 2, baz: 3 } as const
+    const result = pick(object, 'foo')
+    expect(result).toEqual({ foo: 1 })
+    expectTypeOf(result).toEqualTypeOf<{ foo: 1 }>()
   })
 
-  it('should pick the specified property path', () => {
-    const object = { foo: 1, bar: 2, baz: 3 }
-    expect(pick(object, ['foo', 'bar'])).toEqual({ foo: 1, bar: 2 })
+  it('should pick the specified properties', () => {
+    const object = { foo: 1, bar: 2, baz: 3 } as const
+    const result = pick(object, ['foo', 'bar'])
+    expect(result).toEqual({ foo: 1, bar: 2 })
+    expectTypeOf(result).toEqualTypeOf<{ foo: 1; bar: 2 }>()
   })
 
-  it('should pick the specified property path using a function', () => {
-    const object = { foo: { bar: 1 } }
-    expect(pick(object, value => typeof value === 'number')).toEqual({})
+  it('should pick the properties using a predicator function', () => {
+    const object = { foo: 1, bar: 2, baz: '3' } as const
+    const callback = vi.fn(v => typeof v === 'number') as unknown as (value: unknown) => value is number
+    const result = pick(object, callback)
+    expect(result).toEqual({ foo: 1, bar: 2 })
+    expect(callback).toHaveBeenCalledTimes(3)
+    expect(callback).toHaveBeenCalledWith(1, 'foo', object)
+    expect(callback).toHaveBeenCalledWith(2, 'bar', object)
+    expect(callback).toHaveBeenCalledWith('3', 'baz', object)
+    expectTypeOf(result).toEqualTypeOf<{ foo: 1; bar: 2 }>()
   })
 }
