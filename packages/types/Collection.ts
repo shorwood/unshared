@@ -19,8 +19,7 @@ if (import.meta.vitest) {
   })
 
   it('should return a collection of unknowns', () => {
-    type Result = Collection
     type Expected = Iterable<unknown> | Record<PropertyKey, unknown> | readonly unknown[]
-    expectTypeOf<Result>().toEqualTypeOf<Expected>()
+    expectTypeOf<Collection>().toEqualTypeOf<Expected>()
   })
 }
