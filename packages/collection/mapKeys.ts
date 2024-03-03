@@ -50,7 +50,7 @@ export function mapKeys<T, P extends IteratorPath<T>>(collection: T, path: Maybe
  */
 export function mapKeys<T, R extends PropertyKey>(collection: T, iterator: IteratorFunction<T, R>): MappedKeysByIterator<T, R>
 export function mapKeys(collection: Collection, iteratorOrPath: IteratorFunction<unknown, PropertyKey> | string) {
-  // --- If iterator is a value, cast as nested getter function.
+  // --- If iterator is a string, cast as nested getter function.
   const iterator = typeof iteratorOrPath === 'function'
     ? iteratorOrPath
     : (item: unknown) => {
@@ -78,17 +78,7 @@ export function mapKeys(collection: Collection, iteratorOrPath: IteratorFunction
 
 /** v8 ignore start */
 if (import.meta.vitest) {
-  describe('objects', () => {
-    it('should map the keys of an object using a key', () => {
-      const object = { a: { foo: 'BAR' }, b: { foo: 'BAZ' } } as const
-      const result = mapKeys(object, 'foo')
-      expect(result).toEqual({ BAR: { foo: 'BAR' }, BAZ: { foo: 'BAZ' } })
-      expectTypeOf(result).toEqualTypeOf<{
-        BAR: { readonly foo: 'BAR' }
-        BAZ: { readonly foo: 'BAZ' }
-      }>()
-    })
-
+  describe('path', () => {
     it('should map the keys of an object using a path', () => {
       const object = {
         foo: { bar: { baz: 'FOO' } },
@@ -102,34 +92,6 @@ if (import.meta.vitest) {
       expectTypeOf(result).toEqualTypeOf<{
         FOO: { readonly bar: { readonly baz: 'FOO' } }
         BAR: { readonly bar: { readonly baz: 'BAR' } }
-      }>()
-    })
-
-    it('should map the keys of an object using an iterator', () => {
-      const object = { a: 'foo', b: 'bar', c: 'baz' } as const
-      const callback = vi.fn((v: string) => v.toUpperCase()) as <T extends string>(value: T) => Uppercase<T>
-      const result = mapKeys(object, callback)
-      expect(result).toEqual({ FOO: 'foo', BAR: 'bar', BAZ: 'baz' })
-      expect(callback).toHaveBeenCalledTimes(3)
-      expect(callback).toHaveBeenCalledWith('foo', 'a', object)
-      expect(callback).toHaveBeenCalledWith('bar', 'b', object)
-      expect(callback).toHaveBeenCalledWith('baz', 'c', object)
-      expectTypeOf(result).toEqualTypeOf<{
-        FOO: 'bar' | 'baz' | 'foo'
-        BAR: 'bar' | 'baz' | 'foo'
-        BAZ: 'bar' | 'baz' | 'foo'
-      }>()
-    })
-  })
-
-  describe('arrays', () => {
-    it('should map the keys of an array using a key', () => {
-      const array = [{ foo: 'BAR' }, { foo: 'BAZ' }] as const
-      const result = mapKeys(array, 'foo')
-      expect(result).toEqual({ BAR: { foo: 'BAR' }, BAZ: { foo: 'BAZ' } })
-      expectTypeOf(result).toEqualTypeOf<{
-        BAR: { readonly foo: 'BAR' }
-        BAZ: { readonly foo: 'BAZ' }
       }>()
     })
 
@@ -149,6 +111,47 @@ if (import.meta.vitest) {
       }>()
     })
 
+    it('should map the keys of a Set using a path', () => {
+      const set = new Set([{ foo: 'BAR' }, { foo: 'BAZ' }] as const)
+      const result = mapKeys(set, 'foo')
+      expect(result).toEqual({ BAR: { foo: 'BAR' }, BAZ: { foo: 'BAZ' } })
+      expectTypeOf(result).toEqualTypeOf<{
+        BAR: { readonly foo: 'BAR' } | { readonly foo: 'BAZ' }
+        BAZ: { readonly foo: 'BAR' } | { readonly foo: 'BAZ' }
+      }>()
+    })
+
+    it('should map the keys of a Map using a path', () => {
+      const map = new Map([['a', { foo: 'BAR' }], ['b', { foo: 'BAZ' }]] as const)
+      const result = mapKeys(map, '1.foo')
+      expect(result).toEqual({
+        BAR: ['a', { foo: 'BAR' }],
+        BAZ: ['b', { foo: 'BAZ' }],
+      })
+      expectTypeOf(result).toEqualTypeOf<{
+        BAR: ['a' | 'b', { readonly foo: 'BAR' } | { readonly foo: 'BAZ' }]
+        BAZ: ['a' | 'b', { readonly foo: 'BAR' } | { readonly foo: 'BAZ' }]
+      }>()
+    })
+  })
+
+  describe('iterator', () => {
+    it('should map the keys of an object using an iterator', () => {
+      const object = { a: 'foo', b: 'bar', c: 'baz' } as const
+      const callback = vi.fn((v: string) => v.toUpperCase()) as <T extends string>(value: T) => Uppercase<T>
+      const result = mapKeys(object, callback)
+      expect(result).toEqual({ FOO: 'foo', BAR: 'bar', BAZ: 'baz' })
+      expect(callback).toHaveBeenCalledTimes(3)
+      expect(callback).toHaveBeenCalledWith('foo', 'a', object)
+      expect(callback).toHaveBeenCalledWith('bar', 'b', object)
+      expect(callback).toHaveBeenCalledWith('baz', 'c', object)
+      expectTypeOf(result).toEqualTypeOf<{
+        FOO: 'bar' | 'baz' | 'foo'
+        BAR: 'bar' | 'baz' | 'foo'
+        BAZ: 'bar' | 'baz' | 'foo'
+      }>()
+    })
+
     it('should map the keys of an array using an iterator', () => {
       const array = ['foo', 'bar', 'baz'] as const
       const callback = vi.fn((v: string) => v.toUpperCase()) as <T extends string>(value: T) => Uppercase<T>
@@ -162,18 +165,6 @@ if (import.meta.vitest) {
         FOO: 'bar' | 'baz' | 'foo'
         BAR: 'bar' | 'baz' | 'foo'
         BAZ: 'bar' | 'baz' | 'foo'
-      }>()
-    })
-  })
-
-  describe('iterables', () => {
-    it('should map the keys of a Set using a key', () => {
-      const set = new Set([{ foo: 'BAR' }, { foo: 'BAZ' }] as const)
-      const result = mapKeys(set, 'foo')
-      expect(result).toEqual({ BAR: { foo: 'BAR' }, BAZ: { foo: 'BAZ' } })
-      expectTypeOf(result).toEqualTypeOf<{
-        BAR: { readonly foo: 'BAR' } | { readonly foo: 'BAZ' }
-        BAZ: { readonly foo: 'BAR' } | { readonly foo: 'BAZ' }
       }>()
     })
 
@@ -190,19 +181,6 @@ if (import.meta.vitest) {
         FOO: 'bar' | 'baz' | 'foo'
         BAR: 'bar' | 'baz' | 'foo'
         BAZ: 'bar' | 'baz' | 'foo'
-      }>()
-    })
-
-    it('should map the keys of a Map using a key', () => {
-      const map = new Map([['a', { foo: 'BAR' }], ['b', { foo: 'BAZ' }]] as const)
-      const result = mapKeys(map, '1.foo')
-      expect(result).toEqual({
-        BAR: ['a', { foo: 'BAR' }],
-        BAZ: ['b', { foo: 'BAZ' }],
-      })
-      expectTypeOf(result).toEqualTypeOf<{
-        BAR: ['a' | 'b', { readonly foo: 'BAR' } | { readonly foo: 'BAZ' }]
-        BAZ: ['a' | 'b', { readonly foo: 'BAR' } | { readonly foo: 'BAZ' }]
       }>()
     })
 
