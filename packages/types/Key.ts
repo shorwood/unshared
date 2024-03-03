@@ -6,16 +6,14 @@
  */
 // TODO: Extract tuple keys as literal numbers
 export type Key<T = unknown> =
-  T extends string ? (number & keyof T)
-    : T extends Map<infer K, any> ? K
-      : T extends Iterable<any> ? number
-        : T extends object ? keyof T
-          : PropertyKey
+  T extends Iterable<any> ? number
+    : T extends object ? keyof T
+      : PropertyKey
 
 /** v8 ignore start */
 if (import.meta.vitest) {
   it('should return the keys of an object', () => {
-    type Result = Key<{ a: 1; b: 2; c: 3 }>
+    type Result = Key<{ readonly a: 1; b: 2; c?: 3 }>
     expectTypeOf<Result>().toEqualTypeOf<'a' | 'b' | 'c'>()
   })
 
@@ -41,10 +39,15 @@ if (import.meta.vitest) {
 
   it('should return the keys of a map', () => {
     type Result = Key<Map<string, number>>
-    expectTypeOf<Result>().toEqualTypeOf<string>()
+    expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
   it('should return the keys of a string', () => {
+    type Result = Key<string>
+    expectTypeOf<Result>().toEqualTypeOf<number>()
+  })
+
+  it('should return the keys of a literal string', () => {
     type Result = Key<'abc'>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
