@@ -8,7 +8,7 @@
  * MaybePromise<number> // number | Promise<number>
  * MaybePromise<Promise<number>> // Promise<number>
  */
-export type MaybePromise<U = unknown> = U extends Promise<infer V> ? Promise<V> : U | Promise<U>
+export type MaybePromise<U = unknown> = U extends Promise<infer V> ? Promise<V> : Promise<U> | U
 
 /** c8 ignore next */
 if (import.meta.vitest) {
