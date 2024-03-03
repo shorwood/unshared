@@ -27,6 +27,7 @@ if (import.meta.vitest) {
   })
 
   it('should merge a union of objects with compatible property types', () => {
+    // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
     type Result = UnionMerge<{ a: number } | { a: number }>
     expectTypeOf<Result>().toEqualTypeOf<{ a: number }>()
   })
