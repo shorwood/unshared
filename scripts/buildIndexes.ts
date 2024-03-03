@@ -1,8 +1,7 @@
 import { readdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { isMatchingPattern } from '../packages/string/isMatchingPattern'
-import { getPackageMetadata } from './utils'
 import { createPattern } from '@unshared/string'
+import { getPackageMetadata } from './utils'
 
 interface IndexFile {
   /** The path to the index file. */

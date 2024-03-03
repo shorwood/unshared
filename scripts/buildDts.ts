@@ -1,7 +1,7 @@
 import { RollupOptions, rollup } from 'rollup'
 import RollupDts from 'rollup-plugin-dts'
 import { glob } from '../packages/fs/glob'
-import { TSCONFIG_PATH } from './constants'
+import { PackageName, TSCONFIG_PATH } from './constants'
 import { getPackageMetadata } from './utils'
 
 /**
@@ -13,9 +13,12 @@ import { getPackageMetadata } from './utils'
  * @example node scripts/build.ts string
  * @returns A promise that resolves when the build is complete.
  */
-export async function buildDts(packageName: string) {
+export async function buildDts(packageName: PackageName) {
   const { packagePath, outputPath } = await getPackageMetadata(packageName)
   const inputPaths = await glob(['./**/index.ts', './*.ts'], { cwd: packagePath })
+
+  // --- Do not build the declarations for theses packages.
+  if (packageName === 'eslint-config') return
 
   // --- Rollup configuration for `.d.ts` files.
   const rollupConfig = {
