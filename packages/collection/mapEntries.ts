@@ -26,4 +26,53 @@ export function mapEntries(collection: Collection, iterator: IteratorFunction) {
   return Object.fromEntries(entries as Array<[PropertyKey, unknown]>)
 }
 
+/** v8 ignore start */
+if (import.meta.vitest) {
+  it('should map entries in an object', () => {
+    const object = { foo: 1, bar: 2, baz: 3 } as const
+    const callback = vi.fn((v: number, k: string) => [k.toUpperCase(), v % 2 ? 'odd' : 'even']) as <K extends string>(value: number, key: K) => readonly [Uppercase<K>, 'even' | 'odd']
+    const result = mapEntries(object, callback)
+    expect(result).toEqual({ FOO: 'odd', BAR: 'even', BAZ: 'odd' })
+    expect(callback).toHaveBeenCalledTimes(3)
+    expect(callback).toHaveBeenCalledWith(1, 'foo', object)
+    expect(callback).toHaveBeenCalledWith(2, 'bar', object)
+    expect(callback).toHaveBeenCalledWith(3, 'baz', object)
+    expectTypeOf(result).toEqualTypeOf<Record<'BAR' | 'BAZ' | 'FOO', 'even' | 'odd'>>()
+  })
 
+  it('should map entries in an array', () => {
+    const array = [1, 2, 3] as const
+    const callback = vi.fn((v: number) => [v.toString(), v % 2 ? 'odd' : 'even']) as <V extends number>(value: V) => readonly [`${V}`, 'even' | 'odd']
+    const result = mapEntries(array, callback)
+    expect(result).toEqual({ 1: 'odd', 2: 'even', 3: 'odd' })
+    expect(callback).toHaveBeenCalledTimes(3)
+    expect(callback).toHaveBeenCalledWith(1, 0, array)
+    expect(callback).toHaveBeenCalledWith(2, 1, array)
+    expect(callback).toHaveBeenCalledWith(3, 2, array)
+    expectTypeOf(result).toEqualTypeOf<Record<'1' | '2' | '3', 'even' | 'odd'>>()
+  })
+
+  it('should map entries in a set', () => {
+    const set = new Set([1, 2, 3] as const)
+    const callback = vi.fn((v: number) => [v.toString(), v % 2 ? 'odd' : 'even']) as <V extends number>(value: V) => readonly [`${V}`, 'even' | 'odd']
+    const result = mapEntries(set, callback)
+    expect(result).toEqual({ 1: 'odd', 2: 'even', 3: 'odd' })
+    expect(callback).toHaveBeenCalledTimes(3)
+    expect(callback).toHaveBeenCalledWith(1, 0, set)
+    expect(callback).toHaveBeenCalledWith(2, 1, set)
+    expect(callback).toHaveBeenCalledWith(3, 2, set)
+    expectTypeOf(result).toEqualTypeOf<Record<'1' | '2' | '3', 'even' | 'odd'>>()
+  })
+
+  it('should map entries in a map', () => {
+    const map = new Map([['foo', 1], ['bar', 2], ['baz', 3]] as const)
+    const callback = vi.fn(([k, v]: [string, number]) => [k.toUpperCase(), v % 2 ? 'odd' : 'even']) as <K extends string>(value: [K, number]) => readonly [Uppercase<K>, 'even' | 'odd']
+    const result = mapEntries(map, callback)
+    expect(result).toEqual({ FOO: 'odd', BAR: 'even', BAZ: 'odd' })
+    expect(callback).toHaveBeenCalledTimes(3)
+    expect(callback).toHaveBeenCalledWith(['foo', 1], 0, map)
+    expect(callback).toHaveBeenCalledWith(['bar', 2], 1, map)
+    expect(callback).toHaveBeenCalledWith(['baz', 3], 2, map)
+    expectTypeOf(result).toEqualTypeOf<Record<'BAR' | 'BAZ' | 'FOO', 'even' | 'odd'>>()
+  })
+}
