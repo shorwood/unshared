@@ -83,6 +83,7 @@ module.exports = {
         props: true,
         args: true,
         fn: true,
+        ref: true,
       },
     }],
   },
