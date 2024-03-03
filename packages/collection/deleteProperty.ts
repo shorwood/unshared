@@ -1,4 +1,4 @@
-import { Collection, Path } from '@unshared/types'
+import { MaybeLiteral, Path } from '@unshared/types'
 
 /**
  * Delete a property at a nested path in an object safely. If the path does not exist,
@@ -18,9 +18,7 @@ import { Collection, Path } from '@unshared/types'
  * // Log the object.
  * console.log(object) // => { foo: {} }
  */
-export function deleteProperty<T extends Collection, K extends Path<T>>(object: T, path: K): void
-export function deleteProperty(object: unknown, path: string): void
-export function deleteProperty(object: unknown, path: string): void {
+export function deleteProperty<T, K extends Path<T>>(object: T, path: MaybeLiteral<K>): void {
   const keys = path.split('.')
   const lastKey = keys.pop()!
 
@@ -28,8 +26,8 @@ export function deleteProperty(object: unknown, path: string): void {
   let result = object
   for (const key of keys) {
     // @ts-expect-error: Invalid keys will be caught by the try/catch.
-    try { result = result[key] }
-    catch { return undefined }
+    try { result = result[key] as unknown as T }
+    catch { return }
   }
 
   // --- Delete the property from an Iterable.
@@ -63,8 +61,8 @@ if (import.meta.vitest) {
   } as const)
 
   it('should return undefined', () => {
-    const object = { foo: 'bar' }
-    const result = deleteProperty(object, 'foo')
+    // eslint-disable-next-line sonarjs/no-use-of-empty-return-value
+    const result = deleteProperty({ foo: 'bar' }, 'foo')
     expect(result).toBeUndefined()
   })
 
@@ -85,7 +83,7 @@ if (import.meta.vitest) {
     map.set('foo', 'bar')
     deleteProperty(map, 'foo')
     const expected = new Map()
-    expect(map).toEqual(expected)
+    expect(map).toStrictEqual(expected)
   })
 
   it('should delete a property of a Set', () => {
@@ -93,7 +91,7 @@ if (import.meta.vitest) {
     set.add('foo')
     deleteProperty(set, 'foo')
     const expected = new Set()
-    expect(set).toEqual(expected)
+    expect(set).toStrictEqual(expected)
   })
 
   it('should delete a property at the path of a nested object with array index', () => {
