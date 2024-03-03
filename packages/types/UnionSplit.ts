@@ -8,17 +8,17 @@ export type UnionSplit<T> = { [K in keyof T]: { [P in K]: T[P] } }[keyof T]
 
 /** c8 ignore next */
 if (import.meta.vitest) {
-  it('should split an object into a union', () => {
+  it('should split the properties of an object into a union of objects', () => {
     type Result = UnionSplit<{ a: number; b: string }>
     expectTypeOf<Result>().toEqualTypeOf<{ a: number } | { b: string }>()
   })
 
-  it('should split an object with optional properties into a union', () => {
+  it('should split the properties of an object with one optional property into a union of objects', () => {
     type Result = UnionSplit<{ a?: number; b: string }>
     expectTypeOf<Result>().toEqualTypeOf<{ a?: number } | { b: string } | undefined>()
   })
 
-  it('should split an object with rest properties into a union', () => {
+  it('should split the properties of an object with optional properties into a union of objects', () => {
     type Result = UnionSplit<Record<string, number> & Record<symbol, number>>
     expectTypeOf<Result>().toEqualTypeOf<Record<string, number> | Record<symbol, number>>()
   })
