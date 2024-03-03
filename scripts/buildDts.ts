@@ -1,5 +1,5 @@
 import { RollupOptions, rollup } from 'rollup'
-import RollupEsbuild from 'rollup-plugin-esbuild'
+import RollupDts from 'rollup-plugin-dts'
 import { glob } from '../packages/fs/glob'
 import { TSCONFIG_PATH } from './constants'
 import { getPackageMetadata } from './utils'
@@ -13,13 +13,11 @@ import { getPackageMetadata } from './utils'
  * @example node scripts/build.ts string
  * @returns A promise that resolves when the build is complete.
  */
-export async function buildBundle(packageName: string) {
+export async function buildDts(packageName: string) {
   const { packagePath, outputPath } = await getPackageMetadata(packageName)
   const inputPaths = await glob(['./**/index.ts', './*.ts'], { cwd: packagePath })
 
-  if (packageName === 'types') return
-
-  // --- Base Rollup configuration.
+  // --- Rollup configuration for `.d.ts` files.
   const rollupConfig = {
     input: inputPaths,
     external: [
@@ -28,34 +26,22 @@ export async function buildBundle(packageName: string) {
     ],
 
     plugins: [
-      RollupEsbuild({
-        target: 'esnext',
-        platform: 'neutral',
-        treeShaking: true,
-        sourceMap: true,
+      RollupDts({
         tsconfig: TSCONFIG_PATH,
-        define: { 'import.meta.vitest': 'false' },
+        respectExternal: true,
+        compilerOptions: {
+          strict: true,
+        },
       }),
     ],
 
-    output: [
-      {
-        dir: outputPath,
-        format: 'esm',
-        sourcemap: true,
-        entryFileNames: '[name].js',
-        assetFileNames: 'assets/[name].js',
-        chunkFileNames: 'chunks/[hash].js',
-      },
-      {
-        dir: outputPath,
-        format: 'cjs',
-        sourcemap: true,
-        entryFileNames: '[name].cjs',
-        assetFileNames: 'assets/[name].cjs',
-        chunkFileNames: 'chunks/[hash].cjs',
-      },
-    ],
+    output: [{
+      dir: outputPath,
+      format: 'esm',
+      entryFileNames: '[name].d.ts',
+      chunkFileNames: 'chunks/[hash].d.ts',
+      assetFileNames: 'assets/[name].d.ts',
+    }],
   } satisfies RollupOptions
 
   const bundle = await rollup(rollupConfig)

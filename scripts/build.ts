@@ -1,27 +1,32 @@
+import { rm } from 'node:fs/promises'
 import { argv } from 'node:process'
 import { parseArgv } from '../packages/process/parseCliArgv'
 import { buildBundle } from './buildBundle'
+import { buildDts } from './buildDts'
 import { buildIndexes } from './buildIndexes'
 import { buildPackageJson } from './buildPackageJson'
 import { PACKAGES_NAMES } from './constants'
+import { getPackageMetadata } from './utils'
 
 export async function build() {
   const { args } = parseArgv<{ watch: boolean }>(argv)
 
   // --- Get the package names to build.
   const packageNames = args.length > 0
-    ? args.filter(argument => PACKAGES_NAMES.includes(argument))
+    ? PACKAGES_NAMES.filter(argument => args.includes(argument))
     : PACKAGES_NAMES
 
-  // --- Log the packages to build.
-  console.log('Building packages:', packageNames.join(', '))
+  // --- Cleanup the output directories.
+  for (const packageName of packageNames) {
+    const { outputPath } = await getPackageMetadata(packageName)
+    await rm(outputPath, { recursive: true, force: true })
+  }
 
   // --- Build all packages.
-  for (const packageName of packageNames) {
-    await buildIndexes(packageName)
-    await buildBundle(packageName)
-    await buildPackageJson(packageName)
-  }
+  for (const packageName of packageNames) await buildIndexes(packageName)
+  for (const packageName of packageNames) await buildBundle(packageName)
+  for (const packageName of packageNames) await buildDts(packageName)
+  for (const packageName of packageNames) await buildPackageJson(packageName)
 }
 
 // --- Run the build script.
