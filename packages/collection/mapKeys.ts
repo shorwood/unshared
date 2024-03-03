@@ -1,5 +1,6 @@
 import { Collection, IteratorFunction, IteratorPath, Get, FromEntries, MaybeLiteral } from '@unshared/types'
 import { get } from './get'
+import { isIterable } from './isIterable'
 
 type MappedKeysByPath<T, P extends string> =
   T extends readonly unknown[] ? FromEntries<Array<[PropertyKey, unknown]> & { [K in keyof T]: [Get<T[K], P>, T[K]] }> extends infer U ? { -readonly [K in keyof U]: U[K] } : never
@@ -61,8 +62,7 @@ export function mapKeys(collection: Collection, iteratorOrPath: IteratorFunction
     }
 
   // --- If the collection has an iterator method, use it.
-  if (Symbol.iterator in collection) {
-    // @ts-expect-error: Predicate is not detected by TypeScript.
+  if (isIterable(collection)) {
     const entries = [...collection].map((value, key) => [iterator(value, key, collection), value] as const)
     return Object.fromEntries(entries)
   }

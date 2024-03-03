@@ -1,5 +1,6 @@
 import { IteratorFunction, Get, Values, IteratorPath } from '@unshared/types'
 import { get } from './get'
+import { isIterable } from './isIterable'
 
 type MappedValuesByPath<T, P extends string> =
   T extends readonly unknown[] ? { -readonly [K in keyof T]: Get<T[K], P> }
@@ -19,7 +20,7 @@ type MappedValuesByIterator<T, R> =
  * This function also supports iterables, such as Set and Map but will always return
  * an array of the results.
  *
- * @param object The object to iterate over.
+ * @param collection The collection to iterate over.
  * @param path The path to the value to return.
  * @returns A new array consisting of the values at the given path.
  * @example
@@ -33,32 +34,31 @@ type MappedValuesByIterator<T, R> =
  * // Get the first name of each item in the object.
  * mapValues(object, 'name.first') // => ['John', 'Jane', 'Jack']
  */
-export function mapValues<T, P extends string = string>(object: T, path: IteratorPath<T> & P): MappedValuesByPath<T, P>
+export function mapValues<T, P extends string = string>(collection: T, path: IteratorPath<T> & P): MappedValuesByPath<T, P>
 /**
  * Iterates over an object or array, returning a new array consisting of the results
  * of the callback function.
  *
- * @param object The object to iterate over.
+ * @param collection The collection to iterate over.
  * @param iterator The callback function to invoke for each item in the object.
  * @returns A new array consisting of the results of the callback function.
  * @example map([1, 2, 3], x => x * x) // => [1, 4, 9]
  */
-export function mapValues<T, R>(object: T, iterator: IteratorFunction<T, R>): MappedValuesByIterator<T, R>
-export function mapValues(object: object, iteratorOrPath?: IteratorFunction | string) {
+export function mapValues<T, R>(collection: T, iterator: IteratorFunction<T, R>): MappedValuesByIterator<T, R>
+export function mapValues(collection: object, iteratorOrPath?: IteratorFunction | string) {
   // --- If iterator is a value, cast as nested getter function.
   const iterator = typeof iteratorOrPath === 'function'
     ? iteratorOrPath
     : (value: unknown) => get(value, iteratorOrPath!)
 
   // --- If the object has an iterator method, use it.
-  if (Symbol.iterator in object)
-    // @ts-expect-error: Predicate is not detected by TypeScript.
-    return [...object].map((value, key) => iterator(value, key, object))
+  if (isIterable(collection))
+    return [...collection].map((value, key) => iterator(value, key, collection))
 
   // --- Otherwise, iterate over the entries' values.
   const entries = Object
-    .entries(object)
-    .map(([key, value]) => [key, iterator(value, key, object)] as const)
+    .entries(collection)
+    .map(([key, value]) => [key, iterator(value, key, collection)] as const)
   return Object.fromEntries(entries)
 }
 
