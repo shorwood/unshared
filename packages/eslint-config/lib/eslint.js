@@ -48,7 +48,13 @@ module.exports = {
     'no-useless-escape': 'off',
     // es6
     'no-var': 'error',
-    'no-void': 'error',
+    /**
+     * Allow `void` operator. It's useful to discard the result of an expression, especially
+     * when calling asynchronous functions that return a promise.
+     *
+     * @see https://eslint.org/docs/rules/no-void
+     */
+    'no-void': 'off',
     'no-with': 'error',
     'object-curly-spacing': ['error', 'always'],
     'object-shorthand': ['error', 'always', { avoidQuotes: true, ignoreConstructors: false }],
