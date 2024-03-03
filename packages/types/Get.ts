@@ -60,7 +60,7 @@ if (import.meta.vitest) {
   })
 
   it('should return never if the path is invalid', () => {
-    type Result = Get<{ foo: string }, 'bar'>
+    type Result = Get<{ foo: string }, 'foo.bar'>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 }
