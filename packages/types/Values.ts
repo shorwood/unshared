@@ -6,11 +6,7 @@ import { Collection } from './Collection'
  * @template T The collection to get the values from
  * @returns The values of the collection
  */
-export type Values<T = unknown> =
-  T extends string ? string
-    : T extends Map<infer K, infer V> ? [K, V]
-      : T extends Collection<infer U> ? U
-        : unknown
+export type Values<T = unknown> = T extends Collection<infer U> ? U : unknown
 
 /** v8 ignore start */
 if (import.meta.vitest) {
@@ -41,7 +37,7 @@ if (import.meta.vitest) {
 
   it('should return the values of a map', () => {
     type Result = Values<Map<string, symbol>>
-    expectTypeOf<Result>().toEqualTypeOf<symbol>()
+    expectTypeOf<Result>().toEqualTypeOf<[string, symbol]>()
   })
 
   it('should return the values of a string', () => {
@@ -49,7 +45,7 @@ if (import.meta.vitest) {
     expectTypeOf<Result>().toEqualTypeOf<string>()
   })
 
-  it('should fallback to PropertyKey', () => {
+  it('should fallback to unknown', () => {
     type Result = Values
     expectTypeOf<Result>().toEqualTypeOf<unknown>()
   })
