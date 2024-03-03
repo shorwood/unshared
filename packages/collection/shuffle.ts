@@ -36,11 +36,18 @@ if (import.meta.vitest) {
   })
 
   it('should not modify the original array', () => {
-    const array = [1, 2, 3, 4]
+    const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     const result = shuffle(array)
     expect(result).not.toBe(array)
-    expect(result).not.toStrictEqual(array)
-    expect(array).toEqual([1, 2, 3, 4])
+    expect(array).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+  })
+
+  it('should contain the same elements', () => {
+    const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    const result = shuffle(array)
+    expect(result).toHaveLength(10)
+    for (let index = 1; index <= 10; index++)
+      expect(result).toContain(index)
   })
 
   it('should shuffle an empty array', () => {
