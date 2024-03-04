@@ -1,18 +1,74 @@
 {
-  "type": "module",
-  "sideEffects": false,
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch"
-  },
   "name": "@unshared/color",
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
   "bugs": "https://github.com/shorwood/unshared/issues",
   "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shorwood/unshared.git",
+    "url": "git+ssh://git@github.com:shorwood/unshared.git",
     "directory": "packages/color"
   },
-  "author": "Stanley Horwood <stanley@hsjm.io>",
-  "license": "MIT"
+  "exports": {
+    "./createColorHsl": {
+      "require": "./dist/createColorHsl.cjs",
+      "types": "./dist/createColorHsl.d.ts",
+      "import": "./dist/createColorHsl.js"
+    },
+    "./createColorPalette": {
+      "require": "./dist/createColorPalette.cjs",
+      "types": "./dist/createColorPalette.d.ts",
+      "import": "./dist/createColorPalette.js"
+    },
+    "./createColorSrgb": {
+      "require": "./dist/createColorSrgb.cjs",
+      "types": "./dist/createColorSrgb.d.ts",
+      "import": "./dist/createColorSrgb.js"
+    },
+    "./hexToSrgb": {
+      "require": "./dist/hexToSrgb.cjs",
+      "types": "./dist/hexToSrgb.d.ts",
+      "import": "./dist/hexToSrgb.js"
+    },
+    "./hslToSrgb": {
+      "require": "./dist/hslToSrgb.cjs",
+      "types": "./dist/hslToSrgb.d.ts",
+      "import": "./dist/hslToSrgb.js"
+    },
+    "./srgbToHex": {
+      "require": "./dist/srgbToHex.cjs",
+      "types": "./dist/srgbToHex.d.ts",
+      "import": "./dist/srgbToHex.js"
+    },
+    "./srgbToHsl": {
+      "require": "./dist/srgbToHsl.cjs",
+      "types": "./dist/srgbToHsl.d.ts",
+      "import": "./dist/srgbToHsl.js"
+    },
+    "./srgbToInteger": {
+      "require": "./dist/srgbToInteger.cjs",
+      "types": "./dist/srgbToInteger.d.ts",
+      "import": "./dist/srgbToInteger.js"
+    },
+    "./types": {
+      "require": "./dist/types.cjs",
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js"
+    },
+    ".": {
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "dependencies": {
+    "@unshared/math": "workspace:*"
+  }
 }

@@ -1,44 +1,6 @@
-/**
- * Represents a color in the sRGB color space. Each channel is a number between 0 and 255.
- * The alpha channel is optional and defaults to 1.
- *
- * This color space is also known as the sRGB color space and is the most common color space
- * used on the web. It is a linear color space that is used to represent sub-pixel colors
- * intensities on a screen.
- *
- * @see https://en.wikipedia.org/wiki/RGB_color_space
- */
-export interface RGB {
-  /** Red channel from 0 to 255. */
-  red: number
-  /** Green channel from 0 to 255. */
-  green: number
-  /** Blue channel from 0 to 255. */
-  blue: number
-  /** Alpha channel from 0 to 1. */
-  alpha?: number
-}
+import { CharacterHex, StringConstraint } from '@unshared/types'
 
-/**
- * Represents a color in the HSLA color space. Each channel is a number between 0 and 1.
- * The alpha channel is optional and defaults to 1.
- *
- * It is a cylindrical color space that is similar to HSV but has a different definition
- * of the hue channel. The hue channel is defined as the angle around the color wheel
- * where 0 is red, 1/3 is green and 2/3 is blue.
- *
- * @see https://en.wikipedia.org/wiki/HSL_and_HSV
- */
-export interface HSL {
-  /** Hue channel from 0 to 360. */
-  hue: number
-  /** Saturation channel from 0 to 1. */
-  saturation: number
-  /** Lightness channel from 0 to 1. */
-  lightness: number
-  /** Alpha channel from 0 to 1. */
-  alpha?: number
-}
+
 
 /**
  * Represents a color in the HSV color space. Each channel is a number between 0 and 1.
@@ -52,13 +14,13 @@ export interface HSL {
  */
 export interface HSV {
   /** Hue channel from 0 to 360. */
-  hue: number
+  h: number
   /** Saturation channel from 0 to 1. */
-  saturation: number
+  s: number
   /** Value channel from 0 to 1. */
-  value: number
+  v: number
   /** Alpha channel from 0 to 1. */
-  alpha?: number
+  a?: number
 }
 
 /**
@@ -73,15 +35,15 @@ export interface HSV {
  */
 export interface CMYK {
   /** Cyan channel from 0 to 1. */
-  cyan: number
+  c: number
   /** Magenta channel from 0 to 1. */
-  magenta: number
+  m: number
   /** Yellow channel from 0 to 1. */
-  yellow: number
+  y: number
   /** Black channel from 0 to 1. */
-  key: number
+  k: number
   /** Alpha channel from 0 to 1. */
-  alpha?: number
+  a?: number
 }
 
 /**
@@ -102,7 +64,7 @@ export interface XYZ {
   /** Z channel from 0 to 1. */
   z: number
   /** Alpha channel from 0 to 1. */
-  alpha?: number
+  a?: number
 }
 
 /**
@@ -126,7 +88,25 @@ export interface LAB {
   alpha?: number
 }
 
+/**
+ * Represents a color in the LCH color space. Each channel is a number between 0 and 1.
+ * The alpha channel is optional and defaults to 1.
+ *
+ * It is a cylindrical color space that is similar to the LAB color space but has a
+ * different definition of the hue channel. The hue channel is defined as the angle
+ * around the color wheel where 0 is red, 1/3 is green and 2/3 is blue.
+ *
+ * @see https://en.wikipedia.org/wiki/CIELAB_color_space
+ */
+export interface LCH {
+  /** L channel from 0 to 1. */
+  l: number
+  /** C channel from 0 to 1. */
+  c: number
+  /** H channel from 0 to 1. */
+  h: number
+  /** Alpha channel from 0 to 1. */
+  a?: number
+}
 
-export type RGBHex3 = `#${StringCons
-
-export type ColorIntegerFormat = 'rgb' | 'rgba' | 'argb'
+export type RGBHex3 = `#${StringConstraint<CharacterHex, 3>}`
