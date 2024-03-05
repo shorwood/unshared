@@ -48,7 +48,19 @@ module.exports = {
           singleline: 'always',
           multiline: 'always',
         }],
-        'vue/component-name-in-template-casing': ['error', 'PascalCase'],
+
+        /**
+         * Enforce the component name casing to be PascalCase. This rules helps identify
+         * and distinguish between components and HTML elements. It also helps to avoid
+         * conflicts with existing and future HTML elements.
+         *
+         * @see https://eslint.vuejs.org/rules/component-name-in-template-casing.html
+         */
+        'vue/component-name-in-template-casing': ['error', 'PascalCase', {
+          registeredComponentsOnly: false,
+          ignores: [],
+        }],
+
         'vue/component-options-name-casing': ['error', 'PascalCase'],
         'vue/custom-event-name-casing': ['error', 'camelCase'],
         'vue/define-macros-order': ['error', {
