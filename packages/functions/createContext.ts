@@ -34,8 +34,13 @@ export interface Context<T> {
  * @param initialValue The context value to store.
  * @returns A unique context identifier.
  * @example
+ * // Create a context with an initial value.
  * const context = createContext({ foo: 'bar' })
+ *
+ * // Get the current context value after 1 second. `foo` is still `bar`.
  * context.runInContext(asl, (value) => setTimeout(() => console.log(value.foo), 1000)) // 'bar'
+ *
+ * // Change the context value before the timeout.
  * context.runInContext(asl, (value) => value.foo = 'baz') // 'baz'
  */
 export function createContext<T = unknown>(initialValue: NonNullable<T>): Context<T> {
@@ -67,12 +72,16 @@ export function createContext<T = unknown>(initialValue: NonNullable<T>): Contex
 
 /** c8 ignore next */
 if (import.meta.vitest) {
-  it('should get the context value', () => {
+  it('should create a context with an initial value', () => {
     const context = createContext({ foo: 'bar' })
     expect(context.value).toEqual({ foo: 'bar' })
+    expectTypeOf(context).toMatchTypeOf<{
+      runInContext: <U>(fn: (context: { foo: string }) => U) => U
+      value: { foo: string }
+    }>()
   })
 
-  it('should set the context value', () => {
+  it('should set the context value globally', () => {
     const context = createContext({ foo: 'bar' })
     context.value = { foo: 'baz' }
     expect(context.value).toEqual({ foo: 'baz' })
@@ -82,6 +91,7 @@ if (import.meta.vitest) {
     const context = createContext({ foo: 'bar' })
     const result = context.runInContext(context => context.foo)
     expect(result).toEqual('bar')
+    expectTypeOf(result).toEqualTypeOf<string>()
   })
 
   it('should run a function that modifies the context', () => {
@@ -90,10 +100,10 @@ if (import.meta.vitest) {
     expect(context.value).toEqual({ foo: 'baz' })
   })
 
-  it('should run a function where context is preserved', async() => {
+  it('should run with the context being isolated even when modified from the outside', async() => {
     const context = createContext({ foo: 'bar' })
     const result = await context.runInContext(context => new Promise(resolve => setTimeout(() => resolve(context.foo), 10)))
-    context.value = { foo: 'baz' }
+    context.value.foo = 'baz'
     expect(result).toEqual('bar')
   })
 }
