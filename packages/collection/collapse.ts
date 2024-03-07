@@ -87,7 +87,7 @@ export type Collapsed<T, O extends CollapseOptions = {}> =
  * // Collapse the collection.
  * const collapsed = collapse(collection) // { b: { qux: { value: true } } }
  */
-export function collapse<T, O extends CollapseOptions = {}>(object: T, options?: O): Collapsed<T, O>
+export function collapse<T, O extends CollapseOptions>(object: T, options?: O): Collapsed<T, O>
 export function collapse(object?: unknown, options: CollapseOptions = {}) {
   const {
     keepNull = false,
