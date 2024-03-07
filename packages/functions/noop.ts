@@ -9,6 +9,6 @@ export function noop(): void {}
 if (import.meta.vitest) {
   it('should return undefined', () => {
     const result = noop()
-    expect(result).toEqual(undefined)
+    expect(result).toBeUndefined()
   })
 }
