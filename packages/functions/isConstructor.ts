@@ -1,4 +1,4 @@
-import { Constructor } from '@unshared/types/Constructor'
+import { Constructor } from '@unshared/types'
 
 /**
  * Predicate to determine if a value is a constructor function.
@@ -8,7 +8,9 @@ import { Constructor } from '@unshared/types/Constructor'
  * @example isConstructor(Boolean) // true
  */
 export function isConstructor(value: unknown): value is Constructor {
-  return typeof value === 'function' && value.prototype !== undefined && value.prototype.constructor === value
+  return typeof value === 'function'
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    && value.prototype?.constructor === value
 }
 
 /* c8 ignore next */
