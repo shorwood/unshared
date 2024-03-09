@@ -13,9 +13,12 @@ let REGISTRY: FinalizationRegistry<unknown> | undefined
  * @param timeout The timeout to wait for the object to be garbage collected.
  * @returns A promise that resolves when the object is garbage collected.
  * @example
- * const object = { foo: 'bar' }
- * await garbageCollected(object)
- * // The object is garbage collected.
+ * class Database {
+ *   constructor() {
+ *     this.connection = new Connection()
+ *     garbageCollected(this).then(() => this.connection.close())
+ *   }
+ * }
  */
 export function garbageCollected<T extends WeakKey>(value: T, timeout = 0): Promise<void> {
   const resolvable = createResolvable<void>()
@@ -49,6 +52,19 @@ if (import.meta.vitest) {
     const result = createChildContext()
     garbageCollect()
     await expect(result).resolves.toBeUndefined()
+  })
+
+  it('should call the callback function when a class instance is garbage collected', async() => {
+    const callback = vi.fn()
+    class Example {
+      constructor() { void garbageCollected(this).then(callback) }
+    }
+
+    const createChildContext = () => { new Example() }
+    createChildContext()
+    garbageCollect()
+    await new Promise(resolve => setTimeout(resolve, 1))
+    expect(callback).toHaveBeenCalled()
   })
 
   it('should reject if the object is not garbage collected before the timeout', async() => {
