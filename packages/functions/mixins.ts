@@ -1,6 +1,5 @@
 /* eslint-disable unicorn/no-static-only-class */
-import { Constructor } from '@unshared/types/Constructor'
-import { Mixins } from '@unshared/types/Mixins'
+import { Constructor, Mixins } from '@unshared/types'
 
 /**
  * Mixes multiple classes into a single class. The resulting class will have all properties and methods
@@ -12,7 +11,7 @@ import { Mixins } from '@unshared/types/Mixins'
  * resulting class. Or alternatively, only use mixins for classes that do not have decorators.
  *
  * Beware of the fact no [privately accessible](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_class_fields)
- *  properties will be mixed. Because of this, it is recommended to use the `private` keyword instead of the
+ * properties will be mixed. Because of this, it is recommended to use the `private` keyword instead of the
  * `#` private field syntax.
  *
  * @param mixins The classes to mix into the new class.
@@ -24,16 +23,16 @@ import { Mixins } from '@unshared/types/Mixins'
  * class FooBarBaz extends mixins(Foo, Bar, Baz) {}
  */
 export function mixins<T extends [Constructor, ...Constructor[]]>(...mixins: T): Mixins<T> {
-  if (mixins.length === 0) throw new TypeError('No mixins were provided.')
+  if (mixins.length === 0) throw new TypeError('Cannot mix classes: no classes were passed')
   if (mixins.length === 1) return mixins[0] as Mixins<T>
 
-  // --- Reverse the mixins to preserve the prototype chain.
+  // --- Reverse the mixins to preserve the prototype chain order.
   mixins.reverse()
 
   // --- Create a new class extending all the mixins.
   class Mixed {
     constructor(...parameters: unknown[]) {
-      const thisPrototype = Object.getPrototypeOf(this)
+      const thisPrototype = Object.getPrototypeOf(this) as Record<string, unknown>
       let parentPrototype = thisPrototype
 
       // --- Apply the mixins.
@@ -42,7 +41,7 @@ export function mixins<T extends [Constructor, ...Constructor[]]>(...mixins: T):
         Object.assign(this, instance)
 
         // --- Preserve prototype descriptors and prototype chain.
-        const instancePrototype = Object.getPrototypeOf(instance)
+        const instancePrototype = Object.getPrototypeOf(instance) as Record<string, unknown>
         const instanceDescriptors = Object.getOwnPropertyDescriptors(instancePrototype)
         Object.defineProperties(thisPrototype, instanceDescriptors)
         Object.setPrototypeOf(parentPrototype, instancePrototype)
@@ -66,6 +65,11 @@ if (import.meta.vitest) {
     expect(result).toHaveProperty('foo', 'foo')
     expect(result).toHaveProperty('bar', 'bar')
     expect(result).toHaveProperty('baz', 'baz')
+    expectTypeOf(result).toEqualTypeOf<{
+      foo: string
+      bar: string
+      baz: string
+    }>()
   })
 
   it('should override properties from right to left', () => {
@@ -75,6 +79,7 @@ if (import.meta.vitest) {
     class Result extends mixins(mixins(ClassA, ClassB), ClassC) {}
     const result = new Result()
     expect(result).toHaveProperty('foo', 'foo')
+    expectTypeOf(result).toEqualTypeOf<{ foo: string }>()
   })
 
   it('should preserve the prototype chain', () => {
@@ -87,6 +92,11 @@ if (import.meta.vitest) {
     expect(result).toBeInstanceOf(ClassC)
     expect(result).toBeInstanceOf(ClassB)
     expect(result).toBeInstanceOf(ClassA)
+    expectTypeOf(result).toEqualTypeOf<{
+      foo: string
+      bar: string
+      baz: string
+    }>()
   })
 
   it('should preserve the prototype chain of nested mixins', () => {
@@ -99,6 +109,11 @@ if (import.meta.vitest) {
     expect(result).toBeInstanceOf(ClassC)
     expect(result).toBeInstanceOf(ClassB)
     expect(result).toBeInstanceOf(ClassA)
+    expectTypeOf(result).toEqualTypeOf<{
+      foo: string
+      bar: string
+      baz: string
+    }>()
   })
 
   it('should preserve the `this` context', () => {
@@ -117,6 +132,15 @@ if (import.meta.vitest) {
     expect(result).toHaveProperty('bar', 'BAR')
     expect(result).toHaveProperty('baz', 'BAZ')
     expect(result).toHaveProperty('fooBarBaz', 'FOOBARBAZ')
+    expectTypeOf(result).toEqualTypeOf<{
+      foo: string
+      bar: string
+      baz: string
+      _foo: string
+      _bar: string
+      _baz: string
+      fooBarBaz: string
+    }>()
   })
 
   it('should preserve private properties', () => {
@@ -128,6 +152,7 @@ if (import.meta.vitest) {
     expect(result).toHaveProperty('foo', 'foo')
     expect(result).toHaveProperty('bar', 'bar')
     expect(result).toHaveProperty('baz', 'baz')
+    expectTypeOf(result).toEqualTypeOf<{}>()
   })
 
   it('should just return the class if only one class is passed', () => {
@@ -136,6 +161,7 @@ if (import.meta.vitest) {
     const result = new Result()
     expect(result).toHaveProperty('foo', 'foo')
     expect(result).toBeInstanceOf(ClassA)
+    expectTypeOf(result).toEqualTypeOf<{ foo: string }>()
   })
 
   it('should preserve getters and setters', () => {
@@ -150,6 +176,14 @@ if (import.meta.vitest) {
     expect(result.foo).toEqual('FOO')
     expect(result.bar).toEqual('BAR')
     expect(result.baz).toEqual('BAZ')
+    expectTypeOf(result).toEqualTypeOf<{
+      foo: string
+      bar: string
+      baz: string
+      _foo: string
+      _bar: string
+      _baz: string
+    }>()
   })
 
   it('should preserve static properties', () => {
@@ -160,6 +194,7 @@ if (import.meta.vitest) {
     expect(Result.FOO).toEqual('foo')
     expect(Result.BAR).toEqual('bar')
     expect(Result.BAZ).toEqual('baz')
+
   })
 
   it('should preserve static getters and setters', () => {
