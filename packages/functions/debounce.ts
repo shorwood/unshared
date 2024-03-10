@@ -18,11 +18,11 @@ export type Debounced<T extends Function> = (...parameters: Parameters<T>) => vo
  * @returns The debounced function.
  * @example debounce(() => console.log('Hello'), 1000)
  */
-export function debounce<T extends Function, N extends number>(fn: T, delay: NumberIntegerPositive<N>): Debounced<T> {
+export function debounce<T extends Function<unknown>, N extends number>(fn: T, delay: NumberIntegerPositive<N>): Debounced<T> {
   let timeout: NodeJS.Timeout | undefined
 
   // --- Instantiate and return a debounced function.
-  const debounced = (...parameters: Parameters<T>): void =>{
+  const debounced = (...parameters: Parameters<T>): void => {
     clearTimeout(timeout)
     timeout = setTimeout(() => fn(...parameters), delay)
   }
@@ -37,7 +37,7 @@ if (import.meta.vitest) {
     vi.useFakeTimers()
   })
 
-  it('should debounces a function so it is only called once after delay', async() => {
+  it('should debounces a function so it is only called once after delay', () => {
     let count = 0
     const debounced = debounce(() => count++, 10)
     debounced()
@@ -45,9 +45,10 @@ if (import.meta.vitest) {
     debounced()
     vi.advanceTimersByTime(100)
     expect(count).toEqual(1)
+    expectTypeOf(debounced).toEqualTypeOf<() => void>()
   })
 
-  it('should pass the parameters of the last call to the debounced function', async() => {
+  it('should pass the parameters of the last call to the debounced function', () => {
     let count = 0
     const debounced = debounce((n: number) => count = n, 10)
     debounced(1)
@@ -55,9 +56,10 @@ if (import.meta.vitest) {
     debounced(3)
     vi.advanceTimersByTime(100)
     expect(count).toEqual(3)
+    expectTypeOf(debounced).toEqualTypeOf<(n: number) => void>()
   })
 
-  it('should be able to execute the debounced function again after the delay has passed', async() => {
+  it('should be able to execute the debounced function again after the delay has passed', () => {
     let count = 0
     const debounced = debounce(() => count++, 10)
     debounced()
@@ -66,16 +68,18 @@ if (import.meta.vitest) {
     debounced()
     vi.advanceTimersByTime(100)
     expect(count).toEqual(2)
+    expectTypeOf(debounced).toEqualTypeOf<() => void>()
   })
 
-  it('should return undefined', async() => {
-    const debounced = debounce(async() => 1, 10)
+  it('should return undefined', () => {
+    const debounced = debounce(() => 1, 10)
     const result = debounced()
     vi.advanceTimersByTime(100)
     expect(result).toBeUndefined()
+    expectTypeOf(debounced).toEqualTypeOf<() => void>()
   })
 
-  it('should not execute the function before the delay has passed', async() => {
+  it('should not execute the function before the delay has passed', () => {
     let count = 0
     const debounced = debounce(() => count++, 100)
     debounced()
@@ -83,11 +87,6 @@ if (import.meta.vitest) {
     debounced()
     vi.advanceTimersByTime(50)
     expect(count).toEqual(0)
-  })
-
-  it('should transform the return type of the debounced function', async() => {
-    type Result = Debounced<(a: number) => number>
-    type Expected = (a: number) => void
-    expectTypeOf<Result>().toEqualTypeOf<Expected>()
+    expectTypeOf(debounced).toEqualTypeOf<() => void>()
   })
 }
