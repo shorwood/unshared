@@ -42,14 +42,6 @@ if (import.meta.vitest) {
     expect(result2).toEqual(11)
   })
 
-  it('should start over from the initial value once the sequence reaches the default maximum safe integer', () => {
-    const index = createIndex(Number.MAX_SAFE_INTEGER - 1)
-    const result1 = index()
-    const result2 = index()
-    expect(result1).toEqual(Number.MAX_SAFE_INTEGER)
-    expect(result2).toEqual(Number.MAX_SAFE_INTEGER - 1)
-  })
-
   it('should start over from the initial value once the sequence reaches the maximum safe integer', () => {
     const index = createIndex(0, 1)
     const result1 = index()
@@ -58,5 +50,15 @@ if (import.meta.vitest) {
     expect(result1).toEqual(0)
     expect(result2).toEqual(1)
     expect(result3).toEqual(0)
+  })
+
+  it('should start over from the initial value once the sequence reaches the default maximum safe integer', () => {
+    const index = createIndex(Number.MAX_SAFE_INTEGER - 1)
+    const result1 = index()
+    const result2 = index()
+    const result3 = index()
+    expect(result1).toEqual(Number.MAX_SAFE_INTEGER - 1)
+    expect(result2).toEqual(Number.MAX_SAFE_INTEGER)
+    expect(result3).toEqual(Number.MAX_SAFE_INTEGER - 1)
   })
 }
