@@ -60,31 +60,53 @@ export function awaitable<T>(iterable: AsyncIterable<T>): Awaitable<AsyncIterabl
  * await itemsSync() // [{ id: 4 }, { id: 5 }]
  */
 export function awaitable<T extends object, U>(object: T, promise: FunctionAsync<U> | Promise<U>): Awaitable<T, U>
-export function awaitable(object: object, promiseOrFactory?: FunctionAsync<unknown> | Promise<unknown>) {
-  let createPromise: FunctionAsync<unknown> | undefined
+export function awaitable(object: object, createPromise?: FunctionAsync<unknown> | Promise<unknown>) {
 
-  // --- If `object` is an async iterable, then wrap it in a promise that resolves to an array.
-  if (!promiseOrFactory && Symbol.asyncIterator in object) {
-    createPromise = async() => {
+  // --- If `object` is an async iterable, we must extend it with the promise methods
+  // --- instead of wrapping it in a proxy. This is because the `for await` loop will
+  // --- not work with a proxy object as it expects an [AsyncGenerator] instance.
+  if (!createPromise && Symbol.asyncIterator in object) {
+    let promise: Promise<unknown> | undefined
+
+    const collect = async() => {
       const result = []
       for await (const item of object as AsyncGenerator<unknown>) result.push(item)
       return result
     }
+
+    // @ts-expect-error: `then` is a new method that is not yet in the types.
+    // eslint-disable-next-line unicorn/no-thenable
+    object.then = (...args: Parameters<typeof Promise.prototype.then>) => {
+      if (!promise) promise = collect()
+      return promise.then(...args)
+    }
+
+    // @ts-expect-error: `catch` is a new method that is not yet in the types.
+    // eslint-disable-next-line unicorn/no-thenable
+    object.catch = (...args: Parameters<typeof Promise.prototype.catch>) => {
+      if (!promise) promise = collect()
+      return promise.catch(...args)
+    }
+
+    // @ts-expect-error: `finally` is a new method that is not yet in the types.
+    // eslint-disable-next-line unicorn/no-thenable
+    object.finally = (...args: Parameters<typeof Promise.prototype.finally>) => {
+      if (!promise) promise = collect()
+      return promise.finally(...args)
+    }
+
+    // --- Return the extended object.
+    return object
   }
 
   // --- If the second parameter is a promise, wrap it in a function.
-  else if (promiseOrFactory instanceof Promise) {
-    const resolved = promiseOrFactory
-    createPromise = () => resolved
-  }
-
-  // --- If the second parameter is a function, use it as the promise factory.
-  else if (typeof promiseOrFactory === 'function') {
-    createPromise = promiseOrFactory
+  else if (createPromise instanceof Promise) {
+    const promise = createPromise
+    createPromise = () => promise
   }
 
   // --- Otherwise, if `promise` is not a function, throw an error.
-  else {
+  else if (typeof createPromise !== 'function') {
     throw new TypeError('Cannot create awaitable object: Second parameter must be a promise or an asyncronous function')
   }
 
@@ -98,7 +120,7 @@ export function awaitable(object: object, promiseOrFactory?: FunctionAsync<unkno
       if (!isPromiseMethod) return typeof value === 'function' ? value.bind(receiver) as unknown : value
 
       // --- Create the promise and return the bound promise method.
-      const promise = createPromise!()
+      const promise = createPromise() as Promise<unknown>
       if (promise instanceof Promise === false)
         throw new TypeError('Cannot create awaitable object: Second parameter must be a promise or an asyncronous function')
       return promise[(property as 'catch' | 'finally' | 'then')].bind(promise)
@@ -108,69 +130,93 @@ export function awaitable(object: object, promiseOrFactory?: FunctionAsync<unkno
 
 /* c8 ignore next */
 if (import.meta.vitest) {
-  it('should wrap an object with a promise that resolves to undefined', async() => {
-    const object = { foo: 'bar' }
-    const promise = new Promise<void>(resolve => setTimeout(() => { object.foo = 'baz'; resolve() }, 1))
-    const result = awaitable(object, promise)
-    expect(result).toEqual(object)
-    await expect(result).resolves.toBeUndefined()
-    expectTypeOf(result).toEqualTypeOf<Promise<void> & { foo: string }>()
-  })
+  describe('awaitable', () => {
+    it('should wrap an object with a promise that resolves to undefined', async() => {
+      const object = { foo: 'bar' }
+      const promise = new Promise<void>(resolve => setTimeout(() => { object.foo = 'baz'; resolve() }, 1))
+      const result = awaitable(object, promise)
+      expect(result).toEqual(object)
+      await expect(result).resolves.toBeUndefined()
+      expectTypeOf(result).toEqualTypeOf<Promise<void> & { foo: string }>()
+    })
 
-  it('should wrap an object with a promise that resolves to a value', async() => {
-    const object = { foo: 'bar' } as const
-    const result = awaitable(object, Promise.resolve('baz' as const))
-    expect(result).toEqual({ foo: 'bar' })
-    await expect(result).resolves.toEqual('baz')
-    expectTypeOf(result).toEqualTypeOf<Promise<'baz'> & { readonly foo: 'bar' }>()
-  })
+    it('should wrap an object with a promise that resolves to a value', async() => {
+      const object = { foo: 'bar' } as const
+      const result = awaitable(object, Promise.resolve('baz' as const))
+      expect(result).toEqual({ foo: 'bar' })
+      await expect(result).resolves.toEqual('baz')
+      expectTypeOf(result).toEqualTypeOf<Promise<'baz'> & { readonly foo: 'bar' }>()
+    })
 
-  it('should wrap an object with a promise factory that resolves with a value', async() => {
-    const object = { foo: 'bar' } as const
-    const result = awaitable(object, () => Promise.resolve('bar' as const))
-    expect(result).toEqual({ foo: 'bar' })
-    await expect(result).resolves.toEqual('bar')
-    expectTypeOf(result).toEqualTypeOf<Promise<'bar'> & { readonly foo: 'bar' }>()
-  })
+    it('should wrap an object with a promise factory that resolves with a value', async() => {
+      const object = { foo: 'bar' } as const
+      const result = awaitable(object, () => Promise.resolve('bar' as const))
+      expect(result).toEqual({ foo: 'bar' })
+      await expect(result).resolves.toEqual('bar')
+      expectTypeOf(result).toEqualTypeOf<Promise<'bar'> & { readonly foo: 'bar' }>()
+    })
 
-  it('should lazily evaluate the promise factory', async() => {
-    const callback = vi.fn(() => Promise.resolve())
-    const object = { foo: 'bar' }
-    const result = awaitable(object, callback)
-    expect(callback).not.toHaveBeenCalled()
-    await result
-    expect(callback).toHaveBeenCalled()
-  })
+    it('should lazily evaluate the promise factory', async() => {
+      const callback = vi.fn(() => Promise.resolve())
+      const object = { foo: 'bar' }
+      const result = awaitable(object, callback)
+      expect(callback).not.toHaveBeenCalled()
+      await result
+      expect(callback).toHaveBeenCalled()
+    })
 
-  it('should preserve the `this` context of the result object', () => {
-    const object = { _value: 'bar', get value() { return this._value } }
-    const result = awaitable(object, Promise.resolve())
-    expect(result._value).toEqual('bar')
-    expect(result.value).toEqual('bar')
-  })
+    it('should preserve the `this` context of the result object', () => {
+      const object = { _value: 'bar', get value() { return this._value } }
+      const result = awaitable(object, Promise.resolve())
+      expect(result._value).toEqual('bar')
+      expect(result.value).toEqual('bar')
+    })
 
-  it('should throw an error if the promise is not a promise', () => {
+    it('should throw an error if the promise is not a promise', () => {
     // @ts-expect-error: invalid parameter.
-    const shouldThrow = () => awaitable({ foo: 'bar' }, 'foo')
-    expect(shouldThrow).toThrow(TypeError)
-    expect(shouldThrow).toThrow('Cannot create awaitable object: Second parameter must be a promise or an asyncronous function')
-  })
+      const shouldThrow = () => awaitable({ foo: 'bar' }, 'foo')
+      expect(shouldThrow).toThrow(TypeError)
+      expect(shouldThrow).toThrow('Cannot create awaitable object: Second parameter must be a promise or an asyncronous function')
+    })
 
-  it('should reject an error if the promise factory does not resolve a promise', async() => {
+    it('should reject an error if the promise factory does not resolve a promise', async() => {
     // @ts-expect-error: invalid parameter return type.
-    const shouldReject = async() => await awaitable({ foo: 'bar' }, () => 'foo')
-    await expect(shouldReject).rejects.toThrow(TypeError)
-    await expect(shouldReject).rejects.toThrow('Cannot create awaitable object: Second parameter must be a promise or an asyncronous function')
+      const shouldReject = async() => await awaitable({ foo: 'bar' }, () => 'foo')
+      await expect(shouldReject).rejects.toThrow(TypeError)
+      await expect(shouldReject).rejects.toThrow('Cannot create awaitable object: Second parameter must be a promise or an asyncronous function')
+    })
   })
 
-  it('should wrap an async iterable with a promise that resolves to an array', async() => {
-    const iterable = (async function*() {
+  describe('async iterable', () => {
+    const createGenerator = async function*() {
       yield await Promise.resolve(1)
       yield await Promise.resolve(2)
       yield await Promise.resolve(3)
-    })()
+    }
 
-    const result = await awaitable(iterable)
-    expect(result).toEqual([1, 2, 3])
+    it('should wrap an async iterable with a promise that resolves to an array', async() => {
+      const generator = createGenerator()
+      const result = await awaitable(generator)
+      expect(result).toEqual([1, 2, 3])
+    })
+
+    it('should wrap an async iterable and still be able to iterate over it', async() => {
+      const generator = createGenerator()
+      const result = awaitable(generator)
+      const values = []
+      for await (const value of result) values.push(value)
+      expect(values).toEqual([1, 2, 3])
+    })
+
+    it('should wrap an async iterable and catch when an error is thrown', async() => {
+      const createGenerator = async function*() {
+        yield await Promise.resolve(1)
+        throw new Error('foo')
+      }
+
+      const generator = createGenerator()
+      const shouldReject = async() => await awaitable(generator)
+      await expect(shouldReject).rejects.toThrow('foo')
+    })
   })
 }
