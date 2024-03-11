@@ -67,7 +67,7 @@ export function awaitable(object: object, promiseOrFactory?: FunctionAsync<unkno
   if (!promiseOrFactory && Symbol.asyncIterator in object) {
     createPromise = async() => {
       const result = []
-      for await (const item of object as AsyncIterable<unknown>) result.push(item)
+      for await (const item of object as AsyncGenerator<unknown>) result.push(item)
       return result
     }
   }
@@ -90,8 +90,8 @@ export function awaitable(object: object, promiseOrFactory?: FunctionAsync<unkno
 
   // --- Wrap the object in a proxy that handles the promise.
   return new Proxy(object, {
-    get(target: Record<PropertyKey, unknown>, property: keyof object, receiver) {
-      const value = target[property]
+    get(target, property, receiver) {
+      const value = Reflect.get(target, property) as unknown
 
       // --- Handle non-promises properties.
       const isPromiseMethod = ['then', 'catch', 'finally'].includes((property as string))
@@ -161,5 +161,16 @@ if (import.meta.vitest) {
     const shouldReject = async() => await awaitable({ foo: 'bar' }, () => 'foo')
     await expect(shouldReject).rejects.toThrow(TypeError)
     await expect(shouldReject).rejects.toThrow('Cannot create awaitable object: Second parameter must be a promise or an asyncronous function')
+  })
+
+  it('should wrap an async iterable with a promise that resolves to an array', async() => {
+    const iterable = (async function*() {
+      yield await Promise.resolve(1)
+      yield await Promise.resolve(2)
+      yield await Promise.resolve(3)
+    })()
+
+    const result = await awaitable(iterable)
+    expect(result).toEqual([1, 2, 3])
   })
 }
