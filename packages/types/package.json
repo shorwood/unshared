@@ -341,6 +341,6 @@
     "@types/node": ">=14.0.0"
   },
   "devDependencies": {
-    "@types/node": "20.11.6"
+    "@types/node": "20.11.25"
   }
 }
