@@ -1,6 +1,7 @@
 {
   "name": "@unshared/color",
   "type": "module",
+  "version": "1.0.0",
   "license": "MIT",
   "sideEffects": false,
   "author": "Stanley Horwood <stanley@hsjm.io>",
