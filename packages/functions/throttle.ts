@@ -1,43 +1,43 @@
-import { Function, NumberPositive } from '@unshared/types'
+import { Function, NumberIntegerPositive } from '@unshared/types'
 
-export type Throttled<T extends Function> =
-  (...parameters: Parameters<T>) => ReturnType<T> extends Promise<unknown>
-    ? ReturnType<T>
-    : Promise<ReturnType<T>>
+export type Throttled<T extends Function> = (...parameters: Parameters<T>) => void
 
 /**
  * Throttle a function so that it will only execute once every specified delay.
- * Useful for implementing spam protection. If the function is called again
- * before the delay has passed, the call will be ignored.
+ * Useful for implementing spam protection. When the function is called, it will
+ * execute immediately and then wait for the specified delay before it can be
+ * called again.
  *
  * @param fn The function to throttle.
  * @param delay The throttle delay in milliseconds.
- * @returns A throttled function that will only execute once every specified delay.
+ * @returns The throttled function.
  * @example
- * const getUserNow = (id: string) => fetch(`/users/${id}`)
- * const getUser = throttle(getUser)
- * getUser('123') // Will execute immediately.
- * getUser('123') // Will be ignored.
- * getUser('123') // Will be ignored.
+ * // Create a function.
+ * const sayHello = (name: string) => console.log(`Hello, ${name}!`)
+ *
+ * // Wrap the function in a debounce guard.
+ * const throttled = throttle(sayHello, 100)
+ *
+ * // Call the throttled function.
+ * throttled('Alice')
+ * throttled('Bob')
+ * throttled('Charlie')
+ *
+ * // The function will be called immediately and can only be called again after 100ms.
+ * // => Hello, Alice!
  */
-export const throttle = <T extends Function, N extends number>(fn: T, delay: NumberPositive<N>): Throttled<T> => {
-  if (delay < 0) throw new RangeError('Expected delay to be a positive number.')
-
-  // --- Initialize timeout.
+export function throttle<T extends Function, N extends number>(fn: T, delay: NumberIntegerPositive<N>): Throttled<T> {
   let timeout: NodeJS.Timeout | undefined
-  let result: unknown
 
-  // --- Instantiate and return a throttled function.
-  // @ts-expect-error: override the return type.
-  return (...parameters: Parameters<T>[]) =>
-    new Promise((resolve) => {
-      if (timeout) return
-      timeout = setTimeout(() => {
-        timeout = undefined
-        result = fn(...parameters)
-        resolve(result as ReturnType<T>)
-      }, delay)
-    })
+  // --- Wrap the function in a throttle guard.
+  const throttled = (...parameters: Array<Parameters<T>>) => {
+    if (timeout) return
+    fn(...parameters)
+    timeout = setTimeout(() => { timeout = undefined }, delay)
+  }
+
+  // --- Return the throttled function.
+  return throttled as unknown as Throttled<T>
 }
 
 /* c8 ignore next */
@@ -46,62 +46,46 @@ if (import.meta.vitest) {
     vi.useFakeTimers()
   })
 
-  it('should throttle a function so it is only called once every delay', async() => {
-    let count = 0
-    const throttled = throttle(() => count++, 1000)
+  it('should call the function immediately', () => {
+    const fn = vi.fn()
+    const throttled = throttle(fn, 100)
     throttled()
-    throttled()
-    throttled()
-    vi.advanceTimersByTime(1000)
-    expect(count).toEqual(1)
+    expect(fn).toHaveBeenCalledTimes(1)
   })
 
-  it('should pass the parameters to the throttled function', async() => {
-    let count = 0
-    const throttled = throttle((value: number) => (count += value), 1000)
-    const result = throttled(10)
-    expect(result).resolves.toEqual(10)
+  it('should not call the function more than once within the delay', () => {
+    const fn = vi.fn()
+    const throttled = throttle(fn, 100)
+    void throttled()
+    void throttled()
+    void throttled()
+    vi.advanceTimersByTime(100)
+    expect(fn).toHaveBeenCalledTimes(1)
   })
 
-  it('should return an async function that resolves once the delay has passed', async() => {
-    let count = 0
-    const throttled = throttle(() => count++, 1000)
-    const result = Promise.all([throttled(), throttled(), throttled()])
-    expect(result).resolves.toEqual([1, 1, 1])
+  it('should pass the parameters of the first call to the function', () => {
+    const fn = vi.fn()
+    const throttled = throttle(fn, 10)
+    void throttled(1)
+    void throttled(2)
+    void throttled(3)
+    vi.advanceTimersByTime(100)
+    expect(fn).toHaveBeenCalledWith(1)
   })
 
-  it('should wrap the function result in a promise', async() => {
-    const throttled = throttle(() => 1, 1000)
+  it('should call the function again after the delay has passed', () => {
+    const fn = vi.fn()
+    const throttled = throttle(fn, 100)
+    void throttled()
+    vi.advanceTimersByTime(100)
+    void throttled()
+    vi.advanceTimersByTime(100)
+    expect(fn).toHaveBeenCalledTimes(2)
+  })
+
+  it('should return undefined', () => {
+    const throttled = throttle(() => 'foobar', 100)
     const result = throttled()
-    expect(result).resolves.toEqual(1)
-  })
-
-  it('should wrap the function result in a promise if it is async', async() => {
-    const throttled = throttle(async() => 1, 1000)
-    const result = throttled()
-    expect(result).resolves.toEqual(1)
-  })
-
-  it('should throw if delay is lower than 1', () => {
-    // eslint-disable-next-line unicorn/consistent-function-scoping
-    // @ts-expect-error: invalid parameter type.
-    const shouldThrow = () => throttle(() => {}, 0)
-    expect(shouldThrow).toThrow(RangeError)
-  })
-
-  it('should throw if the function is not a function', () => {
-    // @ts-expect-error: invalid parameter type.
-    const shouldThrow = () => throttle('function', 1000)
-    expect(shouldThrow).toThrow(TypeError)
-  })
-
-  it('should infer the return type of the throttled function', async() => {
-    const throttled = throttle(() => 1, 1000)
-    expectTypeOf(throttled).toEqualTypeOf<() => Promise<number>>()
-  })
-
-  it('should infer the return type of the throttled function if it is async', async() => {
-    const throttled = throttle(async() => 1, 1000)
-    expectTypeOf(throttled).toEqualTypeOf<() => Promise<number>>()
+    expect(result).toBeUndefined()
   })
 }

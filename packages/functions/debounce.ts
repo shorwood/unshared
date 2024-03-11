@@ -16,12 +16,25 @@ export type Debounced<T extends Function> = (...parameters: Parameters<T>) => vo
  * @param fn The function to debounce.
  * @param delay The debounce delay in milliseconds.
  * @returns The debounced function.
- * @example debounce(() => console.log('Hello'), 1000)
+ * @example
+ * // Create a function.
+ * const sayHello = (name: string) => console.log(`Hello, ${name}!`)
+ *
+ * // Wrap the function in a debounce guard.
+ * const debounced = debounce(sayHello, 100)
+ *
+ * // Call the debounced function.
+ * debounced('Alice')
+ * debounced('Bob')
+ * debounced('Charlie')
+ *
+ * // After 100ms the function will be called with the parameters of the last call.
+ * // => Hello, Charlie!
  */
 export function debounce<T extends Function<unknown>, N extends number>(fn: T, delay: NumberIntegerPositive<N>): Debounced<T> {
   let timeout: NodeJS.Timeout | undefined
 
-  // --- Instantiate and return a debounced function.
+  // --- Wrap the function in a debounce guard.
   const debounced = (...parameters: Parameters<T>): void => {
     clearTimeout(timeout)
     timeout = setTimeout(() => fn(...parameters), delay)
@@ -31,62 +44,57 @@ export function debounce<T extends Function<unknown>, N extends number>(fn: T, d
   return debounced as unknown as Debounced<T>
 }
 
-/* c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
   beforeAll(() => {
     vi.useFakeTimers()
   })
 
-  it('should debounces a function so it is only called once after delay', () => {
-    let count = 0
-    const debounced = debounce(() => count++, 10)
-    debounced()
-    debounced()
-    debounced()
-    vi.advanceTimersByTime(100)
-    expect(count).toEqual(1)
-    expectTypeOf(debounced).toEqualTypeOf<() => void>()
-  })
-
-  it('should pass the parameters of the last call to the debounced function', () => {
-    let count = 0
-    const debounced = debounce((n: number) => count = n, 10)
-    debounced(1)
-    debounced(2)
-    debounced(3)
-    vi.advanceTimersByTime(100)
-    expect(count).toEqual(3)
-    expectTypeOf(debounced).toEqualTypeOf<(n: number) => void>()
-  })
-
-  it('should be able to execute the debounced function again after the delay has passed', () => {
-    let count = 0
-    const debounced = debounce(() => count++, 10)
-    debounced()
-    vi.advanceTimersByTime(100)
-    expect(count).toEqual(1)
-    debounced()
-    vi.advanceTimersByTime(100)
-    expect(count).toEqual(2)
-    expectTypeOf(debounced).toEqualTypeOf<() => void>()
-  })
-
-  it('should return undefined', () => {
-    const debounced = debounce(() => 1, 10)
-    const result = debounced()
-    vi.advanceTimersByTime(100)
-    expect(result).toBeUndefined()
-    expectTypeOf(debounced).toEqualTypeOf<() => void>()
-  })
-
-  it('should not execute the function before the delay has passed', () => {
-    let count = 0
-    const debounced = debounce(() => count++, 100)
+  it('should not call the function if the delay has not passed', () => {
+    const fn = vi.fn()
+    const debounced = debounce(fn, 100)
     debounced()
     debounced()
     debounced()
     vi.advanceTimersByTime(50)
-    expect(count).toEqual(0)
-    expectTypeOf(debounced).toEqualTypeOf<() => void>()
+    expect(fn).not.toHaveBeenCalled()
+  })
+
+  it('should call the function once after the delay has passed', () => {
+    const fn = vi.fn()
+    const debounced = debounce(fn, 10)
+    debounced()
+    debounced()
+    debounced()
+    vi.advanceTimersByTime(100)
+    expect(fn).toHaveBeenCalledTimes(1)
+  })
+
+  it('should call the function once with the parameters of the last call', () => {
+    const fn = vi.fn()
+    const debounced = debounce(fn, 10)
+    debounced('Alice')
+    debounced('Bob')
+    debounced('Charlie')
+    vi.advanceTimersByTime(100)
+    expect(fn).toHaveBeenCalledWith('Charlie')
+  })
+
+  it('should call the function multiple times if the delay has passed', () => {
+    const fn = vi.fn()
+    const debounced = debounce(fn, 10)
+    debounced()
+    vi.advanceTimersByTime(100)
+    debounced()
+    vi.advanceTimersByTime(100)
+    debounced()
+    vi.advanceTimersByTime(100)
+    expect(fn).toHaveBeenCalledTimes(3)
+  })
+
+  it('should return undefined', () => {
+    const debounced = debounce(() => 'foobar', 100)
+    const result = debounced()
+    expect(result).toBeUndefined()
   })
 }
