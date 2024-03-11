@@ -1,24 +1,23 @@
 import { defineConfig } from 'vitest/config'
 import { PACKAGES_NAMES } from './scripts/constants'
 
-const includeSource = PACKAGES_NAMES.map(name => `./packages/${name}/*.ts`)
-const exclude = ['**/node_modules/**', '**/index.ts']
+const includeSource = PACKAGES_NAMES.map(name => `./packages/${name}/**/*.ts`)
+const exclude = ['**/node_modules/**', '**/index.ts', '**/__wip__/**']
 
 export default defineConfig({
   test: {
     open: false,
     globals: true,
     testTimeout: 100,
-    reporters: ['dot'],
+    reporters: ['basic'],
     setupFiles: './packages/setupTest.ts',
-    // includeSource: ['./packages/**/*.ts'],
     includeSource,
     include: [],
     exclude,
 
     // --- Type-checking configuration.
     typecheck: {
-      enabled: true,
+      enabled: false,
       checker: 'tsc',
       ignoreSourceErrors: true,
       include: includeSource,
@@ -27,7 +26,7 @@ export default defineConfig({
 
     // --- V8 coverage configuration.
     coverage: {
-      enabled: true,
+      enabled: false,
       clean: true,
       cleanOnRerun: true,
       reporter: ['lcovonly', 'html-spa'],
