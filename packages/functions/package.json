@@ -1,6 +1,7 @@
 {
   "name": "@unshared/functions",
   "type": "module",
+  "version": "1.0.0",
   "license": "MIT",
   "sideEffects": false,
   "author": "Stanley Horwood <stanley@hsjm.io>",
@@ -8,11 +9,162 @@
   "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shorwood/unshared.git",
-    "directory": "packages/function"
+    "url": "git+ssh://git@github.com:shorwood/unshared.git",
+    "directory": "packages/functions"
   },
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch"
+  "exports": {
+    "./attempt": {
+      "require": "./dist/attempt.cjs",
+      "types": "./dist/attempt.d.ts",
+      "import": "./dist/attempt.js"
+    },
+    "./awaitable": {
+      "require": "./dist/awaitable.cjs",
+      "types": "./dist/awaitable.d.ts",
+      "import": "./dist/awaitable.js"
+    },
+    "./createContext": {
+      "require": "./dist/createContext.cjs",
+      "types": "./dist/createContext.d.ts",
+      "import": "./dist/createContext.js"
+    },
+    "./createCounter": {
+      "require": "./dist/createCounter.cjs",
+      "types": "./dist/createCounter.d.ts",
+      "import": "./dist/createCounter.js"
+    },
+    "./createFsm": {
+      "require": "./dist/createFsm.cjs",
+      "types": "./dist/createFsm.d.ts",
+      "import": "./dist/createFsm.js"
+    },
+    "./createIndex": {
+      "require": "./dist/createIndex.cjs",
+      "types": "./dist/createIndex.d.ts",
+      "import": "./dist/createIndex.js"
+    },
+    "./createResolvable": {
+      "require": "./dist/createResolvable.cjs",
+      "types": "./dist/createResolvable.d.ts",
+      "import": "./dist/createResolvable.js"
+    },
+    "./createToggle": {
+      "require": "./dist/createToggle.cjs",
+      "types": "./dist/createToggle.d.ts",
+      "import": "./dist/createToggle.js"
+    },
+    "./debounce": {
+      "require": "./dist/debounce.cjs",
+      "types": "./dist/debounce.d.ts",
+      "import": "./dist/debounce.js"
+    },
+    "./flow": {
+      "require": "./dist/flow.cjs",
+      "types": "./dist/flow.d.ts",
+      "import": "./dist/flow.js"
+    },
+    "./garbageCollect": {
+      "require": "./dist/garbageCollect.cjs",
+      "types": "./dist/garbageCollect.d.ts",
+      "import": "./dist/garbageCollect.js"
+    },
+    "./garbageCollected": {
+      "require": "./dist/garbageCollected.cjs",
+      "types": "./dist/garbageCollected.d.ts",
+      "import": "./dist/garbageCollected.js"
+    },
+    "./getCaller": {
+      "require": "./dist/getCaller.cjs",
+      "types": "./dist/getCaller.d.ts",
+      "import": "./dist/getCaller.js"
+    },
+    "./getPrototypeChain": {
+      "require": "./dist/getPrototypeChain.cjs",
+      "types": "./dist/getPrototypeChain.d.ts",
+      "import": "./dist/getPrototypeChain.js"
+    },
+    "./getStack": {
+      "require": "./dist/getStack.cjs",
+      "types": "./dist/getStack.d.ts",
+      "import": "./dist/getStack.js"
+    },
+    "./isConstructor": {
+      "require": "./dist/isConstructor.cjs",
+      "types": "./dist/isConstructor.d.ts",
+      "import": "./dist/isConstructor.js"
+    },
+    "./kindOf": {
+      "require": "./dist/kindOf.cjs",
+      "types": "./dist/kindOf.d.ts",
+      "import": "./dist/kindOf.js"
+    },
+    "./match": {
+      "require": "./dist/match.cjs",
+      "types": "./dist/match.d.ts",
+      "import": "./dist/match.js"
+    },
+    "./memoize": {
+      "require": "./dist/memoize.cjs",
+      "types": "./dist/memoize.d.ts",
+      "import": "./dist/memoize.js"
+    },
+    "./mixins": {
+      "require": "./dist/mixins.cjs",
+      "types": "./dist/mixins.d.ts",
+      "import": "./dist/mixins.js"
+    },
+    "./noop": {
+      "require": "./dist/noop.cjs",
+      "types": "./dist/noop.d.ts",
+      "import": "./dist/noop.js"
+    },
+    "./noopAsync": {
+      "require": "./dist/noopAsync.cjs",
+      "types": "./dist/noopAsync.d.ts",
+      "import": "./dist/noopAsync.js"
+    },
+    "./once": {
+      "require": "./dist/once.cjs",
+      "types": "./dist/once.d.ts",
+      "import": "./dist/once.js"
+    },
+    "./setPrototypeChain": {
+      "require": "./dist/setPrototypeChain.cjs",
+      "types": "./dist/setPrototypeChain.d.ts",
+      "import": "./dist/setPrototypeChain.js"
+    },
+    "./sleep": {
+      "require": "./dist/sleep.cjs",
+      "types": "./dist/sleep.d.ts",
+      "import": "./dist/sleep.js"
+    },
+    "./throttle": {
+      "require": "./dist/throttle.cjs",
+      "types": "./dist/throttle.d.ts",
+      "import": "./dist/throttle.js"
+    },
+    "./tries": {
+      "require": "./dist/tries.cjs",
+      "types": "./dist/tries.d.ts",
+      "import": "./dist/tries.js"
+    },
+    "./unbind": {
+      "require": "./dist/unbind.cjs",
+      "types": "./dist/unbind.d.ts",
+      "import": "./dist/unbind.js"
+    },
+    ".": {
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "dependencies": {
+    "@unshared/types": "workspace:*"
   }
 }
