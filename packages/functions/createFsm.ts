@@ -1,14 +1,5 @@
 /* eslint-disable sonarjs/cognitive-complexity */
-import { MaybePromise } from '@unshared/types/MaybePromise'
-import { Awaitable, awaitable } from './awaitable'
-import { createResolvable } from './createResolvable'
-
-/**
- * The identifier of a state in a finite state machine.
- *
- * @template S The allowed states of the machine.
- */
-export type FSMState<S extends string = string> = S | true | undefined | void
+import { MaybePromise } from '@unshared/types'
 
 /**
  * A map of states and their transitions. The keys of the map are the names of
@@ -17,56 +8,16 @@ export type FSMState<S extends string = string> = S | true | undefined | void
  * Each transition function is called with the last state of the machine and
  * returns the next state of the machine. If the transition function returns
  * `undefined` the machine stays in the same state.
- */
-export type FSMTransitions<D = unknown, S extends string = string> = Record<S, FSMTransition<D, S>>
-
-/**
- * A transition function for a finite state machine.
  *
- * @template S The allowed states of the machine.
- * @template From The state that the machine is transitioning from.
- * @template To The state that the machine is transitioning to.
+ * @template T The data of the machine.
+ * @template K The allowed states of the machine.
  */
-export type FSMTransition<D = unknown, S extends string = string> = (context: FSMContext<D, S>) => MaybePromise<FSMState<S>>
-
-export interface FSMContext<D = unknown, S extends string = string> {
-  /**
-   * The persistent data of this machine. This data is shared between all
-   * transitions and can be mutated to store data between transitions.
-   *
-   * @example fsm({ ..., increment: (ctx) => ctx.data++ }).data = 10
-   */
-  data?: D
-  /**
-   * The current state of this machine. The state is determined by the last
-   * transition that was called and is the name of the transition function.
-   *
-   * @example fsm({ initial: () => { ... } }).state = 'initial'
-   */
-  state?: FSMState<S>
-  /**
-   * The previous state of this machine. The previous state is the state that
-   * the machine was in before the last transition was called.
-   */
-  lastState?: FSMState<S>
+export type FSMTransitions<T, K extends string> = {
+  [P in K]: (data: T) => MaybePromise<string | undefined | void>
 }
 
 /**
- * A finite state machine that returns the context of the machine and can be
- * awaited to get the context of the final state.
- *
- * @template S The allowed states of the machine.
- * @template D The type of the data of the machine.
- * @example FSM<'initial' | 'final', number> = (initialData: number) => Awaitable<FSMContext<'initial' | 'final', number>, number>
- */
-export interface FSM<D = unknown, S extends string = string> {
-  (): Awaitable<FSMContext<D, S>>
-  (initialData?: D): Awaitable<FSMContext<D, S>>
-  (initialData?: D, initialState?: S): Awaitable<FSMContext<D, S>>
-}
-
-/**
- * Create a [finite state machine](https://en.wikipedia.org/wiki/Finite-state_machine)
+ * Create an highly observeable [finite state machine](https://en.wikipedia.org/wiki/Finite-state_machine)
  * that returns the context of the machine and can be awaited to get the context
  * of the final state.
  *
@@ -75,87 +26,206 @@ export interface FSM<D = unknown, S extends string = string> {
  * the machine and it's return value is either the next state of the machine or
  * `true` to finalize the machine.
  *
- * @param states A map of states and their transitions.
  * @param initialData The initial data of the machine.
+ * @param transitions A map of states and their transitions.
  * @returns The machine.
  * @example
- * const startRombaLogic = createFsm({
- *   init: () => 'doingStuff',
- *   doingStuff: () => 'final',
- *   final: () => true,
+ * // Create a finite state machine.
+ * const rombaFSM = new FSM({
+ *     battery: 100,
+ *     position: { x: 0, y: 0 },
+ *   }, {
+ *   init: async(context) => {
+ *     context.battery -= 10
+ *     return 'move'
+ *   },
+ *   move: async(context) => {
+ *     context.position.x += 1
+ *     context.position.y += 1
+ *     return context.battery > 0 ? 'move' : undefined
+ *   },
  * })
- * const result = await startRombaLogic()
+ *
+ * // Run the machine.
+ * const result = await rombaFSM.run('init') // => { battery: 0, position: { x: 10, y: 10 } }
  */
-export function createFsm<D = unknown, S extends string = string>(states: FSMTransitions<D, S>, initialData?: D): FSM<D, S> {
-  const context: FSMContext<D, S> = { data: initialData }
-  const resolvable = createResolvable<typeof context>()
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+export class FSM<T extends object, K extends string> extends EventTarget {
 
-  // --- Run the machine.
-  const run = async(initialData?: D, initialState?: S) => {
-    context.data = initialData ?? context.data
-    context.state = initialState ?? context.state ?? Object.keys(states)[0] as S
+  constructor(initialData: T, private transitions: FSMTransitions<T, K>) {
+    super()
+    this.data = initialData
+  }
+
+  /**
+   * The data of the machine. It can be mutated by the transition functions.
+   *
+   * @example { foo: 'bar' }
+   */
+  public data: T
+
+  /**
+   * The current state of the machine. It is `undefined` when the machine is
+   * idle and holds the name of the current state when the machine is running.
+   *
+   * @example 'init'
+   */
+  public state: K | undefined | void
+
+  /**
+   * Start the machine given a state and data. If no data is provided, the
+   * initial data of the machine is used.
+   *
+   * @param state The state to start the machine in.
+   * @param data The data to start the machine with.
+   * @returns A promise that resolves to the context once the machine is idle.
+   * @example
+   * // Create a finite state machine.
+   * const FSM = createFsm({ isOdd: false }, {
+   *   init: async(context) => {
+   *     context.isOdd = context.data % 2 === 1
+   *     return undefined
+   *   },
+   * })
+   */
+  async run(state: K, data?: T) {
+    this.data = data ?? this.data
+    this.state = state ?? this.state
+
+    // --- Dispatch the `running` event.
+    const eventRunning = new Event('running')
+    this.dispatchEvent(eventRunning)
 
     // --- Run the machine until it is idle or finalized.
-    while (typeof context.state === 'string') {
-      const transition = states[context.state]
-      if (transition === undefined) throw new Error(`FSM state '${context.state}' does not exist.`)
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    while (typeof this.state === 'string') {
+      const transition = this.transitions[this.state]
+      if (transition === undefined) throw new Error(`FSM state '${state}' does not exist.`)
+
+      // --- Dispatch the `stateChange` event.
+      const event = new Event('transition')
+      this.dispatchEvent(event)
 
       // --- Call the transition function and await the result.
-      const result = await transition(context) as FSMState<S>
-      context.lastState = context.state
-      context.state = result
-
-      // --- Finalize if `true`, idle if `undefined`, or set the next state.
-      if (result === true) { resolvable.resolve(context); return }
+      const result = await transition(this.data) as K | undefined
+      this.state = result
     }
+
+    // --- Dispatch the `idle` event.
+    const eventIdle = new Event('idle')
+    this.dispatchEvent(eventIdle)
   }
+}
 
-  // --- Trap the `state` property and run the machine when it changes.
-  const contextProxy = new Proxy(context, {
-    set(target, key, value) {
-      if (key === 'state' && target.state !== value) run()
-      Reflect.set(target, key, value)
-      return true
-    },
-  })
-
-  // --- Create the machine function.
-  const fsm = (initialData?: D, initialState?: S) => {
-    run(initialData, initialState)
-    return awaitable(contextProxy, resolvable.promise)
-  }
-
-  // --- Return the machine.
-  return fsm as FSM<D, S>
+/**
+ * Create an highly observeable [finite state machine](https://en.wikipedia.org/wiki/Finite-state_machine)
+ * that returns the context of the machine and can be awaited to get the context
+ * of the final state.
+ *
+ * Each state is assigned to a transition function that is called when the
+ * machine enters that state. The transition function is called the context of
+ * the machine and it's return value is either the next state of the machine or
+ * `true` to finalize the machine.
+ *
+ * @param initialData The initial data of the machine.
+ * @param transitions A map of states and their transitions.
+ * @returns The machine.
+ * @example
+ * // Create a finite state machine.
+ * const rombaFSM = createFsm({
+ *     battery: 100,
+ *     position: { x: 0, y: 0 },
+ *   }, {
+ *   init: async(context) => {
+ *     context.battery -= 10
+ *     return 'move'
+ *   },
+ *   move: async(context) => {
+ *     context.position.x += 1
+ *     context.position.y += 1
+ *     return context.battery > 0 ? 'move' : undefined
+ *   },
+ * })
+ *
+ * // Run the machine.
+ * const result = await rombaFSM.run('init') // => { battery: 0, position: { x: 10, y: 10 } }
+ */
+export function createFsm<T extends object, K extends string>(initialData: T, transitions: FSMTransitions<T, K>): FSM<T, K> {
+  return new FSM<T, K>(initialData, transitions)
 }
 
 /** c8 ignore next */
 if (import.meta.vitest) {
-  it('should create a finite state machine', async() => {
-    const transition = vi.fn() as () => void
-    const fsm = createFsm({ transition })
-    const result = fsm()
-    const resultFinal = await fsm()
-    expect(result).toEqual({ data: undefined, state: 'transition', lastState: undefined })
-    expect(resultFinal).toEqual({ data: undefined, state: true, lastState: 'transition' })
-    expect(transition).toHaveBeenCalledWith({ data: undefined, state: 'transition', lastState: undefined })
+  it('should create a finite state machine instance', () => {
+    const fsm = createFsm({ foo: 'bar' }, { init: () => {} })
+    expect(fsm).toBeInstanceOf(FSM)
+  })
+
+  it('should expose the data of the machine', () => {
+    const fsm = createFsm({ foo: 'bar' }, { init: () => {} })
+    expect(fsm.data).toEqual({ foo: 'bar' })
+  })
+
+  it('should be initialized with the state set to `undefined`', () => {
+    const fsm = createFsm({ foo: 'bar' }, { init: () => {} })
+    expect(fsm.state).toBeUndefined()
+  })
+
+  it('should run a finite state machine and resolve when the machine is idle', async() => {
+    const fsm = createFsm({ foo: 'bar' }, { init: () => {} })
+    const result = fsm.run('init')
+    await expect(result).resolves.toBeUndefined()
+  })
+
+  it('should call the given transition function with the initial data', async() => {
+    const init = vi.fn() as () => void
+    const fsm = createFsm({ foo: 'bar' }, { init })
+    await fsm.run('init')
+    expect(init).toHaveBeenCalledWith({ foo: 'bar' })
+  })
+
+  it('should call the given transition function with the given data', async() => {
+    const init = vi.fn() as () => void
+    const fsm = createFsm({ foo: 'bar' }, { init })
+    await fsm.run('init', { foo: 'baz' })
+    expect(init).toHaveBeenCalledWith({ foo: 'baz' })
   })
 
   it('should mutate the data of the machine', async() => {
-    const fsm = createFsm({ init: (context) => { context.data = 10 } })
-    const result = await fsm()
-    expect(result).toEqual({ data: 10, state: undefined, lastState: 'init' })
+    const fsm = createFsm({ count: 0 }, { init: (context) => { context.count += 10 } })
+    await fsm.run('init')
+    expect(fsm.data).toEqual({ count: 10 })
   })
 
-  it('should create a finite state machine with initial data', async() => {
-    const fsm = createFsm({ init: (context) => { context.data! += 10 } }, 5)
-    const result = await fsm()
-    expect(result).toEqual({ data: 15, state: undefined, lastState: 'init' })
+  it('should call the next transition function when a state is returned', async() => {
+    const init = vi.fn(() => 'next') as () => string
+    const next = vi.fn() as () => void
+    const fsm = createFsm({ foo: 'bar' }, { init, next })
+    await fsm.run('init')
+    expect(next).toHaveBeenCalledWith({ foo: 'bar' })
   })
 
-  it('should start the machine with initial data', async() => {
-    const fsm = createFsm<number>({ init: (context) => { context.data! += 10 } })
-    const result = await fsm(5)
-    expect(result).toEqual({ data: 15, state: undefined, lastState: 'init' })
+  it('should dispatch a `running` event when the machine is running', async() => {
+    const fsm = createFsm({ foo: 'bar' }, { init: () => {} })
+    const event = vi.fn()
+    fsm.addEventListener('running', event)
+    await fsm.run('init')
+    expect(event).toHaveBeenCalled()
+  })
+
+  it('should dispatch a `transition` event when the machine is running', async() => {
+    const fsm = createFsm({ foo: 'bar' }, { init: () => {} })
+    const event = vi.fn()
+    fsm.addEventListener('transition', event)
+    await fsm.run('init')
+    expect(event).toHaveBeenCalled()
+  })
+
+  it('should dispatch a `idle` event when the machine is idle', async() => {
+    const fsm = createFsm({ foo: 'bar' }, { init: () => {} })
+    const event = vi.fn()
+    fsm.addEventListener('idle', event)
+    await fsm.run('init')
+    expect(event).toHaveBeenCalled()
   })
 }
