@@ -1,4 +1,14 @@
-import { Function } from '@unshared/types/Function'
+import { Function } from '@unshared/types'
+
+/**
+ * A function that will be executed at most one time, no matter how often you
+ * call it. Useful for lazy initialization. Once called, the function will
+ * always return the same value as the one returned by the first call.
+ *
+ * @template T The type of the function.
+ * @example Once<() => number> // => () => number & { reset: () => void }
+ */
+export type Once<T extends Function> = T & { reset: () => void }
 
 /**
  * Returns a function that will be executed at most one time, no matter how
@@ -6,11 +16,25 @@ import { Function } from '@unshared/types/Function'
  * function will always return the same value as the one returned by the
  * first call.
  *
+ * You can reset the function by calling the `reset` method on the returned
+ * function.
+ *
  * @param fn The function to wrap in a call guard.
  * @returns A function that will be executed at most one time.
- * @example const initializeOnce = once(initialize)
+ * @example
+ * // Create a function that will be executed at most one time.
+ * const fn = once(() => Math.random())
+ *
+ * // Call the function.
+ * fn() // => 0.123456789
+ * fn() // => 0.123456789
+ * fn() // => 0.123456789
+ *
+ * // Reset the function.
+ * fn.reset()
+ * fn() // => 0.987654321
  */
-export function once<T extends Function>(fn: T): T {
+export function once<T extends Function>(fn: T): Once<T> {
   let called = false
   let result: unknown
 
@@ -21,8 +45,14 @@ export function once<T extends Function>(fn: T): T {
     return result = fn(...args)
   }
 
+  // --- Extend the wrapped function with a `reset` method.
+  wrapped.reset = () => {
+    called = false
+    result = undefined
+  }
+
   // --- Return the wrapped function.
-  return wrapped as T
+  return wrapped as Once<T>
 }
 
 /** c8 ignore next */
@@ -43,7 +73,7 @@ if (import.meta.vitest) {
     const resultThird = wrapped()
     expect(resultFirst).toEqual(resultSecond)
     expect(resultSecond).toEqual(resultThird)
-    expectTypeOf(wrapped).toEqualTypeOf<() => number>()
+    expectTypeOf(wrapped).toEqualTypeOf<(() => number) & { reset: () => void }>()
   })
 
   it('should take parameters but ignore them after the first call', () => {
@@ -57,5 +87,14 @@ if (import.meta.vitest) {
     expect(resultThird).toEqual(1)
     expect(fn).toHaveBeenCalledOnce()
     expect(fn).toHaveBeenCalledWith(1)
+  })
+
+  it('should call the function again after reset', () => {
+    const fn = vi.fn()
+    const wrapped = once(fn)
+    wrapped()
+    wrapped.reset()
+    wrapped()
+    expect(fn).toHaveBeenCalledTimes(2)
   })
 }
