@@ -31,6 +31,9 @@ async function buildIndex(path: string): Promise<IndexFile> {
       const isPatternMath = pattern.test(entity.name)
       const isIndexFile = entity.name.startsWith('index.')
 
+      // --- If the entity name starts with a dot, ignore it.
+      if (entity.name.startsWith('__')) continue
+
       // --- If subdirectory contains an index file, add it to the imports.
       if (isDirectory) {
         const directoryPath = join(path, entity.name)
@@ -49,12 +52,6 @@ async function buildIndex(path: string): Promise<IndexFile> {
     }
     catch { /** Ignore */ }
   }
-
-  // --- Only keep the JavaScript/TypeScript files.
-  entities
-    .filter(entity => entity.isFile())
-    .map(entity => entity.name)
-    .filter(name => /\.[jt]sx?$/.test(name))
 
   // ---Sort the imports alphabetically and generate the index file content.
   const indexContent = imports
@@ -86,6 +83,7 @@ export async function buildIndexes(packageName: string): Promise<void> {
     if (!entity.isDirectory()) continue
     if (entity.name === 'node_modules') continue
     if (entity.name === 'index.ts') continue
+    if (entity.name.startsWith('__')) continue
 
     const subdirectoryPath = join(packagePath, entity.name)
     const subdirectoryIndexFiles = await buildIndex(subdirectoryPath)

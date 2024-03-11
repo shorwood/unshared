@@ -26,7 +26,7 @@ export interface BenchmarkResult {
  * @returns The average amount of milliseconds it took to run the function.
  * @example benchmark(hash, { iterations: 1000 })
  */
-export const benchmark = async(fn: Function, options: BenchmarkOptions = {}): Promise<BenchmarkResult> => {
+export async function benchmark(fn: Function, options: BenchmarkOptions = {}): Promise<BenchmarkResult> {
   const { memoryUsage } = await import('node:process')
   const { performance } = await import('node:perf_hooks')
 

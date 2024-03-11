@@ -1,9 +1,9 @@
-import { EventEmitterLike } from '@unshared/types/EventEmitterLike'
-import { EventEmitter } from './createEventEmitter'
 import { toCamelCase } from '@unshared/string/toCamelCase'
+import { EventEmitterLike } from '@unshared/types/EventEmitterLike'
+import { EventEmitter } from './createEventEmitter.js'
 
 /** The event types that can be emitted by the {@linkcode inspect} function. */
-export type InspectEventTypes = 'accessed' | 'set' | 'deleted' | 'called' | 'returned' | 'thrown' | 'resolved' | 'rejected'
+export type InspectEventTypes = 'accessed' | 'called' | 'deleted' | 'rejected' | 'resolved' | 'returned' | 'set' | 'thrown'
 
 /** The options to use when wrapping an object with the {@linkcode inspect} function. */
 export interface InspectOptions {
@@ -33,13 +33,13 @@ export interface InspectOptions {
 /**
  * Monitor every interaction with an object and emit events when they occur. This
  * function will emit events when a property is accessed, set, or deleted.
- * 
+ *
  * If the property is a function, then it will emit events when the function is
  * called, returned, or thrown.
- * 
+ *
  * If the property is a promise, then it will emit events when the promise is
  * resolved or rejected.
- * 
+ *
  * The event names are composed of the property name and the event type. The
  * event type. For example, if the property name is `foo` and the event type is
  * `accessed`, then the event name will be `fooAccessed`.
@@ -54,8 +54,9 @@ export interface InspectOptions {
  * wrapped.on('bazCalled', (...args) => console.log(args)) // logs []
  * wrapped.on('bazReturned', (value) => console.log(value)) // logs 'qux'
  */
-export function inspect<T extends object>(object: T, options: InspectOptions = {}): T & EventEmitterLike {
+export function inspect<T extends object>(object: T, options: InspectOptions = {}): EventEmitterLike & T {
   const {
     emitter = new EventEmitter(),
     eventName = (property, type) => toCamelCase(property, type),
   } = options
+}

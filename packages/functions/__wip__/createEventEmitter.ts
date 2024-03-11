@@ -1,13 +1,8 @@
 import { EventEmitter as EventEmitterNodeJS } from 'node:events'
-import { Fallback } from '@unshared/types/Fallback'
-import { Function } from '@unshared/types/Function'
-import { MaybePromise } from '@unshared/types/MaybePromise'
-import { Overloads } from '@unshared/types/Overloads'
-import { TuplePop } from '@unshared/types/TuplePop'
-import { hook } from './hook'
+import { Fallback, Function, MaybePromise, Overloads, TuplePop } from '@unshared/types'
 
 /** Matches both the constructor and the instance of the `EventEmitter` class. */
-export type EventEmitterLike = EventEmitterNodeJS | NodeJS.EventEmitter
+export type EventEmitterLike = EventEmitter | EventEmitterNodeJS
 
 /** Options for the `EventEmitter` class. */
 export type EventEmitterOptions = ConstructorParameters<typeof EventEmitterNodeJS>[0]
@@ -23,7 +18,7 @@ export type EventListenersInternal = EventListeners & { listener: EventListeners
  * @example EventEmitterListeners<Readable> // (chunk: any) => void | (error: Error) => void | () => void
  */
 export type EventListeners<T extends EventEmitterLike = EventEmitterLike> =
-  Fallback<Parameters<TuplePop<Overloads<T['on' | 'addListener']>>[0][number]>[1], Function<MaybePromise>>
+  Fallback<Parameters<TuplePop<Overloads<T['addListener' | 'on']>>[0][number]>[1], Function<MaybePromise>>
 
 /**
  * The event names that can be emitted by an EventEmitter.
@@ -144,7 +139,7 @@ export class EventEmitter implements EventEmitterNodeJS {
     return this
   }
 
-  public eventNames(): Array<EventNames> {
+  public eventNames(): EventNames[] {
     return Object.keys(this.internalListeners)
   }
 
@@ -169,10 +164,8 @@ export class EventEmitter implements EventEmitterNodeJS {
 }
 
 /**
- * Creates a new EventEmitter instance and hook the given event handlers directly
- * to the instance.
+ * Creates a new EventEmitter instance.
  *
- * @param handlers The event handlers to hook.
  * @param options The options to use for the EventEmitter.
  * @returns The created EventEmitter instance.
  * @example
@@ -181,10 +174,8 @@ export class EventEmitter implements EventEmitterNodeJS {
  *   onError: error => console.error(error)
  * })
  */
-export function createEventEmitter(handlers: EventListeners, options?: EventEmitterOptions): EventEmitter {
-  const emitter = new EventEmitter(options)
-  hook(handlers, emitter)
-  return emitter
+export function createEventEmitter(options?: EventEmitterOptions): EventEmitter {
+  return new EventEmitter(options)
 }
 
 /** c8 ignore next */

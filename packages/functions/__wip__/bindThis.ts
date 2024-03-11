@@ -10,8 +10,11 @@ import { BoundThis } from '@unshared/types'
  * const add = bindThis((a: number, b: number) => a + b) // (this: number, b: number) => number
  * add.call(1, 2) // 3
  */
-export function bindThis <T extends Function>(fn: T): BoundThis<T> {
-  return function(this: unknown, ...parameters: unknown[]) { return fn(this, ...parameters) } as BoundThis<T>
+export function bindThis<T extends Function>(fn: T): BoundThis<T> {
+  return function(this: unknown, ...parameters: unknown[]) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return fn(this, ...parameters)
+  } as BoundThis<T>
 }
 
 /* c8 ignore next */
@@ -21,6 +24,7 @@ if (import.meta.vitest) {
     const bound = bindThis(greet)
     const result = bound.call({ name: 'Joe' })
     expect(result).toEqual('Hello, I am Joe')
+    expectTypeOf(result).toEqualTypeOf<string>()
   })
 
   it('should infer the type of the bound function', () => {
