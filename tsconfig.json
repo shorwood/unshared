@@ -9,6 +9,7 @@
       "@unshared/*": ["./packages/*"]
     },
     "types": [
+      "@types/node",
       "vitest/globals",
       "vitest/importMeta"
     ],
