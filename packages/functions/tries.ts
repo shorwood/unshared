@@ -20,7 +20,9 @@ export type TriesResult<F extends Function[]> =
  * @returns A promise that resolves to the first non-undefined result.
  * @example tries(throws, Date.now) // 1658682347132
  */
-export function tries<F extends [Function, ...Function[]]>(...functions: F): TriesResult<F> | undefined {
+export function tries<F extends Array<Function<unknown>>>(...functions: F): TriesResult<F> | undefined
+export function tries<T>(...functions: Array<Function<unknown>>): T | undefined
+export function tries(...functions: Array<Function<unknown>>): unknown | undefined {
   for (const fn of functions) {
     try {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
@@ -44,6 +46,12 @@ if (import.meta.vitest) {
     const result = tries(throws, returnsBoolean, returnsString, resolvesNumber)
     expect(result).toEqual(true)
     expectTypeOf(result).toEqualTypeOf<Promise<number> | boolean | string | undefined>()
+  })
+
+  it('should return a value of the type given in the generic', () => {
+    const result = tries<'foo'>(returnsBoolean, returnsString)
+    expect(result).toEqual(true)
+    expectTypeOf(result).toEqualTypeOf<'foo' | undefined>()
   })
 
   it('should return undefined if all functions throw or return undefined', () => {
