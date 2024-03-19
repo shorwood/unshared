@@ -53,5 +53,17 @@ module.exports = {
     'jsdoc/require-returns-type': 'off',
     'jsdoc/require-param-type': 'off',
     'jsdoc/require-jsdoc': 'off',
+
+    /**
+     * Enforce a strict set of tags for the JSDoc comment. This rule also includes
+     * some custom tags that are used in our projects.
+     *
+     * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/.README/rules/check-tag-names.md
+     */
+    'jsdoc/check-tag-names': ['error', {
+      definedTags: [
+        'category',
+      ],
+    }],
   },
 }
