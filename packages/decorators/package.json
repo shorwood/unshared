@@ -1,0 +1,32 @@
+{
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:shorwood/unshared.git",
+    "directory": "packages/decorators"
+  },
+  "exports": {
+    "./Memoize": {
+      "require": "./dist/Memoize.cjs",
+      "types": "./dist/Memoize.d.ts",
+      "import": "./dist/Memoize.js"
+    },
+    ".": {
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "dependencies": {
+    "@unshared/types": "workspace:*"
+  }
+}
