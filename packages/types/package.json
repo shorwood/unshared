@@ -178,6 +178,9 @@
     "./MaybeReadonly": {
       "types": "./dist/MaybeReadonly.d.ts"
     },
+    "./MethodDecorator": {
+      "types": "./dist/MethodDecorator.d.ts"
+    },
     "./Mixins": {
       "types": "./dist/Mixins.d.ts"
     },
