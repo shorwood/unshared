@@ -33,5 +33,13 @@ export default defineConfig({
       reportsDirectory: './coverage',
       reportOnFailure: true,
     },
+
+    // --- Benchmark configuration.
+    benchmark: {
+      includeSource,
+      exclude,
+      outputFile: './benchmark/results.json',
+      reporters: ['verbose'],
+    },
   },
 })
