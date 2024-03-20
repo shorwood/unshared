@@ -1,21 +1,14 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-// eslint-disable-next-line import/no-named-default
-import * as fs from 'node:fs'
-import { FSWatcher, PathLike, Stats, WatchOptions, readFileSync, renameSync, writeFileSync } from 'node:fs'
-import { Awaitable, awaitable } from '@unshared/functions/awaitable'
-import { debounce } from '@unshared/functions/debounce'
-import { ReactiveOptions, reactive } from '@unshared/reactive/reactive'
-import { vol } from 'memfs'
+import { FSWatcher, PathLike, StatWatcher, Stats, WatchOptions, accessSync, constants, existsSync, mkdirSync, openSync, readFileSync, unwatchFile, watch, watchFile, writeFileSync } from 'node:fs'
+import { access, mkdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises'
+import { overwrite } from '@unshared/collection/overwrite'
+import { garbageCollected } from '@unshared/functions/garbageCollected'
+import { awaitable, Awaitable } from '@unshared/functions/awaitable'
+import { Reactive, ReactiveOptions, reactive } from '@unshared/reactivity/reactive'
+import EventEmitter from 'node:events'
+import { ObjectLike } from '@unshared/types'
+import { dirname } from 'node:path'
 
-export interface FSObjectOptions<T extends object> extends ReactiveOptions<T>, WatchOptions {
-  /**
-   * Debounce time in milliseconds for write operations. This is useful if you
-   * are making multiple changes to the object and you want to prevent multiple
-   * file updates in a short period of time.
-   *
-   * @default 1
-   */
-  debounceWrite?: number
+export interface FSObjectOptions<T extends ObjectLike> extends ReactiveOptions<T>, WatchOptions {
   /**
    * If set to `true`, changes on the file will not be reflected in the object.
    * You can use this to prevent the object from being updated when you are
@@ -34,34 +27,48 @@ export interface FSObjectOptions<T extends object> extends ReactiveOptions<T>, W
   ignoreObjectChanges?: boolean
   /**
    * If set to `true` and the file does not exist, the file will be created
-   * as a temporary file. Temporary files will be deleted when the object is
-   * garbage collected.
+   * if it does not exist and the object will be initialized with an empty
+   * object.
    *
    * @default false
    */
-  temporary?: boolean
+  createIfNotExists?: boolean
   /**
-   * The `node:fs` module instance to use. This is useful if you want to use
-   * `memfs` for testing. If not set, the default `node:fs` module will be used.
-   *
-   * @example const fs = require('memfs').fs
+   * If set to `true`, the file will be deleted when the instance is destroyed.
+   * Allowing you to create temporary files that will be deleted when the
+   * instance is garbage collected.
    */
-  fs?: Partial<typeof fs>
+  deleteOnDestroy?: boolean
+  /**
+   * The initial value of the object. If the file does not exist, the object
+   * will be initialized with this value.
+   * 
+   * @default {}
+   */
+  initialValue?: T
+  /**
+   * The parser function to use when reading the file. If not set, the file
+   * will be parsed as JSON using the native `JSON.parse` function.
+   * 
+   * @default JSON.parse
+   */
+  parse?: (json: string) => T
+  /**
+   * The stringifier function to use when writing the file. If not set, the
+   * object will be stringified as JSON using the native `JSON.stringify` function.
+   * 
+   * @default JSON.stringify
+   */
+  serialize?: (object: T) => string
 }
 
-export class FSObject<T extends object> {
-  /** The current status of the file. */
-  private stats: Stats | undefined
-  /** A watcher that will update the object when the file changes. */
-  private watcher: FSWatcher
-  /** The current content of the file. */
-  private object: T
-  /** Flag to disable file synchronization. */
-  private pauseSync = false
-
-  // TODO: Add a Promise property that resolves when the file is synchronized.
-  // TODO: Add a boolean property that indicates if the file is synchronized.
-
+export class FSObject<T extends ObjectLike> extends EventEmitter<{
+  load: [T];
+  commit: [T];
+  lock: [];
+  unlock: [];
+  destroy: [];
+}> {
   /**
    * Load a JSON file and keep it synchronized with it's source file.
    *
@@ -69,44 +76,180 @@ export class FSObject<T extends object> {
    * @param options Options for the watcher.
    * @throws If the file is not a JSON object.
    */
-  constructor(public path: PathLike, private options: FSObjectOptions<T> = {}) {
-    if (!options.fs) options.fs = fs
+  constructor(public path: PathLike, public options: FSObjectOptions<T> = {}) {
+    super()
 
     // --- The callback that will be called when the object changes.
-    const callback = debounce(() => {
-      if (this.pauseSync) return
+    // --- This callback is wrapped in a debounce function to prevent
+    // --- multiple writes in a short period of time.
+    const callback = async () => {
+      if (this.isBusy) return
       if (this.options.ignoreObjectChanges) return
-      this.commit()
-    }, options.debounceWrite ?? 1)
+      await this.commit()
+    }
 
-    // --- Create the reactive object.
-    this.object = reactive(<T>{}, {
+    // --- Create the reactive object. Each time a nested property is
+    // --- changed, the callback will be called with the new object.
+    this.object = reactive(this.options.initialValue ?? {} as T, {
       deep: true,
       hooks: ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse'],
       callbacks: [callback],
       ...this.options,
     })
 
-    // --- Watch the file for changes.
-    this.watcher = fs.watch(this.path, { persistent: false, ...options }, (event) => {
-      if (this.pauseSync) return
-      if (this.options.ignoreFileChanges) return
-      if (event === 'change') setImmediate(this.load.bind(this))
-      if (event === 'rename') setImmediate(this.close.bind(this))
-    })
+    // --- Destroy the object once this instance is garbage collected.
+    // --- This will also delete the file if it was created as a temporary file.
+    garbageCollected(this).then(() => this.destroy())
   }
 
   /**
-   * Commit the current state of the object to the file.
+   * Create an awaitable instance of `FSObject` that resolves when the file
+   * is synchronized with the object and the object is synchronized with the file.
+   * 
+   * This function is a shorthand for creating a new `FSObject` instance and
+   * calling the `access`, `load` and `watch` methods in sequence. This allows
+   * fast and easy access to the file and object in a single call.
+   * 
+   * @param path The path or file descriptor of the file to load.
+   * @param options Options to pass to the `FSObject` constructor.
+   * @returns An awaitable instance of `FSObject`.
+   * @example
+   * const fsObject = FSObject.from('file.json')
+   * const object = await fsObject
+   * 
+   * // Change the file and check the object.
+   * writeFileSync('file.json', '{"foo":"bar"}')
+   * await fsObject.untilLoaded
+   * object // => { foo: 'bar' }
+   * 
+   * // Change the object and check the file.
+   * object.foo = 'baz'
+   * await fsObject.untilCommitted
+   * readFileSync('file.json', 'utf8') // => { "foo": "baz" }
+   */
+  static from<T extends ObjectLike>(path: PathLike, options: FSObjectOptions<T> = {}): Awaitable<FSObject<T>, Reactive<T>> {
+    const fsObject = new FSObject<T>(path, options)
+    const createPromise = () => fsObject.load().then(() => fsObject.watch().object)
+    return awaitable(fsObject, createPromise)
+  }
+
+  /** The current status of the file. */
+  public stats: Stats | undefined
+  /** A watcher that will update the object when the file changes. */
+  public watcher: FSWatcher | undefined
+  /** The current content of the file. */
+  public object: Reactive<T>
+  /** Flag to signal the instance has been destroyed. */
+  public isDestroyed = false
+  /** Flag to signal the object is synchronized with the file. */
+  public isLoading = false
+  /** Flag to signal the file is synchronized with the object. */
+  public isCommitting = false
+
+  /** Flag to signal the instance is busy doing a commit or a load operation. */
+  get isBusy() {
+    return this.isLoading || this.isCommitting || this.isDestroyed
+  }
+
+  /**
+   * A promise that resolves when the object is destroyed.
+   * 
+   * @example
+   * const object = new FSObject('file.json')
+   * object.destroy()
+   * 
+   * // Wait until the object is destroyed.
+   * await object.untilDestroyed
+   */
+  get untilDestroyed(): Promise<void> {
+    if (this.isDestroyed) return Promise.resolve()
+    return new Promise<void>(resolve => this.prependOnceListener('destroy', resolve))
+  }
+
+  /**
+   * A promise that resolves when the object is synchronized with the file.
+   * 
+   * @example
+   * const object = new FSObject('file.json')
+   * object.load()
+   * 
+   * // Wait until the object is synchronized.
+   * await object.untilLoaded
+   */
+  get untilLoaded(): Promise<void> {
+    if (!this.isLoading) return Promise.resolve()
+    return new Promise<void>(resolve => this.prependOnceListener('load', () => resolve()))
+  }
+
+  /**
+   * A promise that resolves when the file is synchronized with the object.
+   * 
+   * @example
+   * const object = new FSObject('file.json')
+   * object.commit()
+   * 
+   * // Wait until the file is synchronized.
+   * await object.untilCommitted
+   */
+  get untilCommitted(): Promise<void> {
+    if (!this.isCommitting) return Promise.resolve()
+    return new Promise<void>(resolve => this.prependOnceListener('commit', () => resolve()))
+  }
+
+  /**
+   * Start watching the file for changes and update the object if the content
+   * of the file changes.
+   * 
+   * @example
+   * const object = new FSObject('file.json').watch()
+   * 
+   * // Change the file and check the object.
+   * writeFileSync('file.json', '{"foo":"bar"}')
+   * 
+   * // Wait until the object is updated.
+   * await object.untilLoaded
+   * 
+   * // Check the object.
+   * expect(object.object).toEqual({ foo: 'bar' })
+   */
+  public watch(): this {
+    if (this.watcher) return this
+
+    // --- Try to watch the file for changes. If an error occurs, the file
+    // --- is likely not accessible. In this case, just set the `isWatching`
+    // --- flag to `true` and retry watching the file when it becomes accessible.
+    this.watcher = watch(this.path, { persistent: false, ...this.options }, (event) => {
+      if (this.isBusy) return
+      if (this.options.ignoreFileChanges) return
+      if (event === 'change') this.load()
+    })
+
+    // --- Return the instance for chaining.
+    return this
+  }
+
+  /**
+   * Commit the current state of the object to the file. This function
+   *  **will** write the object to the file and emit a `commit` event.
    *
    * @param writeObject The object to write to the file.
    * @returns A promise that resolves when the file has been written.
    */
-  public async commit(writeObject = this.object): Promise<void> {
-    this.pauseSync = true
-    const writeJson = JSON.stringify(writeObject, undefined, 2)
-    await fs.promises.writeFile(this.path, `${writeJson}\n`, 'utf8')
-    this.pauseSync = false
+  public async commit(writeObject = this.object as T): Promise<void> {
+    this.isCommitting = true
+
+    // --- Stringify the object and write it to disk.
+    const { serialize = (object: unknown) => JSON.stringify(object, undefined, 2) } = this.options
+    const writeJson = serialize(writeObject)
+    const pathString = this.path.toString()
+    const pathDirectory = dirname(pathString)
+    await mkdir(pathDirectory, { recursive: true })
+    await writeFile(this.path, `${writeJson}\n`, 'utf8')
+    overwrite(this.object, writeObject)
+    this.stats = await stat(this.path)
+
+    this.emit('commit', writeObject)
+    this.isCommitting = false
   }
 
   /**
@@ -114,133 +257,367 @@ export class FSObject<T extends object> {
    *
    * @returns The loaded object.
    */
-  public async load(): Promise<T> {
-    // --- Assert the file exists.
-    try { await fs.promises.access(this.path, fs.constants.R_OK) }
+  public async load(): Promise<void> {
+    this.isLoading = true
+    this.isDestroyed = false
 
-    // --- Create the file if `temporary` is set to `true`.
-    catch (error) {
-      // @ts-expect-error: `error` is garanteed to be an `Error` object.
-      if (error.code === 'ENOENT' && this.options.temporary)
-        fs.writeFileSync(this.path, '{}')
+    // --- If the file does not exist, and the `createIfNotExists` option is
+    // --- set to `true`, create the file and initialize the object with the
+    // --- `initialValue` option.
+    const accessError = await access(this.path, constants.F_OK | constants.R_OK).catch(error => error)
+    if (accessError && this.options.createIfNotExists) {
+      await this.commit()
+      this.isLoading = false
+      this.emit('load', this.object)
+      return
     }
+
+    // --- If the file does not exist, throw an error.
+    if (accessError  && !this.options.createIfNotExists) throw accessError
 
     // --- Assert the path points to a file.
-    const readStats = await fs.promises.stat(this.path)
-    const readIsFile = readStats.isFile()
-    if (!readIsFile) throw new Error(`Expected ${this.path} to be a file`)
+    const newStats = await stat(this.path)
+    const newIsFile = newStats.isFile()
+    if (!newIsFile) throw new Error(`Expected ${this.path.toString()} to be a file`)
 
     // --- If the file has not changed, return the current object.
-    if (this.object && this.stats && readStats.mtimeMs < this.stats.mtimeMs) return this.object
+    if (this.object && this.stats && newStats.mtimeMs < this.stats.mtimeMs) return
+    this.stats = newStats
 
     // --- Read and parse the file.
-    const readJson = await fs.promises.readFile(this.path, 'utf8')
-    const readObject: T = JSON.parse(readJson)
+    const { parse = JSON.parse } = this.options
+    const newJson = await readFile(this.path, 'utf8')
+    const newObject = parse(newJson) as T
 
     // --- Assert JSON is an object.
-    if (typeof readObject !== 'object' || readObject === null)
-      throw new Error(`Expected ${this.path} to be a JSON object`)
+    if (typeof newObject !== 'object' || newObject === null)
+      throw new Error(`Expected ${this.path.toString()} to be a JSON object`)
 
-    for (const key in { ...this.object, ...readObject }) {
-      if (key in readObject) this.object[key] = readObject[key]
-      else delete this.object[key]
-    }
-    this.pauseSync = true
-
-    // --- Return the reactive object.
-    return this.object as T
+    // --- Update the object by overwriting it's properties.
+    overwrite(this.object, newObject)
+    this.isLoading = false
+    this.emit('load', newObject)
   }
 
   /**
    * Close the file and stop watching the file and object for changes.
    * If the file has been created as a temporary file, it will be deleted.
    */
-  public async close(): Promise<void> {
-    this.watcher.close()
-    this.pauseSync = true
-    if (!this.options.temporary) return
-    await fs.promises.rm(this.path)
+  public async destroy(): Promise<void> {
+    this.isLoading = false
+    this.isCommitting = false
+    if (this.watcher) this.watcher.close()
+    if (this.options.deleteOnDestroy) await rm(this.path, { force: true })
+    this.watcher = undefined
+    this.isDestroyed = true
+    this.emit('destroy')
   }
 }
 
 /**
- * Create an object that will be synchronized with a JSON file.
- *
- * Meaning that any changes to the file will be reflected in the returned
- * object and any changes to the returned object will be reflected in the
- * file.
- *
+ * Create an awaitable instance of `FSObject` that resolves when the file
+ * is synchronized with the object and the object is synchronized with the file.
+ * 
+ * This function is a shorthand for creating a new `FSObject` instance and
+ * calling the `access`, `load` and `watch` methods in sequence. This allows
+ * fast and easy access to the file and object in a single call.
+ * 
  * @param path The path or file descriptor of the file to load.
- * @param options Options for the watcher.
- * @returns The loaded JSON file.
+ * @param options Options to pass to the `FSObject` constructor.
+ * @returns An awaitable instance of `FSObject`.
  * @example
- *
- * // Load the config file.
- * const config = await loadFile('config.json')
- *
- * // Update the config file.
- * config.foo = 'bar'
- *
- * // Check the content of the config file.
- * await readFile('config.json', 'utf8') // { "foo": "bar" }
+ * const fsObject = loadObject('file.json')
+ * const object = await fsObject
+ * 
+ * // Change the file and check the object.
+ * writeFileSync('file.json', '{"foo":"bar"}')
+ * await fsObject.untilLoaded
+ * object // => { foo: 'bar' }
+ * 
+ * // Change the object and check the file.
+ * object.foo = 'baz'
+ * await fsObject.untilCommitted
+ * readFileSync('file.json', 'utf8') // => { "foo": "baz" }
  */
-export function loadObject<T extends object>(path: PathLike, options: FSObjectOptions<T> = {}): Awaitable<FSObject<T>, T> {
-  const fsObject = new FSObject<T>(path, options)
-  const objectPromise = () => fsObject.load()
-  return awaitable(fsObject, objectPromise)
+export function loadObject<T extends ObjectLike>(path: PathLike, options: FSObjectOptions<T> = {}): Awaitable<FSObject<T>, Reactive<T>> {
+  return FSObject.from(path, options)
 }
 
-/** c8 ignore next */
+/** v8 ignore start */
 if (import.meta.vitest) {
-  const object = { foo: 'foo' }
-  const objectUtf8 = JSON.stringify(object, undefined, 2)
-  const objectPath = '/test.json'
+  const { vol } = await import('memfs')
 
-  beforeEach(() => {
-    vol.fromJSON({ [objectPath]: objectUtf8 })
+  describe('loadObject', () => {
+    it('should return an instance of `FSObject`', async() => {
+      vol.fromJSON({ '/app/packages.json': '{"foo":"bar"}' })
+      const result = loadObject('/app/packages.json')
+      expect(result).toBeInstanceOf(FSObject)
+      expect(result).toBeInstanceOf(EventEmitter)
+      expect(result).toHaveProperty('path', '/app/packages.json')
+      expect(result).toHaveProperty('object', reactive({}))
+    })
+
+    it('should expose the options as properties', async() => {
+      const options = { initialValue: { foo: 'bar' } }
+      const result = loadObject('/app/packages.json', options)
+      expect(result.options).toBe(options)
+    })
+
+    it('should resolve the parsed JSON file', async() => {
+      vol.fromJSON({ '/app/packages.json': '{"foo":"bar"}' })
+      const result = await loadObject('/app/packages.json')
+      expect(result).toEqual({ foo: 'bar' })
+    })
+
+    it('should create the file if it does not exist and the `createIfNotExists` option is set to `true`', async() => {
+      const result = await loadObject('/app/packages.json', { createIfNotExists: true })
+      expect(result).toEqual({})
+      const fileContent = readFileSync('/app/packages.json', 'utf8')
+      expect(fileContent).toEqual('{}\n')
+    })
+
+    it('should reject if the file is not a JSON object', async() => {
+      vol.fromJSON({ 'file.json': '"foo": "bar"' })
+      const shouldReject = async () => await loadObject('file.json')
+      await expect(shouldReject).rejects.toThrow()
+    })
   })
 
-  it('should load the file', async() => {
-    const result = await loadObject<typeof object>(objectPath)
-    expect(result).toEqual(object)
-    expectTypeOf(result).toEqualTypeOf(object)
+  describe('load', () => {
+    it('should load the file when the `load` method is called', async() => {
+      vol.fromJSON({ '/app/packages.json': '{"foo":"bar"}' })
+      const result = new FSObject('/app/packages.json')
+      const loaded = await result.load()
+      expect(loaded).toBeUndefined()
+      expect(result.object).toEqual({ foo: 'bar' })
+    })
+
+    it('should set the `isLoading` flag to `true` when loading', async() => {
+      vol.fromJSON({ '/app/packages.json': '{"foo":"bar"}' })
+      const result = new FSObject('/app/packages.json')
+      expect(result.isLoading).toBe(false)
+      const loaded = result.load()
+      expect(result.isLoading).toBe(true)
+      await loaded
+      expect(result.isLoading).toBe(false)
+    })
+
+    it('should call the `load` event when the file is loaded', async() => {
+      vol.fromJSON({ '/app/packages.json': '{"foo":"bar"}' })
+      const fn = vi.fn()
+      const result = new FSObject('/app/packages.json')
+      result.addListener('load', fn)
+      await result.load()
+      expect(fn).toHaveBeenCalledOnce()
+      expect(fn).toHaveBeenCalledWith({ foo: 'bar' })
+    })
+
+    it('should resolve the `untilLoaded` property once the file is loaded', async() => {
+      vol.fromJSON({ '/app/packages.json': '{"foo":"bar"}' })
+      const result = loadObject('/app/packages.json')
+      result.load()
+      expect(result.isLoading).toBe(true)
+      await expect(result.untilLoaded).resolves.toBeUndefined()
+      expect(result.isLoading).toBe(false)
+    })
+
+    it('should resolve the `untilLoaded` property immediately if the file is already loaded', async() => {
+      vol.fromJSON({ '/app/packages.json': '{"foo":"bar"}' })
+      const result = new FSObject('/app/packages.json')
+      await result.load()
+      expect(result.isLoading).toBe(false)
+      await expect(result.untilLoaded).resolves.toBeUndefined()
+      expect(result.isLoading).toBe(false)
+    })
+
+    it('should create the file if it does not exist and the `createIfNotExists` option is set to `true`', async() => {
+      const result = new FSObject('/app/packages.json', { createIfNotExists: true })
+      await result.load()
+      const fileContent = readFileSync('/app/packages.json', 'utf8')
+      expect(fileContent).toEqual('{}\n')
+      expect(result.object).toEqual({})
+    })
+
+    it('should create with initial value if the file does not exist and the `createIfNotExists` option is set to `true`', async() => {
+      const result = new FSObject('/app/packages.json', { createIfNotExists: true, initialValue: { foo: 'bar' } })
+      await result.load()
+      const fileContent = readFileSync('/app/packages.json', 'utf8')
+      expect(fileContent).toEqual('{\n  "foo": "bar"\n}\n')
+      expect(result.object).toEqual({ foo: 'bar' })
+    })
+
+    it('should use the provided `parse` function to parse the file', async() => {
+      vol.fromJSON({ '/app/packages.json': '{"foo":"bar"}' })
+      const parse = vi.fn((json: string) => ({ json }))
+      const result = new FSObject('/app/packages.json', { parse })
+      await result.load()
+      expect(result.object).toEqual({ json: '{"foo":"bar"}' })
+      expect(parse).toHaveBeenCalledOnce()
+      expect(parse).toHaveBeenCalledWith('{"foo":"bar"}')
+    })
+
+    it('should reject if the file does not exist', async() => {
+      const result = new FSObject('/app/packages.json')
+      const shouldReject = () => result.load()
+      await expect(shouldReject).rejects.toThrow('ENOENT')
+    })
   })
 
-  it('should update the file when the object is modified', async() => {
-    const result = await loadObject<typeof object>(objectPath)
-    result.foo = 'bar'
-    await new Promise(resolve => setTimeout(resolve, 1))
-    const fileContent = readFileSync(objectPath, 'utf8')
-    const fileObject = JSON.parse(fileContent)
-    expect(fileObject).toEqual({ foo: 'bar' })
+  describe('watch', () => {
+    it('should return the current instance', async() => {
+      vol.fromJSON({ '/app/packages.json': '{"foo":"bar"}' })
+      const result = new FSObject('/app/packages.json')
+      const watch = result.watch()
+      expect(watch).toBe(result)
+    })
+
+    it('should watch for changes on the file', async() => {
+      vol.fromJSON({ '/app/packages.json': '{"foo":"bar"}' })
+      const fn = vi.fn()
+      const result = new FSObject('/app/packages.json')
+      result.addListener('load', fn)
+      result.watch()
+      writeFileSync('/app/packages.json', '{"bar":"baz"}')
+      await result.untilLoaded
+      expect(fn).toHaveBeenCalledOnce()
+      expect(fn).toHaveBeenCalledWith({ bar: 'baz' })
+    })
+
+    it('should not watch for changes on the file when `ignoreFileChanges` is `true`', async() => {
+      vol.fromJSON({ '/app/packages.json': '{"foo":"bar"}' })
+      const fn = vi.fn()
+      const result = new FSObject('/app/packages.json', { ignoreFileChanges: true })
+      result.watch()
+      result.addListener('load', fn)
+      writeFileSync('/app/packages.json', '{"bar":"baz"}')
+      await new Promise(resolve => setTimeout(resolve, 10))
+      expect(fn).not.toHaveBeenCalled()
+    })
+
+    it('should throw an error if the file does not exist', async() => {
+      const result = new FSObject('/app/packages.json')
+      const shouldThrow = () => result.watch()
+      expect(shouldThrow).toThrow('ENOENT')
+    })
   })
 
-  it('should update the object when the file is modified', async() => {
-    const result = await loadObject(objectPath)
-    const newObject = { foo: 'foo', bar: 'bar', baz: 'baz' }
-    const newObjectUtf8 = JSON.stringify(newObject, undefined, 2)
-    writeFileSync(objectPath, newObjectUtf8, 'utf8')
-    await new Promise(resolve => setTimeout(resolve, 1))
-    expect(result).toEqual(newObject)
+  describe('commit', () => {
+    it('should commit the object to the file when the `commit` method is called', async() => {
+      const result = new FSObject('/app/packages.json')
+      const commited = await result.commit()
+      const fileContent = readFileSync('/app/packages.json', 'utf8')
+      expect(commited).toBeUndefined()
+      expect(fileContent).toEqual('{}\n')
+    })
+
+    it('should set the `isCommitting` flag to `true` when committing', async() => {
+      const result = new FSObject('/app/packages.json')
+      expect(result.isCommitting).toBe(false)
+      result.commit()
+      expect(result.isCommitting).toBe(true)
+    })
+
+    it('should call the `commit` event when the file is isCommitting', async() => {
+      const result = new FSObject('/app/packages.json', { initialValue: { foo: 'bar' } })
+      const fn = vi.fn()
+      result.addListener('commit', fn)
+      await result.commit()
+      expect(fn).toHaveBeenCalledOnce()
+      expect(fn).toHaveBeenCalledWith({ foo: 'bar' })
+    })
+
+    it('should commit the given object to the file', async() => {
+      const result = new FSObject('/app/packages.json')
+      await result.commit({ foo: 'bar' })
+      const fileContent = readFileSync('/app/packages.json', 'utf8')
+      expect(fileContent).toEqual('{\n  "foo": "bar"\n}\n')
+    })
+
+    it('should resolve the `untilCommitted` promise once the file is committed', async() => {
+      const result = new FSObject('/app/packages.json')
+      expect(result.isCommitting).toBe(false)
+      result.commit()
+      expect(result.isCommitting).toBe(true)
+      await expect(result.untilCommitted).resolves.toBeUndefined()
+      expect(result.isCommitting).toBe(false)
+    })
+
+    it('should resolve the `untilCommitted` promise immediately if the file is already committed', async() => {
+      const result = new FSObject('/app/packages.json', { initialValue: { foo: 'bar' } })
+      await result.commit()
+      const untilCommitted = result.untilCommitted
+      await expect(untilCommitted).resolves.toBeUndefined()
+    })
+
+    it('should commit the object to the file when the object changes', async() => {
+      const fn = vi.fn()
+      const result = new FSObject('/app/packages.json', { initialValue: { foo: 'bar' } })
+      result.addListener('commit', fn)
+      result.object.foo = 'baz'
+      await result.untilCommitted
+      expect(fn).toHaveBeenCalledOnce()
+      expect(fn).toHaveBeenCalledWith({ foo: 'baz' })
+    })
+
+    it('should use the provided `serialize` function to serialize the object', async() => {
+      const serialize = vi.fn((object: any) => object.toString())
+      const result = new FSObject('/app/packages.json', { initialValue: { foo: 'bar' }, serialize })
+      await result.commit()
+      const fileContent = readFileSync('/app/packages.json', 'utf8')
+      expect(fileContent).toEqual('[object Object]\n')
+      expect(serialize).toHaveBeenCalledOnce()
+      expect(serialize).toHaveBeenCalledWith({ foo: 'bar' })
+    })
+
+    it('should not commit the object to the file when the `ignoreObjectChanges` option is set to `true`', async() => {
+      const fn = vi.fn()
+      const result = new FSObject<{ foo: string }>('/app/packages.json', { ignoreObjectChanges: true })
+      result.addListener('commit', fn)
+      result.object.foo = 'baz'
+      await new Promise(resolve => setTimeout(resolve, 10))
+      expect(fn).not.toHaveBeenCalled()
+    })
   })
 
-  it('should remove properties from the object when they are removed from the file', async() => {
-    const result = await loadObject(objectPath)
-    const newObject = {}
-    const newObjectUtf8 = JSON.stringify(newObject, undefined, 2)
-    writeFileSync(objectPath, newObjectUtf8, 'utf8')
-    await new Promise(resolve => setTimeout(resolve, 3))
-    expect(result).toEqual(newObject)
-  })
+  describe('destroy', () => {
+    it('should set the `isDestroyed` flag to `true` when destroyed', async() => {
+      const result = new FSObject('/app/packages.json')
+      expect(result.isDestroyed).toBe(false)
+      await result.destroy()
+      expect(result.isDestroyed).toBe(true)
+    })
 
-  it('should update the object when the file is renamed', async() => {
-    const result = await loadObject(objectPath)
-    renameSync(objectPath, '/test2.json')
-    expect(result).toEqual(object)
-  })
+    it('should emit the `destroy` event when the object is destroyed', async() => {
+      const result = new FSObject('/app/packages.json')
+      const fn = vi.fn()
+      result.addListener('destroy', fn)
+      await result.destroy()
+      expect(fn).toHaveBeenCalledOnce()
+    })
 
-  it('should throw if the file is not a JSON object', async() => {
-    const shouldThrow = () => loadObject(objectPath)
-    expect(shouldThrow).toThrow(SyntaxError)
+    it('should resolve the `untilDestroyed` promise when the object is destroyed', async() => {
+      const result = new FSObject('/app/packages.json')
+      expect(result.isDestroyed).toBe(false)
+      const untilDestroyed = result.untilDestroyed
+      result.destroy()
+      expect(result.isDestroyed).toBe(true)
+      await expect(untilDestroyed).resolves.toBeUndefined()
+      expect(result.isDestroyed).toBe(true)
+    })
+
+    it('should resolve the `untilDestroyed` promise immediately if the object is already destroyed', async() => {
+      const result = new FSObject('/app/packages.json')
+      await result.destroy()
+      const untilDestroyed = result.untilDestroyed
+      await expect(untilDestroyed).resolves.toBeUndefined()
+    })
+
+    it('should delete the file when the `deleteOnDestroy` option is set to `true`', async() => {
+      vol.fromJSON({ '/app/packages.json': '{"foo":"bar"}' })
+      const result = new FSObject('/app/packages.json', { deleteOnDestroy: true })
+      await result.destroy()
+      const fileExists = existsSync('/app/packages.json')
+      expect(fileExists).toBe(false)
+    })
   })
 }
