@@ -1,6 +1,7 @@
 {
   "name": "@unshared/fs",
   "type": "module",
+  "version": "1.0.0",
   "license": "MIT",
   "sideEffects": false,
   "author": "Stanley Horwood <stanley@hsjm.io>",
@@ -8,107 +9,69 @@
   "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shorwood/unshared.git",
+    "url": "git+ssh://git@github.com:shorwood/unshared.git",
     "directory": "packages/fs"
   },
   "exports": {
-    "capture": {
-      "require": "./dist/capture.cjs",
-      "import": "./dist/capture.js"
-    },
-    "findAncestor": {
+    "./findAncestor": {
       "require": "./dist/findAncestor.cjs",
+      "types": "./dist/findAncestor.d.ts",
       "import": "./dist/findAncestor.js"
     },
-    "findAncestors": {
+    "./findAncestors": {
       "require": "./dist/findAncestors.cjs",
+      "types": "./dist/findAncestors.d.ts",
       "import": "./dist/findAncestors.js"
     },
-    "getCharset": {
-      "require": "./dist/getCharset.cjs",
-      "import": "./dist/getCharset.js"
-    },
-    "getEncoding": {
-      "require": "./dist/getEncoding.cjs",
-      "import": "./dist/getEncoding.js"
-    },
-    "getMagicHeader": {
-      "require": "./dist/getMagicHeader.cjs",
-      "import": "./dist/getMagicHeader.js"
-    },
-    "getMimeType": {
-      "require": "./dist/getMimeType.cjs",
-      "import": "./dist/getMimeType.js"
-    },
-    "glob": {
+    "./glob": {
       "require": "./dist/glob.cjs",
+      "types": "./dist/glob.d.ts",
       "import": "./dist/glob.js"
     },
-    "*": {
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.js"
-    },
-    "isDirectory": {
-      "require": "./dist/isDirectory.cjs",
-      "import": "./dist/isDirectory.js"
-    },
-    "isFile": {
-      "require": "./dist/isFile.cjs",
-      "import": "./dist/isFile.js"
-    },
-    "loadObject": {
+    "./loadObject": {
       "require": "./dist/loadObject.cjs",
+      "types": "./dist/loadObject.d.ts",
       "import": "./dist/loadObject.js"
     },
-    "loadPackageJson": {
-      "require": "./dist/loadPackageJson.cjs",
-      "import": "./dist/loadPackageJson.js"
-    },
-    "loadTsConfig": {
-      "require": "./dist/loadTsConfig.cjs",
-      "import": "./dist/loadTsConfig.js"
-    },
-    "resolveAlias": {
-      "require": "./dist/resolveAlias.cjs",
-      "import": "./dist/resolveAlias.js"
-    },
-    "resolveDependencies": {
-      "require": "./dist/resolveDependencies.cjs",
-      "import": "./dist/resolveDependencies.js"
-    },
-    "resolveImport": {
+    "./resolveImport": {
       "require": "./dist/resolveImport.cjs",
+      "types": "./dist/resolveImport.d.ts",
       "import": "./dist/resolveImport.js"
     },
-    "resolveModule": {
+    "./resolveModule": {
       "require": "./dist/resolveModule.cjs",
+      "types": "./dist/resolveModule.d.ts",
       "import": "./dist/resolveModule.js"
     },
-    "resolvePackageJson": {
-      "require": "./dist/resolvePackageJson.cjs",
-      "import": "./dist/resolvePackageJson.js"
+    "./touch": {
+      "require": "./dist/touch.cjs",
+      "types": "./dist/touch.d.ts",
+      "import": "./dist/touch.js"
     },
-    "resolveTsConfig": {
-      "require": "./dist/resolveTsConfig.cjs",
-      "import": "./dist/resolveTsConfig.js"
+    "./updateFile": {
+      "require": "./dist/updateFile.cjs",
+      "types": "./dist/updateFile.d.ts",
+      "import": "./dist/updateFile.js"
     },
-    "resolveTypes": {
-      "require": "./dist/resolveTypes.cjs",
-      "import": "./dist/resolveTypes.js"
+    ".": {
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     }
   },
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE.md"
   ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch"
   },
   "dependencies": {
+    "@unshared/collection": "workspace:*",
     "@unshared/functions": "workspace:*",
-    "@unshared/reactive": "workspace:*",
+    "@unshared/reactivity": "workspace:*",
     "@unshared/string": "workspace:*"
   }
 }
