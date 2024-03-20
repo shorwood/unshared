@@ -1,5 +1,5 @@
 {
-  "name": "@unshared/reactive",
+  "name": "@unshared/reactivity",
   "type": "module",
   "license": "MIT",
   "sideEffects": false,
@@ -9,7 +9,7 @@
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com:shorwood/unshared.git",
-    "directory": "packages/reactive"
+    "directory": "packages/reactivity"
   },
   "exports": {
     "./computed": {
