@@ -238,9 +238,6 @@
     "./NumberPositive": {
       "types": "./dist/NumberPositive.d.ts"
     },
-    "./ObjectLike": {
-      "types": "./dist/ObjectLike.d.ts"
-    },
     "./Optional": {
       "types": "./dist/Optional.d.ts"
     },
