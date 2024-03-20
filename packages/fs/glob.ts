@@ -1,12 +1,10 @@
-/* eslint-disable unicorn/no-null */
-/* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable sonarjs/cognitive-complexity */
 import { Stats } from 'node:fs'
 import { readdir, stat } from 'node:fs/promises'
 import { join, relative } from 'node:path'
 import { cwd as getCwd } from 'node:process'
 import { awaitable, Awaitable } from '@unshared/functions/awaitable'
-import { createPatternRegexp } from '@unshared/string/createPatternRegexp'
+import { createPattern } from '@unshared/string/createPattern'
 import { MaybeArray } from '@unshared/types'
 import { vol } from 'memfs'
 
@@ -59,6 +57,12 @@ export interface GlobOptions<Stat extends boolean> {
    * @example glob('src/**', { onlyDirectories: true }) // ['src/foo', 'src/foo/bar']
    */
   onlyDirectories?: boolean
+  /**
+   * A list of patterns to exclude from the result.
+   *
+   * @default []
+   */
+  exclude?: MaybeArray<string>
 }
 
 /**
@@ -78,17 +82,20 @@ export function glob<Stat extends boolean = false>(pattern: MaybeArray<string>, 
     getRelative = false,
     onlyFiles = false,
     onlyDirectories = false,
+    exclude = [],
   } = options
 
   // --- Convert the pattern to an array of RegExp.
-  const patterns = Array.isArray(pattern) ? pattern : [pattern]
-  const regexps = patterns.map(createPatternRegexp)
+  const patternArray = Array.isArray(pattern) ? pattern : [pattern]
+  const patterns = patternArray.map(createPattern)
+  const exludeArray = Array.isArray(exclude) ? exclude : [exclude]
+  const excludePatterns = exludeArray.map(createPattern)
 
   // --- Create an iterator that will yield the matching paths.
   const searchPool: string[] = [cwd]
   async function* createIterator() {
     while (searchPool.length > 0) {
-      const directory = searchPool.shift()!
+      const directory = searchPool.pop()!
       const entities = await readdir(directory, { withFileTypes: true }).catch(() => [])
 
       for (const entity of entities) {
@@ -105,8 +112,12 @@ export function glob<Stat extends boolean = false>(pattern: MaybeArray<string>, 
         if (onlyDirectories && !isDirectory) continue
 
         // --- Check if the path matches the pattern(s).
-        const isMatch = regexps.some(regexp => regexp.test(pathRelative))
+        const isMatch = patterns.some(pattern => pattern.test(pathRelative))
         if (!isMatch) continue
+
+        // --- Check if the path matches the exclude pattern(s).
+        const isExcluded = excludePatterns.some(pattern => pattern.test(pathRelative))
+        if (isExcluded) continue
 
         // --- Return the result.
         let result: GlobEntry = pathAbsolute
@@ -128,39 +139,45 @@ export function glob<Stat extends boolean = false>(pattern: MaybeArray<string>, 
 if (import.meta.vitest) {
   beforeEach(() => {
     vol.fromJSON({
-      '/project': null,
       '/project/foo.ts': '',
       '/project/bar.ts': '',
       '/project/baz.ts': '',
       '/project/README.md': '',
-      '/project/dist': null,
       '/project/dist/foo.js': '',
       '/project/dist/bar.js': '',
       '/project/dist/baz.js': '',
-      '/project/dist/docs': null,
       '/project/dist/docs/README.md': '',
       '/project/dist/docs/CHANGELOG.md': '',
     })
   })
 
-  it('should find the absolute path matching a glob pattern', async() => {
-    const files = await glob('*.ts', { cwd: '/project' })
-    const expected = [
+  it('should yield the paths matching a glob pattern', async() => {
+    const files = glob('*.ts', { cwd: '/project' })
+    const result = []
+    for await (const file of files) result.push(file)
+    expect(result).toEqual([
       '/project/bar.ts',
       '/project/baz.ts',
       '/project/foo.ts',
-    ]
-    expect(files).toEqual(expected)
+    ])
+  })
+
+  it('should find the absolute path matching a glob pattern', async() => {
+    const files = await glob('*.ts', { cwd: '/project' })
+    expect(files).toEqual([
+      '/project/bar.ts',
+      '/project/baz.ts',
+      '/project/foo.ts',
+    ])
   })
 
   it('should find the relative path matching a glob pattern', async() => {
     const files = await glob('*.ts', { cwd: '/project', getRelative: true })
-    const expected = [
+    expect(files).toEqual([
       './bar.ts',
       './baz.ts',
       './foo.ts',
-    ]
-    expect(files).toEqual(expected)
+    ])
   })
 
   it('should find the stats matching a glob pattern', async() => {
@@ -174,30 +191,44 @@ if (import.meta.vitest) {
   })
 
   it('should find the paths matching an exclude pattern', async() => {
-    const files = await glob(['*.ts', '!bar.ts'], { cwd: '/project' })
+    const files = await glob('*.ts', { cwd: '/project', exclude: 'baz.ts' })
     const expected = [
-      '/project/baz.ts',
+      '/project/bar.ts',
       '/project/foo.ts',
     ]
     expect(files).toEqual(expected)
   })
 
   it('should find only files at the root', async() => {
-    const files = await glob('*', { cwd: '/project', onlyFiles: true })
-    const expected = [
+    const files = await glob('**/*', { cwd: '/project', onlyFiles: true })
+    expect(files).toEqual([
       '/project/README.md',
       '/project/bar.ts',
       '/project/baz.ts',
       '/project/foo.ts',
-    ]
-    expect(files).toEqual(expected)
+      '/project/dist/bar.js',
+      '/project/dist/baz.js',
+      '/project/dist/foo.js',
+      '/project/dist/docs/CHANGELOG.md',
+      '/project/dist/docs/README.md',
+    ])
   })
 
   it('should find only directories at the root', async() => {
-    const files = await glob('*', { cwd: '/project', onlyDirectories: true })
-    const expected = [
+    const files = await glob('**/*', { cwd: '/project', onlyDirectories: true })
+    expect(files).toEqual([
       '/project/dist',
-    ]
-    expect(files).toEqual(expected)
+      '/project/dist/docs',
+    ])
+  })
+
+  it.only('should find files but exclude the dist directory', async() => {
+    const files = await glob('*/*', { cwd: '/project', exclude: 'dist/**' })
+    expect(files).toEqual([
+      '/project/README.md',
+      '/project/bar.ts',
+      '/project/baz.ts',
+      '/project/foo.ts',
+    ])
   })
 }
