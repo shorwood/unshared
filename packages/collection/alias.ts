@@ -1,4 +1,4 @@
-import { Fallback, Get, Path, MaybeLiteral } from '@unshared/types'
+import { Fallback, Get, Path, } from '@unshared/types'
 import { deleteProperty } from './deleteProperty'
 import { get } from './get'
 import { set } from './set'
@@ -10,7 +10,7 @@ import { set } from './set'
  * @returns A map of aliases to use for the collection.
  * @example AliasMap<{ abc: 'a.b.c' }> // { abc: 'a.b.c' }
  */
-export type AliasMap<T extends object> = Record<string, MaybeLiteral<Path<T>>>
+export type AliasMap<T extends object = object> = Record<string, Path<T> | (string & {})>
 
 /**
  * Map nested properties to top-level properties. Allows for easier access to nested
@@ -82,7 +82,9 @@ export type Aliased<T extends object, A extends AliasMap<T>> =
  * // Delete nested properties using top-level properties.
  * delete aliased.fooBaz
  */
-export function alias<T extends object, A extends AliasMap<T>>(object: T, aliases: A): Aliased<T, A> {
+export function alias<T extends object, A extends AliasMap<T>>(object: T, aliases: A): Aliased<T, A>
+export function alias<U extends object>(object: object, aliases: AliasMap): U
+export function alias(object: object, aliases: AliasMap) {
   return new Proxy(object, {
 
     // --- Getting an aliased property will get the real property.
@@ -118,7 +120,7 @@ export function alias<T extends object, A extends AliasMap<T>>(object: T, aliase
       return [...keys, ...aliasedKeys]
     },
 
-  }) as Aliased<T, A>
+  })
 }
 
 /** c8 ignore next */
@@ -168,26 +170,26 @@ if (import.meta.vitest) {
   describe('Aliased', () => {
     it('should alias a nested property', () => {
       interface Source { foo: { bar: string } }
-    type Result = Aliased<Source, { fooBar: 'foo.bar' }>
-    expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: string }>()
+      type Result = Aliased<Source, { fooBar: 'foo.bar' }>
+      expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: string }>()
     })
 
     it('should alias a nested array index', () => {
       interface Source { foo: { bar: [string] } }
-    type Result = Aliased<Source, { fooBar: 'foo.bar.0' }>
-    expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: string }>()
+      type Result = Aliased<Source, { fooBar: 'foo.bar.0' }>
+      expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: string }>()
     })
 
     it('should alias new properties as mutable', () => {
       interface Source { foo: { bar: string } }
-    type Result = Aliased<Source, { readonly fooBar: 'foo.bar' }>
-    expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: string }>()
+      type Result = Aliased<Source, { readonly fooBar: 'foo.bar' }>
+      expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: string }>()
     })
 
     it('should alias as uknown if the path does not exist', () => {
       interface Source { foo: { bar: string } }
-    type Result = Aliased<Source, { fooBar: 'foo.baz' }>
-    expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: unknown }>()
+      type Result = Aliased<Source, { fooBar: 'foo.baz' }>
+      expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: unknown }>()
     })
   })
 }
