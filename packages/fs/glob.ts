@@ -6,7 +6,6 @@ import { cwd as getCwd } from 'node:process'
 import { awaitable, Awaitable } from '@unshared/functions/awaitable'
 import { createPattern } from '@unshared/string/createPattern'
 import { MaybeArray } from '@unshared/types'
-import { vol } from 'memfs'
 
 /**
  * An entry in the glob result iterator or array.
@@ -137,6 +136,8 @@ export function glob<Stat extends boolean = false>(pattern: MaybeArray<string>, 
 
 /** c8 ignore next */
 if (import.meta.vitest) {
+  const { vol } = await import('memfs')
+
   beforeEach(() => {
     vol.fromJSON({
       '/project/foo.ts': '',

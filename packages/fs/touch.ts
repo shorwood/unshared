@@ -1,7 +1,6 @@
 import { TimeLike } from 'node:fs'
 import { mkdir, stat, utimes, writeFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
-import { vol } from 'memfs'
 
 export interface TouchOptions {
   /**
@@ -58,6 +57,8 @@ export async function touch(path: string, options: TouchOptions = {}): Promise<v
 
 /** c8 ignore next */
 if (import.meta.vitest) {
+  const { vol } = await import('memfs')
+
   beforeAll(() => {
     vi.useFakeTimers()
   })

@@ -2,7 +2,6 @@ import { access, constants } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { cwd } from 'node:process'
 import { awaitable, Awaitable } from '@unshared/functions/awaitable'
-import { vol } from 'memfs'
 
 /**
  * Find all ancestors of a file from a given path. The search will start
@@ -43,6 +42,8 @@ export function findAncestors(name: string, from: string = cwd()): Awaitable<Asy
 
 /** v8 ignore start */
 if (import.meta.vitest) {
+  const { vol } = await import('memfs')
+
   it('should resolve ancestors from current directory', async() => {
     vi.mock('node:process', () => ({ cwd: () => '/home/user/project' }))
     vol.fromJSON({

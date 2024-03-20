@@ -2,7 +2,6 @@
 import { PathLike } from 'node:fs'
 import { open, readFile, writeFile } from 'node:fs/promises'
 import { MaybePromise } from '@unshared/types'
-import { vol } from 'memfs'
 
 /**
  * A callback that updates a file's contents.
@@ -42,6 +41,8 @@ export async function updateFile(path: PathLike, callback: UpdateFileCallback<an
 
 /* v8 ignore start */
 if (import.meta.vitest) {
+  const { vol } = await import('memfs')
+
   it('should update a file with a callback using buffer', async() => {
     vol.fromJSON({ '/foo.txt': 'Hello, world!' })
     await updateFile('/foo.txt', content => content.toString('utf8').toUpperCase())

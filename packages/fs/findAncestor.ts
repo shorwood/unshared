@@ -1,7 +1,6 @@
 import { access, constants } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { cwd } from 'node:process'
-import { vol } from 'memfs'
 
 /**
  * Find the first ancestor of a file from a given path. The search will start
@@ -33,8 +32,10 @@ export async function findAncestor(name: string, from: string = cwd()): Promise<
   }
 }
 
-/** v8 ignore start */
+/* v8 ignore start */
 if (import.meta.vitest) {
+  const { vol } = await import('memfs')
+
   it('should resolve ancestor from current directory', async() => {
     vi.mock('node:process', () => ({ cwd: () => '/home/user/project' }))
     vol.fromJSON({ '/home/user/project/.npmrc': '' })
