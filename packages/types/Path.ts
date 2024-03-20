@@ -18,7 +18,7 @@ import { IsZero, Substract } from './utils'
  *
  * type Result = Path<Contact> // 'name' | 'name.first' | 'name.last' | 'email'
  */
-export type Path<T, N extends number = 10, P extends string = ''> =
+export type Path<T, N extends number = 8, P extends string = ''> =
   T extends object
 
     // --- On recursion threshold, return the collected paths so far.
