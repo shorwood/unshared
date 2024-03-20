@@ -1,3 +1,5 @@
+import { ObjectLike } from '@unshared/types'
+
 /**
  * Overwrites the values of `object` with the values of `source`. This method
  * is like `Object.assign` except that it deletes properties that are not in
@@ -13,9 +15,8 @@
  * // Overwrite the object with the source object.
  * overwrite(object, { baz: 1 }) // { baz: 1 }
  */
-export function overwrite<T extends object>(object: object, source: T): T
-export function overwrite<T extends unknown[]>(object: unknown[], source: T): T
-export function overwrite(object: object, source: object): object {
+export function overwrite<T extends ObjectLike>(object: ObjectLike, source: T): T
+export function overwrite(object: ObjectLike, source: ObjectLike): ObjectLike {
 
   // --- Assert that the object and source are of both arrays or objects.
   const sourceIsArray = Array.isArray(source)
@@ -29,23 +30,19 @@ export function overwrite(object: object, source: object): object {
   const keys = new Set([...objectKeys, ...sourceKeys])
 
   // --- If the object and source are arrays, set the length of the object.
-  if (Array.isArray(object) && Array.isArray(source))
-    object.length = source.length
+  if (objectIsArray && sourceIsArray) object.length = source.length
 
   // --- Loop through the keys and overwrite the object.
   for (const key of keys) {
-    // @ts-expect-error: Indexing `object` with `key` is not type safe.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    if (key in source) object[key] = source[key]
-    // @ts-expect-error: Indexing `object` with `key` is not type safe.
-    else delete object[key]
+    if (key in source) object[key as keyof object] = source[key as keyof object]
+    else delete object[key as keyof object]
   }
 
   // --- Return the object.
   return object
 }
 
-/** c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
   it('should return the object with the source values', () => {
     const object = { foo: 'foo', bar: 'bar' }
