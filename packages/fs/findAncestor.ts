@@ -33,9 +33,8 @@ export async function findAncestor(name: string, from: string = cwd()): Promise<
   }
 }
 
-/** c8 ignore next */
+/** v8 ignore start */
 if (import.meta.vitest) {
-
   it('should resolve ancestor from current directory', async() => {
     vi.mock('node:process', () => ({ cwd: () => '/home/user/project' }))
     vol.fromJSON({ '/home/user/project/.npmrc': '' })

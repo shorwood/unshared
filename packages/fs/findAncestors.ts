@@ -41,7 +41,7 @@ export function findAncestors(name: string, from: string = cwd()): Awaitable<Asy
   return awaitable(iterator)
 }
 
-/** c8 ignore next */
+/** v8 ignore start */
 if (import.meta.vitest) {
   it('should resolve ancestors from current directory', async() => {
     vi.mock('node:process', () => ({ cwd: () => '/home/user/project' }))
