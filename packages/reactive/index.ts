@@ -1,4 +1,5 @@
 export * from './computed'
+export * from './constants'
 export * from './isComputed'
 export * from './isReactive'
 export * from './isReference'

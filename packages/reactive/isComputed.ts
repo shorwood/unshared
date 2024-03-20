@@ -1,6 +1,5 @@
-import { Computed, ComputedFlag, computed } from './computed'
-import { reactive } from './reactive'
-import { reference } from './reference'
+import { Computed } from './computed'
+import { ComputedFlag } from './constants'
 
 /**
  * Predicate function that checks if a value is a `Computed` object.
@@ -20,6 +19,10 @@ export function isComputed<T>(value: unknown): value is Computed<T> {
 
 /** c8 ignore next */
 if (import.meta.vitest) {
+  const { computed } = await import('./computed')
+  const { reactive } = await import('./reactive')
+  const { reference } = await import('./reference')
+
   it('should return true for computed', () => {
     const value = computed([], () => 1)
     const result = isComputed(value)

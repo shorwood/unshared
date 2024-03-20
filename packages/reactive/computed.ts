@@ -1,21 +1,7 @@
-import { Reactive, ReactiveFlag, ReactiveOptions, reactive } from './reactive'
-import { reference } from './reference'
+import { ComputedData, ComputedFlag, ReactiveFlag } from './constants'
+import { Reactive, ReactiveOptions, reactive } from './reactive'
 import { Unwrapped, unwrap } from './unwrap'
 import { watch } from './watch'
-
-/**
- * Flag for checking if a value is a computed value.
- *
- * @internal
- */
-export const ComputedFlag = Symbol('Computed')
-
-/**
- * The internal value for a computed value.
- *
- * @internal
- */
-export const ComputedData = Symbol('ComputedData')
 
 /**
  * A computed value. This is a reactive value that is computed from other
@@ -120,6 +106,8 @@ export function computed<T, D extends ReadonlyArray<Reactive<any>> = []>(depende
 
 /** c8 ignore next */
 if (import.meta.vitest) {
+  const { reference } = await import('./reference')
+
   it('should create a computed value', () => {
     const a = reference(1)
     const b = reference(2)

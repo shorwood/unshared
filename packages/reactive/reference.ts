@@ -1,8 +1,6 @@
+import { ReactiveFlag, ReferenceFlag } from './constants'
 import { isReference } from './isReference'
-import { Reactive, ReactiveFlag, ReactiveOptions, reactive } from './reactive'
-
-/** Symbol to identify reactive references. */
-export const ReferenceFlag = Symbol('Reference')
+import { Reactive, ReactiveOptions, reactive } from './reactive'
 
 /**
  * A reactive reference to a value. This is a wrapper around a primitive value

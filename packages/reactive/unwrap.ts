@@ -1,12 +1,13 @@
-import { Computed, computed } from './computed'
+import { Computed } from './computed'
+import { ReactiveData } from './constants'
 import { isComputed } from './isComputed'
 import { isReactive } from './isReactive'
 import { isReference } from './isReference'
-import { Reactive, ReactiveData, reactive } from './reactive'
-import { Reference, reference } from './reference'
+import { Reactive } from './reactive'
+import { Reference } from './reference'
 
 /**
- * Dereference a {@link Reactive} type or unwrap a {@link Reference}.
+ * Dereference a `Reactive` object or unwrap a `Reference`.
  * If the value is not reactive, it is returned as-is.
  *
  * @template T The type of the value to unwrap.
@@ -21,7 +22,7 @@ export type Unwrapped<T> =
         : T
 
 /**
- * Dereference a {@link reactive} object or unwrap a {@link reference}.
+ * Dereference a `Reactive` object or unwrap a `Reference`.
  * If the value is not reactive, it is returned as-is.
  *
  * @param value The value to unwrap.
@@ -38,6 +39,10 @@ export function unwrap<T>(value: T): Unwrapped<T> {
 
 /** c8 ignore next */
 if (import.meta.vitest) {
+  const { computed } = await import('./computed')
+  const { reactive } = await import('./reactive')
+  const { reference } = await import('./reference')
+
   it('should unwrap reactive object', () => {
     const source = { foo: 'bar' }
     const value = reactive(source)

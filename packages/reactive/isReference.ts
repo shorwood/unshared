@@ -1,6 +1,5 @@
-import { computed } from './computed'
-import { reactive } from './reactive'
-import { Reference, ReferenceFlag, reference } from './reference'
+import { ReferenceFlag } from './constants'
+import { Reference } from './reference'
 
 /**
  * Predicate for checking if a value is a `Reference` object.
@@ -20,7 +19,11 @@ export function isReference<T>(value: unknown): value is Reference<T> {
 
 /** c8 ignore next */
 if (import.meta.vitest) {
-  it('should return true for computed', () => {
+  const { computed } = await import('./computed')
+  const { reactive } = await import('./reactive')
+  const { reference } = await import('./reference')
+
+  it('should return false for computed', () => {
     const value = computed([], () => 1)
     const result = isReference(value)
     expect(result).toEqual(false)
@@ -32,7 +35,7 @@ if (import.meta.vitest) {
     expect(result).toEqual(false)
   })
 
-  it('should return false for references', () => {
+  it('should return true for references', () => {
     const value = reference()
     const result = isReference(value)
     expect(result).toEqual(true)

@@ -8,7 +8,7 @@
   "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
-    "url": "git@github.com:shorwood/unshared.git",
+    "url": "git+ssh://git@github.com:shorwood/unshared.git",
     "directory": "packages/reactive"
   },
   "exports": {
@@ -16,6 +16,11 @@
       "require": "./dist/computed.cjs",
       "types": "./dist/computed.d.ts",
       "import": "./dist/computed.js"
+    },
+    "./constants": {
+      "require": "./dist/constants.cjs",
+      "types": "./dist/constants.d.ts",
+      "import": "./dist/constants.js"
     },
     "./isComputed": {
       "require": "./dist/isComputed.cjs",

@@ -1,11 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import { NotUndefined, Function } from '@unshared/types'
-
-/** The symbol used to identify reactive objects. */
-export const ReactiveFlag = Symbol('Reactive')
-
-/** The symbol that stores the reactive data. */
-export const ReactiveData = Symbol('ReactiveData')
+import { ReactiveFlag, ReactiveData } from './constants'
 
 /**
  * A callback to call when an object is changed.
@@ -95,7 +90,7 @@ export type MaybeReactive<T = unknown> = Reactive<T> | T
  */
 function wrapFunction(fn: Function, callback: Function, source: unknown, root: unknown) {
   return function(...args: unknown[]) {
-    const result = fn.apply(source, args)
+    const result = fn.apply(source, args) as unknown
 
     // --- If the result is a promise, wait for it to resolve before calling
     if (result instanceof Promise)

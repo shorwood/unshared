@@ -1,6 +1,5 @@
-import { computed } from './computed'
-import { Reactive, ReactiveFlag, reactive } from './reactive'
-import { reference } from './reference'
+import { ReactiveFlag } from './constants'
+import { Reactive } from './reactive'
 
 /**
  * Predicate function that checks if a value is a `Reactive` object.
@@ -20,6 +19,10 @@ export function isReactive<T>(value: unknown): value is Reactive<T> {
 
 /** c8 ignore next */
 if (import.meta.vitest) {
+  const { computed } = await import('./computed')
+  const { reactive } = await import('./reactive')
+  const { reference } = await import('./reference')
+
   it('should return true for computed', () => {
     const value = computed([], () => 1)
     const result = isReactive(value)

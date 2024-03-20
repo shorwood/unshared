@@ -1,6 +1,5 @@
-import { computed } from './computed'
-import { Reactive, ReactiveData, reactive } from './reactive'
-import { reference } from './reference'
+import { ReactiveData } from './constants'
+import { Reactive } from './reactive'
 import { Unwrapped, unwrap } from './unwrap'
 
 /** Stop watching a reactive object. */
@@ -43,6 +42,10 @@ export function watch<T extends Reactive>(value: T, callback: WatchCallback<T>):
 
 /** c8 ignore next */
 if (import.meta.vitest) {
+  const { reference } = await import('./reference')
+  const { reactive } = await import('./reactive')
+  const { computed } = await import('./computed')
+
   it('should watch a reactive object', () => {
     const callback = vi.fn()
     const value = reactive({ foo: 'bar' })
