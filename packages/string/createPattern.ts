@@ -11,7 +11,7 @@ import { escapeRegexp } from './escapeRegexp'
 export function createPattern(pattern: string): RegExp {
   const patternExp = escapeRegexp(pattern, ['\\', '^', '$', '.', '|', '+', '(', ')'])
     // --- Globstar(s)
-    .replaceAll(/(\*+)(\/)?/g, (_, asterisk: string) => (asterisk.length === 1 ? '[^/]+' : '.*?/?'))
+    .replaceAll(/(\/)?(\*+)\/?/g, (_, $1 = '', $2: string) => ($2.length === 1 ? `${$1}[^/]+` : '(\/?.*)'))
 
     // --- Wildcard
     .replaceAll(/{(.+?)}/g, (_, p1: string) => `(?:${p1.replaceAll(',', '|')})`)
@@ -53,8 +53,13 @@ export function createPattern(pattern: string): RegExp {
 /* c8 ignore next */
 if (import.meta.vitest) {
   it('should create RegExp from globstar pattern', () => {
-    const result = createPattern('foo*')
-    expect(result).toEqual(/^foo[^/]+$/)
+    const result = createPattern('foo/*')
+    expect(result).toEqual(/^foo\/[^/]+$/)
+  })
+
+  it('should create RegExp from double globstar pattern', () => {
+    const result = createPattern('foo/**')
+    expect(result).toEqual(/^foo(\/?.*)$/)
   })
 
   it('should create RegExp from pattern with brackets', () => {
