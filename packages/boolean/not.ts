@@ -24,4 +24,9 @@ if (import.meta.vitest) {
     expect(result).toEqual(false)
     expectTypeOf(result).toEqualTypeOf<false>()
   })
+
+  it('should return a boolean type if the parameter is a boolean', () => {
+    const result = not(true as boolean)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
+  })
 }

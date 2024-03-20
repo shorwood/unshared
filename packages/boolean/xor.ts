@@ -8,12 +8,20 @@ import { BooleanXor } from '@unshared/types'
  * @returns `true` if `a` and `b` are different.
  * @example xor(false, true) // true
  */
-export function xor<A extends boolean, B extends boolean>(a: A, b: B): BooleanXor<A, B> {
-  // @ts-expect-error: ignore
-  return (a !== b) as BooleanXor<A, B>
+export function xor<A extends boolean, B extends boolean>(a: A, b: B): BooleanXor<A, B>
+/**
+ * Computes the logical [XOR](https://en.wikipedia.org/wiki/Exclusive_or) of the given booleans.
+ *
+ * @param values The booleans to compare.
+ * @returns `true` if some of the values are different.
+ * @example xor(true, false, true, false) // true
+ */
+export function xor(...values: boolean[]): boolean
+export function xor(...values: boolean[]): boolean {
+  return values.some((a, i, array) => a !== array[0])
 }
 
-/* c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
   it('should return true if both parameters are true', () => {
     const result = xor(true, true)
@@ -37,5 +45,23 @@ if (import.meta.vitest) {
     const result = xor(false, true)
     expect(result).toEqual(true)
     expectTypeOf(result).toEqualTypeOf<true>()
+  })
+
+  it('should return true if some values are true and some are false', () => {
+    const result = xor(true, false, true, false)
+    expect(result).toEqual(true)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
+  })
+
+  it('should return false if all values are true', () => {
+    const result = xor(true, true, true, true)
+    expect(result).toEqual(false)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
+  })
+
+  it('should return false if all values are false', () => {
+    const result = xor(false, false, false, false)
+    expect(result).toEqual(false)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
   })
 }

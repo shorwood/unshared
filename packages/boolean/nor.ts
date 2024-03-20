@@ -8,8 +8,17 @@ import { BooleanNor } from '@unshared/types'
  * @returns `true` if `a` and `b` are `false`.
  * @example nor(false, true) // false
  */
-export function nor<A extends boolean, B extends boolean>(a: A, b: B): BooleanNor<A, B> {
-  return !(a || b) as BooleanNor<A, B>
+export function nor<A extends boolean, B extends boolean>(a: A, b: B): BooleanNor<A, B>
+/**
+ * Computes the logical [NOR](https://en.wikipedia.org/wiki/NOR_gate) of the given booleans.
+ *
+ * @param values The booleans to compare.
+ * @returns `true` if all the values are `false`.
+ * @example nor(false, false, false, false) // true
+ */
+export function nor(...values: boolean[]): boolean
+export function nor(...values: boolean[]): boolean {
+  return values.every(a => !a)
 }
 
 /* c8 ignore next */
@@ -36,5 +45,17 @@ if (import.meta.vitest) {
     const result = nor(true, true)
     expect(result).toEqual(false)
     expectTypeOf(result).toEqualTypeOf<false>()
+  })
+
+  it('should return true if all values are false', () => {
+    const result = nor(false, false, false, false)
+    expect(result).toEqual(true)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
+  })
+
+  it('should return false if some values are true', () => {
+    const result = nor(false, false, false, true)
+    expect(result).toEqual(false)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
   })
 }

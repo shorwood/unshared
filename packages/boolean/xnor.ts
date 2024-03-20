@@ -8,12 +8,20 @@ import { BooleanXnor } from '@unshared/types'
  * @returns `true` if `a` and `b` are the same.
  * @example xnor(false, true) // false
  */
-export function xnor<A extends boolean, B extends boolean>(a: A, b: B): BooleanXnor<A, B> {
-  // @ts-expect-error: ignore
-  return (a === b) as BooleanXnor<A, B>
+export function xnor<A extends boolean, B extends boolean>(a: A, b: B): BooleanXnor<A, B>
+/**
+ * Computes the logical [XNOR](https://en.wikipedia.org/wiki/XNOR_gate) of the given booleans.
+ *
+ * @param values The booleans to compare.
+ * @returns `true` if all the values are the same.
+ * @example xnor(false, false, false, false) // true
+ */
+export function xnor(...values: boolean[]): boolean
+export function xnor(...values: boolean[]): boolean {
+  return values.every((a, i, array) => a === array[0])
 }
 
-/* c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
   it('should return true if both parameters are true', () => {
     const result = xnor(true, true)
@@ -37,5 +45,23 @@ if (import.meta.vitest) {
     const result = xnor(false, true)
     expect(result).toEqual(false)
     expectTypeOf(result).toEqualTypeOf<false>()
+  })
+
+  it('should return true if all values are false', () => {
+    const result = xnor(false, false, false, false)
+    expect(result).toEqual(true)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
+  })
+
+  it('should return true if all values are true', () => {
+    const result = xnor(true, true, true, true)
+    expect(result).toEqual(true)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
+  })
+
+  it('should return false if some values are true and some are false', () => {
+    const result = xnor(true, true, false, true)
+    expect(result).toEqual(false)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
   })
 }

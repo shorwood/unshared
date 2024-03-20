@@ -8,8 +8,17 @@ import { BooleanNand } from '@unshared/types'
  * @returns `true` if `a` and `b` are `false`.
  * @example nand(false, true) // true
  */
-export function nand<A extends boolean, B extends boolean>(a: A, b: B): BooleanNand<A, B> {
-  return !(a && b) as BooleanNand<A, B>
+export function nand<A extends boolean, B extends boolean>(a: A, b: B): BooleanNand<A, B>
+/**
+ * Computes the logical [NAND](https://en.wikipedia.org/wiki/NAND_gate) of the given booleans.
+ *
+ * @param values The booleans to compare.
+ * @returns `true` if some of the values are `false`.
+ * @example nand(false, false, false, false) // true
+ */
+export function nand(...values: boolean[]): boolean
+export function nand(...values: boolean[]): boolean {
+  return values.some(a => !a)
 }
 
 /* c8 ignore next */
@@ -36,5 +45,17 @@ if (import.meta.vitest) {
     const result = nand(false, false)
     expect(result).toEqual(true)
     expectTypeOf(result).toEqualTypeOf<true>()
+  })
+
+  it('should return true if some values are false', () => {
+    const result = nand(false, false, false, true)
+    expect(result).toEqual(true)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
+  })
+
+  it('should return false if all values are true', () => {
+    const result = nand(true, true, true, true)
+    expect(result).toEqual(false)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
   })
 }
