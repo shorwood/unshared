@@ -13,6 +13,11 @@
     "directory": "packages/functions"
   },
   "exports": {
+    "./attach": {
+      "require": "./dist/attach.cjs",
+      "types": "./dist/attach.d.ts",
+      "import": "./dist/attach.js"
+    },
     "./attempt": {
       "require": "./dist/attempt.cjs",
       "types": "./dist/attempt.d.ts",

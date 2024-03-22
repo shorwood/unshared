@@ -1,3 +1,4 @@
+export * from './attach'
 export * from './attempt'
 export * from './awaitable'
 export * from './createContext'
