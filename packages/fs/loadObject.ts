@@ -1,14 +1,14 @@
-import { FSWatcher, PathLike, StatWatcher, Stats, WatchOptions, accessSync, constants, existsSync, mkdirSync, openSync, readFileSync, unwatchFile, watch, watchFile, writeFileSync } from 'node:fs'
-import { access, mkdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises'
-import { overwrite } from '@unshared/collection/overwrite'
-import { garbageCollected } from '@unshared/functions/garbageCollected'
-import { awaitable, Awaitable } from '@unshared/functions/awaitable'
-import { Reactive, ReactiveOptions, reactive } from '@unshared/reactivity/reactive'
-import EventEmitter from 'node:events'
-import { ObjectLike } from '@unshared/types'
+/* eslint-disable sonarjs/no-duplicate-string */
+import { EventEmitter } from 'node:events'
+import { FSWatcher, PathLike, Stats, WatchOptions, constants, existsSync, readFileSync, watch, writeFileSync } from 'node:fs'
+import { access, mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
+import { overwrite } from '@unshared/collection/overwrite'
+import { awaitable, Awaitable } from '@unshared/functions/awaitable'
+import { garbageCollected } from '@unshared/functions/garbageCollected'
+import { Reactive, ReactiveOptions, reactive } from '@unshared/reactivity/reactive'
 
-export interface FSObjectOptions<T extends ObjectLike> extends ReactiveOptions<T>, WatchOptions {
+export interface FSObjectOptions<T extends object> extends ReactiveOptions<T>, WatchOptions {
   /**
    * If set to `true`, changes on the file will not be reflected in the object.
    * You can use this to prevent the object from being updated when you are
@@ -42,32 +42,33 @@ export interface FSObjectOptions<T extends ObjectLike> extends ReactiveOptions<T
   /**
    * The initial value of the object. If the file does not exist, the object
    * will be initialized with this value.
-   * 
+   *
    * @default {}
    */
   initialValue?: T
   /**
    * The parser function to use when reading the file. If not set, the file
    * will be parsed as JSON using the native `JSON.parse` function.
-   * 
+   *
    * @default JSON.parse
    */
   parse?: (json: string) => T
   /**
    * The stringifier function to use when writing the file. If not set, the
    * object will be stringified as JSON using the native `JSON.stringify` function.
-   * 
+   *
    * @default JSON.stringify
    */
   serialize?: (object: T) => string
 }
 
-export class FSObject<T extends ObjectLike> extends EventEmitter<{
-  load: [T];
-  commit: [T];
-  lock: [];
-  unlock: [];
-  destroy: [];
+// eslint-disable-next-line unicorn/prefer-event-target
+export class FSObject<T extends object> extends EventEmitter<{
+  load: [T]
+  commit: [T]
+  lock: []
+  unlock: []
+  destroy: []
 }> {
   /**
    * Load a JSON file and keep it synchronized with it's source file.
@@ -82,7 +83,7 @@ export class FSObject<T extends ObjectLike> extends EventEmitter<{
     // --- The callback that will be called when the object changes.
     // --- This callback is wrapped in a debounce function to prevent
     // --- multiple writes in a short period of time.
-    const callback = async () => {
+    const callback = async() => {
       if (this.isBusy) return
       if (this.options.ignoreObjectChanges) return
       await this.commit()
@@ -99,35 +100,35 @@ export class FSObject<T extends ObjectLike> extends EventEmitter<{
 
     // --- Destroy the object once this instance is garbage collected.
     // --- This will also delete the file if it was created as a temporary file.
-    garbageCollected(this).then(() => this.destroy())
+    void garbageCollected(this).then(() => this.destroy())
   }
 
   /**
    * Create an awaitable instance of `FSObject` that resolves when the file
    * is synchronized with the object and the object is synchronized with the file.
-   * 
+   *
    * This function is a shorthand for creating a new `FSObject` instance and
    * calling the `access`, `load` and `watch` methods in sequence. This allows
    * fast and easy access to the file and object in a single call.
-   * 
+   *
    * @param path The path or file descriptor of the file to load.
    * @param options Options to pass to the `FSObject` constructor.
    * @returns An awaitable instance of `FSObject`.
    * @example
    * const fsObject = FSObject.from('file.json')
    * const object = await fsObject
-   * 
+   *
    * // Change the file and check the object.
    * writeFileSync('file.json', '{"foo":"bar"}')
    * await fsObject.untilLoaded
    * object // => { foo: 'bar' }
-   * 
+   *
    * // Change the object and check the file.
    * object.foo = 'baz'
    * await fsObject.untilCommitted
    * readFileSync('file.json', 'utf8') // => { "foo": "baz" }
    */
-  static from<T extends ObjectLike>(path: PathLike, options: FSObjectOptions<T> = {}): Awaitable<FSObject<T>, Reactive<T>> {
+  static from<T extends object>(path: PathLike, options: FSObjectOptions<T> = {}): Awaitable<FSObject<T>, Reactive<T>> {
     const fsObject = new FSObject<T>(path, options)
     const createPromise = () => fsObject.load().then(() => fsObject.watch().object)
     return awaitable(fsObject, createPromise)
@@ -146,18 +147,23 @@ export class FSObject<T extends ObjectLike> extends EventEmitter<{
   /** Flag to signal the file is synchronized with the object. */
   public isCommitting = false
 
-  /** Flag to signal the instance is busy doing a commit or a load operation. */
+  /**
+   * Flag to signal the instance is busy doing a commit or a load operation.
+   *
+   * @returns `true` if the instance is busy, `false` otherwise.
+   */
   get isBusy() {
     return this.isLoading || this.isCommitting || this.isDestroyed
   }
 
   /**
    * A promise that resolves when the object is destroyed.
-   * 
+   *
+   * @returns A promise that resolves when the object is destroyed.
    * @example
    * const object = new FSObject('file.json')
    * object.destroy()
-   * 
+   *
    * // Wait until the object is destroyed.
    * await object.untilDestroyed
    */
@@ -168,11 +174,12 @@ export class FSObject<T extends ObjectLike> extends EventEmitter<{
 
   /**
    * A promise that resolves when the object is synchronized with the file.
-   * 
+   *
+   * @returns A promise that resolves when the file is synchronized.
    * @example
    * const object = new FSObject('file.json')
    * object.load()
-   * 
+   *
    * // Wait until the object is synchronized.
    * await object.untilLoaded
    */
@@ -183,11 +190,12 @@ export class FSObject<T extends ObjectLike> extends EventEmitter<{
 
   /**
    * A promise that resolves when the file is synchronized with the object.
-   * 
+   *
+   * @returns A promise that resolves when the file is synchronized.
    * @example
    * const object = new FSObject('file.json')
    * object.commit()
-   * 
+   *
    * // Wait until the file is synchronized.
    * await object.untilCommitted
    */
@@ -199,16 +207,17 @@ export class FSObject<T extends ObjectLike> extends EventEmitter<{
   /**
    * Start watching the file for changes and update the object if the content
    * of the file changes.
-   * 
+   *
+   * @returns The current instance for chaining.
    * @example
    * const object = new FSObject('file.json').watch()
-   * 
+   *
    * // Change the file and check the object.
    * writeFileSync('file.json', '{"foo":"bar"}')
-   * 
+   *
    * // Wait until the object is updated.
    * await object.untilLoaded
-   * 
+   *
    * // Check the object.
    * expect(object.object).toEqual({ foo: 'bar' })
    */
@@ -221,7 +230,7 @@ export class FSObject<T extends ObjectLike> extends EventEmitter<{
     this.watcher = watch(this.path, { persistent: false, ...this.options }, (event) => {
       if (this.isBusy) return
       if (this.options.ignoreFileChanges) return
-      if (event === 'change') this.load()
+      if (event === 'change') void this.load()
     })
 
     // --- Return the instance for chaining.
@@ -230,7 +239,7 @@ export class FSObject<T extends ObjectLike> extends EventEmitter<{
 
   /**
    * Commit the current state of the object to the file. This function
-   *  **will** write the object to the file and emit a `commit` event.
+   * **will** write the object to the file and emit a `commit` event.
    *
    * @param writeObject The object to write to the file.
    * @returns A promise that resolves when the file has been written.
@@ -264,7 +273,7 @@ export class FSObject<T extends ObjectLike> extends EventEmitter<{
     // --- If the file does not exist, and the `createIfNotExists` option is
     // --- set to `true`, create the file and initialize the object with the
     // --- `initialValue` option.
-    const accessError = await access(this.path, constants.F_OK | constants.R_OK).catch(error => error)
+    const accessError = await access(this.path, constants.F_OK | constants.R_OK).catch((error: Error) => error)
     if (accessError && this.options.createIfNotExists) {
       await this.commit()
       this.isLoading = false
@@ -273,7 +282,7 @@ export class FSObject<T extends ObjectLike> extends EventEmitter<{
     }
 
     // --- If the file does not exist, throw an error.
-    if (accessError  && !this.options.createIfNotExists) throw accessError
+    if (accessError && !this.options.createIfNotExists) throw accessError
 
     // --- Assert the path points to a file.
     const newStats = await stat(this.path)
@@ -317,29 +326,29 @@ export class FSObject<T extends ObjectLike> extends EventEmitter<{
 /**
  * Create an awaitable instance of `FSObject` that resolves when the file
  * is synchronized with the object and the object is synchronized with the file.
- * 
+ *
  * This function is a shorthand for creating a new `FSObject` instance and
  * calling the `access`, `load` and `watch` methods in sequence. This allows
  * fast and easy access to the file and object in a single call.
- * 
+ *
  * @param path The path or file descriptor of the file to load.
  * @param options Options to pass to the `FSObject` constructor.
  * @returns An awaitable instance of `FSObject`.
  * @example
  * const fsObject = loadObject('file.json')
  * const object = await fsObject
- * 
+ *
  * // Change the file and check the object.
  * writeFileSync('file.json', '{"foo":"bar"}')
  * await fsObject.untilLoaded
  * object // => { foo: 'bar' }
- * 
+ *
  * // Change the object and check the file.
  * object.foo = 'baz'
  * await fsObject.untilCommitted
  * readFileSync('file.json', 'utf8') // => { "foo": "baz" }
  */
-export function loadObject<T extends ObjectLike>(path: PathLike, options: FSObjectOptions<T> = {}): Awaitable<FSObject<T>, Reactive<T>> {
+export function loadObject<T extends object>(path: PathLike, options: FSObjectOptions<T> = {}): Awaitable<FSObject<T>, Reactive<T>> {
   return FSObject.from(path, options)
 }
 
@@ -348,7 +357,7 @@ if (import.meta.vitest) {
   const { vol } = await import('memfs')
 
   describe('loadObject', () => {
-    it('should return an instance of `FSObject`', async() => {
+    it('should return an instance of `FSObject`', () => {
       vol.fromJSON({ '/app/packages.json': '{"foo":"bar"}' })
       const result = loadObject('/app/packages.json')
       expect(result).toBeInstanceOf(FSObject)
@@ -357,7 +366,7 @@ if (import.meta.vitest) {
       expect(result).toHaveProperty('object', reactive({}))
     })
 
-    it('should expose the options as properties', async() => {
+    it('should expose the options as properties', () => {
       const options = { initialValue: { foo: 'bar' } }
       const result = loadObject('/app/packages.json', options)
       expect(result.options).toBe(options)
@@ -378,7 +387,7 @@ if (import.meta.vitest) {
 
     it('should reject if the file is not a JSON object', async() => {
       vol.fromJSON({ 'file.json': '"foo": "bar"' })
-      const shouldReject = async () => await loadObject('file.json')
+      const shouldReject = async() => await loadObject('file.json')
       await expect(shouldReject).rejects.toThrow()
     })
   })
@@ -415,7 +424,7 @@ if (import.meta.vitest) {
     it('should resolve the `untilLoaded` property once the file is loaded', async() => {
       vol.fromJSON({ '/app/packages.json': '{"foo":"bar"}' })
       const result = loadObject('/app/packages.json')
-      result.load()
+      void result.load()
       expect(result.isLoading).toBe(true)
       await expect(result.untilLoaded).resolves.toBeUndefined()
       expect(result.isLoading).toBe(false)
@@ -464,7 +473,7 @@ if (import.meta.vitest) {
   })
 
   describe('watch', () => {
-    it('should return the current instance', async() => {
+    it('should return the current instance', () => {
       vol.fromJSON({ '/app/packages.json': '{"foo":"bar"}' })
       const result = new FSObject('/app/packages.json')
       const watch = result.watch()
@@ -494,7 +503,7 @@ if (import.meta.vitest) {
       expect(fn).not.toHaveBeenCalled()
     })
 
-    it('should throw an error if the file does not exist', async() => {
+    it('should throw an error if the file does not exist', () => {
       const result = new FSObject('/app/packages.json')
       const shouldThrow = () => result.watch()
       expect(shouldThrow).toThrow('ENOENT')
@@ -510,10 +519,10 @@ if (import.meta.vitest) {
       expect(fileContent).toEqual('{}\n')
     })
 
-    it('should set the `isCommitting` flag to `true` when committing', async() => {
+    it('should set the `isCommitting` flag to `true` when committing', () => {
       const result = new FSObject('/app/packages.json')
       expect(result.isCommitting).toBe(false)
-      result.commit()
+      void result.commit()
       expect(result.isCommitting).toBe(true)
     })
 
@@ -536,7 +545,7 @@ if (import.meta.vitest) {
     it('should resolve the `untilCommitted` promise once the file is committed', async() => {
       const result = new FSObject('/app/packages.json')
       expect(result.isCommitting).toBe(false)
-      result.commit()
+      void result.commit()
       expect(result.isCommitting).toBe(true)
       await expect(result.untilCommitted).resolves.toBeUndefined()
       expect(result.isCommitting).toBe(false)
@@ -560,7 +569,7 @@ if (import.meta.vitest) {
     })
 
     it('should use the provided `serialize` function to serialize the object', async() => {
-      const serialize = vi.fn((object: any) => object.toString())
+      const serialize = vi.fn(String)
       const result = new FSObject('/app/packages.json', { initialValue: { foo: 'bar' }, serialize })
       await result.commit()
       const fileContent = readFileSync('/app/packages.json', 'utf8')
@@ -599,7 +608,7 @@ if (import.meta.vitest) {
       const result = new FSObject('/app/packages.json')
       expect(result.isDestroyed).toBe(false)
       const untilDestroyed = result.untilDestroyed
-      result.destroy()
+      void result.destroy()
       expect(result.isDestroyed).toBe(true)
       await expect(untilDestroyed).resolves.toBeUndefined()
       expect(result.isDestroyed).toBe(true)
