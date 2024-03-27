@@ -16,6 +16,9 @@
     "./Any": {
       "types": "./dist/Any.d.ts"
     },
+    "./Bind": {
+      "types": "./dist/Bind.d.ts"
+    },
     "./BooleanAnd": {
       "types": "./dist/BooleanAnd.d.ts"
     },
@@ -36,9 +39,6 @@
     },
     "./BooleanXor": {
       "types": "./dist/BooleanXor.d.ts"
-    },
-    "./BoundThis": {
-      "types": "./dist/BoundThis.d.ts"
     },
     "./CaseInsensitive": {
       "types": "./dist/CaseInsensitive.d.ts"
@@ -237,6 +237,9 @@
     },
     "./NumberPositive": {
       "types": "./dist/NumberPositive.d.ts"
+    },
+    "./OmitNever": {
+      "types": "./dist/OmitNever.d.ts"
     },
     "./Optional": {
       "types": "./dist/Optional.d.ts"
