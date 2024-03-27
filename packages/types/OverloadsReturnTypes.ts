@@ -21,13 +21,13 @@ export type OverloadsReturnTypes<T extends Function<any, any[]>> = ExtractTupleR
 
 /** c8 ignore next */
 if (import.meta.vitest) {
-  it('should infer the parameters of a function', () => {
+  it('should infer the return type of a function with no overloads', () => {
     type Method = (a: number, b: string) => boolean
     type Result = OverloadsReturnTypes<Method>
     expectTypeOf<Result>().toEqualTypeOf<boolean>()
   })
 
-  it('should infer the parameters of a function with overloads', () => {
+  it('should infer the return type of a function with multiple overloads', () => {
     interface Method {
       (a: number, b: string): string
       (a: string, b: number): number

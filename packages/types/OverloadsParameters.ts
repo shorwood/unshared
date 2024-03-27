@@ -21,16 +21,16 @@ export type OverloadsParameters<T extends Function<any, any[]>> = ExtractTuplePa
 
 /** c8 ignore next */
 if (import.meta.vitest) {
-  it('should infer the parameters of a function', () => {
+  it('should infer the parameters of a function with no overloads', () => {
     type Method = (a: number, b: string) => boolean
     type Result = OverloadsParameters<Method>
     expectTypeOf<Result>().toEqualTypeOf<[number, string]>()
   })
 
-  it('should infer the parameters of a function with overloads', () => {
+  it('should infer the parameters of a function with multiple overloads', () => {
     interface Method {
-      (a: number, b: string): boolean
-      (a: string, b: number): boolean
+      (a: number, b: string): string
+      (a: string, b: number): number
     }
     type Result = OverloadsParameters<Method>
     expectTypeOf<Result>().toEqualTypeOf<[number, string] | [string, number]>()
