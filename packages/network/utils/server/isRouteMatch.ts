@@ -23,7 +23,7 @@ export function isRouteMatch(route: Route, request: Http2ServerRequest): boolean
   if (method && method !== requestMethod) return false
 
   // --- Check the path.
-  const regexpString = path.replace(/:[a-z]+/g, '([a-z0-9]+)')
+  const regexpString = path.replaceAll(/:[a-z]+/g, '([a-z0-9]+)')
   const regexp = new RegExp(`^${regexpString}$`)
   return regexp.test(url)
 }

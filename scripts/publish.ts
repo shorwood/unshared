@@ -1,8 +1,8 @@
 import { cp } from 'node:fs/promises'
 import { argv } from 'node:process'
 import { execute as $ } from '../packages/process/execute'
-import { parseArgv } from '../packages/process/parseCliArgv'
-import { SemverComponents, createSemver } from '../packages/string/createSemver'
+import { parseCliArguments } from '../packages/process/parseCliArguments'
+import { createSemver } from '../packages/string/createSemver'
 import { PACKAGES_NAMES } from './constants'
 import { getPackageMetadata } from './utils'
 
@@ -17,16 +17,13 @@ import { getPackageMetadata } from './utils'
 export async function publishPackage(packageName: string) {
   const { packageJson, packageJsonFS, packagePath } = await getPackageMetadata(packageName)
   const version = createSemver(packageJson.version)
+  const registry = ['--registry', 'https://npm.hsjm.dev/']
 
   // --- If the current hash has a tag, get the tag.
   const hash = await $('git', ['rev-parse', 'HEAD'], 'utf8')
   const gitTag = await $('git', ['describe', '--tags', '--exact-match', hash], 'utf8')
     .then(tag => tag.trim())
     .catch(() => {})
-
-  // --- Check if the current version is already released.
-  // const npmViewJSON = await $('npm', ['view', packageName, 'version', '--json'], 'utf8')
-  // const npmView = JSON.parse(npmViewJSON) as Record<string, unknown>
 
   if (!gitTag) {
     const hash = await $('git', ['rev-parse', 'HEAD'], 'utf8')
@@ -36,8 +33,6 @@ export async function publishPackage(packageName: string) {
 
   else if (gitTag.startsWith('v')) {
     const tagVersion = createSemver(gitTag.slice(1))
-    if (version.satisfies(`>${tagVersion.toString()}`))
-      throw new Error(`The current version ${version.toString()} is already released.`)
     version.major = tagVersion.major
     version.minor = tagVersion.minor
     version.patch = tagVersion.patch
@@ -45,31 +40,51 @@ export async function publishPackage(packageName: string) {
     version.build = undefined
   }
 
-  else {
-    throw new Error(`Invalid tag ${gitTag}`)
+  else { throw new Error(`Invalid tag ${gitTag}`) }
+
+  // --- Check if the current version is already released.
+  // --- Get the latest version from the registry.
+  const npmViewJSON = await $('pnpm', ['view', packageJson.name!, '--json', ...registry], 'utf8')
+    .then((json: string) => JSON.parse(json) as { version: string })
+    .catch(() => ({})) as { 'dist-tags': Record<string, string> }
+
+  // --- Check if the current version is already released.
+  const versionNpm = npmViewJSON?.['dist-tags']?.latest
+  const versionPublished = version.toString()
+  if (versionPublished === versionNpm){
+    console.log(`The package "${packageJson.name!}@${version.toString()}" already exists in the registry.`)
+    return
   }
 
   // --- Set the version in the package.json file.
+  packageJson.version = versionPublished
+  await packageJsonFS.commit()
+  const isNext = version.prerelease !== undefined
+  await $('pnpm', [
+    'publish',
+    '--access',
+    isNext ? 'restricted' : 'public',
+    '--tag',
+    isNext ? 'next' : 'latest',
+    ...registry,
+    // '--dry-run',
+    '--no-git-checks',
+  ], {
+    cwd: packagePath,
+    stdio: 'inherit',
+  }).catch(() => {})
+
+  // --- Reset the version in the package.json file.
+  version.prerelease = undefined
   packageJson.version = version.toString()
   await packageJsonFS.commit()
-
-  // --- Publish the package.
-  const isNext = version.prerelease !== undefined
-  const access = isNext ? 'restricted' : 'public'
-  const tag = isNext ? 'next' : 'latest'
-
-  // --- Publish the package.
-  await $('npm', ['publish', '--access', access, '--tag', tag, '--dry-run'], {
-    stdio: 'inherit',
-    cwd: packagePath,
-  })
 }
 
 export async function publish() {
-  const { args } = parseArgv(argv)
+  const { args } = parseCliArguments(argv)
 
   const packageNames = args.length > 0
-    ? args.filter(argument => PACKAGES_NAMES.includes(argument))
+    ? PACKAGES_NAMES.filter(argument => args.includes(argument))
     : PACKAGES_NAMES
 
   // --- Prepare the package for publishing.

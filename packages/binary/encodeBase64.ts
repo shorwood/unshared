@@ -1,3 +1,6 @@
+import { BinaryLike } from "./isBinaryLike"
+import { toArrayBuffer } from "./toArrayBuffer"
+
 /** The Base64 alphabet table as defined in [RFC 4648](https://tools.ietf.org/html/rfc4648#section-4). */
 export const BASE_64_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 
@@ -16,8 +19,9 @@ export const BASE_64_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstu
  * // Encode the ArrayBuffer into a Base64 string.
  * encodeBase64(buffer) // 'VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZw=='
  */
-export function encodeBase64(buffer: ArrayBuffer): string {
-  const view = new DataView(buffer)
+export async function encodeBase64(buffer: BinaryLike): Promise<string> {
+  const arrayBuffer = await toArrayBuffer(buffer)
+  const view = new DataView(arrayBuffer)
   const bytes: number[] = []
   const remainder = view.byteLength % 3
 
@@ -91,5 +95,48 @@ if (import.meta.vitest) {
     const buffer = new TextEncoder().encode('').buffer
     const result = encodeBase64(buffer)
     expect(result).toEqual('')
+  })
+
+  // if (process.argv.includes('bench')) {
+  //   bench('should be fast', () => {
+  //     const buffer = new Uint8Array(1024 * 1024).buffer
+  //     console.time('encodeBase64')
+  //     encodeBase64(buffer)
+  //     console.timeEnd('encodeBase64')
+  //   })
+
+  //   bench('should be faster', () => {
+  //     const buffer = new Uint8Array(1024 * 1024).buffer
+  //     console.time('encodeBase64')
+  //     Buffer.from(buffer).toString('base64')
+  //     console.timeEnd('encodeBase64')
+  //   })
+  // }
+
+  it.only('should be faster than Buffer.from(buffer).toString("base64")', async () => {
+    const b = Buffer.from('Hello, World', 'utf8')
+    console.log(await encodeBase64(b))
+
+    const bench = (fn: Record<string, Function>) => {
+      const results: Record<string, { time: number; result: string }> = {}
+      for (const key in fn) {
+        const start = process.hrtime.bigint()
+        for (let i = 0; i < 100; i++) fn[key]()
+        const end = process.hrtime.bigint()
+        results[key] = {
+          time: Number(end - start) / 1e6,
+          result: fn[key]()
+        }
+      }
+      return results
+    }
+
+    // const result = bench({
+    //   encodeBase64: () => encodeBase64(b),
+    //   bufferBase64: () => new Buffer(b).toString('base64'),
+    //   // textEncoder: () => new TextDecoder().decode(b, { stream: true })
+    // })
+
+    // console.log(result)
   })
 }

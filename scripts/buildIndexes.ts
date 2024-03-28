@@ -74,6 +74,9 @@ async function buildIndex(path: string): Promise<IndexFile> {
 export async function buildIndexes(packageName: string): Promise<void> {
   const { packagePath } = await getPackageMetadata(packageName)
 
+  // --- Do not build the index for these packages.
+  if (packageName === 'eslint-config') return
+
   // --- Build the index file for the current directory.
   const indexFiles: IndexFile[] = [await buildIndex(packagePath)]
 

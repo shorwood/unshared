@@ -8,6 +8,7 @@
  * isStringIntegerNegative('-1') // true
  * isStringIntegerNegative('-1.0') // false
  */
-export const isStringIntegerNegative = (value: string): boolean =>
-  typeof value === 'string'
+export function isStringIntegerNegative(value: string): boolean {
+  return typeof value === 'string'
   && /^-\d+$/.test(value)
+}

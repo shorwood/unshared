@@ -9,7 +9,8 @@
  * isNumberGreaterOrEq(2, 2) // true
  * isNumberGreaterOrEq(2, 4) // false
  */
-export const isNumberGreaterOrEq = (value: number, n: number): boolean =>
-  typeof value === 'number'
+export function isNumberGreaterOrEq(value: number, n: number): boolean {
+  return typeof value === 'number'
   && typeof n === 'number'
   && value >= n
+}

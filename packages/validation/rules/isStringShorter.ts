@@ -8,7 +8,8 @@
  * isStringShorter('foo', 6) // true
  * isStringShorter('foobar', 6) // false
  */
-export const isStringShorter = (value: string, length: number): boolean =>
-  typeof value === 'string'
+export function isStringShorter(value: string, length: number): boolean {
+  return typeof value === 'string'
   && typeof length === 'number'
   && value.length < length
+}

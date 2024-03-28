@@ -7,6 +7,7 @@
  * isNumberInteger(1) // true
  * isNumberInteger(1.5) // false
  */
-export const isNumberInteger = (value: number): boolean =>
-  typeof value === 'number'
+export function isNumberInteger(value: number): boolean {
+  return typeof value === 'number'
   && Number.isInteger(value)
+}

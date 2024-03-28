@@ -9,10 +9,11 @@
  * isArrayIncludingEvery([1, 2, 3], [1]) // true
  * isArrayIncludingEvery([1, 2, 3], [1, 2, 3, 4]) // false
  */
-export const isArrayIncludingEvery = <T>(array: unknown[], items: T[]): array is T[] =>
-  Array.isArray(array)
+export function isArrayIncludingEvery <T>(array: unknown[], items: T[]): array is T[] {
+  return Array.isArray(array)
   && Array.isArray(items)
   && items.every(item => array.includes(item))
+}
 
 /** c8 ignore next */
 if (import.meta.vitest) {

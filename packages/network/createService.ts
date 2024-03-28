@@ -1,6 +1,6 @@
-import { parse } from 'yaml'
 import { OpenAPIV3 } from 'openapi-types'
-import { ClientOptions, createClient } from './createClient'
+import { parse } from 'yaml'
+import { ClientOptions, createClient } from './createHttpClient'
 import { createMethods, resolveDocument } from './utils'
 
 export interface ServiceOptions extends ClientOptions {

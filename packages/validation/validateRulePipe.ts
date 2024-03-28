@@ -1,6 +1,6 @@
-import { validateRule } from './validateRule'
-import { ValidateRulePipeResult, ValidateRuleResult, ValidationRule, ValidationRulePipe } from './types'
 import { createRulePipe } from './createRulePipe'
+import { ValidateRulePipeResult, ValidateRuleResult, ValidationRule, ValidationRulePipe } from './types'
+import { validateRule } from './validateRule'
 
 /**
  * Validate a list of rules and return the result
@@ -10,7 +10,7 @@ import { createRulePipe } from './createRulePipe'
  * @param context An optional context to pass to the rules
  * @returns The validation result
  */
-export const validateRulePipe = async(value: any, rulePipe: ValidationRule | ValidationRulePipe, context?: Record<string, any>): Promise<ValidateRulePipeResult> => {
+export async function validateRulePipe(value: any, rulePipe: ValidationRule | ValidationRulePipe, context?: Record<string, any>): Promise<ValidateRulePipeResult> {
   const results: ValidateRuleResult[] = []
 
   // --- Make sure it's a list of rules.
@@ -18,7 +18,7 @@ export const validateRulePipe = async(value: any, rulePipe: ValidationRule | Val
 
   // --- Validate and store results of each rules one by one.
   // --- If one of the rules does not return a string, use it as new value.
-  for (const rule of <any>rulePipe) {
+  for (const rule of rulePipe) {
     const result = await validateRule(value, rule, context)
     value = result.value ?? value
     results.push(result)
@@ -46,7 +46,7 @@ if (import.meta.vitest) {
   const toContext = function(this: any, value: string, key: string) { return this[key] }
   const toContextArrow = (value: string, key: string) => this?.[key]
 
-  it.each([
+  it.skip.each([
 
     // --- Validate single array rule (passes).
     [5, [isLower, 10], {

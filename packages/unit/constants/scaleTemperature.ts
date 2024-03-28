@@ -1,5 +1,5 @@
 import { createScale } from '../utils/createScale'
-import { PREFIX_BASE10_LONG, PREFIX_BASE10_SHORT } from './prefixes'
+import { FACTOR_BASE10_LONG, FACTOR_BASE10_SHORT } from './factors'
 
 const baseValueKelvin = (value: number) => Math.max(value, 0)
 
@@ -20,14 +20,14 @@ const baseValueDelisle = {
 
 export const SCALE_TEMPERATURE = {
   // --- SI units
-  ...createScale('K', { prefixes: PREFIX_BASE10_SHORT, baseValue: baseValueKelvin }),
-  ...createScale('C', { prefixes: PREFIX_BASE10_SHORT, baseValue: baseValueCelsius }),
-  ...createScale(['kelvin'], { prefixes: PREFIX_BASE10_LONG, baseValue: baseValueKelvin }),
-  ...createScale(['celsius', 'centigrade'], { prefixes: PREFIX_BASE10_LONG, baseValue: baseValueCelsius }),
+  ...createScale('K', { factors: FACTOR_BASE10_SHORT, baseValue: baseValueKelvin }),
+  ...createScale('C', { factors: FACTOR_BASE10_SHORT, baseValue: baseValueCelsius }),
+  ...createScale(['kelvin'], { factors: FACTOR_BASE10_LONG, baseValue: baseValueKelvin }),
+  ...createScale(['celsius', 'centigrade'], { factors: FACTOR_BASE10_LONG, baseValue: baseValueCelsius }),
 
   // --- Imperial units.
-  ...createScale('F', { prefixes: PREFIX_BASE10_SHORT, baseValue: baseValueFahrenheit }),
-  ...createScale('fahrenheit', { prefixes: PREFIX_BASE10_LONG, baseValue: baseValueFahrenheit }),
+  ...createScale('F', { factors: FACTOR_BASE10_SHORT, baseValue: baseValueFahrenheit }),
+  ...createScale('fahrenheit', { factors: FACTOR_BASE10_LONG, baseValue: baseValueFahrenheit }),
 
   // --- Delisle units.
   De: baseValueDelisle,

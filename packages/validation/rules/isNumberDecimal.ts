@@ -7,8 +7,9 @@
  * isNumberDecimal(0) // false
  * isNumberDecimal(0.5) // true
  */
-export const isNumberDecimal = (value: number): boolean =>
-  typeof value === 'number'
+export function isNumberDecimal(value: number): boolean {
+  return typeof value === 'number'
   && !Number.isNaN(value)
   && Number.isFinite(value)
   && !Number.isInteger(value)
+}

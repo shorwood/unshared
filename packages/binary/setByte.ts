@@ -7,7 +7,7 @@
  * @param index The index of the byte to set.
  * @param state The state to set the byte to.
  * @returns The value with the byte set.
- * @example setByte(0x00000000, 0, 0x64) // 0x000000FF
+ * @example setByte(0x00000000, 0, 0x64) // 0x00000064
  */
 export function setByte(value: number, index: number, state: number): number {
   if (index < 0 || index > 3)

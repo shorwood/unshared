@@ -7,6 +7,7 @@
  * isStringMac('AB:CD:EF') // false
  * isStringMac('01:AB:CD:EF:AB:CD') // true
  */
-export const isStringMac = (value: string): boolean =>
-  typeof value === 'string'
+export function isStringMac(value: string): boolean {
+  return typeof value === 'string'
   && /^[\da-f]{2}(:[\da-f]{2}){5}$/i.test(value)
+}

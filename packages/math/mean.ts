@@ -4,14 +4,14 @@
  * The mean is the sum of the numbers divided by the number of numbers. In other
  * words, it is the average of the numbers.
  *
- * @param numbers The numbers to compute the mean of.
+ * @param n The numbers to compute the mean of.
  * @returns The mean of the numbers.
  * @example mean(10, 50, 75) // 45
  */
-export function mean(...numbers: number[]): number {
+export function mean(...n: number[]): number {
   let result = 0
-  for (const number of numbers) result += number
-  return result / numbers.length
+  for (const number of n) result += number
+  return result / n.length
 }
 
 /* c8 ignore next */

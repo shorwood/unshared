@@ -9,20 +9,17 @@
  * getType(true) // 'boolean'
  * getType(RegExp) // 'RegExp'
  */
-export const kindOf = (value?: any): string => {
+export function kindOf(value?: any): string {
   // --- Is null
   if (value === null) return 'null'
-
-  // --- Primitive types
-  const typeOf = typeof value
-  if (typeOf !== 'object') return typeOf
-
-  // --- Value is an array
-  if (Array.isArray(value)) return 'Array'
 
   // --- Get the constructor name
   if ('constructor' in value && value.constructor.name !== 'Object')
     return value.constructor.name
+
+  // --- Primitive types
+  const typeOf = typeof value
+  if (typeOf !== 'object') return typeOf
 
   // --- Default to object
   return 'object'

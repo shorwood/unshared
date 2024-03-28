@@ -5,7 +5,28 @@ export const TSCONFIG_PATH = new URL('../tsconfig.json', import.meta.url).pathna
 
 /** The names of the packages to build. */
 export const PACKAGES_NAMES = [
-  'boolean',
-  'string',
   'types',
-]
+  // 'binary',
+  'boolean',
+  'collection',
+  'color',
+  // 'console
+  // 'decorators',
+  // 'environment',
+  'eslint-config',
+  'fs',
+  'functions',
+  // 'math',
+  // 'network',
+  // 'process',
+  'reactivity',
+  'string',
+  // 'unit',
+  // 'unocss-preset',
+  // 'unplugin',
+  // 'validation',
+  // 'vue',
+] as const
+
+/** The names of the packages to build. */
+export type PackageName = typeof PACKAGES_NAMES[number]

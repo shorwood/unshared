@@ -8,6 +8,7 @@
  * isStringInteger('1.0') // false
  * isStringInteger('1n') // false
  */
-export const isStringInteger = (value: string): boolean =>
-  typeof value === 'string'
+export function isStringInteger(value: string): boolean {
+  return typeof value === 'string'
   && /^-?\d+$/.test(value)
+}

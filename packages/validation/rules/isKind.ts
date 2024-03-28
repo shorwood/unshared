@@ -12,7 +12,7 @@ import { kindOf } from './kindOf'
  * isKind('foo', 'number') // false
  * isKind('foo', ['string', 'number']) // true
  */
-export const isKind = (value: any, kind: string | string[]): boolean => {
+export function isKind(value: any, kind: string[] | string): boolean {
   // --- Get the kind of the value
   const valueKind = kindOf(value)
 

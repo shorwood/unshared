@@ -4,7 +4,7 @@ module.exports = {
   ],
   overrides: [
     {
-      files: ['**/*.md/*.*'],
+      files: ['**/*.md'],
       rules: {
         '@typescript-eslint/no-redeclare': 'off',
         '@typescript-eslint/no-unused-vars': 'off',

@@ -8,6 +8,7 @@
  * isStringEndingWith('foo', 'oo') // true
  * isStringEndingWith('foo', 'bar') // false
  */
-export const isStringEndingWith = <S extends string>(value: string, substr: S): value is `${string}${S}` =>
-  typeof value === 'string'
+export function isStringEndingWith <S extends string>(value: string, substr: S): value is `${string}${S}` {
+  return typeof value === 'string'
   && value.endsWith(substr)
+}

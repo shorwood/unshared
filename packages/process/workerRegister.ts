@@ -52,7 +52,7 @@ function isWorkerRequest(value: unknown): value is WorkerRequest {
  * @returns A promise that resolves with the result of the function.
  * @internal
  */
-async function requestCallback(request: unknown) {
+async function requestCallback(request: unknown): Promise<void> {
   if (!isWorkerRequest(request)) return
 
   // --- Destructure the request and get the function to call.
@@ -66,7 +66,7 @@ async function requestCallback(request: unknown) {
   // --- If the handler is registered, call it.
   if (fn) {
     try { response.value = await fn(...parameters) }
-    catch (error) { response.error = <Error>error }
+    catch (error) { response.error = error as Error }
   }
 
   // --- If the handler is not registered, send back an error.
@@ -98,13 +98,15 @@ export function workerRegister(name: string, callback: Function): Unregister {
 
   // --- Register and start listening for messages.
   if (workerHandlers.size === 0)
-    parentPort!.on('message', requestCallback)
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    parentPort.on('message', requestCallback)
   workerHandlers.set(name, callback)
 
   // --- Return a function to unregister the handler.
   return () => {
     workerHandlers.delete(name)
     if (workerHandlers.size === 0)
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       parentPort!.removeListener('message', requestCallback)
   }
 }

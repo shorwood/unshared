@@ -1,6 +1,6 @@
 import { mapValues } from '@unshared/collection/mapValues'
-import { validateRuleSet } from './validateRuleSet'
 import { ValidateSchemaResult, ValidationRules } from './types'
+import { validateRuleSet } from './validateRuleSet'
 
 /**
  * A validation schema that maps field names to validation rules.
@@ -21,7 +21,7 @@ export type ValidationSchema = Record<string, ValidationRules>
  * @param context The context to use for validation
  * @returns A promise resolving to the validation result
  */
-export const validateSchema = async(object: any, schema: ValidationSchema, context?: Record<string, any>): Promise<ValidateSchemaResult> => {
+export async function validateSchema(object: any, schema: ValidationSchema, context?: Record<string, any>): Promise<ValidateSchemaResult> {
   // --- Validate rule sets for every fields.
   const results: ValidateSchemaResult['results'] = {}
   for (const key in schema) {
@@ -37,7 +37,7 @@ export const validateSchema = async(object: any, schema: ValidationSchema, conte
     valid: mapValues(results, x => x.valid),
     errors: mapValues(results, x => x.error),
     value: { ...object, ...mapValues(results, x => x.value) },
-    isValid: Object.values(results).every(result => (<any>result).isValid),
+    isValid: Object.values(results).every(result => (result as any).isValid),
     areValid: mapValues(results, x => x.isValid),
   }
 }

@@ -13,7 +13,7 @@
     "build": "tsx ./scripts/build.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "vitest --watch",
+    "test": "vitest",
     "test:ci": "vitest --run --typecheck --coverage",
     "test:ui": "vitest --ui",
     "test:types": "vitest --typecheck",
@@ -43,7 +43,7 @@
     "commitlint": "19.2.1",
     "dotenv": "16.4.5",
     "eslint": "8.57.0",
-    "happy-dom": "14.0.0",
+    "happy-dom": "14.3.1",
     "husky": "9.0.11",
     "js-yaml": "4.1.0",
     "memfs": "4.8.0",
@@ -55,7 +55,8 @@
     "tsx": "4.7.1",
     "types-pkg-json": "1.2.1",
     "types-tsconfig": "2.0.2",
-    "typescript": "5.4.2",
+    "typescript": "5.4.3",
+    "vite-tsconfig-paths": "4.3.2",
     "vitest": "1.4.0"
   },
   "eslintConfig": {

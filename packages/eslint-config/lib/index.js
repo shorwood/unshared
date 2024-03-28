@@ -29,7 +29,7 @@ module.exports = {
     './import.js',
     './jsdoc.js',
     './jsonc.js',
-    './markdown.js',
+    // './markdown.js',
     './sonarjs.js',
     './typescript.js',
     './unicorn.js',

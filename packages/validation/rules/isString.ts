@@ -7,5 +7,6 @@
  * isString('foo') // true
  * isString(1) // false
  */
-export const isString = (value: any): value is string =>
-  typeof value === 'string'
+export function isString(value: any): value is string {
+  return typeof value === 'string'
+}

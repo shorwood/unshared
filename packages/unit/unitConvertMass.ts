@@ -17,9 +17,7 @@ export function unitConvertMass(value: UnitValue<typeof SCALE_MASS>, unit: UnitS
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should convert SI units to imperial units', () => {
-    // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
-    // @ts-ignore
-    const result = unitConvertMass(1, 'pound')
+    const result = unitConvertMass('1', 'lb')
     expect(result).toEqual(2.2046226218487757)
   })
 }

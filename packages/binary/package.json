@@ -11,8 +11,7 @@
     "url": "git+https://github.com/shorwood/unshared.git",
     "directory": "packages/binary"
   },
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch"
+  "dependencies": {
+    "@unshared/functions": "workspace:*"
   }
 }

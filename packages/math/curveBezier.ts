@@ -1,5 +1,5 @@
 import { bernstein } from './bernstein'
-import { Vector2 } from './vector2'
+import { Vector2 } from './createVector2'
 
 /**
  * Compute the value at `x` for a [Bezier curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve).
@@ -16,10 +16,10 @@ import { Vector2 } from './vector2'
  * const p2 = vector2(1, 0)
  * curveBezier(0.5, p0, p1, p2) // { x: 0.5, y: 0.5 }
  */
-export function curveBezier(x: number, ...points: Vector2[]): Vector2 {
-  const result = { x, y: 0 }
-  const n = points.length - 1
-  for (const t in points)
-    result.y += points[t].y * bernstein(n, t) * Math.pow(1 - x, n - t) * Math.pow(x, t)
-  return result
-}
+// export function curveBezier(x: number, ...points: Vector2[]): Vector2 {
+//   const result = { x, y: 0 }
+//   const n = points.length - 1
+//   for (const t in points)
+//     result.y += points[t].y * bernstein(n, t) * Math.pow(1 - x, n - t) * Math.pow(x, t)
+//   return result
+// }

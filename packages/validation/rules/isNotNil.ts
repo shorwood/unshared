@@ -8,6 +8,7 @@
  * isNotNil(null) // false
  * isNotNil(undefined) // false
  */
-export const isNotNil = <T>(value: T): value is Exclude<T, undefined | null> =>
-  value !== undefined
+export function isNotNil <T>(value: T): value is Exclude<T, null | undefined> {
+  return value !== undefined
   && value !== null
+}

@@ -1,4 +1,3 @@
-/* eslint-disable no-void */
 /* eslint-disable unicorn/no-null */
 /* eslint-disable no-useless-return */
 /* eslint-disable arrow-body-style */

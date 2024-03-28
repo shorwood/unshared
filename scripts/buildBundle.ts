@@ -25,17 +25,18 @@ export async function buildBundle(packageName: PackageName) {
   const rollupConfig = {
     input: inputPaths,
     external: [
-      /^node:.*/,
-      /^@unshared\/.*/,
+      /^node:/,
+      /^@unshared\//,
     ],
 
     plugins: [
       RollupEsbuild({
         target: 'esnext',
-        platform: 'neutral',
-        treeShaking: true,
-        sourceMap: true,
+        platform: 'node',
         tsconfig: TSCONFIG_PATH,
+        sourceMap: true,
+        treeShaking: true,
+        minifySyntax: true,
         define: { 'import.meta.vitest': 'false' },
       }),
     ],

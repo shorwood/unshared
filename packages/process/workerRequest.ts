@@ -1,4 +1,5 @@
-import { MessageChannel, MessagePort, Worker } from 'node:worker_threads'
+import { isArrayBuffer, isArrayBufferView } from 'node:util/types'
+import { MessageChannel, MessagePort, TransferListItem, Worker } from 'node:worker_threads'
 import { Function } from '@unshared/types'
 import { WorkerResponse } from './workerRegister'
 
@@ -51,7 +52,16 @@ export interface WorkerRequest<P extends unknown[] = unknown[]> {
  */
 export async function workerRequest<T extends Function>(worker: Worker, name: string, ...parameters: Parameters<T>): Promise<Awaited<ReturnType<T>>> {
   const { port1, port2 } = new MessageChannel()
-  worker.postMessage({ name, parameters, port: port1 }, [port1])
+
+  // --- Compute the transfer list by filtering-in any `ArrayBuffer` or `MessagePort` objects.
+  const transferList: TransferListItem[] = [port1]
+  for (const parameter of parameters) {
+    if (isArrayBufferView(parameter)) transferList.push(parameter.buffer)
+    if (isArrayBuffer(parameter)) transferList.push(parameter)
+  }
+
+  // --- Post the request to the worker thread.
+  worker.postMessage({ name, parameters, port: port1 }, transferList)
 
   // --- Wait for the response and resolve with the result or reject with the error.
   return await new Promise((resolve, reject) => {

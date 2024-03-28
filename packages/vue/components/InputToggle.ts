@@ -4,8 +4,8 @@ import { useVModel } from '@vueuse/core'
 import { Component, PropType, VNode, computed, defineComponent, h, markRaw, mergeProps, nextTick, toRefs } from 'vue-demi'
 import { exposeToDevtool } from '../utils'
 
-export const InputClick = defineComponent({
-  name: 'InputClick',
+export const InputToggle = defineComponent({
+  name: 'InputToggle',
   props: {
     as: { type: [Object, String] as PropType<Component | keyof HTMLElementTagNameMap>, default: 'button' },
     type: { type: String as PropType<'checkbox' | 'radio' | 'switch'>, default: 'checkbox' },
@@ -109,7 +109,7 @@ if (import.meta.vitest) {
   // @vitest-environment happy-dom
   describe('switch', () => {
     it.each([undefined, false, 0])('should switch the modelValue when clicked from %s to true', async(initialValue) => {
-      const wrapper = mount(InputClick, { props: {
+      const wrapper = mount(InputToggle, { props: {
         'type': 'switch',
         'modelValue': initialValue,
         'onUpdate:modelValue': (modelValue) => { void wrapper.setProps({ modelValue }) },
@@ -121,7 +121,7 @@ if (import.meta.vitest) {
     })
 
     it.each([true, 1])('should switch the modelValue when clicked from %s to false', async(initialValue) => {
-      const wrapper = mount(InputClick, { props: {
+      const wrapper = mount(InputToggle, { props: {
         'type': 'switch',
         'modelValue': initialValue,
         'onUpdate:modelValue': (modelValue) => { void wrapper.setProps({ modelValue }) },
@@ -135,7 +135,7 @@ if (import.meta.vitest) {
 
   describe('checkbox', () => {
     it('should add the value to the modelValue when clicked', async() => {
-      const wrapper = mount(InputClick, { props: {
+      const wrapper = mount(InputToggle, { props: {
         'type': 'checkbox',
         'modelValue': [],
         'value': 'a',
@@ -148,7 +148,7 @@ if (import.meta.vitest) {
     })
 
     it('should remove the value from the modelValue when clicked', async() => {
-      const wrapper = mount(InputClick, { props: {
+      const wrapper = mount(InputToggle, { props: {
         'type': 'checkbox',
         'modelValue': ['a'],
         'value': 'a',
@@ -163,7 +163,7 @@ if (import.meta.vitest) {
 
   describe('radio', () => {
     it('should set the modelValue to the value when clicked', async() => {
-      const wrapper = mount(InputClick, { props: {
+      const wrapper = mount(InputToggle, { props: {
         'type': 'radio',
         'modelValue': 'a',
         'value': 'b',
@@ -178,13 +178,13 @@ if (import.meta.vitest) {
 
   describe('attributes', () => {
     it('should render template slots', () => {
-      const wrapper = mount(InputClick, { slots: { default: h('span', 'slot') } })
+      const wrapper = mount(InputToggle, { slots: { default: h('span', 'slot') } })
       const html = wrapper.html()
       expect(html).toEqual('<button><span>slot</span></button>')
     })
 
     it('should pass isActive to the slot', () => {
-      const wrapper = mount(InputClick, {
+      const wrapper = mount(InputToggle, {
         props: { type: 'switch', modelValue: true },
         slots: { default: ({ isActive }) => h('span', { 'is-active': isActive }) },
       })
@@ -193,74 +193,74 @@ if (import.meta.vitest) {
     })
 
     it('should render a simple checkbox by default', () => {
-      const wrapper = mount(InputClick)
+      const wrapper = mount(InputToggle)
       const html = wrapper.html()
       expect(html).toEqual('<button></button>')
     })
 
     it('should set the tag name when the as prop is provided', () => {
-      const wrapper = mount(InputClick, { props: { as: 'div' } })
+      const wrapper = mount(InputToggle, { props: { as: 'div' } })
       const html = wrapper.html()
       expect(html).toEqual('<div></div>')
     })
 
     it('should set the component when the as prop is provided', () => {
       const Component = defineComponent({ template: '<h1><slot></slot></h1>' })
-      const wrapper = mount(InputClick, { props: { as: markRaw(Component), disabled: true } })
+      const wrapper = mount(InputToggle, { props: { as: markRaw(Component), disabled: true } })
       const html = wrapper.html()
       expect(html).toEqual('<h1 disabled="true" aria-disabled="true"></h1>')
     })
 
     it('should not apply the active class when it is not provided', () => {
-      const wrapper = mount(InputClick, { props: { type: 'switch', modelValue: true } })
+      const wrapper = mount(InputToggle, { props: { type: 'switch', modelValue: true } })
       const html = wrapper.html()
       expect(html).toEqual('<button></button>')
     })
 
     it('should apply the active class when input is active', () => {
-      const wrapper = mount(InputClick, { props: { type: 'switch', modelValue: true, classActive: 'active' } })
+      const wrapper = mount(InputToggle, { props: { type: 'switch', modelValue: true, classActive: 'active' } })
       const html = wrapper.html()
       expect(html).toEqual('<button class="active"></button>')
     })
 
     it('should set the disabled attribute when the disabled prop is true', () => {
-      const wrapper = mount(InputClick, { props: { disabled: true } })
+      const wrapper = mount(InputToggle, { props: { disabled: true } })
       const html = wrapper.html()
       expect(html).toEqual('<button disabled="" aria-disabled="true"></button>')
     })
 
     it('should apply the disabled class when the disabled prop is true', () => {
-      const wrapper = mount(InputClick, { props: { disabled: true, classDisabled: 'disabled' } })
+      const wrapper = mount(InputToggle, { props: { disabled: true, classDisabled: 'disabled' } })
       const html = wrapper.html()
       expect(html).toEqual('<button disabled="" aria-disabled="true" class="disabled"></button>')
     })
 
     it('should set the readonly attribute when the readonly prop is true', () => {
-      const wrapper = mount(InputClick, { props: { readonly: true } })
+      const wrapper = mount(InputToggle, { props: { readonly: true } })
       const html = wrapper.html()
       expect(html).toEqual('<button readonly="" aria-readonly="true"></button>')
     })
 
     it('should apply the readonly class when the readonly prop is true', () => {
-      const wrapper = mount(InputClick, { props: { readonly: true, classReadonly: 'readonly' } })
+      const wrapper = mount(InputToggle, { props: { readonly: true, classReadonly: 'readonly' } })
       const html = wrapper.html()
       expect(html).toEqual('<button readonly="" aria-readonly="true" class="readonly"></button>')
     })
 
     it('should set the aria-busy attribute when the loading prop is true', () => {
-      const wrapper = mount(InputClick, { props: { loading: true } })
+      const wrapper = mount(InputToggle, { props: { loading: true } })
       const html = wrapper.html()
       expect(html).toEqual('<button aria-busy="true"></button>')
     })
 
     it('should apply the loading class when the loading prop is true', () => {
-      const wrapper = mount(InputClick, { props: { loading: true, classLoading: 'loading' } })
+      const wrapper = mount(InputToggle, { props: { loading: true, classLoading: 'loading' } })
       const html = wrapper.html()
       expect(html).toEqual('<button aria-busy="true" class="loading"></button>')
     })
 
     it('should merge template attributes with component attributes', () => {
-      const wrapper = mount(InputClick, { props: { disabled: true }, attrs: { 'aria-label': 'label' } })
+      const wrapper = mount(InputToggle, { props: { disabled: true }, attrs: { 'aria-label': 'label' } })
       const html = wrapper.html()
       expect(html).toEqual('<button aria-label="label" disabled="" aria-disabled="true"></button>')
     })

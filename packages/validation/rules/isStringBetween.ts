@@ -10,7 +10,8 @@
  * isStringBetween('foo', { min: 3 }) // true
  * isStringBetween('foo', { min: 6, max: 10 }) // false
  */
-export const isStringBetween = (value: string, { min, max }: { min?: number; max?: number } = {}): boolean =>
-  typeof value === 'string'
+export function isStringBetween(value: string, { min, max }: { min?: number; max?: number } = {}): boolean {
+  return typeof value === 'string'
   && (typeof min === 'number' ? value.length >= min : true)
   && (typeof max === 'number' ? value.length <= max : true)
+}

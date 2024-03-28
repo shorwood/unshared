@@ -7,5 +7,6 @@
  * isNumberPositive(1) // true
  * isNumberPositive(-1) // false
  */
-export const isNumberPositive = (value: number): boolean =>
-  typeof value === 'number' && value >= 0
+export function isNumberPositive(value: number): boolean {
+  return typeof value === 'number' && value >= 0
+}

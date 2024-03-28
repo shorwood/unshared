@@ -1,9 +1,9 @@
 import { writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { buildEnum } from '@unshared/build/buildEnum'
-import { scrapeMdn } from './scrapeMdn'
+import { buildEnum } from '@/buildEnum'
+import { scrapeMdn } from '@/scrapeMdn'
 
-export const buildHttpHeader = async(): Promise<void> => {
+export async function buildHttpHeader(): Promise<void> {
   const data = await scrapeMdn('/files/en-us/web/http/headers')
 
   // --- Transforms key value
@@ -19,4 +19,4 @@ export const buildHttpHeader = async(): Promise<void> => {
   await writeFile(path, output)
 }
 
-buildHttpHeader()
+await buildHttpHeader()

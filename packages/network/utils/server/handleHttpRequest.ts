@@ -1,6 +1,6 @@
 import { attempt } from '@unshared/functions/attempt'
-import { HttpError } from '../../HttpError'
 import { RequestContext } from '../../createServerRoute'
+import { HttpError } from '../../HttpError'
 import { handleHttpResult } from './handleHttpResult'
 import { isRouteMatch } from './isRouteMatch'
 

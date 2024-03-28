@@ -5,7 +5,7 @@ import { getEnvironment } from './getEnvironment'
  *
  * @returns `true` if process is running in a CI environment
  */
-export const isCi = () => {
+export function isCi() {
   const environment = getEnvironment()
   return environment.CI !== undefined
   || environment.APPVEYOR !== undefined

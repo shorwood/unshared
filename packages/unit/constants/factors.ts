@@ -84,7 +84,7 @@ export const FACTOR_BASE2_LONG = {
   quibi: 2 ** 100,
 } as const
 
-export const FACTOR_YEAR_SHORT = {
+export const FACTOR_DURATION_SHORT = {
   s: 1,
   sec: 1,
   min: 60,
@@ -95,7 +95,7 @@ export const FACTOR_YEAR_SHORT = {
   y: 60 * 60 * 24 * 365,
 } as const
 
-export const FACTOR_YEAR_LONG = {
+export const FACTOR_DURATION_LONG = {
   second: 1,
   minute: 60,
   hour: 60 * 60,

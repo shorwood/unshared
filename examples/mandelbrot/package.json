@@ -8,9 +8,9 @@
     "start": "node dist/index.mjs"
   },
   "devDependencies": {
-    "@chialab/esbuild-plugin-meta-url": "0.17.2",
-    "@chialab/esbuild-plugin-worker": "0.17.3",
-    "tsup": "6.6.3",
-    "tsx": "3.12.3"
+    "@chialab/esbuild-plugin-meta-url": "0.18.2",
+    "@chialab/esbuild-plugin-worker": "0.18.1",
+    "tsup": "8.0.2",
+    "tsx": "4.7.1"
   }
 }

@@ -1,5 +1,5 @@
-import { ValidationRule, ValidationRulePipe, ValidationRuleSet, ValidationRules } from './types'
 import { createRuleSet } from './createRuleSet'
+import { ValidationRule, ValidationRulePipe, ValidationRuleSet, ValidationRules } from './types'
 import { validateRuleSet } from './validateRuleSet'
 
 /**

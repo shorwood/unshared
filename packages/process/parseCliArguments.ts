@@ -1,4 +1,4 @@
-/* eslint-disable unicorn/prevent-abbreviations */
+import { argv as processArgv } from 'node:process'
 import { parseOption } from './parseCliOption'
 
 export interface ParseArgvReturnType<T extends object> {
@@ -31,42 +31,35 @@ export interface ParseArgvReturnType<T extends object> {
  *
  * @param argv The command line argv.
  * @returns An object with options mapped to an object.
- * @example
- * parseArgv(['-f', '-bq', '--foo', 'bar', 'baz']) // returns { f: true, b: true, q: true, foo: 'bar' }
+ * @example parseCliArguments(['-f', '-bq', '--foo', 'bar', 'baz']) // returns { f: true, b: true, q: true, foo: 'bar' }
  */
-export function parseArgv <T extends object>(argv: NodeJS.Process['argv']): ParseArgvReturnType<T> {
-  const parsedArgs = [] as string[]
-  const parsedOptions = {} as T
+export function parseCliArguments<T extends object>(argv = processArgv): ParseArgvReturnType<T> {
+  const args: string[] = []
+  const options = {} as T
   const [nodePath, scriptPath, ...parameters] = argv
 
-  // --- Parse the argv.
+  // --- Traverse the parameters one by one.
   for (let index = 0; index < parameters.length; index++) {
     const argument = parameters[index]
 
-    // --- If the parameter starts with a dash, it's an option.
+    // --- If the parameter starts with a dash, it's an option. If so,
+    // --- get the next parameter as the value of the option and parse it.
     if (argument.startsWith('-')) {
       const next = parameters[index + 1]
-
-      // --- Parse option and increment the index if option has a value.
-      const parsedOption = next && !next.startsWith('-')
+      const option = next && !next.startsWith('-')
         ? (index++, parseOption(argument, next))
         : parseOption(argument)
-
-      // --- Merge the option into the result.
-      Object.assign(parsedOptions, parsedOption)
+      Object.assign(options, option)
     }
 
-    // --- Otherwise, it's an argument.
-    else { parsedArgs.push(parameters[index]) }
+    // --- Otherwise, it's a simple argument.
+    else {
+      args.push(parameters[index])
+    }
   }
 
   // --- Return the result.
-  return {
-    args: parsedArgs,
-    options: parsedOptions,
-    nodePath,
-    scriptPath,
-  }
+  return { args, options, nodePath, scriptPath }
 }
 
 /* c8 ignore next */
@@ -90,7 +83,7 @@ if (import.meta.vitest) {
   ])('should parse %j to %j is parsed', (argv, expected) => {
     const wrappedArgv = ['/usr/local/bin/node', 'index.js', ...argv.split(' ')]
     const wrappedExpected = { ...expected, nodePath: '/usr/local/bin/node', scriptPath: 'index.js' }
-    const result = parseArgv(wrappedArgv)
+    const result = parseCliArguments(wrappedArgv)
     expect(result).toEqual(wrappedExpected)
   })
 }

@@ -5,15 +5,7 @@ import { NotFunction } from '@unshared/types/NotFunction'
 export type ValidationRulePipe = ValidationRule[]
 export type ValidationRuleSet = ValidationRule[][]
 
-export type ValidationRules = ValidationRuleSet | ValidationRulePipe | ValidationRule
-
-export interface ValidateRuleResult {
-  name: string
-  value: any
-  isValid: boolean
-  parameters?: any[]
-  error?: Error
-}
+export type ValidationRules = ValidationRule | ValidationRulePipe | ValidationRuleSet
 
 export interface ValidateRulePipeResult {
   value: any

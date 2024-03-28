@@ -1,7 +1,6 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { Worker, WorkerOptions } from 'node:worker_threads'
 import { Function } from '@unshared/types/Function'
-import { WORKER_SERVICE_FUNCTION_NAME, WORKER_SERVICE_URL } from './createWorkerService.constants'
 import { workerRequest } from './workerRequest'
 
 /** A workerized function or value. */
@@ -24,10 +23,8 @@ export interface WorkerServiceOptions extends WorkerOptions {
   /**
    * The path to the worker to use. This worker will be responsible for importing
    * and executing the functions in the worker thread. Internally, this script will
-   * use `workerRegister` to register a single function that will be called by the
-   * `WorkerService` instances.
-   *
-   * @deprecated This should be lest as-is unless you know what you are doing.
+   * use the `workerRegister` function to register the `WORKER_SERVICE` handler
+   * that will be used to import and execute the functions.
    */
   workerUrl?: URL
   // TODO: Add support for the following options.
@@ -121,7 +118,7 @@ export class WorkerService {
     // --- Destructure and default options.
     const {
       execArgv = [],
-      workerUrl = WORKER_SERVICE_URL,
+      workerUrl = new URL('createWorkerService.worker.ts', import.meta.url),
       ...workerOptions
     } = this.workerOptions
 
@@ -181,7 +178,7 @@ export class WorkerService {
     this.running++
     const path = typeof id === 'string' ? id : id.pathname
     const payload: WorkerServiceRequest = { id: path, name, parameters }
-    const result = await workerRequest(this.worker!, WORKER_SERVICE_FUNCTION_NAME, payload)
+    const result = await workerRequest(this.worker!, 'WORKER_SERVICE', payload)
     this.running--
 
     // --- Finally, if all went well, return the value.

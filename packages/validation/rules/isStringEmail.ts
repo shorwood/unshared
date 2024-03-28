@@ -8,6 +8,7 @@
  * isStringEmail('john.doe@') // false
  * isStringEmail('john.doe@gmail.com') // true
  */
-export const isStringEmail = (value: string): boolean =>
-  typeof value === 'string'
+export function isStringEmail(value: string): boolean {
+  return typeof value === 'string'
   && /^[\w!#$%&'*+./=?^`{|}~-]+@[\da-z](?:[\da-z-]{0,61}[\da-z])?(?:\.[\da-z](?:[\da-z-]{0,61}[\da-z])?)*$/i.test(value)
+}

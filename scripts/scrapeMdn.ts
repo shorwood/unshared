@@ -12,30 +12,30 @@ interface MdnEntry {
  * @param content The raw MDN content.
  * @returns The parsed MDN content.
  */
-const parseMdn = (content: string) => {
+function parseMdn(content: string) {
   const name = content
     .match(/title:(.+)\n/)?.[1]
     .trim() as string
 
   const document = content
     .match(/{{httpsidebar}}(.+?)##/is)?.[1]
-    .replace(/{{(\w+)\("(.+?)"(?:,\s*"(.+?)")?\)}}/gs, (_, link, name, title) => {
+    .replaceAll(/{{(\w+)\("(.+?)"(?:,\s*"(.+?)")?\)}}/gs, (_, link, name, title) => {
       link = link
         .replace('HTTPHeader', 'HTTPHeaders')
         .replace('HTTP', 'Web/HTTP/')
-      link = `https://developer.mozilla.org/en-US/docs/${link}/${name.replace(/\s/g, '_')}`
-      const text = (title || name).replace(/\n/g, ' ').replace(/\s{2,}/g, ' ')
+      link = `https://developer.mozilla.org/en-US/docs/${link}/${name.replaceAll(/\s/g, '_')}`
+      const text = (title || name).replaceAll('\n', ' ').replaceAll(/\s{2,}/g, ' ')
       return `[${text}](${link})`
     })
 
     // --- Remove the {{Tags}}.
-    .replace(/{{.+?}}/gs, '')
+    .replaceAll(/{{.+?}}/gs, '')
 
     // --- No more than 2 consecutive new lines
-    .replace(/\n{3,}/g, '\n\n')
+    .replaceAll(/\n{3,}/g, '\n\n')
 
     // Remove HTML tags
-    .replace(/<.+?>.+<\/.+?>/gs, '')
+    .replaceAll(/<.+?>.+<\/.+?>/gs, '')
 
     .trim()
     .replaceAll('*/', '* /')
@@ -52,7 +52,7 @@ const parseMdn = (content: string) => {
  * @param path The path to the folder in the MDN repository to load.
  * @returns A list of files and their content.
  */
-export const scrapeMdn = async(path: string): Promise<MdnEntry[]> => {
+export async function scrapeMdn(path: string): Promise<MdnEntry[]> {
   const githubClient = axios.create({
     baseURL: 'https://api.github.com/repos/mdn/content/contents',
     headers: {
@@ -63,7 +63,7 @@ export const scrapeMdn = async(path: string): Promise<MdnEntry[]> => {
   })
 
   // --- Get the list of folders in the repo
-  const { data: folderLinks } = await githubClient.get<Record<string, any>[]>(path)
+  const { data: folderLinks } = await githubClient.get<Array<Record<string, any>>>(path)
 
   // --- Get and parse all files in the folders
   const entries = await Promise.all(

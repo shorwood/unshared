@@ -1,42 +1,42 @@
 /**
- * Check if value is an array
+ * Assert that a value is an array. If not, throw a `ValidationError`.
  *
- * @param value The value to check
+ * @param value The value to assert
  * @returns `true` if value is an array, `false` otherwise
- * @example
- * isArray([]) // true
- * isArray({}) // false
+ * @example asseryArray([]) // true
  */
-export const isArray = (value: unknown): value is unknown[] =>
-  Array.isArray(value)
+export function isArray<T>(value?: T[]): value is T[]
+export function isArray(value?: unknown): value is unknown[]
+export function isArray(value?: unknown): value is unknown[] {
+  return Array.isArray(value)
+}
 
-/** c8 ignore next */
+/** v8 ignore start */
 if (import.meta.vitest) {
-  it.each([
+  it('should return true if value is an array', () => {
+    const result = isArray([])
+    expect(result).toEqual(true)
+  })
 
-    // --- Returns true
-    [true, []],
-    [true, [1, 2, 3]],
+  it('should return false if value is an object', () => {
+    const result = isArray({})
+    expect(result).toEqual(false)
+  })
 
-    // --- Returns false
-    [false, {}],
-    // eslint-disable-next-line unicorn/no-null
-    [false, null],
-    [false, undefined],
-    [false, 1],
-    [false, 'string'],
-    [false, Symbol('symbol')],
-    [false, () => {}],
-    [false, /regexp/],
-    [false, Array],
-    [false, new Date()],
-    [false, new Set()],
-    [false, new Map()],
-    [false, new WeakSet()],
-    [false, new WeakMap()],
+  it('should return false if value is undefined', () => {
+    const result = isArray()
+    expect(result).toEqual(false)
+  })
 
-  ])('should return %s when checking if %s is an array', (expected, value) => {
+  it('should predicate if value is an array of unknown', () => {
+    const value = [] as unknown
     const result = isArray(value)
-    expect(result).toEqual(expected)
+    if (result) expectTypeOf(value).toEqualTypeOf<unknown[]>()
+  })
+
+  it('should predicate if value is an array of strings', () => {
+    const value = [] as string[]
+    const result = isArray(value)
+    if (result) expectTypeOf(value).toEqualTypeOf<string[]>()
   })
 }

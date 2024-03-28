@@ -1,5 +1,5 @@
+import { env } from 'node:process'
 import { toCamelCase } from '@unshared/string/toCamelCase'
-import { getEnvironment } from './getEnvironment'
 
 /**
  * Get variables from the environment that are prefixed with `prefix`
@@ -12,8 +12,7 @@ import { getEnvironment } from './getEnvironment'
 export function getVariables<T = Record<string, any>>(prefix: string, transformers?: Partial<{ [P in keyof T]: (value: string) => T[P] }>): Partial<T>
 export function getVariables<T = Record<string, string>>(prefix: string): Partial<T>
 export function getVariables(prefix: string, transformers: any = {}) {
-  const environment = getEnvironment()
-  const entries = Object.entries(environment)
+  const entries = Object.entries(env)
 
     // --- Filter out entries that don't match the prefix.
     .filter(([key]) => key.startsWith(prefix))

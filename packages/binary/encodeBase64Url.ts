@@ -17,7 +17,7 @@ import { encodeBase64 } from './encodeBase64'
  */
 export function encodeBase64Url(buffer: ArrayBuffer): string {
   return encodeBase64(buffer)
-    .replace(/\+|\/|=+$/g, (match) => {
+    .replaceAll(/\+|\/|=+$/g, (match) => {
       if (match === '+') return '-'
       if (match === '/') return '_'
       return ''

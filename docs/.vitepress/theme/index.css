@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fire+Code:wght@400;700&display=swap');
+
+:root {
+  --vp-sidebar-width-mobile: 280px;
+  --vp-sidebar-width-small: 220px;
+  --vp-sidebar-width-medium: 220px;
+  --vp-sidebar-width-large: 220px;
+  --vt-font-family-mono: 'Fira Code', monospace !important;
+  --vt-font-family-serif: 'Inter', sans-serif !important;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+.vt-doc ul {
+  padding-left: 0!important;
+}
+
+.vt-doc ul li {
+  line-height: 2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vt-doc ul li:before {
+  display: none;
+}
+
+.vt-doc h1 {
+  margin: 0;
+}
+
+
+.vt-doc ul li a:first-of-type {
+  background-color: var(--vt-c-bg-mute);
+	padding: 0.25em 0.5em;
+	border-radius: 4px;
+	color: var(--vt-c-brand);
+  font-weight: bold;
+  font-family: var(--vt-font-family-mono);
+}
+
+
+* {
+  transition: none!important
+}

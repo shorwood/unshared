@@ -1,21 +1,21 @@
 import { createScale } from '../utils/createScale'
 import { createScaleAlias } from '../utils/createScaleAlias'
-import { PREFIX_BASE10_LONG, PREFIX_BASE10_LONG_BIG, PREFIX_BASE10_SHORT, PREFIX_BASE10_SHORT_BIG } from './prefixes'
+import { FACTOR_BASE10_LONG, FACTOR_BASE10_LONG_BIG, FACTOR_BASE10_SHORT, FACTOR_BASE10_SHORT_BIG } from './factors'
 
 /** A map of mass units relative to a [kilogram](https://en.wikipedia.org/wiki/Gram). */
 export const SCALE_MASS = {
   // --- SI
-  ...createScale('g', { baseValue: 1e-3, prefixes: PREFIX_BASE10_SHORT }),
-  ...createScale('t', { baseValue: 1e+3, prefixes: PREFIX_BASE10_SHORT_BIG }),
-  ...createScale('gram', { baseValue: 1e-3, prefixes: PREFIX_BASE10_LONG }),
-  ...createScale('tonne', { baseValue: 1e+3, prefixes: PREFIX_BASE10_LONG_BIG }),
+  ...createScale('g', { baseValue: 1e-3, factors: FACTOR_BASE10_SHORT }),
+  ...createScale('t', { baseValue: 1e+3, factors: FACTOR_BASE10_SHORT_BIG }),
+  ...createScale('gram', { baseValue: 1e-3, factors: FACTOR_BASE10_LONG }),
+  ...createScale('tonne', { baseValue: 1e+3, factors: FACTOR_BASE10_LONG_BIG }),
 
   // --- Electron volt per c².
-  ...createScale('eV/c²', { baseValue: 1.782661845e-36, prefixes: PREFIX_BASE10_SHORT_BIG }),
+  ...createScale('eV/c²', { baseValue: 1.782661845e-36, factors: FACTOR_BASE10_SHORT_BIG }),
 
   // --- Atomic mass unit.
-  ...createScale(['Da', 'amu', 'u'], { baseValue: 1.6605390666e-27, prefixes: PREFIX_BASE10_SHORT_BIG }),
-  ...createScale('dalton', { baseValue: 1.6605390666e-27, prefixes: PREFIX_BASE10_LONG_BIG }),
+  ...createScale(['Da', 'amu', 'u'], { baseValue: 1.6605390666e-27, factors: FACTOR_BASE10_SHORT_BIG }),
+  ...createScale('dalton', { baseValue: 1.6605390666e-27, factors: FACTOR_BASE10_LONG_BIG }),
 
   // --- Imperial units. (Avoirdupois)
   ...createScaleAlias(['gr', 'grain'], 6.479891e-5),

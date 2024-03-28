@@ -9,7 +9,8 @@
  * isNumber(Number.NaN) // false
  * isNumber(Number.POSITIVE_INFINITY) // false
  */
-export const isNumber = (value: any): value is number =>
-  typeof value === 'number'
+export function isNumber(value: any): value is number {
+  return typeof value === 'number'
   && !Number.isNaN(value)
   && Number.isFinite(value)
+}

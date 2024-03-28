@@ -8,6 +8,7 @@
  * isStringLatLong('-90.0') // true
  * isStringLatLong('-90,0.0') // false
  */
-export const isStringLatLong = (value: string): boolean =>
-  typeof value === 'string'
+export function isStringLatLong(value: string): boolean {
+  return typeof value === 'string'
   && /^((-?|\+?)?\d+(\.\d+)?),\s*((-?|\+?)?\d+(\.\d+)?)$/.test(value)
+}

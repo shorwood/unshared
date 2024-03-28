@@ -8,7 +8,8 @@
  * isNumberOdd(1) // true
  * isNumberOdd(2.5) // false
  */
-export const isNumberOdd = (value: number): boolean =>
-  typeof value === 'number'
+export function isNumberOdd(value: number): boolean {
+  return typeof value === 'number'
   && Number.isInteger(value)
   && (value & 0x1) !== 0
+}

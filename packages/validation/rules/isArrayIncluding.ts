@@ -8,9 +8,10 @@
  * isArrayIncluding([], 1) // false
  * isArrayIncluding([1, 2, 3], 1) // true
  */
-export const isArrayIncluding = <T>(array: T[], item: T): boolean =>
-  Array.isArray(array)
+export function isArrayIncluding <T>(array: T[], item: T): boolean {
+  return Array.isArray(array)
   && array.includes(item)
+}
 
 /** c8 ignore next */
 if (import.meta.vitest) {

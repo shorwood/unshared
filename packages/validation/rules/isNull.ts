@@ -8,5 +8,6 @@
  * isNull(null) // true
  * isNull(undefined) // false
  */
-export const isNull = (value: any): value is null =>
-  value === null
+export function isNull(value: any): value is null {
+  return value === null
+}

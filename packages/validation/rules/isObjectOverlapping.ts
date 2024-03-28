@@ -13,7 +13,7 @@
  * isObjectOverlapping({ a: 1 }, { b: 1 }) // false
  * isObjectOverlapping({ a: 1 }, { a: 2 }) // true
  */
-export const isObjectOverlapping = (object1: object, object2: object, depth?: number | boolean): boolean => {
+export function isObjectOverlapping(object1: object, object2: object, depth?: boolean | number): boolean {
   // --- Makre sure values are objects
   if (typeof object1 !== 'object' || object1 === null) return false
   if (typeof object2 !== 'object' || object2 === null) return false

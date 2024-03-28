@@ -24,8 +24,8 @@ export async function buildDts(packageName: PackageName) {
   const rollupConfig = {
     input: inputPaths,
     external: [
-      /^node:.*/,
-      /^@unshared\/.*/,
+      /^node:.+/,
+      /^@unshared\/.+/,
     ],
 
     plugins: [

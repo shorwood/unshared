@@ -1,11 +1,10 @@
 {
-  "type": "module",
-  "sideEffects": false,
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch"
-  },
   "name": "@unshared/environment",
+  "type": "module",
+  "version": "0.0.1+cd0078f",
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
   "bugs": "https://github.com/shorwood/unshared/issues",
   "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
@@ -13,6 +12,105 @@
     "url": "git+https://github.com/shorwood/unshared.git",
     "directory": "packages/environment"
   },
-  "author": "Stanley Horwood <stanley@hsjm.io>",
-  "license": "MIT"
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "exports": {
+    "getEnvironment": {
+      "require": "./dist/getEnvironment.cjs",
+      "import": "./dist/getEnvironment.js"
+    },
+    "getVariable": {
+      "require": "./dist/getVariable.test.cjs",
+      "import": "./dist/getVariable.test.js"
+    },
+    "getVariables": {
+      "require": "./dist/getVariables.test.cjs",
+      "import": "./dist/getVariables.test.js"
+    },
+    "*": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
+    },
+    "isAws": {
+      "require": "./dist/isAws.cjs",
+      "import": "./dist/isAws.js"
+    },
+    "isAzure": {
+      "require": "./dist/isAzure.cjs",
+      "import": "./dist/isAzure.js"
+    },
+    "isBrowser": {
+      "require": "./dist/isBrowser.cjs",
+      "import": "./dist/isBrowser.js"
+    },
+    "isCi": {
+      "require": "./dist/isCi.cjs",
+      "import": "./dist/isCi.js"
+    },
+    "isCli": {
+      "require": "./dist/isCli.cjs",
+      "import": "./dist/isCli.js"
+    },
+    "isDeno": {
+      "require": "./dist/isDeno.cjs",
+      "import": "./dist/isDeno.js"
+    },
+    "isDevelopment": {
+      "require": "./dist/isDevelopment.cjs",
+      "import": "./dist/isDevelopment.js"
+    },
+    "isDocker": {
+      "require": "./dist/isDocker.cjs",
+      "import": "./dist/isDocker.js"
+    },
+    "isElectron": {
+      "require": "./dist/isElectron.cjs",
+      "import": "./dist/isElectron.js"
+    },
+    "isGcp": {
+      "require": "./dist/isGcp.cjs",
+      "import": "./dist/isGcp.js"
+    },
+    "isKubernetes": {
+      "require": "./dist/isKubernetes.cjs",
+      "import": "./dist/isKubernetes.js"
+    },
+    "isMinikube": {
+      "require": "./dist/isMinikube.cjs",
+      "import": "./dist/isMinikube.js"
+    },
+    "isNode": {
+      "require": "./dist/isNode.cjs",
+      "import": "./dist/isNode.js"
+    },
+    "isNuxt": {
+      "require": "./dist/isNuxt.cjs",
+      "import": "./dist/isNuxt.js"
+    },
+    "isProduction": {
+      "require": "./dist/isProduction.cjs",
+      "import": "./dist/isProduction.js"
+    },
+    "isTsx": {
+      "require": "./dist/isTsx.cjs",
+      "import": "./dist/isTsx.js"
+    },
+    "isWebWorker": {
+      "require": "./dist/isWebWorker.cjs",
+      "import": "./dist/isWebWorker.js"
+    },
+    "isWsl": {
+      "require": "./dist/isWsl.cjs",
+      "import": "./dist/isWsl.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  }
 }

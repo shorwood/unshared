@@ -3,7 +3,7 @@
  *
  * @returns `true` if process is running in a Kubernetes environment
  */
-export const isKubernetes = async() => {
+export async function isKubernetes() {
   const { access, readFile } = await import('node:fs/promises')
   try {
     await access('/proc/self/cgroup')

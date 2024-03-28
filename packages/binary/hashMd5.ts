@@ -7,27 +7,27 @@ const K: number[] = []
 for (let index = 0; index < 64; index++)
   K[index] = Math.trunc(Math.abs(Math.sin(index + 1)) * 0x100000000)
 
-const f = (a: number, b: number, c: number, d: number, x: number, s: number, t: number) => {
+function f(a: number, b: number, c: number, d: number, x: number, s: number, t: number) {
   const n = a + ((b & c) | (~b & d)) + x + t
   return ((n << s) | (n >>> (32 - s))) + b
 }
 
-const g = (a: number, b: number, c: number, d: number, x: number, s: number, t: number) => {
+function g(a: number, b: number, c: number, d: number, x: number, s: number, t: number) {
   const n = a + ((b & d) | (c & ~d)) + x + t
   return ((n << s) | (n >>> (32 - s))) + b
 }
 
-const h = (a: number, b: number, c: number, d: number, x: number, s: number, t: number) => {
+function h(a: number, b: number, c: number, d: number, x: number, s: number, t: number) {
   const n = a + (b ^ c ^ d) + x + t
   return ((n << s) | (n >>> (32 - s))) + b
 }
 
-const i = (a: number, b: number, c: number, d: number, x: number, s: number, t: number) => {
+function i(a: number, b: number, c: number, d: number, x: number, s: number, t: number) {
   const n = a + (c ^ (b | ~d)) + x + t
   return ((n << s) | (n >>> (32 - s))) + b
 }
 
-const process = (chunk: Uint32Array, words: Uint32Array) => {
+function process(chunk: Uint32Array, words: Uint32Array) {
   // --- Make sure chunk are little-endian.
   if (getEndianness() !== 'LE') chunk = chunk.slice(0, 15).map(swapEndian)
 
@@ -107,7 +107,7 @@ const process = (chunk: Uint32Array, words: Uint32Array) => {
   words[3] += d
 }
 
-const preprocess = (data: ArrayBuffer) => {
+function preprocess(data: ArrayBuffer) {
   // --- Pre-process data.
   const dataBitLength = data.byteLength * 8
   const totalByteLength = data.byteLength + 9
@@ -137,7 +137,7 @@ const preprocess = (data: ArrayBuffer) => {
  * @returns The hash of the data.
  * @see https://en.wikipedia.org/wiki/MD5
  */
-export const hashMd5 = (data: ArrayBufferLike): ArrayBuffer => {
+export function hashMd5(data: ArrayBufferLike): ArrayBuffer {
   // --- Preprocess data buffer and initialize data.
   const chunks = preprocess(data)
   const hash = new Uint32Array([0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476])

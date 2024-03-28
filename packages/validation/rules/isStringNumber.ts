@@ -8,6 +8,7 @@
  * isStringNumber('-1.0') // true
  * isStringNumber('1n') // false
  */
-export const isStringNumber = (value: string): value is `${number}` =>
-  typeof value === 'string'
+export function isStringNumber(value: string): value is `${number}` {
+  return typeof value === 'string'
   && /^-?\d+(\.\d+)?$/.test(value)
+}

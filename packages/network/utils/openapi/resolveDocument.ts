@@ -11,7 +11,7 @@ import { resolveReference } from './resolveReference'
  */
 export type ResolvedDeep<T> =
   T extends OpenAPIV3.ReferenceObject ? never
-    : T extends (infer U)[] ? ResolvedDeep<U>[]
+    : T extends Array<infer U> ? Array<ResolvedDeep<U>>
       : T extends Record<string, any> ? { [K in keyof T]: ResolvedDeep<T[K]> }
         : T
 
