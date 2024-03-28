@@ -1,3 +1,5 @@
+import { OmitNever } from './OmitNever'
+
 /**
  * Merged type of all the objects in the union.
  *
@@ -6,7 +8,7 @@
  */
 export type UnionMerge<T> =
   (T extends any ? (x: T) => any : never) extends (x: infer U) => any
-    ? { [P in keyof U]: U[P] }
+    ? OmitNever<{ [P in keyof U]: U[P] }>
     : never
 
 /** c8 ignore next */
@@ -21,9 +23,14 @@ if (import.meta.vitest) {
     expectTypeOf<Result>().toEqualTypeOf<{ a: number; b: string; c: boolean }>()
   })
 
-  it('should merge a union of objects with incompatible property types', () => {
+  it('should return an empty object for a union of objects with incompatible property types', () => {
     type Result = UnionMerge<{ a: number } | { a: string }>
-    expectTypeOf<Result>().toEqualTypeOf<{ a: never }>()
+    expectTypeOf<Result>().toEqualTypeOf<{}>()
+  })
+
+  it('should omit never properties from the result', () => {
+    type Result = UnionMerge<{ a: number } | { b: string } | { c: never }>
+    expectTypeOf<Result>().toEqualTypeOf<{ a: number; b: string }>()
   })
 
   it('should merge a union of objects with compatible property types', () => {
