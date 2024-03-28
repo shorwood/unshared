@@ -3,7 +3,7 @@ import { BooleanNot } from '../BooleanNot'
 import { BooleanOr } from '../BooleanOr'
 import { Tuple } from '../Tuple'
 import { TupleLength } from '../TupleLength'
-import { IsNotEqual, IsStrictEqual, IsZero } from './predicate'
+import { IsEqual, IsStrictEqual, IsZero } from './predicate'
 
 // --- Arithmetics operations (No range safety).
 export type Add<A extends number, B extends number> = TupleLength<[...Tuple<A>, ...Tuple<B>]> extends infer U extends number ? U : never
@@ -18,7 +18,82 @@ export type Maximum<A extends number, B extends number> = IsLower<A, B> extends 
 
 // --- Number predicate. (No range safety).
 export type IsLower<A extends number, B extends number> = Substract<A, B> extends never ? true : false
-export type IsGreater<A extends number, B extends number> = BooleanNor<IsLower<A, B>, IsNotEqual<A, B>>
+export type IsGreater<A extends number, B extends number> = BooleanNor<IsLower<A, B>, IsEqual<A, B>>
 export type IsEqualOrLower<A extends number, B extends number> = BooleanOr<IsStrictEqual<A, B>, IsLower<A, B>>
 export type IsEqualOrGreater<A extends number, B extends number> = BooleanNot<IsLower<A, B>>
 export type IsDivisibleBy<A extends number, B extends number> = IsStrictEqual<Modulo<Absolute<A>, Absolute<B>>, 0>
+
+/* v8 ignore start */
+if (import.meta.vitest) {
+  it('should add two numbers', () => {
+    expectTypeOf<Add<1, 2>>().toEqualTypeOf<3>()
+    expectTypeOf<Add<2, 1>>().toEqualTypeOf<3>()
+  })
+
+  it('should substract two numbers', () => {
+    expectTypeOf<Substract<3, 2>>().toEqualTypeOf<1>()
+    expectTypeOf<Substract<2, 3>>().toEqualTypeOf<never>()
+  })
+
+  it('should get the absolute value of a number', () => {
+    expectTypeOf<Absolute<-5>>().toEqualTypeOf<5>()
+    expectTypeOf<Absolute<5>>().toEqualTypeOf<5>()
+  })
+
+  it('should get the negative value of a number', () => {
+    expectTypeOf<Negative<-5>>().toEqualTypeOf<5>()
+    expectTypeOf<Negative<5>>().toEqualTypeOf<-5>()
+  })
+
+  it('should divide two numbers', () => {
+    expectTypeOf<Divide<10, 2>>().toEqualTypeOf<5>()
+    expectTypeOf<Divide<10, 3>>().toEqualTypeOf<3>()
+  })
+
+  it('should multiply two numbers', () => {
+    expectTypeOf<Multiply<10, 2>>().toEqualTypeOf<20>()
+    expectTypeOf<Multiply<2, 10>>().toEqualTypeOf<20>()
+  })
+
+  it('should get the modulo of two numbers', () => {
+    expectTypeOf<Modulo<10, 3>>().toEqualTypeOf<1>()
+    expectTypeOf<Modulo<3, 10>>().toEqualTypeOf<3>()
+  })
+
+  it('should get the minimum of two numbers', () => {
+    expectTypeOf<Minimum<3, 10>>().toEqualTypeOf<3>()
+    expectTypeOf<Minimum<10, 3>>().toEqualTypeOf<3>()
+  })
+
+  it('should get the maximum of two numbers', () => {
+    expectTypeOf<Maximum<10, 3>>().toEqualTypeOf<10>()
+    expectTypeOf<Maximum<3, 10>>().toEqualTypeOf<10>()
+  })
+
+  it('should check if a number is lower than another', () => {
+    expectTypeOf<IsLower<1, 2>>().toEqualTypeOf<true>()
+    expectTypeOf<IsLower<2, 1>>().toEqualTypeOf<false>()
+  })
+
+  it('should check if a number is greater than another', () => {
+    expectTypeOf<IsGreater<2, 1>>().toEqualTypeOf<true>()
+    expectTypeOf<IsGreater<1, 2>>().toEqualTypeOf<false>()
+  })
+
+  it('should check if a number is equal or lower than another', () => {
+    expectTypeOf<IsEqualOrLower<1, 1>>().toEqualTypeOf<true>()
+    expectTypeOf<IsEqualOrLower<1, 2>>().toEqualTypeOf<true>()
+    expectTypeOf<IsEqualOrLower<2, 1>>().toEqualTypeOf<false>()
+  })
+
+  it('should check if a number is equal or greater than another', () => {
+    expectTypeOf<IsEqualOrGreater<1, 1>>().toEqualTypeOf<true>()
+    expectTypeOf<IsEqualOrGreater<2, 1>>().toEqualTypeOf<true>()
+    expectTypeOf<IsEqualOrGreater<1, 2>>().toEqualTypeOf<false>()
+  })
+
+  it('should check if a number is divisible by another', () => {
+    expectTypeOf<IsDivisibleBy<4, 2>>().toEqualTypeOf<true>()
+    expectTypeOf<IsDivisibleBy<4, 3>>().toEqualTypeOf<false>()
+  })
+}
