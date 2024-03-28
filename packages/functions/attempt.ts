@@ -9,10 +9,9 @@ import { MaybePromise, NotPromise } from '@unshared/types'
  * @template E The type of the error.
  * @example Result<string, Error> // [string | undefined, Error | undefined]
  */
-export interface Result<T = unknown, E extends Error = Error> {
-  value: T | undefined
-  error: E | undefined
-}
+export type Result<T = unknown, E extends Error = Error> =
+  { value: T; error: undefined } |
+  { value: undefined; error: E }
 
 /**
  * Run a function and return the value or error in an array. If the function
@@ -92,5 +91,11 @@ if (import.meta.vitest) {
     const result = await attempt(async() => { throw new Error('Uh oh! Something went wrong!') })
     expect(result).toStrictEqual({ error: new Error('Uh oh! Something went wrong!') })
     expectTypeOf(result).toEqualTypeOf<Result<never, Error>>()
+  })
+
+  it('should return a discriminated union type', () => {
+    const result = attempt(() => 'Hello, world!')
+    if (result.error) expectTypeOf(result).toEqualTypeOf<{ value: undefined; error: Error }>()
+    if (result.value) expectTypeOf(result).toEqualTypeOf<{ value: string; error: undefined }>()
   })
 }
