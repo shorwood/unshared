@@ -2,6 +2,7 @@
 import { Constructor } from './Constructor'
 import { ConstructorStatics } from './ConstructorStatics'
 import { DefaultObject } from './DefaultObject'
+import { UnionMerge } from './UnionMerge'
 
 /**
  * Extends one class with another. The first class will be extended with the
@@ -17,12 +18,12 @@ import { DefaultObject } from './DefaultObject'
  */
 export type Extends<T1 extends Constructor, T2 extends Constructor> =
   Constructor<
+  UnionMerge<DefaultObject<InstanceType<T1>, InstanceType<T2>, 0>>,
   ConstructorParameters<T1>,
-  DefaultObject<InstanceType<T1>, InstanceType<T2>, 0>,
-  DefaultObject<ConstructorStatics<T2>, ConstructorStatics<T1>, 0>
+  UnionMerge<DefaultObject<ConstructorStatics<T2>, ConstructorStatics<T1>, 0>>
   >
 
-/** c8 ignore next */
+/** v8 ignore start */
 if (import.meta.vitest) {
   it('should extends prototype properties from left to right', () => {
     class A { a = 1; c = 3 }

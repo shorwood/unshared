@@ -1,5 +1,6 @@
 /* eslint-disable unicorn/no-static-only-class */
 import { Constructor } from './Constructor'
+import { OmitNever } from './OmitNever'
 
 /**
  * Extract static properties from a class constructor.
@@ -11,7 +12,7 @@ import { Constructor } from './Constructor'
  * type A = ConstructorStatics<Foo> // { a: number }
  */
 export type ConstructorStatics<T extends Constructor> =
-  { [K in Exclude<keyof T, 'prototype'>]: T[K] }
+  OmitNever<{ [K in Exclude<keyof T, 'prototype'>]: T[K] }>
 
 /** c8 ignore next */
 if (import.meta.vitest) {
@@ -21,14 +22,14 @@ if (import.meta.vitest) {
     expectTypeOf<Result>().toEqualTypeOf<{ a: 1 }>()
   })
 
-  it('should not extract instance properties from a class', () => {
-    class Foo { a = 1 as const }
+  it('should not extract instance properties', () => {
+    class Foo { static a = 1 as const; b = 1 as const }
     type Result = ConstructorStatics<typeof Foo>
-    expectTypeOf<Result>().toEqualTypeOf<{}>()
+    expectTypeOf<Result>().toEqualTypeOf<{ a: 1 }>()
   })
 
-  it('should extract empty static properties from a class', () => {
-    class Foo {}
+  it('should return an empty object for a class with no static properties', () => {
+    class Foo { b = 1 as const }
     type Result = ConstructorStatics<typeof Foo>
     expectTypeOf<Result>().toEqualTypeOf<{}>()
   })
