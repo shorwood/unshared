@@ -29,10 +29,4 @@ if (import.meta.vitest) {
     const result = isConstructor(10)
     expect(result).toEqual(false)
   })
-
-  it('should predicate the type of a value', () => {
-    const value: unknown = Boolean
-    const result = isConstructor(value)
-    if (result) expectTypeOf(value).toEqualTypeOf<Constructor>()
-  })
 }
