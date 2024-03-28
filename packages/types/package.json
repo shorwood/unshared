@@ -274,6 +274,9 @@
     "./PromiseWrap": {
       "types": "./dist/PromiseWrap.d.ts"
     },
+    "./Replace": {
+      "types": "./dist/Replace.d.ts"
+    },
     "./StringConstraint": {
       "types": "./dist/StringConstraint.d.ts"
     },
