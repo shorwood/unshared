@@ -6,7 +6,7 @@ export type BooleanEvery<T extends boolean[]> = T extends [infer A extends boole
 export type BooleanSome<T extends boolean[]> = T extends [infer A extends boolean, ...infer B extends boolean[]] ? BooleanOr<A, BooleanSome<B>> : false
 
 // --- Predicate special types
-export type IsUnknown<T> = [T] extends [unknown] ? true : false
+export type IsUnknown<T> = [unknown] extends [T] ? true : false
 export type IsNever<T> = [T] extends [never] ? true : false
 export type IsVoid<T> = IsStrictEqual<T, void>
 export type IsUndefined<T> = IsStrictEqual<T, undefined>
