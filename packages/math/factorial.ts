@@ -1,12 +1,18 @@
+import { NumberIntegerPositive } from "@unshared/types"
+
 /**
  * Computes the [factorial](https://en.wikipedia.org/wiki/Factorial) of the given number.
+ * 
+ * The factorial of a positive integer `n`, denoted by `n!`, is the product of all positive
+ * integers less than or equal to `n`.
  *
  * @param n The number to calculate the factorial of.
  * @returns The factorial of the number.
  * @example factorial(5) // 120
  */
-export function factorial(n: number): number {
-  if (n < 0) throw new RangeError('Cannot compute factorial of negative number')
+export function factorial<N extends number>(n: NumberIntegerPositive<N> | 0): number {
+  if(n < 0) throw new RangeError('Expected a positive number')
+  if(n % 1 !== 0) throw new RangeError('Expected an integer')
   let result = 1
   for (let index = 1; index <= n; index++) result *= index
   return result
@@ -24,8 +30,15 @@ if (import.meta.vitest) {
     expect(result).toEqual(120)
   })
 
-  it('should throw an error if the argument is negative', () => {
+  it('should highlight invalid input when the argument is negative', () => {
+    // @ts-expect-error: Testing invalid input
     const shouldThrow = () => factorial(-1)
+    expect(shouldThrow).toThrow(RangeError)
+  })
+
+  it('should highlight invalid input when the argument is not an integer', () => {
+    // @ts-expect-error: Testing invalid input
+    const shouldThrow = () => factorial(1.5)
     expect(shouldThrow).toThrow(RangeError)
   })
 }
