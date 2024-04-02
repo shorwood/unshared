@@ -6,7 +6,9 @@
  * @example sum(2, 2, 2) // 6
  */
 export function sum(...numbers: number[]): number {
-  return numbers.reduce((sum, n) => sum + n, 0)
+  let result = 0
+  for (const number of numbers) result += number
+  return result
 }
 
 /* c8 ignore next */
