@@ -17,7 +17,7 @@ export type IsNil<T> = BooleanOr<IsUndefined<T>, IsVoid<T>>
 export type IsString<S> = string extends S ? true : false
 export type IsEmptyString<S> = S extends '' ? true : false
 
-// --- Predicate array and tuple
+// --- Predicate array, objects and tuple
 export type IsArray<T> = any[] extends T ? true : readonly any[] extends T ? true : false
 export type IsTupleEmpty<T extends MaybeReadonly<any>> = T extends MaybeReadonly<[]> ? true : false
 export type IsArrayOrTuple<T> = BooleanOr<IsArray<T>, IsTuple<T>>
