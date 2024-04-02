@@ -11,21 +11,13 @@
 export function range(start: number, end: number, step = 1): number[] {
   const result: number[] = []
 
-  // --- Step up until we reach the end
-  if (start > end) {
-    if (step > 0) throw new Error('Step must be negative')
-    for (let index = start; index > end; index += step)
-      result.push(index)
-  }
+  // --- Assert the step allows the range to be created.
+  const isPositiveStep = step > 0
+  if (isPositiveStep && start > end) throw new Error('Since the step is positive, the start must be less than the end')
+  if (!isPositiveStep && start < end) throw new Error('Since the step is negative, the start must be greater than the end')
 
-  // --- Step down until we reach the end
-  else {
-    if (step < 0) throw new Error('Step must be positive')
-    for (let index = start; index < end; index += step)
-      result.push(index)
-  }
-
-  // --- Return the result
+  // --- Step through the range
+  for (let i = start; i !== end; i += step) result.push(i)
   return result
 }
 
