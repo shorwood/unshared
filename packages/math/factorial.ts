@@ -1,8 +1,8 @@
-import { NumberIntegerPositive } from "@unshared/types"
+import { NumberIntegerPositive } from '@unshared/types'
 
 /**
  * Computes the [factorial](https://en.wikipedia.org/wiki/Factorial) of the given number.
- * 
+ *
  * The factorial of a positive integer `n`, denoted by `n!`, is the product of all positive
  * integers less than or equal to `n`.
  *
@@ -12,7 +12,7 @@ import { NumberIntegerPositive } from "@unshared/types"
  */
 export function factorial<N extends number>(n: NumberIntegerPositive<N> | 0): number {
   if(n < 0) throw new RangeError('Expected a positive number')
-  if(n % 1 !== 0) throw new RangeError('Expected an integer')
+  if(Number.isSafeInteger(n) === false) throw new RangeError('Expected an integer number')
   let result = 1
   for (let index = 1; index <= n; index++) result *= index
   return result
