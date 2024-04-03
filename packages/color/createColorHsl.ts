@@ -33,7 +33,7 @@ export interface HSL {
  */
 export function createColorHsl(hsl: Partial<HSL>): HSL {
   return {
-    h: toSafeNumber(hsl.h) % 360,
+    h: toSafeNumber(hsl.h ?? 0) % 360,
     s: clamp(hsl.s ?? 0, 0, 1),
     l: clamp(hsl.l ?? 0, 0, 1),
     a: clamp(hsl.a ?? 1, 0, 1) || 1,
