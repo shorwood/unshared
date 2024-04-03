@@ -1,4 +1,3 @@
-
 /**
  * A complex number is a number that can be expressed in the form `a + bi`,
  * where `a` and `b` are real numbers, and `i` is a solution of the equation
@@ -96,6 +95,21 @@ export class Complex {
       (a.real * b.real + a.imaginary * b.imaginary) / denominator,
       (a.imaginary * b.real - a.real * b.imaginary) / denominator,
     )
+  }
+
+  /**
+   * Compute the square root of a complex number.
+   *
+   * @param complex The complex number to compute the square root of.
+   * @returns The square root of the complex number.
+   * @example createComplex(1, 2).sqrt() // Complex { real: 1.272019649514069, imaginary: 0.7861513777574233 }
+   */
+  public sqrt(complex: Complex): Complex {
+    const { real, imaginary } = complex
+    const modulus = Math.hypot(real, imaginary)
+    const resultReal = Math.sqrt((modulus + real) / 2)
+    const resulyImaginary = Math.sign(imaginary) * Math.sqrt((modulus - real) / 2)
+    return new Complex(resultReal, resulyImaginary)
   }
 }
 
