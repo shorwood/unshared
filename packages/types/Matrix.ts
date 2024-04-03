@@ -7,16 +7,16 @@ import { IsDecimal, IsNumber, IsZero } from './utils'
  * @template U The type of the elements.
  * @example Matrix<number> // number[][][]
  */
-export type Matrix<U = unknown, L extends number = number> =
+export type Matrix<L extends number = number, U = unknown> =
   IsNumber<L> extends true ? U[][]
     : IsZero<L> extends true ? []
       : IsDecimal<L> extends true ? never
         : Tuple<L, Tuple<L, U>>
 
-/** c8 ignore next */
+/** v8 ignore start */
 if (import.meta.vitest) {
   it('should return a 4x4 matrix of numbers', () => {
-    type Result = Matrix<number, 4>
+    type Result = Matrix<4, number>
     type Expected = [
       [number, number, number, number],
       [number, number, number, number],
@@ -26,9 +26,9 @@ if (import.meta.vitest) {
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should return a nested array of numbers by default', () => {
+  it('should return a nested array of unknowns by default', () => {
     type Result = Matrix<number>
-    type Expected = number[][]
+    type Expected = unknown[][]
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
@@ -38,20 +38,20 @@ if (import.meta.vitest) {
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should return empty matrix if D is 0', () => {
-    type Result = Matrix<number, 0>
+  it('should return empty matrix if L is 0', () => {
+    type Result = Matrix<0>
     type Expected = []
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should return never if D is negative', () => {
-    type Result = Matrix<number, -1>
+  it('should return never if L is negative', () => {
+    type Result = Matrix<-1>
     type Expected = never
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should return never if D is a decimal', () => {
-    type Result = Matrix<number, 1.1>
+  it('should return never if L is a decimal', () => {
+    type Result = Matrix<1.1>
     type Expected = never
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
