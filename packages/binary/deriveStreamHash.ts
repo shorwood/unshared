@@ -1,34 +1,31 @@
 import { Hash, HashOptions, createHash } from 'node:crypto'
-import { Readable, Transform } from 'node:stream'
+import { Transform } from 'node:stream'
 import { Awaitable } from '@unshared/functions/awaitable'
 import { deriveStream } from './deriveStream'
-import { streamRead } from './streamRead'
 
 /**
  * Computes the hash of a stream of bytes without consuming the stream. This
  * function will intercept the chunks read from subsequent calls to `read()`,
- * execute the given callback, and then pass the chunks back into the stream.
+ * update the hash with the chunk, and then pass the chunks back into the stream.
  *
  * This function returns an `Awaitable` value, which means that the synchronous
- * value is the stream itself, and the asynchronous value is the value returned
- * from the callback once the stream has been consumed.
+ * value is the `Derive` stream itself, and the asynchronous value is the final
+ * `Hash` object once the stream has been consumed by an external stream.
  *
  * @param algorithm The algorithm to use.
  * @param options The options to use.
- * @returns A resolvable that returns the stream and lazily resolves to the
- * derived value.
+ * @returns A resolvable stream that resolves to the hash of the stream.
  * @example
- * const stream = fs.createReadStream('file.txt')
- * const checksum = await deriveStreamChecksum('sha256')
- *
- * // Pipe the stream to a file.
+ * // Pipe the `request.body` to a file.
  * const writeStream = fs.createWriteStream('file.copy.txt')
- * stream.pipe(writeStream)
+ * const checksum = await deriveStreamHash('sha256')
+ * request.body.pipe(checksum).pipe(writeStream)
  *
- * // Once the stream has been consumed, get the checksum of the file.
+ * // Once the hash has been computed, store it in a file.
  * await checksum // Hash { ... }
+ * await writeFileSync('file.sha256.txt', checksum.digest('hex'))
  */
-export function deriveStreamChecksum(algorithm: string, options?: HashOptions): Awaitable<Transform, Hash> {
+export function deriveStreamHash(algorithm: string, options?: HashOptions): Awaitable<Transform, Hash> {
   const hash = createHash(algorithm, options)
   return deriveStream(({ chunk }) => { hash.update(chunk); return hash }, hash)
 }
@@ -38,11 +35,12 @@ if (import.meta.vitest) {
   const valueUtf8 = 'Hello, world!'
   const valueBuffer = Buffer.from(valueUtf8, 'utf8')
   const valueSha256 = createHash('sha256').update(valueBuffer).digest('hex')
+  const { Readable } = await import('node:stream')
+  const { streamRead } = await import('./streamRead')
 
   it('should not consume the stream chunks', async() => {
     const stream = Readable.from(valueBuffer)
-    const checksum = deriveStreamChecksum('sha256')
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    const checksum = deriveStreamHash('sha256')
     stream.pipe(checksum)
     const buffer = await streamRead(checksum, 'utf8')
     expect(buffer).toEqual(valueUtf8)
@@ -50,8 +48,7 @@ if (import.meta.vitest) {
 
   it('should derive the SHA-256 checksum from the stream chunks', async() => {
     const stream = Readable.from(valueBuffer)
-    const checksum = deriveStreamChecksum('sha256')
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    const checksum = deriveStreamHash('sha256')
     stream.pipe(checksum)
     const sha256 = await checksum.then(hash => hash.digest('hex'))
     expect(sha256).toEqual(valueSha256)

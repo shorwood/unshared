@@ -1,6 +1,5 @@
 import { Transform, Readable } from 'node:stream'
 import { awaitable, Awaitable } from '@unshared/functions/awaitable'
-import { streamRead } from './streamRead'
 
 /** Callback that is executed with the stream chunks. */
 export type DeriveStreamFunction<T> = (value: { chunk: Buffer; encoding: BufferEncoding; value: T }) => T
@@ -53,17 +52,18 @@ class Derive<T = unknown> extends Transform {
 }
 
 /**
- * Derive a value from a stream of bytes without consuming the stream. This
+ * Derive a value from a stream of bytes without consuming the data. This
  * function will intercept the chunks read from subsequent calls to `read()`,
  * execute the given callback, and then pass the chunks back into the stream.
  *
  * This function returns an `Awaitable` value, which means that the synchronous
- * value is the stream itself, and the asynchronous value is the value returned
- * from the callback once the stream has been consumed.
+ * value is the `Derive` stream itself, and the asynchronous value is the value
+ * returned from the callback once the stream has been consumed by an external
+ * consumer.
  *
  * This function is useful for computing checksums, digests, and other values
- * from a stream without consuming the stream. For example, you can pipe the
- * stream to a file, and then get the checksum once the stream has been consumed
+ * from a stream without consuming it. For example, you can pipe the stream to
+ * a file while simultaneously computing the length, hash, or other value,
  * without having to buffer the entire stream in memory.
  *
  * @param derive The callback to execute with the stream chunks.
@@ -71,41 +71,46 @@ class Derive<T = unknown> extends Transform {
  * @returns A promise that resolves to the value returned from the callback.
  * @example
  * const stream = fs.createReadStream('file.txt')
+ * const derivedHash = deriveStream(({ chunk, value }) => { hash.update(chunk); return hash }, createHash('sha256'))
  * const derivedLength = deriveStream(({ chunk, value }) => value + chunk.length, 0)
- * stream.pipe(derivedLength)
  *
  * // Pipe the stream to a file.
  * const writeStream = fs.createWriteStream('file.txt')
- * stream.pipe(writeStream)
+ * stream.pipe(derivedHash).pipe(derivedLength).pipe(writeStream)
  *
- * // Once the stream has been consumed, get the length of the file.
- * const length = await derivedLength // 13
+ * // Once the stream has been consumed, extract the hash and length.
+ * const hash = await derivedHash.then(hash => hash.digest('hex'))
+ * const length = await derivedLength
  */
 export function deriveStream<T>(derive: DeriveStreamFunction<T>, initialValue: T): Awaitable<Transform, T> {
   const stream = new Derive(derive, initialValue)
   return awaitable(stream, () => stream.value)
 }
 
-/* c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
   const valueUtf8 = 'Hello, world!'
   const valueBuffer = Buffer.from(valueUtf8, 'utf8')
+  const { streamRead } = await import('./streamRead')
 
-  it('should not consume the stream chunks', async() => {
-    const stream = Readable.from(valueBuffer)
-    const derivedLength = deriveStream(({ chunk, value }) => value + chunk.length, 0)
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    stream.pipe(derivedLength)
-    const buffer = await streamRead(derivedLength, 'utf8')
-    expect(buffer).toEqual(valueUtf8)
+  it('should synchroneously return the initial stream value', async() => {
+    const result = deriveStream(({ value }) => value, 42)
+    expect(result).toBeInstanceOf(Derive)
   })
 
   it('should derive a value from the stream chunks', async() => {
     const stream = Readable.from(valueBuffer)
-    const derivedLength = deriveStream(({ chunk, value }) => value + chunk.length, 0)
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    stream.pipe(derivedLength)
-    const length = await derivedLength
+    const result = deriveStream(({ chunk, value }) => value + chunk.length, 0)
+    stream.pipe(result)
+    const length = await result
     expect(length).toEqual(13)
+  })
+
+  it('should not consume the stream chunks', async() => {
+    const stream = Readable.from(valueBuffer)
+    const result = deriveStream(({ chunk, value }) => value + chunk.length, 0)
+    stream.pipe(result)
+    const buffer = await streamRead(result, 'utf8')
+    expect(buffer).toEqual(valueUtf8)
   })
 }
