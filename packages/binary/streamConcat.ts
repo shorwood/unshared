@@ -1,5 +1,4 @@
 import { PassThrough, Readable } from 'node:stream'
-import { streamRead } from './streamRead'
 
 /**
  * Concatenates multiple streams into a single stream.
@@ -7,34 +6,43 @@ import { streamRead } from './streamRead'
  * @param streams The streams to concatenate.
  * @returns A stream that emits the chunks from the given streams.
  * @example
+ * // Create multiple read streams for a file split into parts.
  * const fileParts = ['file.part1.txt', 'file.part2.txt', 'file.part3.txt']
  * const fileStreams = fileParts.map(createReadStream)
- * const fileStream = concatStream(...fileStreams)
+ * 
+ * // Concatenate the file streams into a single stream.
+ * const fileStream = streamConcat(...fileStreams)
  */
-export function concatStream(...streams: Readable[]): Readable {
-  // --- Make sure the streams are readable.
-  for (const stream of streams) {
-    if (Readable.isReadable(stream) === false)
-      throw new TypeError('Expected all items to be a Readable stream.')
-    if (stream.readableEnded)
-      throw new Error('Expected all streams to be readable.')
-  }
-
-  // --- Pipe the streams together.
+export function streamConcat(...streams: Readable[]): Readable {
   const result = new PassThrough()
-  const streamLastIndex = streams.length - 1
-  for (let index = 0; index < streams.length; index++)
-    streams[index].pipe(result, { end: index >= streamLastIndex })
 
-  // --- Return the concatenated stream.
+  // --- If there are no input streams, return an empty stream that
+  // --- will end immediately to avoid returning a stream that may never end.
+  if (streams.length === 0) return result.end()
+
+  // --- Pipe the stream into the result stream one by one.
+  // --- To avoid return a stream that may never end, we need to ensure
+  // --- that the result stream ends when the last stream has ended.
+  for (let index = 0; index < streams.length; index++)
+    streams[index].pipe(result, { end: index >= streams.length - 1 })
+
   return result
 }
 
-/* c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
+  const { streamRead } = await import('./streamRead')
+
+  it('should passthrough an empty stream', async() => {
+    const stream = Readable.from('')
+    const result = streamConcat(stream)
+    const resultUtf8 = await streamRead(result, 'utf8')
+    expect(resultUtf8).toEqual('')
+  })
+
   it('should passthrough a single stream', async() => {
     const stream = Readable.from('Hello')
-    const result = concatStream(stream)
+    const result = streamConcat(stream)
     const resultUtf8 = await streamRead(result, 'utf8')
     expect(resultUtf8).toEqual('Hello')
   })
@@ -42,7 +50,7 @@ if (import.meta.vitest) {
   it('should concatenate two streams', async() => {
     const streamHello = Readable.from('Hello')
     const streamWorld = Readable.from('World')
-    const result = concatStream(streamHello, streamWorld)
+    const result = streamConcat(streamHello, streamWorld)
     const resultUtf8 = await streamRead(result, 'utf8')
     expect(resultUtf8).toEqual('HelloWorld')
   })
@@ -51,30 +59,8 @@ if (import.meta.vitest) {
     const streamHello = Readable.from('Hello')
     const streamSpace = Readable.from(' ')
     const streamWorld = Readable.from('World')
-    const result = concatStream(streamHello, streamSpace, streamWorld)
+    const result = streamConcat(streamHello, streamSpace, streamWorld)
     const resultUtf8 = await streamRead(result, 'utf8')
     expect(resultUtf8).toEqual('Hello World')
-  })
-
-  it('should throw if no streams are given', () => {
-    const shouldThrow = () => concatStream()
-    expect(shouldThrow).toThrowError('Expected at least one stream.')
-  })
-
-  it('should throw an error if one of the items is not a stream without consuming the other streams', () => {
-    const stream = Readable.from('Hello')
-    // @ts-expect-error: invalid argument type.
-    const shouldThrow = () => concatStream(stream, 'not-stream')
-    expect(shouldThrow).toThrowError(TypeError)
-    expect(stream.readableEnded).toEqual(false)
-  })
-
-  it('should throw an error if one of the streams has already ended without consuming the other streams', async() => {
-    const streamHello = Readable.from('Hello')
-    const streamWorld = Readable.from('World')
-    await streamRead(streamWorld)
-    const shouldThrow = () => concatStream(streamHello, streamWorld)
-    expect(shouldThrow).toThrowError(Error)
-    expect(streamHello.readableEnded).toEqual(false)
   })
 }
