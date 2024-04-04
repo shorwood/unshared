@@ -1,3 +1,8 @@
+import { NumberInteger } from '@unshared/types'
+
+/** The index of a byte in a 32-bit number. */
+export type ByteIndex = 0 | 1 | 2 | 3
+
 /**
  * Sets the byte at the specified index to a specified state. The index indicates
  * the position of the byte to modify, where 0 is the least significant byte and
@@ -9,7 +14,9 @@
  * @returns The value with the byte set.
  * @example setByte(0x00000000, 0, 0x64) // 0x00000064
  */
-export function setByte(value: number, index: number, state: number): number {
+export function setByte<N extends number>(value: NumberInteger<N>, index: ByteIndex, state: number): number {
+  if (Number.isInteger(value) === false)
+    throw new TypeError('Could not set bit: The value must be a safe integer.')
   if (index < 0 || index > 3)
     throw new RangeError('Could not set byte: The index must be between 0 and 3.')
 
@@ -46,11 +53,13 @@ if (import.meta.vitest) {
   })
 
   it('should throw if the index is greater than 3', () => {
+    // @ts-expect-error: Testing invalid input.
     const shouldThrow = () => setByte(0x00000000, 4, 0x64)
     expect(shouldThrow).toThrow(RangeError)
   })
 
   it('should throw if the index is less than 0', () => {
+    // @ts-expect-error: Testing invalid input.
     const shouldThrow = () => setByte(0x00000000, -1, 0x64)
     expect(shouldThrow).toThrow(RangeError)
   })
