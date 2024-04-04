@@ -1,10 +1,8 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-
 /** The Base32 alphabet table as defined in [RFC 4648](https://tools.ietf.org/html/rfc4648#section-6). */
-export const BASE_32_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
+export const B32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
 
 /**
- * Encode a `ArrayBuffer` to a Base32-encoded string. Since this implementation is
+ * Encode a `ArrayBuffer` or `Buffer` into a Base32-encoded string. Since this implementation is
  * using the native `ArrayBuffer` API, it does not rely on Node.js, this makes it ideal
  * for use in cross-platform libraries.
  *
@@ -18,24 +16,21 @@ export const BASE_32_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
  * // Encode the ArrayBuffer into a Base32 string.
  * encodeBase32(buffer) // 'E5KGQZJAOF2WSY3LEBRHE33XNYQGM33YEBVHK3LQOMQG65TFOIQHI2DFEBWGC6TZEBSG6ZZH'
  */
-export function encodeBase32(buffer: ArrayBuffer): string {
-  const view = new DataView(buffer)
-  const bytes: number[] = []
-  const remainder = view.byteLength % 5
+export function encodeBase32(buffer: Buffer | ArrayBufferLike): string {
+  const view = new Uint8Array(buffer)
+  let result = ''
 
-  // --- Loop over every 5 byte in the ArrayBuffer.
-  for (let offset = 4; offset < view.byteLength + 5; offset += 5) {
-    const inBounds = offset < view.byteLength
-
-    // --- Exit the loop if the remainder is 0 and the offset is out of bounds.
-    if (remainder === 0 && !inBounds) break
+  // --- Loop over every byte in the Buffer in 5-byte chunks.
+  for (let i = 0; i < view.byteLength; i += 5) {
+    const remaining = view.byteLength - i
 
     // --- Get 5 bytes from the buffer.
-    const byte0 = view.getUint8(offset - 4)
-    const byte1 = (inBounds || remainder > 1) ? view.getUint8(offset - 3) : 0
-    const byte2 = (inBounds || remainder > 2) ? view.getUint8(offset - 2) : 0
-    const byte3 = (inBounds || remainder > 3) ? view.getUint8(offset - 1) : 0
-    const byte4 = (inBounds || remainder > 4) ? view.getUint8(offset) : 0
+    if (remaining === 0) break
+    const byte0 = view[i]
+    const byte1 = (remaining > 1) ? view[i + 1] : 0
+    const byte2 = (remaining > 2) ? view[i + 2] : 0
+    const byte3 = (remaining > 3) ? view[i + 3] : 0
+    const byte4 = (remaining > 4) ? view[i + 4] : 0
 
     // --- Encode the 5 bytes into 8 Base32 characters.
     const c0 = ((byte0 >> 3) & 0b00011111)
@@ -48,56 +43,71 @@ export function encodeBase32(buffer: ArrayBuffer): string {
     const c7 = byte4 & 0b00011111
 
     // --- Append the 8 Base32 characters to the result.
-    bytes.push(c0, c1, c2, c3, c4, c5, c6, c7)
+    switch (remaining) {
+      case 1:  result += B32[c0] + B32[c1] + '======'; break
+      case 2:  result += B32[c0] + B32[c1] + B32[c2] + B32[c3] + '===='; break
+      case 3:  result += B32[c0] + B32[c1] + B32[c2] + B32[c3] + B32[c4] + '==='; break
+      case 4:  result += B32[c0] + B32[c1] + B32[c2] + B32[c3] + B32[c4] + B32[c5] + B32[c6] + '='; break
+      default: result += B32[c0] + B32[c1] + B32[c2] + B32[c3] + B32[c4] + B32[c5] + B32[c6] + B32[c7]
+    }
   }
 
-  // --- If there is a remainder, clip to length and pad the result with '='.
-  if (remainder > 0) {
-    const bytesLength = Math.ceil(view.byteLength * 8 / 5)
-    const bytesClipped = bytes.slice(0, bytesLength)
-    const lengthPadding = 8 - bytesLength % 8
-    return bytesClipped.map(byte => BASE_32_ALPHABET[byte]).join('') + '='.repeat(lengthPadding)
-  }
-
-  // --- Return the result.
-  return bytes.map(byte => BASE_32_ALPHABET[byte]).join('')
+  return result
 }
 
-/* c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
-  it('should encode a buffer to a Base32-encoded string with a remainder of 0', () => {
-    const buffer = new TextEncoder().encode('Hello, World!!!').buffer
-    const result = encodeBase32(buffer)
-    expect(result).toEqual('JBSWY3DPFQQFO33SNRSCCIJB')
+  describe('input conversion', () => {
+    it('should encode an `ArrayBuffer` to a Base32-encoded string', () => {
+      const buffer = new TextEncoder().encode('Hello, World').buffer
+      const result = encodeBase32(buffer)
+      expect(result).toEqual('JBSWY3DPFQQFO33SNRSA====')
+    })
+
+    it('should encode a `Buffer` to a Base32-encoded string', () => {
+      const buffer = Buffer.from('Hello, World')
+      const result = encodeBase32(buffer)
+      expect(result).toEqual('JBSWY3DPFQQFO33SNRSA====')
+    })
   })
 
-  it('should encode a buffer to a Base32-encoded string with a remainder of 1', () => {
-    const buffer = new TextEncoder().encode('Hello, World!!').buffer
-    const result = encodeBase32(buffer)
-    expect(result).toEqual('JBSWY3DPFQQFO33SNRSCCII=')
+  describe('remainder handling', () => {
+    it('should encode a buffer to a Base32-encoded string with a remainder of 0', () => {
+      const buffer = new TextEncoder().encode('Hello, World!!!')
+      const result = encodeBase32(buffer)
+      expect(result).toEqual('JBSWY3DPFQQFO33SNRSCCIJB')
+    })
+
+    it('should encode a buffer to a Base32-encoded string with a remainder of 1', () => {
+      const buffer = new TextEncoder().encode('Hello, World!!')
+      const result = encodeBase32(buffer)
+      expect(result).toEqual('JBSWY3DPFQQFO33SNRSCCII=')
+    })
+
+    it('should encode a buffer to a Base32-encoded string with a remainder of 3', () => {
+      const buffer = new TextEncoder().encode('Hello, World!')
+      const result = encodeBase32(buffer)
+      expect(result).toEqual('JBSWY3DPFQQFO33SNRSCC===')
+    })
+
+    it('should encode a buffer to a Base32-encoded string with a remainder of 4', () => {
+      const buffer = new TextEncoder().encode('Hello, World')
+      const result = encodeBase32(buffer)
+      expect(result).toEqual('JBSWY3DPFQQFO33SNRSA====')
+    })
   })
 
-  it('should encode a buffer to a Base32-encoded string with a remainder of 3', () => {
-    const buffer = new TextEncoder().encode('Hello, World!').buffer
-    const result = encodeBase32(buffer)
-    expect(result).toEqual('JBSWY3DPFQQFO33SNRSCC===')
-  })
+  describe('edge cases', () => {
+    it('should encode a single byte to a Base32-encoded string', () => {
+      const buffer = new TextEncoder().encode('A').buffer
+      const result = encodeBase32(buffer)
+      expect(result).toEqual('IE======')
+    })
 
-  it('should encode a buffer to a Base32-encoded string with a remainder of 4', () => {
-    const buffer = new TextEncoder().encode('Hello, World').buffer
-    const result = encodeBase32(buffer)
-    expect(result).toEqual('JBSWY3DPFQQFO33SNRSA====')
-  })
-
-  it('should encode a single byte to a Base32-encoded string', () => {
-    const buffer = new TextEncoder().encode('A').buffer
-    const result = encodeBase32(buffer)
-    expect(result).toEqual('IE======')
-  })
-
-  it('should encode an empty buffer to an empty string', () => {
-    const buffer = new TextEncoder().encode('').buffer
-    const result = encodeBase32(buffer)
-    expect(result).toEqual('')
+    it('should encode an empty buffer to an empty string', () => {
+      const buffer = new TextEncoder().encode('').buffer
+      const result = encodeBase32(buffer)
+      expect(result).toEqual('')
+    })
   })
 }

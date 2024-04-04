@@ -13,7 +13,7 @@
  * // Encode the buffer into UTF-8.
  * encodeUtf8(buffer) // 'The quick brown fox jumps over the lazy dog'
  */
-export function encodeUtf8(buffer: ArrayBuffer): string {
+export function encodeUtf8(buffer: Buffer | ArrayBuffer): string {
   const view = new Uint8Array(buffer)
   const result: string[] = []
   for (const element of view) {

@@ -15,22 +15,27 @@ import { encodeBase64 } from './encodeBase64'
  * // Encode the ArrayBuffer into an URL-safe Base64 string.
  * encodeBase64Url(buffer) // 'VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZw'
  */
-export function encodeBase64Url(buffer: ArrayBuffer): string {
+export function encodeBase64Url(buffer: Buffer | ArrayBuffer): string {
   return encodeBase64(buffer)
-    .replace(/\+|\/|=+$/g, (match) => {
+    .replaceAll(/\+|\/|=+$/g, (match) => {
       if (match === '+') return '-'
       if (match === '/') return '_'
       return ''
     })
 }
 
-/* c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
-  it('should encode a buffer into a URL-safe Base64', () => {
+  it('should encode a `Buffer` into a URL-safe Base64', () => {
     const buffer = Buffer.from([0x00, 0x0F, 0xBF])
-    const arrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)
-    const result = encodeBase64Url(arrayBuffer)
+    const result = encodeBase64Url(buffer)
     expect(result).toEqual('AA-_')
+  })
+
+  it('should encode an `ArrayBuffer` into a URL-safe Base64', () => {
+    const buffer = new TextEncoder().encode('Hello, World!').buffer
+    const result = encodeBase64Url(buffer)
+    expect(result).toEqual('SGVsbG8sIFdvcmxkIQ')
   })
 
   it('should encode a buffer into a URL-safe Base64 string and omit padding', () => {
