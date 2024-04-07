@@ -1,24 +1,24 @@
-import { PassThrough, TransformCallback } from "node:stream"
-import { nextTick } from "node:process"
+import { nextTick } from 'node:process'
+import { PassThrough, TransformCallback } from 'node:stream'
 
 /**
  * Stream that buffers previously consumed data and allows it to be seeked, peeked, and rewound.
  * This stream is useful for reading data from a stream that may be consumed multiple times.
- * 
+ *
  * @example
  * const buffered = new Seekable()
  * const stream = fs.createReadStream('file.txt')
  * stream.pipe(buffered)
- * 
+ *
  * // Read the first 10 bytes of the stream.
  * const first = await buffered.readBytes(10)
- * 
+ *
  * // Peek the next 10 bytes of the stream.
  * const second = await buffered.peek(10)
- * 
+ *
  * // Seek to the 5th byte of the stream.
  * await buffered.seek(5)
- * 
+ *
  * // Rewind the stream back to the beginning.
  * buffered.rewind()
  */
@@ -39,7 +39,14 @@ export class Seekable extends PassThrough {
   /** The total count of bytes that have been stored in the buffer. */
   public bufferLength = 0
 
-  /** Extended `_write` method that stores the incoming chunks in the `buffer` map. */
+  /**
+   * Extended `_write` method that stores the incoming chunks in the `buffer` map.
+   *
+   * @param chunk The chunk of data to write to the stream.
+   * @param encoding The encoding of the chunk.
+   * @param callback The callback to invoke when the write operation is complete.
+   * @returns The result of the `_write` method.
+   */
   override _write(chunk: Buffer, encoding: BufferEncoding, callback: TransformCallback) {
     const result = super._write(chunk, encoding, callback)
     this.buffer.set(this.offsetWrite, chunk)
@@ -49,16 +56,17 @@ export class Seekable extends PassThrough {
   }
 
   /**
-   * Reads the data from the buffer at the current offset without consuming 
+   * Reads the data from the buffer at the current offset without consuming
    * the data from the stream. This method is used internally by the `read`
    * override to read the data from the buffer if it is available.
-   * 
-   * @param size The size of the data to read.
+   *
+   * @param start The start offset of the data to read.
+   * @param end The end offset of the data to read.
    * @returns The data read from the buffer.
    * @example
    * const seekable = new Seekable()
    * seekable.write('Hello, world!')
-   * 
+   *
    * // Read the first 5 bytes from the internal buffer.
    * const result = seekable.readFromBuffer(7, 12).toString() // => 'world'
    */
@@ -85,19 +93,19 @@ export class Seekable extends PassThrough {
    * Reads the specified number of bytes from the internal buffer from the
    * current read offset. If the size is not specified, the entire buffer
    * is read from the current offset.
-   * 
+   *
    * @param size The number of bytes to read from the buffer.
    * @returns The data read from the buffer.
    * @example
    * const seekable = new Seekable()
    * seekable.write('Hello, world!')
-   * 
+   *
    * // Read the first 5 bytes from the internal buffer.
    * const result = seekable.read(5).toString() // => 'Hello'
    */
-  override read(size: number = this.readableLength) {
-    if (size === 0) return null
-    if (this.offsetRead >= this.offsetWrite) return null
+  override read(size: number = this.readableLength): Buffer | undefined {
+    if (size === 0) return
+    if (this.offsetRead >= this.offsetWrite) return
 
     // --- Read the data from the buffer.
     const chunk = this.readFromBuffer(this.offsetRead, this.offsetRead + size)
@@ -110,16 +118,16 @@ export class Seekable extends PassThrough {
     // --- Return the chunk of data.
     return chunk
   }
-  
+
   /**
    * Await the stream to become readable and read the specified number of bytes.
-   * 
+   *
    * @param size The number of bytes to read from the stream.
    * @returns A promise that resolves with the data read from the stream.
    * @example
    * const seekable = new Seekable()
    * seekable.write('Hello, world!')
-   * 
+   *
    * // Read the first 5 bytes from the stream.
    * const result = await seekable.readBytes(5) // => <Buffer 48 65 6c 6c 6f>
    */
@@ -142,7 +150,7 @@ export class Seekable extends PassThrough {
 
   /**
    * Peek the specified number of bytes from the stream without consuming the data.
-   * 
+   *
    * @param size The number of bytes to peek from the stream.
    * @returns A promise that resolves with the data peeked from the stream.
    */
@@ -155,15 +163,15 @@ export class Seekable extends PassThrough {
 
   /**
    * Update the read offset to the specified position in the stream.
-   * 
+   *
    * @param offset The position to seek to in the stream.
    * @example
    * const seekable = new Seekable()
    * seekable.write('Hello, world!')
-   * 
+   *
    * // Seek to the 5th byte in the stream.
    * seekable.seek(5)
-   * 
+   *
    * // Read the next 5 bytes from the stream.
    * const result = seekable.read(5) // => <Buffer 2c 20 77 6f 72>
    */
@@ -173,14 +181,14 @@ export class Seekable extends PassThrough {
 
   /**
    * Rewind the stream back to the beginning.
-   * 
+   *
    * @example
    * const seekable = new Seekable()
    * seekable.write('Hello, world!')
-   * 
+   *
    * // Read the first 5 bytes from the stream.
    * const result1 = seekable.read(5) // => <Buffer 48 65 6c 6c 6f>
-   * 
+   *
    * // Rewind the stream back to the beginning and read again.
    * seekable.rewind()
    * const result2 = seekable.read(5) // => <Buffer 48 65 6c 6c 6f>
@@ -193,7 +201,7 @@ export class Seekable extends PassThrough {
     const chunks: Buffer[] = []
 
     // --- Read the data from the stream until a NULL byte is found.
-    while (true) {
+    while (this.offsetRead < this.offsetWrite) {
       const chunk = await this.readBytes()
       if (!chunk) break
       const nullIndex = chunk.indexOf(0)
@@ -204,7 +212,7 @@ export class Seekable extends PassThrough {
     // --- Concatenate the chunks and slice the result.
     const buffer = Buffer.concat(chunks)
     const nullIndex = buffer.indexOf(0)
-    const result = nullIndex > 0 
+    const result = nullIndex > 0
       ? buffer.subarray(0, nullIndex).toString(encoding)
       : buffer.toString(encoding)
 
@@ -252,7 +260,7 @@ export class Seekable extends PassThrough {
   async readUint16BE(): Promise<number | undefined> {
     return this.readUintBE(2)
   }
-  
+
   async readInt32LE(): Promise<number | undefined> {
     return this.readIntLE(4)
   }
@@ -268,7 +276,7 @@ export class Seekable extends PassThrough {
   async readUint32BE(): Promise<number | undefined> {
     return this.readUintBE(4)
   }
-  
+
   async readFloat32(): Promise<number | undefined> {
     return this.readBytes(4).then(b => b?.readFloatLE(0))
   }
@@ -296,7 +304,7 @@ if (import.meta.vitest) {
       stream.write('EFGH')
       const expected = new Map([
         [0, Buffer.from('ABCD')],
-        [4, Buffer.from('EFGH')]
+        [4, Buffer.from('EFGH')],
       ])
       expect(stream.buffer).toStrictEqual(expected)
     })
@@ -308,7 +316,7 @@ if (import.meta.vitest) {
       await new Promise(nextTick)
       const expected = new Map([
         [0, Buffer.from('ABCD')],
-        [4, Buffer.from('EFGH')]
+        [4, Buffer.from('EFGH')],
       ])
       expect(stream.buffer).toStrictEqual(expected)
     })
@@ -417,21 +425,21 @@ if (import.meta.vitest) {
     it('should return null if the stream is empty', () => {
       const stream = new Seekable()
       const result = stream.read()
-      expect(result).toBeNull()
+      expect(result).toBeUndefined()
     })
 
     it('should return null if the stream has ended', () => {
       const stream = new Seekable()
       stream.end()
       const result = stream.read()
-      expect(result).toBeNull()
+      expect(result).toBeUndefined()
     })
 
     it('should return null if the stream has been destroyed', () => {
       const stream = new Seekable()
       stream.destroy()
       const result = stream.read()
-      expect(result).toBeNull()
+      expect(result).toBeUndefined()
     })
 
     it('should return null if reading past the end of the stream', () => {
@@ -439,7 +447,7 @@ if (import.meta.vitest) {
       stream.write('ABCD')
       stream.read(4)
       const result = stream.read()
-      expect(result).toBeNull()
+      expect(result).toBeUndefined()
     })
 
     it('should consecutively read the data from the stream', () => {
@@ -480,14 +488,14 @@ if (import.meta.vitest) {
   })
 
   describe('readBytes', () => {
-    it('should read the specified number of bytes from the stream', async () => {
+    it('should read the specified number of bytes from the stream', async() => {
       const stream = new Seekable()
       stream.write('ABCD')
       const result = await stream.readBytes(2)
       expect(result!.toString()).toEqual('AB')
     })
 
-    it('should wait for the stream to become readable', async () => {
+    it('should wait for the stream to become readable', async() => {
       const stream = new Seekable()
       const result = stream.readBytes(2)
       stream.write('ABCD')
@@ -495,7 +503,7 @@ if (import.meta.vitest) {
       expect(buffer!.toString()).toEqual('AB')
     })
 
-    it('should return an empty buffer if the stream has ended', async () => {
+    it('should return an empty buffer if the stream has ended', async() => {
       const stream = new Seekable()
       stream.end()
       const result = await stream.readBytes(2)
@@ -504,7 +512,7 @@ if (import.meta.vitest) {
   })
 
   describe('seek', () => {
-    it('should update the read offset to the specified position', async () => {
+    it('should update the read offset to the specified position', () => {
       const stream = new Seekable()
       stream.seek(2)
       expect(stream.offsetRead).toEqual(2)
@@ -520,14 +528,14 @@ if (import.meta.vitest) {
   })
 
   describe('peek', () => {
-    it('should read the specified number of bytes from the stream without consuming the data', async () => {
+    it('should read the specified number of bytes from the stream without consuming the data', async() => {
       const stream = new Seekable()
       stream.write('ABCD')
       const result = await stream.peek(2)
       expect(result!.toString()).toEqual('AB')
     })
 
-    it('should not update the read offset when peeking data', async () => {
+    it('should not update the read offset when peeking data', async() => {
       const stream = new Seekable()
       stream.write('ABCD')
       await stream.peek(2)
@@ -536,7 +544,7 @@ if (import.meta.vitest) {
   })
 
   describe('rewind', () => {
-    it('should reset the read offset back to the beginning of the stream', async () => {
+    it('should reset the read offset back to the beginning of the stream', () => {
       const stream = new Seekable()
       stream.write('ABCD')
       stream.read(2)
@@ -555,135 +563,136 @@ if (import.meta.vitest) {
   })
 
   describe('readString', () => {
-    it('should read until a null byte is found', async () => {
+    it('should read until a null byte is found', async() => {
       const stream = new Seekable()
       stream.write('Hello,\0world!')
       const result = await stream.readString()
       expect(result).toEqual('Hello,')
     })
 
-    it('should read until the end of the stream', async () => {
+    it('should read until the end of the stream', async() => {
       const stream = new Seekable()
       stream.write('Hello, world!')
       const result = await stream.readString()
       expect(result).toEqual('Hello, world!')
     })
 
-    it('should read a string with a specified encoding', async () => {
+    it('should read a string with a specified encoding', async() => {
       const stream = new Seekable()
       stream.write('Hello, World!')
       const result = await stream.readString('hex')
       expect(result).toEqual('48656c6c6f2c20576f726c6421')
     })
 
-    // it('should read the specified number of bytes', async () => {
-    //   const stream = new Seekable()
-    //   stream.write('Hello, world!')
-    //   const result = await stream.readString(5)
-    //   expect(result).toEqual('Hello')
-    // })
+    // TODO: Implement the `size` option for the `readString` method.
+    it.skip('should read the specified number of bytes', () => {
+      // const stream = new Seekable()
+      // stream.write('Hello, world!')
+      // const result = await stream.readString(5)
+      // expect(result).toEqual('Hello')
+    })
   })
 
   describe('readIntegers', () => {
-    it('should read an N-bit little-endian signed integer', async () => {
+    it('should read an N-bit little-endian signed integer', async() => {
       const stream = new Seekable()
       stream.write(Buffer.from([0xFF, 0xFF, 0xFF, 0xFF]))
       const result = await stream.readIntLE(4)
       expect(result).toEqual(-1)
     })
 
-    it('should read an N-bit big-endian signed integer', async () => {
+    it('should read an N-bit big-endian signed integer', async() => {
       const stream = new Seekable()
       stream.write(Buffer.from([0xFF, 0xFF, 0xFF, 0xFF]))
       const result = await stream.readIntBE(4)
       expect(result).toEqual(-1)
     })
 
-    it('should read an N-bit unsigned integer', async () => {
+    it('should read an N-bit unsigned integer', async() => {
       const stream = new Seekable()
       stream.write(Buffer.from([0xFF, 0xFF, 0xFF, 0xFF]))
       const result = await stream.readUintLE(4)
       expect(result).toEqual(0xFFFFFFFF)
     })
 
-    it('should read an unsigned 8-bit integer', async () => {
+    it('should read an unsigned 8-bit integer', async() => {
       const stream = new Seekable()
       stream.write(Buffer.from([0xFF, 0xFF, 0xFF, 0xFF]))
       const result = await stream.readUint8()
       expect(result).toEqual(0xFF)
     })
 
-    it('should read a signed 8-bit integer', async () => {
+    it('should read a signed 8-bit integer', async() => {
       const stream = new Seekable()
       stream.write(Buffer.from([0xFF, 0xFF, 0xFF, 0xFF]))
       const result = await stream.readInt8()
       expect(result).toEqual(-0x01)
     })
 
-    it('should read a little-endian 16-bit unsigned integer', async () => {
+    it('should read a little-endian 16-bit unsigned integer', async() => {
       const stream = new Seekable()
       stream.write(Buffer.from([0xFF, 0xFF, 0xFF, 0xFF]))
       const result = await stream.readUint16LE()
       expect(result).toEqual(0xFFFF)
     })
 
-    it('should read a little-endian 16-bit signed integer', async () => {
+    it('should read a little-endian 16-bit signed integer', async() => {
       const stream = new Seekable()
       stream.write(Buffer.from([0xFF, 0xFF, 0xFF, 0xFF]))
       const result = await stream.readInt16LE()
       expect(result).toEqual(0xFFFF)
     })
 
-    it('should read a big-endian 16-bit unsigned integer', async () => {
+    it('should read a big-endian 16-bit unsigned integer', async() => {
       const stream = new Seekable()
       stream.write(Buffer.from([0xFF, 0xFF, 0xFF, 0xFF]))
       const result = await stream.readUint16BE()
       expect(result).toEqual(0xFFFF)
     })
 
-    it('should read a big-endian 16-bit signed integer', async () => {
+    it('should read a big-endian 16-bit signed integer', async() => {
       const stream = new Seekable()
       stream.write(Buffer.from([0xFF, 0xFF, 0xFF, 0xFF]))
       const result = await stream.readInt16BE()
       expect(result).toEqual(-1)
     })
 
-    it('should read a little-endian 32-bit unsigned integer', async () => {
+    it('should read a little-endian 32-bit unsigned integer', async() => {
       const stream = new Seekable()
       stream.write(Buffer.from([0xFF, 0xFF, 0xFF, 0xFF]))
       const result = await stream.readUint32LE()
       expect(result).toEqual(0xFFFFFFFF)
     })
 
-    it('should read a little-endian 32-bit signed integer', async () => {
+    it('should read a little-endian 32-bit signed integer', async() => {
       const stream = new Seekable()
       stream.write(Buffer.from([0xFF, 0xFF, 0xFF, 0xFF]))
       const result = await stream.readInt32LE()
       expect(result).toEqual(-1)
     })
 
-    it('should read a big-endian 32-bit unsigned integer', async () => {
+    it('should read a big-endian 32-bit unsigned integer', async() => {
       const stream = new Seekable()
       stream.write(Buffer.from([0xFF, 0xFF, 0xFF, 0xFF]))
       const result = await stream.readUint32BE()
       expect(result).toEqual(0xFFFFFFFF)
     })
 
-    it('should read a big-endian 32-bit signed integer', async () => {
+    it('should read a big-endian 32-bit signed integer', async() => {
       const stream = new Seekable()
       stream.write(Buffer.from([0xFF, 0xFF, 0xFF, 0xFF]))
       const result = await stream.readInt32BE()
       expect(result).toEqual(-1)
     })
 
-    it('should read a little-endian 32-bit float', async () => {
+    it('should read a little-endian 32-bit float', async() => {
       const stream = new Seekable()
       stream.write(Buffer.from([0x00, 0x00, 0x80, 0x3F]))
       const result = await stream.readFloat32()
       expect(result).toEqual(1)
     })
 
-    it('should read a little-endian 64-bit float', async () => {
+    it('should read a little-endian 64-bit float', async() => {
       const stream = new Seekable()
       stream.write(Buffer.from([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF0, 0x3F]))
       const result = await stream.readFloat64()
