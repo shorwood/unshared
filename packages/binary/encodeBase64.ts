@@ -1,23 +1,18 @@
+import { BinaryLike, toUint8Array } from './toUint8Array'
+
 /** The Base64 alphabet table as defined in [RFC 4648](https://tools.ietf.org/html/rfc4648#section-4). */
 const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 
 /**
- * Encode a `ArrayBuffer` or `Buffer` into a Base64-encoded string. Since this implementation is
- * using the native `ArrayBuffer` API, it does not rely on Node.js, this makes it ideal
- * for use in cross-platform libraries.
+ * Encode a `BinaryLike` into a Base64-encoded string. This implementation is
+ * agnostic to the environment and can be used in both Node.js and browsers.
  *
- * @param buffer The `ArrayBuffer` to convert.
+ * @param value The value to encode.
  * @returns The Base64-encoded string.
- * @example
- *
- * // Create an ArrayBuffer from a string.
- * const buffer = new TextEncoder().encode('The quick brown fox jumps over the lazy dog')
- *
- * // Encode the ArrayBuffer into a Base64 string.
- * encodeBase64(buffer) // 'VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZw=='
+ * @example encodeBase64('Hello, World!') // 'SGVsbG8sIFdvcmxkIQ=='
  */
-export function encodeBase64(buffer: ArrayBufferLike | Buffer): string {
-  const view = new Uint8Array(buffer)
+export function encodeBase64(value: BinaryLike): string {
+  const view = toUint8Array(value)
   let result = ''
 
   // --- Loop over every byte in the Buffer in 3-byte chunks.
@@ -50,55 +45,59 @@ export function encodeBase64(buffer: ArrayBufferLike | Buffer): string {
 /* v8 ignore start */
 if (import.meta.vitest) {
   describe('input conversion', () => {
-    it('should encode an `ArrayBuffer` to a Base64-encoded string', () => {
+    it('should encode an Array into a Base64-encoded string', () => {
+      const result = encodeBase64([0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x2C, 0x20, 0x57, 0x6F, 0x72, 0x6C, 0x64])
+      expect(result).toEqual('SGVsbG8sIFdvcmxk')
+    })
+
+    it('should encode an `BinaryLike` into a Base64-encoded string', () => {
       const buffer = new TextEncoder().encode('Hello, World').buffer
       const result = encodeBase64(buffer)
       expect(result).toEqual('SGVsbG8sIFdvcmxk')
     })
 
-    it('should encode a `Buffer` to a Base64-encoded string', () => {
+    it('should encode a `Buffer` into a Base64-encoded string', () => {
       const buffer = Buffer.from('Hello, World')
       const result = encodeBase64(buffer)
+      expect(result).toEqual('SGVsbG8sIFdvcmxk')
+    })
+
+    it('should encode a `string` into a Base64-encoded string', () => {
+      const result = encodeBase64('Hello, World')
       expect(result).toEqual('SGVsbG8sIFdvcmxk')
     })
   })
 
   describe('remainder handling', () => {
     it('should encode a buffer to a Base64-encoded string with a remainder of 0', () => {
-      const buffer = new TextEncoder().encode('Hello, World')
-      const result = encodeBase64(buffer)
+      const result = encodeBase64('Hello, World')
       expect(result).toEqual('SGVsbG8sIFdvcmxk')
     })
 
     it('should encode a buffer to a Base64-encoded string with a remainder of 1', () => {
-      const buffer = new TextEncoder().encode('Hello, World!!')
-      const result = encodeBase64(buffer)
-      expect(result).toEqual('SGVsbG8sIFdvcmxkISE=')
+      const result = encodeBase64('Hello, World!?')
+      expect(result).toEqual('SGVsbG8sIFdvcmxkIT8=')
     })
 
     it('should encode a buffer to a Base64-encoded string with a remainder of 2', () => {
-      const buffer = new TextEncoder().encode('Hello, World!')
-      const result = encodeBase64(buffer)
+      const result = encodeBase64('Hello, World!')
       expect(result).toEqual('SGVsbG8sIFdvcmxkIQ==')
     })
   })
 
   describe('edge cases', () => {
     it('should encode a 3-byte buffer to a Base64-encoded string', () => {
-      const buffer = new Uint8Array([0x00, 0x0F, 0xBF])
-      const result = encodeBase64(buffer)
+      const result = encodeBase64([0x00, 0x0F, 0xBF])
       expect(result).toEqual('AA+/')
     })
 
     it('should encode a single byte to a Base64-encoded string', () => {
-      const buffer = new TextEncoder().encode('A')
-      const result = encodeBase64(buffer)
-      expect(result).toEqual('QQ==')
+      const result = encodeBase64([0x01])
+      expect(result).toEqual('AQ==')
     })
 
     it('should encode an empty buffer to an empty string', () => {
-      const buffer = new TextEncoder().encode('')
-      const result = encodeBase64(buffer)
+      const result = encodeBase64([])
       expect(result).toEqual('')
     })
   })

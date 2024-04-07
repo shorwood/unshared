@@ -1,22 +1,16 @@
 import { encodeBase64 } from './encodeBase64'
+import { BinaryLike } from './toUint8Array'
 
 /**
- * Encode a `ArrayBuffer` to a Base64 URL-safe encoded string. Since this implementation is
- * using the native `ArrayBuffer` API, it does not rely on Node.js, this makes it ideal
- * for use in cross-platform libraries.
+ * Encode a `BinaryLike` into a Base64-encoded string. This implementation is
+ * agnostic to the environment and can be used in both Node.js and browsers.
  *
- * @param buffer The `ArrayBuffer` to convert.
- * @returns The Base64 URL-safe encoded string.
- * @example
- *
- * // Create an ArrayBuffer from a string.
- * const buffer = new TextEncoder().encode('The quick brown fox jumps over the lazy dog')
- *
- * // Encode the ArrayBuffer into an URL-safe Base64 string.
- * encodeBase64Url(buffer) // 'VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZw'
+ * @param value The value to encode.
+ * @returns The Base64-encoded string.
+ * @example encodeBase64Url('Hello, World!') // 'SGVsbG8sIFdvcmxkIQ'
  */
-export function encodeBase64Url(buffer: ArrayBuffer | Buffer): string {
-  return encodeBase64(buffer)
+export function encodeBase64Url(value: BinaryLike): string {
+  return encodeBase64(value)
     .replaceAll(/\+|\/|=+$/g, (match) => {
       if (match === '+') return '-'
       if (match === '/') return '_'
@@ -27,20 +21,17 @@ export function encodeBase64Url(buffer: ArrayBuffer | Buffer): string {
 /* v8 ignore start */
 if (import.meta.vitest) {
   it('should encode a `Buffer` into a URL-safe Base64', () => {
-    const buffer = Buffer.from([0x00, 0x0F, 0xBF])
-    const result = encodeBase64Url(buffer)
+    const result = encodeBase64Url([0x00, 0x0F, 0xBF])
     expect(result).toEqual('AA-_')
   })
 
   it('should encode an `ArrayBuffer` into a URL-safe Base64', () => {
-    const buffer = new TextEncoder().encode('Hello, World!').buffer
-    const result = encodeBase64Url(buffer)
+    const result = encodeBase64Url('Hello, World!')
     expect(result).toEqual('SGVsbG8sIFdvcmxkIQ')
   })
 
   it('should encode a buffer into a URL-safe Base64 string and omit padding', () => {
-    const buffer = new TextEncoder().encode('Hello, World!').buffer
-    const result = encodeBase64Url(buffer)
+    const result = encodeBase64Url('Hello, World!')
     expect(result).toEqual('SGVsbG8sIFdvcmxkIQ')
   })
 }

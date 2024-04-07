@@ -1,33 +1,44 @@
+import { BinaryLike, toUint8Array } from './toUint8Array'
+
 /**
- * Encode a `ArrayBuffer` to an UTF-8 encoded string. Since this implementation is
- * using the native `ArrayBuffer` API, it does not rely on Node.js, this makes it ideal
- * for use in cross-platform libraries.
+ * Encode a `BinaryLike` into a UTF8-encoded string. This implementation is
+ * agnostic to the environment and can be used in both Node.js and browsers.
  *
- * @param buffer The `ArrayBuffer` to convert.
- * @returns The UTF-8 encoded string.
- * @example
- *
- * // Create a buffer from a string.
- * const buffer = new TextEncoder().encode('The quick brown fox jumps over the lazy dog')
- *
- * // Encode the buffer into UTF-8.
- * encodeUtf8(buffer) // 'The quick brown fox jumps over the lazy dog'
+ * @param value The value to encode.
+ * @returns The UTF8-encoded string.
+ * @example encodeUtf8([72, 101, 108, 108, 111, 44, 32, 240, 159, 140, 141, 33]) // 'Hello, 🌍!'
  */
-export function encodeUtf8(buffer: Buffer | ArrayBuffer): string {
-  const view = new Uint8Array(buffer)
-  const result: string[] = []
-  for (const element of view) {
-    const char = String.fromCharCode(element)
-    result.push(char)
-  }
-  return result.join('')
+export function encodeUtf8(value: BinaryLike): string {
+  const array = toUint8Array(value)
+  return new TextDecoder().decode(array)
 }
 
 /* c8 ignore next */
 if (import.meta.vitest) {
-  it('should encode a buffer into a UTF-8 string and omit padding', () => {
-    const buffer = new TextEncoder().encode('Hello, World!').buffer
+  it('should encode a buffer into a UTF-8 string', () => {
+    const buffer = Buffer.from('Hello, World!')
     const result = encodeUtf8(buffer)
     expect(result).toEqual('Hello, World!')
+  })
+
+  it('should encode an ArrayBuffer into a UTF-8 string', () => {
+    const buffer = new TextEncoder().encode('Hello, World!')
+    const result = encodeUtf8(buffer)
+    expect(result).toEqual('Hello, World!')
+  })
+
+  it('should encode an Array into a UTF-8 string', () => {
+    const result = encodeUtf8([0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x2C, 0x20, 0x57, 0x6F, 0x72, 0x6C, 0x64])
+    expect(result).toEqual('Hello, World')
+  })
+
+  it('should encode a string into a UTF-8 string', () => {
+    const result = encodeUtf8('Hello, World')
+    expect(result).toEqual('Hello, World')
+  })
+
+  it('should keep the special characters in the string', () => {
+    const result = encodeUtf8([72, 101, 108, 108, 111, 44, 32, 240, 159, 140, 141, 33])
+    expect(result).toEqual('Hello, 🌍!')
   })
 }
