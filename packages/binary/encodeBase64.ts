@@ -1,5 +1,3 @@
-import { performance } from "perf_hooks"
-
 /** The Base64 alphabet table as defined in [RFC 4648](https://tools.ietf.org/html/rfc4648#section-4). */
 const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 
@@ -18,7 +16,7 @@ const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
  * // Encode the ArrayBuffer into a Base64 string.
  * encodeBase64(buffer) // 'VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZw=='
  */
-export function encodeBase64(buffer: Buffer | ArrayBufferLike): string {
+export function encodeBase64(buffer: ArrayBufferLike | Buffer): string {
   const view = new Uint8Array(buffer)
   let result = ''
 
@@ -40,9 +38,9 @@ export function encodeBase64(buffer: Buffer | ArrayBufferLike): string {
 
     // --- Append the 4 Base64 characters to the result
     switch (remaining) {
-      case 1:  result += B64[c0] + B64[c1] + '=='; break
-      case 2:  result += B64[c0] + B64[c1] + B64[c2] + '='; break
-      default: result += B64[c0] + B64[c1] + B64[c2] + B64[c3]
+      case 1: { result += `${B64[c0] + B64[c1]}==`; break }
+      case 2: { result += `${B64[c0] + B64[c1] + B64[c2]}=`; break }
+      default: { result += B64[c0] + B64[c1] + B64[c2] + B64[c3] }
     }
   }
 

@@ -16,7 +16,7 @@ export const B16 = '0123456789abcdef'
  * // Encode the ArrayBuffer into a Base16 string.
  * encodeBase16(buffer) // '54686520717569636b2062726f776e20666f78206a756d7073206f76657220746865206c617a7920646f67'
  */
-export function encodeBase16(buffer: Buffer | ArrayBuffer): string {
+export function encodeBase16(buffer: ArrayBuffer | Buffer): string {
   const view = new Uint8Array(buffer)
   let result = ''
 

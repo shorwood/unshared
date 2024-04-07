@@ -16,7 +16,7 @@ export const B32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
  * // Encode the ArrayBuffer into a Base32 string.
  * encodeBase32(buffer) // 'E5KGQZJAOF2WSY3LEBRHE33XNYQGM33YEBVHK3LQOMQG65TFOIQHI2DFEBWGC6TZEBSG6ZZH'
  */
-export function encodeBase32(buffer: Buffer | ArrayBufferLike): string {
+export function encodeBase32(buffer: ArrayBufferLike | Buffer): string {
   const view = new Uint8Array(buffer)
   let result = ''
 
@@ -44,11 +44,11 @@ export function encodeBase32(buffer: Buffer | ArrayBufferLike): string {
 
     // --- Append the 8 Base32 characters to the result.
     switch (remaining) {
-      case 1:  result += B32[c0] + B32[c1] + '======'; break
-      case 2:  result += B32[c0] + B32[c1] + B32[c2] + B32[c3] + '===='; break
-      case 3:  result += B32[c0] + B32[c1] + B32[c2] + B32[c3] + B32[c4] + '==='; break
-      case 4:  result += B32[c0] + B32[c1] + B32[c2] + B32[c3] + B32[c4] + B32[c5] + B32[c6] + '='; break
-      default: result += B32[c0] + B32[c1] + B32[c2] + B32[c3] + B32[c4] + B32[c5] + B32[c6] + B32[c7]
+      case 1: { result += `${B32[c0] + B32[c1]}======`; break }
+      case 2: { result += `${B32[c0] + B32[c1] + B32[c2] + B32[c3]}====`; break }
+      case 3: { result += `${B32[c0] + B32[c1] + B32[c2] + B32[c3] + B32[c4]}===`; break }
+      case 4: { result += `${B32[c0] + B32[c1] + B32[c2] + B32[c3] + B32[c4] + B32[c5] + B32[c6]}=`; break }
+      default: { result += B32[c0] + B32[c1] + B32[c2] + B32[c3] + B32[c4] + B32[c5] + B32[c6] + B32[c7] }
     }
   }
 

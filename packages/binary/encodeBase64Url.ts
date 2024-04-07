@@ -15,7 +15,7 @@ import { encodeBase64 } from './encodeBase64'
  * // Encode the ArrayBuffer into an URL-safe Base64 string.
  * encodeBase64Url(buffer) // 'VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZw'
  */
-export function encodeBase64Url(buffer: Buffer | ArrayBuffer): string {
+export function encodeBase64Url(buffer: ArrayBuffer | Buffer): string {
   return encodeBase64(buffer)
     .replaceAll(/\+|\/|=+$/g, (match) => {
       if (match === '+') return '-'
