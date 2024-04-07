@@ -5,7 +5,7 @@ import { awaitable, Awaitable } from '@unshared/functions/awaitable'
 export type DeriveStreamFunction<T> = (value: { chunk: Buffer; encoding: BufferEncoding; value: T }) => T
 
 /** A transform stream that derives a value from the stream chunks. */
-class Derive<T = unknown> extends Transform {
+export class Derive<T = unknown> extends Transform {
   /**
    * Create a transform stream that derives a value from the stream chunks.
    * The chunks are passed-through to the stream, and the derived value is
@@ -82,35 +82,32 @@ class Derive<T = unknown> extends Transform {
  * const hash = await derivedHash.then(hash => hash.digest('hex'))
  * const length = await derivedLength
  */
-export function deriveStream<T>(derive: DeriveStreamFunction<T>, initialValue: T): Awaitable<Transform, T> {
+export function deriveStream<T>(derive: DeriveStreamFunction<T>, initialValue: T): Awaitable<Derive, T> {
   const stream = new Derive(derive, initialValue)
-  return awaitable(stream, () => stream.value)
+  return awaitable(stream, () => stream.value) as Awaitable<Derive, T>
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  const valueUtf8 = 'Hello, world!'
-  const valueBuffer = Buffer.from(valueUtf8, 'utf8')
-  const { streamRead } = await import('./streamRead')
-
-  it('should synchroneously return the initial stream value', async() => {
+  it('should synchroneously return the initial stream value', () => {
     const result = deriveStream(({ value }) => value, 42)
     expect(result).toBeInstanceOf(Derive)
   })
 
   it('should derive a value from the stream chunks', async() => {
-    const stream = Readable.from(valueBuffer)
+    const stream = Readable.from('Hello, world!')
     const result = deriveStream(({ chunk, value }) => value + chunk.length, 0)
-    stream.pipe(result)
+    void stream.pipe(result)
     const length = await result
     expect(length).toEqual(13)
   })
 
   it('should not consume the stream chunks', async() => {
-    const stream = Readable.from(valueBuffer)
+    const stream = Readable.from('Hello, world!')
     const result = deriveStream(({ chunk, value }) => value + chunk.length, 0)
-    stream.pipe(result)
-    const buffer = await streamRead(result, 'utf8')
-    expect(buffer).toEqual(valueUtf8)
+    void stream.pipe(result)
+    const chunks = await result.toArray()
+    const buffer = Buffer.concat(chunks).toString('utf8')
+    expect(buffer).toEqual('Hello, world!')
   })
 }

@@ -1,7 +1,5 @@
-import { createHash } from 'node:crypto'
-import { Transform } from 'node:stream'
 import { Awaitable } from '@unshared/functions/awaitable'
-import { deriveStream } from './deriveStream'
+import { Derive, deriveStream } from './deriveStream'
 
 /**
  * Computes the length of a stream of bytes without consuming the stream. This
@@ -18,34 +16,31 @@ import { deriveStream } from './deriveStream'
  * // Store the request body in an S3 bucket.
  * const length = await deriveStreamLength()
  * await s3.upload({ Body: request.body })
- * 
+ *
  * // Once the length has been computed, print it to the console.
  * console.log(`Uploaded ${length} bytes`)
  */
-export function deriveStreamLength(): Awaitable<Transform, number> {
+export function deriveStreamLength(): Awaitable<Derive, number> {
   return deriveStream(({ chunk, value }) => value + chunk.length, 0)
 }
 
 /* c8 ignore next */
 if (import.meta.vitest) {
-  const valueUtf8 = 'Hello, world!'
-  const valueBuffer = Buffer.from(valueUtf8, 'utf8')
-  const valueSha256 = createHash('sha256').update(valueBuffer).digest('hex')
   const { Readable } = await import('node:stream')
-  const { streamRead } = await import('./streamRead')
 
   it('should not consume the stream chunks', async() => {
-    const stream = Readable.from(valueBuffer)
+    const stream = Readable.from('Hello, world!')
     const length = deriveStreamLength()
-    stream.pipe(length)
-    const buffer = await streamRead(length, 'utf8')
-    expect(buffer).toEqual(valueUtf8)
+    void stream.pipe(length)
+    const chunks = await length.toArray()
+    const buffer = Buffer.concat(chunks).toString('utf8')
+    expect(buffer).toEqual('Hello, world!')
   })
 
   it('should derive the length from the stream chunks', async() => {
-    const stream = Readable.from(valueBuffer)
+    const stream = Readable.from('Hello, world!')
     const length = deriveStreamLength()
-    stream.pipe(length)
-    expect(length).resolves.toEqual(13)
+    void stream.pipe(length)
+    await expect(length).resolves.toEqual(13)
   })
 }

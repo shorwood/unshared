@@ -1,7 +1,6 @@
 import { Hash, HashOptions, createHash } from 'node:crypto'
-import { Transform } from 'node:stream'
 import { Awaitable } from '@unshared/functions/awaitable'
-import { deriveStream } from './deriveStream'
+import { Derive, deriveStream } from './deriveStream'
 
 /**
  * Computes the hash of a stream of bytes without consuming the stream. This
@@ -25,32 +24,29 @@ import { deriveStream } from './deriveStream'
  * await checksum // Hash { ... }
  * await writeFileSync('file.sha256.txt', checksum.digest('hex'))
  */
-export function deriveStreamHash(algorithm: string, options?: HashOptions): Awaitable<Transform, Hash> {
+export function deriveStreamHash(algorithm: string, options?: HashOptions): Awaitable<Derive, Hash> {
   const hash = createHash(algorithm, options)
   return deriveStream(({ chunk }) => { hash.update(chunk); return hash }, hash)
 }
 
 /* c8 ignore next */
 if (import.meta.vitest) {
-  const valueUtf8 = 'Hello, world!'
-  const valueBuffer = Buffer.from(valueUtf8, 'utf8')
-  const valueSha256 = createHash('sha256').update(valueBuffer).digest('hex')
   const { Readable } = await import('node:stream')
-  const { streamRead } = await import('./streamRead')
 
   it('should not consume the stream chunks', async() => {
-    const stream = Readable.from(valueBuffer)
+    const stream = Readable.from('Hello, world!')
     const checksum = deriveStreamHash('sha256')
-    stream.pipe(checksum)
-    const buffer = await streamRead(checksum, 'utf8')
-    expect(buffer).toEqual(valueUtf8)
+    void stream.pipe(checksum)
+    const chunks = await checksum.toArray()
+    const buffer = Buffer.concat(chunks).toString('utf8')
+    expect(buffer).toEqual('Hello, world!')
   })
 
   it('should derive the SHA-256 checksum from the stream chunks', async() => {
-    const stream = Readable.from(valueBuffer)
+    const stream = Readable.from('Hello, world!')
     const checksum = deriveStreamHash('sha256')
-    stream.pipe(checksum)
+    void stream.pipe(checksum)
     const sha256 = await checksum.then(hash => hash.digest('hex'))
-    expect(sha256).toEqual(valueSha256)
+    expect(sha256).toEqual('315f5bdb76d078c43b8ac0064e4a0164612b1fce77c869345bfc94c75894edd3')
   })
 }
