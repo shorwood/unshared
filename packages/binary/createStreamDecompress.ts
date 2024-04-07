@@ -1,7 +1,6 @@
 import { randomBytes } from 'node:crypto'
 import { PassThrough, Readable, Transform } from 'node:stream'
 import { Gunzip, Inflate, ZlibOptions, createDeflate, createGunzip, createGzip, createInflate } from 'node:zlib'
-import { streamRead } from './streamRead'
 
 const Z_GZIP_HEADER = Buffer.from([0x1F, 0x8B, 0x08])
 const Z_DEFLATE_HEADER_1 = Buffer.from([0x78, 0x9C])
@@ -71,7 +70,7 @@ export class Decompress extends Transform {
     else this.decompressor = new PassThrough()
 
     // --- Pipe the decompressor to the transform stream.
-    this.decompressor.on('data', chunk => this.push(chunk))
+    this.decompressor.once('data', chunk => this.push(chunk))
     this.decompressor.write(chunk, encoding, callback)
   }
 }
@@ -81,7 +80,7 @@ export class Decompress extends Transform {
  * the data is not compressed, it is passed through. This functions allows,
  * stream to be lazily decompress, however, it comes with limitations.
  *
- * For auto-detection, this function uses Magic headers .This can cause
+ * For auto-detection, this function uses Magic headers. This can cause
  * issues if the data is not compressed, but happens to match a Magic header.
  *
  * @param options The options to use for decompression.
@@ -96,10 +95,11 @@ export function createStreamDecompress(options: ZlibOptions = {}) {
   return new Decompress(options)
 }
 
-/** c8 ignore next */
+/** v8 ignore start */
 if (import.meta.vitest) {
   const buffer = randomBytes(2048)
   const expected = buffer.toString('hex')
+  const { streamRead } = await import('./streamRead')
 
   it('should not decompress raw data', async() => {
     const decompress = createStreamDecompress()
