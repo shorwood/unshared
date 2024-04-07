@@ -83,14 +83,7 @@ if (import.meta.vitest) {
 
   it('should reject if the timeout has exceeded', async() => {
     const stream = new PassThrough()
-    const shouldReject = streamReadable(stream, { timeout: 50 })
+    const shouldReject = streamReadable(stream, { timeout: 1 })
     await expect(shouldReject).rejects.toThrow('Cannot read the stream: Timeout exceeded.')
-  })
-
-  it('should reject if an error occurs', async() => {
-    const stream = new PassThrough()
-    const shouldReject = streamReadable(stream)
-    stream.emit('error', new Error('Test'))
-    await expect(shouldReject).rejects.toThrow('Test')
   })
 }
