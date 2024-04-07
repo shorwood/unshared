@@ -38,7 +38,7 @@ export function randomString(length = 16, options: RandomStringOptions = {}): st
 if (import.meta.vitest) {
   it('should return a random string with default options', () => {
     const result = randomString()
-    const every = [...result].every((c) => DEFAULT_CHARACTERS.includes(c))
+    const every = [...result].every(c => DEFAULT_CHARACTERS.includes(c))
     expect(every).toBe(true)
   })
 
