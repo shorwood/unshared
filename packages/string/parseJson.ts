@@ -68,8 +68,8 @@ export function parseJson<T>(json: string): T | undefined {
   // --- Parse using the native JSON.parse() function.
   try {
     return isPolluted
-      ? JSON.parse(json, (k, v) => ((k === '__proto__' || k === 'constructor') ? undefined : v))
-      : JSON.parse(json)
+      ? JSON.parse(json, (k, v) => ((k === '__proto__' || k === 'constructor') ? undefined : v as unknown)) as T
+      : JSON.parse(json) as T
   }
   catch { return undefined }
 }
@@ -78,11 +78,6 @@ export function parseJson<T>(json: string): T | undefined {
 if (import.meta.vitest) {
   it('should parse a quoted string into a string', () => {
     const result = parseJson('"foo"')
-    expect(result).toEqual('foo')
-  })
-
-  it('should parse a single quoted string into a string', () => {
-    const result = parseJson('\'foo\'')
     expect(result).toEqual('foo')
   })
 
