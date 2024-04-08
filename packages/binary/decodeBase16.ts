@@ -18,7 +18,7 @@ const BASE_16_REGEXP = /^[\da-f]+$/i
  * // Decode a Base16 string to an Uint8Array
  * const buffer = decodeBase16(string) // <Uint8Array 54 68 65 20 71 75 69 63 6b 20 62 72 ...>
  */
-function decodeBase16(value: string): Uint8Array {
+export function decodeBase16(value: string): Uint8Array {
   if (value.length % 2 !== 0)
     throw new Error('Could not decode string as Base16: Length is not a multiple of 2')
   if (BASE_16_REGEXP.test(value) === false)
