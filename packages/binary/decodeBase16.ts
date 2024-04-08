@@ -1,66 +1,67 @@
-import { BASE_16_ALPHABET } from './encodeBase16'
+import { B16 } from './encodeBase16'
 
 /** Regular expression to test if a string is a valid Base16 string. */
 const BASE_16_REGEXP = /^[\da-f]+$/i
 
 /**
- * Decode a Base16-encoded string into an `ArrayBuffer`. Since this implementation is
- * using the native `ArrayBuffer` API, it does not rely on Node.js, this makes it ideal
+ * Decode a Base16-encoded string into an `Uint8Array`. Since this implementation is
+ * using the native `Uint8Array` API, it does not rely on Node.js, this makes it ideal
  * for use in cross-platform libraries.
  *
- * @param base16 The Base16 string to decode.
- * @returns The decoded `ArrayBuffer`.
+ * @param value The Base16 string to decode.
+ * @returns The decoded `Uint8Array`.
  * @example
  *
  * // Create a Base16 string
- * const base32 = 'KRUGKIDROVUWG2ZAMJZG653OEBTG66BANJ2W24DTEBXXMZLSEB2GQZJANRQXU6JAMRXWO==='
+ * const string = 'KRUGKIDROVUWG2ZAMJZG653OEBTG66BANJ2W24DTEBXXMZLSEB2GQZJANRQXU6JAMRXWO==='
  *
- * // Decode a Base16 string to an ArrayBuffer
- * const buffer = decodeBase16(base32) // <ArrayBuffer 54 68 65 20 71 75 69 63 6b 20 62 72 ...>
- *
- * // Get the string from the buffer
- * const string = new TextDecoder().decode(buffer) // 'The quick brown fox jumps over the lazy dog'
+ * // Decode a Base16 string to an Uint8Array
+ * const buffer = decodeBase16(string) // <Uint8Array 54 68 65 20 71 75 69 63 6b 20 62 72 ...>
  */
-function decodeBase16(base16: string): ArrayBuffer {
-  if (base16.length % 2 !== 0)
+function decodeBase16(value: string): Uint8Array {
+  if (value.length % 2 !== 0)
     throw new Error('Could not decode string as Base16: Length is not a multiple of 2')
-  if (BASE_16_REGEXP.test(base16) === false)
+  if (BASE_16_REGEXP.test(value) === false)
     throw new Error('Could not decode string as Base16: Invalid characters')
 
+  // --- Convert to lowercase
+  value = value.toLowerCase()
+
   // --- Decode every 2 characters into 1 byte.
-  const result: number[] = []
-  for (let index = 0; index < base16.length; index += 2) {
-    const c0 = BASE_16_ALPHABET.indexOf(base16[index])
-    const c1 = BASE_16_ALPHABET.indexOf(base16[index + 1])
-    const byte = (c0 << 4) | c1
-    result.push(byte)
+  const result = new Uint8Array(value.length / 2)
+  for (let i = 0, offset = 0; i < value.length; i += 2) {
+    const c0 = B16.indexOf(value[i])
+    const c1 = B16.indexOf(value[i + 1])
+    result[offset++] = c0 << 4 | c1
   }
 
-  // --- Return as ArrayBuffer
-  return new Uint8Array(result).buffer
+  // --- Return as Buffer
+  return result
 }
 
-/* c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
-  it('should decode an hexadecimal string into a buffer', () => {
-    const result = decodeBase16('123456')
-    const expected = new Uint8Array([0x12, 0x34, 0x56]).buffer
-    expect(result).toEqual(expected)
+  const { encodeUtf8 } = await import('./encodeUtf8')
+
+  it('should decode uppercase hexadecimal string into a buffer', () => {
+    const result = decodeBase16('48656C6C6F2C20576F726C6421')
+    const string = encodeUtf8(result)
+    expect(string).toEqual('Hello, World!')
   })
 
-  it('should decode lowercase hexadecimal characters', () => {
-    const result = decodeBase16('abcdef')
-    const expected = new Uint8Array([0xAB, 0xCD, 0xEF]).buffer
-    expect(result).toEqual(expected)
+  it('should decode lowercase hexadecimal string into a buffer', () => {
+    const result = decodeBase16('48656c6c6f2c20576f726c6421')
+    const string = encodeUtf8(result)
+    expect(string).toEqual('Hello, World!')
   })
 
   it('should throw if the string is not a multiple of 2', () => {
     const shouldThrow = () => decodeBase16('123')
-    expect(shouldThrow).toThrow()
+    expect(shouldThrow).toThrow('Could not decode string as Base16: Length is not a multiple of 2')
   })
 
   it('should throw if the string contains non-hexadecimal characters', () => {
-    const shouldThrow = () => decodeBase16('0000G')
-    expect(shouldThrow).toThrow()
+    const shouldThrow = () => decodeBase16('0G')
+    expect(shouldThrow).toThrow('Could not decode string as Base16: Invalid characters')
   })
 }
