@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-var-requires */
 export interface RandomOptions {
   /**
    * If neither `node:crypto` nor `globalThis.crypto` is available,
@@ -5,7 +7,7 @@ export interface RandomOptions {
    * When working with sensitive data, it is recommended to leave
    * this option as `false` to raise an error when no secure
    * random number generator is available.
-   * 
+   *
    * @default false
    */
   allowUnsafe?: boolean
@@ -14,14 +16,16 @@ export interface RandomOptions {
 /**
  * Returns a cryptographically secure pseudo-random 32-bit number.
  *
- * @param allowUnsafe
+ * @param options The options for generating a random number.
  * Allow unsafe random number generation if neither `node:crypto`
  * nor `globalThis.crypto` is not available. This is not recommended
  * as it is not cryptographically secure.
  * @returns A cryptographically secure pseudo-random 32-bit number.
  * @example randomInt() // 1234567890
  */
-export function randomInt({ allowUnsafe }: RandomOptions = {}): number {
+export function randomInt(options: RandomOptions = {}): number {
+  const { allowUnsafe = false } = options
+
   try {
     const { randomInt } = require('node:crypto') as typeof import('node:crypto')
     return randomInt(0xFFFFFFFF)
@@ -46,10 +50,15 @@ export function randomInt({ allowUnsafe }: RandomOptions = {}): number {
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  it('returns a random unsigned 32-bit integer', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it.only('returns a random unsigned 32-bit integer', () => {
     const result = randomInt()
     const isInteger = Number.isInteger(result)
     expect(isInteger).toBe(true)
+    expect(result).not.toBeNaN()
     expect(result).toBeLessThanOrEqual(0xFFFFFFFF)
     expect(result).toBeGreaterThanOrEqual(0x00000000)
   })
@@ -61,6 +70,7 @@ if (import.meta.vitest) {
     const isInteger = Number.isInteger(result)
     expect(isInteger).toBe(true)
     expect(result).toEqual(0x7FFFFFFF)
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(globalThis.crypto.getRandomValues).toHaveBeenCalled()
   })
 

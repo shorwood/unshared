@@ -19,6 +19,7 @@ export function randomFloat(min = 0, max = 1, options?: RandomOptions): number {
 if (import.meta.vitest) {
   it('returns a random float between 0 and 1', () => {
     const result = randomFloat()
+    expect(result).not.toBeNaN()
     expect(result).toBeTypeOf('number')
     expect(result).toBeGreaterThanOrEqual(0)
     expect(result).toBeLessThanOrEqual(1)
