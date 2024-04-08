@@ -33,16 +33,6 @@
       "types": "./dist/loadObject.d.ts",
       "import": "./dist/loadObject.js"
     },
-    "./resolveImport": {
-      "require": "./dist/resolveImport.cjs",
-      "types": "./dist/resolveImport.d.ts",
-      "import": "./dist/resolveImport.js"
-    },
-    "./resolveModule": {
-      "require": "./dist/resolveModule.cjs",
-      "types": "./dist/resolveModule.d.ts",
-      "import": "./dist/resolveModule.js"
-    },
     "./touch": {
       "require": "./dist/touch.cjs",
       "types": "./dist/touch.d.ts",
@@ -64,10 +54,6 @@
     "README.md",
     "LICENSE.md"
   ],
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch"
-  },
   "dependencies": {
     "@unshared/collection": "workspace:*",
     "@unshared/functions": "workspace:*",
