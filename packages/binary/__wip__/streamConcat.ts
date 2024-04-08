@@ -9,7 +9,7 @@ import { PassThrough, Readable } from 'node:stream'
  * // Create multiple read streams for a file split into parts.
  * const fileParts = ['file.part1.txt', 'file.part2.txt', 'file.part3.txt']
  * const fileStreams = fileParts.map(createReadStream)
- * 
+ *
  * // Concatenate the file streams into a single stream.
  * const fileStream = streamConcat(...fileStreams)
  */
@@ -47,20 +47,21 @@ if (import.meta.vitest) {
     expect(resultUtf8).toEqual('Hello')
   })
 
-  it('should concatenate two streams', async() => {
+  it('should concatenate three streams', async() => {
+    const stream1 = Readable.from('Hello')
+    const stream2 = Readable.from(' ')
+    const stream3 = Readable.from('World')
+    const result = streamConcat(stream1, stream2, stream3)
+    const resultUtf8 = await streamRead(result, 'utf8')
+    expect(resultUtf8).toEqual('Hello World')
+  })
+
+  it('should write to the array in the order given in the arguments', async() => {
+    const stream1 = new PassThrough()
+    const stream2 = new PassThrough()
     const streamHello = Readable.from('Hello')
-    const streamWorld = Readable.from('World')
     const result = streamConcat(streamHello, streamWorld)
     const resultUtf8 = await streamRead(result, 'utf8')
     expect(resultUtf8).toEqual('HelloWorld')
-  })
-
-  it('should concatenate three streams', async() => {
-    const streamHello = Readable.from('Hello')
-    const streamSpace = Readable.from(' ')
-    const streamWorld = Readable.from('World')
-    const result = streamConcat(streamHello, streamSpace, streamWorld)
-    const resultUtf8 = await streamRead(result, 'utf8')
-    expect(resultUtf8).toEqual('Hello World')
   })
 }

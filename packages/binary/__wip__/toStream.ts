@@ -1,6 +1,5 @@
-import { Buffer } from 'node:buffer'
 import { Readable } from 'node:stream'
-import { BinaryLike } from '../binary/isBinaryLike'
+import { BinaryLike } from './isBinaryLike'
 
 /**
  * Cast a value to a Readable stream.
@@ -19,10 +18,8 @@ export function toStream(value: BinaryLike): Readable {
 
   // --- Cast ArrayBuffers and ArrayBufferViews in a Readable stream.
   if (value instanceof ArrayBuffer) return Readable.from(Buffer.from(value))
-  if (value instanceof SharedArrayBuffer)
-    return Readable.from(Buffer.from(value))
-  if (ArrayBuffer.isView(value))
-    return Readable.from(Buffer.from(value.buffer))
+  if (value instanceof SharedArrayBuffer) return Readable.from(Buffer.from(value))
+  if (ArrayBuffer.isView(value)) return Readable.from(Buffer.from(value.buffer))
 
   // --- Cast iterables and arrays in a Readable stream.
   if (Array.isArray(value)) return Readable.from(Buffer.from(value))

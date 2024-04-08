@@ -69,8 +69,8 @@ export async function streamPeek(stream: Readable, options: ToBufferOptions<Buff
  * @returns A promise that resolves with the buffer.
  * @example streamPeek(fs.createReadStream('file.txt'), { length: 1024 }) // Promise<Buffer>
  */
-export async function streamPeek(stream: Readable, options?: number | BufferEncoding | ToBufferOptions): Promise<Buffer | string>
-export async function streamPeek(stream: Readable, options?: number | BufferEncoding | ToBufferOptions): Promise<Buffer | string> {
+export async function streamPeek(stream: Readable, options?: BufferEncoding | ToBufferOptions | number): Promise<Buffer | string>
+export async function streamPeek(stream: Readable, options?: BufferEncoding | ToBufferOptions | number): Promise<Buffer | string> {
   // --- Decompose the parameters and options.
   if (typeof options === 'string') options = { encoding: options }
   if (typeof options === 'number') options = { length: options }
@@ -89,7 +89,7 @@ export async function streamPeek(stream: Readable, options?: number | BufferEnco
   return encoding ? buffer.toString(encoding) : buffer
 }
 
-/* c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
   const string = 'Hello, world!'
   const buffer = Buffer.from(string)
@@ -130,7 +130,7 @@ if (import.meta.vitest) {
     expect(result2).toEqual(expected)
   })
 
-  it.each([string, buffer])('should not end the stream from %o', async(input) => {
+  it('should not end the stream from %o', async(input) => {
     const stream = Readable.from(input)
     const result1 = await streamPeek(stream)
     const result2 = await streamPeek(stream)
@@ -138,17 +138,17 @@ if (import.meta.vitest) {
     expect(result2).toEqual(buffer)
   })
 
-  it.each([string, buffer])('should throw if stream is already ended', async() => {
+  it('should throw if stream is already ended', async() => {
     const stream = Readable.from('Hello, world!')
     stream.destroy()
     const shouldReject = () => streamPeek(stream, 4)
-    expect(shouldReject).rejects.toThrow(Error)
+    await expect(shouldReject).rejects.toThrow(Error)
   })
 
   it.each([string, buffer])('should throw if stream is not a stream', async() => {
     // @ts-expect-error: invalid argument type.
     const shouldReject = () => streamPeek(1, 4)
-    expect(shouldReject).rejects.toThrow(TypeError)
+    await expect(shouldReject).rejects.toThrow(TypeError)
   })
 
   it.each([string, buffer])('should throw if length is not a number', async() => {

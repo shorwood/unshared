@@ -1,16 +1,16 @@
+import { NumberIntegerPositive } from "@unshared/types"
+
 /**
  * Swap endian of a 32-bit number
  *
  * @param n The number to swap
  * @returns The number with swapped endian
  */
-export function swapEndian(n: number): number {
-  if (typeof n !== 'number')
-    throw new TypeError('Expected a number.')
-  if (Number.isInteger(n) === false)
-    throw new TypeError('Expected an integer.')
+export function swapEndian<N extends number>(n: NumberIntegerPositive<N>): number {
+  if (Number.isSafeInteger(n) === false)
+    throw new TypeError('Could not swap endian: Expected a safe integer.')
   if (n < 0 || n > 0xFFFFFFFF)
-    throw new RangeError('Expected a 32-bit number.')
+    throw new RangeError('Could not swap endian: Expected a 32-bit number.')
 
   // --- Swap the endian.
   const a = ((n << 8) | (n >>> 24)) & 0x00FF00FF

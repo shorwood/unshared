@@ -7,7 +7,7 @@ export interface Multiplex extends Readable {
    *
    * @example [[32, 1024], [16, 256]]
    */
-  readonly offsets: [number, number][]
+  readonly offsets: Array<[number, number]>
 }
 
 /**
