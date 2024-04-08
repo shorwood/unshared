@@ -8,11 +8,138 @@
   "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shorwood/unshared.git",
+    "url": "git+ssh://git@github.com:shorwood/unshared.git",
     "directory": "packages/binary"
   },
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch"
+  "exports": {
+    "./createStreamDecompress": {
+      "require": "./dist/createStreamDecompress.cjs",
+      "types": "./dist/createStreamDecompress.d.ts",
+      "import": "./dist/createStreamDecompress.js"
+    },
+    "./createStreamSeekable": {
+      "require": "./dist/createStreamSeekable.cjs",
+      "types": "./dist/createStreamSeekable.d.ts",
+      "import": "./dist/createStreamSeekable.js"
+    },
+    "./decodeBase16": {
+      "require": "./dist/decodeBase16.cjs",
+      "types": "./dist/decodeBase16.d.ts",
+      "import": "./dist/decodeBase16.js"
+    },
+    "./decodeBase32": {
+      "require": "./dist/decodeBase32.cjs",
+      "types": "./dist/decodeBase32.d.ts",
+      "import": "./dist/decodeBase32.js"
+    },
+    "./decodeBase64": {
+      "require": "./dist/decodeBase64.cjs",
+      "types": "./dist/decodeBase64.d.ts",
+      "import": "./dist/decodeBase64.js"
+    },
+    "./decodeBase64Url": {
+      "require": "./dist/decodeBase64Url.cjs",
+      "types": "./dist/decodeBase64Url.d.ts",
+      "import": "./dist/decodeBase64Url.js"
+    },
+    "./decodeUtf8": {
+      "require": "./dist/decodeUtf8.cjs",
+      "types": "./dist/decodeUtf8.d.ts",
+      "import": "./dist/decodeUtf8.js"
+    },
+    "./deriveStream": {
+      "require": "./dist/deriveStream.cjs",
+      "types": "./dist/deriveStream.d.ts",
+      "import": "./dist/deriveStream.js"
+    },
+    "./deriveStreamHash": {
+      "require": "./dist/deriveStreamHash.cjs",
+      "types": "./dist/deriveStreamHash.d.ts",
+      "import": "./dist/deriveStreamHash.js"
+    },
+    "./deriveStreamLength": {
+      "require": "./dist/deriveStreamLength.cjs",
+      "types": "./dist/deriveStreamLength.d.ts",
+      "import": "./dist/deriveStreamLength.js"
+    },
+    "./dump": {
+      "require": "./dist/dump.cjs",
+      "types": "./dist/dump.d.ts",
+      "import": "./dist/dump.js"
+    },
+    "./encodeBase16": {
+      "require": "./dist/encodeBase16.cjs",
+      "types": "./dist/encodeBase16.d.ts",
+      "import": "./dist/encodeBase16.js"
+    },
+    "./encodeBase32": {
+      "require": "./dist/encodeBase32.cjs",
+      "types": "./dist/encodeBase32.d.ts",
+      "import": "./dist/encodeBase32.js"
+    },
+    "./encodeBase64": {
+      "require": "./dist/encodeBase64.cjs",
+      "types": "./dist/encodeBase64.d.ts",
+      "import": "./dist/encodeBase64.js"
+    },
+    "./encodeBase64Url": {
+      "require": "./dist/encodeBase64Url.cjs",
+      "types": "./dist/encodeBase64Url.d.ts",
+      "import": "./dist/encodeBase64Url.js"
+    },
+    "./encodeUtf8": {
+      "require": "./dist/encodeUtf8.cjs",
+      "types": "./dist/encodeUtf8.d.ts",
+      "import": "./dist/encodeUtf8.js"
+    },
+    "./randomFloat": {
+      "require": "./dist/randomFloat.cjs",
+      "types": "./dist/randomFloat.d.ts",
+      "import": "./dist/randomFloat.js"
+    },
+    "./randomInt": {
+      "require": "./dist/randomInt.cjs",
+      "types": "./dist/randomInt.d.ts",
+      "import": "./dist/randomInt.js"
+    },
+    "./randomString": {
+      "require": "./dist/randomString.cjs",
+      "types": "./dist/randomString.d.ts",
+      "import": "./dist/randomString.js"
+    },
+    "./setBit": {
+      "require": "./dist/setBit.cjs",
+      "types": "./dist/setBit.d.ts",
+      "import": "./dist/setBit.js"
+    },
+    "./setByte": {
+      "require": "./dist/setByte.cjs",
+      "types": "./dist/setByte.d.ts",
+      "import": "./dist/setByte.js"
+    },
+    "./streamReadable": {
+      "require": "./dist/streamReadable.cjs",
+      "types": "./dist/streamReadable.d.ts",
+      "import": "./dist/streamReadable.js"
+    },
+    "./toUint8Array": {
+      "require": "./dist/toUint8Array.cjs",
+      "types": "./dist/toUint8Array.d.ts",
+      "import": "./dist/toUint8Array.js"
+    },
+    ".": {
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "dependencies": {
+    "@unshared/functions": "workspace:*",
+    "@unshared/types": "workspace:*"
   }
 }
