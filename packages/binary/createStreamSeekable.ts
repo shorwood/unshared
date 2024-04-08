@@ -199,6 +199,7 @@ export class Seekable extends PassThrough {
 
   async readString(encoding: BufferEncoding = 'utf8'): Promise<string> {
     const chunks: Buffer[] = []
+    const currentOffset = this.offsetRead
 
     // --- Read the data from the stream until a NULL byte is found.
     while (this.offsetRead < this.offsetWrite) {
@@ -206,18 +207,18 @@ export class Seekable extends PassThrough {
       if (!chunk) break
       const nullIndex = chunk.indexOf(0)
       chunks.push(chunk)
-      if (nullIndex > 0) break
+      if (nullIndex !== -1) break
     }
 
     // --- Concatenate the chunks and slice the result.
     const buffer = Buffer.concat(chunks)
     const nullIndex = buffer.indexOf(0)
-    const result = nullIndex > 0
-      ? buffer.subarray(0, nullIndex).toString(encoding)
-      : buffer.toString(encoding)
+    const result = nullIndex === -1
+      ? buffer.toString(encoding)
+      : buffer.subarray(0, nullIndex).toString(encoding)
 
-    // --- Set the read offset after the null byte and return the result.
-    this.offsetRead += result.length + 1
+    // --- Reset the read offset after the null byte and return the result.
+    this.offsetRead = currentOffset + nullIndex + 1
     return result
   }
 
@@ -595,6 +596,22 @@ if (import.meta.vitest) {
       stream.write('Hello,\0world!')
       const result = await stream.readString()
       expect(result).toEqual('Hello,')
+    })
+
+    it('should read consecutive strings separated by a null byte', async() => {
+      const stream = createStreamSeekable()
+      stream.write('Hello,\0world!\0')
+      const result1 = await stream.readString()
+      const result2 = await stream.readString()
+      expect(result1).toEqual('Hello,')
+      expect(result2).toEqual('world!')
+    })
+
+    it('shoulr return an empty string if the first byte is a null byte', async() => {
+      const stream = createStreamSeekable()
+      stream.write('\0Hello, world!')
+      const result = await stream.readString()
+      expect(result).toEqual('')
     })
 
     it('should read until the end of the stream', async() => {
