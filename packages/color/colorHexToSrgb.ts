@@ -10,9 +10,9 @@ const COLOR_HEX_REGEX = /^#?([\da-f]{3,4}|[\da-f]{6}|[\da-f]{8})$/i
  *
  * @param color The hexadecimal color to convert.
  * @returns The sRGB representation of the color.
- * @example hexToSrgb('#fff') // => { r: 1, g: 1, b: 1, a: 1 }
+ * @example colorHexToSrgb('#fff') // => { r: 1, g: 1, b: 1, a: 1 }
  */
-export function hexToSrgb(color: string): sRGB {
+export function colorHexToSrgb(color: string): sRGB {
   const hex = color.match(COLOR_HEX_REGEX)?.[1]
   if (!hex) throw new Error(`Could not parse hexadecimal color from string: "${color}"`)
 
@@ -46,7 +46,7 @@ export function hexToSrgb(color: string): sRGB {
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('should parse an hex3 into an sRGB object', () => {
-    const result = hexToSrgb('123')
+    const result = colorHexToSrgb('123')
     expect(result).toEqual({
       r: 0x11 / 0xFF,
       g: 0x22 / 0xFF,
@@ -56,7 +56,7 @@ if (import.meta.vitest) {
   })
 
   it('should parse an hex4 into an sRGB object', () => {
-    const result = hexToSrgb('1234')
+    const result = colorHexToSrgb('1234')
     expect(result).toEqual({
       r: 0x11 / 0xFF,
       g: 0x22 / 0xFF,
@@ -66,7 +66,7 @@ if (import.meta.vitest) {
   })
 
   it('should parse a color in hex6 into an sRGB object', () => {
-    const result = hexToSrgb('123456')
+    const result = colorHexToSrgb('123456')
     expect(result).toEqual({
       r: 0x12 / 0xFF,
       g: 0x34 / 0xFF,
@@ -76,7 +76,7 @@ if (import.meta.vitest) {
   })
 
   it('should parse a color in hex8 into an sRGB object', () => {
-    const result = hexToSrgb('12345678')
+    const result = colorHexToSrgb('12345678')
     expect(result).toEqual({
       r: 0x12 / 0xFF,
       g: 0x34 / 0xFF,
@@ -86,7 +86,7 @@ if (import.meta.vitest) {
   })
 
   it('should omit the # prefix', () => {
-    const result = hexToSrgb('#12345678')
+    const result = colorHexToSrgb('#12345678')
     expect(result).toEqual({
       r: 0x12 / 0xFF,
       g: 0x34 / 0xFF,
@@ -96,17 +96,17 @@ if (import.meta.vitest) {
   })
 
   it('should throw if the color is too short', () => {
-    const shouldThrow = () => hexToSrgb('12')
+    const shouldThrow = () => colorHexToSrgb('12')
     expect(shouldThrow).toThrow('Could not parse hexadecimal color from string: "12"')
   })
 
   it('should throw if the color is too long', () => {
-    const shouldThrow = () => hexToSrgb('123456789')
+    const shouldThrow = () => colorHexToSrgb('123456789')
     expect(shouldThrow).toThrow('Could not parse hexadecimal color from string: "123456789"')
   })
 
   it('should throw if the color has invalid characters', () => {
-    const shouldThrow = () => hexToSrgb('1234GG')
+    const shouldThrow = () => colorHexToSrgb('1234GG')
     expect(shouldThrow).toThrow('Could not parse hexadecimal color from string: "1234GG"')
   })
 }

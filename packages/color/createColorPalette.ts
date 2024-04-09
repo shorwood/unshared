@@ -1,8 +1,8 @@
 import { clamp } from '@unshared/math/clamp'
-import { hexToSrgb } from './hexToSrgb'
-import { hslToSrgb } from './hslToSrgb'
-import { srgbToHex } from './srgbToHex'
-import { srgbToHsl } from './srgbToHsl'
+import { colorHexToSrgb } from './colorHexToSrgb'
+import { colorHslToSrgb } from './colorHslToSrgb'
+import { colorSrgbToHex } from './colorSrgbToHex'
+import { colorSrgbToHsl } from './colorSrgbToHsl'
 
 /** The default stops for a color palette. */
 const COLOR_PALETTE_DEFAULT_STOPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900] as const
@@ -72,8 +72,8 @@ export function createColorPalette<K extends number = ColorPaletteDefaultStops>(
   } = options
 
   // --- Convert color to HSL.
-  const srgb = hexToSrgb(color)
-  const hsl = srgbToHsl(srgb)
+  const srgb = colorHexToSrgb(color)
+  const hsl = colorSrgbToHsl(srgb)
 
   // --- Generate shades.
   const shades = stops.map((stop) => {
@@ -93,8 +93,8 @@ export function createColorPalette<K extends number = ColorPaletteDefaultStops>(
 
     // --- Return result as hexadecimal color string.
     const key = stop.toFixed(0)
-    const srgb = hslToSrgb({ h, l, s })
-    const hex = srgbToHex(srgb, 'rgb')
+    const srgb = colorHslToSrgb({ h, l, s })
+    const hex = colorSrgbToHex(srgb, 'rgb')
     return [key, hex]
   })
 

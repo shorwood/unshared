@@ -13,6 +13,36 @@
     "directory": "packages/color"
   },
   "exports": {
+    "./colorHexToSrgb": {
+      "require": "./dist/colorHexToSrgb.cjs",
+      "types": "./dist/colorHexToSrgb.d.ts",
+      "import": "./dist/colorHexToSrgb.js"
+    },
+    "./colorHslToSrgb": {
+      "require": "./dist/colorHslToSrgb.cjs",
+      "types": "./dist/colorHslToSrgb.d.ts",
+      "import": "./dist/colorHslToSrgb.js"
+    },
+    "./colorIntegerToSrgb": {
+      "require": "./dist/colorIntegerToSrgb.cjs",
+      "types": "./dist/colorIntegerToSrgb.d.ts",
+      "import": "./dist/colorIntegerToSrgb.js"
+    },
+    "./colorSrgbToHex": {
+      "require": "./dist/colorSrgbToHex.cjs",
+      "types": "./dist/colorSrgbToHex.d.ts",
+      "import": "./dist/colorSrgbToHex.js"
+    },
+    "./colorSrgbToHsl": {
+      "require": "./dist/colorSrgbToHsl.cjs",
+      "types": "./dist/colorSrgbToHsl.d.ts",
+      "import": "./dist/colorSrgbToHsl.js"
+    },
+    "./colorSrgbToInteger": {
+      "require": "./dist/colorSrgbToInteger.cjs",
+      "types": "./dist/colorSrgbToInteger.d.ts",
+      "import": "./dist/colorSrgbToInteger.js"
+    },
     "./createColorHsl": {
       "require": "./dist/createColorHsl.cjs",
       "types": "./dist/createColorHsl.d.ts",
@@ -27,31 +57,6 @@
       "require": "./dist/createColorSrgb.cjs",
       "types": "./dist/createColorSrgb.d.ts",
       "import": "./dist/createColorSrgb.js"
-    },
-    "./hexToSrgb": {
-      "require": "./dist/hexToSrgb.cjs",
-      "types": "./dist/hexToSrgb.d.ts",
-      "import": "./dist/hexToSrgb.js"
-    },
-    "./hslToSrgb": {
-      "require": "./dist/hslToSrgb.cjs",
-      "types": "./dist/hslToSrgb.d.ts",
-      "import": "./dist/hslToSrgb.js"
-    },
-    "./srgbToHex": {
-      "require": "./dist/srgbToHex.cjs",
-      "types": "./dist/srgbToHex.d.ts",
-      "import": "./dist/srgbToHex.js"
-    },
-    "./srgbToHsl": {
-      "require": "./dist/srgbToHsl.cjs",
-      "types": "./dist/srgbToHsl.d.ts",
-      "import": "./dist/srgbToHsl.js"
-    },
-    "./srgbToInteger": {
-      "require": "./dist/srgbToInteger.cjs",
-      "types": "./dist/srgbToInteger.d.ts",
-      "import": "./dist/srgbToInteger.js"
     },
     "./types": {
       "require": "./dist/types.cjs",

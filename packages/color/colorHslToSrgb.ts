@@ -6,8 +6,9 @@ import { createColorSrgb, sRGB } from './createColorSrgb'
  *
  * @param hsl The HSLA values
  * @returns The `RGB` representation of the color.
+ * @example colorHslToSrgb({ h: 60, s: 0.8, l: 0.5, a: 0.5 }) // => { r: 0.9, g: 0.9, b: 0.1, a: 0.5 }
  */
-export function hslToSrgb(hsl: Partial<HSL>): sRGB {
+export function colorHslToSrgb(hsl: Partial<HSL>): sRGB {
   const { h, s, l, a } = createColorHsl(hsl)
 
   // --- If saturation is 0, the color is a shade of grey.
@@ -39,17 +40,17 @@ export function hslToSrgb(hsl: Partial<HSL>): sRGB {
 /** v8 ignore start */
 if (import.meta.vitest) {
   it('should convert HSL values to sRGB', () => {
-    const result = hslToSrgb({ h: 60, s: 0.8, l: 0.5, a: 0.5 })
+    const result = colorHslToSrgb({ h: 60, s: 0.8, l: 0.5, a: 0.5 })
     expect(result).toEqual({ r: 0.9, g: 0.9, b: 0.099_999_999_999_999_98, a: 0.5 })
   })
 
   it('should default alpha channel to 1', () => {
-    const result = hslToSrgb({ h: 60, s: 0.8, l: 0.5 })
+    const result = colorHslToSrgb({ h: 60, s: 0.8, l: 0.5 })
     expect(result).toEqual({ r: 0.9, g: 0.9, b: 0.099_999_999_999_999_98, a: 1 })
   })
 
   it('should clamp channel values outside their respective ranges', () => {
-    const result = hslToSrgb({ h: 420, s: -1, l: 0.5, a: 2 })
+    const result = colorHslToSrgb({ h: 420, s: -1, l: 0.5, a: 2 })
     expect(result).toEqual({ r: 0.5, g: 0.5, b: 0.5, a: 1 })
   })
 }

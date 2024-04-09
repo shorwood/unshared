@@ -7,9 +7,9 @@ import { createColorSrgb, sRGB } from './createColorSrgb'
  *
  * @param srgb sRGB color to convert to HSL.
  * @returns The HSL representation of the color.
- * @example srgbToHsl({ r: 1, g: 0, b: 0 }) // => { h: 0, s: 1, l: 0.5, a: 1 }
+ * @example colorSrgbToHsl({ r: 1, g: 0, b: 0 }) // => { h: 0, s: 1, l: 0.5, a: 1 }
  */
-export function srgbToHsl(srgb: Partial<sRGB>): HSL {
+export function colorSrgbToHsl(srgb: Partial<sRGB>): HSL {
   const { r, g, b, a } = createColorSrgb(srgb)
 
   // --- Get min and max values.
@@ -40,17 +40,17 @@ export function srgbToHsl(srgb: Partial<sRGB>): HSL {
 /** c8 ignore next */
 if (import.meta.vitest) {
   it('converts an sRGB color value to HSLA', () => {
-    const result = srgbToHsl({ r: 0x11 / 0xFF, g: 0x22 / 0xFF, b: 0x33 / 0xFF, a: 0.5 })
+    const result = colorSrgbToHsl({ r: 0x11 / 0xFF, g: 0x22 / 0xFF, b: 0x33 / 0xFF, a: 0.5 })
     expect(result).toEqual({ h: 210, s: 0.500_000_000_000_000_1, l: 0.133_333_333_333_333_33, a: 0.5 })
   })
 
   it('converts an sRGB color value to HSLA and defaults the alpha channel to 1', () => {
-    const result = srgbToHsl({ r: 0x11 / 0xFF, g: 0x22 / 0xFF, b: 0x33 / 0xFF })
+    const result = colorSrgbToHsl({ r: 0x11 / 0xFF, g: 0x22 / 0xFF, b: 0x33 / 0xFF })
     expect(result).toEqual({ h: 210, s: 0.500_000_000_000_000_1, l: 0.133_333_333_333_333_33, a: 1 })
   })
 
   it('clamps the values if they are out of range', () => {
-    const result = srgbToHsl({ r: -1, g: 2, b: -0, a: 2 })
+    const result = colorSrgbToHsl({ r: -1, g: 2, b: -0, a: 2 })
     expect(result).toEqual({ h: 120, s: 1, l: 0.5, a: 1 })
   })
 }
