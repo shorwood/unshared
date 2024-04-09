@@ -1,5 +1,8 @@
+import { randomBytes } from 'node:crypto'
 import { nextTick } from 'node:process'
 import { PassThrough, TransformCallback, TransformOptions } from 'node:stream'
+
+const EventWriteBuffer = Symbol('SeekableData')
 
 /**
  * Stream that buffers previously consumed data and allows it to be seeked, peeked, and rewound.
@@ -24,8 +27,8 @@ import { PassThrough, TransformCallback, TransformOptions } from 'node:stream'
  */
 export class Seekable extends PassThrough {
 
-  /** The intrinsic position of the stream. */
-  public offsetIntrinsic = 0
+  /** The buffer of data that has been written to the stream. */
+  public buffer = new Map<number, Buffer>()
 
   /** The current position in the buffered data. */
   public offsetRead = 0
@@ -33,11 +36,10 @@ export class Seekable extends PassThrough {
   /** The total size of the data passed through the stream. */
   public offsetWrite = 0
 
-  /** The buffer of data that has been written to the stream. */
-  public buffer = new Map<number, Buffer>()
-
-  /** The total count of bytes that have been stored in the buffer. */
-  public bufferLength = 0
+  /** @returns The amount of bytes available from the buffer ahead of the current position */
+  get offsetReadable() {
+    return this.offsetWrite - this.offsetRead
+  }
 
   /**
    * Extended `_write` method that stores the incoming chunks in the `buffer` map.
@@ -49,10 +51,19 @@ export class Seekable extends PassThrough {
    */
   override _write(chunk: Buffer, encoding: BufferEncoding, callback: TransformCallback) {
     const result = super._write(chunk, encoding, callback)
+    this.emit(EventWriteBuffer, chunk)
     this.buffer.set(this.offsetWrite, chunk)
-    this.bufferLength += chunk.length
     this.offsetWrite += chunk.length
     return result
+  }
+
+  // @ts-expect-error: The `end` method is overloaded in the `PassThrough` class.
+  end(callback?: () => void): this
+  end(chunk: any, callback?: () => void): this
+  end(chunk: any, encoding?: BufferEncoding, callback?: () => void): this
+  end(...args: Parameters<PassThrough['end']>) {
+    super.end(...args)
+    this.emit('end')
   }
 
   /**
@@ -71,21 +82,22 @@ export class Seekable extends PassThrough {
    * const result = seekable.readFromBuffer(7, 12).toString() // => 'world'
    */
   public readFromBuffer(start: number, end: number) {
+    const size = end - start
 
     // --- Collect the chunks containing data within the specified range.
-    let startOffset = -1
+    let chunksStart = -1
     const chunks: Buffer[] = []
-    for (const [offsetStart, chunk] of this.buffer) {
-      const offsetEnd = offsetStart + chunk.length
-      if (offsetStart > end) break
-      if (offsetEnd <= start) continue
-      if (startOffset < 0) startOffset = offsetStart
+    for (const [chunkStart, chunk] of this.buffer) {
+      const chunkEnd = chunkStart + chunk.length
+      if (chunkStart > end) break
+      if (chunkEnd < start) continue
+      if (chunksStart === -1) chunksStart = chunkStart
       chunks.push(chunk)
     }
 
     // --- Concatenate the chunks into a single buffer and slice the result.
-    const sliceStart = start - startOffset
-    const sliceEnd = end - startOffset
+    const sliceStart = start - chunksStart
+    const sliceEnd = sliceStart + size
     return Buffer.concat(chunks).subarray(sliceStart, sliceEnd)
   }
 
@@ -103,19 +115,13 @@ export class Seekable extends PassThrough {
    * // Read the first 5 bytes from the internal buffer.
    * const result = seekable.read(5).toString() // => 'Hello'
    */
-  override read(size: number = this.readableLength): Buffer | undefined {
+  override read(size: number = this.offsetReadable): Buffer | undefined {
     if (size === 0) return
     if (this.offsetRead >= this.offsetWrite) return
 
     // --- Read the data from the buffer.
     const chunk = this.readFromBuffer(this.offsetRead, this.offsetRead + size)
-
-    // --- If the bytes are read from
-    const readSize = this.offsetWrite - this.offsetRead + chunk.length
-    if (readSize > 0) void super.read(readSize)
     this.offsetRead += chunk.length
-
-    // --- Return the chunk of data.
     return chunk
   }
 
@@ -131,21 +137,29 @@ export class Seekable extends PassThrough {
    * // Read the first 5 bytes from the stream.
    * const result = await seekable.readBytes(5) // => <Buffer 48 65 6c 6c 6f>
    */
-  async readBytes(size?: number): Promise<Buffer | undefined> {
-    await new Promise(nextTick)
+  async readBytes(size: number = this.offsetReadable): Promise<Buffer> {
+    const offsetTarget = this.offsetRead + size
 
-    // --- Wait for the stream to become readable.
-    if (this.readableLength === 0 && !this.writableEnded) {
+    // --- Wait for the stream to become readable and queue the read operation.
+    while (!this.writableEnded && this.offsetWrite < offsetTarget) {
       await new Promise<void>((resolve, reject) => {
-        this.once('end', reject)
-        this.once('error', reject)
-        this.once('readable', resolve)
-        setTimeout(() => reject(new Error('Timeout exceeded')), 100)
+        this.prependOnceListener('end', resolve)
+        this.prependOnceListener('error', reject)
+        this.prependOnceListener(EventWriteBuffer, resolve)
+        setTimeout(resolve)
       })
+
+      // --- Remove the event listeners to prevent memory leaks.
+      this.removeAllListeners('end')
+      this.removeAllListeners('error')
+      this.removeAllListeners(EventWriteBuffer)
+
+      // --- Trigger the read operation if the stream is readable.
+      if (this.readable) super._read(0)
     }
 
     // --- Read the data from the internal buffer.
-    return this.read(size) ?? undefined
+    return this.read(size) ?? Buffer.alloc(0)
   }
 
   /**
@@ -154,7 +168,7 @@ export class Seekable extends PassThrough {
    * @param size The number of bytes to peek from the stream.
    * @returns A promise that resolves with the data peeked from the stream.
    */
-  async peek(size: number): Promise<Buffer | undefined> {
+  async peek(size: number): Promise<Buffer> {
     const originalOffset = this.offsetRead
     const result = await this.readBytes(size)
     this.offsetRead = originalOffset
@@ -177,6 +191,24 @@ export class Seekable extends PassThrough {
    */
   public seek(offset: number): void {
     this.offsetRead = offset
+  }
+
+  /**
+   * Skip the specified number of bytes from the stream.
+   *
+   * @param size The number of bytes to skip from the stream.
+   * @example
+   * const seekable = new Seekable()
+   * seekable.write('Hello, world!')
+   *
+   * // Skip the first 5 bytes in the stream.
+   * seekable.skip(5)
+   *
+   * // Read the next 5 bytes from the stream.
+   * const result = seekable.read(5) // => <Buffer 20 77 6f 72 6c>
+   */
+  public skip(size: number): void {
+    this.offsetRead += size
   }
 
   /**
@@ -222,67 +254,67 @@ export class Seekable extends PassThrough {
     return result
   }
 
-  async readUint8(): Promise<number | undefined> {
-    return this.readBytes(1).then(b => b?.readUInt8(0))
-  }
-
-  async readInt8(): Promise<number | undefined> {
-    return this.readBytes(1).then(b => b?.readInt8(0))
-  }
-
-  async readIntLE(size: number): Promise<number | undefined> {
+  async readIntLE(size: number): Promise<number> {
     return this.readBytes(size).then(b => b?.readIntLE(0, size))
   }
 
-  async readIntBE(size: number): Promise<number | undefined> {
+  async readIntBE(size: number): Promise<number> {
     return this.readBytes(size).then(b => b?.readIntBE(0, size))
   }
 
-  async readUintLE(size: number): Promise<number | undefined> {
+  async readUintLE(size: number): Promise<number> {
     return this.readBytes(size).then(b => b?.readUIntLE(0, size))
   }
 
-  async readUintBE(size: number): Promise<number | undefined> {
+  async readUintBE(size: number): Promise<number> {
     return this.readBytes(size).then(b => b?.readUIntBE(0, size))
   }
 
-  async readInt16LE(): Promise<number | undefined> {
+  async readUint8(): Promise<number> {
+    return this.readBytes(1).then(b => b?.readUInt8(0))
+  }
+
+  async readInt8(): Promise<number> {
+    return this.readBytes(1).then(b => b?.readInt8(0))
+  }
+
+  async readInt16LE(): Promise<number> {
     return this.readUintLE(2)
   }
 
-  async readInt16BE(): Promise<number | undefined> {
+  async readInt16BE(): Promise<number> {
     return this.readIntBE(2)
   }
 
-  async readUint16LE(): Promise<number | undefined> {
+  async readUint16LE(): Promise<number> {
     return this.readUintLE(2)
   }
 
-  async readUint16BE(): Promise<number | undefined> {
+  async readUint16BE(): Promise<number> {
     return this.readUintBE(2)
   }
 
-  async readInt32LE(): Promise<number | undefined> {
+  async readInt32LE(): Promise<number> {
     return this.readIntLE(4)
   }
 
-  async readInt32BE(): Promise<number | undefined> {
+  async readInt32BE(): Promise<number> {
     return this.readIntBE(4)
   }
 
-  async readUint32LE(): Promise<number | undefined> {
+  async readUint32LE(): Promise<number> {
     return this.readUintLE(4)
   }
 
-  async readUint32BE(): Promise<number | undefined> {
+  async readUint32BE(): Promise<number> {
     return this.readUintBE(4)
   }
 
-  async readFloat32(): Promise<number | undefined> {
+  async readFloat32(): Promise<number> {
     return this.readBytes(4).then(b => b?.readFloatLE(0))
   }
 
-  async readFloat64(): Promise<number | undefined> {
+  async readFloat64(): Promise<number> {
     return this.readBytes(8).then(b => b?.readDoubleLE(0))
   }
 }
@@ -316,7 +348,6 @@ export function createStreamSeekable(options?: TransformOptions) {
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  const { Readable } = await import('node:stream')
 
   describe('_write', () => {
     it('should store the written chunk in the buffer when calling write', () => {
@@ -338,6 +369,7 @@ if (import.meta.vitest) {
     })
 
     it('should store the written chunks when piping a stream', async() => {
+      const { Readable } = await import('node:stream')
       const stream = createStreamSeekable()
       const source = Readable.from(['ABCD', 'EFGH'])
       source.pipe(stream)
@@ -513,6 +545,17 @@ if (import.meta.vitest) {
       stream.read(2)
       expect(stream.offsetWrite).toEqual(4)
     })
+
+    it('should not skip data when reading chunks', async() => {
+      const stream = createStreamSeekable({ highWaterMark: 512 })
+      const promise = stream.readBytes(2048)
+      setTimeout(() => stream.write(randomBytes(512)), 5)
+      setTimeout(() => stream.write(randomBytes(512)), 10)
+      setTimeout(() => stream.write(randomBytes(512)), 15)
+      setTimeout(() => stream.end(randomBytes(512)), 20)
+      const buffer = (await promise)
+      expect(buffer.length).toEqual(2048)
+    })
   })
 
   describe('readBytes', () => {
@@ -520,22 +563,57 @@ if (import.meta.vitest) {
       const stream = createStreamSeekable()
       stream.write('ABCD')
       const result = await stream.readBytes(2)
-      expect(result!.toString()).toEqual('AB')
+      expect(result.toString()).toEqual('AB')
+    })
+
+    it('should read the specified number of bytes from before the read offset', async() => {
+      const stream = createStreamSeekable()
+      setTimeout(() => stream.write('ABCD'), 10)
+      setTimeout(() => stream.write('EFGH'), 20)
+      stream.seek(2)
+      const result = await stream.readBytes(4)
+      expect(result.toString()).toEqual('CDEF')
     })
 
     it('should wait for the stream to become readable', async() => {
       const stream = createStreamSeekable()
       const result = stream.readBytes(2)
-      stream.write('ABCD')
+      setTimeout(() => stream.write('AB'), 10)
       const buffer = await result
-      expect(buffer!.toString()).toEqual('AB')
+      expect(buffer.toString()).toEqual('AB')
     })
 
     it('should return an empty buffer if the stream has ended', async() => {
       const stream = createStreamSeekable()
       stream.end()
       const result = await stream.readBytes(2)
-      expect(result).toBeUndefined()
+      expect(result).toHaveLength(0)
+    })
+
+    it('should await for the next chunks if the size is not reached yet', async() => {
+      const stream = createStreamSeekable({ highWaterMark: 4 })
+      setTimeout(() => stream.write('ABCD'), 5)
+      setTimeout(() => stream.write('EFGH'), 10)
+      setTimeout(() => stream.write('IJKL'), 15)
+      setTimeout(() => stream.write('MNOP'), 20)
+      setTimeout(() => stream.end(), 30)
+      const result = await stream.readBytes(16).then(b => b.toString())
+      expect(result).toEqual('ABCDEFGHIJKLMNOP')
+    })
+
+    it('should return undefined if the stream ends after a period of time', async() => {
+      const stream = createStreamSeekable()
+      const result = stream.readBytes(1)
+      setTimeout(() => stream.end(), 10)
+      const buffer = await result
+      expect(buffer).toHaveLength(0)
+    })
+
+    it('should reject the promise if the stream emits an error', async() => {
+      const stream = createStreamSeekable()
+      const result = stream.readBytes(1)
+      setTimeout(() => stream.emit('error', new Error('Test')), 10)
+      await expect(result).rejects.toThrow('Test')
     })
   })
 
@@ -560,7 +638,7 @@ if (import.meta.vitest) {
       const stream = createStreamSeekable()
       stream.write('ABCD')
       const result = await stream.peek(2)
-      expect(result!.toString()).toEqual('AB')
+      expect(result.toString()).toEqual('AB')
     })
 
     it('should not update the read offset when peeking data', async() => {
@@ -601,13 +679,14 @@ if (import.meta.vitest) {
     it('should read consecutive strings separated by a null byte', async() => {
       const stream = createStreamSeekable()
       stream.write('Hello,\0world!\0')
+      stream.end()
       const result1 = await stream.readString()
       const result2 = await stream.readString()
       expect(result1).toEqual('Hello,')
       expect(result2).toEqual('world!')
     })
 
-    it('shoulr return an empty string if the first byte is a null byte', async() => {
+    it('should return an empty string if the first byte is a null byte', async() => {
       const stream = createStreamSeekable()
       stream.write('\0Hello, world!')
       const result = await stream.readString()
