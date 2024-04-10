@@ -16,6 +16,11 @@
       "types": "./dist/Memoize.d.ts",
       "import": "./dist/Memoize.js"
     },
+    "./Once": {
+      "require": "./dist/Once.cjs",
+      "types": "./dist/Once.d.ts",
+      "import": "./dist/Once.js"
+    },
     ".": {
       "require": "./dist/index.cjs",
       "types": "./dist/index.d.ts",
@@ -28,6 +33,7 @@
     "LICENSE.md"
   ],
   "dependencies": {
+    "@unshared/functions": "workspace:*",
     "@unshared/types": "workspace:*"
   }
 }
