@@ -93,7 +93,7 @@ export class FSM<T extends object, K extends string> extends EventTarget {
     this.state = state ?? this.state
 
     // --- Dispatch the `running` event.
-    const eventRunning = new Event('running')
+    const eventRunning = new Event('start')
     this.dispatchEvent(eventRunning)
 
     // --- Run the machine until it is idle or finalized.
@@ -208,7 +208,7 @@ if (import.meta.vitest) {
   it('should dispatch a `running` event when the machine is running', async() => {
     const fsm = createFsm({ foo: 'bar' }, { init: () => {} })
     const event = vi.fn()
-    fsm.addEventListener('running', event)
+    fsm.addEventListener('start', event)
     await fsm.run('init')
     expect(event).toHaveBeenCalled()
   })
