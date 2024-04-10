@@ -1,5 +1,5 @@
 import { nextTick } from 'node:process'
-import { PassThrough, TransformCallback, TransformOptions } from 'node:stream'
+import { PassThrough, Readable, TransformCallback, TransformOptions } from 'node:stream'
 import { createResolvable } from '@unshared/functions'
 
 /**
@@ -188,7 +188,7 @@ export class Seekable extends PassThrough {
    * // Read the first 5 bytes from the forked stream.
    * const result = await forked.toArray() // => [ <Buffer 48 65 6c 6c 6f> ]
    */
-  fork(size: number = Number.MAX_SAFE_INTEGER): PassThrough {
+  fork(size: number = Number.MAX_SAFE_INTEGER): Readable {
     const forked = new PassThrough()
 
     const onChunk = (chunk: Buffer | string, encoding: BufferEncoding) => {
