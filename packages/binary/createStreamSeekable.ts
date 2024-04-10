@@ -284,29 +284,39 @@ export class Seekable extends PassThrough {
     this.offsetRead = 0
   }
 
-  async readString(size = Number.POSITIVE_INFINITY, encoding: BufferEncoding = 'utf8'): Promise<string> {
-    const chunks: Buffer[] = []
+  async readString(size?: number, encoding: BufferEncoding = 'utf8'): Promise<string> {
     const currentOffset = this.offsetRead
-    let chunksSize = 0
 
+    if (size !== undefined) {
+      const bytes = await this.readBytes(size)
+      const offsetNull = bytes.indexOf(0)
+      const result = (offsetNull !== -1 && offsetNull < size)
+        ? bytes.subarray(0, offsetNull).toString(encoding)
+        : bytes.subarray(0, size).toString(encoding)
+
+      this.offsetRead = currentOffset + result.length + (offsetNull === -1 ? 0 : 1)
+      return result
+    }
+
+    const chunks: Buffer[] = []
     // --- Read the data from the stream until a NULL byte is found.
-    while (this.offsetRead < this.offsetWrite && chunksSize < size) {
+    while (this.offsetRead < this.offsetWrite) {
       const chunk = await this.readBytes()
-      if (!chunk) break
+      if (chunk.length === 0) break
       const offsetNull = chunk.indexOf(0)
       chunks.push(chunk)
-      chunksSize += chunk.length
       if (offsetNull !== -1) break
     }
 
     // --- Concatenate the chunks and slice the result.
-    const buffer = Buffer.concat(chunks).subarray(0, size)
+    const buffer = Buffer.concat(chunks)
     const offsetNull = buffer.indexOf(0)
-    const offsetEnd = offsetNull === -1 ? buffer.length : Math.min(offsetNull)
-    const result = buffer.subarray(0, offsetEnd).toString(encoding)
+    const result = offsetNull === -1
+      ? buffer.toString(encoding)
+      : buffer.subarray(0, offsetNull).toString(encoding)
 
     // --- Reset the read offset after the null byte and return the result.
-    this.offsetRead = currentOffset + result.length + 1
+    this.offsetRead = currentOffset + result.length + (offsetNull === -1 ? 0 : 1)
     return result
   }
 
@@ -731,6 +741,7 @@ if (import.meta.vitest) {
       stream.write('Hello,\0world!')
       const result = await stream.readString()
       expect(result).toEqual('Hello,')
+      expect(stream.offsetRead).toEqual(7)
     })
 
     it('should read consecutive strings separated by a null byte', async() => {
@@ -741,6 +752,7 @@ if (import.meta.vitest) {
       const result2 = await stream.readString()
       expect(result1).toEqual('Hello,')
       expect(result2).toEqual('world!')
+      expect(stream.offsetRead).toEqual(14)
     })
 
     it('should return an empty string if the first byte is a null byte', async() => {
@@ -748,6 +760,7 @@ if (import.meta.vitest) {
       stream.write('\0Hello, world!')
       const result = await stream.readString()
       expect(result).toEqual('')
+      expect(stream.offsetRead).toEqual(1)
     })
 
     it('should read until the end of the stream', async() => {
@@ -755,6 +768,7 @@ if (import.meta.vitest) {
       stream.write('Hello, world!')
       const result = await stream.readString()
       expect(result).toEqual('Hello, world!')
+      expect(stream.offsetRead).toEqual(13)
     })
 
     it('should read a string with a specified encoding', async() => {
@@ -769,6 +783,7 @@ if (import.meta.vitest) {
       stream.write('Hello, world!')
       const result = await stream.readString(5)
       expect(result).toEqual('Hello')
+      expect(stream.offsetRead).toEqual(5)
     })
 
     it('should read the specified number of bytes until a null byte is found', async() => {
@@ -776,6 +791,7 @@ if (import.meta.vitest) {
       stream.write('Hello,\0world!')
       const result = await stream.readString(10)
       expect(result).toEqual('Hello,')
+      expect(stream.offsetRead).toEqual(7)
     })
   })
 
