@@ -2,23 +2,24 @@ import { MemoizeOptions, memoize } from '@unshared/functions/memoize'
 import { Function, MethodDecorator } from '@unshared/types'
 
 /**
- * Decorate a class method to memoize the result of the method.
+ * Decorate a method to memoize it's result based on the arguments. Meaning
+ * that it will return the same result without executing the method again,
+ * **unless the arguments change**.
  *
  * @param options The memoization options.
  * @returns The method descriptor.
  * @example
  * // Declare a class with a memoized method.
- * class MyClass {
+ * class Greeter {
  * ->@Memoize()
- *   getId() { return Math.random() }
+ *   greet(name: string) { return `Hello, ${name}! - ${Math.random()}` }
  * }
  *
- * // Use the class.
- * const instance = new MyClass()
- *
  * // The first call to the method will be executed.
- * instance.getId() // 0.123456789
- * instance.getId() // 0.123456789
+ * const instance = new Greeter()
+ * instance.greet('Alice') // 'Hello, Alice! - 0.123456789'
+ * instance.greet('Alice') // 'Hello, Alice! - 0.123456789'
+ * instance.greet('Bob')   // 'Hello, Bob!   - 0.987654321'
  */
 export function Memoize<T extends Function>(options?: MemoizeOptions<T>): MethodDecorator<T> {
   return function(target, propertyName, descriptor) {
