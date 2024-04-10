@@ -1,4 +1,4 @@
-import { sRGB, createColorSrgb } from './createColorSrgb'
+import { RGB, createColorRgb } from './createColorRgb'
 
 /** Format of an RGB color in hexadecimal format. */
 export type ColorBinaryFormat = 'argb' | 'rgb' | 'rgba'
@@ -13,14 +13,14 @@ export type ColorBinaryFormat = 'argb' | 'rgb' | 'rgba'
  * @returns The 24-bit or 32-bit integer representation of the color.
  * @example rgbToInteger({ r: 0x11, g: 0x22, b: 0x33, a: 0.5 }) // 0x11223380
  */
-export function colorSrgbToInteger(rgb: Partial<sRGB>, format: ColorBinaryFormat = 'rgba'): number {
-  let { r, g, b, a } = createColorSrgb(rgb)
+export function colorRgbToInteger(rgb: Partial<RGB>, format: ColorBinaryFormat = 'rgba'): number {
+  let { r, g, b, a } = createColorRgb(rgb)
 
-  // --- Clamp between 0 and 255 and cast as big integer.
-  r = Math.round(r * 0xFF)
-  g = Math.round(g * 0xFF)
-  b = Math.round(b * 0xFF)
-  a = Math.round(a * 0xFF)
+  // --- Clamp between 0 and 255.
+  r = Math.round(r)
+  g = Math.round(g)
+  b = Math.round(b)
+  a = Math.round(a)
 
   // --- Return integer with specified format.
   if (format === 'rgba') return (r << 24 | g << 16 | b << 8 | a) >>> 0
@@ -30,30 +30,30 @@ export function colorSrgbToInteger(rgb: Partial<sRGB>, format: ColorBinaryFormat
 
 /** c8 ignore next */
 if (import.meta.vitest) {
-  const color = { r: 0x11 / 0xFF, g: 0x22 / 0xFF, b: 0x33 / 0xFF, a: 0.5 }
+  const color = { r: 0x11, g: 0x22, b: 0x33, a: 0x80 }
 
-  it('should convert sRGB object to a 32-bit RGBA integer by default', () => {
-    const result = colorSrgbToInteger(color)
+  it('should convert RGB object to a 32-bit RGBA integer by default', () => {
+    const result = colorRgbToInteger(color)
     expect(result).toEqual(0x11_22_33_80)
   })
 
-  it('should convert sRGB object to a 24-bit RGB integer', () => {
-    const result = colorSrgbToInteger(color, 'rgb')
+  it('should convert RGB object to a 24-bit RGB integer', () => {
+    const result = colorRgbToInteger(color, 'rgb')
     expect(result).toEqual(0x11_22_33)
   })
 
-  it('should convert sRGB object to a 32-bit ARGB integer', () => {
-    const result = colorSrgbToInteger(color, 'argb')
+  it('should convert RGB object to a 32-bit ARGB integer', () => {
+    const result = colorRgbToInteger(color, 'argb')
     expect(result).toEqual(0x80_11_22_33)
   })
 
-  it('should convert sRGB object to a 32-bit RGBA integer', () => {
-    const result = colorSrgbToInteger(color, 'rgba')
+  it('should convert RGB object to a 32-bit RGBA integer', () => {
+    const result = colorRgbToInteger(color, 'rgba')
     expect(result).toEqual(0x11_22_33_80)
   })
 
-  it('should clamp sRGB channels that are out of range', () => {
-    const result = colorSrgbToInteger({ r: -1, g: 2, b: -0, a: 2 }, 'rgba')
+  it('should clamp RGB channels that are out of range', () => {
+    const result = colorRgbToInteger({ r: -1, g: 0x100, b: -0, a: 0x100 }, 'rgba')
     expect(result).toEqual(0x00_FF_00_FF)
   })
 }

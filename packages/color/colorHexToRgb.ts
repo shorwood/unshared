@@ -1,4 +1,4 @@
-import { sRGB, createColorSrgb } from './createColorSrgb'
+import { RGB, createColorRgb } from './createColorRgb'
 
 /** Regular expression to match a hexadecimal color. */
 const COLOR_HEX_REGEX = /^#?([\da-f]{3,4}|[\da-f]{6}|[\da-f]{8})$/i
@@ -9,10 +9,10 @@ const COLOR_HEX_REGEX = /^#?([\da-f]{3,4}|[\da-f]{6}|[\da-f]{8})$/i
  * byte is the alpha channel.
  *
  * @param color The hexadecimal color to convert.
- * @returns The sRGB representation of the color.
- * @example colorHexToSrgb('#fff') // => { r: 1, g: 1, b: 1, a: 1 }
+ * @returns The RGB representation of the color.
+ * @example colorHexToRgb('#fff') // => { r: 1, g: 1, b: 1, a: 1 }
  */
-export function colorHexToSrgb(color: string): sRGB {
+export function colorHexToRgb(color: string): RGB {
   const hex = color.match(COLOR_HEX_REGEX)?.[1]
   if (!hex) throw new Error(`Could not parse hexadecimal color from string: "${color}"`)
 
@@ -33,80 +33,74 @@ export function colorHexToSrgb(color: string): sRGB {
     a = a | (a << 4)
   }
 
-  // --- Normalize to 0-1 range.
-  r = r / 0xFF
-  g = g / 0xFF
-  b = b / 0xFF
-  a = a / 0xFF
-
   // --- Return RGB object.
-  return createColorSrgb({ r, g, b, a })
+  return createColorRgb({ r, g, b, a })
 }
 
-/** c8 ignore next */
+/** v8 ignore start */
 if (import.meta.vitest) {
-  it('should parse an hex3 into an sRGB object', () => {
-    const result = colorHexToSrgb('123')
+  it('should parse an hex3 into an RGB object', () => {
+    const result = colorHexToRgb('123')
     expect(result).toEqual({
-      r: 0x11 / 0xFF,
-      g: 0x22 / 0xFF,
-      b: 0x33 / 0xFF,
-      a: 1,
+      r: 0x11,
+      g: 0x22,
+      b: 0x33,
+      a: 0xFF,
     })
   })
 
-  it('should parse an hex4 into an sRGB object', () => {
-    const result = colorHexToSrgb('1234')
+  it('should parse an hex4 into an RGB object', () => {
+    const result = colorHexToRgb('1234')
     expect(result).toEqual({
-      r: 0x11 / 0xFF,
-      g: 0x22 / 0xFF,
-      b: 0x33 / 0xFF,
-      a: 0x44 / 0xFF,
+      r: 0x11,
+      g: 0x22,
+      b: 0x33,
+      a: 0x44,
     })
   })
 
-  it('should parse a color in hex6 into an sRGB object', () => {
-    const result = colorHexToSrgb('123456')
+  it('should parse a color in hex6 into an RGB object', () => {
+    const result = colorHexToRgb('123456')
     expect(result).toEqual({
-      r: 0x12 / 0xFF,
-      g: 0x34 / 0xFF,
-      b: 0x56 / 0xFF,
-      a: 1,
+      r: 0x12,
+      g: 0x34,
+      b: 0x56,
+      a: 0xFF,
     })
   })
 
-  it('should parse a color in hex8 into an sRGB object', () => {
-    const result = colorHexToSrgb('12345678')
+  it('should parse a color in hex8 into an RGB object', () => {
+    const result = colorHexToRgb('12345678')
     expect(result).toEqual({
-      r: 0x12 / 0xFF,
-      g: 0x34 / 0xFF,
-      b: 0x56 / 0xFF,
-      a: 0x78 / 0xFF,
+      r: 0x12,
+      g: 0x34,
+      b: 0x56,
+      a: 0x78,
     })
   })
 
   it('should omit the # prefix', () => {
-    const result = colorHexToSrgb('#12345678')
+    const result = colorHexToRgb('#12345678')
     expect(result).toEqual({
-      r: 0x12 / 0xFF,
-      g: 0x34 / 0xFF,
-      b: 0x56 / 0xFF,
-      a: 0x78 / 0xFF,
+      r: 0x12,
+      g: 0x34,
+      b: 0x56,
+      a: 0x78,
     })
   })
 
   it('should throw if the color is too short', () => {
-    const shouldThrow = () => colorHexToSrgb('12')
+    const shouldThrow = () => colorHexToRgb('12')
     expect(shouldThrow).toThrow('Could not parse hexadecimal color from string: "12"')
   })
 
   it('should throw if the color is too long', () => {
-    const shouldThrow = () => colorHexToSrgb('123456789')
+    const shouldThrow = () => colorHexToRgb('123456789')
     expect(shouldThrow).toThrow('Could not parse hexadecimal color from string: "123456789"')
   })
 
   it('should throw if the color has invalid characters', () => {
-    const shouldThrow = () => colorHexToSrgb('1234GG')
+    const shouldThrow = () => colorHexToRgb('1234GG')
     expect(shouldThrow).toThrow('Could not parse hexadecimal color from string: "1234GG"')
   })
 }

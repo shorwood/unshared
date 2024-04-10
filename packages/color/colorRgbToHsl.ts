@@ -1,16 +1,22 @@
 import { HSL, createColorHsl } from './createColorHsl'
-import { createColorSrgb, sRGB } from './createColorSrgb'
+import { createColorRgb, RGB } from './createColorRgb'
 
 /**
- * Converts an sRGB color to HSL. This function uses the algorithm described on
+ * Converts an RGB color to HSL. This function uses the algorithm described on
  * [Wikipedia](https://en.wikipedia.org/wiki/HSL_and_HSV#From_RGB) to convert the color.
  *
- * @param srgb sRGB color to convert to HSL.
+ * @param rgb RGB color to convert to HSL.
  * @returns The HSL representation of the color.
- * @example colorSrgbToHsl({ r: 1, g: 0, b: 0 }) // => { h: 0, s: 1, l: 0.5, a: 1 }
+ * @example colorRgbToHsl({ r: 1, g: 0, b: 0 }) // => { h: 0, s: 1, l: 0.5, a: 1 }
  */
-export function colorSrgbToHsl(srgb: Partial<sRGB>): HSL {
-  const { r, g, b, a } = createColorSrgb(srgb)
+export function colorRgbToHsl(rgb: Partial<RGB>): HSL {
+  let { r, g, b, a } = createColorRgb(rgb)
+
+  // --- Normalize between 0 and 1.
+  r /= 0xFF
+  g /= 0xFF
+  b /= 0xFF
+  a /= 0xFF
 
   // --- Get min and max values.
   const max = Math.max(r, g, b)
@@ -37,20 +43,20 @@ export function colorSrgbToHsl(srgb: Partial<sRGB>): HSL {
   return createColorHsl({ h, s, l, a })
 }
 
-/** c8 ignore next */
+/** v8 ignore start */
 if (import.meta.vitest) {
-  it('converts an sRGB color value to HSLA', () => {
-    const result = colorSrgbToHsl({ r: 0x11 / 0xFF, g: 0x22 / 0xFF, b: 0x33 / 0xFF, a: 0.5 })
+  it('converts an RGB color value to HSLA', () => {
+    const result = colorRgbToHsl({ r: 0x11, g: 0x22, b: 0x33, a: 0xFF / 2 })
     expect(result).toEqual({ h: 210, s: 0.500_000_000_000_000_1, l: 0.133_333_333_333_333_33, a: 0.5 })
   })
 
-  it('converts an sRGB color value to HSLA and defaults the alpha channel to 1', () => {
-    const result = colorSrgbToHsl({ r: 0x11 / 0xFF, g: 0x22 / 0xFF, b: 0x33 / 0xFF })
+  it('converts an RGB color value to HSLA and defaults the alpha channel to 1', () => {
+    const result = colorRgbToHsl({ r: 0x11, g: 0x22, b: 0x33 })
     expect(result).toEqual({ h: 210, s: 0.500_000_000_000_000_1, l: 0.133_333_333_333_333_33, a: 1 })
   })
 
   it('clamps the values if they are out of range', () => {
-    const result = colorSrgbToHsl({ r: -1, g: 2, b: -0, a: 2 })
+    const result = colorRgbToHsl({ r: -1, g: 0x100, b: -0, a: 0x100 })
     expect(result).toEqual({ h: 120, s: 1, l: 0.5, a: 1 })
   })
 }
