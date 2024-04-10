@@ -1,0 +1,56 @@
+import { once } from '@unshared/functions/once'
+import { Function, MethodDecorator } from '@unshared/types'
+
+/**
+ * Decorate a method to memoize it's result. Meaning that if the method is called,
+ * it will return the same result without executing the method again, **even if the
+ * method is called with different arguments**.
+ *
+ * @returns The method descriptor.
+ * @example
+ * // Declare a class with a onced method.
+ * class Greeter {
+ * ->@Once()
+ *  greet(name: string) { return `Hello, ${name}! - ${Math.random()}` }
+ * }
+ *
+ * // The first call to the method will be executed.
+ * const instance = new Greeter()
+ * instance.greet('Alice') // 'Hello, Alice! - 0.123456789'
+ * instance.greet('Bob')   // 'Hello, Alice! - 0.123456789'
+ */
+export function Once<T extends Function>(): MethodDecorator<T> {
+  return function(target, propertyName, descriptor) {
+    const method = descriptor.value!
+    descriptor.value = once(method).bind(target) as unknown as T
+    return descriptor
+  }
+}
+
+/* v8 ignore start */
+if (import.meta.vitest) {
+  it('should return the same value if no arguments are passed', () => {
+    const fn = vi.fn(Math.random)
+    class MyClass { @Once() getId() { return fn() } }
+    const instance = new MyClass()
+    const id1 = instance.getId()
+    const id2 = instance.getId()
+    expect(id1).toEqual(id2)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(fn).toHaveBeenCalledWith()
+  })
+
+  it('should return the same values if different arguments are passed', () => {
+    const fn = vi.fn((n = 0) => (n as number) + Math.random())
+    class MyClass { @Once() getId(n: number) { return fn(n) } }
+    const instance = new MyClass()
+    const id1 = instance.getId(1)
+    const id2 = instance.getId(1)
+    const id3 = instance.getId(2)
+    expect(id1).toEqual(id2)
+    expect(id1).toEqual(id3)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(fn).toHaveBeenCalledWith(1)
+    expect(fn).not.toHaveBeenCalledWith(2)
+  })
+}
