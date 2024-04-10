@@ -33,6 +33,7 @@ async function buildIndex(path: string): Promise<IndexFile> {
 
       // --- If the entity name starts with a dot, ignore it.
       if (entity.name.startsWith('__')) continue
+      if (entity.name.startsWith('scripts')) continue
 
       // --- If subdirectory contains an index file, add it to the imports.
       if (isDirectory) {
@@ -73,6 +74,9 @@ async function buildIndex(path: string): Promise<IndexFile> {
  */
 export async function buildIndexes(packageName: string): Promise<void> {
   const { packagePath } = await getPackageMetadata(packageName)
+
+  // --- Do not build the index for these packages.
+  if (packageName === 'eslint-config') return
 
   // --- Build the index file for the current directory.
   const indexFiles: IndexFile[] = [await buildIndex(packagePath)]
