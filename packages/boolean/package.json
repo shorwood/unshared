@@ -13,6 +13,9 @@
     "url": "git+ssh://git@github.com:shorwood/unshared.git",
     "directory": "packages/boolean"
   },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     "./Boolean": {
       "require": "./dist/Boolean.cjs",

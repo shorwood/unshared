@@ -1,5 +1,6 @@
 {
   "name": "@unshared/decorators",
+  "type": "module",
   "license": "MIT",
   "sideEffects": false,
   "author": "Stanley Horwood <stanley@hsjm.io>",
@@ -10,6 +11,9 @@
     "url": "git+ssh://git@github.com:shorwood/unshared.git",
     "directory": "packages/decorators"
   },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     "./Memoize": {
       "require": "./dist/Memoize.cjs",

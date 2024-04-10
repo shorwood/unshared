@@ -49,16 +49,17 @@ export async function buildPackageJson(packageName: string) {
   const packageExports = await createPackageExports(outPath, packagePath)
 
   // --- Update the package.json file.
+  packageJson.type = 'module'
+  packageJson.sideEffects = false
   packageJson.exports = packageExports
   packageJson.files = packageName === 'eslint-config'
     ? ['lib', 'README.md', 'LICENSE.md']
     : ['dist', 'README.md', 'LICENSE.md']
-  packageJson.main = packageExports['*']?.require
-  packageJson.module = packageExports['*']?.import
-  packageJson.types = packageExports['*']?.types
-  packageJson.browser = packageExports['*']?.browser
+  packageJson.main = packageExports['.']?.require
+  packageJson.module = packageExports['.']?.import
+  packageJson.types = packageExports['.']?.types
+  packageJson.browser = packageExports['.']?.browser
   packageJson.license = 'MIT'
-  packageJson.sideEffects = false
   packageJson.author = 'Stanley Horwood <stanley@hsjm.io>'
   packageJson.bugs = `${packageRemoteUrlHttps}/issues`
   packageJson.homepage = `${packageRemoteUrlHttps}#readme`

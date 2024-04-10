@@ -12,6 +12,9 @@
     "url": "git+ssh://git@github.com:shorwood/unshared.git",
     "directory": "packages/functions"
   },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     "./attach": {
       "require": "./dist/attach.cjs",

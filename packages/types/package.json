@@ -12,6 +12,7 @@
     "url": "git+ssh://git@github.com:shorwood/unshared.git",
     "directory": "packages/types"
   },
+  "types": "./dist/index.d.ts",
   "exports": {
     "./Any": {
       "types": "./dist/Any.d.ts"
