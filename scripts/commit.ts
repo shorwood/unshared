@@ -31,7 +31,7 @@ export async function commit() {
 
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   const response = await openai.chat.completions.create({
-    model: 'gpt-4-1106-preview',
+    model: 'gpt-4-turbo-preview',
     stream: true,
     max_tokens: 1024,
     temperature: 0.7,
