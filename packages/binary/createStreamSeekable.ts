@@ -1,7 +1,17 @@
 import { nextTick } from 'node:process'
-import { Duplex, PassThrough, TransformCallback, TransformOptions } from 'node:stream'
+import { PassThrough, TransformCallback, TransformOptions } from 'node:stream'
+import { createResolvable } from '@unshared/functions'
 
-const EventWriteBuffer = Symbol('SeekableData')
+/**
+ * In Node, when you start listening to a `data` event, it automatically
+ * starts the flow of data from the source to the destination. This means
+ * that the `read` method is called automatically when the stream is readable.
+ *
+ * This is an issue when we want to read data from the stream without consuming
+ * it. To solve this, we need override the `_write` method and we manually
+ * emit the `Symbol('EventWrite')` event when data is written to the stream.
+ */
+const EventWrite = Symbol('EventWrite')
 
 /**
  * Stream that buffers previously consumed data and allows it to be seeked, peeked, and rewound.
@@ -50,9 +60,9 @@ export class Seekable extends PassThrough {
    */
   override _write(chunk: Buffer, encoding: BufferEncoding, callback: TransformCallback) {
     const result = super._write(chunk, encoding, callback)
-    this.emit(EventWriteBuffer, chunk)
     this.buffer.set(this.offsetWrite, chunk)
     this.offsetWrite += chunk.length
+    this.emit(EventWrite, chunk, encoding)
     return result
   }
 
@@ -141,17 +151,19 @@ export class Seekable extends PassThrough {
 
     // --- Wait for the stream to become readable and queue the read operation.
     while (!this.writableEnded && this.offsetWrite < offsetTarget) {
-      await new Promise<void>((resolve, reject) => {
-        this.prependOnceListener('end', resolve)
-        this.prependOnceListener('error', reject)
-        this.prependOnceListener(EventWriteBuffer, resolve)
-        setTimeout(resolve)
-      })
+
+      // --- Create a resolvable to wait for the stream to become readable.
+      const resolvable = createResolvable<void>()
+      this.prependOnceListener('end', resolvable.resolve)
+      this.prependOnceListener('error', resolvable.reject)
+      this.prependOnceListener('data', resolvable.resolve)
+      setTimeout(resolvable.resolve)
+      await resolvable.promise
 
       // --- Remove the event listeners to prevent memory leaks.
-      this.removeAllListeners('end')
-      this.removeAllListeners('error')
-      this.removeAllListeners(EventWriteBuffer)
+      this.removeListener('data', resolvable.resolve)
+      this.removeListener('end', resolvable.resolve)
+      this.removeListener('error', resolvable.reject)
 
       // --- Trigger the read operation if the stream is readable.
       if (this.readable) super._read(0)
@@ -159,6 +171,50 @@ export class Seekable extends PassThrough {
 
     // --- Read the data from the internal buffer.
     return this.read(size) ?? Buffer.alloc(0)
+  }
+
+  /**
+   * Fork this stream from current position to the given size. If
+   * no size is given, the fork will contain all the data from the
+   * current position to the end of the stream.
+   *
+   * @param size The number of bytes to fork from the stream.
+   * @returns A new `Readable` stream with the forked data.
+   * @example
+   * const seekable = new Seekable()
+   * seekable.write('Hello, world!')
+   * const forked = seekable.fork(5)
+   *
+   * // Read the first 5 bytes from the forked stream.
+   * const result = await forked.toArray() // => [ <Buffer 48 65 6c 6c 6f> ]
+   */
+  fork(size: number = Number.MAX_SAFE_INTEGER): PassThrough {
+    const forked = new PassThrough()
+
+    const onChunk = (chunk: Buffer | string, encoding: BufferEncoding) => {
+      if (size >= chunk.length) {
+        forked.write(chunk, encoding)
+        size -= chunk.length
+        return
+      }
+
+      // --- If the size was reached, remove the listener and end the stream.
+      forked.removeListener(EventWrite, onChunk)
+      chunk = chunk.slice(0, size)
+      forked.write(chunk, encoding)
+      forked.end()
+      size = 0
+    }
+
+    // --- Listen for buffered data and write it to the forked stream.
+    this.addListener(EventWrite, onChunk)
+    this.prependOnceListener('end', () => {
+      forked.removeListener(EventWrite, onChunk)
+      forked.end()
+    })
+
+    // --- Return the forked stream.
+    return forked
   }
 
   /**
@@ -708,7 +764,6 @@ if (import.meta.vitest) {
       expect(result).toEqual('48656c6c6f2c20576f726c6421')
     })
 
-    // TODO: Implement the `size` option for the `readString` method.
     it('should read the specified number of bytes', async() => {
       const stream = createStreamSeekable()
       stream.write('Hello, world!')
@@ -828,6 +883,30 @@ if (import.meta.vitest) {
       stream.write(Buffer.from([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF0, 0x3F]))
       const result = await stream.readFloat64()
       expect(result).toEqual(1)
+    })
+  })
+
+  describe('fork', () => {
+    it('should create a fork of the stream from the current position', async() => {
+      const stream = createStreamSeekable()
+      const forked = stream.fork()
+      const chunks = forked.toArray()
+      stream.write('Hello')
+      stream.write(', World!')
+      stream.end()
+      const result = Buffer.concat(await chunks).toString()
+      expect(result).toEqual('Hello, World!')
+    })
+
+    it('should create a fork of the stream from the current position with a specified size', async() => {
+      const stream = createStreamSeekable()
+      const forked = stream.fork(5)
+      const chunks = forked.toArray()
+      stream.write('Hello')
+      stream.write(', World!')
+      stream.end()
+      const result = Buffer.concat(await chunks).toString()
+      expect(result).toEqual('Hello')
     })
   })
 }
