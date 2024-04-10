@@ -11,6 +11,9 @@
     "url": "git+ssh://git@github.com:shorwood/unshared.git",
     "directory": "packages/unocss-preset"
   },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     "./preset": {
       "require": "./dist/preset.cjs",
@@ -33,11 +36,17 @@
     "README.md",
     "LICENSE.md"
   ],
+  "peerDependencies": {
+    "@unocss/core": ">=0.59.0",
+    "@unocss/preset-mini": ">=0.59.0"
+  },
   "dependencies": {
-    "@unocss/core": "0.59.0-beta.1",
-    "@unocss/preset-mini": "0.59.0-beta.1",
     "@unshared/collection": "workspace:*",
     "@unshared/string": "workspace:*",
     "@unshared/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@unocss/core": "0.59.0-beta.1",
+    "@unocss/preset-mini": "0.59.0-beta.1"
   }
 }
