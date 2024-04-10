@@ -120,7 +120,7 @@ export function awaitable(object: object, createPromise?: FunctionAsync<unknown>
       if (!isPromiseMethod) return typeof value === 'function' ? value.bind(receiver) as unknown : value
 
       // --- Create the promise and return the bound promise method.
-      const promise = createPromise() as Promise<unknown>
+      const promise = createPromise()
       if (promise instanceof Promise === false)
         throw new TypeError('Cannot create awaitable object: Second parameter must be a promise or an asyncronous function')
       return promise[(property as 'catch' | 'finally' | 'then')].bind(promise)
