@@ -20,9 +20,9 @@ import { Function, MethodDecorator } from '@unshared/types'
  * instance.greet('Bob')   // 'Hello, Alice! - 0.123456789'
  */
 export function Once<T extends Function>(): MethodDecorator<T> {
-  return function(target, propertyName, descriptor) {
+  return (target, propertyName, descriptor) => {
     const method = descriptor.value!
-    descriptor.value = once(method).bind(target) as unknown as T
+    descriptor.value = once(method) as unknown as T
     return descriptor
   }
 }
@@ -52,5 +52,13 @@ if (import.meta.vitest) {
     expect(fn).toHaveBeenCalledTimes(1)
     expect(fn).toHaveBeenCalledWith(1)
     expect(fn).not.toHaveBeenCalledWith(2)
+  })
+
+  it('should preserve the method context', () => {
+    class MyClass { @Once() getValue() { return this?.value } value = { foo: 42 } }
+    const instance = new MyClass()
+    const result1 = instance.getValue()
+    const result2 = instance.value
+    expect(result1).toBe(result2)
   })
 }

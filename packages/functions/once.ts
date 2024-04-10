@@ -8,7 +8,7 @@ import { Function } from '@unshared/types'
  * @template T The type of the function.
  * @example Once<() => number> // => () => number & { reset: () => void }
  */
-export type Once<T extends Function> = T & { reset: () => void }
+export type Once<T extends Function = Function> = T & { reset: () => void }
 
 /**
  * Returns a function that will be executed at most one time, no matter how
@@ -39,10 +39,10 @@ export function once<T extends Function>(fn: T): Once<T> {
   let result: unknown
 
   // --- Wrap the function in a call guard.
-  const wrapped = (...args: unknown[]): unknown => {
+  function wrapped(this: unknown, ...args: unknown[]): unknown {
     if (called) return result
     called = true
-    return result = fn(...args)
+    return result = fn.call(this, ...args)
   }
 
   // --- Extend the wrapped function with a `reset` method.
@@ -96,5 +96,15 @@ if (import.meta.vitest) {
     wrapped.reset()
     wrapped()
     expect(fn).toHaveBeenCalledTimes(2)
+  })
+
+  it('should preserve the `this` context', () => {
+    const context = { value: 42 }
+    const fn = vi.fn(function(this: typeof context) {
+      return this.value
+    })
+    const wrapped = once(fn)
+    const result = wrapped.call(context)
+    expect(result).toEqual(42)
   })
 }

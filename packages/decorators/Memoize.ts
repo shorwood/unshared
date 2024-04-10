@@ -1,6 +1,7 @@
 import { MemoizeOptions, memoize } from '@unshared/functions/memoize'
 import { Function, MethodDecorator } from '@unshared/types'
 
+
 /**
  * Decorate a method to memoize it's result based on the arguments. Meaning
  * that it will return the same result without executing the method again,
@@ -22,9 +23,9 @@ import { Function, MethodDecorator } from '@unshared/types'
  * instance.greet('Bob')   // 'Hello, Bob!   - 0.987654321'
  */
 export function Memoize<T extends Function>(options?: MemoizeOptions<T>): MethodDecorator<T> {
-  return function(target, propertyName, descriptor) {
+  return function(_target, _propertyName, descriptor) {
     const method = descriptor.value!
-    descriptor.value = memoize(method, options).bind(target) as unknown as T
+    descriptor.value = memoize(method, options) as unknown as T
     return descriptor
   }
 }
@@ -54,5 +55,13 @@ if (import.meta.vitest) {
     expect(fn).toHaveBeenCalledTimes(2)
     expect(fn).toHaveBeenCalledWith(1)
     expect(fn).toHaveBeenCalledWith(2)
+  })
+
+  it('should preserve the method context', () => {
+    class MyClass { @Memoize() getValue() { return this?.value } value = { foo: 42 } }
+    const instance = new MyClass()
+    const result1 = instance.getValue()
+    const result2 = instance.value
+    expect(result1).toBe(result2)
   })
 }
