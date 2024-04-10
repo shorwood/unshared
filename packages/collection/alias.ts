@@ -1,4 +1,4 @@
-import { Fallback, Get, Path, } from '@unshared/types'
+import { Fallback, Get, Path } from '@unshared/types'
 import { deleteProperty } from './deleteProperty'
 import { get } from './get'
 import { set } from './set'

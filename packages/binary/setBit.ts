@@ -26,7 +26,7 @@ export function setBit<N extends number>(value: NumberInteger<N>, index: BitInde
 
   // --- Set the bit.
   return state
-    ? value |  (0b00000001 << index)
+    ? value | (0b00000001 << index)
     : value & ~(0b00000001 << index)
 }
 

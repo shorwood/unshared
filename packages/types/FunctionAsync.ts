@@ -7,7 +7,7 @@
  */
 export type FunctionAsync<U = unknown, P = unknown[]> = P extends unknown[]
   ? (...args: P) => Promise<U>
-  : (arg0: P) => Promise<U>
+  : (argument0: P) => Promise<U>
 
 /** c8 ignore next */
 if (import.meta.vitest) {
@@ -18,7 +18,7 @@ if (import.meta.vitest) {
 
   it('should return a FunctionAsync type with 1 parameter', () => {
     type Result = FunctionAsync<string, number>
-    expectTypeOf<Result>().toEqualTypeOf<(arg0: number) => Promise<string>>()
+    expectTypeOf<Result>().toEqualTypeOf<(argument0: number) => Promise<string>>()
   })
 
   it('should build a FunctionAsync with 2 parameters', () => {
