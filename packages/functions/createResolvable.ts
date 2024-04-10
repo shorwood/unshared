@@ -35,7 +35,7 @@ export interface Resolvable<T = unknown> extends Promise<T> {
  *
  * @returns A new resolvable object
  * @example
- * const state = resolvable()
+ * const state = createResolvable()
  * eventEmitter.on('event', state.resolve)
  * await state
  */
@@ -64,6 +64,12 @@ export function createResolvable<T>(): Resolvable<T> {
         reject(value)
       }
     })
+
+    // --- Bind the promise methods to the state object.
+    // eslint-disable-next-line unicorn/no-thenable
+    state.then = state.promise.then.bind(state.promise)
+    state.catch = state.promise.catch.bind(state.promise)
+    state.finally = state.promise.finally.bind(state.promise)
   }
 
   // --- Initalize instance and return it.
@@ -125,5 +131,28 @@ if (import.meta.vitest) {
     expect(result.rejected).toEqual(false)
     expect(result.promise).toBeInstanceOf(Promise)
     expectTypeOf(result.promise).toEqualTypeOf<Promise<void>>()
+  })
+
+  it('should return an awaitable object that resolves to the value', async() => {
+    const result = createResolvable<string>()
+    result.resolve('test')
+    const value = await result
+    expect(value).toEqual('test')
+  })
+
+  it('should return an awaitable object that rejects with the reason', async() => {
+    const result = createResolvable<string>()
+    result.reject('test')
+    await expect(result).rejects.toThrow('test')
+  })
+
+  it('should call the finally method when the promise is resolved', async() => {
+    const result = createResolvable()
+    const callback = vi.fn()
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    result.finally(callback)
+    result.resolve()
+    await result
+    expect(callback).toHaveBeenCalled()
   })
 }
