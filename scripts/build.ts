@@ -1,6 +1,6 @@
 import { rm } from 'node:fs/promises'
 import { argv } from 'node:process'
-import { parseArgv } from '../packages/process/parseCliArgv'
+import { parseCliArguments } from '../packages/process/parseCliArguments'
 import { buildBundle } from './buildBundle'
 import { buildDts } from './buildDts'
 import { buildIndexes } from './buildIndexes'
@@ -9,7 +9,7 @@ import { PACKAGES_NAMES } from './constants'
 import { getPackageMetadata } from './utils'
 
 export async function build() {
-  const { args } = parseArgv<{ watch: boolean }>(argv)
+  const { args } = parseCliArguments<{ watch: boolean }>(argv)
 
   // --- Get the package names to build.
   const packageNames = args.length > 0
