@@ -1,4 +1,5 @@
 {
+  "name": "@unshared/decorators",
   "license": "MIT",
   "sideEffects": false,
   "author": "Stanley Horwood <stanley@hsjm.io>",
