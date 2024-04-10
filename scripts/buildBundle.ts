@@ -14,7 +14,7 @@ import { getPackageMetadata } from './utils'
  * @returns A promise that resolves when the build is complete.
  */
 export async function buildBundle(packageName: PackageName) {
-  const { packagePath, outputPath } = await getPackageMetadata(packageName)
+  const { packagePath, outputPath, packageDependencies } = await getPackageMetadata(packageName)
   const inputPaths = await glob(['./**/index.ts', './*.ts'], { cwd: packagePath })
 
   // --- Do not build the bundle for theses packages.
@@ -24,18 +24,18 @@ export async function buildBundle(packageName: PackageName) {
   // --- Base Rollup configuration.
   const rollupConfig = {
     input: inputPaths,
-    external: [
-      /^node:.*/,
-      /^@unshared\/.*/,
-    ],
+    external: [...Object
+      .keys(packageDependencies)
+      .map(dep => new RegExp(`^${dep}`)), /^node:/],
 
     plugins: [
       RollupEsbuild({
         target: 'esnext',
-        platform: 'neutral',
-        treeShaking: true,
-        sourceMap: true,
+        platform: 'node',
         tsconfig: TSCONFIG_PATH,
+        sourceMap: true,
+        treeShaking: true,
+        minifySyntax: true,
         define: { 'import.meta.vitest': 'false' },
       }),
     ],

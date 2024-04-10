@@ -14,7 +14,7 @@ import { getPackageMetadata } from './utils'
  * @returns A promise that resolves when the build is complete.
  */
 export async function buildDts(packageName: PackageName) {
-  const { packagePath, outputPath } = await getPackageMetadata(packageName)
+  const { packagePath, outputPath, packageDependencies } = await getPackageMetadata(packageName)
   const inputPaths = await glob(['./**/index.ts', './*.ts'], { cwd: packagePath })
 
   // --- Do not build the declarations for theses packages.
@@ -23,10 +23,9 @@ export async function buildDts(packageName: PackageName) {
   // --- Rollup configuration for `.d.ts` files.
   const rollupConfig = {
     input: inputPaths,
-    external: [
-      /^node:.*/,
-      /^@unshared\/.*/,
-    ],
+    external: [...Object
+      .keys(packageDependencies)
+      .map(dep => new RegExp(`^${dep}`)), /^node:/],
 
     plugins: [
       RollupDts({

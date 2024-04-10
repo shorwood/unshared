@@ -22,8 +22,12 @@ export async function getPackageMetadata(packageName: string) {
   const packagePath = resolve(ROOT_PATH, 'packages', packageName)
   const packageRelativePath = relative(ROOT_PATH, packagePath)
   const packageJsonPath = resolve(packagePath, 'package.json')
-  const packageJsonFS = loadObject<PackageJSON>(packageJsonPath)
+  const packageJsonFS = loadObject<PackageJSON>(packageJsonPath, { createIfNotExists: true })
   const packageJson = await packageJsonFS
+  const packageDependencies = {
+    ...packageJson.dependencies,
+    ...packageJson.peerDependencies,
+  }
 
   return {
     packageName,
@@ -34,6 +38,7 @@ export async function getPackageMetadata(packageName: string) {
     packageJsonFS,
     packageJsonPath,
     packageRelativePath,
+    packageDependencies,
   }
 }
 
