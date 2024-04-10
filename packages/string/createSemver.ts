@@ -326,7 +326,7 @@ if (import.meta.vitest) {
     ['0.9.9', '~1.0.0', false],
     ['0.0.0', '~1.0.0', false],
 
-  ])('should check if %s is %s and return %s', (version: string, range: string, expected: boolean) => {
+  ])('should check if %s satisfies %s and return %s', (version: string, range: string, expected: boolean) => {
     const result = createSemver(version).satisfies(range)
     expect(result).toEqual(expected)
   })
