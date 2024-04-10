@@ -1,4 +1,4 @@
-import { B32 } from './encodeBase32'
+import { B32 } from './constants'
 
 /** Regular expression to test if a string is a valid Base32 string. */
 const BASE_32_REGEXP = /^[2-7a-z]+=*$/i

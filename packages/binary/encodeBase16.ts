@@ -1,7 +1,5 @@
+import { B16 } from './constants'
 import { BinaryLike, toUint8Array } from './toUint8Array'
-
-/** The Base16 alphabet table as defined in [RFC 4648](https://tools.ietf.org/html/rfc4648#section-8). */
-export const B16 = '0123456789abcdef'
 
 /**
  * Encode a `BinaryLike` into a Base16-encoded string. This implementation is

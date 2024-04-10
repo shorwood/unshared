@@ -1,4 +1,4 @@
-import { B16 } from './encodeBase16'
+import { B16 } from './constants'
 
 /** Regular expression to test if a string is a valid Base16 string. */
 const BASE_16_REGEXP = /^[\da-f]+$/i

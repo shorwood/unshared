@@ -1,4 +1,4 @@
-import { B64 } from './encodeBase64'
+import { B64 } from './constants'
 
 /** Regular expression to test if a string is a valid Base64 string. */
 const B64_EXP = /^[\d+/a-z]+=*$/i

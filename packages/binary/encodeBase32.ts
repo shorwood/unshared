@@ -1,7 +1,5 @@
+import { B32 } from './constants'
 import { BinaryLike, toUint8Array } from './toUint8Array'
-
-/** The Base32 alphabet table as defined in [RFC 4648](https://tools.ietf.org/html/rfc4648#section-6). */
-export const B32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
 
 /**
  * Encode a `BinaryLike` into a Base32-encoded string. This implementation is

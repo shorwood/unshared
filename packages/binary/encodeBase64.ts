@@ -1,7 +1,6 @@
+import { B64 } from './constants'
 import { BinaryLike, toUint8Array } from './toUint8Array'
 
-/** The Base64 alphabet table as defined in [RFC 4648](https://tools.ietf.org/html/rfc4648#section-4). */
-export const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 
 /**
  * Encode a `BinaryLike` into a Base64-encoded string. This implementation is

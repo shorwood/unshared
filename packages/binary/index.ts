@@ -1,3 +1,4 @@
+export * from './constants'
 export * from './createStreamDecompress'
 export * from './createStreamSeekable'
 export * from './decodeBase16'

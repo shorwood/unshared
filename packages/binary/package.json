@@ -12,6 +12,11 @@
     "directory": "packages/binary"
   },
   "exports": {
+    "./constants": {
+      "require": "./dist/constants.cjs",
+      "types": "./dist/constants.d.ts",
+      "import": "./dist/constants.js"
+    },
     "./createStreamDecompress": {
       "require": "./dist/createStreamDecompress.cjs",
       "types": "./dist/createStreamDecompress.d.ts",
