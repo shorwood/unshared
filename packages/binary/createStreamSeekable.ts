@@ -1,6 +1,5 @@
-import { randomBytes } from 'node:crypto'
 import { nextTick } from 'node:process'
-import { PassThrough, TransformCallback, TransformOptions } from 'node:stream'
+import { Duplex, PassThrough, TransformCallback, TransformOptions } from 'node:stream'
 
 const EventWriteBuffer = Symbol('SeekableData')
 
@@ -229,28 +228,29 @@ export class Seekable extends PassThrough {
     this.offsetRead = 0
   }
 
-  async readString(encoding: BufferEncoding = 'utf8'): Promise<string> {
+  async readString(size = Number.POSITIVE_INFINITY, encoding: BufferEncoding = 'utf8'): Promise<string> {
     const chunks: Buffer[] = []
     const currentOffset = this.offsetRead
+    let chunksSize = 0
 
     // --- Read the data from the stream until a NULL byte is found.
-    while (this.offsetRead < this.offsetWrite) {
+    while (this.offsetRead < this.offsetWrite && chunksSize < size) {
       const chunk = await this.readBytes()
       if (!chunk) break
-      const nullIndex = chunk.indexOf(0)
+      const offsetNull = chunk.indexOf(0)
       chunks.push(chunk)
-      if (nullIndex !== -1) break
+      chunksSize += chunk.length
+      if (offsetNull !== -1) break
     }
 
     // --- Concatenate the chunks and slice the result.
-    const buffer = Buffer.concat(chunks)
-    const nullIndex = buffer.indexOf(0)
-    const result = nullIndex === -1
-      ? buffer.toString(encoding)
-      : buffer.subarray(0, nullIndex).toString(encoding)
+    const buffer = Buffer.concat(chunks).subarray(0, size)
+    const offsetNull = buffer.indexOf(0)
+    const offsetEnd = offsetNull === -1 ? buffer.length : Math.min(offsetNull)
+    const result = buffer.subarray(0, offsetEnd).toString(encoding)
 
     // --- Reset the read offset after the null byte and return the result.
-    this.offsetRead = currentOffset + nullIndex + 1
+    this.offsetRead = currentOffset + result.length + 1
     return result
   }
 
@@ -547,6 +547,7 @@ if (import.meta.vitest) {
     })
 
     it('should not skip data when reading chunks', async() => {
+      const { randomBytes } = await import('node:crypto')
       const stream = createStreamSeekable({ highWaterMark: 512 })
       const promise = stream.readBytes(2048)
       setTimeout(() => stream.write(randomBytes(512)), 5)
@@ -703,16 +704,23 @@ if (import.meta.vitest) {
     it('should read a string with a specified encoding', async() => {
       const stream = createStreamSeekable()
       stream.write('Hello, World!')
-      const result = await stream.readString('hex')
+      const result = await stream.readString(undefined, 'hex')
       expect(result).toEqual('48656c6c6f2c20576f726c6421')
     })
 
     // TODO: Implement the `size` option for the `readString` method.
-    it.skip('should read the specified number of bytes', () => {
-      // const stream = createStreamSeekable()
-      // stream.write('Hello, world!')
-      // const result = await stream.readString(5)
-      // expect(result).toEqual('Hello')
+    it('should read the specified number of bytes', async() => {
+      const stream = createStreamSeekable()
+      stream.write('Hello, world!')
+      const result = await stream.readString(5)
+      expect(result).toEqual('Hello')
+    })
+
+    it('should read the specified number of bytes until a null byte is found', async() => {
+      const stream = createStreamSeekable()
+      stream.write('Hello,\0world!')
+      const result = await stream.readString(10)
+      expect(result).toEqual('Hello,')
     })
   })
 
