@@ -278,6 +278,9 @@
     "./Replace": {
       "types": "./dist/Replace.d.ts"
     },
+    "./StringCombinaison": {
+      "types": "./dist/StringCombinaison.d.ts"
+    },
     "./StringConstraint": {
       "types": "./dist/StringConstraint.d.ts"
     },
@@ -304,6 +307,9 @@
     },
     "./TupleFilter": {
       "types": "./dist/TupleFilter.d.ts"
+    },
+    "./TupleJoin": {
+      "types": "./dist/TupleJoin.d.ts"
     },
     "./TupleLength": {
       "types": "./dist/TupleLength.d.ts"
