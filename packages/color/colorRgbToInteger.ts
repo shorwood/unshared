@@ -13,7 +13,7 @@ export type ColorBinaryFormat = 'argb' | 'rgb' | 'rgba'
  * @returns The 24-bit or 32-bit integer representation of the color.
  * @example rgbToInteger({ r: 0x11, g: 0x22, b: 0x33, a: 0.5 }) // 0x11223380
  */
-export function colorRgbToInteger(rgb: Partial<RGB>, format: ColorBinaryFormat = 'rgba'): number {
+export function colorRgbToInteger(rgb?: Partial<RGB>, format: ColorBinaryFormat = 'rgba'): number {
   let { r, g, b, a } = createColorRgb(rgb)
 
   // --- Clamp between 0 and 255.
@@ -23,37 +23,42 @@ export function colorRgbToInteger(rgb: Partial<RGB>, format: ColorBinaryFormat =
   a = Math.round(a)
 
   // --- Return integer with specified format.
-  if (format === 'rgba') return (r << 24 | g << 16 | b << 8 | a) >>> 0
-  if (format === 'argb') return (a << 24 | r << 16 | g << 8 | b) >>> 0
-  return r << 16 | g << 8 | b
+  if (format === 'argb') return (b << 24 | g << 16 | r << 8 | a) >>> 0
+  if (format === 'rgba') return (a << 24 | b << 16 | g << 8 | r) >>> 0
+  return b << 16 | g << 8 | r
 }
 
-/** c8 ignore next */
+/** v8 ignore start */
 if (import.meta.vitest) {
   const color = { r: 0x11, g: 0x22, b: 0x33, a: 0x80 }
 
-  it('should convert RGB object to a 32-bit RGBA integer by default', () => {
+  it('should return opaque black if no color is provided', () => {
+    const result = colorRgbToInteger({})
+    expect(result).toEqual(0xFF000000)
+  })
+
+  it('should convert RGB object to a 32-bit RGBA32 integer by default', () => {
     const result = colorRgbToInteger(color)
-    expect(result).toEqual(0x11_22_33_80)
+    expect(result).toEqual(0x80_33_22_11)
   })
 
-  it('should convert RGB object to a 24-bit RGB integer', () => {
+  it('should convert RGB object to a 24-bit RGB24 integer', () => {
     const result = colorRgbToInteger(color, 'rgb')
-    expect(result).toEqual(0x11_22_33)
+    expect(result).toEqual(0x33_22_11)
   })
 
-  it('should convert RGB object to a 32-bit ARGB integer', () => {
+  it('should convert RGB object to a 32-bit ARGB32 integer', () => {
     const result = colorRgbToInteger(color, 'argb')
-    expect(result).toEqual(0x80_11_22_33)
+    expect(result).toEqual(0x33_22_11_80)
   })
 
-  it('should convert RGB object to a 32-bit RGBA integer', () => {
+  it('should convert RGB object to a 32-bit RGBA32 integer', () => {
     const result = colorRgbToInteger(color, 'rgba')
-    expect(result).toEqual(0x11_22_33_80)
+    expect(result).toEqual(0x80_33_22_11)
   })
 
   it('should clamp RGB channels that are out of range', () => {
-    const result = colorRgbToInteger({ r: -1, g: 0x100, b: -0, a: 0x100 }, 'rgba')
+    const result = colorRgbToInteger({ r: -1, g: 0x100, b: -0, a: 0x100 }, 'argb')
     expect(result).toEqual(0x00_FF_00_FF)
   })
 }

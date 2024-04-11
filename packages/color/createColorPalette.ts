@@ -95,7 +95,7 @@ export function createColorPalette<K extends number = ColorPaletteDefaultStops>(
     const key = stop.toFixed(0)
     const rgb = colorHslToRgb({ h, l, s })
     const hex = colorRgbToHex(rgb, 'rgb')
-    return [key, hex]
+    return [key, `#${hex}`]
   })
 
   // --- Return palette.
