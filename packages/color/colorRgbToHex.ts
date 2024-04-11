@@ -1,4 +1,4 @@
-import { ColorBinaryFormat, colorRgbToInteger } from './colorRgbToInteger'
+import { RGBBinaryFormat, colorRgbToInteger } from './colorRgbToInteger'
 import { RGB } from './createColorRgb'
 
 /**
@@ -11,7 +11,7 @@ import { RGB } from './createColorRgb'
  * @returns The hexadecimal string representation of the color.
  * @example colorRgbToHex({ r: 0x11, g: 0x22, b: 0x33, a: 0.5 }) // '112233'
  */
-export function colorRgbToHex(rgb: Partial<RGB>, format: ColorBinaryFormat = 'rgba'): string {
+export function colorRgbToHex(rgb: Partial<RGB>, format: RGBBinaryFormat = 'rgba'): string {
   const hex = colorRgbToInteger(rgb, format).toString(16)
 
   // --- Reverse the order of the components.
@@ -26,27 +26,32 @@ export function colorRgbToHex(rgb: Partial<RGB>, format: ColorBinaryFormat = 'rg
 
 /** v8 ignore start */
 if (import.meta.vitest) {
-  it('converts an RGB object to an RGBA32 hexadecimal string by default', () => {
+  it('should converts an RGB object to an RGBA32 hexadecimal string by default', () => {
     const result = colorRgbToHex({ r: 0x40, g: 0x80, b: 0xBF, a: 0x80 })
     expect(result).toEqual('4080bf80')
   })
 
-  it('converts an RGB object to an RGB24 hexadecimal string', () => {
+  it('should converts an RGB object to an RGB24 hexadecimal string', () => {
     const result = colorRgbToHex({ r: 0x40, g: 0x80, b: 0xBF, a: 0x80 }, 'rgb')
     expect(result).toEqual('4080bf')
   })
 
-  it('converts an RGB object to an ARGB32 hexadecimal string', () => {
+  it('should converts an RGB object to an ARGB32 hexadecimal string', () => {
     const result = colorRgbToHex({ a: 0x80, r: 0x40, g: 0x80, b: 0xBF }, 'argb')
     expect(result).toEqual('804080bf')
   })
 
-  it('converts an RGB object to an RGBA32 hexadecimal string', () => {
+  it('should converts an RGB object to an RGBA32 hexadecimal string', () => {
     const result = colorRgbToHex({ r: 0x40, g: 0x80, b: 0xBF, a: 0x80 }, 'rgba')
     expect(result).toEqual('4080bf80')
   })
 
-  it('clamps the values if they are out of range', () => {
+  it('should convert an RGB object to a BGRA32 hexadecimal string', () => {
+    const result = colorRgbToHex({ r: 0x40, g: 0x80, b: 0xBF, a: 0x80 }, 'bgra')
+    expect(result).toEqual('bf804080')
+  })
+
+  it('should clamps the values if they are out of range', () => {
     const result = colorRgbToHex({ r: -1, g: 0x100, b: -0, a: 0x100 }, 'rgba')
     expect(result).toEqual('00ff00ff')
   })

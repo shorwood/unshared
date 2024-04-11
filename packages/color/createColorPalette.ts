@@ -107,32 +107,32 @@ if (import.meta.vitest) {
   it('should generate a palette', () => {
     const result = createColorPalette('#6c50ff')
     expect(result).toEqual({
-      50: '#ffffff',
       100: '#f5f3ff',
-      200: '#d3caff',
-      300: '#b1a2ff',
-      400: '#8e79ff',
+      200: '#d2caff',
+      300: '#b0a1ff',
+      400: '#8e78ff',
+      50: '#ffffff',
       500: '#6c50ff',
-      600: '#3d18ff',
-      700: '#2400df',
-      800: '#1b00a7',
-      900: '#12006f',
+      600: '#3c17ff',
+      700: '#2300de',
+      800: '#1a00a6',
+      900: '#11006e',
     })
   })
 
   it('should generate a palette with a custom base stop', () => {
     const result = createColorPalette('#6c50ff', { baseStop: 400 })
     expect(result).toEqual({
-      50: '#e4dfff',
-      100: '#d3caff',
-      200: '#b1a2ff',
-      300: '#8e79ff',
+      50: '#e3deff',
+      100: '#d2caff',
+      200: '#b0a1ff',
+      300: '#8e78ff',
       400: '#6c50ff',
-      500: '#3d18ff',
-      600: '#2400df',
-      700: '#1b00a7',
-      800: '#12006f',
-      900: '#090036',
+      500: '#3c17ff',
+      600: '#2300de',
+      700: '#1a00a6',
+      800: '#11006e',
+      900: '#080036',
     })
   })
 
@@ -140,9 +140,9 @@ if (import.meta.vitest) {
     const result = createColorPalette('#6c50ff', { stops: [100, 200, 300, 400, 500] })
     expect(result).toEqual({
       100: '#f5f3ff',
-      200: '#d3caff',
-      300: '#b1a2ff',
-      400: '#8e79ff',
+      200: '#d2caff',
+      300: '#b0a1ff',
+      400: '#8e78ff',
       500: '#6c50ff',
     })
   })
@@ -150,15 +150,15 @@ if (import.meta.vitest) {
   it('should generate a palette of colors from a single hex color with custom parameters', () => {
     const result = createColorPalette('#B8B6FF', { hueShift: -20, stepDown: 5, stepUp: 3 })
     expect(result).toEqual({
-      50: '#fbfbff',
+      50: '#fafbff',
       100: '#f3f4ff',
-      200: '#e4e6ff',
-      300: '#d5d6ff',
-      400: '#c5c6ff',
-      500: '#b8b6ff',
-      600: '#a29dff',
-      700: '#8f83ff',
-      800: '#7d6aff',
+      200: '#e3e5ff',
+      300: '#d4d6ff',
+      400: '#c5c5ff',
+      500: '#b7b6ff',
+      600: '#a29cff',
+      700: '#8e83ff',
+      800: '#7c69ff',
       900: '#6c50ff',
     })
   })

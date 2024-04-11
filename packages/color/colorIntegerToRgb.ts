@@ -1,5 +1,5 @@
 import { clamp } from '@unshared/math/clamp'
-import { ColorBinaryFormat } from './colorRgbToInteger'
+import { RGBBinaryFormat } from './colorRgbToInteger'
 import { createColorRgb, RGB } from './createColorRgb'
 
 /**
@@ -10,36 +10,48 @@ import { createColorRgb, RGB } from './createColorRgb'
  * @returns The RGB object.
  * @example colorIntegerToRgb(0xFF8040BF) // => { r: 0.25, g: 0.5, b: 0.75, a: 0.5 }
  */
-export function colorIntegerToRgb(color: number, format: ColorBinaryFormat = 'rgba'): RGB {
-  color = clamp(color, 0, 0xFFFFFFFF)
+export function colorIntegerToRgb(color: number, format: RGBBinaryFormat = 'rgba'): RGB {
+  color = clamp(color, 0, 0xFF_FF_FF_FF)
 
-  // --- Extract the color components.
-  const c0 = (color >> 24) & 0xFF
-  const c1 = (color >> 16) & 0xFF
-  const c2 = (color >> 8) & 0xFF
-  const c3 = color & 0xFF
+  // --- Find the shift positions for each component.
+  let r = 0x00
+  let g = 0x00
+  let b = 0x00
+  let a = 0xFF
+  for (let i = 0; i < 4; i++) {
+    if (format[i] === 'r') r = color >> (i << 3) & 0xFF
+    if (format[i] === 'g') g = color >> (i << 3) & 0xFF
+    if (format[i] === 'b') b = color >> (i << 3) & 0xFF
+    if (format[i] === 'a') a = color >> (i << 3) & 0xFF
+  }
 
   // --- Return the RGB object.
-  if (format === 'argb') return createColorRgb({ b: c0, g: c1, r: c2, a: c3 })
-  if (format === 'rgba') return createColorRgb({ a: c0, b: c1, g: c2, r: c3 })
-  return createColorRgb({ b: c0, g: c1, r: c2, a: 0xFF })
+  return createColorRgb({ r, g, b, a })
 }
 
 /** v8 ignore start */
 if (import.meta.vitest) {
-  it('should convert a 32-bit integer to an RGB object in RGBA format', () => {
+  const { colorRgbToInteger } = await import('./colorRgbToInteger')
+
+  it('should allow two-way conversion with `colorRgbToInteger`', () => {
+    const color = colorRgbToInteger({ r: 0x40, g: 0x80, b: 0xBF, a: 0x80 })
+    const result = colorIntegerToRgb(color)
+    expect(result).toEqual({ r: 0x40, g: 0x80, b: 0xBF, a: 0x80 })
+  })
+
+  it('should convert a 32-bit integer to an RGB object in RGBA32 format', () => {
     const result = colorIntegerToRgb(0xF88040BF)
     expect(result).toEqual({ a: 0xF8, b: 0x80, g: 0x40, r: 0xBF })
   })
 
-  it('should convert a 32-bit integer to an RGB object in ARGB format', () => {
+  it('should convert a 32-bit integer to an RGB object in ARGB32 format', () => {
     const result = colorIntegerToRgb(0xBF8040F8, 'argb')
     expect(result).toEqual({ b: 0xBF, g: 0x80, r: 0x40, a: 0xF8 })
   })
 
-  it('should convert a 32-bit integer to an RGB object in RGB format', () => {
-    const result = colorIntegerToRgb(0x8040BF80, 'rgb')
-    expect(result).toEqual({ b: 0x80, g: 0x40, r: 0xBF, a: 0xFF })
+  it('should convert a 32-bit integer to an RGB object in RGB24 format', () => {
+    const result = colorIntegerToRgb(0x40BF80, 'rgb')
+    expect(result).toEqual({ r: 0x80, g: 0xBF, b: 0x40, a: 0xFF })
   })
 
   it('should clamp the value if it is too small', () => {
