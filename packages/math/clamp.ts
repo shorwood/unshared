@@ -1,5 +1,3 @@
-import { toSafeNumber } from './toSafeNumber'
-
 /**
  * [Clamps](https://en.wikipedia.org/wiki/Clamping_(graphics)) a number to a given range.
  * If the number is smaller than  the minimum value, the minimum value is returned. If
@@ -14,13 +12,6 @@ import { toSafeNumber } from './toSafeNumber'
  */
 export function clamp(number: number, min: number, max: number): number {
   if (min > max) throw new RangeError('Expected the minimum value to be less than or equal to the maximum value')
-
-  // --- Make sure the values are safe numbers.
-  number = toSafeNumber(number)
-  min = toSafeNumber(min)
-  max = toSafeNumber(max)
-
-  // --- Clamp the value.
   if (number <= min) return min
   if (number >= max) return max
   return number
