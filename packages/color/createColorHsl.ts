@@ -1,5 +1,4 @@
 import { clamp } from '@unshared/math/clamp'
-import { toSafeNumber } from '@unshared/math/toSafeNumber'
 
 /**
  * Color in the HSL color space. Each channel is a number between 0 and 1 except for the
@@ -33,7 +32,7 @@ export interface HSL {
  */
 export function createColorHsl(hsl: Partial<HSL>): HSL {
   return {
-    h: toSafeNumber(hsl.h ?? 0) % 360,
+    h: (hsl.h ?? 0) % 360,
     s: clamp(hsl.s ?? 0, 0, 1),
     l: clamp(hsl.l ?? 0, 0, 1),
     a: clamp(hsl.a ?? 1, 0, 1) || 1,
@@ -64,11 +63,6 @@ if (import.meta.vitest) {
 
   it('should default component channels to 0', () => {
     const result = createColorHsl({})
-    expect(result).toEqual({ h: 0, s: 0, l: 0, a: 1 })
-  })
-
-  it('should default Number.NaN component channels to 0', () => {
-    const result = createColorHsl({ h: Number.NaN, s: Number.NaN, l: Number.NaN, a: Number.NaN })
     expect(result).toEqual({ h: 0, s: 0, l: 0, a: 1 })
   })
 

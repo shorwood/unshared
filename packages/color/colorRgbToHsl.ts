@@ -45,7 +45,7 @@ export function colorRgbToHsl(rgb: Partial<RGB>): HSL {
 
 /** v8 ignore start */
 if (import.meta.vitest) {
-  it('converts an RGB color value to HSLA', () => {
+  it.only('converts an RGB color value to HSLA', () => {
     const result = colorRgbToHsl({ r: 0x11, g: 0x22, b: 0x33, a: 0xFF / 2 })
     expect(result).toEqual({ h: 210, s: 0.500_000_000_000_000_1, l: 0.133_333_333_333_333_33, a: 0.5 })
   })

@@ -56,7 +56,7 @@ if (import.meta.vitest) {
 
   it('should clamp the value if it is too small', () => {
     const result = colorIntegerToRgb(-1)
-    expect(result).toEqual({ r: 0, g: 0, b: 0, a: 0xFF })
+    expect(result).toEqual({ r: 0, g: 0, b: 0, a: 0 })
   })
 
   it('should clamp the value if it is too large', () => {

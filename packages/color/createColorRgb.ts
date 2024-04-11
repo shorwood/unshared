@@ -40,19 +40,18 @@ export interface RGB {
  */
 export function createColorRgb(rgb: Partial<RGB> = {}): RGB {
   return {
-    r: clamp(rgb.r ?? 0, 0, 0xFF),
-    g: clamp(rgb.g ?? 0, 0, 0xFF),
-    b: clamp(rgb.b ?? 0, 0, 0xFF),
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    a: clamp(rgb.a || 0xFF, 0, 0xFF),
+    r: clamp(rgb.r ?? 0x00, 0, 0xFF),
+    g: clamp(rgb.g ?? 0x00, 0, 0xFF),
+    b: clamp(rgb.b ?? 0x00, 0, 0xFF),
+    a: clamp(rgb.a ?? 0xFF, 0, 0xFF),
   }
 }
 
 /** v8 ignore start */
 if (import.meta.vitest) {
   it('should create a color in the RGB color space', () => {
-    const result = createColorRgb({ g: 0x80, a: 0x80, r: 1, b: 0 })
-    expect(result).toEqual({ g: 0x80, a: 0x80, r: 1, b: 0 })
+    const result = createColorRgb({ g: 0x80, a: 0x80, r: 0x01, b: 0x00 })
+    expect(result).toEqual({ g: 0x80, a: 0x80, r: 0x01, b: 0x00 })
   })
 
   it('should default the alpha channel to 255', () => {
@@ -73,11 +72,6 @@ if (import.meta.vitest) {
   it('should clamp RGB channels that are out of range', () => {
     const result = createColorRgb({ r: -1, g: -0, b: 0x100, a: 0x100 })
     expect(result).toEqual({ r: 0, g: 0, b: 0xFF, a: 0xFF })
-  })
-
-  it('should replace Number.NaN values with default values', () => {
-    const result = createColorRgb({ r: Number.NaN, g: Number.NaN, b: Number.NaN, a: Number.NaN })
-    expect(result).toEqual({ r: 0, g: 0, b: 0, a: 0xFF })
   })
 
   it('should return a type-safe RGB object', () => {

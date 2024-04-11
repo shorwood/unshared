@@ -39,6 +39,11 @@ if (import.meta.vitest) {
     expect(result).toEqual(0xFF000000)
   })
 
+  it('should return a transparent black if alpha is 0', () => {
+    const result = colorRgbToInteger({ a: 0 })
+    expect(result).toEqual(0x00000000)
+  })
+
   it('should convert RGB object to a 32-bit RGBA32 integer by default', () => {
     const result = colorRgbToInteger(color)
     expect(result).toEqual(0x80332211)
