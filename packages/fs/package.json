@@ -16,6 +16,11 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
+    "./createTemporaryFile": {
+      "require": "./dist/createTemporaryFile.cjs",
+      "types": "./dist/createTemporaryFile.d.ts",
+      "import": "./dist/createTemporaryFile.js"
+    },
     "./findAncestor": {
       "require": "./dist/findAncestor.cjs",
       "types": "./dist/findAncestor.d.ts",
@@ -45,6 +50,11 @@
       "require": "./dist/updateFile.cjs",
       "types": "./dist/updateFile.d.ts",
       "import": "./dist/updateFile.js"
+    },
+    "./withTemporaryFiles": {
+      "require": "./dist/withTemporaryFiles.cjs",
+      "types": "./dist/withTemporaryFiles.d.ts",
+      "import": "./dist/withTemporaryFiles.js"
     },
     ".": {
       "require": "./dist/index.cjs",
