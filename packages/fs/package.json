@@ -71,6 +71,7 @@
     "@unshared/collection": "workspace:*",
     "@unshared/functions": "workspace:*",
     "@unshared/reactivity": "workspace:*",
-    "@unshared/string": "workspace:*"
+    "@unshared/string": "workspace:*",
+    "@unshared/types": "workspace:*"
   }
 }
