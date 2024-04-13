@@ -1,7 +1,8 @@
-import { Tuple } from '@unshared/types'
-import { createTemporaryFile } from './createTemporaryFile'
+import { MaybeArray, Tuple, TupleLength, Function } from '@unshared/types'
+import { CreateTemporaryFileOptions, createTemporaryFile } from './createTemporaryFile'
 
 type Callback<U, N extends number> = (...paths: Tuple<N, string>) => Promise<U> | U
+
 /**
  * Wrap a function that will create one or more temporary files and
  * remove them after the function has been executed, regardless of
@@ -11,13 +12,19 @@ type Callback<U, N extends number> = (...paths: Tuple<N, string>) => Promise<U> 
  * @param fn The function to wrap.
  * @returns A promise that resolves to the result of the function.
  */
+export async function withTemporaryFiles<U, N extends number>(count: N, fn: Callback<U, N>): Promise<U>
+export async function withTemporaryFiles<U, T extends CreateTemporaryFileOptions[]>(options: T, fn: Callback<U, TupleLength<T>>): Promise<U>
+export async function withTemporaryFiles<U, T extends CreateTemporaryFileOptions>(option: T, fn: Callback<U, 1>): Promise<U>
+export async function withTemporaryFiles(options: MaybeArray<CreateTemporaryFileOptions> | number, fn: Function<unknown>): Promise<unknown> {
 
-export async function withTemporaryFiles<U, N extends number>(count: N, fn: Callback<U, N>): Promise<U> {
+  // --- Normalize the arguments.
+  if (typeof options === 'number') options = Array.from({ length: options }, () => ({}))
+  if (!Array.isArray(options)) options = [options]
 
   // --- Create temporary files.
-  const pathsPromises = Array.from({ length: count }, () => createTemporaryFile())
+  const pathsPromises = options.map(option => createTemporaryFile(undefined, option))
   const pathsInstances = await Promise.all(pathsPromises)
-  const paths = pathsInstances.map(x => x[0]) as Tuple<N, string>
+  const paths = pathsInstances.map(x => x[0])
 
   try {
     return await fn(...paths)
@@ -73,6 +80,32 @@ if (import.meta.vitest) {
     const exists2 = existsSync(temporaryPath2!)
     expect(exists1).toEqual(false)
     expect(exists2).toEqual(false)
+  })
+
+  it('should call a function with a temporary file in the specified directory', async() => {
+    await withTemporaryFiles({ directory: '/cache' }, (path) => {
+      expect(path).toMatch(/^\/cache\/[\da-z]+$/)
+    })
+  })
+
+  it('should call a function with a temporary file with the specified extension', async() => {
+    await withTemporaryFiles({ extension: 'txt' }, (path) => {
+      expect(path).toMatch(/^\/tmp\/[\da-z]+\.txt$/)
+    })
+  })
+
+  it('should call a function with a temporary file with the given random function', async() => {
+    await withTemporaryFiles({ random: () => 'foo' }, (path) => {
+      expect(path).toMatch(/^\/tmp\/foo$/)
+    })
+  })
+
+  it('should call a function with multiple temporary files with different options', async() => {
+    await withTemporaryFiles([{ directory: '/cache' }, { extension: 'txt' }, { random: () => 'foo' }], (path1, path2, path3) => {
+      expect(path1).toMatch(/^\/cache\/[\da-z]+$/)
+      expect(path2).toMatch(/^\/tmp\/[\da-z]+\.txt$/)
+      expect(path3).toMatch(/^\/tmp\/foo$/)
+    })
   })
 
   it('should return the result of the function', async() => {
