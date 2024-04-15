@@ -9,7 +9,7 @@ type Callback<U, N extends number> = (...paths: Tuple<N, string>) => Promise<U> 
  * whether the function throws an error or not.
  *
  * @param count The number of temporary files to create.
- * @param fn The function to wrap.
+ * @param fn The function to wrap that takes the temporary directory path(s) as arguments.
  * @returns A promise that resolves to the result of the function.
  */
 export async function withTemporaryFiles<U, N extends number>(count: N, fn: Callback<U, N>): Promise<U>

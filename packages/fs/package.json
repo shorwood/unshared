@@ -16,6 +16,11 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
+    "./createTemporaryDirectory": {
+      "require": "./dist/createTemporaryDirectory.cjs",
+      "types": "./dist/createTemporaryDirectory.d.ts",
+      "import": "./dist/createTemporaryDirectory.js"
+    },
     "./createTemporaryFile": {
       "require": "./dist/createTemporaryFile.cjs",
       "types": "./dist/createTemporaryFile.d.ts",
@@ -50,6 +55,11 @@
       "require": "./dist/updateFile.cjs",
       "types": "./dist/updateFile.d.ts",
       "import": "./dist/updateFile.js"
+    },
+    "./withTemporaryDirectories": {
+      "require": "./dist/withTemporaryDirectories.cjs",
+      "types": "./dist/withTemporaryDirectories.d.ts",
+      "import": "./dist/withTemporaryDirectories.js"
     },
     "./withTemporaryFiles": {
       "require": "./dist/withTemporaryFiles.cjs",

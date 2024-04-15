@@ -65,13 +65,15 @@ export async function createTemporaryFile(content?: Parameters<typeof writeFile>
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  const { readFileSync, existsSync } = await import('node:fs')
+  const { statSync, readFileSync, existsSync } = await import('node:fs')
 
   it('should create an empty temporary file in "/tmp/<random>"', async() => {
     const [path] = await createTemporaryFile()
+    const isFile = statSync(path).isFile()
     const content = readFileSync(path, 'utf8')
     expect(path).toMatch(/^\/tmp\/[\da-z]+$/)
-    expect (content).toEqual('')
+    expect (isFile).toEqual(true)
+    expect(content).toEqual('')
   })
 
   it('should create a temporary file with the specified content', async() => {
