@@ -170,6 +170,9 @@
     "./MaybeArray": {
       "types": "./dist/MaybeArray.d.ts"
     },
+    "./MaybeFunction": {
+      "types": "./dist/MaybeFunction.d.ts"
+    },
     "./MaybeLiteral": {
       "types": "./dist/MaybeLiteral.d.ts"
     },
