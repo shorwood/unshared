@@ -61,4 +61,13 @@ if (import.meta.vitest) {
     const result2 = instance.value
     expect(result1).toBe(result2)
   })
+
+  it('should have different results for different instances', () => {
+    class MyClass { @Once() getValue() { return Math.random() } }
+    const instance1 = new MyClass()
+    const instance2 = new MyClass()
+    const result1 = instance1.getValue()
+    const result2 = instance2.getValue()
+    expect(result1).not.toEqual(result2)
+  })
 }
