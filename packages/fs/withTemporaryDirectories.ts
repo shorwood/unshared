@@ -67,4 +67,50 @@ if (import.meta.vitest) {
     expect(exists1).toEqual(false)
     expect(exists2).toEqual(false)
   })
+
+  it('should remove the temporary directories even if the function throws an error', async() => {
+    let temporaryPath1: string
+    let temporaryPath2: string
+    await withTemporaryDirectories(2, (path1, path2) => {
+      temporaryPath1 = path1
+      temporaryPath2 = path2
+      throw new Error('Test error')
+    }).catch(() => {})
+    const exists1 = existsSync(temporaryPath1!)
+    const exists2 = existsSync(temporaryPath2!)
+    expect(exists1).toEqual(false)
+    expect(exists2).toEqual(false)
+  })
+
+  it('should call a function with a temporary file in the specified directory', async() => {
+    await withTemporaryDirectories({ directory: '/cache' }, (path) => {
+      expect(path).toMatch(/^\/cache\/[\da-z]+$/)
+    })
+  })
+
+  it('should call a function with a temporary file with the given random function', async() => {
+    await withTemporaryDirectories({ random: () => 'foo' }, (path) => {
+      expect(path).toMatch(/^\/tmp\/foo$/)
+    })
+  })
+
+  it('should call a function with multiple temporary files with different options', async() => {
+    await withTemporaryDirectories(
+      [{ directory: '/cache' }, { random: () => 'foo' }],
+      (path1, path2) => {
+        expect(path1).toMatch(/^\/cache\/[\da-z]+$/)
+        expect(path2).toMatch(/^\/tmp\/foo$/)
+      },
+    )
+  })
+
+  it('should return the result of the function', async() => {
+    const result = await withTemporaryDirectories(1, () => 42)
+    expect(result).toEqual(42)
+  })
+
+  it('should throw an error if the function throws an error', async() => {
+    const shouldReject = withTemporaryDirectories(1, () => { throw new Error('Test error') })
+    await expect(shouldReject).rejects.toThrow('Test error')
+  })
 }
