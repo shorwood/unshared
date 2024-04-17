@@ -223,7 +223,7 @@ if (import.meta.vitest) {
     ])
   })
 
-  it.only('should find files but exclude the dist directory', async() => {
+  it('should find files but exclude the dist directory', async() => {
     const files = await glob('*/*', { cwd: '/project', exclude: 'dist/**' })
     expect(files).toEqual([
       '/project/README.md',
