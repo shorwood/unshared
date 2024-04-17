@@ -35,27 +35,29 @@ export type Once<T extends Function = Function> = T & { reset: () => void }
  * fn() // => 0.987654321
  */
 export function once<T extends Function>(fn: T): Once<T> {
-  let called = false
-  let result: unknown
+  const cache = new Map<unknown, { result: unknown }>()
 
   // --- Wrap the function in a call guard.
   function wrapped(this: unknown, ...args: unknown[]): unknown {
-    if (called) return result
-    called = true
-    return result = fn.call(this, ...args)
+    const context = this === undefined ? 'global' : this
+    const isCalled = cache.get(context)
+    if (isCalled) return isCalled.result
+    const result = fn.call(this, ...args) as unknown
+    cache.set(context, { result })
+    return result
   }
 
   // --- Extend the wrapped function with a `reset` method.
-  wrapped.reset = () => {
-    called = false
-    result = undefined
+  wrapped.reset = function(this: unknown) {
+    const context = this === wrapped ? 'global' : this
+    cache.delete(context)
   }
 
   // --- Return the wrapped function.
   return wrapped as Once<T>
 }
 
-/** c8 ignore next */
+/** v8 ignore start */
 if (import.meta.vitest) {
   it('should only call the function once', () => {
     const fn = vi.fn()
@@ -98,7 +100,7 @@ if (import.meta.vitest) {
     expect(fn).toHaveBeenCalledTimes(2)
   })
 
-  it('should preserve the `this` context', () => {
+  it('should preserve the `this` context when calling the function', () => {
     const context = { value: 42 }
     const fn = vi.fn(function(this: typeof context) {
       return this.value
@@ -106,5 +108,12 @@ if (import.meta.vitest) {
     const wrapped = once(fn)
     const result = wrapped.call(context)
     expect(result).toEqual(42)
+  })
+
+  it('should return different results for different `this` contexts', () => {
+    const wrapped = once(Math.random)
+    const result1 = wrapped.call({})
+    const result2 = wrapped.call({})
+    expect(result1).not.toEqual(result2)
   })
 }
