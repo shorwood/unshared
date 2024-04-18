@@ -51,6 +51,11 @@
       "types": "./dist/createIndex.d.ts",
       "import": "./dist/createIndex.js"
     },
+    "./createQueue": {
+      "require": "./dist/createQueue.cjs",
+      "types": "./dist/createQueue.d.ts",
+      "import": "./dist/createQueue.js"
+    },
     "./createResolvable": {
       "require": "./dist/createResolvable.cjs",
       "types": "./dist/createResolvable.d.ts",
