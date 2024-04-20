@@ -72,8 +72,10 @@ export function createResolvable<T>(): Resolvable<T> {
     state.finally = state.promise.finally.bind(state.promise)
   }
 
-  // --- Initalize instance and return it.
+  // --- Set prototype chain to promise so that it can be detected as a promise
+  // --- by other libraries or functions. Then initalize instance and return it.
   state.reset()
+  Object.setPrototypeOf(state, Promise.prototype)
   return state as Resolvable<T>
 }
 
@@ -86,6 +88,11 @@ if (import.meta.vitest) {
     expect(result.rejected).toEqual(false)
     expect(result.promise).toBeInstanceOf(Promise)
     expectTypeOf(result).toEqualTypeOf<Resolvable<unknown>>()
+  })
+
+  it('should be an instance of Promise', () => {
+    const result = createResolvable()
+    expect(result).toBeInstanceOf(Promise)
   })
 
   it('should be resolved after resolve is called', async() => {
