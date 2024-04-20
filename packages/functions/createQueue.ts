@@ -290,6 +290,20 @@ if (import.meta.vitest) {
       await expect(shouldReject).rejects.toThrow('Oops!')
     })
 
+    it('should free the queue after a task is complete', async() => {
+      const queue = createQueue()
+      const task = vi.fn()
+      await queue.call(task)
+      expect(queue.length).toEqual(0)
+    })
+
+    it('should free the queue after a task is rejected', async() => {
+      const queue = createQueue()
+      const task = vi.fn(() => { throw new Error('Oops!') })
+      await queue.call(task).catch(() => {})
+      expect(queue.length).toEqual(0)
+    })
+
     it('should abort a task that is not running and reject with an error', async() => {
       const queue = createQueue({ concurency: -1 })
       const task = queue.call(Math.random)
