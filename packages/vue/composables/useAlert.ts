@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { reactive } from 'vue-demi'
+import { reactive } from 'vue'
 
 export interface Alert {
   /** Unique id for lifecycle handling. Defaults to auto-generated one. */
@@ -101,6 +100,7 @@ export function useAlert(): UseAlertReturnType {
 }
 
 /* v8 ignore start */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 if (import.meta.vitest) {
   const { sleep } = await import('@unshared/functions/sleep')
 
