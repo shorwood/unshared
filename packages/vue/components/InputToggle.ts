@@ -1,7 +1,6 @@
 /* eslint-disable unicorn/no-null */
-import { mount } from '@vue/test-utils'
 import { useVModel } from '@vueuse/core'
-import { Component, PropType, VNode, computed, defineComponent, h, markRaw, mergeProps, nextTick, toRefs } from 'vue-demi'
+import { Component, PropType, VNode, computed, defineComponent, h, markRaw, mergeProps, nextTick } from 'vue'
 import { exposeToDevtool } from '../utils'
 
 export const InputToggle = defineComponent({
@@ -37,37 +36,36 @@ export const InputToggle = defineComponent({
     },
   },
   setup: (props, { attrs, slots, emit }) => {
-    const { value, classActive, type, disabled, readonly, loading } = toRefs(props)
     const model = useVModel(props, 'modelValue', emit, { passive: true, eventName: 'update:modelValue' })
 
     // --- Compute reactive `isActive` state.
     const isActive = computed(() => {
-      if (type.value === 'checkbox') return Array.isArray(model.value) && model.value.includes(value.value)
-      if (type.value === 'radio') return model.value === value.value
-      if (type.value === 'switch') return !!model.value
+      if (props.type === 'checkbox') return Array.isArray(model.value) && model.value.includes(props.value)
+      if (props.type === 'radio') return model.value === props.value
+      if (props.type === 'switch') return !!model.value
       return false
     })
 
     // --- Declare `toggle` method to handle click event.
     const toggle = () => {
       // --- If `switch`, just toggle the value.
-      if (type.value === 'switch') {
+      if (props.type === 'switch') {
         model.value = !model.value
       }
 
       // --- If `radio`, set the value.
-      else if (type.value === 'radio') { model.value = value.value }
+      else if (props.type === 'radio') { model.value = props.value }
 
       // --- If `checkbox`, but value is not an array, wrap it in an array.
-      else if (type.value === 'checkbox' && !Array.isArray(model.value)) {
-        model.value = [value.value]
+      else if (props.type === 'checkbox' && !Array.isArray(model.value)) {
+        model.value = [props.value]
       }
 
       // --- If `checkbox`, add or remove value.
-      else if (type.value === 'checkbox' && Array.isArray(model.value)) {
+      else if (props.type === 'checkbox' && Array.isArray(model.value)) {
         model.value = isActive.value
-          ? [...model.value].filter(x => x !== value.value)
-          : [...model.value, value.value]
+          ? [...model.value].filter(x => x !== props.value)
+          : [...model.value, props.value]
       }
     }
 
@@ -78,19 +76,19 @@ export const InputToggle = defineComponent({
 
     // --- Dynamically compute classes.
     const classes = computed(() => [
-      isActive.value && classActive.value,
-      disabled.value && props.classDisabled,
-      loading.value && props.classLoading,
-      readonly.value && props.classReadonly,
+      isActive.value && props.classActive,
+      props.disabled && props.classDisabled,
+      props.loading && props.classLoading,
+      props.readonly && props.classReadonly,
     ].filter(Boolean))
 
     // --- Build the props object.
     const propsObject = computed(() => ({
-      'disabled': disabled.value || undefined,
-      'readonly': readonly.value || undefined,
-      'aria-disabled': disabled.value || undefined,
-      'aria-readonly': readonly.value || undefined,
-      'aria-busy': loading.value || undefined,
+      'disabled': props.disabled || undefined,
+      'readonly': props.readonly || undefined,
+      'aria-disabled': props.disabled || undefined,
+      'aria-readonly': props.readonly || undefined,
+      'aria-busy': props.loading || undefined,
       'class': classes.value.some(Boolean) ? classes.value : undefined,
       'onClick': toggle,
     }))
@@ -107,6 +105,16 @@ export const InputToggle = defineComponent({
 /* v8 ignore start */
 if (import.meta.vitest) {
   // @vitest-environment happy-dom
+  const { mount } = await import('@vue/test-utils')
+
+  describe('InputToggle', () => {
+    it('should render a simple button by default', () => {
+      const wrapper = mount(InputToggle)
+      const html = wrapper.html()
+      expect(html).toEqual('<button></button>')
+    })
+  })
+
   describe('switch', () => {
     it.each([undefined, false, 0])('should switch the modelValue when clicked from %s to true', async(initialValue) => {
       const wrapper = mount(InputToggle, { props: {
