@@ -16,11 +16,11 @@ export type GlobEntry = Stats | string
  * The result of a glob operation. If `Stat` is `true` the result will be an
  * array of file stats. Otherwise the result will be an array of file paths.
  */
-export type GlobResult<T extends boolean> = T extends true
+export type GlobResult<T extends boolean = boolean> = T extends true
   ? Awaitable<AsyncIterable<Stats>, Stats[]>
   : Awaitable<AsyncIterable<string>, string[]>
 
-export interface GlobOptions<Stat extends boolean> {
+export interface GlobOptions<Stat extends boolean = boolean> {
   /**
    * The current working directory. Used to determine the base path for the glob
    * pattern.
@@ -74,7 +74,10 @@ export interface GlobOptions<Stat extends boolean> {
  * const files = glob('src/*.ts')
  * for await (const file of files) { ... }
  */
-export function glob<Stat extends boolean = false>(pattern: MaybeArray<string>, options: GlobOptions<Stat> = {}): GlobResult<Stat> {
+export function glob(pattern: MaybeArray<string>, options?: GlobOptions<false>): GlobResult<false>
+export function glob(pattern: MaybeArray<string>, options?: GlobOptions<true>): GlobResult<true>
+export function glob<T extends boolean>(pattern: MaybeArray<string>, options?: GlobOptions<T>): GlobResult<T>
+export function glob(pattern: MaybeArray<string>, options: GlobOptions = {}): GlobResult {
   const {
     cwd = getCwd(),
     getStats = false,
@@ -131,7 +134,7 @@ export function glob<Stat extends boolean = false>(pattern: MaybeArray<string>, 
   const iterator = createIterator()
 
   // --- Return the iterator or the result as an array.
-  return awaitable(iterator) as GlobResult<Stat>
+  return awaitable(iterator) as GlobResult
 }
 
 /** c8 ignore next */
@@ -231,5 +234,20 @@ if (import.meta.vitest) {
       '/project/baz.ts',
       '/project/foo.ts',
     ])
+  })
+
+  it('should infer the return type as a collection of `Stats`', () => {
+    const files = glob('*.ts', { cwd: '/project', getStats: true })
+    expectTypeOf(files).toEqualTypeOf<Awaitable<AsyncIterable<Stats>, Stats[]>>()
+  })
+
+  it('should infer the return type as a collection of `string`', () => {
+    const files = glob('*.ts', { cwd: '/project', getStats: false })
+    expectTypeOf(files).toEqualTypeOf<Awaitable<AsyncIterable<string>, string[]>>()
+  })
+
+  it('should infer the return type as a collection of `Stats` or `string`', () => {
+    const files = glob('*.ts', { cwd: '/project', getStats: true as boolean })
+    expectTypeOf(files).toEqualTypeOf<Awaitable<AsyncIterable<Stats>, Stats[]> | Awaitable<AsyncIterable<string>, string[]>>()
   })
 }
