@@ -10,13 +10,13 @@
  * parseOption('--foo', 'bar') // returns { foo: 'bar' }
  * parseOption('--foo.bar', 'baz') // returns { foo: { bar: 'baz' } }
  */
-export function parseOption <T extends Record<string, any>>(option: string, value?: string): T {
-  const result: Record<string, any> = {}
+export function parseOption<T extends Record<string, unknown>>(option: string, value?: string): T {
+  const result: Record<string, unknown> = {}
 
   // --- If the option is a flag or a group of flags, set it/them to true.
   if (/^-[\da-z]+$/i.test(option)) {
     for (const flag of option.slice(1))
-      result[flag] = true
+      result[flag] = value ?? true
   }
 
   // --- If the option has a dot, it's a nested option.
@@ -28,30 +28,63 @@ export function parseOption <T extends Record<string, any>>(option: string, valu
 
   // --- If the option has no dot, it's a simple option.
   else {
-    result[option.replace(/^--/, '')] = value || true
+    result[option.replace(/^--/, '')] = value ?? true
   }
 
   // --- Return the result.
   return result as T
 }
 
-/* c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
-  it.each([
+  describe('simple', () => {
+    it('should parse a simple option as a flag', () => {
+      const result = parseOption('--foo')
+      expect(result).toEqual({ foo: true })
+    })
 
-    // --- Simple option.
-    ['-f', undefined, { f: true }],
-    ['--foo', 'bar', { foo: 'bar' }],
+    it('should parse a simple option with a value', () => {
+      const result = parseOption('--foo', 'bar')
+      expect(result).toEqual({ foo: 'bar' })
+    })
+  })
 
-    // --- Nested option.
-    ['--foo.bar', 'baz', { foo: { bar: 'baz' } }],
-    ['--foo.bar.baz', 'qux', { foo: { bar: { baz: 'qux' } } }],
+  describe('nested', () => {
+    it('should parse a nested option as a flag', () => {
+      const result = parseOption('--foo.bar')
+      expect(result).toEqual({ foo: { bar: true } })
+    })
 
-    // --- Concatenated option.
-    ['-fbq', '', { f: true, b: true, q: true }],
+    it('should parse a nested option with a value', () => {
+      const result = parseOption('--foo.bar', 'baz')
+      expect(result).toEqual({ foo: { bar: 'baz' } })
+    })
 
-  ])('should parse "%s %s" into %s', (option, value, expected) => {
-    const result = parseOption(option, value)
-    expect(result).toEqual(expected)
+    it('should parse a deeply nested option', () => {
+      const result = parseOption('--foo.bar.baz.qux', 'quux')
+      expect(result).toEqual({ foo: { bar: { baz: { qux: 'quux' } } } })
+    })
+  })
+
+  describe('short', () => {
+    it('should parse one short option as a flag', () => {
+      const result = parseOption('-f')
+      expect(result).toEqual({ f: true })
+    })
+
+    it('should parse one short option with a value', () => {
+      const result = parseOption('-f', 'bar')
+      expect(result).toEqual({ f: 'bar' })
+    })
+
+    it('should parse multiple short options as flags', () => {
+      const result = parseOption('-fbq')
+      expect(result).toEqual({ f: true, b: true, q: true })
+    })
+
+    it('should parse multiple short options with value', () => {
+      const result = parseOption('-fbq', 'bar')
+      expect(result).toEqual({ f: 'bar', b: 'bar', q: 'bar' })
+    })
   })
 }
