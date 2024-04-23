@@ -12,6 +12,14 @@ export function factorial(n) {
 }
 
 /**
+ * @param {number} n The number to calculate the factorial
+ * @returns {Promise<number>} A promise that resolves with the factorial of the number
+ */
+export function factorialAsync(n) {
+  return Promise.resolve(factorial(n))
+}
+
+/**
  * @returns {void} Throws a syntax error
  */
 export function throws() {

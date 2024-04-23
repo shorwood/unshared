@@ -262,11 +262,19 @@ if (import.meta.vitest) {
       })
     })
 
+    it('should handle message when in a worker thread and return an promise value', async() => {
+      const response = await send('factorialAsync', [5])
+      expect(response).toEqual({
+        value: 120,
+        error: undefined,
+      })
+    })
+
     it('should handle message when in a worker thread and return an error', async() => {
       const response = await send('throws', [])
       expect(response).toEqual({
         value: undefined,
-        error: new Error('test'),
+        error: new SyntaxError('Thrown'),
       })
     })
 
@@ -274,7 +282,7 @@ if (import.meta.vitest) {
       const response = await send('rejects', [])
       expect(response).toEqual({
         value: undefined,
-        error: new Error('test'),
+        error: new SyntaxError('Rejected'),
       })
     })
 

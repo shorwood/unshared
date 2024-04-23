@@ -4,9 +4,9 @@ import { MessageChannel, MessagePort, TransferListItem, Worker } from 'node:work
 import { WorkerResponse } from './workerRegister'
 
 /**
- * The time in milliseconds to wait for a response from the worker.
- * If the worker does not respond within this time, the request will
- * be rejected.
+ * The time in milliseconds to wait for a heartbeat message from the worker before
+ * rejecting the request. This is used to ensure that the worker is still alive and
+ * listening for messages.
  */
 const WORKER_HEALTHCHECK_TIMEOUT = 1000
 
@@ -68,9 +68,9 @@ export async function workerRequest<T extends Function>(worker: Worker, name: st
     const error = new Error('No registered handler is listening for messages.')
     const timeout = setTimeout(reject, WORKER_HEALTHCHECK_TIMEOUT, error)
 
-    port2.once('close', reject)
+    port2.once('close', () => reject(error))
     port2.once('messageerror', reject)
-    port2.on('message', (response: WorkerResponse | 'heartbeat') => {
+    port2.addListener('message', (response: WorkerResponse | 'heartbeat') => {
       if (response === 'heartbeat') return clearTimeout(timeout)
       const { error, value } = response
       if (error) reject(error)
@@ -81,47 +81,55 @@ export async function workerRequest<T extends Function>(worker: Worker, name: st
 
 /* v8 ignore next */
 if (import.meta.vitest) {
-  const url = new URL('__fixtures__/handlers.js', import.meta.url).pathname
-  const worker = new Worker(url)
+  const urlHandlers = new URL('__fixtures__/handlers.js', import.meta.url).pathname
+  const urlModules = new URL('__fixtures__/module.js', import.meta.url).pathname
+  const workerHandlers = new Worker(urlHandlers, { stdout: true, stderr: true })
+  const workerModules = new Worker(urlModules, { stdout: true, stderr: true })
   type Module = typeof import('./__fixtures__/module')
 
-  it('should call a function if the name matches and return the result', async() => {
-    const result = workerRequest<Module['factorial']>(worker, 'factorial', 10)
+  it('should call a sync function if the name matches and return the result', async() => {
+    const result = workerRequest<Module['factorial']>(workerHandlers, 'factorial', 10)
+    await expect(result).resolves.toEqual(3628800)
+    expectTypeOf(result).toEqualTypeOf<Promise<number>>()
+  })
+
+  it('should call an async function if the name matches and return the resolved value', async() => {
+    const result = workerRequest<Module['factorialAsync']>(workerHandlers, 'factorialAsync', 10)
     await expect(result).resolves.toEqual(3628800)
     expectTypeOf(result).toEqualTypeOf<Promise<number>>()
   })
 
   it('should return Buffers as an Uint8Array', async() => {
-    const result = await workerRequest<Module['buffer']>(worker, 'buffer')
+    const result = await workerRequest<Module['buffer']>(workerHandlers, 'buffer')
     const expected = new Uint8Array([72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33])
     expect(result).toBeInstanceOf(Uint8Array)
     expect(result).toEqual(expected)
   })
 
   it('should throw an error if the function does not exist', async() => {
-    const shouldReject = workerRequest(worker, 'doesNotExist')
-    await expect(shouldReject).rejects.toThrow()
+    const shouldReject = workerRequest(workerHandlers, 'doesNotExist')
+    await expect(shouldReject).rejects.toThrow('Cannot execute handler: doesNotExist is not registered.')
   })
 
   it('should throw an error if the function throws', async() => {
-    const shouldReject = workerRequest(worker, 'throws')
+    const shouldReject = workerRequest(workerHandlers, 'throws')
     await expect(shouldReject).rejects.toThrow(SyntaxError)
     await expect(shouldReject).rejects.toThrow('Thrown')
   })
 
   it('should throw an error if the function rejects', async() => {
-    const shouldReject = workerRequest(worker, 'rejects')
+    const shouldReject = workerRequest(workerHandlers, 'rejects')
     await expect(shouldReject).rejects.toThrow(SyntaxError)
     await expect(shouldReject).rejects.toThrow('Rejected')
   })
 
   it('should return the process ID', async() => {
-    const result = await workerRequest<Module['getThreadId']>(worker, 'threadId')
-    expect(result).toEqual(worker.threadId)
+    const result = await workerRequest<Module['getThreadId']>(workerHandlers, 'threadId')
+    expect(result).toEqual(workerHandlers.threadId)
   })
 
   it('should reject if the worker does not respond', async() => {
-    const shouldReject = workerRequest(worker, 'doesNotExist')
-    await expect(shouldReject).rejects.toThrow('Cannot execute handler: doesNotExist is not registered.')
+    const shouldReject = workerRequest(workerModules, 'doesNotExist')
+    await expect(shouldReject).rejects.toThrow('No registered handler is listening for messages.')
   })
 }
