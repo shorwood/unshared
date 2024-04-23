@@ -1,18 +1,35 @@
-module.exports = {
-  overrides: [
+import { ESLint, Linter } from 'eslint'
+import tslint from 'typescript-eslint'
+
+const { recommendedTypeChecked, stylisticTypeChecked } = tslint.configs
+const TSLING_DEFAULT_RULES = [recommendedTypeChecked, stylisticTypeChecked]
+  .flat()
+  .map(x => x.rules)
+  // eslint-disable-next-line unicorn/no-array-reduce
+  .reduce((accumulator, x) => ({ ...accumulator, ...x }), {})
+
+export function typescript(): Linter.FlatConfig[] {
+  return [
     {
-      parser: '@typescript-eslint/parser',
-      parserOptions: {
-        project: true,
+      plugins: {
+        '@typescript-eslint': tslint.plugin as ESLint.Plugin,
       },
-      extends: [
-        'plugin:@typescript-eslint/recommended-type-checked',
-        'plugin:@typescript-eslint/stylistic-type-checked',
-      ],
+      languageOptions: {
+        // @ts-expect-error: ignore
+        parser: tslint.parser,
+        parserOptions: {
+          project: [
+            './tsconfig.json',
+            './packages/*/tsconfig.json',
+          ],
+        },
+      },
       files: [
-        '*.{ts,mts,cts,tsx,d.ts}',
+        '**/*.ts',
+        '**/*.tsx',
       ],
       rules: {
+        ...TSLING_DEFAULT_RULES,
 
         /**
          * Enforce no semi-colons. This rule aims to maintain consistency around the
@@ -35,6 +52,14 @@ module.exports = {
         '@typescript-eslint/member-delimiter-style': ['error', {
           multiline: { delimiter: 'none' },
         }],
+
+        /**
+         * Enforce no unused expressions. This rule aims to prevent dead code and
+         * reduce the likelihood of bugs.
+         *
+         * @see https://typescript-eslint.io/rules/no-unused-expressions
+         */
+        '@typescript-eslint/no-unused-expressions': 'error',
 
         /**
          * Enforce spacing around the `:` in type annotations. This rule aims to
@@ -213,35 +238,27 @@ module.exports = {
     },
 
     /**
-     * Ignore duplicate imports in declaration files as they are often used
-     * to re-export types from other packages into multiple namespaces.
+     * Ignore duplicate imports in declaration files as they are often used to re-export
+     * types from other packages into multiple namespaces. This is a common pattern
+     * in TypeScript declaration files.
      */
     {
       files: ['*.d.ts'],
       rules: {
         'import/no-duplicates': 'off',
-      },
-    },
-
-    {
-      files: ['*.js'],
-      rules: {
-        '@typescript-eslint/no-var-requires': 'off',
+        '@typescript-eslint/no-use-before-define': 'off',
       },
     },
 
     /**
-     * Allow console statements in scripts and CLI files since they are
-     * not part of the library / production code and are useful for
-     * debugging, logging, and testing.
-     *
-     * @see https://eslint.org/docs/rules/no-console
+     * Allow console statements in scripts and CLI files since they are not part of the
+     * library / production code and are useful for debugging, logging, and testing.
      */
     {
-      files: ['scripts/**/*.*', 'cli.*'],
+      files: ['**/scripts/**/*', 'cli.*'],
       rules: {
         'no-console': 'off',
       },
     },
-  ],
+  ]
 }

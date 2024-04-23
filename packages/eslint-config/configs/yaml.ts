@@ -1,18 +1,25 @@
-module.exports = {
-  overrides: [
+import { ESLint, Linter } from 'eslint'
+import yamlPlugin from 'eslint-plugin-yml'
+import yamlParser from 'yaml-eslint-parser'
+
+export function yaml(): Linter.FlatConfig[] {
+  return [
     {
-      parser: 'yaml-eslint-parser',
-      parserOptions: {
-        defaultYAMLVersion: '1.2',
+      plugins: {
+        yaml: yamlPlugin as ESLint.Plugin,
       },
-      extends: [
-        'plugin:yml/standard',
-      ],
+      languageOptions: {
+        parser: yamlParser,
+        parserOptions: {
+          defaultYAMLVersion: '1.2',
+        },
+      },
       files: [
-        '*.{yaml,yml}',
+        '**/*.yaml',
+        '**/*.yml',
       ],
       rules: {
-        'spaced-comment': 'off',
+        ...yamlPlugin.configs.standard.rules as Linter.RulesRecord,
 
         /**
          * Enforce single quotes. This rule aims to maintain consistency around the
@@ -21,6 +28,7 @@ module.exports = {
          *
          * @see https://github.com/ota-meshi/eslint-plugin-yml/blob/master/docs/rules/quotes.md
          */
+        'spaced-comment': 'off',
         'yml/quotes': ['error', {
           prefer: 'single',
           avoidEscape: false,
@@ -34,5 +42,5 @@ module.exports = {
         'yml/no-empty-document': 'off',
       },
     },
-  ],
+  ]
 }

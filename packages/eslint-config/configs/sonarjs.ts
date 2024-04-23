@@ -1,22 +1,17 @@
-module.exports = {
-  overrides: [
+import { Linter } from 'eslint'
+import sonarjsPlugin from 'eslint-plugin-sonarjs'
+
+// @ts-expect-error: untyped module
+const SONARJS_RECOMMENDED_RULES = sonarjsPlugin.configs.recommended.rules as Linter.RulesRecord
+
+export function sonarjs(): Linter.FlatConfig[] {
+  return [
     {
-      parser: '@typescript-eslint/parser',
-      parserOptions: {
-        project: true,
+      plugins: {
+        sonarjs: sonarjsPlugin,
       },
-      extends: [
-        'plugin:sonarjs/recommended',
-      ],
-      files: [
-        '*.{ts,mts,cts,tsx,d.ts}',
-        '*.{js,mjs,cjs,jsx}',
-        '*.vue',
-      ],
-      plugins: [
-        'sonarjs',
-      ],
       rules: {
+        ...SONARJS_RECOMMENDED_RULES,
 
         /**
          * Duplicated string literals make the process of refactoring error-prone,
@@ -37,8 +32,8 @@ module.exports = {
          *
          * @see https://github.com/SonarSource/eslint-plugin-sonarjs/blob/master/docs/rules/cognitive-complexity.md
          */
-        'sonarjs/cognitive-complexity': ['error', 20],
+        'sonarjs/cognitive-complexity': ['error', 25],
       },
     },
-  ],
+  ]
 }

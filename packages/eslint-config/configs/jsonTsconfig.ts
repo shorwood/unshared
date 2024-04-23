@@ -1,97 +1,12 @@
-module.exports = {
-  extends: [
-    'plugin:jsonc/recommended-with-jsonc',
-  ],
-  overrides: [
-    {
-      files: [
-        '*.json',
-        '*.json5',
-      ],
-      parser: 'jsonc-eslint-parser',
-      rules: {
-        'comma-dangle': ['error', 'never'],
-        'quote-props': ['error', 'always'],
-        'quotes': ['error', 'double'],
-      },
-    },
+import { Linter } from 'eslint'
 
-    // --- Package.json
-    {
-      files: [
-        '**/package.json',
-      ],
-      parser: 'jsonc-eslint-parser',
-      rules: {
-        'jsonc/sort-keys': [
-          'error',
-          {
-            order: [
-              'name',
-              'type',
-              'version',
-              'license',
-              'private',
-              'sideEffects',
-
-              // --- Publishing
-              'description',
-              'author',
-              'keywords',
-              'bugs',
-              'funding',
-              'homepage',
-              'repository',
-
-              // --- Distribution
-              'bin',
-              'main',
-              'module',
-              'types',
-              'typings',
-              'browser',
-              'exports',
-              'files',
-
-              // --- Package Manager
-              'packageManager',
-              'pnpm',
-
-              // --- Scripts
-              'scripts',
-
-              // --- Dependencies
-              'peerDependencies',
-              'peerDependenciesMeta',
-              'optionalDependencies',
-              'dependencies',
-              'devDependencies',
-              'bundledDependencies',
-              'bundleDependencies',
-
-              // --- Config
-              'tsup',
-              'husky',
-              'lint-staged',
-              'eslintConfig',
-            ],
-            pathPattern: '^$',
-          },
-          {
-            order: { type: 'asc' },
-            pathPattern: '^(?:dev|peer|optional|bundled)?[Dd]ependencies$',
-          },
-        ],
-      },
-    },
-
-    // --- TSConfig.json
+export function jsonTsconfig(): Linter.FlatConfig[] {
+  return [
     {
       files: [
         '**/tsconfig.json',
         '**/tsconfig.*.json',
       ],
-      parser: 'jsonc-eslint-parser',
       rules: {
         'jsonc/sort-keys': [
           'error',
@@ -219,17 +134,6 @@ module.exports = {
             pathPattern: '^compilerOptions\\.paths$',
           },
         ],
-      },
-    },
-
-    // --- TSConfig Array values
-    {
-      files: [
-        '**/tsconfig.json',
-        '**/tsconfig.*.json',
-      ],
-      parser: 'jsonc-eslint-parser',
-      rules: {
         'jsonc/sort-array-values': [
           'error',
           {
@@ -239,5 +143,5 @@ module.exports = {
         ],
       },
     },
-  ],
+  ]
 }

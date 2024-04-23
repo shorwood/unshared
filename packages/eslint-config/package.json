@@ -1,5 +1,6 @@
 {
   "name": "@unshared/eslint-config",
+  "type": "module",
   "version": "1.0.0",
   "license": "MIT",
   "sideEffects": false,
@@ -11,16 +12,31 @@
     "url": "git+ssh://git@github.com:shorwood/unshared.git",
     "directory": "packages/eslint-config"
   },
-  "main": "./lib/index.js",
-  "module": "./lib/index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "files": [
     "lib",
     "README.md",
     "LICENSE.md"
   ],
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissiong": [
+        "eslint-plugin-vitest"
+      ]
+    }
+  },
   "peerDependencies": {
-    "eslint": ">=8.0.0",
-    "typescript": ">=5.0.0"
+    "eslint": ">=9",
+    "typescript": ">=5"
   },
   "peerDependenciesMeta": {
     "typescript": {
@@ -28,29 +44,30 @@
     }
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "7.2.0",
-    "@typescript-eslint/parser": "7.2.0",
-    "eslint-config-standard": "17.1.0",
+    "@eslint/eslintrc": "3.0.2",
+    "@eslint/js": "9.1.1",
+    "@stylistic/eslint-plugin": "1.7.2",
     "eslint-plugin-antfu": "2.1.2",
     "eslint-plugin-eslint-comments": "3.2.0",
-    "eslint-plugin-html": "8.0.0",
+    "eslint-plugin-html": "8.1.1",
     "eslint-plugin-import": "2.29.1",
-    "eslint-plugin-jsdoc": "48.2.1",
-    "eslint-plugin-jsonc": "2.13.0",
+    "eslint-plugin-jsdoc": "48.2.3",
+    "eslint-plugin-jsonc": "2.15.1",
     "eslint-plugin-markdown": "4.0.1",
-    "eslint-plugin-n": "16.6.2",
-    "eslint-plugin-perfectionist": "2.7.0",
+    "eslint-plugin-n": "17.2.1",
+    "eslint-plugin-perfectionist": "2.9.0",
     "eslint-plugin-promise": "6.1.1",
-    "eslint-plugin-sonarjs": "0.24.0",
-    "eslint-plugin-unicorn": "51.0.1",
-    "eslint-plugin-vitest": "0.3.26",
-    "eslint-plugin-vue": "9.23.0",
-    "eslint-plugin-yml": "1.12.2",
-    "jsonc-eslint-parser": "2.4.0"
+    "eslint-plugin-unicorn": "52.0.0",
+    "eslint-plugin-vitest": "0.5.3",
+    "eslint-plugin-vue": "9.25.0",
+    "eslint-plugin-yml": "1.14.0",
+    "jsonc-eslint-parser": "2.4.0",
+    "typescript-eslint": "7.7.1"
   },
   "devDependencies": {
-    "@types/eslint": "8.56.5",
-    "eslint": "8.57.0",
-    "typescript": "5.4.2"
+    "@types/eslint__eslintrc": "2.1.1",
+    "@types/eslint__js": "8.42.3",
+    "eslint": "9.1.0",
+    "typescript": "5.4.5"
   }
 }
