@@ -68,7 +68,7 @@ export async function workerRequest<T extends Function>(worker: Worker, name: st
     const error = new Error('No registered handler is listening for messages.')
     const timeout = setTimeout(reject, WORKER_HEALTHCHECK_TIMEOUT, error)
 
-    port2.once('close', () => reject(error))
+    port2.once('error', reject)
     port2.once('messageerror', reject)
     port2.addListener('message', (response: WorkerResponse | 'heartbeat') => {
       if (response === 'heartbeat') return clearTimeout(timeout)
