@@ -1,6 +1,6 @@
+import { createPattern } from '@unshared/string'
 import { readdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { createPattern } from '@unshared/string'
 import { getPackageMetadata } from './utils'
 
 interface IndexFile {
@@ -34,6 +34,7 @@ async function buildIndex(path: string): Promise<IndexFile> {
       // --- If the entity name starts with a dot, ignore it.
       if (entity.name.startsWith('__')) continue
       if (entity.name.startsWith('scripts')) continue
+      if (entity.name.endsWith('.d.ts')) continue
 
       // --- If subdirectory contains an index file, add it to the imports.
       if (isDirectory) {

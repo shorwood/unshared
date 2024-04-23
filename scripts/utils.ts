@@ -18,11 +18,15 @@ const cwd = getCwd()
  */
 export async function getPackageMetadata(packageName: string) {
   const globalName = toPascalCase('Unshared', packageName)
-  const outputPath = resolve(ROOT_PATH, 'packages', packageName, 'dist')
+  const outputDirectory = resolve(ROOT_PATH, 'packages', packageName, 'dist')
   const packagePath = resolve(ROOT_PATH, 'packages', packageName)
   const packageRelativePath = relative(ROOT_PATH, packagePath)
   const packageJsonPath = resolve(packagePath, 'package.json')
-  const packageJsonFS = loadObject<PackageJSON>(packageJsonPath, { createIfNotExists: true })
+  const packageJsonFS = loadObject<PackageJSON>(packageJsonPath, {
+    createIfNotExists: true,
+    ignoreFileChanges: true,
+    ignoreObjectChanges: true,
+  })
   const packageJson = await packageJsonFS
   const packageDependencies = {
     ...packageJson.dependencies,
@@ -32,7 +36,7 @@ export async function getPackageMetadata(packageName: string) {
   return {
     packageName,
     globalName,
-    outputPath,
+    outputDirectory,
     packagePath,
     packageJson,
     packageJsonFS,

@@ -1,4 +1,5 @@
-import { RollupOptions, rollup } from 'rollup'
+import { defineConfig } from 'rollup'
+import RollupDts from 'rollup-plugin-dts'
 import RollupEsbuild from 'rollup-plugin-esbuild'
 import { glob } from '../packages/fs/glob'
 import { PackageName, TSCONFIG_PATH } from './constants'
@@ -14,20 +15,17 @@ import { getPackageMetadata } from './utils'
  * @returns A promise that resolves when the build is complete.
  */
 export async function buildBundle(packageName: PackageName) {
-  const { packagePath, outputPath, packageDependencies } = await getPackageMetadata(packageName)
-  const inputPaths = await glob(['./**/index.ts', './*.ts'], { cwd: packagePath })
+  const { packagePath, outputDirectory: outputDirectory, packageDependencies } = await getPackageMetadata(packageName)
 
-  // --- Do not build the bundle for theses packages.
-  if (packageName === 'types') return
-  if (packageName === 'eslint-config') return
+  // --- Get the input files and external dependencies.
+  const inputPaths = await glob(['./**/index.ts', './*.ts'], { cwd: packagePath, exclude: ['*.d.ts'] })
+  const externalExps = Object.keys(packageDependencies).map(dep => new RegExp(`^${dep}`))
+  const external = [...externalExps, /^node:/]
 
   // --- Base Rollup configuration.
-  const rollupConfig = {
+  const rollupConfig = defineConfig({
     input: inputPaths,
-    external: [...Object
-      .keys(packageDependencies)
-      .map(dep => new RegExp(`^${dep}`)), /^node:/],
-
+    external,
     plugins: [
       RollupEsbuild({
         target: 'esnext',
@@ -39,10 +37,9 @@ export async function buildBundle(packageName: PackageName) {
         define: { 'import.meta.vitest': 'false' },
       }),
     ],
-
     output: [
       {
-        dir: outputPath,
+        dir: outputDirectory,
         format: 'esm',
         sourcemap: true,
         entryFileNames: '[name].js',
@@ -50,7 +47,7 @@ export async function buildBundle(packageName: PackageName) {
         chunkFileNames: 'chunks/[hash].js',
       },
       {
-        dir: outputPath,
+        dir: outputDirectory,
         format: 'cjs',
         sourcemap: true,
         entryFileNames: '[name].cjs',
@@ -58,9 +55,31 @@ export async function buildBundle(packageName: PackageName) {
         chunkFileNames: 'chunks/[hash].cjs',
       },
     ],
-  } satisfies RollupOptions
+  })
 
-  const bundle = await rollup(rollupConfig)
-  for (const output of rollupConfig.output) await bundle.write(output)
-  await bundle.close()
+  // --- Rollup configuration for `.d.ts` files.
+  const rollupConfigDts = defineConfig({
+    input: inputPaths,
+    external,
+    plugins: [
+      RollupDts({
+        tsconfig: TSCONFIG_PATH,
+        respectExternal: true,
+        compilerOptions: {
+          strict: true,
+        },
+      }),
+    ],
+    output: {
+      dir: outputDirectory,
+      format: 'esm',
+      entryFileNames: '[name].d.ts',
+      chunkFileNames: 'chunks/[hash].d.ts',
+      assetFileNames: 'assets/[name].d.ts',
+    },
+  })
+
+  // --- Return the configuration.
+  if (packageName === 'types') return [rollupConfigDts]
+  return [rollupConfig, rollupConfigDts]
 }

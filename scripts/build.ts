@@ -1,15 +1,17 @@
 import { rm } from 'node:fs/promises'
-import { argv } from 'node:process'
+import { argv, stdout } from 'node:process'
+import { rollup, watch as rollupWatch } from 'rollup'
+import { toArray } from '../packages/collection/toArray'
 import { parseCliArguments } from '../packages/process/parseCliArguments'
 import { buildBundle } from './buildBundle'
-import { buildDts } from './buildDts'
 import { buildIndexes } from './buildIndexes'
 import { buildPackageJson } from './buildPackageJson'
 import { PACKAGES_NAMES } from './constants'
 import { getPackageMetadata } from './utils'
 
 export async function build() {
-  const { args } = parseCliArguments<{ watch: boolean }>(argv)
+  const { args, options } = parseCliArguments<{ watch: boolean }>(argv)
+  const { watch = false } = options
 
   // --- Get the package names to build.
   const packageNames = args.length > 0
@@ -18,15 +20,44 @@ export async function build() {
 
   // --- Cleanup the output directories.
   for (const packageName of packageNames) {
-    const { outputPath } = await getPackageMetadata(packageName)
-    await rm(outputPath, { recursive: true, force: true })
+    const { outputDirectory } = await getPackageMetadata(packageName)
+    await rm(outputDirectory, { recursive: true, force: true })
   }
 
-  // --- Build all packages.
+  // --- Create the configuration for each package.
   for (const packageName of packageNames) await buildIndexes(packageName)
-  for (const packageName of packageNames) await buildBundle(packageName)
-  for (const packageName of packageNames) await buildDts(packageName)
-  for (const packageName of packageNames) await buildPackageJson(packageName)
+  const bundlesPromises = packageNames.map(buildBundle)
+  const bundlesResolved = await Promise.all(bundlesPromises)
+  const bundles = bundlesResolved.flat()
+
+  // --- Start watching the files.
+  if (watch) {
+    const watcher = rollupWatch(bundles)
+    watcher.on('event', async(event) => {
+      if (event.code === 'ERROR') console.error(event.error)
+      if (event.code === 'START') {
+        const packagesNames = packageNames.join(', ')
+        stdout.write('\u001Bc')
+        stdout.write(`Building ${packagesNames}...\n`)
+      }
+
+      if (event.code === 'END') {
+        for (const packageName of packageNames) await buildPackageJson(packageName)
+        stdout.write('Build complete.\n')
+      }
+    })
+  }
+
+  // --- Otherwise, build all packages.
+  else {
+    for (const bundle of bundles) {
+      const build = await rollup(bundle)
+      const outputs = toArray(bundle.output)
+      for (const output of outputs) await build.write(output)
+    }
+    for (const packageName of packageNames) await buildPackageJson(packageName)
+    console.log('Build complete.')
+  }
 }
 
 // --- Run the build script.
