@@ -38,7 +38,6 @@ export interface EventBus<T extends EventMap = EventMap> {
   listen<K extends string & keyof T>(eventName: K, callback: EventCallback<T, K>): Unsubscribe
 }
 
-
 /**
  * Create a shared event bus that can be used to emit and listen to events across
  * multiple components. This is useful when you need to communicate between components
@@ -92,75 +91,79 @@ if (import.meta.vitest) {
 
   }
 
-  it('should send and receive events', () => {
-    const callback = vi.fn()
-    const bus = useEventBus<{ foo: [string]; bar: [string] }>()
-    bus.listen('foo', callback)
-    bus.emit('foo', 'bar')
-    expect(callback).toHaveBeenCalledWith('bar')
+  describe('event', () => {
+    it('should send and receive events', () => {
+      const callback = vi.fn()
+      const bus = useEventBus<{ foo: [string]; bar: [string] }>()
+      bus.listen('foo', callback)
+      bus.emit('foo', 'bar')
+      expect(callback).toHaveBeenCalledWith('bar')
+    })
+
+    it('should unsubscribe from events', () => {
+      const callback = vi.fn()
+      const bus = useEventBus<{ foo: [string]; bar: [string] }>()
+      const unsubscribe = bus.listen('foo', callback)
+      unsubscribe()
+      bus.emit('foo', 'bar')
+      expect(callback).not.toHaveBeenCalled()
+    })
   })
 
-  it('should unsubscribe from events', () => {
-    const callback = vi.fn()
-    const bus = useEventBus<{ foo: [string]; bar: [string] }>()
-    const unsubscribe = bus.listen('foo', callback)
-    unsubscribe()
-    bus.emit('foo', 'bar')
-    expect(callback).not.toHaveBeenCalled()
-  })
+  describe('component', () => {
+    it('should unsubscribe when component is unmounted', () => {
+      const callback = vi.fn()
+      const bus = useEventBus<EventMap>()
+      const wrapper = mount({
+        template: '<div></div>',
+        setup: () => { bus.listen('foo', callback) },
+      })
 
-  it('should unsubscribe when component is unmounted', () => {
-    const callback = vi.fn()
-    const bus = useEventBus<EventMap>()
-    const wrapper = mount({
-      setup: () => { bus.listen('foo', callback) },
-      template: '<div></div>',
+      wrapper.unmount()
+      bus.emit('foo', 'bar')
+      expect(callback).not.toHaveBeenCalled()
     })
 
-    wrapper.unmount()
-    bus.emit('foo', 'bar')
-    expect(callback).not.toHaveBeenCalled()
-  })
+    it('should send and receive events within the same component', async() => {
+      const callback = vi.fn()
+      const wrapper = mount({
+        template: '<div @click="onClick"></div>',
+        setup: () => {
+          const bus = useEventBus<EventMap>()
+          bus.listen('foo', callback)
+          return { onClick: () => bus.emit('foo', 'bar') }
+        },
+      })
 
-  it('should send and receive events within the same component', async() => {
-    const callback = vi.fn()
-    const wrapper = mount({
-      setup: () => {
-        const bus = useEventBus<EventMap>()
-        bus.listen('foo', callback)
-        return { onClick: () => bus.emit('foo', 'bar') }
-      },
-      template: '<div @click="onClick"></div>',
+      await wrapper.trigger('click')
+      expect(callback).toHaveBeenCalledWith('bar')
     })
 
-    await wrapper.trigger('click')
-    expect(callback).toHaveBeenCalledWith('bar')
-  })
+    it('should send and receive events across multiple components', async() => {
+      const callback = vi.fn()
+      const listener = defineComponent({
+        template: '<div></div>',
+        setup: () => {
+          const bus = useEventBus<EventMap>()
+          bus.listen('foo', callback)
+        },
+      })
 
-  it('should send and receive events across multiple components', async() => {
-    const callback = vi.fn()
-    const listener = defineComponent({
-      template: '<div></div>',
-      setup: () => {
-        const bus = useEventBus<EventMap>()
-        bus.listen('foo', callback)
-      },
+      const emitter = defineComponent({
+        template: '<button @click="onClick"></button>',
+        setup: () => {
+          const bus = useEventBus<EventMap>()
+          return { onClick: () => bus.emit('foo', 'bar') }
+        },
+      })
+
+      const parent = mount({
+        components: { listener, emitter },
+        template: '<div><listener /><emitter /></div>',
+      })
+
+      await parent.find('button').trigger('click')
+      expect(callback).toHaveBeenCalledWith('bar')
     })
-
-    const emitter = defineComponent({
-      template: '<button @click="onClick"></button>',
-      setup: () => {
-        const bus = useEventBus<EventMap>()
-        return { onClick: () => bus.emit('foo', 'bar') }
-      },
-    })
-
-    const parent = mount({
-      components: { listener, emitter },
-      template: '<div><listener /><emitter /></div>',
-    })
-
-    await parent.find('button').trigger('click')
-    expect(callback).toHaveBeenCalledWith('bar')
   })
 }
