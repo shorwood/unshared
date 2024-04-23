@@ -1,7 +1,7 @@
-import { EventEmitter } from 'node:events'
-import { cpus } from 'node:os'
+import { Once } from '@unshared/decorators/Once'
 import { Function } from '@unshared/types'
-import { WorkerService, WorkerServiceOptions, Workerized } from './createWorkerService'
+import { cpus } from 'node:os'
+import { WorkerService, WorkerServiceOptions, WorkerServicePayload, WorkerServiceResult, Workerized } from './createWorkerService'
 
 export interface WorkerPoolOptions extends WorkerServiceOptions {
   /**
@@ -18,12 +18,16 @@ export interface WorkerPoolOptions extends WorkerServiceOptions {
    */
   size?: number
   /**
-   * Instantiate the worker pool immediately. If set to `false`, the worker pool will
-   * only be instantiated when the first function is called.
+   * If `true`, the worker pool will be created immediately when the worker pool is
+   * created. By default, the worker pool will be created when when they are needed
+   * for the first time but this may cause a delay each time a worker is created.
+   *
+   * To avoid this delay, you can set this option to `true` to create the workers
+   * immediately when the worker pool is created. Like at the start of the program.
    *
    * @default false
    */
-  coldStart?: boolean
+  eager?: boolean
 }
 
 /**
@@ -40,28 +44,17 @@ export interface WorkerPoolOptions extends WorkerServiceOptions {
  * const mathUrl = new URL('./math.js', import.meta.url);
  * const math = await pool.wrapModule(moduleUrl)
  */
-export class WorkerPool extends EventEmitter {
+export class WorkerPool {
   constructor(private options: WorkerPoolOptions = {}) {
-    super()
-    if (options.coldStart) this.createWorkers()
+    if (options.eager) this.initialize()
   }
 
   /** The `WorkerService` instances that are used to execute the functions. */
   public workers: WorkerService[] = []
 
-  /** @returns The number of currently running threads. */
-  get length() {
-    return this.workers.length
-  }
-
   /** @returns The number of currently running tasks. */
   get running() {
     return this.workers.reduce((sum, worker) => sum + worker.running, 0)
-  }
-
-  /** @returns The number of currently available threads. */
-  get available() {
-    return this.workers.length - this.running
   }
 
   /**
@@ -70,16 +63,15 @@ export class WorkerPool extends EventEmitter {
    * this method is synchronous and will block the main thread until all workers have
    * been created.
    *
-   * @returns This worker pool instance.
    * @example workerPool.createWorkers()
    */
-  public createWorkers(): this {
+  @Once()
+  public initialize(): void {
     const { size = cpus().length - 1 } = this.options
     for (let index = 0; index < size; index++) {
       const worker = new WorkerService(this.options)
       this.workers.push(worker)
     }
-    return this
   }
 
   /**
@@ -90,6 +82,7 @@ export class WorkerPool extends EventEmitter {
    * @returns A promise that resolves when all workers have been terminated.
    * @example await workerPool.destroy()
    */
+  @Once()
   public async terminate() {
     const promises = this.workers.map(worker => worker.terminate())
     await Promise.all(promises)
@@ -97,27 +90,22 @@ export class WorkerPool extends EventEmitter {
   }
 
   /**
-   * Get the worker with the least amount of running tasks. If no workers exist, the
-   * {@link createWorkers} method will be called to create the workers.
+   * Get the worker with the least amount of running tasks. If no workers exist,
+   * the `createWorkers` method will be called to create the workers.
    *
    * @returns The worker with the least amount of running tasks.
    * @example const worker = new WorkerPool().getWorker()
    */
-  public getWorker(): WorkerService {
-    // --- Create the workers if they don't exist.
-    if (this.workers.length === 0) this.createWorkers()
-
-    // --- Find the worker with the least amount of running tasks.
-    return [...this.workers].sort((a, b) => a.running - b.running).shift()!
+  private getWorker(): WorkerService {
+    if (this.workers.length === 0) this.initialize()
+    return [...this.workers].sort((a, b) => a.running - b.running)[0]
   }
 
   /**
    * Spawn a function in a worker thread. This method will find the worker with the
    * least amount of running tasks and spawn the function on that worker.
    *
-   * @param id The path or URL to the worker thread.
-   * @param name The named export to run in the worker thread.
-   * @param parameters The parameters to pass to the function.
+   * @param payload The payload to send to the worker.
    * @returns An awaitable promise that resolves with the result of the function.
    * @example
    *
@@ -129,16 +117,16 @@ export class WorkerPool extends EventEmitter {
    * const mathUrl = new URL('./math.ts', import.meta.url)
    * const result = await workerPool.spawn(mathUrl, 'add', 1, 2) // 3
    */
-  public async spawn<T extends Function>(id: URL | string, name: string, ...parameters: Parameters<T>): Promise<Awaited<ReturnType<T>>> {
+  public async spawn<T extends Function>(payload: WorkerServicePayload<T>): Promise<Awaited<WorkerServiceResult<T>>> {
     const worker = this.getWorker()
-    return worker.spawn<T>(id, name, ...parameters)
+    return worker.spawn<T>(payload)
   }
 
   /**
    * Wraps all exports of a module to be executed in a separate thread. When called, the
    * function will be executed in a separate thread and the result will be returned.
    *
-   * @param id The module ID to wrap.
+   * @param moduleId The module ID to wrap.
    * @returns A proxy object that will execute the named function in a separate thread.
    * @example
    *
@@ -151,9 +139,20 @@ export class WorkerPool extends EventEmitter {
    * // Call the add function in a worker thread.
    * const result = await lodash.add(1, 2) // 3
    */
-  public wrap<T extends object>(id: URL | string): Workerized<T> {
-    const worker = this.getWorker()
-    return worker.wrap<T>(id)
+  public wrap<T extends object>(moduleId: URL | string): Workerized<T> {
+    return new Proxy({}, {
+      get: (_, name: string & keyof T) =>
+        (...parameters: unknown[]) =>
+          this.spawn.call(this, { moduleId, name, parameters }),
+    }) as Workerized<T>
+  }
+
+  /**
+   * Dispose of the allocated resources. This method is called automatically when the
+   * automatically when the garbage collector runs on the `WorkerPool` instance.
+   */
+  [Symbol.dispose]() {
+    void this.terminate()
   }
 }
 
@@ -170,4 +169,99 @@ export class WorkerPool extends EventEmitter {
  */
 export function createWorkerPool(options?: WorkerPoolOptions): WorkerPool {
   return new WorkerPool(options)
+}
+
+/* v8 ignore start */
+if (import.meta.vitest) {
+  type Module = typeof import('./__fixtures__/module')
+  const moduleId = new URL('__fixtures__/module', import.meta.url)
+
+  it('should create a worker pool', () => {
+    const pool = createWorkerPool()
+    expect(pool).toBeInstanceOf(WorkerPool)
+  })
+
+  describe('spawn', () => {
+    it('should spawn a function in a worker thread', async() => {
+      const pool = createWorkerPool()
+      const result = await pool.spawn<Module['factorial']>({ moduleId, name: 'factorial', parameters: [5] })
+      expect(result).toBe(120)
+    })
+  })
+
+  describe('wrap', () => {
+    it('should wrap a module to be executed in a separate thread', async() => {
+      const pool = createWorkerPool()
+      const module = pool.wrap<Module>(moduleId)
+      const result = await module.factorial(5)
+      expect(result).toBe(120)
+    })
+  })
+
+  describe('lifecycle', () => {
+    it('should instantiate with empty worker list', () => {
+      const pool = createWorkerPool()
+      expect(pool.workers).toHaveLength(0)
+    })
+
+    it('should have a size of cpus().length - 1 by default', () => {
+      const pool = createWorkerPool()
+      pool.initialize()
+      expect(pool.workers).toHaveLength(cpus().length - 1)
+    })
+
+    it('should create workers on the first function call', async() => {
+      const pool = createWorkerPool({ size: 4 })
+      const module = pool.wrap<Module>(moduleId)
+      await module.factorial(5)
+      expect(pool.workers).toHaveLength(4)
+    })
+
+    it('should create workers eagerly', async() => {
+      const pool = createWorkerPool({ size: 4, eager: true })
+      await new Promise(resolve => setTimeout(resolve, 10))
+      expect(pool.workers).toHaveLength(4)
+    })
+
+    it('should terminate all workers', async() => {
+      const pool = createWorkerPool({ size: 4 })
+      pool.initialize()
+      await pool.terminate()
+      expect(pool.workers.length).toBe(0)
+    })
+
+    it('should terminate all workers when the pool is disposed', async() => {
+      const pool = createWorkerPool({ size: 4 })
+      pool.initialize()
+      pool[Symbol.dispose]()
+      await new Promise(resolve => setTimeout(resolve, 10))
+      expect(pool.workers.length).toBe(0)
+    })
+
+    it('should dispatch tasks between 4 workers', async() => {
+      const pool = createWorkerPool({ size: 4 })
+      const module = pool.wrap<Module>(moduleId)
+      const promises = Array.from({ length: 8 }, () => module.getThreadId())
+      const results = Promise.all(promises)
+      await expect(results).resolves.toEqual([
+        pool.workers[0].worker!.threadId,
+        pool.workers[1].worker!.threadId,
+        pool.workers[2].worker!.threadId,
+        pool.workers[3].worker!.threadId,
+        pool.workers[0].worker!.threadId,
+        pool.workers[1].worker!.threadId,
+        pool.workers[2].worker!.threadId,
+        pool.workers[3].worker!.threadId,
+      ])
+    })
+
+    it('should keep track of the number of running tasks', async() => {
+      const pool = createWorkerPool({ size: 4 })
+      const module = pool.wrap<Module>(moduleId)
+      const promises = Array.from({ length: 8 }, () => module.getThreadId())
+      const results = Promise.all(promises)
+      await expect(results).resolves.toHaveLength(8)
+      expect(pool.running).toBe(0)
+    })
+  })
 }
