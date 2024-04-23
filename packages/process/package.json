@@ -8,11 +8,63 @@
   "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shorwood/unshared.git",
+    "url": "git+ssh://git@github.com:shorwood/unshared.git",
     "directory": "packages/process"
   },
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch"
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./createWorkerPool": {
+      "require": "./dist/createWorkerPool.cjs",
+      "types": "./dist/createWorkerPool.d.ts",
+      "import": "./dist/createWorkerPool.js"
+    },
+    "./createWorkerService": {
+      "require": "./dist/createWorkerService.worker.cjs",
+      "types": "./dist/createWorkerService.worker.d.ts",
+      "import": "./dist/createWorkerService.worker.js"
+    },
+    "./execute": {
+      "require": "./dist/execute.cjs",
+      "types": "./dist/execute.d.ts",
+      "import": "./dist/execute.js"
+    },
+    "./parseCliArguments": {
+      "require": "./dist/parseCliArguments.cjs",
+      "types": "./dist/parseCliArguments.d.ts",
+      "import": "./dist/parseCliArguments.js"
+    },
+    "./parseCliOption": {
+      "require": "./dist/parseCliOption.cjs",
+      "types": "./dist/parseCliOption.d.ts",
+      "import": "./dist/parseCliOption.js"
+    },
+    "./workerRegister": {
+      "require": "./dist/workerRegister.cjs",
+      "types": "./dist/workerRegister.d.ts",
+      "import": "./dist/workerRegister.js"
+    },
+    "./workerRequest": {
+      "require": "./dist/workerRequest.cjs",
+      "types": "./dist/workerRequest.d.ts",
+      "import": "./dist/workerRequest.js"
+    },
+    ".": {
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "dependencies": {
+    "@unshared/binary": "workspace:*",
+    "@unshared/decorators": "workspace:*",
+    "@unshared/functions": "workspace:*",
+    "@unshared/types": "workspace:*"
   }
 }
