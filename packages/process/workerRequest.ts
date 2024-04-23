@@ -1,5 +1,6 @@
-import { MessageChannel, MessagePort, Worker } from 'node:worker_threads'
 import { Function } from '@unshared/types'
+import { isArrayBuffer, isArrayBufferView } from 'node:util/types'
+import { MessageChannel, MessagePort, TransferListItem, Worker } from 'node:worker_threads'
 import { WorkerResponse } from './workerRegister'
 
 /**
@@ -7,7 +8,7 @@ import { WorkerResponse } from './workerRegister'
  * If the worker does not respond within this time, the request will
  * be rejected.
  */
-const WORKER_HEALTHCHECK_TIMEOUT = 500
+const WORKER_HEALTHCHECK_TIMEOUT = 1000
 
 /**
  * A common interface for the request passed to a `workerRegister` callback. This is
@@ -51,12 +52,21 @@ export interface WorkerRequest<P extends unknown[] = unknown[]> {
  */
 export async function workerRequest<T extends Function>(worker: Worker, name: string, ...parameters: Parameters<T>): Promise<Awaited<ReturnType<T>>> {
   const { port1, port2 } = new MessageChannel()
-  worker.postMessage({ name, parameters, port: port1 }, [port1])
+
+  // --- Compute the transfer list by filtering-in any `ArrayBuffer` or `MessagePort` objects.
+  const transferList: TransferListItem[] = [port1]
+  for (const parameter of parameters) {
+    if (isArrayBufferView(parameter)) transferList.push(parameter.buffer)
+    if (isArrayBuffer(parameter)) transferList.push(parameter)
+  }
+
+  // --- Post the request to the worker thread.
+  worker.postMessage({ name, parameters, port: port1 }, transferList)
 
   // --- Wait for the response and resolve with the result or reject with the error.
   return await new Promise((resolve, reject) => {
-    const timeoutError = new Error('No registered handler is listening for messages.')
-    const timeout = setTimeout(() => reject(timeoutError), WORKER_HEALTHCHECK_TIMEOUT)
+    const error = new Error('No registered handler is listening for messages.')
+    const timeout = setTimeout(reject, WORKER_HEALTHCHECK_TIMEOUT, error)
 
     port2.once('close', reject)
     port2.once('messageerror', reject)
@@ -66,65 +76,52 @@ export async function workerRequest<T extends Function>(worker: Worker, name: st
       if (error) reject(error)
       else resolve(value as Awaited<ReturnType<T>>)
     })
-  })
+  }) as Promise<Awaited<ReturnType<T>>>
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-  const workerHandlerUrl = new URL('__fixtures__/handlers.ts', import.meta.url).pathname
-  const workerModuleUrl = new URL('__fixtures__/module.ts', import.meta.url).pathname
-  const workerHandler = new Worker(workerHandlerUrl, { execArgv: ['--loader', 'tsx', '--no-warnings'] })
-  const workerModule = new Worker(workerModuleUrl, { execArgv: ['--loader', 'tsx', '--no-warnings'] })
+  const url = new URL('__fixtures__/handlers.js', import.meta.url).pathname
+  const worker = new Worker(url)
+  type Module = typeof import('./__fixtures__/module')
 
-  // --- Wait for the worker to start.
-  beforeAll(async() => {
-    await new Promise((resolve) => {
-      workerHandler.once('online', resolve)
-      workerModule.once('online', resolve)
-    })
-  })
-
-  afterAll(() => {
-    workerHandler.terminate()
-    workerModule.terminate()
-  })
-
-  it('should call a function if the name matches and return the result', () => {
-    const result = workerRequest<(n: number) => number>(workerHandler, 'factorial', 10)
-    expect(result).resolves.toEqual(3628800)
+  it('should call a function if the name matches and return the result', async() => {
+    const result = workerRequest<Module['factorial']>(worker, 'factorial', 10)
+    await expect(result).resolves.toEqual(3628800)
     expectTypeOf(result).toEqualTypeOf<Promise<number>>()
   })
 
   it('should return Buffers as an Uint8Array', async() => {
-    const result = await workerRequest(workerHandler, 'buffer')
+    const result = await workerRequest<Module['buffer']>(worker, 'buffer')
+    const expected = new Uint8Array([72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33])
     expect(result).toBeInstanceOf(Uint8Array)
-    const string = Buffer.from(<Uint8Array>result).toString()
-    expect(string).toEqual('Hello, World!')
+    expect(result).toEqual(expected)
   })
 
-  it('should throw an error if the function does not exist', () => {
-    const shouldReject = workerRequest(workerHandler, 'doesNotExist')
-    expect(shouldReject).rejects.toThrow()
+  it('should throw an error if the function does not exist', async() => {
+    const shouldReject = workerRequest(worker, 'doesNotExist')
+    await expect(shouldReject).rejects.toThrow()
   })
 
-  it('should throw an error if the function throws', () => {
-    const shouldReject = workerRequest(workerHandler, 'throws')
-    expect(shouldReject).rejects.toThrow(SyntaxError)
+  it('should throw an error if the function throws', async() => {
+    const shouldReject = workerRequest(worker, 'throws')
+    await expect(shouldReject).rejects.toThrow(SyntaxError)
+    await expect(shouldReject).rejects.toThrow('Thrown')
   })
 
-  it('should throw an error if the function rejects', () => {
-    const shouldReject = workerRequest(workerHandler, 'rejects')
-    expect(shouldReject).rejects.toThrow(SyntaxError)
+  it('should throw an error if the function rejects', async() => {
+    const shouldReject = workerRequest(worker, 'rejects')
+    await expect(shouldReject).rejects.toThrow(SyntaxError)
+    await expect(shouldReject).rejects.toThrow('Rejected')
   })
 
   it('should return the process ID', async() => {
-    const result = await workerRequest(workerHandler, 'threadId')
-    expect(result).toEqual(workerHandler.threadId)
+    const result = await workerRequest<Module['getThreadId']>(worker, 'threadId')
+    expect(result).toEqual(worker.threadId)
   })
 
-  it('should reject if the worker does not respond', () => {
-    const shouldReject = workerRequest(workerModule, 'doesNotExist')
-    expect(shouldReject).rejects.toThrow('No registered handler is listening for messages.')
+  it('should reject if the worker does not respond', async() => {
+    const shouldReject = workerRequest(worker, 'doesNotExist')
+    await expect(shouldReject).rejects.toThrow('Cannot execute handler: doesNotExist is not registered.')
   })
 }
