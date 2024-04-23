@@ -1,14 +1,49 @@
-import { Linter } from 'eslint'
+import { ESLint, Linter } from 'eslint'
 import vuePlugin from 'eslint-plugin-vue'
+import tslint from 'typescript-eslint'
+import vueParser from 'vue-eslint-parser'
+
+// @ts-expect-error: `eslint-plugin-vue` has no types declaration.
+const VUE_RECOMMENDED_RULES = vuePlugin.configs?.['flat/recommended'].rules as Linter.RulesRecord
 
 export function vue(): Linter.FlatConfig[] {
   return [
-    ...vuePlugin.configs?.['flat/recommended'] as Linter.FlatConfig[],
     {
+      plugins: {
+        'vue': vuePlugin,
+        '@typescript-eslint': tslint.plugin as ESLint.Plugin,
+      },
+      languageOptions: {
+        parser: vueParser,
+        parserOptions: {
+          ecmaFeatures: { jsx: false },
+          ecmaVersion: 'latest',
+          sourceType: 'module',
+          parser: tslint.parser,
+        },
+        globals: {
+          computed: 'readonly',
+          defineEmits: 'readonly',
+          defineExpose: 'readonly',
+          defineProps: 'readonly',
+          onMounted: 'readonly',
+          onUnmounted: 'readonly',
+          reactive: 'readonly',
+          ref: 'readonly',
+          shallowReactive: 'readonly',
+          shallowRef: 'readonly',
+          toRef: 'readonly',
+          toRefs: 'readonly',
+          watch: 'readonly',
+          watchEffect: 'readonly',
+        },
+      },
       files: [
         '**/*.vue',
       ],
       rules: {
+        ...VUE_RECOMMENDED_RULES,
+
         /**
          * Enforces consistent usage of type imports. This rule will enforce the use
          * of `type` imports to make it easier for the Vue SFC compiler to analyze
@@ -17,11 +52,11 @@ export function vue(): Linter.FlatConfig[] {
          * @see https://typescript-eslint.io/rules/consistent-type-imports
          * @see https://vuejs.github.io/vetur/guide/FAQ.html#why-does-vetur-show-cannot-find-module-xxx
          */
-        // '@typescript-eslint/consistent-type-imports': ['error', {
-        //   disallowTypeAnnotations: false,
-        //   fixStyle: 'inline-type-imports',
-        //   prefer: 'type-imports',
-        // }],
+        '@typescript-eslint/consistent-type-imports': ['error', {
+          disallowTypeAnnotations: false,
+          fixStyle: 'inline-type-imports',
+          prefer: 'type-imports',
+        }],
 
         /**
          * Since we may use the auto-import feature of Nuxt / unplugin-autoimport,

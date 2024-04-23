@@ -62,7 +62,8 @@
     "eslint-plugin-vue": "9.25.0",
     "eslint-plugin-yml": "1.14.0",
     "jsonc-eslint-parser": "2.4.0",
-    "typescript-eslint": "7.7.1"
+    "typescript-eslint": "7.7.1",
+    "vue-eslint-parser": "9.4.2"
   },
   "devDependencies": {
     "@types/eslint__eslintrc": "2.1.1",
