@@ -1,4 +1,3 @@
-/* eslint-disable no-new-wrappers */
 import { Boolean } from './Boolean'
 
 /**
@@ -8,16 +7,16 @@ import { Boolean } from './Boolean'
  * @returns A boolean instance with the value.
  * @example createBoolean(true) // Boolean { value: true }
  */
-export function createBoolean<T extends boolean>(value: T): Boolean<T> {
-  return new Boolean<T>(value)
+export function createBoolean<T extends boolean>(value: T): Boolean {
+  return new Boolean(value)
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
   it('should create a Boolean instance from a boolean', () => {
     const result = createBoolean(true)
     expect(result).toBeInstanceOf(Boolean)
     expect(result.value).toEqual(true)
-    expectTypeOf(result.value).toEqualTypeOf<true>()
+    expectTypeOf(result).toEqualTypeOf<Boolean>()
   })
 }

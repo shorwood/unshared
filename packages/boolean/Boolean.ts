@@ -1,67 +1,60 @@
-/* eslint-disable no-new-wrappers */
-import { BooleanAnd, BooleanNand, BooleanNor, BooleanNot, BooleanOr, BooleanXnor, BooleanXor } from '@unshared/types'
-
 /**
- * Class representing a mutable boolean value.
- *
- * This class provides a very superfluous API for working with boolean values.
- * Albeit, it does provide a type-safe API that allows deeper type inference
- * than the native `boolean` type.
- *
- * Since no optimizations can be performed on the boolean operations, this class
- * is not meant to be used in any performance-critical contexts.
+ * Very superfluous class representing a mutable boolean value. This allows
+ * for chaining of boolean operations and stateful mutation of a boolean value.
+ * Such as a flag or a switch that can be toggled.
  *
  * It should be noted that this class is not a wrapper around the native
- * `Boolean` constructor. It is a completely separate class with a
- * different API.
+ * `Boolean` constructor. It is a completely separate class with a different API.
  */
-export class Boolean<A extends boolean = boolean> {
+export class Boolean {
   /**
    * Create a new Boolean instance with the given value.
    *
    * @param value The value of the new Boolean instance.
    * @example new Boolean(true) // Boolean { value: true }
    */
-  constructor(public value: A) {}
+  constructor(public value = false) {}
 
   /**
-   * Create a new Boolean with value `true`.
-   *
-   * @returns A new Boolean with value `true`.
-   * @example Boolean.true // Boolean { value: true }
-   */
-  static get true(): Boolean<true> {
-    return new this(true)
-  }
-
-  /**
-   * Create a new Boolean with value `false`.
-   *
-   * @returns A new Boolean with value `false`.
-   * @example Boolean.false // Boolean { value: false }
-   */
-  static get false(): Boolean<false> {
-    return new this(false)
-  }
-
-  /**
-   * Predicate function to check if the given value is `true`.
+   * Function to check if the value is `true`.
    *
    * @returns `true` if the value of this boolean is `true`.
    * @example new Boolean(true).isTrue // true
    */
-  isTrue(): this is Boolean<true> {
+  get isTrue(): boolean {
     return this.value === true
   }
 
   /**
-   * Predicate function to check if the given value is `false`.
+   * Function to check if the value is `false`.
    *
    * @returns `true` if the value of this boolean is `false`.
    * @example new Boolean(true).isFalse // false
    */
-  isFalse(): this is Boolean<false> {
+  get isFalse(): boolean {
     return this.value === false
+  }
+
+  /**
+   * Set the value of the Boolean to `true`.
+   *
+   * @returns The Boolean instance with the value set to `true`.
+   * @example Boolean.true // Boolean { value: true }
+   */
+  get true(): this {
+    this.value = true
+    return this
+  }
+
+  /**
+   * Set the value of the Boolean to `false`.
+   *
+   * @returns The Boolean instance with the value set to `false`.
+   * @example Boolean.false // Boolean { value: false }
+   */
+  get false(): this {
+    this.value = false
+    return this
   }
 
   /**
@@ -72,9 +65,9 @@ export class Boolean<A extends boolean = boolean> {
    * @returns A new Boolean with the result of the operation.
    * @example new Boolean(true).and(true) // Boolean { value: true }
    */
-  and<B extends boolean>(value: B): Boolean<BooleanAnd<A, B>> {
-    // @ts-expect-error: ignore
-    return new Boolean(this.value && value)
+  and(value: boolean): this {
+    this.value = this.value&& value
+    return this
   }
 
   /**
@@ -85,9 +78,9 @@ export class Boolean<A extends boolean = boolean> {
    * @returns A new Boolean with the result of the operation.
    * @example new Boolean(true).nand(true) // Boolean { value: false }
    */
-  nand<B extends boolean>(value: B): Boolean<BooleanNand<A, B>> {
-    // @ts-expect-error: ignore
-    return new Boolean(!(this.value && value))
+  nand(value: boolean): this {
+    this.value = !(this.value && value)
+    return this
   }
 
   /**
@@ -98,9 +91,9 @@ export class Boolean<A extends boolean = boolean> {
    * @returns A new Boolean with the result of the operation.
    * @example new Boolean(true).nor(true) // Boolean { value: false }
    */
-  nor<B extends boolean>(value: B): Boolean<BooleanNor<A, B>> {
-    // @ts-expect-error: ignore
-    return new Boolean(!(this.value || value))
+  nor(value: boolean): this {
+    this.value = !(this.value || value)
+    return this
   }
 
   /**
@@ -110,9 +103,9 @@ export class Boolean<A extends boolean = boolean> {
    * @returns A new Boolean with the result of the operation.
    * @example new Boolean(true).not() // Boolean { value: false }
    */
-  get not(): Boolean<BooleanNot<A>> {
-    // @ts-expect-error: ignore
-    return new Boolean(!this.value)
+  not(): this {
+    this.value = !this.value
+    return this
   }
 
   /**
@@ -123,9 +116,9 @@ export class Boolean<A extends boolean = boolean> {
    * @returns A new Boolean with the result of the operation.
    * @example new Boolean(true).or(true) // Boolean { value: true }
    */
-  or<B extends boolean>(value: B): Boolean<BooleanOr<A, B>> {
-    // @ts-expect-error: ignore
-    return new Boolean(this.value || value)
+  or(value: boolean): this {
+    this.value = this.value || value
+    return this
   }
 
   /**
@@ -136,9 +129,9 @@ export class Boolean<A extends boolean = boolean> {
    * @returns A new Boolean with the result of the operation.
    * @example new Boolean(true).xnor(true) // Boolean { value: true }
    */
-  xnor<B extends boolean>(value: B): Boolean<BooleanXnor<A, B>> {
-    // @ts-expect-error: ignore
-    return new Boolean(this.value === value)
+  xnor(value: boolean): this {
+    this.value = this.value === value
+    return this
   }
 
   /**
@@ -149,100 +142,95 @@ export class Boolean<A extends boolean = boolean> {
    * @returns A new Boolean with the result of the operation.
    * @example new Boolean(true).xor(true) // Boolean { value: false }
    */
-  xor<B extends boolean>(value: B): Boolean<BooleanXor<A, B>> {
-    // @ts-expect-error: ignore
-    return new Boolean(this.value !== value)
+  xor(value: boolean): this {
+    this.value = this.value !== value
+    return this
   }
 }
 
-/* c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
   it('should create a Boolean instance', () => {
-    const result = new Boolean(true).value
-    expect(result).toEqual(true)
-    expectTypeOf(result).toEqualTypeOf<true>()
+    const result = new Boolean()
+    expect(result).toBeInstanceOf(Boolean)
+    expectTypeOf(result).toEqualTypeOf<Boolean>()
   })
 
-  it('should create a true Boolean instance', () => {
-    const result = Boolean.true.value
-    expect(result).toEqual(true)
-    expectTypeOf(result).toEqualTypeOf<true>()
+  it('should default to false', () => {
+    const result = new Boolean()
+    expect(result.value).toEqual(false)
   })
 
-  it('should create a false Boolean instance', () => {
-    const result = Boolean.false.value
-    expect(result).toEqual(false)
-    expectTypeOf(result).toEqualTypeOf<false>()
+  it('should set the value to true', () => {
+    const result = new Boolean(true)
+    expect(result.value).toEqual(true)
   })
 
   it('should check if a Boolean is true', () => {
-    const boolean = new Boolean<boolean>(true)
-    const result = boolean.isTrue()
-    expect(result).toEqual(true)
-    expectTypeOf(result).toEqualTypeOf<boolean>()
-    if (result) expectTypeOf(boolean).toEqualTypeOf<Boolean<true>>()
+    const boolean = new Boolean(true)
+    expect(boolean.isTrue).toEqual(true)
   })
 
   it('should check if a Boolean is false', () => {
-    const boolean = new Boolean<boolean>(false)
-    const result = boolean.isFalse()
-    expect(result).toEqual(true)
-    expectTypeOf(result).toEqualTypeOf<boolean>()
-    if (result) expectTypeOf(boolean).toEqualTypeOf<Boolean<false>>()
+    const boolean = new Boolean(false)
+    expect(boolean.isFalse).toEqual(true)
   })
 
   it('should and a boolean', () => {
-    const result = new Boolean(true).and(false).value
-    expect(result).toEqual(false)
-    expectTypeOf(result).toEqualTypeOf<false>()
+    const result = new Boolean(true)
+    result.and(false)
+    expect(result.value).toEqual(false)
   })
 
   it('should nand a boolean', () => {
-    const result = new Boolean(true).nand(false).value
-    expect(result).toEqual(true)
-    expectTypeOf(result).toEqualTypeOf<true>()
+    const result = new Boolean(true)
+    result.nand(false)
+    expect(result.value).toEqual(true)
   })
 
   it('should nor a boolean', () => {
-    const result = new Boolean(true).nor(false).value
-    expect(result).toEqual(false)
-    expectTypeOf(result).toEqualTypeOf<false>()
+    const result = new Boolean(true)
+    result.nor(false)
+    expect(result.value).toEqual(false)
   })
 
   it('should not a boolean', () => {
-    const result = new Boolean(true).not.value
-    expect(result).toEqual(false)
-    expectTypeOf(result).toEqualTypeOf<false>()
+    const result = new Boolean(true)
+    result.not()
+    expect(result.value).toEqual(false)
   })
 
   it('should or a boolean', () => {
-    const result = new Boolean(true).or(false).value
-    expect(result).toEqual(true)
-    expectTypeOf(result).toEqualTypeOf<true>()
+    const result = new Boolean(true)
+    result.or(false)
+    expect(result.value).toEqual(true)
   })
 
   it('should xor a boolean', () => {
-    const result = new Boolean(true).xor(false).value
-    expect(result).toEqual(true)
-    expectTypeOf(result).toEqualTypeOf<true>()
+    const result = new Boolean(true)
+    result.xor(false)
+    expect(result.value).toEqual(true)
   })
 
   it('should xnor a boolean', () => {
-    const result = new Boolean(true).xnor(false).value
-    expect(result).toEqual(false)
-    expectTypeOf(result).toEqualTypeOf<false>()
+    const result = new Boolean(true)
+    result.xnor(false)
+    expect(result.value).toEqual(false)
   })
 
   it('should be chainable', () => {
-    const boolean = new Boolean(true)
-    const result = boolean.and(false).nand(false).nor(false).not.or(false).xor(false).xnor(false).value
-    expect(result).toEqual(false)
-    expectTypeOf(result).toEqualTypeOf<false>()
-  })
-
-  it('should mutate the original boolean', () => {
-    const boolean = new Boolean(true)
-    const result = boolean.and(false).nand(false).nor(false).not.or(false).xor(false).xnor(false)
-    expect(result).not.toBe(boolean)
+    // const boolean = new Boolean(true)
+    // const result = boolean.and(false).nand(false).nor(false).not.or(false).xor(false).xnor(false).value
+    // expect(result).toEqual(false)
+    // expectTypeOf(result).toEqualTypeOf<false>()
+    const result = new Boolean(true)
+    result.and(false)
+      .nand(false)
+      .nor(false)
+      .not()
+      .or(false)
+      .xor(false)
+      .xnor(false)
+    expect(result.value).toEqual(false)
   })
 }
