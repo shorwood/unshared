@@ -1,16 +1,15 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-/* eslint-disable sonarjs/no-duplicate-string */
+import { BinaryLike, toUint8Array } from '@unshared/binary/toUint8Array'
+import { Awaitable, awaitable } from '@unshared/functions/awaitable'
+import { Function } from '@unshared/types'
 import { ChildProcess, SpawnOptions, spawn } from 'node:child_process'
-import { randomUUID } from 'node:crypto'
+import { randomBytes } from 'node:crypto'
 import { createServer } from 'node:net'
 import { join } from 'node:path'
 import { getuid } from 'node:process'
 import { Readable, Writable } from 'node:stream'
-import { BinaryLike, toUint8Array } from '@unshared/binary/toUint8Array'
-import { Awaitable, awaitable } from '@unshared/functions/awaitable'
 
 /** Argument that can be passed to `execute`. */
-export type SpawnArgument = BinaryLike | Readable
+export type BinaryArgument = BinaryLike | Function<BinaryLike | Readable> | Readable
 
 export interface ExecuteOptions<T extends BufferEncoding | undefined = BufferEncoding | undefined> extends SpawnOptions {
   /**
@@ -25,7 +24,7 @@ export interface ExecuteOptions<T extends BufferEncoding | undefined = BufferEnc
    *
    * @example await execute("echo", [], { stdin: "Hello, world!" }) // "Hello, world!"
    */
-  stdin?: BinaryLike | Readable
+  stdin?: BinaryArgument
   /**
    * The timeout to use for the process.
    *
@@ -43,7 +42,8 @@ export interface ExecuteOptions<T extends BufferEncoding | undefined = BufferEnc
  *
  * @example writeToStream(stream, Buffer.from("Hello, world!"))
  */
-function writeToStream(stream: Writable, data: BinaryLike | Readable) {
+function writeToStream(stream: Writable, data: BinaryArgument) {
+  if (typeof data === 'function') data = data()
   if (data instanceof Readable) { data.pipe(stream); return }
   data = toUint8Array(data)
   stream.write(data)
@@ -69,11 +69,11 @@ function writeToStream(stream: Writable, data: BinaryLike | Readable) {
  * const b = Buffer.from("Hello, world?")
  * await execute("diff", [a, b]) // The diff output.
  */
-export function execute(command: string, parameters: SpawnArgument[] | undefined, options: ExecuteOptions<undefined>): Awaitable<ChildProcess, Buffer>
-export function execute(command: string, parameters: SpawnArgument[] | undefined, options: ExecuteOptions<BufferEncoding>): Awaitable<ChildProcess, string>
-export function execute(command: string, parameters: SpawnArgument[] | undefined, encoding: BufferEncoding): Awaitable<ChildProcess, string>
-export function execute(command: string, parameters?: SpawnArgument[]): Awaitable<ChildProcess, Buffer>
-export function execute(command: string, parameters: SpawnArgument[] = [], options: BufferEncoding | ExecuteOptions = {}): Awaitable<ChildProcess, Buffer | string> {
+export function execute(command: string, parameters: BinaryArgument[] | undefined, options: ExecuteOptions<undefined>): Awaitable<ChildProcess, Buffer>
+export function execute(command: string, parameters: BinaryArgument[] | undefined, options: ExecuteOptions<BufferEncoding>): Awaitable<ChildProcess, string>
+export function execute(command: string, parameters: BinaryArgument[] | undefined, encoding: BufferEncoding): Awaitable<ChildProcess, string>
+export function execute(command: string, parameters?: BinaryArgument[]): Awaitable<ChildProcess, Buffer>
+export function execute(command: string, parameters: BinaryArgument[] = [], options: BufferEncoding | ExecuteOptions = {}): Awaitable<ChildProcess, Buffer | string> {
   if (typeof options === 'string') options = { encoding: options }
   const { encoding, stdin, timeout = 0, ...spawnOptions } = options
 
@@ -86,12 +86,12 @@ export function execute(command: string, parameters: SpawnArgument[] = [], optio
     // --- a temporary socket to pass the data to the process. This is done
     // --- by writing the data to the socket and then reading from it using
     // --- process substitution through the `nc` command.
-    const uuid = randomUUID()
+    const uuid = randomBytes(16).toString('hex')
     const path = join('/run/user', uid, `${uuid}.sock`)
     const socket = createServer()
-      .listen(path)
-      .on('connection', socket => writeToStream(socket, argument))
-
+    socket.maxConnections = 1000
+    socket.listen(path)
+    socket.once('connection', socket => writeToStream(socket, argument))
     return {
       arg: `<(echo | nc -U ${path})`,
       data: argument,
@@ -138,7 +138,7 @@ export function execute(command: string, parameters: SpawnArgument[] = [], optio
       }
 
       // --- If process substitution was used, close the sockets.
-      for (const { socket } of args) socket?.close()
+      for (const { socket } of args) if (socket) socket.close()
 
       // --- The process exited with an error.
       const errorMessage = Buffer.concat(stderrChunks).toString('utf8') || `Process exited with code ${code}`
@@ -151,7 +151,7 @@ export function execute(command: string, parameters: SpawnArgument[] = [], optio
   return awaitable(process, createPromise)
 }
 
-/** v8 ignore start */
+/* v8 ignore start */
 if (import.meta.vitest) {
   describe('execute', () => {
     it('should return a ChildProcess', () => {
