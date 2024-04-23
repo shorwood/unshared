@@ -1,0 +1,18 @@
+{
+  "name": "@unshared/examples-nuxt",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "nuxi dev",
+    "build": "nuxi build",
+    "start": "node .output/server/index.mjs"
+  },
+  "dependencies": {
+    "@unocss/nuxt": "0.59.4"
+  },
+  "devDependencies": {
+    "@nuxt/test-utils": "3.12.1",
+    "@unshared/vue": "workspace:*",
+    "nuxt": "3.10.2"
+  }
+}
