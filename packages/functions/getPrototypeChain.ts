@@ -47,12 +47,14 @@ if (import.meta.vitest) {
   })
 
   it('should return the prototype chain of null', () => {
+    // eslint-disable-next-line unicorn/no-null
     const result = getPrototypeChain(null)
     expect(result).toEqual([])
   })
 
   it('should return the prototype chain of undefined', () => {
-    const result = getPrototypeChain()
+    // eslint-disable-next-line unicorn/no-useless-undefined
+    const result = getPrototypeChain(undefined)
     expect(result).toEqual([])
   })
 
