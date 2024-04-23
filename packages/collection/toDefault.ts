@@ -1,4 +1,4 @@
-import { NumberIntegerPositive, Default } from '@unshared/types'
+import { Default, NumberIntegerPositive } from '@unshared/types'
 
 export interface ToDefaultOptions<N extends number, C extends boolean> {
   /**

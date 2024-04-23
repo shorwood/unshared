@@ -1,6 +1,3 @@
-/* eslint-disable unicorn/no-unsafe-regex */
-/* eslint-disable sonarjs/cognitive-complexity */
-
 /** Regular expression to match the `__proto__` property. */
 const protoRegexp
   = /"(?:_|\\u0{2}5[Ff]){2}(?:p|\\u0{2}70)(?:r|\\u0{2}72)(?:o|\\u0{2}6[Ff])(?:t|\\u0{2}74)(?:o|\\u0{2}6[Ff])(?:_|\\u0{2}5[Ff]){2}"\s*:/

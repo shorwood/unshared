@@ -1,12 +1,11 @@
-/* eslint-disable sonarjs/no-duplicate-string */
+import { overwrite } from '@unshared/collection/overwrite'
+import { Awaitable, awaitable } from '@unshared/functions/awaitable'
+import { garbageCollected } from '@unshared/functions/garbageCollected'
+import { Reactive, ReactiveOptions, reactive } from '@unshared/reactivity/reactive'
 import { EventEmitter } from 'node:events'
 import { FSWatcher, PathLike, Stats, WatchOptions, constants, existsSync, readFileSync, watch, writeFileSync } from 'node:fs'
 import { access, mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
-import { overwrite } from '@unshared/collection/overwrite'
-import { awaitable, Awaitable } from '@unshared/functions/awaitable'
-import { garbageCollected } from '@unshared/functions/garbageCollected'
-import { Reactive, ReactiveOptions, reactive } from '@unshared/reactivity/reactive'
 
 export interface FSObjectOptions<T extends object> extends ReactiveOptions<T>, WatchOptions {
   /**
@@ -352,8 +351,9 @@ export function loadObject<T extends object>(path: PathLike, options: FSObjectOp
   return FSObject.from(path, options)
 }
 
-/** v8 ignore start */
+/* v8 ignore start */
 if (import.meta.vitest) {
+  // eslint-disable-next-line n/no-extraneous-import
   const { vol } = await import('memfs')
 
   describe('loadObject', () => {

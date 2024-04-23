@@ -1,4 +1,3 @@
-
 /**
  * Function that does nothing and returns a promise that resolves to undefined.
  *

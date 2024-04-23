@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/informative-docs */
-/* eslint-disable sonarjs/no-duplicate-string */
 import { get } from '@unshared/collection/get'
 import { Collection } from '@unshared/types'
 import { escapeRegexp } from './escapeRegexp'

@@ -1,6 +1,3 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-/* eslint-disable sonarjs/no-duplicate-string */
-
 export interface UriComponents {
   /** The protocol (e.g. `http`) */
   protocol?: string
@@ -205,19 +202,16 @@ const TOP_LEVEL_DOMAINS = new Set<string>([
 
 /** Regular expression to extract the main components of a URI. */
 // TODO: Improve unsafe regular expressions.
-// eslint-disable-next-line unicorn/no-unsafe-regex, unicorn/better-regex
+// eslint-disable-next-line unicorn/better-regex
 const URI_REGEXP = /^(?:(?<protocol>.+?):\/\/)?(?<authority>[^#\/?]+)?(?<path>[^#?]*)?(?<query>\?[^#]*)?(?<hash>#\w+)?$/
 
 /** Regular expression to extract the userinfo and host from the authority. */
-// eslint-disable-next-line unicorn/no-unsafe-regex
 const URI_AUTHORITY_REGEXP = /^(?:(?<userinfo>.*?)@)?(?<host>.*)$/
 
 /** Regular expression to extract the path components from the path. */
-// eslint-disable-next-line unicorn/no-unsafe-regex
 const URI_PATH_REGEXP = /^(?:(?<pathDirectory>.+)\/)?(?<pathName>[^.]+(?:\.(?<pathExtension>.*))?)$/
 
 /** Regular expression that matches any IPv6 address. */
-// eslint-disable-next-line unicorn/no-unsafe-regex
 const IPV6_REGEXP = /([\d:a-f]+:+)+[\da-f]+/
 
 /**
@@ -239,7 +233,7 @@ function isStringIPv4(maybeIpv4: string): boolean {
  * @returns `true` if the string is a valid IPv6 address, otherwise `false`.
  */
 function isStringIPv6(maybeIpv6: string): boolean {
-  // eslint-disable-next-line unicorn/no-unsafe-regex
+
   return IPV6_REGEXP.test(maybeIpv6)
 }
 
@@ -291,7 +285,7 @@ export function parseUri(uri: string): UriComponents {
   const [, pathDirectory, pathName, pathExtension] = path?.match(URI_PATH_REGEXP) || []
 
   // --- Extract hostname and port or Ipv6
-  // eslint-disable-next-line unicorn/no-unsafe-regex
+
   const [, hostName, maybeIpv6, hostPort] = host?.match(/^(?<hostName>[\w.-]+?|(?:\[(?<ipv6>.+)]))(?::(?<port>\d{1,5}))?$/) || []
   const hostPortNumber = hostPort ? Number.parseInt(hostPort) || undefined : undefined
 
@@ -339,8 +333,8 @@ export function parseUri(uri: string): UriComponents {
 
     // --- Otherwise, it's `subdomain.domain.tld`
     else {
-      domainTop = hostNameParts.pop() || undefined
-      domain = hostNameParts.pop() || undefined
+      domainTop = hostNameParts.pop()! || undefined
+      domain = hostNameParts.pop()! || undefined
       domainSub = hostNameParts.join('.') || undefined
     }
   }
@@ -492,7 +486,7 @@ if (import.meta.vitest) {
       hostName: '-',
     }],
 
-  ])('should extract the components of "%s"', (url: string, expected: any) => {
+  ])('should extract the components of "%s"', (url: string, expected: object) => {
     const result = parseUri(url)
     for (const [key, value] of Object.entries(expected))
       expect(result).toHaveProperty(key, value)

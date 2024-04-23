@@ -32,7 +32,6 @@ export type Default<T1, T2, N extends number = 0, C extends boolean = false> =
     ? { -readonly [K in keyof R]: R[K] }
     : never
 
-
 /* v8 ignore start */
 if (import.meta.vitest) {
   it('should default objects', () => {

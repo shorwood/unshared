@@ -110,7 +110,6 @@ if (import.meta.vitest) {
     expect(result).toEqual('Hello,')
   })
 
-
   it('should truncate a string to a specified length and break words', () => {
     const result = truncate('Hello, world!', { length: 10, breakWords: true })
     expect(result).toEqual('Hello, wor')
@@ -133,13 +132,14 @@ if (import.meta.vitest) {
 
   it('should throw a type error when the length is not a positive integer', () => {
     // @ts-expect-error: Invalid argument.
-    // eslint-disable-next-line no-unused-expressions
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     () => truncate('Hello, World!', -1)
   })
 
   it('should throw a type error when the length is not a positive integer', () => {
     // @ts-expect-error: Invalid argument.
-    // eslint-disable-next-line no-unused-expressions
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     () => truncate('Hello, World!', -1)
   })
 }

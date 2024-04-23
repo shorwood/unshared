@@ -1,10 +1,9 @@
-#!/usr/bin/env node
-
 import 'dotenv/config'
+import { load as parseYaml } from 'js-yaml'
 import { execFileSync, spawn } from 'node:child_process'
 import { readFile } from 'node:fs/promises'
+// eslint-disable-next-line n/no-unsupported-features/node-builtins
 import { createInterface } from 'node:readline/promises'
-import { load as parseYaml } from 'js-yaml'
 import { OpenAI } from 'openai'
 
 interface Prompt {

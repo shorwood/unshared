@@ -1,8 +1,6 @@
-
 import { NumberIntegerPositive } from '@unshared/types'
 
-// eslint-disable-next-line unicorn/no-unsafe-regex
-export const semverRegExp = /^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[A-Za-z-][\dA-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][\dA-Za-z-]*))*))?(?:\+(?<buildmetadata>[\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*))?$/
+export const SEMVER_REGEXP = /^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[A-Za-z-][\dA-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][\dA-Za-z-]*))*))?(?:\+(?<buildmetadata>[\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*))?$/
 
 /** The components of a semver version. */
 export type SemverComponents = 'build' | 'major' | 'minor' | 'patch' | 'prerelease'
@@ -81,7 +79,7 @@ export class Semver {
    * @example Semver.parse('1.2.3-alpha+build') // Semver { ... }
    */
   static parse(version: string): Semver {
-    const match = version.match(semverRegExp)
+    const match = version.match(SEMVER_REGEXP)
     if (!match) throw new Error(`Invalid semver version: ${version}`)
     return new Semver({
       major: Number.parseInt(match.groups!.major, 10),
@@ -148,7 +146,6 @@ export class Semver {
    * @returns `true` if the given semver version satisfies the current semver range, otherwise `false`.
    * @example new Semver({ major: 1 }).satisfies('>=1.0.0') // true
    */
-  // eslint-disable-next-line sonarjs/cognitive-complexity
   satisfies(range: string): boolean {
     // --- Get the comparison operator and the version to compare.
     const rangeMatch = range.match(/^(>=|<=|>|<|=|\^|~)?\s*(.*)$/)

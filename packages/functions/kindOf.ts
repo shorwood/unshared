@@ -1,4 +1,3 @@
-
 /**
  * Gets the "kind" of a value. This is a more specific version of `typeof` that
  * will return the constructor name of a value if it is not a primitive type. If

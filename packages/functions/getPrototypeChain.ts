@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-null */
 /**
  * Returns the prototype chain of an object. The prototype chain is an array of
  * constructors that are used to construct the object. For example, if an the
@@ -53,8 +52,7 @@ if (import.meta.vitest) {
   })
 
   it('should return the prototype chain of undefined', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    const result = getPrototypeChain(undefined)
+    const result = getPrototypeChain()
     expect(result).toEqual([])
   })
 

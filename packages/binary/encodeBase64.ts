@@ -1,7 +1,6 @@
 import { B64 } from './constants'
 import { BinaryLike, toUint8Array } from './toUint8Array'
 
-
 /**
  * Encode a `BinaryLike` into a Base64-encoded string. This implementation is
  * agnostic to the environment and can be used in both Node.js and browsers.

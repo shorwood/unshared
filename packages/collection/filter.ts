@@ -64,7 +64,7 @@ if (import.meta.vitest) {
     })
 
     it('should filter-in non-nullable values of a readonly object', () => {
-    // eslint-disable-next-line unicorn/no-null
+      // eslint-disable-next-line unicorn/no-null
       const result = filter({ foo: 1, bar: null, baz: undefined } as const, Boolean)
       expect(result).toEqual({ foo: 1 })
       expectTypeOf(result).toEqualTypeOf<{ foo: 1 }>()

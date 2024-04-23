@@ -49,7 +49,6 @@ export type FSMTransitions<T, K extends string> = {
  * // Run the machine.
  * const result = await rombaFSM.run('init') // => { battery: 0, position: { x: 10, y: 10 } }
  */
-// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class FSM<T extends object, K extends string> extends EventTarget {
 
   constructor(initialData: T, private transitions: FSMTransitions<T, K>) {
@@ -97,7 +96,6 @@ export class FSM<T extends object, K extends string> extends EventTarget {
     this.dispatchEvent(eventRunning)
 
     // --- Run the machine until it is idle or finalized.
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     while (typeof this.state === 'string') {
       const transition = this.transitions[this.state]
       if (transition === undefined) throw new Error(`FSM state '${state}' does not exist.`)

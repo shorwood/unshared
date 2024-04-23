@@ -1,5 +1,3 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-/* eslint-disable unicorn/no-null */
 import { Optional } from '@unshared/types'
 
 export interface CollapseOptions {
@@ -117,10 +115,11 @@ export function collapse(object?: unknown, options: CollapseOptions = {}) {
   return object
 }
 
-/** c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
   describe('collapse', () => {
     it('should mutate the object', () => {
+      // eslint-disable-next-line unicorn/no-null
       const object = { a: null }
       collapse(object)
       expect(object).toStrictEqual({})
@@ -129,36 +128,43 @@ if (import.meta.vitest) {
 
   describe('null', () => {
     it('should collapse null values', () => {
+      // eslint-disable-next-line unicorn/no-null
       const result = collapse(null)
       expect(result).toEqual(undefined)
       expectTypeOf(result).toEqualTypeOf<undefined>()
     })
 
     it('should not collapse nested null values when keepNull is true', () => {
+      // eslint-disable-next-line unicorn/no-null
       const result = collapse({ a: null }, { keepNull: true })
+      // eslint-disable-next-line unicorn/no-null
       expect(result).toEqual({ a: null })
       expectTypeOf(result).toEqualTypeOf<{ a: null }>()
     })
 
     it('should collapse nested null values recursively', () => {
+      // eslint-disable-next-line unicorn/no-null
       const result = collapse({ a: null })
       expect(result).toEqual(undefined)
       expectTypeOf(result).toEqualTypeOf<undefined>()
     })
 
     it('should partially collapse nested null values', () => {
+      // eslint-disable-next-line unicorn/no-null
       const result = collapse({ a: null, b: { c: null } })
       expect(result).toEqual(undefined)
       expectTypeOf(result).toEqualTypeOf<undefined>()
     })
 
     it('should collapse nested null values recursively but keep the keys', () => {
+      // eslint-disable-next-line unicorn/no-null
       const result = collapse({ a: null }, { keepPropertyKeys: true })
       expect(result).toEqual({ a: undefined })
       expectTypeOf(result).toEqualTypeOf<{ a: undefined } | undefined>()
     })
 
     it('should maybe collapse null values', () => {
+      // eslint-disable-next-line unicorn/no-null
       const result = collapse({ a: null as string | null })
       expect(result).toEqual(undefined)
       expectTypeOf(result).toEqualTypeOf<{ a: string } | undefined>()
@@ -260,6 +266,7 @@ if (import.meta.vitest) {
       const result = collapse({
         withArrays: { a: [], keep: true },
         withObjects: { a: {}, keep: true },
+        // eslint-disable-next-line unicorn/no-null
         withNull: { a: null, keep: true },
         withUndefined: { a: undefined, keep: true },
         withNestedArrays: { a: [{ b: [] }], keep: true },

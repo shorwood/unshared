@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-import { setFlagsFromString, GCProfiler } from 'node:v8'
+import { GCProfiler, setFlagsFromString } from 'node:v8'
 import { runInNewContext } from 'node:vm'
 
 /**

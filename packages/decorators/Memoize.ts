@@ -1,7 +1,6 @@
 import { MemoizeOptions, memoize } from '@unshared/functions/memoize'
 import { Function, MethodDecorator } from '@unshared/types'
 
-
 /**
  * Decorate a method to memoize it's result based on the arguments. Meaning
  * that it will return the same result without executing the method again,
