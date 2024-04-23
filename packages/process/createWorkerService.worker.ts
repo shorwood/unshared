@@ -1,18 +1,29 @@
-import { WorkerServiceRequest } from './createWorkerService'
-import { WORKER_SERVICE_FUNCTION_NAME } from './createWorkerService.constants'
+import { createRequire } from 'node:module'
+import { WorkerServicePayload } from './createWorkerService'
+import { WORKER_SERVICE_HANDLER_NAME } from './createWorkerService.constants'
 import { workerRegister } from './workerRegister'
 
-// --- Register the dynamic runner function.
-workerRegister(WORKER_SERVICE_FUNCTION_NAME, async(request: WorkerServiceRequest) => {
-  const { id, name = 'default', parameters = [] } = request
+async function callback(request: WorkerServicePayload) {
+  const { moduleId, name = 'default', parameters = [], paths } = request
 
   // --- Import the module and get the named export.
-  const modulePath = id instanceof URL ? id.pathname : id
-  const moduleResolved = await import(modulePath)
+  const require = createRequire(import.meta.url)
+  const modulePath = require.resolve(moduleId as string, { paths })
+  const moduleResolved = await import(modulePath) as Record<string, unknown>
+
+  // --- If the named export is a special method, return the result.
+  if (name === 'getOwnPropertyNames') return Object.getOwnPropertyNames(moduleResolved)
+
+  // --- Check if the named export exists.
+  if (name in moduleResolved === false)
+    throw new Error(`The module "${modulePath}" does not have the named export "${name}".`)
   const moduleExport = moduleResolved[name]
 
   // --- Execute the function.
   return typeof moduleExport === 'function'
-    ? moduleExport(...parameters)
+    ? moduleExport(...parameters) as unknown
     : moduleExport
-})
+}
+
+// --- Register the dynamic runner function.
+workerRegister(WORKER_SERVICE_HANDLER_NAME, callback)
