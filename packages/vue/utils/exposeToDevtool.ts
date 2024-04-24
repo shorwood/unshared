@@ -1,32 +1,33 @@
-import { mount } from '@vue/test-utils'
-import { expect, it } from 'vitest'
-import { ComponentInternalInstance, getCurrentInstance, nextTick, h } from 'vue-demi'
+import { ComponentInternalInstance, getCurrentInstance, h, nextTick } from 'vue'
 
 /**
- * Exposes an object to the Vue Devtools.
+ * Exposes an object to the Vue Devtools. This is useful when defining a component
+ * using the `defineComponent` function and you want to expose some properties to
+ * the Vue Devtools for debugging purposes.
  *
- * @param object The object to expose
- * @param componentInstance The component instance to expose to
- * @returns The exposed object
+ * @param object The object to expose to the Vue Devtools.
+ * @param componentInstance The component instance to expose the object to.
+ * @example
+ * const component = defineComponent({
+ *   setup() {
+ *     const text = reactive({ foo: 'bar' })
+ *     exposeToDevtool({ text })
+ *     return () => h('div', text.foo)
+ *   },
+ * })
  */
-export function exposeToDevtool<T>(object: T, componentInstance?: ComponentInternalInstance | null): T {
-  // TODO: abort when not in dev mode
-
-  // --- Get current component instance.
+export function exposeToDevtool<T extends object>(object: T, componentInstance?: ComponentInternalInstance | null): void {
   const instance = componentInstance ?? getCurrentInstance()
-  if (!instance) return object
-
-  // --- Update `setupState` on next tick.
+  if (!instance) return
   // @ts-expect-error: `setupState` is not declared in the type definition.
   void nextTick(() => instance.setupState = object)
-
-  // --- Return the object.
-  return object
 }
 
 /* v8 ignore start */
+// @vitest-environment happy-dom
 if (import.meta.vitest) {
-  // @vitest-environment happy-dom
+  const { mount } = await import('@vue/test-utils')
+
   it('should expose an object to the Vue Devtools', async() => {
     const wrapper = mount({ render: () => h('div') })
     const instance = wrapper.getCurrentComponent()
@@ -36,9 +37,8 @@ if (import.meta.vitest) {
     expect(instance.setupState).toStrictEqual({ foo: 'bar' })
   })
 
-  it('should return the exposed object', () => {
+  it('should return undefined', () => {
     const result = exposeToDevtool({ foo: 'bar' })
-    expect(result).toStrictEqual({ foo: 'bar' })
-    expect(result).toBe(result)
+    expect(result).toBeUndefined()
   })
 }
