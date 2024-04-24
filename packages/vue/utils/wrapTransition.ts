@@ -1,5 +1,3 @@
-/* eslint-disable unicorn/prevent-abbreviations */
-import { mount } from '@vue/test-utils'
 import { Transition, TransitionGroup, TransitionProps, VNode, h } from 'vue'
 
 type RawChildrenOrSlots = Parameters<typeof h>[2]
@@ -48,8 +46,9 @@ export function wrapTransition<T extends RawChildrenOrSlots>(vnode: T, options?:
 }
 
 /* v8 ignore start */
+// @vitest-environment happy-dom
 if (import.meta.vitest) {
-  // @vitest-environment happy-dom
+  const { mount } = await import('@vue/test-utils')
   const div = h('div', { key: '1' })
 
   it('should wrap a single VNode in a Transition component', () => {
