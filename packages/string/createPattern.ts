@@ -18,7 +18,7 @@ export function createPattern(pattern: string): RegExp {
 
     // --- Globstar(s)
     .replaceAll(/(\/)?(\*+)(\/)?/g, (_, $1 = '', $2: string, $3 = '') =>
-      ($2.length === 1 ? `${$1}[^/]+${$3}` : `\/?.*${$3}`))
+      ($2.length === 1 ? `${$1}[^/]+${$3}` : `(:?\/?.*${$3})?`))
 
     // --- Wildcard
     .replaceAll(/{(.+?)}/g, (_, p1: string) => `(?:${p1.replaceAll(',', '|')})`)
@@ -66,7 +66,7 @@ if (import.meta.vitest) {
     it('should create RegExp from double globstar pattern', () => {
       const result = createPattern('foo/**')
       const test = result.test('foo/bar/baz')
-      expect(result).toEqual(/^foo\/?.*$/)
+      expect(result).toEqual(/^foo(:?\/?.*)?$/)
       expect(test).toBe(true)
     })
 
@@ -80,7 +80,7 @@ if (import.meta.vitest) {
     it('should create RegExp for deeply nested paths with file extension', () => {
       const result = createPattern('**/src/*.ts')
       const test = result.test('foo/bar/src/baz.ts')
-      expect(result).toEqual(/^\/?.*\/src\/[^/]+\.ts$/)
+      expect(result).toEqual(/^(:?\/?.*\/)?src\/[^/]+\.ts$/)
       expect(test).toBe(true)
     })
   })

@@ -203,7 +203,7 @@ if (import.meta.vitest) {
     expect(files).toEqual(expected)
   })
 
-  it('should find only files at the root', async() => {
+  it('should find nested and non-nested files', async() => {
     const files = await glob('**/*', { cwd: '/project', onlyFiles: true })
     expect(files).toEqual([
       '/project/README.md',
@@ -218,7 +218,7 @@ if (import.meta.vitest) {
     ])
   })
 
-  it('should find only directories at the root', async() => {
+  it('should find nested and non-nested directories', async() => {
     const files = await glob('**/*', { cwd: '/project', onlyDirectories: true })
     expect(files).toEqual([
       '/project/dist',
@@ -227,7 +227,7 @@ if (import.meta.vitest) {
   })
 
   it('should find files but exclude the dist directory', async() => {
-    const files = await glob('*/*', { cwd: '/project', exclude: 'dist/**' })
+    const files = await glob('*', { cwd: '/project', exclude: 'dist/**' })
     expect(files).toEqual([
       '/project/README.md',
       '/project/bar.ts',
