@@ -39,6 +39,7 @@ export function typescript(): Linter.FlatConfig[] {
          *
          * @see https://typescript-eslint.io/rules/semi
          */
+        'semi': 'off',
         '@typescript-eslint/semi': ['error', 'never'],
 
         /**
@@ -59,6 +60,7 @@ export function typescript(): Linter.FlatConfig[] {
          *
          * @see https://typescript-eslint.io/rules/no-unused-expressions
          */
+        'no-unused-expressions': 'off',
         '@typescript-eslint/no-unused-expressions': 'error',
 
         /**
