@@ -13,7 +13,7 @@ async function createPackageExports(outPath: string, packagePath: string) {
 
     const outPathRelative = relative(packagePath, outPath)
     const importPath = `./${join(outPathRelative, path)}`
-    const importName = `./${path.split('/').pop()!.replace(/\..+$/, '')}`
+    const importName = `./${path.split('/').pop()!.replace(/(\.d)?\.(ts|mjs|cjs|js)$/, '')}`
     packageExports[importName] = packageExports[importName] ?? {}
 
     if (path.endsWith('.d.ts')) packageExports[importName].types = importPath

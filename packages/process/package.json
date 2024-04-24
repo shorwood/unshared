@@ -21,6 +21,11 @@
       "import": "./dist/createWorkerPool.js"
     },
     "./createWorkerService": {
+      "require": "./dist/createWorkerService.cjs",
+      "types": "./dist/createWorkerService.d.ts",
+      "import": "./dist/createWorkerService.js"
+    },
+    "./createWorkerService.worker": {
       "require": "./dist/createWorkerService.worker.cjs",
       "types": "./dist/createWorkerService.worker.d.ts",
       "import": "./dist/createWorkerService.worker.js"
@@ -63,6 +68,7 @@
   ],
   "dependencies": {
     "@unshared/binary": "workspace:*",
+    "@unshared/collection": "workspace:*",
     "@unshared/decorators": "workspace:*",
     "@unshared/functions": "workspace:*",
     "@unshared/types": "workspace:*"

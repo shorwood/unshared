@@ -1,6 +1,5 @@
 export * from './createWorkerPool'
 export * from './createWorkerService'
-export * from './createWorkerService.constants'
 export * from './createWorkerService.worker'
 export * from './execute'
 export * from './parseCliArguments'
