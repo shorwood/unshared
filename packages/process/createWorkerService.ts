@@ -1,8 +1,9 @@
+import { toArray } from '@unshared/collection/toArray'
 import { Once } from '@unshared/decorators/Once'
-import { UnionMerge } from '@unshared/types'
+import { MaybeArray, UnionMerge } from '@unshared/types'
 import { Function } from '@unshared/types/Function'
+import { createRequire } from 'node:module'
 import { Worker, WorkerOptions } from 'node:worker_threads'
-import { WORKER_SERVICE_HANDLER_NAME, WORKER_SERVICE_URL } from './createWorkerService.constants'
 import { workerRequest } from './workerRequest'
 
 /** The result of a function when called from a `WorkerService`. */
@@ -99,6 +100,18 @@ export interface WorkerServicePayload<T extends Function = Function<unknown, unk
 }
 
 /**
+ * Dynamically resolve the path of the worker service script used by the `WorkerService`
+ * to dynamically wrap modules and functions in a worker thread.
+ *
+ * @returns The path to the worker service script.
+ */
+function getWorkerServicePath(): URL {
+  const require = createRequire(import.meta.url)
+  const unsharedModulePath = require.resolve('@unshared/process/createWorkerService.worker')
+  return new URL(unsharedModulePath, import.meta.url)
+}
+
+/**
  * A service that can be used to workerize functions and modules in a `Worker` thread
  * from anywhere in the application. Allowing you to dynamically import functions and
  * execute functions in another thread without having to worry about the implementation.
@@ -161,7 +174,7 @@ export class WorkerService implements Disposable {
     if (this.worker) return
 
     // --- Create the worker thread.
-    const { workerUrl = WORKER_SERVICE_URL, ...workerOptions } = this.options
+    const { workerUrl = getWorkerServicePath(), ...workerOptions } = this.options
     this.worker = new Worker(workerUrl, workerOptions)
 
     // --- Await for the worker to be online.
@@ -206,7 +219,7 @@ export class WorkerService implements Disposable {
     this.running++
     if (!this.worker) await this.initialize()
     if (payload.moduleId instanceof URL) payload.moduleId = payload.moduleId.pathname
-    const request = workerRequest(this.worker!, WORKER_SERVICE_HANDLER_NAME, payload)
+    const request = workerRequest(this.worker!, 'WORKER_SERVICE', payload)
     return request.finally(() => this.running--) as Awaited<WorkerServiceResult<T>>
   }
 
@@ -215,6 +228,7 @@ export class WorkerService implements Disposable {
    * function will be executed in a separate thread and the result will be returned.
    *
    * @param moduleId The module ID to wrap.
+   * @param paths An array of paths to use when resolving the module ID.
    * @returns A proxy object that will execute the named function in a separate thread.
    * @example
    * // Create a worker service.
@@ -226,11 +240,11 @@ export class WorkerService implements Disposable {
    * // Call the hash function in a worker thread.
    * const result = await randomBytes(128) // Uint8Array { ... }
    */
-  public wrap<T extends object>(moduleId: URL | string): Workerized<T> {
+  public wrap<T extends object>(moduleId: URL | string, paths?: MaybeArray<string>): Workerized<T> {
     return new Proxy({}, {
       get: (_, name: string & keyof T) =>
         (...parameters: unknown[]) =>
-          this.spawn.call(this, { moduleId, name, parameters }),
+          this.spawn.call(this, { moduleId, name, parameters, paths: toArray(paths) }),
     }) as Workerized<T>
   }
 

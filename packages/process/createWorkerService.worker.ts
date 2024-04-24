@@ -1,6 +1,5 @@
 import { createRequire } from 'node:module'
 import { WorkerServicePayload } from './createWorkerService'
-import { WORKER_SERVICE_HANDLER_NAME } from './createWorkerService.constants'
 import { workerRegister } from './workerRegister'
 
 async function callback(request: WorkerServicePayload) {
@@ -26,4 +25,4 @@ async function callback(request: WorkerServicePayload) {
 }
 
 // --- Register the dynamic runner function.
-workerRegister(WORKER_SERVICE_HANDLER_NAME, callback)
+workerRegister('WORKER_SERVICE', callback)

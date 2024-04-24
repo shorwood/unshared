@@ -1,5 +1,6 @@
+import { toArray } from '@unshared/collection/toArray'
 import { Once } from '@unshared/decorators/Once'
-import { Function } from '@unshared/types'
+import { Function, MaybeArray } from '@unshared/types'
 import { cpus } from 'node:os'
 import { WorkerService, WorkerServiceOptions, WorkerServicePayload, WorkerServiceResult, Workerized } from './createWorkerService'
 
@@ -127,6 +128,7 @@ export class WorkerPool {
    * function will be executed in a separate thread and the result will be returned.
    *
    * @param moduleId The module ID to wrap.
+   * @param paths An array of paths to use when resolving the module ID.
    * @returns A proxy object that will execute the named function in a separate thread.
    * @example
    *
@@ -139,11 +141,11 @@ export class WorkerPool {
    * // Call the add function in a worker thread.
    * const result = await lodash.add(1, 2) // 3
    */
-  public wrap<T extends object>(moduleId: URL | string): Workerized<T> {
+  public wrap<T extends object>(moduleId: URL | string, paths?: MaybeArray<string>): Workerized<T> {
     return new Proxy({}, {
       get: (_, name: string & keyof T) =>
         (...parameters: unknown[]) =>
-          this.spawn.call(this, { moduleId, name, parameters }),
+          this.spawn.call(this, { moduleId, name, parameters, paths: toArray(paths) }),
     }) as Workerized<T>
   }
 
