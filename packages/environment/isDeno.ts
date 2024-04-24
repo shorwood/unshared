@@ -4,10 +4,11 @@
  * @returns `true` if the current environment is Deno
  */
 export function isDeno(): boolean {
-  return typeof process !== 'undefined' && !!process.versions!.deno
+  return typeof process !== 'undefined'
+    && typeof process.versions.deno === 'string'
 }
 
-/* c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
   it('should return true if the current environment is Deno', () => {
     vi.stubGlobal('process', { versions: { deno: '0.0.0' } })
@@ -22,8 +23,7 @@ if (import.meta.vitest) {
   })
 
   it('should return false if the current environment is browser', () => {
-    // eslint-disable-next-line unicorn/no-null
-    vi.stubGlobal('process', null)
+    vi.stubGlobal('process', {})
     const result = isDeno()
     expect(result).toEqual(false)
   })

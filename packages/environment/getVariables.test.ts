@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/prevent-abbreviations */
 import { expect, it, vi } from 'vitest'
 import { getVariables } from './getVariables'
 

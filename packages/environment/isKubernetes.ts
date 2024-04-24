@@ -1,12 +1,12 @@
+import { readFile } from 'node:fs/promises'
+
 /**
  * Check if process is running in a Kubernetes environment
  *
  * @returns `true` if process is running in a Kubernetes environment
  */
-export const isKubernetes = async() => {
-  const { access, readFile } = await import('node:fs/promises')
+export async function isKubernetes() {
   try {
-    await access('/proc/self/cgroup')
     const cgroupContent = await readFile('/proc/self/cgroup', 'utf8')
     return /kubernetes/i.test(cgroupContent)
   }

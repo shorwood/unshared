@@ -1,5 +1,3 @@
-import { memoize } from '@unshared/functions/memoize'
-
 export interface GetEnvironmentOptions {
   /** Ignore environment variables from `process.env` */
   ignoreProcess?: boolean
@@ -25,7 +23,7 @@ export interface GetEnvironmentOptions {
  * getEnvironment() // => { NODE_ENV: 'development', ... }
  * getEnvironment({ ignoreProcess: true }) // => { ... }
  */
-export const getEnvironment = memoize((options: GetEnvironmentOptions = {}): NodeJS.ProcessEnv => {
+export function getEnvironment(options: GetEnvironmentOptions = {}): NodeJS.ProcessEnv {
   const { ignoreProcess } = options
   let environment: NodeJS.ProcessEnv = {}
 
@@ -42,4 +40,4 @@ export const getEnvironment = memoize((options: GetEnvironmentOptions = {}): Nod
 
   // --- Return the environment.
   return environment
-})
+}

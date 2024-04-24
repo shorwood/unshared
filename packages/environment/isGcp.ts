@@ -1,10 +1,15 @@
+import { access } from 'node:fs/promises';
+
 /**
  * Check if process is running on Google Cloud Functions
  *
  * @returns `true` if process is running on Google Cloud Functions
  */
-export const isGcp = async() => {
-  const { access } = await import('node:fs/promises')
-  try { await access('/etc/gcp_conf'); return true }
-  catch { return false }
+export async function isGcp() {
+  try {
+    await access('/etc/gcp_conf'); return true
+  }
+  catch {
+    return false
+  }
 }

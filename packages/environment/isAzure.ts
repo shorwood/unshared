@@ -3,7 +3,7 @@
  *
  * @returns `true` if process is running on Azure Functions
  */
-export const isAzure = async() => {
+export async function isAzure() {
   const { access } = await import('node:fs/promises')
   try { await access('/etc/azure.conf'); return true }
   catch { return false }

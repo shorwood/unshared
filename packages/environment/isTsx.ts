@@ -20,7 +20,7 @@ export function isTsx() {
   return false
 }
 
-/* c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
   it('should return true when ESBK_TSCONFIG_PATH is set', () => {
     vi.stubEnv('ESBK_TSCONFIG_PATH', '/path/to/tsconfig.json')

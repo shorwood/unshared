@@ -3,14 +3,14 @@
  *
  * @returns `true` if process is running in a Worker
  */
-export const isWorker = () => {
+export function isWorker() {
   // --- Detect on browser
   // @ts-expect-error: `WorkerGlobalScope` is not defined on Node.js
   if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope)
     return true
 
   // --- Detect on Node.js
-  if (typeof process !== 'undefined' && process.versions?.worker)
+  if (process?.versions?.worker)
     return true
 
   // --- Detect on Deno
