@@ -10,12 +10,12 @@ import { PACKAGES_NAMES } from './constants'
 import { getPackageMetadata } from './utils'
 
 export async function build() {
-  const { args, options } = parseCliArguments<{ watch: boolean }>(argv)
+  const { parameters, options } = parseCliArguments<{ watch: boolean }>(argv)
   const { watch = false } = options
 
   // --- Get the package names to build.
-  const packageNames = args.length > 0
-    ? PACKAGES_NAMES.filter(argument => args.includes(argument))
+  const packageNames = parameters.length > 0
+    ? PACKAGES_NAMES.filter(argument => parameters.includes(argument))
     : PACKAGES_NAMES
 
   // --- Cleanup the output directories.
