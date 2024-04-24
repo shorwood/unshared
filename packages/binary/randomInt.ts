@@ -54,7 +54,7 @@ if (import.meta.vitest) {
     vi.unstubAllGlobals()
   })
 
-  it.only('returns a random unsigned 32-bit integer', () => {
+  it('returns a random unsigned 32-bit integer', () => {
     const result = randomInt()
     const isInteger = Number.isInteger(result)
     expect(isInteger).toBe(true)
