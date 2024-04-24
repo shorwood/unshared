@@ -1,4 +1,4 @@
-import { Ref, ref, watch } from 'vue-demi'
+import { Ref, ref, watch } from 'vue'
 
 export type ReadyCondition<T> = T | ((value: T) => boolean)
 
