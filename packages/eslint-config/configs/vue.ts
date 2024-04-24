@@ -45,6 +45,12 @@ export function vue(): Linter.FlatConfig[] {
         ...VUE_RECOMMENDED_RULES,
 
         /**
+         * Disable the `no-unused-vars` rule because as it may trigger false positives
+         * when using the Composition API.
+         */
+        'no-unused-vars': 'off',
+
+        /**
          * Enforces consistent usage of type imports. This rule will enforce the use
          * of `type` imports to make it easier for the Vue SFC compiler to analyze
          * the code and infer the dependency graph correctly.
@@ -127,16 +133,37 @@ export function vue(): Linter.FlatConfig[] {
          * Enforce consistent spacing and newlines in the template. This rule helps
          * to maintain consistency and readability by enforcing a predictable
          *
+         * @see https://eslint.vuejs.org/rules/html-indent.html
          * @see https://eslint.vuejs.org/rules/max-attributes-per-line.html
          * @see https://eslint.vuejs.org/rules/html-closing-bracket-newline.html
          */
+        'vue/html-indent': ['error', 2, {
+          attribute: 1,
+          baseIndent: 1,
+          closeBracket: 0,
+          alignAttributesVertically: true,
+          ignores: [],
+        }],
         'vue/max-attributes-per-line': ['error', {
-          singleline: { max: 3 },
+          singleline: { max: 5 },
           multiline: { max: 1 },
         }],
         'vue/html-closing-bracket-newline': ['error', {
           singleline: 'never',
           multiline: 'never',
+          selfClosingTag: {
+            singleline: 'never',
+            multiline: 'always',
+          },
+        }],
+        'vue/first-attribute-linebreak': ['error', {
+          singleline: 'beside',
+          multiline: 'below',
+        }],
+        'vue/multiline-html-element-content-newline': ['error', {
+          ignoreWhenEmpty: true,
+          allowEmptyLines: true,
+          ignores: [],
         }],
 
         /**
@@ -152,15 +179,26 @@ export function vue(): Linter.FlatConfig[] {
          * Enforce consistent spacing between HTML / Component tags. This makes it
          * easier to read and understand the structure of the component.
          *
-         * @see https://eslint.vuejs.org/rules/padding-line-between-tags.html
          * @see https://eslint.vuejs.org/rules/padding-line-between-blocks.html
+         * @see https://eslint.vuejs.org/rules/padding-line-between-tags.html
          */
+        'vue/html-comment-indent': ['error', 2],
         'vue/padding-line-between-blocks': ['error', 'always'],
-        'vue/padding-line-between-tags': ['error', [{
-          blankLine: 'consistent',
-          prev: '*',
-          next: '*',
-        }]],
+        'vue/padding-line-between-tags': ['error', [
+          { blankLine: 'consistent', prev: '*', next: '*' },
+        ]],
+
+        /**
+         * Enforce consistent spacing between HTML comments and their content.
+         *
+         * @see https://eslint.vuejs.org/rules/html-comment-content-spacing.html
+         * @see https://eslint.vuejs.org/rules/html-comment-content-newline.html
+         */
+        'vue/html-comment-content-spacing': ['error', 'always'],
+        'vue/html-comment-content-newline': ['error', {
+          singleline: 'never',
+          multiline: 'always',
+        }],
 
         /**
          * Enforce the declaration of emits in the setup function and warn on unused
@@ -200,9 +238,6 @@ export function vue(): Linter.FlatConfig[] {
         'vue/custom-event-name-casing': ['error', 'camelCase'],
         'vue/define-macros-order': ['error', {
           order: ['defineProps', 'defineEmits'],
-        }],
-        'vue/html-comment-content-spacing': ['error', 'always', {
-          exceptions: ['-'],
         }],
         'vue/no-restricted-v-bind': ['error', '/^v-/'],
         'vue/no-useless-v-bind': 'error',
