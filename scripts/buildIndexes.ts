@@ -56,7 +56,7 @@ async function buildIndex(path: string): Promise<IndexFile> {
   }
 
   // ---Sort the imports alphabetically and generate the index file content.
-  const indexContent = imports
+  const indexContent = [...new Set(imports)]
     .sort((a, b) => a.localeCompare(b))
     .map(script => `export * from './${script}'`)
     .join('\n')
