@@ -1,12 +1,15 @@
-import metaUrlPlugin from '@chialab/esbuild-plugin-meta-url'
-import workerPlugin from '@chialab/esbuild-plugin-worker'
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
-  entry: ['index.ts'],
-  format: ['esm', 'cjs'],
-  esbuildPlugins: [
-    workerPlugin(),
-    metaUrlPlugin(),
-  ],
+  format: ['esm'],
+  entry: {
+    index: './index.ts',
+    render: './render.ts',
+  },
+  clean: true,
+  silent: true,
+  esbuildOptions: (options) => {
+    options.define = { 'import.meta.vitest': 'false' }
+  },
+  minifySyntax: true,
 })

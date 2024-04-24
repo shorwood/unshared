@@ -1,9 +1,8 @@
-import { Worker } from 'node:worker_threads'
-import { renderLoop } from './renderLoop'
+import { loop } from './loop'
 
-renderLoop()
+void loop()
 
-process.on('exit', () => {
-  process.stdout.write('\u001B[0;0H')
-  process.stdout.write('\u001Bc')
-})
+// process.on('exit', () => {
+//   process.stdout.write('\u001B[0;0H')
+//   process.stdout.write('\u001Bc')
+// })
