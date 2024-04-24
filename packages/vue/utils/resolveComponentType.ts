@@ -1,6 +1,4 @@
-import { mount } from '@vue/test-utils'
-import { expect, it, vi } from 'vitest'
-import { Component, resolveComponent, defineComponent, h } from 'vue-demi'
+import { Component, defineComponent, h, resolveComponent } from 'vue'
 
 /**
  * Dynamically resolves to a globally registered Vue component or an HTML tag.
@@ -22,10 +20,14 @@ export function resolveComponentType(type: string): Component | string {
 }
 
 /* v8 ignore start */
+// @vitest-environment happy-dom
 if (import.meta.vitest) {
-  // @vitest-environment happy-dom
+  const { mount } = await import('@vue/test-utils')
+
   const Component = defineComponent({
-    props: ['as'],
+    props: {
+      as: { type: String, required: true },
+    },
     setup: props => () => h(
       resolveComponentType(props.as),
       { foo: 'bar' },
