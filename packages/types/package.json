@@ -360,6 +360,6 @@
     "@types/node": ">=14.0.0"
   },
   "devDependencies": {
-    "@types/node": "20.11.25"
+    "@types/node": "20.12.7"
   }
 }

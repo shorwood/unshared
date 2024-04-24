@@ -1,1 +1,1 @@
-export { default } from '@unshared/eslint-config'
+export { default } from './packages/eslint-config'

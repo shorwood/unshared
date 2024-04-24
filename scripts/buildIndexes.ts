@@ -1,4 +1,4 @@
-import { createPattern } from '@unshared/string'
+import { createPattern } from '../packages/string/createPattern'
 import { readdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { getPackageMetadata } from './utils'

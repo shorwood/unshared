@@ -47,11 +47,11 @@
     "eslint-plugin-jsdoc": "48.2.3",
     "eslint-plugin-jsonc": "2.15.1",
     "eslint-plugin-markdown": "4.0.1",
-    "eslint-plugin-n": "17.2.1",
-    "eslint-plugin-perfectionist": "2.9.0",
+    "eslint-plugin-n": "17.3.1",
+    "eslint-plugin-perfectionist": "2.10.0",
     "eslint-plugin-promise": "6.1.1",
     "eslint-plugin-unicorn": "52.0.0",
-    "eslint-plugin-vitest": "0.5.3",
+    "eslint-plugin-vitest": "0.5.4",
     "eslint-plugin-vue": "9.25.0",
     "eslint-plugin-yml": "1.14.0",
     "jsonc-eslint-parser": "2.4.0",
@@ -61,7 +61,7 @@
   "devDependencies": {
     "@types/eslint__eslintrc": "2.1.1",
     "@types/eslint__js": "8.42.3",
-    "eslint": "9.1.0",
+    "eslint": "9.1.1",
     "typescript": "5.4.5"
   }
 }
