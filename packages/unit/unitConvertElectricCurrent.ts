@@ -5,8 +5,8 @@ import { UnitSymbol, UnitValue } from './utils/types'
 /**
  * Convert a data volume to another unit.
  *
- * @param value The value to convert.
- * @param unit The unit to convert to. (Defaults to the base unit.)
+ * @param value The value to convert. By default, this is assumed to be in SI units (amperes).
+ * @param unit The unit to convert to. By default, this is assumed to be in SI units (amperes).
  * @returns The converted value.
  * @example unitConvertIntensity('1mA', 'A') // 0.001
  */
@@ -14,10 +14,10 @@ export function unitConvertIntensity(value: UnitValue<typeof SCALE_ELECTRIC_CURR
   return unitConvert(value, unit, SCALE_ELECTRIC_CURRENT)
 }
 
-/** c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
-  it('should convert ampere to exacoulomb', () => {
-    const result = unitConvertIntensity(1, 'exacoulomb')
+  it('should convert 1 ampere to coulomb', () => {
+    const result = unitConvertIntensity(1, 'coulomb')
     expect(result).toEqual(6.2415090744607635)
   })
 }

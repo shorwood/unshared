@@ -14,7 +14,7 @@ export function unitConvertTemperature(value: UnitValue<typeof SCALE_TEMPERATURE
   return unitConvert(value, unit, SCALE_TEMPERATURE)
 }
 
-/** c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
   it('should convert Kelvin to Celsius', () => {
     // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
