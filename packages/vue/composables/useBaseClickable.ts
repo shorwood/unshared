@@ -21,7 +21,7 @@ export const BASE_CLICKABLE_PROPS = {
    *
    * @default 0
    */
-  throttle: { type: Number, default: 0 },
+  throttle: { type: Number, default: 0 } as Prop<number>,
   /**
    * The debounce time to wait before calling the `onClick` method. This is
    * used to debounce the click event and prevent multiple clicks from being
@@ -29,7 +29,7 @@ export const BASE_CLICKABLE_PROPS = {
    *
    * @default 0
    */
-  debounce: { type: Number, default: 0 },
+  debounce: { type: Number, default: 0 } as Prop<number>,
 }
 
 /** The properties of the base clickable component. */
