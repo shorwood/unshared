@@ -2,18 +2,28 @@ import { defineConfig } from 'vitest/config'
 import { PACKAGES_NAMES } from './scripts/constants'
 
 const includeSource = PACKAGES_NAMES.map(name => `./packages/${name}/**/*.ts`)
-const exclude = ['**/node_modules/**', '**/index.ts', '**/__wip__/**']
+const exclude = [
+  '**/node_modules/**',
+  '**/index.ts',
+  '**/__wip__/**',
+  '**/*.d.ts',
+]
 
 export default defineConfig({
   test: {
     open: false,
     globals: true,
-    testTimeout: 100,
+    testTimeout: process.env.DEBUGGER ? 100 : 0,
     reporters: ['basic'],
     setupFiles: './packages/setupTest.ts',
     includeSource,
     include: [],
     exclude,
+
+    api: {
+      host: '0.0.0.0',
+      port: 8000,
+    },
 
     // --- Type-checking configuration.
     typecheck: {
