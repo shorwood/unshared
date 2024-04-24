@@ -81,10 +81,10 @@ export async function publishPackage(packageName: string) {
 }
 
 export async function publish() {
-  const { args } = parseCliArguments(argv)
+  const { parameters } = parseCliArguments(argv)
 
-  const packageNames = args.length > 0
-    ? PACKAGES_NAMES.filter(argument => args.includes(argument))
+  const packageNames = parameters.length > 0
+    ? PACKAGES_NAMES.filter(argument => parameters.includes(argument))
     : PACKAGES_NAMES
 
   // --- Prepare the package for publishing.
