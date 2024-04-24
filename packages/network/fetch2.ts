@@ -16,7 +16,7 @@ const sessions = new Map<string, ClientHttp2Session>()
  * const response = await fetch2('https://example.com')
  * const body = await response.text() // 'Hello, world!'
  */
-export async function fetch2(url: string | URL | Request, options: InitOptions = {}): Promise<Response> {
+export async function fetch2(url: Request | URL | string, options: InitOptions = {}): Promise<Response> {
   let authority: string | undefined
   if (typeof url === 'string') authority = url
   else if (url instanceof URL) authority = url.origin

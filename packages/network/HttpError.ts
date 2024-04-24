@@ -74,7 +74,7 @@ export class HttpError extends Error {
   public debugSolution?: string
 }
 
-/* c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
   it('should create an instance of basic error', () => {
     const error = new HttpError('An error occurred while processing your request.')

@@ -1,5 +1,5 @@
-import { parse } from 'yaml'
 import { OpenAPIV3 } from 'openapi-types'
+import { parse } from 'yaml'
 import { ClientOptions, createClient } from './createClient'
 import { createMethods, resolveDocument } from './utils'
 
@@ -58,7 +58,7 @@ export function createService(specification: OpenAPIV3.Document, options: Client
   return service
 }
 
-/** c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
   const response = await fetch('https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/openai.com/1.1.0/openapi.yaml')
   const specYaml = await response.text()

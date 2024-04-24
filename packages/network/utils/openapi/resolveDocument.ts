@@ -11,7 +11,7 @@ import { resolveReference } from './resolveReference'
  */
 export type ResolvedDeep<T> =
   T extends OpenAPIV3.ReferenceObject ? never
-    : T extends (infer U)[] ? ResolvedDeep<U>[]
+    : T extends Array<infer U> ? Array<ResolvedDeep<U>>
       : T extends Record<string, any> ? { [K in keyof T]: ResolvedDeep<T[K]> }
         : T
 
@@ -44,7 +44,7 @@ export function resolveDocument<T>(specification: Partial<OpenAPIV3.Document>, s
   }) as ResolvedDeep<T>
 }
 
-/** c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
   const specRaw = await import('../../__fixtures__/example.json')
   const spec = specRaw as OpenAPIV3.Document

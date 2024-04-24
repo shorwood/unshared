@@ -37,7 +37,7 @@ export interface ClientOptions extends RequestInit {
    *
    * @example `Zm9vOmJhcg==`
    */
-  auth?: string | ClientOptionsAuth
+  auth?: ClientOptionsAuth | string
   /**
    * The headers to use for all requests. These headers will be merged with the
    * headers provided in the `options` parameter of the `fetch` method.
@@ -129,20 +129,20 @@ export function createClient(url: string, options: ClientOptions = {}): Client {
     connect<T>(path: string, options: ClientOptions = {}) { return fetchData<T>(path, { ...options, method: 'CONNECT' }) },
     trace<T>(path: string, options: ClientOptions = {}) { return fetchData<T>(path, { ...options, method: 'TRACE' }) },
     $fetch<T>(path: string, options: ClientOptions = {}) { return fetchRaw<T>(path, options) },
-    $get<T>(path: string, options: ClientOptions = {}) { return fetchData<T>(path, { ...options, method: 'GET' }) },
-    $post<T>(path: string, options: ClientOptions = {}) { return fetchData<T>(path, { ...options, method: 'POST' }) },
-    $put<T>(path: string, options: ClientOptions = {}) { return fetchData<T>(path, { ...options, method: 'PUT' }) },
-    $patch<T>(path: string, options: ClientOptions = {}) { return fetchData<T>(path, { ...options, method: 'PATCH' }) },
-    $delete<T>(path: string, options: ClientOptions = {}) { return fetchData<T>(path, { ...options, method: 'DELETE' }) },
-    $options<T>(path: string, options: ClientOptions = {}) { return fetchData<T>(path, { ...options, method: 'OPTIONS' }) },
-    $head<T>(path: string, options: ClientOptions = {}) { return fetchData<T>(path, { ...options, method: 'HEAD' }) },
-    $connect<T>(path: string, options: ClientOptions = {}) { return fetchData<T>(path, { ...options, method: 'CONNECT' }) },
-    $trace<T>(path: string, options: ClientOptions = {}) { return fetchData<T>(path, { ...options, method: 'TRACE' }) },
+    $get<T>(path: string, options: ClientOptions = {}) { return fetchRaw<T>(path, { ...options, method: 'GET' }) },
+    $post<T>(path: string, options: ClientOptions = {}) { return fetchRaw<T>(path, { ...options, method: 'POST' }) },
+    $put<T>(path: string, options: ClientOptions = {}) { return fetchRaw<T>(path, { ...options, method: 'PUT' }) },
+    $patch<T>(path: string, options: ClientOptions = {}) { return fetchRaw<T>(path, { ...options, method: 'PATCH' }) },
+    $delete<T>(path: string, options: ClientOptions = {}) { return fetchRaw<T>(path, { ...options, method: 'DELETE' }) },
+    $options<T>(path: string, options: ClientOptions = {}) { return fetchRaw<T>(path, { ...options, method: 'OPTIONS' }) },
+    $head<T>(path: string, options: ClientOptions = {}) { return fetchRaw<T>(path, { ...options, method: 'HEAD' }) },
+    $connect<T>(path: string, options: ClientOptions = {}) { return fetchRaw<T>(path, { ...options, method: 'CONNECT' }) },
+    $trace<T>(path: string, options: ClientOptions = {}) { return fetchRaw<T>(path, { ...options, method: 'TRACE' }) },
     clientOptions: options,
   }
 }
 
-/** c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
   it('should create a client with a `.get` method', async() => {
     const client = createClient('https://jsonplaceholder.typicode.com')

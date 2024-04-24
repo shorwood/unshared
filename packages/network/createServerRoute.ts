@@ -10,7 +10,7 @@ import { isHttpMethod } from './isHttpMethod'
  *
  * @example 'GET /random'
  */
-export type RouteName = `${HttpMethod} /${string}` | `/${string}`
+export type RouteName = `/${string}` | `${HttpMethod} /${string}`
 
 /**
  * A function that can be used as a route handler. The `this` context is an object
@@ -158,7 +158,7 @@ export function createHttpRoute(route: RouteName, ...handlers: RouteHandler[]): 
   return { path, method, handlers }
 }
 
-/** c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
   it('should create a route with a GET method', () => {
     const route = createHttpRoute('/random', Math.random)

@@ -1,4 +1,5 @@
-/* eslint-disable unicorn/prefer-switch */
+import { MaybeArray } from '@unshared/types/MaybeArray'
+import { rejects } from 'node:assert'
 import {
   Http2Server,
   Http2ServerRequest,
@@ -10,12 +11,8 @@ import {
   createServer as createHttpServer,
   createSecureServer as createHttpsServer,
 } from 'node:http2'
-import { Agent } from 'node:https'
-import { rejects } from 'node:assert'
-import { MaybeArray } from '@unshared/types/MaybeArray'
 import { RouteHandler, RouteName } from './createServerRoute'
 import { getServerAddress } from './getServerAddress'
-import { handleHttpRequest } from './utils'
 
 export interface CreateServerOptions extends ServerOptions, SecureServerOptions {
   /**
@@ -75,7 +72,7 @@ export function createServer(routes: ServerRoutes, options: CreateServerOptions 
     : createHttpsServer(options, handler)
 }
 
-/** c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
   it('should create an HTTP server', () => {
     const result = createServer({}, { secure: false })
@@ -101,10 +98,7 @@ if (import.meta.vitest) {
     })
 
     const response = await new Promise<Http2ServerRequest>((resolve) => {
-      const response = {
-        headers: {},
-        body: '',
-      }
+      const response = { headers: {}, body: '' }
       request.on('response', (headers) => { response.headers = headers })
       request.on('data', (chunk) => { response.body += chunk })
       request.on('error', rejects)

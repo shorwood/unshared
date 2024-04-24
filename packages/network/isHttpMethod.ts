@@ -12,7 +12,7 @@ export function isHttpMethod(method: string): method is HttpMethod {
   return Object.keys(HttpMethod).includes(upperCaseMethod)
 }
 
-/** c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
   const httpMethodsUpper = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS', 'TRACE']
   const httpMethodsLower = httpMethodsUpper.map(method => method.toLowerCase())
@@ -28,7 +28,7 @@ if (import.meta.vitest) {
   })
 
   it('should predicate the method is an `HttpMethod`', () => {
-    const method = 'GET'
+    const method = 'GET' as string
     const result = isHttpMethod(method)
     if (result) expectTypeOf(method).toMatchTypeOf<HttpMethod>()
   })

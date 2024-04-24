@@ -50,7 +50,7 @@ export function resolveReference<T>(specification: Partial<OpenAPIV3.Document>, 
   return result as Resolved<T>
 }
 
-/** c8 ignore next */
+/* v8 ignore start */
 if (import.meta.vitest) {
   const specification = await import('../../__fixtures__/example.json') as OpenAPIV3.Document
 
