@@ -15,6 +15,11 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
+    "./Debounce": {
+      "require": "./dist/Debounce.cjs",
+      "types": "./dist/Debounce.d.ts",
+      "import": "./dist/Debounce.js"
+    },
     "./Memoize": {
       "require": "./dist/Memoize.cjs",
       "types": "./dist/Memoize.d.ts",
@@ -24,6 +29,11 @@
       "require": "./dist/Once.cjs",
       "types": "./dist/Once.d.ts",
       "import": "./dist/Once.js"
+    },
+    "./Throttle": {
+      "require": "./dist/Throttle.cjs",
+      "types": "./dist/Throttle.d.ts",
+      "import": "./dist/Throttle.js"
     },
     ".": {
       "require": "./dist/index.cjs",
