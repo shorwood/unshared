@@ -1,11 +1,10 @@
-/* eslint-disable sonarjs/cognitive-complexity */
+import { Awaitable, awaitable } from '@unshared/functions/awaitable'
+import { createPattern } from '@unshared/string/createPattern'
+import { MaybeArray } from '@unshared/types'
 import { Stats } from 'node:fs'
 import { readdir, stat } from 'node:fs/promises'
 import { join, relative } from 'node:path'
 import { cwd as getCwd } from 'node:process'
-import { awaitable, Awaitable } from '@unshared/functions/awaitable'
-import { createPattern } from '@unshared/string/createPattern'
-import { MaybeArray } from '@unshared/types'
 
 /**
  * An entry in the glob result iterator or array.
@@ -139,6 +138,7 @@ export function glob(pattern: MaybeArray<string>, options: GlobOptions = {}): Gl
 
 /** c8 ignore next */
 if (import.meta.vitest) {
+  // eslint-disable-next-line n/no-extraneous-import
   const { vol } = await import('memfs')
 
   beforeEach(() => {
