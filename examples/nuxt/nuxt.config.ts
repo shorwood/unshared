@@ -1,7 +1,8 @@
 import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
-  ssr: true,
+  devtools: true,
+
   modules: [
     '@unocss/nuxt',
     '@nuxt/test-utils/module',
