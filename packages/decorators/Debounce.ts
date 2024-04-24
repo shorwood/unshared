@@ -42,7 +42,7 @@ if (import.meta.vitest) {
 
   it('should not call the function if the delay has not passed', () => {
     const fn = vi.fn()
-    class Greeter { @Debounce(10) fn() { fn() } }
+    class Greeter { @Debounce(100) fn() { fn() } }
     const instance = new Greeter()
     instance.fn()
     instance.fn()
