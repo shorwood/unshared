@@ -18,7 +18,7 @@ export async function buildBundle(packageName: PackageName) {
   const { packagePath, outputDirectory: outputDirectory, packageDependencies } = await getPackageMetadata(packageName)
 
   // --- Get the input files and external dependencies.
-  const inputPaths = await glob(['./**/index.ts', './*.ts'], { cwd: packagePath, exclude: ['*.d.ts'] })
+  const inputPaths = await glob(['./*/index.ts', './*.ts'], { cwd: packagePath, exclude: ['*.d.ts'] })
   const externalExps = Object.keys(packageDependencies).map(dep => new RegExp(`^${dep}`))
   const external = [...externalExps, /^node:/]
 
