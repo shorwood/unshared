@@ -1,6 +1,7 @@
 {
   "name": "@unshared/monorepo",
   "type": "module",
+  "version": "0.0.1",
   "license": "MIT",
   "private": true,
   "author": "Stanley Horwood <stanley@hsjm.io>",

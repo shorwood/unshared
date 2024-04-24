@@ -33,6 +33,13 @@ export async function getPackageMetadata(packageName: string) {
     ...packageJson.peerDependencies,
   }
 
+  const rootPackageJsonPath = resolve(ROOT_PATH, 'package.json')
+  const rootPackageJson = await loadObject<PackageJSON>(rootPackageJsonPath, {
+    createIfNotExists: true,
+    ignoreFileChanges: true,
+    ignoreObjectChanges: true,
+  })
+
   return {
     packageName,
     globalName,
@@ -43,6 +50,8 @@ export async function getPackageMetadata(packageName: string) {
     packageJsonPath,
     packageRelativePath,
     packageDependencies,
+    rootPackageJsonPath,
+    rootPackageJson,
   }
 }
 

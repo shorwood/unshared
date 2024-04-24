@@ -39,7 +39,13 @@ async function createPackageExports(outPath: string, packagePath: string) {
  * @param packageName The name of the package to build.
  */
 export async function buildPackageJson(packageName: string) {
-  const { packagePath, packageJson, packageJsonFS, packageRelativePath } = await getPackageMetadata(packageName)
+  const {
+    packagePath,
+    packageJson,
+    packageJsonFS,
+    rootPackageJson,
+    packageRelativePath,
+  } = await getPackageMetadata(packageName)
   const outPath = join(packagePath, 'dist')
 
   // --- Load the root and current package.json files.
@@ -49,6 +55,7 @@ export async function buildPackageJson(packageName: string) {
   const packageExports = await createPackageExports(outPath, packagePath)
 
   // --- Update the package.json file.
+  packageJson.version = rootPackageJson.version
   packageJson.type = 'module'
   packageJson.sideEffects = false
   packageJson.exports = packageExports
