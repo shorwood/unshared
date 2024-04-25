@@ -1,1 +1,1 @@
-export { default } from './packages/eslint-config'
+export { default } from './packages/eslint-config/dist/index.cjs'
