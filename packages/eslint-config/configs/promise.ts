@@ -8,6 +8,7 @@ export function promise(): Linter.FlatConfig[] {
         promise: promisePlugin,
       },
       rules: {
+
         /**
          * Recommended rules from the plugin.
          *

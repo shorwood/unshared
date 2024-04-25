@@ -2,9 +2,7 @@ import { vue } from './vue'
 import { vitest } from './vitest'
 import { unicorn } from './unicorn'
 import { typescript } from './typescript'
-import { stylistic } from './stylistic'
 import { sonarjs } from './sonarjs'
-import { perfectionist } from './perfectionist'
 import { node } from './node'
 import { jsonTsconfig } from './jsonTsconfig'
 import { jsonPackage } from './jsonPackage'
@@ -24,9 +22,7 @@ export function all() {
     ...jsonPackage(),
     ...jsonTsconfig(),
     ...node(),
-    ...perfectionist(),
     ...sonarjs(),
-    ...stylistic(),
     ...typescript(),
     ...unicorn(),
     ...vitest(),

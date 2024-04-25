@@ -32,12 +32,12 @@ export function sonarjs(): Linter.FlatConfig[] {
         threshold: 10,
       }],
 
-      'sonarjs/no-empty-collection': 'off',
-      'sonarjs/no-extra-arguments': 'off',
-      'sonarjs/no-gratuitous-expressions': 'off',
       /**
        * Those rules are crashing ESLint at startup, so they are disabled for now.
        */
+      'sonarjs/no-empty-collection': 'off',
+      'sonarjs/no-extra-arguments': 'off',
+      'sonarjs/no-gratuitous-expressions': 'off',
       'sonarjs/no-one-iteration-loop': 'off',
       'sonarjs/no-redundant-jump': 'off',
       'sonarjs/no-unused-collection': 'off',

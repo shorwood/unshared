@@ -9,6 +9,7 @@ export function antfu(): Linter.FlatConfig[] {
       },
       rules: {
         'antfu/consistent-list-newline': 'error',
+
         /**
          * Auto-fix import duplication. The TypeScript compiler already detects and removes
          * duplicate imports, but this rule can be used to fix the issue automatically in the editor.

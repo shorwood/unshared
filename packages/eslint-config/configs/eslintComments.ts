@@ -15,6 +15,7 @@ export function eslintComments(): Linter.FlatConfig[] {
         'eslint-comments': eslintCommentsPlugin,
       },
       rules: {
+
         /**
          * Allow multiple rules directive in a single comment. This
          * reduces the number of comments in the code.

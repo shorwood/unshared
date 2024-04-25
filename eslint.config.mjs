@@ -1,1 +1,3 @@
-export { default } from './packages/eslint-config/dist/index.cjs'
+import unsharedConfig from './packages/eslint-config/dist/index.cjs'
+
+export default unsharedConfig()

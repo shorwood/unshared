@@ -29,6 +29,7 @@ export function yaml(): Linter.FlatConfig[] {
          * @see https://github.com/ota-meshi/eslint-plugin-yml/blob/master/docs/rules/quotes.md
          */
         'spaced-comment': 'off',
+
         /**
          * Allow empty documents. Useful for placeholder files.
          *
