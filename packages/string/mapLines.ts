@@ -18,7 +18,8 @@ export type MapLinesIterator = (line: string, index: number, lines: string[]) =>
  * @example mapLines('foo\nbar\nbaz', (str, i) => `${i}:${str}`) // => '0:foo\n1:bar\n2:baz'
  */
 export function mapLines(value: string, iterator: MapLinesIterator): string {
-  return value.split('\n').map(iterator).join('\n')
+  return value.split('\n').map(iterator)
+    .join('\n')
 }
 
 /* v8 ignore next */

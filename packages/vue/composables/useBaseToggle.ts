@@ -10,6 +10,7 @@ export type ToggleValue<T, U extends ToggleType> =
         never
 
 export interface BaseToggleProps<T, U extends ToggleType> {
+
   /**
    * The class to apply when the toggle is active. This allows you to customize
    * the appearance of the toggle when it is active without handling the CSS in
@@ -18,6 +19,7 @@ export interface BaseToggleProps<T, U extends ToggleType> {
    * @default undefined
    */
   classActive?: string
+
   /**
    * The class to apply when the toggle is inactive. This allows you to customize
    * the appearance of the toggle when it is inactive without handling the CSS in
@@ -26,6 +28,7 @@ export interface BaseToggleProps<T, U extends ToggleType> {
    * @default undefined
    */
   classInactive?: string
+
   /**
    * The model value of the toggle. This holds the current state of the toggle
    * and should be updated when the toggle is clicked.
@@ -34,6 +37,7 @@ export interface BaseToggleProps<T, U extends ToggleType> {
    */
   modelValue: ToggleValue<T, U>
   'onUpdate:modelValue'?: (value: ToggleValue<T, U>) => void
+
   /**
    * The type of the toggle. This can be either `checkbox`, `radio`, or `switch`.
    * This will determine how the toggle will behave when it is clicked.
@@ -41,6 +45,7 @@ export interface BaseToggleProps<T, U extends ToggleType> {
    * @default 'switch'
    */
   type?: U
+
   /**
    * The value to set or push when the toggle is active. This is only used when
    * the type of the toggle is either `checkbox` or `radio`. By default, it

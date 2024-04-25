@@ -3,12 +3,14 @@ import { mkdir, stat, utimes, writeFile } from 'node:fs/promises'
 import { TimeLike } from 'node:fs'
 
 export interface TouchOptions {
+
   /**
    * The time to set as the file's last access time.
    *
    * @default Date.now()
    */
   accessTime?: TimeLike
+
   /**
    * The time to set as the file's last modified time.
    *

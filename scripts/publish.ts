@@ -55,7 +55,7 @@ export async function pnpmPublish(packageName: string, registry: string) {
   // --- Check if the current version is already released.
   const versionNpm = npmViewJSON?.['dist-tags']?.latest
   const versionPublished = version.toString()
-  if (versionPublished === versionNpm){
+  if (versionPublished === versionNpm) {
     console.log(`The package "${packageJson.name!}@${version.toString()}" already exists in the registry.`)
     return
   }

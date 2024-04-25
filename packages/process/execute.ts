@@ -12,12 +12,14 @@ import { BinaryLike, toUint8Array } from '@unshared/binary/toUint8Array'
 export type BinaryArgument = BinaryLike | Function<BinaryLike | Readable> | Readable
 
 export interface ExecuteOptions<T extends BufferEncoding | undefined = BufferEncoding | undefined> extends SpawnOptions {
+
   /**
    * The encoding to use for the output.
    *
    * @example await execute("echo", ["Hello, world!"], { encoding: "base64" }) // "SGVsbG8sIHdvcmxkIQ=="
    */
   encoding?: T
+
   /**
    * The input to pipe to the process. If provided, the process will write this
    * value to `stdin` and then close it.
@@ -25,6 +27,7 @@ export interface ExecuteOptions<T extends BufferEncoding | undefined = BufferEnc
    * @example await execute("echo", [], { stdin: "Hello, world!" }) // "Hello, world!"
    */
   stdin?: BinaryArgument
+
   /**
    * The timeout to use for the process.
    *

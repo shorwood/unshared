@@ -20,7 +20,7 @@ import { Awaitable, awaitable } from '@unshared/functions/awaitable'
  * for await (const ancestor of ancestors) console.log(ancestor)
  */
 export function findAncestors(name: string, from: string = cwd()): Awaitable<AsyncIterable<string>, string[]> {
-  async function *createIterator() {
+  async function * createIterator() {
     while (from !== '') {
       const absolutePath = resolve(from, name)
       try {
@@ -28,6 +28,7 @@ export function findAncestors(name: string, from: string = cwd()): Awaitable<Asy
         yield absolutePath
       }
       catch {
+
         /** Ignore error. */
       }
       if (from === '/') break

@@ -2,6 +2,7 @@ import { Component, ExtractPropTypes, Prop, computed, provide, resolveComponent 
 import { toReactive } from '@vueuse/core'
 
 export const BASE_RENDERABLE_PROPS = {
+
   /**
    * The HTML tag, component name, or component object to render. This represents
    * what will encapsulate the content of the component and how it will be rendered.

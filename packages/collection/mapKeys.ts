@@ -31,6 +31,7 @@ type MappedKeysByIterator<T, R extends PropertyKey> =
  * mapValues(collection, 'name.first') // => { a: 'John', b: 'Jane', c: 'Jack' }
  */
 export function mapKeys<T, P extends IteratorPath<T>>(collection: T, path: MaybeLiteral<P>): MappedKeysByPath<T, P>
+
 /**
  * Iterates over an object or array and transforms the keys using a callback function.
  *

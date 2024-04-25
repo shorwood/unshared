@@ -63,12 +63,16 @@ export class Seekable extends PassThrough {
 
   // @ts-expect-error: The `end` method is overloaded in the `PassThrough` class.
   end(callback?: () => void): this
+
   end(chunk: any, callback?: () => void): this
+
   end(chunk: any, encoding?: BufferEncoding, callback?: () => void): this
+
   end(...args: Parameters<PassThrough['end']>) {
     super.end(...args)
     this.emit('end')
   }
+
   /**
    * Fork this stream from current position to the given size. If
    * no size is given, the fork will contain all the data from the

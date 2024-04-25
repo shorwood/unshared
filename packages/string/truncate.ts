@@ -1,6 +1,7 @@
 import { NumberIntegerPositive } from '@unshared/types'
 
 export interface TruncateOptions<N extends number = number> {
+
   /**
    * Allow words to be broken if they exceed the `length` option. If `true`,
    * the word will be broken at the `length` option. If `false`, the entire
@@ -11,6 +12,7 @@ export interface TruncateOptions<N extends number = number> {
    * @example truncate('Hello, world!', { length: 10, breakWords: true }) // 'Hello...'
    */
   breakWords?: boolean
+
   /**
    * If defined, the ellipsis character sequence that will be used to replace the
    * last characters of the string when it is truncated. This means that the final
@@ -20,6 +22,7 @@ export interface TruncateOptions<N extends number = number> {
    * @example truncate('Hello, world!', { length: 6, ellipsis: '…' }) // 'Hello…'
    */
   ellipsis?: string
+
   /**
    * The maximum length of the string. If the string is longer than this value,
    * (including the ellipsis) the string will be truncated and the last characters
@@ -45,6 +48,7 @@ export interface TruncateOptions<N extends number = number> {
  * @example truncate('Hello, world!', 10) // 'Hello'
  */
 export function truncate<N extends number>(string: string, length: NumberIntegerPositive<N>): string
+
 /**
  * Truncate a string to a specified length. By default, if the string is longer
  * than the specified length, the string is cut-off at the nearest word boundary.

@@ -27,6 +27,7 @@ type OmitByIterator<T, I extends IteratorFunction<T, boolean>> =
  * omit(object, ['foo', 'bar']) // => { baz: 3 }
  */
 export function omit<T, K extends keyof T>(collection: T, keys: MaybeArray<K>): OmitByKey<T, K>
+
 /**
  * Returns a new object with the properties omitted by the iterator function.
  *

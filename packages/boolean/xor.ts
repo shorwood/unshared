@@ -9,6 +9,7 @@ import { BooleanXor } from '@unshared/types'
  * @example xor(false, true) // true
  */
 export function xor<A extends boolean, B extends boolean>(a: A, b: B): BooleanXor<A, B>
+
 /**
  * Computes the logical [XOR](https://en.wikipedia.org/wiki/Exclusive_or) of the given booleans.
  *

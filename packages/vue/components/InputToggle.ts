@@ -124,7 +124,8 @@ if (import.meta.vitest) {
 //     expect(type).toStrictEqual('switch')
 //   })
 
-//   it.each([false, 0, 1, undefined])('should switch the modelValue when clicked from %s to true', async(modelValue: unknown) => {
+//   it.each([false, 0, 1, undefined])
+//     ('should switch the modelValue when clicked from %s to true', async(modelValue: unknown) => {
 //     const wrapper = mount(InputToggle, { props: { modelValue } })
 //     wrapper.find('div').element.click()
 //     await nextTick()

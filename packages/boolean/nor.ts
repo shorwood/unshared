@@ -9,6 +9,7 @@ import { BooleanNor } from '@unshared/types'
  * @example nor(false, true) // false
  */
 export function nor<A extends boolean, B extends boolean>(a: A, b: B): BooleanNor<A, B>
+
 /**
  * Computes the logical [NOR](https://en.wikipedia.org/wiki/NOR_gate) of the given booleans.
  *

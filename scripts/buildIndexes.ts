@@ -4,8 +4,10 @@ import { getPackageMetadata } from './utils'
 import { createPattern } from '../packages/string/createPattern'
 
 interface IndexFile {
+
   /** The content of the index file. */
   content: string
+
   /** The path to the index file. */
   path: string
 }
@@ -50,7 +52,8 @@ async function buildIndex(path: string): Promise<IndexFile> {
       if (!isFile || !isPatternMath || isIndexFile) continue
 
       // --- Push the import.
-      const importId = entity.name.split('.').slice(0, -1).join('.')
+      const importId = entity.name.split('.').slice(0, -1)
+        .join('.')
       imports.push(importId)
     }
     catch { /** Ignore */ }

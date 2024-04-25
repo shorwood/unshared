@@ -23,6 +23,7 @@ export function flow<V, R1, R2, R3, R4, R5>(value: V, transformer: (value: V) =>
 export function flow<V, R1, R2, R3, R4, R5, R6>(value: V, transformer: (value: V) => R1, transformer2: (value: Awaited<R1>) => R2, transformer3: (value: Awaited<R2>) => R3, transformer4: (value: Awaited<R3>) => R4, transformer5: (value: Awaited<R4>) => R5, transformer6: (value: Awaited<R5>) => R6): FlowResult<[R1, R2, R3, R4, R5, R6]>
 export function flow<V, R1, R2, R3, R4, R5, R6, R7>(value: V, transformer: (value: V) => R1, transformer2: (value: Awaited<R1>) => R2, transformer3: (value: Awaited<R2>) => R3, transformer4: (value: Awaited<R3>) => R4, transformer5: (value: Awaited<R4>) => R5, transformer6: (value: Awaited<R5>) => R6, transformer7: (value: Awaited<R6>) => R7): FlowResult<[R1, R2, R3, R4, R5, R6, R7]>
 export function flow<V, R1, R2, R3, R4, R5, R6, R7, R8>(value: V, transformer: (value: V) => R1, transformer2: (value: Awaited<R1>) => R2, transformer3: (value: Awaited<R2>) => R3, transformer4: (value: Awaited<R3>) => R4, transformer5: (value: Awaited<R4>) => R5, transformer6: (value: Awaited<R5>) => R6, transformer7: (value: Awaited<R6>) => R7, transformer8: (value: Awaited<R7>) => R8): FlowResult<[R1, R2, R3, R4, R5, R6, R7, R8]>
+
 /**
  * Transform a value using a chain of transformers. The `flow` function takes a
  * value and a list of transformers and applies consecutively each transformer to

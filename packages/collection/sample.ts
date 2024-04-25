@@ -13,6 +13,7 @@ import { Collection, NumberIntegerPositive, Tuple } from '@unshared/types'
  * sample(collection) // => 3
  */
 export function sample<T>(collection: Collection<T>): T
+
 /**
  * Returns a single item randomly sampled from a collection.
  *
@@ -26,6 +27,7 @@ export function sample<T>(collection: Collection<T>): T
  * sample(collection, 1) // => 3
  */
 export function sample<T>(collection: Collection<T>, size: 1): T
+
 /**
  * Returns a sample array of random items selected from a collection.
  *

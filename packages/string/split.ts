@@ -21,7 +21,8 @@ import { NumberInteger } from '@unshared/types'
  */
 export function split<N extends number>(value: string, delimiter: RegExp | string = '', limit?: NumberInteger<N>): string[] {
   return limit !== undefined && limit < 0
-    ? value.split(delimiter).slice(limit).filter(Boolean)
+    ? value.split(delimiter).slice(limit)
+      .filter(Boolean)
     : value.split(delimiter, limit).filter(Boolean)
 }
 

@@ -1,4 +1,5 @@
 export interface DumpOptions {
+
   /**
    * The number of bytes to dump per line. It also affects the number of bytes
    * displayed per group and can be adjusted to fit the terminal width.
@@ -6,6 +7,7 @@ export interface DumpOptions {
    * @default 16
    */
   bytesPerLine?: number
+
   /**
    * The string representation of the characters on the right side of the dump.
    * It is recommended to keep it as 'ascii' as `utf8` may display multi-byte
@@ -14,6 +16,7 @@ export interface DumpOptions {
    * @default 'ascii'
    */
   encoding?: 'ascii' | 'utf8'
+
   /**
    * Skip zero-filled lines in the dump. Typically, zero-filled lines are not
    * useful and can be skipped to reduce the output size and improve readability.

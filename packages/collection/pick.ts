@@ -27,6 +27,7 @@ type PickByIterator<T, I extends IteratorFunction<T, boolean>> =
  * pick(object, ['foo', 'bar']) // => { foo: 1, bar: 2 }
  */
 export function pick<T, K extends keyof T>(collection: T, keys: MaybeArray<K>): PickByKey<T, K>
+
 /**
  * Returns a new object with the properties pickted by the iterator function.
  *

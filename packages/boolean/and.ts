@@ -9,6 +9,7 @@ import { BooleanAnd } from '@unshared/types'
  * @example and(true, true) // true
  */
 export function and<A extends boolean, B extends boolean>(a: A, b: B): BooleanAnd<A, B>
+
 /**
  * Computes the logical [AND](https://en.wikipedia.org/wiki/AND_gate) of the given booleans.
  *

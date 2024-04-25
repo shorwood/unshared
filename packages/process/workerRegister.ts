@@ -10,12 +10,14 @@ export type Unregister = () => void
  * of the IPC message sent to the port specified in the request.
  */
 export interface WorkerResponse<T = unknown, E = Error> {
+
   /**
    * If the function threw an error, this will be the error that was thrown.
    *
    * @internal
    */
   error: E | undefined
+
   /**
    * The value returned from the function.
    *
@@ -36,10 +38,10 @@ export const WORKER_HANDLERS = new Map<string, Function>()
  */
 function isWorkerRequest(value: unknown): value is WorkerRequest {
   return typeof value === 'object'
-  && value !== null
-  && 'name' in value && typeof value.name === 'string'
-  && 'port' in value && value.port instanceof MessagePort
-  && 'parameters' in value && Array.isArray(value.parameters)
+    && value !== null
+    && 'name' in value && typeof value.name === 'string'
+    && 'port' in value && value.port instanceof MessagePort
+    && 'parameters' in value && Array.isArray(value.parameters)
 }
 
 /**
@@ -120,9 +122,11 @@ if (import.meta.vitest) {
     const workerThreads = await vi.importActual<WorkerThreads>('node:worker_threads')
     class MessagePortMock extends EventTarget {
       addListener(type: string, listener: Function<void>): void {
+
         // @ts-expect-error: event is expected to have a `data` property.
         super.addEventListener('message', (event: MessageEvent) => listener(event.data))
       }
+
       postMessage(data: unknown): void {
         const event = new MessageEvent('message', { data })
         super.dispatchEvent(event)

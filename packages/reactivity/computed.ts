@@ -25,6 +25,7 @@ export type ComputedGetter<U, T> =
 
 /** The options for creating a computed value. */
 export interface ComputedOptions extends ReactiveOptions {
+
   /**
    * The computed value will be evaluated eagerly. This means that the computed
    * value will be evaluated every time one of the dependencies changes. If you
@@ -36,6 +37,7 @@ export interface ComputedOptions extends ReactiveOptions {
    * @default false
    */
   eager?: boolean
+
   /**
    * The computed value will be evaluated upon creation. This is useful if the
    * computation is time consuming and you want to avoid a delay when accessing
@@ -154,8 +156,8 @@ if (import.meta.vitest) {
     const b = reference(2)
     const sum = computed([a, b], (a, b) => a + b)
     a.value = 2
-    expect (sum[ComputedData].dirty).toBeTruthy()
-    expect (sum[ComputedData].value).toBeUndefined()
+    expect(sum[ComputedData].dirty).toBeTruthy()
+    expect(sum[ComputedData].value).toBeUndefined()
   })
 
   test('should recompute the value when a dependency changes if eager', () => {
@@ -163,16 +165,16 @@ if (import.meta.vitest) {
     const b = reference(2)
     const sum = computed([a, b], (a, b) => a + b, { eager: true })
     a.value = 2
-    expect (sum[ComputedData].dirty).toBeFalsy()
-    expect (sum[ComputedData].value).toBe(4)
+    expect(sum[ComputedData].dirty).toBeFalsy()
+    expect(sum[ComputedData].value).toBe(4)
   })
 
   test('should compute the value immediately', () => {
     const a = reference(1)
     const b = reference(2)
     const sum = computed([a, b], (a, b) => a + b, { immediate: true })
-    expect (sum[ComputedData].dirty).toBeFalsy()
-    expect (sum[ComputedData].value).toBe(3)
+    expect(sum[ComputedData].dirty).toBeFalsy()
+    expect(sum[ComputedData].value).toBe(3)
   })
 
   test('should recompute the value when a dependency changes', () => {
@@ -180,6 +182,6 @@ if (import.meta.vitest) {
     const b = reference(2)
     const sum = computed([a, b], (a, b) => a + b)
     a.value = 2
-    expect (sum.value).toBe(4)
+    expect(sum.value).toBe(4)
   })
 }

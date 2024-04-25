@@ -66,12 +66,14 @@ if (import.meta.vitest) {
   })
 
   test('should throw an error if the first parameter is not an object', () => {
+
     // @ts-expect-error: invalid parameter type
     const shouldThrow = () => immutable(1)
     expect(shouldThrow).toThrow('Cannot create proxy with a non-object as target or handler')
   })
 
   test('should throw an error if the given object is null', () => {
+
     // @ts-expect-error: invalid parameter type
     // eslint-disable-next-line unicorn/no-null
     const shouldThrow = () => immutable(null)

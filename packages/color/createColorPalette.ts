@@ -12,6 +12,7 @@ type ColorPaletteDefaultStops = typeof COLOR_PALETTE_DEFAULT_STOPS[number]
 
 /** Options for palette creation. */
 export interface CreateColorPaletteOptions<K extends number = number> {
+
   /**
    * The base stop of the palette. This is the stop that will be used to generate the
    * base color of the palette.
@@ -19,24 +20,28 @@ export interface CreateColorPaletteOptions<K extends number = number> {
    * @default 500
    */
   baseStop?: number
+
   /**
    * Hue shift to apply to the base color each stops.
    *
    * @default 0
    */
   hueShift?: number
+
   /**
    * Decrease in luminance to apply to the base color each stops.
    *
    * @default 11
    */
   stepDown?: number
+
   /**
    * Increase in luminance to apply to the base color each stops.
    *
    * @default 8
    */
   stepUp?: number
+
   /**
    * Define the stops to generate in the palette. The stops are the luminance and hue
    * values to apply to the base color to generate the palette.

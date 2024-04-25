@@ -1,50 +1,74 @@
 export interface UriComponents {
+
   /** The authority (e.g. `user:pass@www.example.com:443`) */
   authority?: string
+
   /** The domain name (e.g. `example`) */
   domain?: string
+
   /** Domain name with the top level domain (e.g. `www.example.com`) */
   domainFull?: string
+
   /** The root domain (e.g. `example.com`) */
   domainRoot?: string
+
   /** The subdomain (e.g. `www`) */
   domainSub?: string
+
   /** The top level domain (e.g. `com`) */
   domainTop?: string
+
   /** The hash (e.g. `#hash`) */
   hash?: string
+
   /** The host (e.g. `www.example.com:433`) */
   host?: string
+
   /** The host IP (e.g. `127.0.0.1`) */
   hostIp?: string
+
   /** The host IP as an IPv4 address (e.g. `127.0.0.1`) */
   hostIpv4?: string
+
   /** The host IP as an IPv6 address (e.g. `::1`) */
   hostIpv6?: string
+
   /** The host name (e.g. `www.example.com`) */
   hostName?: string
+
   /** The host port (e.g. `443`) */
   hostPort?: string
+
   /** The host port as a number (e.g. `433`) */
   hostPortNumber?: number
+
   /** The origin (e.g. `http://www.example.com`) */
   origin?: string
+
   /** The password (e.g. `pass`) */
   password?: string
+
   /** The path (e.g. `/path/to/file.html`) */
   path?: string
+
   /** The path directory (e.g. `/path/to`) */
   pathDirectory?: string
+
   /** The path extension (e.g. `html`) */
   pathExtension?: string
+
   /** The path name (e.g. `file.html`) */
   pathName?: string
+
   /** The protocol (e.g. `http`) */
   protocol?: string
+
   /** The search query (e.g. `?q=search`) */
   query?: string
+
   /** The userinfo (e.g. `user:pass`) */
   userinfo?: string
+
   /** The username (e.g. `user`) */
   username?: string
 }

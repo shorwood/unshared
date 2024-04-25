@@ -20,6 +20,7 @@ export type GlobResult<T extends boolean = boolean> = T extends true
   : Awaitable<AsyncIterable<string>, string[]>
 
 export interface GlobOptions<Stat extends boolean = boolean> {
+
   /**
    * The current working directory. Used to determine the base path for the glob
    * pattern.
@@ -27,12 +28,14 @@ export interface GlobOptions<Stat extends boolean = boolean> {
    * @default process.cwd()
    */
   cwd?: string
+
   /**
    * A list of patterns to exclude from the result.
    *
    * @default []
    */
   exclude?: MaybeArray<string>
+
   /**
    * Return the paths relative to the current working directory. Will be ignored
    * if `stats` is `true`.
@@ -40,6 +43,7 @@ export interface GlobOptions<Stat extends boolean = boolean> {
    * @default false
    */
   getRelative?: boolean
+
   /**
    * Return the file stats instead of the file path. Allowing you to filter-out
    * files based on their stats.
@@ -47,6 +51,7 @@ export interface GlobOptions<Stat extends boolean = boolean> {
    * @default false
    */
   getStats?: Stat
+
   /**
    * If `true` and the glob pattern will only match directories.
    *
@@ -54,6 +59,7 @@ export interface GlobOptions<Stat extends boolean = boolean> {
    * @example glob('src/**', { onlyDirectories: true }) // ['src/foo', 'src/foo/bar']
    */
   onlyDirectories?: boolean
+
   /**
    * Only return entries that matches the path of a file.
    *
@@ -94,7 +100,7 @@ export function glob(pattern: MaybeArray<string>, options: GlobOptions = {}): Gl
 
   // --- Create an iterator that will yield the matching paths.
   const searchPool: string[] = [cwd]
-  async function* createIterator() {
+  async function * createIterator() {
     while (searchPool.length > 0) {
       const directory = searchPool.pop()!
       const entities = await readdir(directory, { withFileTypes: true }).catch(() => [])

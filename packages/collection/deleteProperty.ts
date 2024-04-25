@@ -25,6 +25,7 @@ export function deleteProperty<T, K extends Path<T>>(object: T, path: MaybeLiter
   // --- Loop through the path and get the object.
   let result = object
   for (const key of keys) {
+
     // @ts-expect-error: Invalid keys will be caught by the try/catch.
     try { result = result[key] as unknown as T }
     catch { return }
@@ -32,9 +33,9 @@ export function deleteProperty<T, K extends Path<T>>(object: T, path: MaybeLiter
 
   // --- Delete the property from an Iterable.
   if (typeof result === 'object'
-  && result !== null
-  && 'delete' in result
-  && typeof result.delete === 'function') {
+    && result !== null
+    && 'delete' in result
+    && typeof result.delete === 'function') {
     result.delete(lastKey)
     return
   }

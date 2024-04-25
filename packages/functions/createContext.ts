@@ -1,6 +1,7 @@
 import { AsyncLocalStorage } from 'node:async_hooks'
 
 export interface Context<T> {
+
   /**
    * Run a function in the context.
    *
@@ -11,6 +12,7 @@ export interface Context<T> {
    * context.runInContext((value) => value.foo = 'baz') // 'baz'
    */
   runInContext<U>(fn: (context: T) => U): U
+
   /**
    * Get the current context.
    *

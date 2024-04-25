@@ -9,6 +9,7 @@ import { BooleanXnor } from '@unshared/types'
  * @example xnor(false, true) // false
  */
 export function xnor<A extends boolean, B extends boolean>(a: A, b: B): BooleanXnor<A, B>
+
 /**
  * Computes the logical [XNOR](https://en.wikipedia.org/wiki/XNOR_gate) of the given booleans.
  *

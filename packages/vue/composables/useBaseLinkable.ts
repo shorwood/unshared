@@ -3,6 +3,7 @@ import { ComponentObjectPropsOptions, ExtractPropTypes, Prop, computed, provide 
 import { toReactive } from '@vueuse/core'
 
 export const BASE_LINKABLE_PROPS = {
+
   /**
    * The class to apply when the link is active. This allows you to customize
    * the appearance of the link when it is active without handling the CSS in
@@ -11,6 +12,7 @@ export const BASE_LINKABLE_PROPS = {
    * @default undefined
    */
   classActive: { default: '', type: [String] } as Prop<string>,
+
   /**
    * The class to apply when the link is active and the URL matches exactly.
    * This allows you to customize the appearance of the link when it is active
@@ -20,6 +22,7 @@ export const BASE_LINKABLE_PROPS = {
    * @default undefined
    */
   classActiveExact: { default: '', type: [String] } as Prop<string>,
+
   /**
    * If `true`, the link should open in a new tab. By default, the link will
    * open in the same tab as trigger a navigation event.
@@ -27,6 +30,7 @@ export const BASE_LINKABLE_PROPS = {
    * @default false
    */
   newtab: Boolean as Prop<boolean>,
+
   /**
    * If `true`, the link should replace the current URL in the history stack.
    * This can be useful when navigating between similar pages or when you want
@@ -35,6 +39,7 @@ export const BASE_LINKABLE_PROPS = {
    * @default false
    */
   replace: Boolean as Prop<boolean>,
+
   /**
    * The URL to link to when the component is clicked. This is used to create a
    * link to another page or website when the component is clicked.

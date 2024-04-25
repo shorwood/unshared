@@ -29,7 +29,7 @@ async function callback(request: WorkerServicePayload) {
 workerRegister('WORKER_SERVICE', callback)
 
 /* v8 ignore next */
-if(import.meta.vitest) {
+if (import.meta.vitest) {
   test('should call a named function from a built-in module and return the result', async() => {
     const result = await callback({ moduleId: 'node:util', name: 'format', parameters: ['Hello', 'World!'] })
     expect(result).toBe('Hello World!')

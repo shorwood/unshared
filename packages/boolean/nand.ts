@@ -9,6 +9,7 @@ import { BooleanNand } from '@unshared/types'
  * @example nand(false, true) // true
  */
 export function nand<A extends boolean, B extends boolean>(a: A, b: B): BooleanNand<A, B>
+
 /**
  * Computes the logical [NAND](https://en.wikipedia.org/wiki/NAND_gate) of the given booleans.
  *

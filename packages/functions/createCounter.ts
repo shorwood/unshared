@@ -1,4 +1,5 @@
 export interface Counter {
+
   /**
    * Decrements the value of this counter.
    *
@@ -7,6 +8,7 @@ export interface Counter {
    * @example createCounter().decrement() // -1
    */
   decrement(step?: number): number
+
   /**
    * Increments the value of this counter.
    *
@@ -15,10 +17,12 @@ export interface Counter {
    * @example createCounter().increment() // 1
    */
   increment(step?: number): number
+
   /**
    * The amount to increment or decrement the counter by.
    */
   step: number
+
   /**
    * The current value of this counter.
    */

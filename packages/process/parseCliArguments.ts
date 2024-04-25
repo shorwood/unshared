@@ -2,10 +2,12 @@ import { argv as processArgv } from 'node:process'
 import { parseOption } from './parseCliOption'
 
 export interface ParseArgvReturnType<T extends object> {
+
   /**
    * The path to the Node.js executable.
    */
   nodePath: string
+
   /**
    * Extracted options.
    *
@@ -13,6 +15,7 @@ export interface ParseArgvReturnType<T extends object> {
    * parseArgv(['-f', '-b', '-q', '--foo', 'bar', 'baz']) // returns { f: true, b: true, q: true, foo: 'bar' }
    */
   options: T
+
   /**
    * Arguments that are not options.
    *
@@ -20,6 +23,7 @@ export interface ParseArgvReturnType<T extends object> {
    * parseArgv(['-f', '-b', '-q', '--foo', 'bar', 'baz']) // returns ['baz']
    */
   parameters: string[]
+
   /**
    * The path to the current script.
    */

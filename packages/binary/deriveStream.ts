@@ -6,6 +6,7 @@ export type DeriveStreamFunction<T> = (value: { chunk: Buffer; encoding: BufferE
 
 /** A transform stream that derives a value from the stream chunks. */
 export class Derive<T = unknown> extends Transform {
+
   /** The chunks read from the stream. */
   private resolveDerivedValue!: (value: T) => void
 

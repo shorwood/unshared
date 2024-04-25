@@ -8,6 +8,7 @@ import { Awaitable, awaitable } from '@unshared/functions/awaitable'
 import { overwrite } from '@unshared/collection/overwrite'
 
 export interface FSObjectOptions<T extends object> extends ReactiveOptions<T>, WatchOptions {
+
   /**
    * If set to `true` and the file does not exist, the file will be created
    * if it does not exist and the object will be initialized with an empty
@@ -16,12 +17,14 @@ export interface FSObjectOptions<T extends object> extends ReactiveOptions<T>, W
    * @default false
    */
   createIfNotExists?: boolean
+
   /**
    * If set to `true`, the file will be deleted when the instance is destroyed.
    * Allowing you to create temporary files that will be deleted when the
    * instance is garbage collected.
    */
   deleteOnDestroy?: boolean
+
   /**
    * If set to `true`, changes on the file will not be reflected in the object.
    * You can use this to prevent the object from being updated when you are
@@ -30,6 +33,7 @@ export interface FSObjectOptions<T extends object> extends ReactiveOptions<T>, W
    * @default false
    */
   ignoreFileChanges?: boolean
+
   /**
    * If set to `true`, changes on the object will be reflected in the file.
    * You can set this to `false` if you want to make multiple changes to the
@@ -38,6 +42,7 @@ export interface FSObjectOptions<T extends object> extends ReactiveOptions<T>, W
    * @default false
    */
   ignoreObjectChanges?: boolean
+
   /**
    * The initial value of the object. If the file does not exist, the object
    * will be initialized with this value.
@@ -45,6 +50,7 @@ export interface FSObjectOptions<T extends object> extends ReactiveOptions<T>, W
    * @default {}
    */
   initialValue?: T
+
   /**
    * The parser function to use when reading the file. If not set, the file
    * will be parsed as JSON using the native `JSON.parse` function.
@@ -52,6 +58,7 @@ export interface FSObjectOptions<T extends object> extends ReactiveOptions<T>, W
    * @default JSON.parse
    */
   parse?: (json: string) => T
+
   /**
    * The stringifier function to use when writing the file. If not set, the
    * object will be stringified as JSON using the native `JSON.stringify` function.
@@ -71,6 +78,7 @@ export interface FSObjectEventMap<T extends object> {
 
 // eslint-disable-next-line unicorn/prefer-event-target
 export class FSObject<T extends object> extends EventEmitter<FSObjectEventMap<T>> {
+
   /** Flag to signal the file is synchronized with the object. */
   public isCommitting = false
 
@@ -121,6 +129,7 @@ export class FSObject<T extends object> extends EventEmitter<FSObjectEventMap<T>
     // --- This will also delete the file if it was created as a temporary file.
     void garbageCollected(this).then(() => this.destroy())
   }
+
   /**
    * Create an awaitable instance of `FSObject` that resolves when the file
    * is synchronized with the object and the object is synchronized with the file.

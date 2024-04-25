@@ -11,6 +11,7 @@ export type SemverComponents = 'build' | 'major' | 'minor' | 'patch' | 'prerelea
  * this class is based on the [semver.org](https://semver.org/) recommendation.
  */
 export class Semver {
+
   /**
    * The build version number. Build versions are used to identify the build
    * number of a version. This number is incremented when a new version
@@ -146,22 +147,22 @@ export class Semver {
     // --- Check if the Semver is strictly greater than the range Semver.
     if (operator === '>') {
       return (major > rangeSemver.major)
-          || (major === rangeSemver.major && minor > rangeSemver.minor)
-          || (major === rangeSemver.major && minor === rangeSemver.minor && patch > rangeSemver.patch)
+        || (major === rangeSemver.major && minor > rangeSemver.minor)
+        || (major === rangeSemver.major && minor === rangeSemver.minor && patch > rangeSemver.patch)
     }
 
     // --- Check if the Semver is strictly lower than the range Semver.
     if (operator === '<') {
       return (major < rangeSemver.major)
-          || (major === rangeSemver.major && minor < rangeSemver.minor)
-          || (major === rangeSemver.major && minor === rangeSemver.minor && patch < rangeSemver.patch)
+        || (major === rangeSemver.major && minor < rangeSemver.minor)
+        || (major === rangeSemver.major && minor === rangeSemver.minor && patch < rangeSemver.patch)
     }
 
     // --- Check if the Semver is greater than or equal to the range Semver.
     if (operator === '<=') {
       return (major < rangeSemver.major)
-          || (major === rangeSemver.major && minor < rangeSemver.minor)
-          || (major === rangeSemver.major && minor === rangeSemver.minor && patch <= rangeSemver.patch)
+        || (major === rangeSemver.major && minor < rangeSemver.minor)
+        || (major === rangeSemver.major && minor === rangeSemver.minor && patch <= rangeSemver.patch)
     }
 
     // --- Check if the Semver is lower than or equal to the range Semver.

@@ -1,6 +1,7 @@
 import { Default, NumberIntegerPositive } from '@unshared/types'
 
 export interface ToDefaultOptions<N extends number, C extends boolean> {
+
   /**
    * If `true`, arrays will be concatenated instead of replaced,
    * when merging objects. This also applies to nested arrays.
@@ -17,6 +18,7 @@ export interface ToDefaultOptions<N extends number, C extends boolean> {
    * toDefault(object, source, { concat: true }) // { a: [1, 2, 3, 4] }
    */
   concat?: C
+
   /**
    * The depth at which to default the objects. If an object is deeper than the
    * specified depth, the reference of the source object will be used.

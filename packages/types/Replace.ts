@@ -8,7 +8,7 @@
 export type Replace<T, U, V> = U extends T ? T extends U ? V : T : T
 
 /** v8 ignore start */
-if(import.meta.vitest) {
+if (import.meta.vitest) {
   test('should replace string with number', () => {
     type Result = Replace<boolean | string, string, number>
     expectTypeOf<Result>().toEqualTypeOf<boolean | number>()

@@ -2,6 +2,7 @@ import { Readable } from 'node:stream'
 import { nextTick } from 'node:process'
 
 export interface StreamReadableOptions {
+
   /**
    * The timeout to wait for the stream to become readable. If the stream
    * does not become readable within the timeout, the promise will reject.

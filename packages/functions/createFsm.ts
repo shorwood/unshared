@@ -12,7 +12,7 @@ import { MaybePromise } from '@unshared/types'
  * @template K The allowed states of the machine.
  */
 export type FSMTransitions<T, K extends string> = {
-  [P in K]: (data: T) => MaybePromise<string | undefined | void>
+  [P in K]: (data: T) => MaybePromise<string | void | undefined>
 }
 
 /**
@@ -63,7 +63,7 @@ export class FSM<T extends object, K extends string> extends EventTarget {
    *
    * @example 'init'
    */
-  public state: K | undefined | void
+  public state: K | void | undefined
 
   constructor(initialData: T, private transitions: FSMTransitions<T, K>) {
     super()

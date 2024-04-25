@@ -9,6 +9,7 @@ import { BooleanOr } from '@unshared/types'
  * @example or(false, true) // true
  */
 export function or<A extends boolean, B extends boolean>(a: A, b: B): BooleanOr<A, B>
+
 /**
  * Computes the logical [OR](https://en.wikipedia.org/wiki/OR_gate) of the given booleans.
  *

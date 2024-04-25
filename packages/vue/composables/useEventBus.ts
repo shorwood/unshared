@@ -12,6 +12,7 @@ type EventCallback<T extends EventMap, K extends keyof T> =
 type Unsubscribe = () => void
 
 export interface EventBus<T extends EventMap = EventMap> {
+
   /**
    * Emit a change event to notify the panel that the item being displayed has
    * been saved, updated, or deleted. This allows us to trigger a refresh of the
@@ -21,6 +22,7 @@ export interface EventBus<T extends EventMap = EventMap> {
    * @param data The data to send with the event.
    */
   emit<K extends keyof T & string>(eventName: K, ...data: T[K]): void
+
   /**
    * Add a listener to the panel to listen for changes to the data being displayed.
    * This allows us to trigger a refresh of the data in other components.

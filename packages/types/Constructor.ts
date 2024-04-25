@@ -21,6 +21,7 @@ export type Constructor<R extends object = {}, P extends any[] = any[], S extend
     : S & (new (...parameters: P) => R)
 
 /** v8 ignore start */
+
 if (import.meta.vitest) {
   test('should build the instance properties of a class', () => {
     type Result = Constructor<{ a: number }>

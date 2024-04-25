@@ -30,6 +30,7 @@ export function Memoize<T extends Function>(options?: MemoizeOptions<T>): Method
 }
 
 /* v8 ignore start */
+
 if (import.meta.vitest) {
   test('should memoize the method', () => {
     const fn = vi.fn(Math.random)

@@ -43,6 +43,7 @@ export type MaybeReference<T = unknown> = Reference<T> | T
  * @example reference() // { value: undefined }
  */
 export function reference<T>(): Reference<T | undefined>
+
 /**
  * Create a reference to a value. This is a wrapper around a primitive value
  * that allows it to be used in reactive expressions. If the value is already

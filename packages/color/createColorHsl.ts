@@ -9,12 +9,16 @@ import { clamp } from '@unshared/math/clamp'
  * @see https://en.wikipedia.org/wiki/HSL_and_HSV
  */
 export interface HSL {
+
   /** Alpha channel from 0 to 1. */
   a: number
+
   /** Hue channel from 0 to 360. */
   h: number
+
   /** Lightness channel from 0 to 1. */
   l: number
+
   /** Saturation channel from 0 to 1. */
   s: number
 }

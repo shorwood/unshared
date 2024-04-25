@@ -3,6 +3,7 @@ import { Transition, TransitionGroup, TransitionProps, VNode, h } from 'vue'
 type RawChildrenOrSlots = Parameters<typeof h>[2]
 
 export interface WrapTransitionOptions<T extends boolean = boolean> extends TransitionProps {
+
   /**
    * Whether to wrap the VNode in a `TransitionGroup` instead
    */
@@ -13,6 +14,7 @@ export function wrapTransition<T extends RawChildrenOrSlots>(vnode: T): T
 export function wrapTransition<T extends RawChildrenOrSlots>(vnode: T & any[], options: WrapTransitionOptions): VNode
 export function wrapTransition<T extends RawChildrenOrSlots>(vnode: T, options: WrapTransitionOptions): VNode
 export function wrapTransition<T extends RawChildrenOrSlots>(vnode: T, options?: WrapTransitionOptions): T | VNode
+
 /**
  * Wrap a VNode with a `Transition` component
  *
