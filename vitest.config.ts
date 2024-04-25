@@ -20,14 +20,6 @@ export default defineConfig({
     setupFiles: './packages/setupTest.ts',
     testTimeout: process.env.DEBUGGER ? 100 : 0,
 
-    // --- UI configuration.
-    api: {
-      host: '0.0.0.0',
-      port: 5000,
-    },
-    open: true,
-    ui: true,
-
     // --- Benchmark configuration.
     benchmark: {
       exclude,
