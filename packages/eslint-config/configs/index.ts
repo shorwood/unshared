@@ -1,7 +1,6 @@
 export * from './all'
 export * from './antfu'
 export * from './eslintComments'
-export * from './javascript'
 export * from './jsdoc'
 export * from './json'
 export * from './jsonPackage'

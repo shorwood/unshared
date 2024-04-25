@@ -1,3 +1,1 @@
-import { all } from './configs'
-
-export default all()
+export { all as default } from './configs'

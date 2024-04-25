@@ -4,14 +4,26 @@ import { Linter } from 'eslint'
 export function vitest(): Linter.FlatConfig[] {
   return [
     {
+      plugins: {
+        vitest: vitestPlugin,
+      },
       files: [
         '**/*.{ts,mts,cts,tsx,d.ts}',
         '**/*.{js,mjs,cjs,jsx}',
       ],
-      plugins: {
-        vitest: vitestPlugin,
+      settings: {
+        vitest: {
+          typecheck: true,
+        },
+      },
+      languageOptions: {
+        globals: {
+          ...vitestPlugin.environments.env.globals,
+          expectTypeOf: true,
+        },
       },
       rules: {
+
         /**
          * Inject all configuration from eslint-plugin-vitest.
          *
@@ -57,6 +69,7 @@ export function vitest(): Linter.FlatConfig[] {
          * @see https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/prefer-expect-assertions.md
          */
         'vitest/prefer-expect-assertions': 'off',
+
         /**
          * Some functions may have a single test case, and it is not necessary
          * to wrap them in a describe block.
@@ -78,11 +91,6 @@ export function vitest(): Linter.FlatConfig[] {
             test: ['^should'],
           },
         }],
-
-        // /**
-        //  * Allow runt
-        //  */
-        // 'vitest/require-hook': 'off',
       },
     },
   ]

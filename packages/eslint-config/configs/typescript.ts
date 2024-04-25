@@ -1,155 +1,232 @@
 import tslint from 'typescript-eslint'
+import perfectionist from 'eslint-plugin-perfectionist'
 import { ESLint, Linter } from 'eslint'
+import stylistic from '@stylistic/eslint-plugin'
+import javascript from '@eslint/js'
 
-const { recommendedTypeChecked, stylisticTypeChecked } = tslint.configs
-const TSLING_DEFAULT_RULES = [recommendedTypeChecked, stylisticTypeChecked]
-  .flat()
-  .map(x => x.rules)
-  // eslint-disable-next-line unicorn/no-array-reduce
-  .reduce((accumulator, x) => ({ ...accumulator, ...x }), {})
+function flattenRules(config: unknown[]): Linter.RulesRecord {
+  const configs = config.flat() as Array<{ rules: Linter.RulesRecord }>
+  const rules = configs.map(x => x.rules)
+  return Object.assign({}, ...rules) as Linter.RulesRecord
+}
 
 export function typescript(): Linter.FlatConfig[] {
   return [
+    javascript.configs.recommended,
     {
-      files: [
-        '**/*.ts',
-        '**/*.tsx',
-      ],
       languageOptions: {
-
         // @ts-expect-error: ignore
         parser: tslint.parser,
         parserOptions: {
-          project: [
-            './tsconfig.json',
-            './packages/*/tsconfig.json',
-          ],
+          tsconfigRootDir: import.meta.dirname,
+          extraFileExtensions: ['.vue'],
+          project: true,
         },
       },
       plugins: {
         '@typescript-eslint': tslint.plugin as ESLint.Plugin,
+        '@stylistic': stylistic as ESLint.Plugin,
+        'perfectionist': perfectionist,
       },
+      files: [
+        '**/*.{ts,tsx,cts,mts}',
+        '**/*.{js,jsx,cjs,mjs}',
+        '**/*.vue',
+      ],
       rules: {
-        ...TSLING_DEFAULT_RULES,
 
         /**
-         * Enforce consistent Array types. This rule aims to standardize the usage of
-         * `Array<T>` over `T[]`, and `ReadonlyArray<T>` over `readonly T[]`. Allows
-         * for reduced cognitive load when reading code that uses arrays. Exceptions
-         * are allowed for primitive or simple types.
-         *
-         * @see https://typescript-eslint.io/rules/array-type
+         * Inherit all recommended rules from the `@eslint/js` plugin. This is the base
+         * configuration for JavaScript files.
          */
-        '@typescript-eslint/array-type': ['error', {
-          default: 'array-simple',
-          readonly: 'array-simple',
-        }],
-        '@typescript-eslint/ban-ts-comment': ['error', {
-          'ts-check': false,
-          'ts-expect-error': 'allow-with-description',
-          'ts-ignore': false,
-          'ts-nocheck': false,
-        }],
+        ...flattenRules(tslint.configs.recommendedTypeChecked),
+        ...flattenRules(tslint.configs.stylisticTypeChecked),
 
-        '@typescript-eslint/ban-ts-ignore': 'off',
-
-        '@typescript-eslint/ban-types': 'off',
-        '@typescript-eslint/brace-style': ['error', 'stroustrup', {
+        /**
+         * Age-old debate over how to style braces. This rule aims to reduce the
+         * cognitive load of reasoning about code by enforcing a consistent style.
+         *
+         * @see https://eslint.style/rules/default/brace-style
+         */
+        'brace-style': 'off',
+        '@typescript-eslint/brace-style': 'off',
+        '@stylistic/brace-style': ['error', 'stroustrup', {
           allowSingleLine: true,
         }],
 
-        '@typescript-eslint/camelcase': 'off',
+        /**
+         * Enforce an indent of 2 spaces. Aims to reduce visual noise and maintain
+         * readability of code when viewed on GitHub or GitLab.
+         *
+         * @see https://eslint.style/rules/default/no-tabs
+         * @see https://eslint.style/rules/default/indent
+         * @see https://eslint.style/rules/default/indent-binary-ops
+         */
+        'no-tabs': 'off',
+        'indent': 'off',
+        'indent-binary-ops': 'off',
+        '@typescript-eslint/no-tabs': 'off',
+        '@typescript-eslint/indent': 'off',
+        '@typescript-eslint/indent-binary-ops': 'off',
+        '@stylistic/no-tabs': 'error',
+        '@stylistic/indent': ['error', 2],
+        '@stylistic/indent-binary-ops': ['error', 2],
+
+        /**
+         * Enforce no semi-colons. This rule aims to maintain consistency around the
+         * use or omission of trailing semicolons. Helps reduce the visual noise in
+         * the codebase. Also helps to prevent errors when refactoring and adding
+         * new lines.
+         *
+         * @see https://eslint.style/rules/default/semi
+         */
+        'semi': 'off',
+        '@typescript-eslint/semi': 'off',
+        '@stylistic/semi': ['error', 'never'],
+
+        /**
+         * Enforce a consistent linebreak style and ensure no leading line breaks
+         * and a single trailing line break. This rule aims to maintain consistency
+         * around the use of line breaks in the codebase and reduce the amount of
+         * diff churn when making changes.
+         *
+         * @see https://eslint.style/rules/default/linebreak-style
+         */
+        'eol-last': 'off',
+        'no-multiple-empty-lines': 'off',
+        '@stylistic/eol-last': ['error', 'always'],
+        '@stylistic/no-multiple-empty-lines': ['error', {
+          max: 1,
+          maxBOF: 0,
+          maxEOF: 1,
+        }],
 
         /**
          * Enforce a trailing comma after the last element or property in a multiline
          * list of properties or elements. This rule improves the clarity of diffs
          * when an item is added or removed from an object or array.
          *
-         * @see https://typescript-eslint.io/rules/comma-dangle
+         * @see https://eslint.style/rules/default/comma-dangle
+         * @see https://eslint.style/rules/default/comma-spacing
          */
-        '@typescript-eslint/comma-dangle': ['error', 'always-multiline'],
-
-        '@typescript-eslint/comma-spacing': ['error'],
+        'comma-dangle': 'off',
+        '@typescript-eslint/comma-dangle': 'off',
+        '@stylistic/comma-dangle': ['error', 'always-multiline'],
 
         /**
-         * Enforce `Record<K, T>` instead of `{ [K]: T }`. This rule aims to standardize
-         * the declaration of Record types and helps prevent bugs caused by typos.
+         * This rule requires empty lines before and/or after comments. It is disabled
+         * however when in an object literal, array, or type literal.
+         *
+         * @see https://eslint.style/rules/default/lines-around-comment
+         */
+
+        /**
+         * Normalize type declaration and definition. This reduces the cognitive load
+         * of reasoning about code by enforcing a consistent style.
          *
          * @see https://typescript-eslint.io/rules/consistent-indexed-object-style
          */
         '@typescript-eslint/consistent-indexed-object-style': ['error', 'record'],
-        /**
-         * Enforces `interface` usage over `type` usage. This allows for better consistency
-         * and identification of objects that can be augmented while favoring separation
-         * between interfaces describing objects and types describing primitives and/or unions.
-         *
-         * @see https://typescript-eslint.io/rules/consistent-type-definitions
-         */
         '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+        '@typescript-eslint/member-delimiter-style': ['error', { multiline: { delimiter: 'none' } }],
+        '@typescript-eslint/array-type': ['error', { default: 'array-simple', readonly: 'array-simple' }],
 
         /**
-         * Enforces consistent usage of type imports. This rule will disallow the use of
-         * `import type` or `import { type }` to reduce the cognitive load of reasoning
-         * about imports. Typically, the bundler will know which imports are types and
-         * strip them out.
+         * Enforce sequential declarations in the same block. This rule aims to
+         * enforce a top to bottom ordering of variable and type declarations.
+         * This reduces the likelihood of a developer skipping over a declaration
+         * when modifying code.
          *
-         * @see https://typescript-eslint.io/rules/consistent-type-imports
+         * @see https://typescript-eslint.io/rules/no-use-before-define
          */
-        '@typescript-eslint/consistent-type-imports': ['error', {
-          disallowTypeAnnotations: false,
-          prefer: 'no-type-imports',
-        }],
-
-        '@typescript-eslint/explicit-function-return-type': 'off',
-
-        '@typescript-eslint/explicit-member-accessibility': 'off',
-
-        '@typescript-eslint/explicit-module-boundary-types': 'off',
-
-        /**
-         * Enforce an indent of 2 spaces. Aims to reduce visual noise and maintain
-         * readability of code when viewed on GitHub or GitLab.
-         *
-         * @see https://typescript-eslint.io/rules/indent
-         */
-        '@typescript-eslint/indent': ['error', 2],
-
-        /**
-         * Enforce no comma/semi-columns in interfaces. This rule aims to maintain
-         * consistency around the use or omission of trailing semicolons. Helps
-         * reduce the visual noise in the codebase. Also helps to prevent errors
-         * when refactoring and adding new lines.
-         *
-         * @see https://typescript-eslint.io/rules/member-delimiter-style
-         */
-        '@typescript-eslint/member-delimiter-style': ['error', {
-          multiline: { delimiter: 'none' },
-        }],
-
-        '@typescript-eslint/no-empty-function': 'off',
-        '@typescript-eslint/no-empty-interface': 'off',
-        '@typescript-eslint/no-explicit-any': 'off',
-        '@typescript-eslint/no-namespace': 'off',
-        '@typescript-eslint/no-non-null-assertion': 'off',
-        '@typescript-eslint/no-parameter-properties': 'off',
-        '@typescript-eslint/no-redeclare': 'error',
-        '@typescript-eslint/no-unused-expressions': 'error',
-        '@typescript-eslint/no-unused-vars': ['error', {
-          argsIgnorePattern: '^_',
-        }],
-
+        'no-use-before-define': 'off',
         '@typescript-eslint/no-use-before-define': ['error', {
+          enums: true,
           classes: false,
-          functions: false,
+          typedefs: true,
           variables: true,
+          functions: false,
+          ignoreTypeReferences: true,
         }],
+
         /**
-         * Enforce consistent spacing inside braces. This rule aims to reduce the
-         * cognitive load of reasoning about code by enforcing a consistent style.
+         * Enforce a consistent spacing around various places where spaces are optional.
+         * This rule aims to maintain consistency around the use of spaces in the codebase
+         * and reduce the amount of diff churn when making changes.
          *
-         * @see https://typescript-eslint.io/rules/object-curly-spacing
+         * @see https://eslint.style/rules/default/key-spacing
+         * @see https://eslint.style/rules/default/comma-spacing
+         * @see https://eslint.style/rules/default/block-spacing
+         * @see https://eslint.style/rules/default/arrow-spacing
+         * @see https://eslint.style/rules/default/object-curly-spacing
          */
-        '@typescript-eslint/object-curly-spacing': ['error', 'always'],
+        'key-spacing': 'off',
+        'comma-spacing': 'off',
+        'block-spacing': 'off',
+        'arrow-spacing': 'off',
+        'spaced-comment': 'off',
+        'no-multi-spaces': 'off',
+        'space-before-blocks': 'off',
+        'lines-around-comment': 'off',
+        'object-curly-spacing': 'off',
+        'array-bracket-spacing': 'off',
+        'array-bracket-newline': 'off',
+        'function-call-spacing': 'off',
+        'generator-star-spacing': 'off',
+        'template-curly-spacing': 'off',
+        'newline-per-chained-call': 'off',
+        'computed-property-spacing': 'off',
+        'lines-between-class-members': 'off',
+        '@typescript-eslint/comma-spacing': 'off',
+        '@typescript-eslint/object-curly-spacing': 'off',
+        '@typescript-eslint/type-annotation-spacing': 'off',
+        '@typescript-eslint/lines-around-comment': 'off',
+
+        '@stylistic/key-spacing': ['error', { afterColon: true, beforeColon: false }],
+        '@stylistic/comma-spacing': ['error', { after: true, before: false }],
+        '@stylistic/arrow-spacing': ['error', { before: true, after: true }],
+        '@stylistic/type-generic-spacing': 'error',
+        '@stylistic/type-named-tuple-spacing': 'error',
+        '@stylistic/block-spacing': ['error', 'always'],
+        '@stylistic/no-multi-spaces': 'error',
+        '@stylistic/keyword-spacing': ['error', { before: true, after: true }],
+        '@stylistic/space-before-blocks': ['error', 'always'],
+        '@stylistic/object-curly-spacing': ['error', 'always'],
+        '@stylistic/array-bracket-spacing': ['error', 'never'],
+        '@stylistic/array-bracket-newline': ['error', 'consistent'],
+        '@stylistic/function-call-spacing': ['error', 'never'],
+        '@stylistic/template-curly-spacing': ['error', 'never'],
+        '@stylistic/generator-star-spacing': ['error', { before: true, after: true }],
+        '@stylistic/computed-property-spacing': ['error', 'never'],
+        '@stylistic/multiline-ternary': ['error', 'always-multiline'],
+        '@stylistic/lines-around-comment': ['error', {
+          beforeBlockComment: true,
+          beforeLineComment: true,
+          ignorePattern: '^(?! ?---|@)',
+          applyDefaultIgnorePatterns: true,
+          afterHashbangComment: true,
+        }],
+        '@stylistic/spaced-comment': ['error', 'always', {
+          block: { markers: ['!'], exceptions: ['*'], balanced: true },
+          line: { markers: ['/'], exceptions: ['/', '#'] },
+        }],
+        '@stylistic/lines-between-class-members': ['error', {
+          enforce: [{ blankLine: 'always', prev: 'method', next: '*' }],
+        }, {
+          exceptAfterSingleLine: true,
+        }],
+        '@stylistic/type-annotation-spacing': ['error', {
+          before: false,
+          after: true,
+          overrides: {
+            arrow: { before: true, after: true },
+            colon: { before: false, after: true },
+            variable: { before: false, after: true },
+            property: { before: false, after: true },
+            parameter: { before: false, after: true },
+            returnType: { before: false, after: true },
+          },
+        }],
 
         /**
          * Enforce the use of `@ts-expect-error` over `@ts-ignore` to silence TypeScript
@@ -161,81 +238,119 @@ export function typescript(): Linter.FlatConfig[] {
          * @see https://typescript-eslint.io/rules/ban-ts-comment
          */
         '@typescript-eslint/prefer-ts-expect-error': 'error',
-        '@typescript-eslint/semi': ['error', 'never'],
+        '@typescript-eslint/ban-ts-comment': ['error', {
+          'ts-check': false,
+          'ts-expect-error': 'allow-with-description',
+          'ts-ignore': false,
+          'ts-nocheck': false,
+        }],
 
         /**
-         * Disable this rule as it may conflict with the `perfectionist/sort-imports` rule.
+         * Disallow dangling expressions and promises. This rule aims to prevent
+         * dangling promises and expressions that are not assigned to a variable.
+         * This can lead to bugs and unexpected behavior in the codebase.
          *
-         * @see https://typescript-eslint.io/rules/sort-type-constituents
+         * @see https://eslint.org/docs/rules/no-void
+         * @see https://typescript-eslint.io/rules/no-floating-promises
          */
-        '@typescript-eslint/sort-type-constituents': 'off',
-        /**
-         * Enforce spacing around the `:` in type annotations. This rule aims to
-         * maintain consistency and reduce visual noise in the codebase.
-         *
-         * @see https://typescript-eslint.io/rules/type-annotation-spacing
-         */
-        '@typescript-eslint/type-annotation-spacing': ['error', {}],
-        /**
-         * Age-old debate over how to style braces. This rule aims to reduce the
-         * cognitive load of reasoning about code by enforcing a consistent style.
-         *
-         * @see https://typescript-eslint.io/rules/brace-style
-         */
-        'brace-style': 'off',
-        'comma-dangle': 'off',
-        /**
-         * Enforce standard comma-spacing. Normalizes the codebase and reduces
-         * cognitive load when reasoning about code.
-         *
-         * @see https://typescript-eslint.io/rules/comma-spacing
-         */
-        'comma-spacing': 'off',
-        'import/named': 'off',
-        'indent': 'off',
-        /**
-         * In JavaScript, it’s possible to redeclare the same variable name using var.
-         * This can lead to confusion as to where the variable is actually declared and initialized.
-         *
-         * @see https://typescript-eslint.io/rules/no-redeclare
-         */
-        'no-redeclare': 'off',
-        /**
-         * Enforce no unused expressions. This rule aims to prevent dead code and
-         * reduce the likelihood of bugs.
-         *
-         * @see https://typescript-eslint.io/rules/no-unused-expressions
-         */
+        'no-void': 'off',
         'no-unused-expressions': 'off',
+        '@typescript-eslint/no-unused-expressions': 'error',
+        '@typescript-eslint/no-floating-promises': ['error', {
+          ignoreVoid: true,
+          ignoreIIFE: true,
+        }],
+
+        /**
+         * Sort imports alphabetically and group them without newlines. This rule
+         * aims to maintain consistency around the order of imports in JavaScript
+         * files. Helps reduce the visual noise in the codebase.
+         *
+         * @see https://eslint-plugin-perfectionist.azat.io/rules/sort-imports
+         */
+        'sort-imports': 'off',
+        '@typescript-eslint/sort-type-constituents': 'off',
+        '@typescript-eslint/consistent-type-imports': ['error', {
+          disallowTypeAnnotations: false,
+          prefer: 'no-type-imports',
+        }],
+        'perfectionist/sort-named-imports': ['error', { type: 'natural' }],
+        'perfectionist/sort-imports': ['error', {
+          'newlines-between': 'never',
+          'order': 'desc',
+        }],
+
         /**
          * Enforce no unused variables. Helps keep the codebase clean and reduces
          * the chance of bugs from side-effects.
          *
          * @see https://typescript-eslint.io/rules/@typescript-eslint/no-unused-vars
          */
+        'no-redeclare': 'off',
         'no-unused-vars': 'off',
+        '@typescript-eslint/no-redeclare': 'error',
+        '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
 
-        /**
-         * Enforce sequential declarations in the same block. This rule aims to
-         * enforce a top to bottom ordering of variable and type declarations.
-         * This reduces the likelihood of a developer skipping over a declaration
-         * when modifying code.
-         *
-         * @see https://typescript-eslint.io/rules/no-use-before-define
-         */
-        'no-use-before-define': 'off',
+        //////////////////////////////////////////////////////////////////////////////////////////
+
+        'perfectionist/sort-intersection-types': ['error', { type: 'natural' }],
+        'perfectionist/sort-union-types': ['error', {
+          'type': 'natural',
+          'nullable-last': true,
+        }],
         'no-useless-constructor': 'off',
-        'object-curly-spacing': 'off',
-
-        /**
-         * Enforce no semi-colons. This rule aims to maintain consistency around the
-         * use or omission of trailing semicolons. Helps reduce the visual noise in
-         * the codebase. Also helps to prevent errors when refactoring and adding
-         * new lines.
-         *
-         * @see https://typescript-eslint.io/rules/semi
-         */
-        'semi': 'off',
+        '@typescript-eslint/ban-types': 'off',
+        '@typescript-eslint/camelcase': 'off',
+        '@typescript-eslint/explicit-function-return-type': 'off',
+        '@typescript-eslint/explicit-member-accessibility': 'off',
+        '@typescript-eslint/explicit-module-boundary-types': 'off',
+        '@typescript-eslint/no-empty-function': 'off',
+        '@typescript-eslint/no-empty-interface': 'off',
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-namespace': 'off',
+        '@typescript-eslint/no-non-null-assertion': 'off',
+        '@typescript-eslint/no-parameter-properties': 'off',
+        'array-callback-return': 'error',
+        'arrow-body-style': ['error', 'as-needed'],
+        'arrow-parens': ['error', 'as-needed', { requireForBlockBody: true }],
+        'block-scoped-var': 'error',
+        'camelcase': 'off',
+        'comma-style': ['error', 'last'],
+        'complexity': ['off', 11],
+        'consistent-return': 'off',
+        'curly': ['error', 'multi-or-nest', 'consistent'],
+        'eqeqeq': ['error', 'smart'],
+        'no-alert': 'error',
+        'no-case-declarations': 'error',
+        'no-cond-assign': ['error', 'always'],
+        'no-confusing-arrow': 'error',
+        'no-console': ['warn', { allow: ['warn', 'error'] }],
+        'no-constant-condition': 'error',
+        'no-debugger': 'error',
+        'no-eval': 'error',
+        'no-implied-eval': 'error',
+        'no-multi-str': 'error',
+        'no-param-reassign': 'off',
+        'no-restricted-syntax': ['error', 'DebuggerStatement', 'LabeledStatement', 'WithStatement'],
+        'no-return-assign': 'off',
+        'no-return-await': 'off',
+        'no-trailing-spaces': 'error',
+        'no-useless-escape': 'off',
+        'no-var': 'error',
+        'no-with': 'error',
+        'object-shorthand': ['error', 'always', { avoidQuotes: true, ignoreConstructors: false }],
+        'one-var-declaration-per-line': 'error',
+        'operator-linebreak': ['error', 'before'],
+        'prefer-arrow-callback': ['error', { allowNamedFunctions: false, allowUnboundThis: true }],
+        'prefer-const': ['error', { destructuring: 'any', ignoreReadBeforeAssign: true }],
+        'prefer-rest-params': 'error',
+        'prefer-spread': 'error',
+        'prefer-template': 'error',
+        'quote-props': ['error', 'consistent-as-needed'],
+        'quotes': ['error', 'single'],
+        'require-await': 'off',
+        'space-before-function-paren': ['error', 'never'],
+        'vars-on-top': 'error',
       },
     },
 

@@ -6,11 +6,12 @@ export function jsdoc(): Linter.FlatConfig[] {
     pluginJsdoc.configs['flat/recommended-typescript-flavor-error'],
     {
       files: [
-        '**/*.js',
-        '**/*.ts',
-        '**/*.tsx',
+        '**/*.{ts,mts,cts,tsx,d.ts}',
+        '**/*.{js,mjs,cjs,jsx}',
+        '**/*.vue',
       ],
       rules: {
+
         /**
          * Enforce a consistent padding of the block description.
          *
@@ -31,6 +32,8 @@ export function jsdoc(): Linter.FlatConfig[] {
          *
          * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/.README/rules/check-tag-names.md
          */
+        'jsdoc/require-jsdoc': 'off',
+        'jsdoc/require-param-type': 'off',
         'jsdoc/check-tag-names': ['error', {
           definedTags: [
             'category',
@@ -41,7 +44,7 @@ export function jsdoc(): Linter.FlatConfig[] {
          * Checks for multi-line-style comments which fail to meet the criteria of a jsdoc block,
          * namely that it should begin with two and only two asterisks.
          *
-         * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/no-bad-blocks.md#readme
+         * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/no-bad-blocks.md
          */
         'jsdoc/no-bad-blocks': 'error',
 
@@ -50,16 +53,14 @@ export function jsdoc(): Linter.FlatConfig[] {
          * is sometimes forgotten and has no real purpose. This rule aims to enforce
          * that no hyphen is used.
          *
-         * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/require-hyphen-before-param-description#readme
+         * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/require-hyphen-before-param-description
          */
         'jsdoc/require-hyphen-before-param-description': ['error', 'never'],
 
-        'jsdoc/require-jsdoc': 'off',
-        'jsdoc/require-param-type': 'off',
         /**
          * Since we are using TypeScript, we don't need to enforce types in JSDoc.
          *
-         * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/.README/rules/require-return-type.md
+         * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/require-param-type.md
          */
         'jsdoc/require-returns-type': 'off',
 
@@ -67,7 +68,7 @@ export function jsdoc(): Linter.FlatConfig[] {
          * Enforce a new-line between the JSDoc summary and tags. Aims to improve
          * readability by separating the summary and tags.
          *
-         * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/tag-lines.md#readme
+         * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/tag-lines.md
          */
         'jsdoc/tag-lines': ['error', 'any', { startLines: 1 }],
       },

@@ -35,10 +35,6 @@ export function unicorn(): Linter.FlatConfig[] {
           name: 'error',
         }],
 
-        'unicorn/consistent-function-scoping': 'off',
-        'unicorn/error-message': 'error',
-        'unicorn/escape-case': 'error',
-
         /**
          * Enforce the use of camelCase or PascalCase when naming folders, files and
          * variables. This rule aims to enforce a consistent naming convention for
@@ -55,6 +51,7 @@ export function unicorn(): Linter.FlatConfig[] {
             '^[A-Z]+(.md)?$',
           ],
         }],
+
         /**
          * Disable the recommended import style rules. We want to be able to use both
          * named and default imports in our codebase.
@@ -62,12 +59,6 @@ export function unicorn(): Linter.FlatConfig[] {
          * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/import-style.md
          */
         'unicorn/import-style': 'off',
-
-        'unicorn/no-array-callback-reference': 'off',
-        'unicorn/no-array-for-each': 'off',
-        'unicorn/no-array-instanceof': 'error',
-        'unicorn/no-new-buffer': 'error',
-        'unicorn/no-static-only-class': 'off',
 
         /**
          * Disallow unsafe regular expressions. Regular expressions can be unsafe
@@ -77,8 +68,6 @@ export function unicorn(): Linter.FlatConfig[] {
          * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/no-unsafe-regex.md
          */
         'unicorn/no-unsafe-regex': 'error',
-
-        'unicorn/number-literal-case': 'error',
 
         /**
          * Enforces a convention of grouping digits using numeric separators.
@@ -91,6 +80,15 @@ export function unicorn(): Linter.FlatConfig[] {
           onlyIfContainsSeparator: true,
         }],
 
+        'unicorn/number-literal-case': 'error',
+        'unicorn/consistent-function-scoping': 'off',
+        'unicorn/error-message': 'error',
+        'unicorn/escape-case': 'error',
+        'unicorn/no-array-callback-reference': 'off',
+        'unicorn/no-array-for-each': 'off',
+        'unicorn/no-array-instanceof': 'error',
+        'unicorn/no-new-buffer': 'error',
+        'unicorn/no-static-only-class': 'off',
         'unicorn/prefer-code-point': 'off',
         'unicorn/prefer-exponentiation-operator': 'error',
         'unicorn/prefer-includes': 'error',

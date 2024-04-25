@@ -14,6 +14,7 @@ export function configJson(): Linter.FlatConfig[] {
         '**/*.json5',
       ],
       rules: {
+
         /**
          * Automatically apply jsonc rules similar to your configured ESLint core rules to JSON.
          *
