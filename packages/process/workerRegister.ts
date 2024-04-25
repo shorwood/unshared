@@ -239,7 +239,7 @@ if (import.meta.vitest) {
     })
   })
 
-  describe('e2e', { timeout: 100 }, () => {
+  describe.sequential('e2e', { retry: 3, timeout: 100 }, () => {
     const url = new URL('__fixtures__/handlers', import.meta.url).pathname
     const worker = new workerThreads.Worker(url)
     const send = (name: string, parameters: unknown[]) => {

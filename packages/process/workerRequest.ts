@@ -81,55 +81,57 @@ export async function workerRequest<T extends Function>(worker: Worker, name: st
 
 /* v8 ignore next */
 if (import.meta.vitest) {
-  const urlHandlers = new URL('__fixtures__/handlers.js', import.meta.url).pathname
-  const urlModules = new URL('__fixtures__/module.js', import.meta.url).pathname
-  const workerHandlers = new Worker(urlHandlers, { stderr: true, stdout: true })
-  const workerModules = new Worker(urlModules, { stderr: true, stdout: true })
-  type Module = typeof import('./__fixtures__/module')
+  describe.sequential('e2e', () => {
+    const urlHandlers = new URL('__fixtures__/handlers.js', import.meta.url).pathname
+    const urlModules = new URL('__fixtures__/module.js', import.meta.url).pathname
+    const workerHandlers = new Worker(urlHandlers, { stderr: true, stdout: true })
+    const workerModules = new Worker(urlModules, { stderr: true, stdout: true })
+    type Module = typeof import('./__fixtures__/module')
 
-  test('should call a sync function if the name matches and return the result', async() => {
-    const result = workerRequest<Module['factorial']>(workerHandlers, 'factorial', 10)
-    await expect(result).resolves.toBe(3628800)
-    expectTypeOf(result).toEqualTypeOf<Promise<number>>()
-  })
+    it('should call a sync function if the name matches and return the result', async() => {
+      const result = workerRequest<Module['factorial']>(workerHandlers, 'factorial', 10)
+      await expect(result).resolves.toBe(3628800)
+      expectTypeOf(result).toEqualTypeOf<Promise<number>>()
+    })
 
-  test('should call an async function if the name matches and return the resolved value', async() => {
-    const result = workerRequest<Module['factorialAsync']>(workerHandlers, 'factorialAsync', 10)
-    await expect(result).resolves.toBe(3628800)
-    expectTypeOf(result).toEqualTypeOf<Promise<number>>()
-  })
+    it('should call an async function if the name matches and return the resolved value', async() => {
+      const result = workerRequest<Module['factorialAsync']>(workerHandlers, 'factorialAsync', 10)
+      await expect(result).resolves.toBe(3628800)
+      expectTypeOf(result).toEqualTypeOf<Promise<number>>()
+    })
 
-  test('should return Buffers as an Uint8Array', async() => {
-    const result = await workerRequest<Module['buffer']>(workerHandlers, 'buffer')
-    const expected = new Uint8Array([72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33])
-    expect(result).toBeInstanceOf(Uint8Array)
-    expect(result).toStrictEqual(expected)
-  })
+    it('should return Buffers as an Uint8Array', async() => {
+      const result = await workerRequest<Module['buffer']>(workerHandlers, 'buffer')
+      const expected = new Uint8Array([72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33])
+      expect(result).toBeInstanceOf(Uint8Array)
+      expect(result).toStrictEqual(expected)
+    })
 
-  test('should throw an error if the function does not exist', async() => {
-    const shouldReject = workerRequest(workerHandlers, 'doesNotExist')
-    await expect(shouldReject).rejects.toThrow('Cannot execute handler: doesNotExist is not registered.')
-  })
+    it('should throw an error if the function does not exist', async() => {
+      const shouldReject = workerRequest(workerHandlers, 'doesNotExist')
+      await expect(shouldReject).rejects.toThrow('Cannot execute handler: doesNotExist is not registered.')
+    })
 
-  test('should throw an error if the function throws', async() => {
-    const shouldReject = workerRequest(workerHandlers, 'throws')
-    await expect(shouldReject).rejects.toThrow(SyntaxError)
-    await expect(shouldReject).rejects.toThrow('Thrown')
-  })
+    it('should throw an error if the function throws', async() => {
+      const shouldReject = workerRequest(workerHandlers, 'throws')
+      await expect(shouldReject).rejects.toThrow(SyntaxError)
+      await expect(shouldReject).rejects.toThrow('Thrown')
+    })
 
-  test('should throw an error if the function rejects', async() => {
-    const shouldReject = workerRequest(workerHandlers, 'rejects')
-    await expect(shouldReject).rejects.toThrow(SyntaxError)
-    await expect(shouldReject).rejects.toThrow('Rejected')
-  })
+    it('should throw an error if the function rejects', async() => {
+      const shouldReject = workerRequest(workerHandlers, 'rejects')
+      await expect(shouldReject).rejects.toThrow(SyntaxError)
+      await expect(shouldReject).rejects.toThrow('Rejected')
+    })
 
-  test('should return the process ID', async() => {
-    const result = await workerRequest<Module['getThreadId']>(workerHandlers, 'threadId')
-    expect(result).toStrictEqual(workerHandlers.threadId)
-  })
+    it('should return the process ID', async() => {
+      const result = await workerRequest<Module['getThreadId']>(workerHandlers, 'threadId')
+      expect(result).toStrictEqual(workerHandlers.threadId)
+    })
 
-  test('should reject if the worker does not respond', async() => {
-    const shouldReject = workerRequest(workerModules, 'doesNotExist')
-    await expect(shouldReject).rejects.toThrow('No registered handler is listening for messages.')
+    it('should reject if the worker does not respond', async() => {
+      const shouldReject = workerRequest(workerModules, 'doesNotExist')
+      await expect(shouldReject).rejects.toThrow('No registered handler is listening for messages.')
+    })
   })
 }

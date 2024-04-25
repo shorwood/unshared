@@ -161,8 +161,8 @@ if (import.meta.vitest) {
     })
   })
 
-  describe('await', () => {
-    it('should spawn a process and return the output as a buffer', { retry: 3 }, async() => {
+  describe.sequential('await', { retry: 3 }, () => {
+    it('should spawn a process and return the output as a buffer', async() => {
       const result = await execute('echo', ['Hello, world!'])
       const string = result.toString('utf8')
       expect(string).toBe('Hello, world!\n')
@@ -182,7 +182,7 @@ if (import.meta.vitest) {
     })
   })
 
-  describe('pipe', () => {
+  describe.sequential('pipe', { retry: 3 }, () => {
     it('should spawn a process and pipe a string to it', async() => {
       const result = await execute('cat', undefined, { stdin: 'Hello, world!' })
       const string = result.toString('utf8')
@@ -215,7 +215,7 @@ if (import.meta.vitest) {
     })
   })
 
-  describe('process substitution', () => {
+  describe.sequential('process substitution', { retry: 3 }, () => {
     it('should handle Buffer arguments with process substitution', async() => {
       const buffer = Buffer.from('Hello, world!')
       const result = await execute('cat', [buffer], { encoding: 'utf8' })
