@@ -59,9 +59,7 @@ export async function buildPackageJson(packageName: string) {
   packageJson.type = 'module'
   packageJson.sideEffects = false
   packageJson.exports = packageExports
-  packageJson.files = packageName === 'eslint-config'
-    ? ['lib', 'README.md', 'LICENSE.md']
-    : ['dist', 'README.md', 'LICENSE.md']
+  packageJson.files = ['dist', 'README.md', 'LICENSE.md']
   packageJson.main = packageExports['.']?.require
   packageJson.module = packageExports['.']?.import
   packageJson.types = packageExports['.']?.types
