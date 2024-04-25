@@ -7,6 +7,7 @@ const exclude = [
   '**/index.ts',
   '**/__wip__/**',
   '**/*.d.ts',
+  './packages/eslint-config/**',
 ]
 
 export default defineConfig({
