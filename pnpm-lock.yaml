@@ -187,6 +187,9 @@ importers:
       eslint-plugin-promise:
         specifier: 6.1.1
         version: 6.1.1(eslint@9.1.1)
+      eslint-plugin-sonarjs:
+        specifier: 0.25.1
+        version: 0.25.1(eslint@9.1.1)
       eslint-plugin-unicorn:
         specifier: 52.0.0
         version: 52.0.0(eslint@9.1.1)
@@ -208,6 +211,9 @@ importers:
       vue-eslint-parser:
         specifier: 9.4.2
         version: 9.4.2(eslint@9.1.1)
+      yaml-eslint-parser:
+        specifier: 1.2.2
+        version: 1.2.2
     devDependencies:
       '@types/eslint__eslintrc':
         specifier: 2.1.1
@@ -239,6 +245,10 @@ importers:
       '@unshared/types':
         specifier: workspace:*
         version: link:../types
+    devDependencies:
+      memfs:
+        specifier: 4.8.2
+        version: 4.8.2
 
   packages/functions:
     dependencies:
@@ -310,6 +320,9 @@ importers:
 
   packages/vue:
     dependencies:
+      '@unshared/collection':
+        specifier: 1.0.0-build-8dd01b4
+        version: 1.0.0-build-8dd01b4
       '@unshared/functions':
         specifier: workspace:*
         version: link:../functions
@@ -1816,6 +1829,9 @@ packages:
     peerDependencies:
       webpack: ^4 || ^5
 
+  '@unshared/collection@1.0.0-build-8dd01b4':
+    resolution: {integrity: sha512-dnILD530Ke+eNvy8WVsLSjhvtr6mb9RAqNzS20X8KfrA6s/SfJXqQyTER+m8C+uIHdWapyVWe+tGQMExq6PUvg==}
+
   '@vercel/nft@0.26.4':
     resolution: {integrity: sha512-j4jCOOXke2t8cHZCIxu1dzKLHLcFmYzC3yqAK6MfZznOL1QIJKd0xcFsXK3zcqzU7ScsE2zWkiMMNHGMHgp+FA==}
     engines: {node: '>=16'}
@@ -2994,6 +3010,12 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0
+
+  eslint-plugin-sonarjs@0.25.1:
+    resolution: {integrity: sha512-5IOKvj/GMBNqjxBdItfotfRHo7w48496GOu1hxdeXuD0mB1JBlDCViiLHETDTfA8pDAVSBimBEQoetRXYceQEw==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      eslint: ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
 
   eslint-plugin-unicorn@52.0.0:
     resolution: {integrity: sha512-1Yzm7/m+0R4djH0tjDjfVei/ju2w3AzUGjG6q8JnuNIL5xIwsflyCooW5sfBvQp2pMYQFSWWCFONsjCax1EHng==}
@@ -7827,6 +7849,8 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
+  '@unshared/collection@1.0.0-build-8dd01b4': {}
+
   '@vercel/nft@0.26.4(encoding@0.1.13)':
     dependencies:
       '@mapbox/node-pre-gyp': 1.0.11(encoding@0.1.13)
@@ -9260,6 +9284,10 @@ snapshots:
       - typescript
 
   eslint-plugin-promise@6.1.1(eslint@9.1.1):
+    dependencies:
+      eslint: 9.1.1
+
+  eslint-plugin-sonarjs@0.25.1(eslint@9.1.1):
     dependencies:
       eslint: 9.1.1
 
