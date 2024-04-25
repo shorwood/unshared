@@ -71,9 +71,10 @@ export async function buildPackageJson(packageName: string) {
   packageJson.bugs = `${packageRemoteUrlHttps}/issues`
   packageJson.homepage = `${packageRemoteUrlHttps}#readme`
   packageJson.repository = {
-    directory: packageRelativePath,
     type: 'git',
     url: packageRemoteUrlGit,
+    // eslint-disable-next-line perfectionist/sort-objects
+    directory: packageRelativePath,
   }
 
   // --- Save the package.json file.
