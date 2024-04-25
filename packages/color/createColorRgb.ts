@@ -13,12 +13,16 @@ import { clamp } from '@unshared/math/clamp'
  * @see https://en.wikipedia.org/wiki/SRGB
  */
 export interface RGB {
+
   /** Alpha channel from 0 to 255. */
   a: number
+
   /** Blue channel from 0 to 255. */
   b: number
+
   /** Green channel from 0 to 255. */
   g: number
+
   /** Red channel from 0 to 255. */
   r: number
 }

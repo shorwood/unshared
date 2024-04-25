@@ -1,16 +1,19 @@
 export interface EnumEntry {
+
   /**
    * The JSDoc documentation for the enum entry.
    *
    * @example `This is a document.\n@default 0`
    */
   document?: string
+
   /**
    * The key of the enum entry.
    *
    * @example `Zero`
    */
   key: string
+
   /**
    * The value of the enum entry.
    *

@@ -25,6 +25,7 @@ export async function findAncestor(name: string, from: string = cwd()): Promise<
       return absolutePath
     }
     catch {
+
       /** Ignore error. */
     }
     if (from === '/') break

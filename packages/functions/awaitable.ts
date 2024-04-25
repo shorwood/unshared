@@ -36,6 +36,7 @@ export type Awaitable<T, U = void> = Promise<U> & T
  * await fileChunks // [Buffer, Buffer, Buffer, ...]
  */
 export function awaitable<T>(iterable: AsyncIterable<T>): Awaitable<AsyncIterable<T>, T[]>
+
 /**
  * Extend an object with a promise making it awaitable. If the promise resolves to a value,
  * then this value will be returned when the object is awaited. If the promise resolves to
@@ -188,7 +189,7 @@ if (import.meta.vitest) {
   })
 
   describe('async iterable', () => {
-    const createGenerator = async function*() {
+    const createGenerator = async function * () {
       yield await Promise.resolve(1)
       yield await Promise.resolve(2)
       yield await Promise.resolve(3)
@@ -209,7 +210,7 @@ if (import.meta.vitest) {
     })
 
     it('should wrap an async iterable and catch when an error is thrown', async() => {
-      const createGenerator = async function*() {
+      const createGenerator = async function * () {
         yield await Promise.resolve(1)
         throw new Error('foo')
       }

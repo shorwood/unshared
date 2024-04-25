@@ -2,6 +2,7 @@ import { ComponentObjectPropsOptions, ExtractPropTypes, Prop, Ref, computed, get
 import { toReactive, useVModel } from '@vueuse/core'
 
 export const BASE_STATE_PROPS = {
+
   /**
    * The CSS class to apply when the component is disabled. This allows you
    * to customize the appearance of the component when it is disabled without
@@ -10,6 +11,7 @@ export const BASE_STATE_PROPS = {
    * @default ''
    */
   'classDisabled': { default: '', type: [String] } as Prop<string>,
+
   /**
    * The CSS class to apply when the component is in an error state. This
    * allows you to customize the appearance of the component when it is in
@@ -18,6 +20,7 @@ export const BASE_STATE_PROPS = {
    * @default ''
    */
   'classError': { default: '', type: [String] } as Prop<string>,
+
   /**
    * The CSS class to apply when the component is loading. This allows you
    * to customize the appearance of the component when it is loading without
@@ -26,6 +29,7 @@ export const BASE_STATE_PROPS = {
    * @default ''
    */
   'classLoading': { default: '', type: [String] } as Prop<string>,
+
   /**
    * The CSS class to apply when the component is read-only. This allows you
    * to customize the appearance of the component when it is read-only without
@@ -34,6 +38,7 @@ export const BASE_STATE_PROPS = {
    * @default ''
    */
   'classReadonly': { default: '', type: [String] } as Prop<string>,
+
   /**
    * If `true`, all interactions with the component should be disabled.
    * Meaning that the component should not be able to send any `click`,
@@ -42,6 +47,7 @@ export const BASE_STATE_PROPS = {
    * @default false
    */
   'disabled': [Boolean],
+
   /**
    * If `true`, the component should be in an error state. Meaning that
    * the component should show an error message or a visual indication
@@ -50,6 +56,7 @@ export const BASE_STATE_PROPS = {
    * @default undefined
    */
   'error': [Error, String],
+
   /**
    * If `true`, the component should be in a loading state. Meaning that
    * the component should not be able to send any `click`, `focus`, `hover`,
@@ -63,6 +70,7 @@ export const BASE_STATE_PROPS = {
   'onUpdate:error': Function as Prop<(error?: Error | string) => void>,
   'onUpdate:loading': Function as Prop<(loading: boolean) => void>,
   'onUpdate:readonly': Function as Prop<(readonly: boolean) => void>,
+
   /**
    * If `true`, the component should be in a read-only state. Meaning that
    * the component should not be able to send any `click`, `focus`, `hover`,

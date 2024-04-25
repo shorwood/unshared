@@ -19,7 +19,7 @@ if (import.meta.vitest) {
   })
 
   test('should default null to string', () => {
-    type Result = DefaultValue<null | number, string>
+    type Result = DefaultValue<number | null, string>
     expectTypeOf<Result>().toEqualTypeOf<number | string>()
   })
 

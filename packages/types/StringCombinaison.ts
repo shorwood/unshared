@@ -10,9 +10,9 @@ export type StringCombinaison<S extends string[]> =
     ? `${H}${StringCombinaison<T>}` | `${StringCombinaison<T>}${H}`
     : '') |
 
-  (S extends [infer H extends string, ...infer T extends string[]]
-    ? `${H}${StringCombinaison<T>}` | `${StringCombinaison<T>}${H}`
-    : '')
+    (S extends [infer H extends string, ...infer T extends string[]]
+      ? `${H}${StringCombinaison<T>}` | `${StringCombinaison<T>}${H}`
+      : '')
 
 /** v8 ignore start */
 if (import.meta.vitest) {

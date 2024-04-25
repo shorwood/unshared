@@ -1,7 +1,7 @@
 import { env, exit, stderr } from 'node:process'
 
 // --- Check if pnpm is being used.
-const agent = env.npm_config_user_agent || 'npm'
+const agent = env.npm_config_user_agent ?? 'npm'
 if (agent.startsWith('pnpm')) exit(0)
 
 // --- If not, throw an error.

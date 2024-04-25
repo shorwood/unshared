@@ -27,14 +27,14 @@ export type WorkerizedExport<T> =
  */
 export type Workerized<T extends object> =
   UnionMerge<
-  {
-    -readonly [K in keyof T]: WorkerizedExport<T[K]> } | {
-    getOwnPropertyNames: () => Promise<string[]>
-  }
+    {
+      -readonly [K in keyof T]: WorkerizedExport<T[K]> }
+      | { getOwnPropertyNames: () => Promise<string[]> }
   >
 
 /** The options for the `WorkerService`. */
 export interface WorkerServiceOptions extends WorkerOptions {
+
   /**
    * If `true`, the worker thread will be created when the `WorkerService` is
    * instantiated. If `false`, the worker thread will be created when the first
@@ -43,6 +43,7 @@ export interface WorkerServiceOptions extends WorkerOptions {
    * @default false
    */
   eager?: boolean
+
   /**
    * The path to the worker to use. This worker will be responsible for importing
    * and executing the functions in the worker thread. Internally, this script will
@@ -56,6 +57,7 @@ export interface WorkerServiceOptions extends WorkerOptions {
 }
 
 export interface WorkerServicePayload<T extends Function = Function<unknown, unknown[]>> {
+
   /**
    * The path or URL to the module to import. Be aware that this path
    * will be resolved using the `createRequire().resolve()` function.
@@ -65,6 +67,7 @@ export interface WorkerServicePayload<T extends Function = Function<unknown, unk
    * @example 'node:crypto'
    */
   moduleId: URL | string
+
   /**
    * The name of the export to get from the module. If the named
    * export is a constant, it will be returned as is. If it is a
@@ -74,12 +77,14 @@ export interface WorkerServicePayload<T extends Function = Function<unknown, unk
    * @example 'randomBytes'
    */
   name?: string
+
   /**
    * The parameters to pass to the target function as an array.
    *
    * @example [128]
    */
   parameters?: Parameters<T>
+
   /**
    * Additionally, you can provide the `paths` property to specify the
    * search paths for the module. This is useful when you cannot garantee
@@ -88,6 +93,7 @@ export interface WorkerServicePayload<T extends Function = Function<unknown, unk
    * @example ['/path/to/module']
    */
   paths?: string[]
+
   /**
    * Additional transferable objects to pass to the worker thread. This can be used
    * to pass `ArrayBuffer` or `MessagePort` objects to the worker thread. By default,
@@ -121,6 +127,7 @@ function getWorkerServicePath(): URL {
  * worker thread.
  */
 export class WorkerService implements Disposable {
+
   /**
    * The number of currently running tasks. This is useful to know if the worker thread
    * is busy or not. Allowing you to better orchestrate and balance the load on the

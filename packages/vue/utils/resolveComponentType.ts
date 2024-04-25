@@ -1,5 +1,7 @@
 import { Component, defineComponent, h, resolveComponent } from 'vue'
 
+export type ResolvedComponent<K extends string> = K extends keyof HTMLElementTagNameMap ? K : Component | string
+
 /**
  * Dynamically resolves to a globally registered Vue component or an HTML tag.
  *
@@ -12,7 +14,7 @@ import { Component, defineComponent, h, resolveComponent } from 'vue'
  * // Resolves to an HTML tag.
  * resolveComponentType('div') // => 'div'
  */
-export function resolveComponentType<T extends Component, K extends string = string>(type: K): K extends keyof HTMLElementTagNameMap ? K : K | T
+export function resolveComponentType<K extends string = string>(type: K): ResolvedComponent<K>
 export function resolveComponentType(type: string): Component | string {
   return /^[A-Z]/.test(type) ? resolveComponent(type) : type
 }

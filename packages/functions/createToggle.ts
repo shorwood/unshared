@@ -1,4 +1,5 @@
 export interface Toggle {
+
   /**
    * Set the value of this switch to `false`.
    *
@@ -6,6 +7,7 @@ export interface Toggle {
    * @example createToggle(true).off() // false
    */
   off(): boolean
+
   /**
    * Set the value of this switch to `true`.
    *
@@ -13,6 +15,7 @@ export interface Toggle {
    * @example createToggle(false).on() // true
    */
   on(): boolean
+
   /**
    * Toggles the value of this switch.
    *
@@ -20,6 +23,7 @@ export interface Toggle {
    * @example createToggle(true).toggle() // false
    */
   toggle(): boolean
+
   /**
    * The current value of this switch.
    */

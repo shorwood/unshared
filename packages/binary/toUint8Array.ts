@@ -51,7 +51,7 @@ if (import.meta.vitest) {
   })
 
   test('should convert an Iterator to an Uint8Array', () => {
-    const createIterator = function* () {
+    const createIterator = function * () {
       yield 72
       yield 101
       yield 108

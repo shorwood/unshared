@@ -3,6 +3,7 @@ import { get } from '@unshared/collection/get'
 import { escapeRegexp } from './escapeRegexp'
 
 export interface TemplateOptions<T> {
+
   /**
    * String used to delimit the end of an interpolation. This string must not
    * contain the start delimiter otherwise it will be considered as part of the
@@ -11,12 +12,14 @@ export interface TemplateOptions<T> {
    * @default '}}'
    */
   delimiterEnd?: string
+
   /**
    * String used to delimit the start of an interpolation.
    *
    * @default '{{'
    */
   delimiterStart?: string
+
   /**
    * Function used to transform the value before it is inserted into the
    * template. This function is called for each match and receives the value,

@@ -7,6 +7,7 @@
  * `Boolean` constructor. It is a completely separate class with a different API.
  */
 export class Boolean {
+
   /**
    * Create a new Boolean instance with the given value.
    *

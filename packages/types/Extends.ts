@@ -17,9 +17,9 @@ import { Constructor } from './Constructor'
  */
 export type Extends<T1 extends Constructor, T2 extends Constructor> =
   Constructor<
-  UnionMerge<DefaultObject<InstanceType<T1>, InstanceType<T2>, 0>>,
-  ConstructorParameters<T1>,
-  UnionMerge<DefaultObject<ConstructorStatics<T2>, ConstructorStatics<T1>, 0>>
+    UnionMerge<DefaultObject<InstanceType<T1>, InstanceType<T2>, 0>>,
+    ConstructorParameters<T1>,
+    UnionMerge<DefaultObject<ConstructorStatics<T2>, ConstructorStatics<T1>, 0>>
   >
 
 /** v8 ignore start */

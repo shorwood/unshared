@@ -35,6 +35,7 @@ type MappedValuesByIterator<T, R> =
  * mapValues(object, 'name.first') // => ['John', 'Jane', 'Jack']
  */
 export function mapValues<T, P extends string = string>(collection: T, path: IteratorPath<T> & P): MappedValuesByPath<T, P>
+
 /**
  * Iterates over an object or array, returning a new array consisting of the results
  * of the callback function.

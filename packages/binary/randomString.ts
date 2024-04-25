@@ -1,6 +1,7 @@
 import { RandomOptions, randomInt } from './randomInt'
 
 export interface RandomStringOptions extends RandomOptions {
+
   /**
    * Pool of characters to use for generating the string.
    *

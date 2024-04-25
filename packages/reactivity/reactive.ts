@@ -9,6 +9,7 @@ import { ReactiveData, ReactiveFlag } from './constants'
 export type ReactiveCallback<T = unknown> = (object: T) => void
 
 export interface ReactiveOptions<T = unknown> {
+
   /**
    * An array of functions that will be called when the object is changed.
    * This is used internally to pass the callbacks to nested reactive objects.
@@ -18,6 +19,7 @@ export interface ReactiveOptions<T = unknown> {
    * @internal
    */
   callbacks?: Array<ReactiveCallback<T>>
+
   /**
    * Whether to recursively watch the nested objects and arrays. Be careful
    * when using this option, as it can cause performance issues if the object
@@ -31,6 +33,7 @@ export interface ReactiveOptions<T = unknown> {
    * object.foo.bar = 'qux' // 'Object changed!'
    */
   deep?: boolean
+
   /**
    * An array of protype methods that will trigger a change. This is used to
    * capture changes to arrays and maps.
@@ -42,6 +45,7 @@ export interface ReactiveOptions<T = unknown> {
    * array.push(4) // 'Array changed!'
    */
   hooks?: string[]
+
   /**
    * The root object that is being watched. This is and should only be used
    * internally to track changes to nested objects.

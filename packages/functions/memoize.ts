@@ -1,6 +1,7 @@
 import { Function } from '@unshared/types'
 
 export type Memoized<T extends Function> = {
+
   /**
    * The cache of the arguments and their results that have been memoized.
    * The cache is a `Map` instance that can be used to inspect the memoized
@@ -13,6 +14,7 @@ export type Memoized<T extends Function> = {
 } & T
 
 export interface MemoizeOptions<T extends Function = Function> {
+
   /**
    * The `Map` instance or constructor to use as the cache. It defaults to the
    * native `Map` constructor but can be replaced with a more advanced cache
@@ -21,6 +23,7 @@ export interface MemoizeOptions<T extends Function = Function> {
    * @default Map
    */
   cache?: Map<string, unknown>
+
   /**
    * A function to generate the cache key given the parameters of the function.
    * This will be used to index the results of the function and retrieve them

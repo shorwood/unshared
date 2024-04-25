@@ -16,6 +16,7 @@ export type ReactiveState<T = unknown> = [
  * getState() // 1
  */
 export function useState<T>(): ReactiveState<T | undefined>
+
 /**
  * Creates a reactive state with a setter. Similar to `useState` from React.
  *

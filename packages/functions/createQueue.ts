@@ -5,18 +5,22 @@ import { MaybeFunction } from '@unshared/types'
 import { Awaitable, awaitable } from './awaitable'
 
 export interface QueueTask<T = unknown> {
+
   /**
    * Abort the task.
    */
   cancel(): void
+
   /**
    * The queued function.
    */
   fn: Function<Promise<T> | T>
+
   /**
    * Is the task running?
    */
   isRunning: boolean
+
   /**
    * The promise that resolves when the task is complete.
    */
@@ -24,6 +28,7 @@ export interface QueueTask<T = unknown> {
 }
 
 export interface QueueOptions {
+
   /**
    * The maximum number of functions that can run concurrently. You can also provide a
    * function that returns the concurrency; The result will be evaluated each time a task

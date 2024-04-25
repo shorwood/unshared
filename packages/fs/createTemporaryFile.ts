@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os'
 import { mkdir, rm, writeFile } from 'node:fs/promises'
 
 export interface CreateTemporaryFileOptions {
+
   /**
    * The directory to create the temporary file in.
    * Defaults to the system's temporary directory.
@@ -10,12 +11,14 @@ export interface CreateTemporaryFileOptions {
    * @default tmpdir()
    */
   directory?: string
+
   /**
    * The file extension to use for the temporary file.
    *
    * @default ''
    */
   extension?: string
+
   /**
    * A function that generates a random string.
    *
@@ -46,7 +49,8 @@ export async function createTemporaryFile(content?: Parameters<typeof writeFile>
   const {
     directory = tmpdir(),
     extension,
-    random = () => Math.random().toString(36).slice(2),
+    random = () => Math.random().toString(36)
+      .slice(2),
   } = options
 
   // --- Generate a random name.
@@ -72,7 +76,7 @@ if (import.meta.vitest) {
     const isFile = statSync(path).isFile()
     const content = readFileSync(path, 'utf8')
     expect(path).toMatch(/^\/tmp\/[\da-z]+$/)
-    expect (isFile).toBeTruthy()
+    expect(isFile).toBeTruthy()
     expect(content).toBe('')
   })
 

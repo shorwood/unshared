@@ -15,16 +15,19 @@ const WORKER_HEALTHCHECK_TIMEOUT = 1000
  * the payload of the IPC message received from the port specified in the request.
  */
 export interface WorkerRequest<P extends unknown[] = unknown[]> {
+
   /**
    * The name of the handler to call. This is the name the handler was registered with.
    * This is used to identify which handler to call.
    */
   name: string
+
   /**
    * The parameters to pass to the handler. These are the parameters passed to the
    * `workerRequest` function.
    */
   parameters: P
+
   /**
    * The port to send the response to and receive the request from. This is the port
    * that will listen for messages from the `workerRequest` function.

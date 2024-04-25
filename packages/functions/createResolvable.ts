@@ -1,4 +1,5 @@
 export interface Resolvable<T = unknown> extends Promise<T> {
+
   /**
    * Whether the promise is still pending. This is `true` until the promise is
    * either resolved or rejected and becomes `false`.
@@ -12,6 +13,7 @@ export interface Resolvable<T = unknown> extends Promise<T> {
    * resolvable.pending // => false
    */
   pending: boolean
+
   /**
    * The resolvable promise. This is the promise instance that is currently
    * being resolved or rejected until `resolve` or `reject` is called.
@@ -25,6 +27,7 @@ export interface Resolvable<T = unknown> extends Promise<T> {
    * resolvable.promise // => Promise { 'resolved' }
    */
   promise: Promise<T>
+
   /**
    * Reject the promise with a cause. This will mark the promise as rejected and
    * set the reason for the rejection.
@@ -36,8 +39,10 @@ export interface Resolvable<T = unknown> extends Promise<T> {
    * resolvable.rejected // => true
    */
   reject: (cause?: any) => void
+
   /** Whether the promise has been rejected. */
   rejected: boolean
+
   /**
    * Reset the promise to its initial state. This will internally instantiate a
    * new promise that can be resolved or rejected from outside the promise.
@@ -52,12 +57,14 @@ export interface Resolvable<T = unknown> extends Promise<T> {
    * resolvable.pending // => true
    */
   reset: () => void
+
   /**
    * Resolve the promise with a value.
    *
    * @param value The value to resolve the promise with.
    */
   resolve: T extends unknown ? (value?: PromiseLike<T> | T) => void : (value: PromiseLike<T> | T) => void
+
   /** Whether the promise has been resolved. */
   resolved: boolean
 }

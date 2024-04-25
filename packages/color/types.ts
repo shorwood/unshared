@@ -11,12 +11,16 @@ import { CharacterHex, StringConstraint } from '@unshared/types'
  * @see https://en.wikipedia.org/wiki/HSL_and_HSV
  */
 export interface HSV {
+
   /** Alpha channel from 0 to 1. */
   a?: number
+
   /** Hue channel from 0 to 360. */
   h: number
+
   /** Saturation channel from 0 to 1. */
   s: number
+
   /** Value channel from 0 to 1. */
   v: number
 }
@@ -32,14 +36,19 @@ export interface HSV {
  * @see https://en.wikipedia.org/wiki/CMYK_color_model
  */
 export interface CMYK {
+
   /** Alpha channel from 0 to 1. */
   a?: number
+
   /** Cyan channel from 0 to 1. */
   c: number
+
   /** Black channel from 0 to 1. */
   k: number
+
   /** Magenta channel from 0 to 1. */
   m: number
+
   /** Yellow channel from 0 to 1. */
   y: number
 }
@@ -55,12 +64,16 @@ export interface CMYK {
  * @see https://en.wikipedia.org/wiki/CIE_1931_color_space
  */
 export interface XYZ {
+
   /** Alpha channel from 0 to 1. */
   a?: number
+
   /** X channel from 0 to 1. */
   x: number
+
   /** Y channel from 0 to 1. */
   y: number
+
   /** Z channel from 0 to 1. */
   z: number
 }
@@ -76,12 +89,16 @@ export interface XYZ {
  * @see https://en.wikipedia.org/wiki/CIELAB_color_space
  */
 export interface LAB {
+
   /** A channel from 0 to 1. */
   a: number
+
   /** Alpha channel from 0 to 1. */
   alpha?: number
+
   /** B channel from 0 to 1. */
   b: number
+
   /** L channel from 0 to 1. */
   l: number
 }
@@ -97,12 +114,16 @@ export interface LAB {
  * @see https://en.wikipedia.org/wiki/CIELAB_color_space
  */
 export interface LCH {
+
   /** Alpha channel from 0 to 1. */
   a?: number
+
   /** C channel from 0 to 1. */
   c: number
+
   /** H channel from 0 to 1. */
   h: number
+
   /** L channel from 0 to 1. */
   l: number
 }

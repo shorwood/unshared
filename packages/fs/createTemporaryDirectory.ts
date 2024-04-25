@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os'
 import { mkdir, rm } from 'node:fs/promises'
 
 export interface CreateTemporaryDirectoryOptions {
+
   /**
    * The directory to create the temporary directory in.
    * Defaults to the system's temporary directory.
@@ -10,6 +11,7 @@ export interface CreateTemporaryDirectoryOptions {
    * @default tmpdir()
    */
   directory?: string
+
   /**
    * A function that generates a random string.
    *
@@ -17,6 +19,7 @@ export interface CreateTemporaryDirectoryOptions {
    */
   random?: () => string
 }
+
 /**
  * Create a temporary directory with a random name and return
  * an object containing the directory path, and a function to
@@ -38,7 +41,8 @@ export interface CreateTemporaryDirectoryOptions {
 export async function createTemporaryDirectory(options: CreateTemporaryDirectoryOptions = {}) {
   const {
     directory = tmpdir(),
-    random = () => Math.random().toString(36).slice(2),
+    random = () => Math.random().toString(36)
+      .slice(2),
   } = options
 
   // --- Generate a random name.
@@ -61,7 +65,7 @@ if (import.meta.vitest) {
     const [path] = await createTemporaryDirectory()
     const isDirectory = statSync(path).isDirectory()
     expect(path).toMatch(/^\/tmp\/[\da-z]+$/)
-    expect (isDirectory).toBeTruthy()
+    expect(isDirectory).toBeTruthy()
   })
 
   test('should create a temporary directory in the specified directory', async() => {

@@ -54,6 +54,7 @@ export function mixins<T extends [Constructor, ...Constructor[]]>(...mixins: T):
 }
 
 /* v8 ignore next */
+
 if (import.meta.vitest) {
   test('should mix classes into a single class', () => {
     class ClassA { foo = 'foo' }
@@ -220,6 +221,7 @@ if (import.meta.vitest) {
   })
 
   test('should throw if no class is passed', () => {
+
     // @ts-expect-error: invalid arguments
     const shouldThrow = () => mixins()
     expect(shouldThrow).toThrow('Cannot mix classes: no classes were passed')

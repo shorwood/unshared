@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-var-requires */
 export interface RandomOptions {
+
   /**
    * If neither `node:crypto` nor `globalThis.crypto` is available,
    * allow unsafe random number generation using `Math.random()`.

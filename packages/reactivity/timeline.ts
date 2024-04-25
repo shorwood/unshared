@@ -5,12 +5,14 @@ import { Reactive } from './reactive'
 import { computed } from './computed'
 
 export interface TimelineOptions<T, U> {
+
   /**
    * The maximum number of changes to store.
    *
    * @default Infinity
    */
   limit?: number
+
   /**
    * The function to transform the value before storing it in the timeline.
    * This is useful if you want to store a clone of the value instead of

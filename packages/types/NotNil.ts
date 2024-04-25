@@ -15,7 +15,7 @@ export type NotNil<U = unknown> = IsUnknown<U> extends true ? NotNil<Any> : U ex
 /* v8 ignore next */
 if (import.meta.vitest) {
   test('should exclude null', () => {
-    type Result = NotNil<null | number>
+    type Result = NotNil<number | null>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
@@ -30,7 +30,7 @@ if (import.meta.vitest) {
   })
 
   test('should exclude null, undefined and void', () => {
-    type Result = NotNil<null | number | undefined | void>
+    type Result = NotNil<number | void | null | undefined>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 

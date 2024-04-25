@@ -1,12 +1,16 @@
 import { reactive } from 'vue'
 
 export interface Alert {
+
   /** Duration of the alert in ms. */
   duration?: number
+
   /** Unique id for lifecycle handling. Defaults to auto-generated one. */
   id?: string
+
   /** Content of the alert. */
   text?: string
+
   /** Type of alert. Defines the design of the toast. */
   type?: 'error' | 'info' | 'success' | 'warning'
 }
@@ -14,6 +18,7 @@ export interface Alert {
 type Dismiss = () => void
 
 export interface UseAlertReturnType {
+
   /**
    * Create an alert that is displayed for a duration, then automatically dismissed.
    *
@@ -21,6 +26,7 @@ export interface UseAlertReturnType {
    * @returns A function that can be used to dismiss the alert manually
    */
   alert: (alert: Alert) => Dismiss
+
   /**
    * Create an error alert that is displayed for a duration, then automatically dismissed.
    *
@@ -28,6 +34,7 @@ export interface UseAlertReturnType {
    * @returns A function that can be used to dismiss the alert manually
    */
   alertError: (text: string) => Dismiss
+
   /**
    * Create a success alert that is displayed for a duration, then automatically dismissed.
    *
@@ -35,6 +42,7 @@ export interface UseAlertReturnType {
    * @returns A function that can be used to dismiss the alert manually
    */
   alertSuccess: (text: string) => Dismiss
+
   /**
    * Create a warning alert that is displayed for a duration, then automatically dismissed.
    *
@@ -42,12 +50,15 @@ export interface UseAlertReturnType {
    * @returns A function that can be used to dismiss the alert manually
    */
   alertWarning: (text: string) => Dismiss
+
   /** The active alerts pool. */
   alerts: Alert[]
+
   /**
    * Clear all alerts
    */
   clear: () => void
+
   /**
    * Dismiss an alert or all allerts
    *
@@ -75,7 +86,8 @@ export function useAlert(): UseAlertReturnType {
 
   // --- Create an alert.
   const alert = (alert: Alert) => {
-    alert.id = alert.id ?? Math.random().toString(36).slice(2, 11)
+    alert.id = alert.id ?? Math.random().toString(36)
+      .slice(2, 11)
     alerts.push(alert)
     const dismissThisAlert = () => dismiss(alert)
     setTimeout(dismissThisAlert, alert.duration ?? 5000)

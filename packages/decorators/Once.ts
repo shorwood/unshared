@@ -28,6 +28,7 @@ export function Once<T extends Function>(): MethodDecorator<T> {
 }
 
 /* v8 ignore start */
+
 if (import.meta.vitest) {
   test('should return the same value if no arguments are passed', () => {
     const fn = vi.fn(Math.random)

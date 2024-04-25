@@ -35,6 +35,7 @@ type GroupedByIterator<T, R extends PropertyKey> =
  * // }
  */
 export function groupBy<T, R extends PropertyKey>(collection: T, iterator: IteratorFunction<T, R>): GroupedByIterator<T, R>
+
 /**
  * Groups a collection by the value of a property at a given path.
  *

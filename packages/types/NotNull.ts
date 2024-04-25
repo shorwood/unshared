@@ -17,7 +17,7 @@ export type NotNull<U = unknown> =
 /* v8 ignore next */
 if (import.meta.vitest) {
   test('should exclude null', () => {
-    type Result = NotNull<null | number>
+    type Result = NotNull<number | null>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 

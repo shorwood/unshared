@@ -1,18 +1,21 @@
 import { Optional } from '@unshared/types'
 
 export interface CollapseOptions {
+
   /**
    * Keep empty objects in the collection.
    *
    * @default false
    */
   keepEmptyObjects?: boolean
+
   /**
    * Keep `null` properties in the collection.
    *
    * @default false
    */
   keepNull?: boolean
+
   /**
    * Keep the keys of empty objects in the collection, meaning
    * it wont delete the key from the object, but set it to `undefined`.
@@ -167,7 +170,7 @@ if (import.meta.vitest) {
 
     it('should maybe collapse null values', () => {
       // eslint-disable-next-line unicorn/no-null
-      const result = collapse({ a: null as null | string })
+      const result = collapse({ a: null as string | null })
       expect(result).toBeUndefined()
       expectTypeOf(result).toEqualTypeOf<{ a: string } | undefined>()
     })

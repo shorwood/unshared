@@ -24,7 +24,7 @@ function isHeaderGzip(chunk: Buffer) {
  */
 function isHeaderDeflate(chunk: Buffer) {
   return chunk.subarray(0, 2).equals(Z_DEFLATE_HEADER_1)
-      || chunk.subarray(0, 2).equals(Z_DEFLATE_HEADER_2)
+    || chunk.subarray(0, 2).equals(Z_DEFLATE_HEADER_2)
 }
 
 /**
@@ -32,6 +32,7 @@ function isHeaderDeflate(chunk: Buffer) {
  * it is passed through.
  */
 export class Decompress extends Transform {
+
   /** The decompressor to use. */
   private decompressor: Gunzip | Inflate | PassThrough | undefined
 
@@ -95,6 +96,7 @@ export class Decompress extends Transform {
 export function createStreamDecompress(options: ZlibOptions = {}) {
   return new Decompress(options)
 }
+
 /** v8 ignore start */
 if (import.meta.vitest) {
   const buffer = randomBytes(2048)
@@ -111,7 +113,8 @@ if (import.meta.vitest) {
   test('should decompress gzip data', async() => {
     const compress = createGzip()
     const decompress = createStreamDecompress()
-    const result = Readable.from(buffer).pipe(compress).pipe(decompress)
+    const result = Readable.from(buffer).pipe(compress)
+      .pipe(decompress)
     const chunks = await result.toArray()
     const data = Buffer.concat(chunks).toString('hex')
     expect(data).toStrictEqual(expected)
@@ -120,7 +123,8 @@ if (import.meta.vitest) {
   test('should decompress deflate data', async() => {
     const compress = createDeflate()
     const decompress = createStreamDecompress()
-    const result = Readable.from(buffer).pipe(compress).pipe(decompress)
+    const result = Readable.from(buffer).pipe(compress)
+      .pipe(decompress)
     const chunks = await result.toArray()
     const data = Buffer.concat(chunks).toString('hex')
     expect(data).toStrictEqual(expected)

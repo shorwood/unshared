@@ -11,8 +11,8 @@ import { NumberIntegerPositive } from '@unshared/types'
  * @example factorial(5) // 120
  */
 export function factorial<N extends number>(n: 0 | NumberIntegerPositive<N>): number {
-  if(n < 0) throw new RangeError('Expected a positive number')
-  if(Number.isSafeInteger(n) === false) throw new RangeError('Expected an integer number')
+  if (n < 0) throw new RangeError('Expected a positive number')
+  if (Number.isSafeInteger(n) === false) throw new RangeError('Expected an integer number')
   let result = 1
   for (let index = 1; index <= n; index++) result *= index
   return result

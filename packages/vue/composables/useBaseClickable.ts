@@ -6,6 +6,7 @@ import { BASE_STATE_PROPS, useBaseState } from './useBaseState'
 
 export const BASE_CLICKABLE_PROPS = {
   ...BASE_STATE_PROPS,
+
   /**
    * The debounce time to wait before calling the `onClick` method. This is
    * used to debounce the click event and prevent multiple clicks from being
@@ -14,6 +15,7 @@ export const BASE_CLICKABLE_PROPS = {
    * @default 0
    */
   debounce: { default: 0, type: Number } as Prop<number>,
+
   /**
    * The callback to call when the component is clicked. This is used to
    * handle the click event of the component and should be called when the
@@ -22,6 +24,7 @@ export const BASE_CLICKABLE_PROPS = {
    * @default false
    */
   onClick: Function as Prop<() => Promise<void> | void>,
+
   /**
    * The throttle time to wait before calling the `onClick` method. This is
    * used to throttle the click event and prevent multiple clicks from being

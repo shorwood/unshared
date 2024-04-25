@@ -11,6 +11,7 @@ import {
 } from './createWorkerService'
 
 export interface WorkerPoolOptions extends WorkerServiceOptions {
+
   /**
    * If `true`, the worker pool will be created immediately when the worker pool is
    * created. By default, the worker pool will be created when when they are needed
@@ -22,6 +23,7 @@ export interface WorkerPoolOptions extends WorkerServiceOptions {
    * @default false
    */
   eager?: boolean
+
   /**
    * The number of workers to create. Defaults to the number of threads available
    * on the system. It is not recommended to create more workers than the number
@@ -52,6 +54,7 @@ export interface WorkerPoolOptions extends WorkerServiceOptions {
  * const math = await pool.wrapModule(moduleUrl)
  */
 export class WorkerPool {
+
   /** The `WorkerService` instances that are used to execute the functions. */
   public workers: WorkerService[] = []
 
