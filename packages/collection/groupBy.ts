@@ -28,13 +28,13 @@ type GroupedByIterator<T, R extends PropertyKey> =
  * ]
  *
  * // Group the collection by the value of the `group` property.
- * group(collection, 'group')
+ * groupBy(collection, 'group')
  * // {
  * //   a: [{ id: 1, group: 'a' }, { id: 2, group: 'a' }],
  * //   b: [{ id: 3, group: 'b' }, { id: 4, group: 'b' }],
  * // }
  */
-export function group<T, P extends IteratorPath<T>>(collection: T, path: MaybeLiteral<P>): GroupedByPath<T, P>
+export function groupBy<T, P extends IteratorPath<T>>(collection: T, path: MaybeLiteral<P>): GroupedByPath<T, P>
 /**
  * Groups a collection by the result of an iterator function.
  *
@@ -51,14 +51,14 @@ export function group<T, P extends IteratorPath<T>>(collection: T, path: MaybeLi
  * ]
  *
  * // Group the collection by the value of the `group` property.
- * group(collection, item => item.group)
+ * groupBy(collection, item => item.group)
  * // {
  * //   a: [{ id: 1, group: 'a' }, { id: 2, group: 'a' }],
  * //   b: [{ id: 3, group: 'b' }, { id: 4, group: 'b' }],
  * // }
  */
-export function group<T, R extends PropertyKey>(collection: T, iterator: IteratorFunction<T, R>): GroupedByIterator<T, R>
-export function group(collection: object, iteratorOrPath: IteratorFunction<unknown, PropertyKey> | string) {
+export function groupBy<T, R extends PropertyKey>(collection: T, iterator: IteratorFunction<T, R>): GroupedByIterator<T, R>
+export function groupBy(collection: object, iteratorOrPath: IteratorFunction<unknown, PropertyKey> | string) {
 
   // --- If iterator is a string, cast as nested getter function.
   const iterator = typeof iteratorOrPath === 'function'
@@ -99,7 +99,7 @@ if (import.meta.vitest) {
         { group: 'b', id: 3 },
         { group: 'b', id: 4 },
       ] as const
-      const result = group(object, 'group')
+      const result = groupBy(object, 'group')
       expect(result).toStrictEqual({
         a: [{ group: 'a', id: 1 }, { group: 'a', id: 2 }],
         b: [{ group: 'b', id: 3 }, { group: 'b', id: 4 }],
@@ -117,7 +117,7 @@ if (import.meta.vitest) {
         c: { group: 'b', id: 3 },
         d: { group: 'b', id: 4 },
       } as const
-      const result = group(object, 'group')
+      const result = groupBy(object, 'group')
       expect(result).toStrictEqual({
         a: [{ group: 'a', id: 1 }, { group: 'a', id: 2 }],
         b: [{ group: 'b', id: 3 }, { group: 'b', id: 4 }],
@@ -135,7 +135,7 @@ if (import.meta.vitest) {
         { group: 'b', id: 3 },
         { group: 'b', id: 4 },
       ] as const)
-      const result = group(object, 'group')
+      const result = groupBy(object, 'group')
       expect(result).toStrictEqual({
         a: [{ group: 'a', id: 1 }, { group: 'a', id: 2 }],
         b: [{ group: 'b', id: 3 }, { group: 'b', id: 4 }],
@@ -153,7 +153,7 @@ if (import.meta.vitest) {
         ['c', { group: 'b', id: 3 }],
         ['d', { group: 'b', id: 4 }],
       ] as const)
-      const result = group(object, '1.group')
+      const result = groupBy(object, '1.group')
       expect(result).toStrictEqual({
         a: [['a', { group: 'a', id: 1 }], ['b', { group: 'a', id: 2 }]],
         b: [['c', { group: 'b', id: 3 }], ['d', { group: 'b', id: 4 }]],
@@ -173,7 +173,7 @@ if (import.meta.vitest) {
         { group: 'b', id: 3 },
       ] as const
       const callback = vi.fn((item: { group: string; id: number }) => item.group) as <T extends string>(value: { group: T; id: number }) => T
-      const result = group(object, callback)
+      const result = groupBy(object, callback)
       expect(result).toStrictEqual({
         a: [{ group: 'a', id: 1 }, { group: 'a', id: 2 }],
         b: [{ group: 'b', id: 3 }],
@@ -196,7 +196,7 @@ if (import.meta.vitest) {
         d: { group: 'b', id: 4 },
       } as const
       const callback = vi.fn((item: { group: string; id: number }) => item.group) as <T extends string>(value: { group: T; id: number }) => T
-      const result = group(object, callback)
+      const result = groupBy(object, callback)
       expect(result).toStrictEqual({
         a: [{ group: 'a', id: 1 }, { group: 'a', id: 2 }],
         b: [{ group: 'b', id: 3 }, { group: 'b', id: 4 }],
@@ -214,7 +214,7 @@ if (import.meta.vitest) {
         { group: 'b', id: 3 },
         { group: 'b', id: 4 },
       ] as const)
-      const result = group(object, item => item.group)
+      const result = groupBy(object, item => item.group)
       expect(result).toStrictEqual({
         a: [{ group: 'a', id: 1 }, { group: 'a', id: 2 }],
         b: [{ group: 'b', id: 3 }, { group: 'b', id: 4 }],
@@ -232,7 +232,7 @@ if (import.meta.vitest) {
         ['c', { group: 'b', id: 3 }],
         ['d', { group: 'b', id: 4 }],
       ] as const)
-      const result = group(object, item => item[1].group)
+      const result = groupBy(object, item => item[1].group)
       expect(result).toStrictEqual({
         a: [['a', { group: 'a', id: 1 }], ['b', { group: 'a', id: 2 }]],
         b: [['c', { group: 'b', id: 3 }], ['d', { group: 'b', id: 4 }]],

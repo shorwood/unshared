@@ -56,10 +56,10 @@
       "types": "./dist/get.d.ts",
       "import": "./dist/get.js"
     },
-    "./group": {
-      "require": "./dist/group.cjs",
-      "types": "./dist/group.d.ts",
-      "import": "./dist/group.js"
+    "./groupBy": {
+      "require": "./dist/groupBy.cjs",
+      "types": "./dist/groupBy.d.ts",
+      "import": "./dist/groupBy.js"
     },
     "./immutable": {
       "require": "./dist/immutable.cjs",
