@@ -14,7 +14,6 @@
     "node": ">=20.0.0",
     "pnpm": ">=9.0.0"
   },
-  "packageManager": "pnpm@9.0.5",
   "pnpm": {
     "peerDependencyRules": {
       "allowAny": [
@@ -28,8 +27,8 @@
     "dev": "tsx ./scripts/build.ts --watch true",
     "build": "tsx ./scripts/build.ts",
     "examples:nuxt": "pnpm -F @unshared/examples-nuxt dev",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "DEBUG=eslint:eslint eslint . --cache",
+    "lint:fix": "DEBUG=eslint:eslint eslint . --fix --cache",
     "test": "vitest --watch",
     "test:ci": "vitest --run --typecheck --coverage",
     "test:ui": "vitest --ui",
