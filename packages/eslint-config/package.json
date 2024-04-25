@@ -8,9 +8,9 @@
   "bugs": "https://github.com/shorwood/unshared/issues",
   "homepage": "https://github.com/shorwood/unshared#readme",
   "repository": {
+    "directory": "packages/eslint-config",
     "type": "git",
-    "url": "git+ssh://git@github.com:shorwood/unshared.git",
-    "directory": "packages/eslint-config"
+    "url": "git+ssh://git@github.com:shorwood/unshared.git"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -50,13 +50,15 @@
     "eslint-plugin-n": "17.3.1",
     "eslint-plugin-perfectionist": "2.10.0",
     "eslint-plugin-promise": "6.1.1",
+    "eslint-plugin-sonarjs": "0.25.1",
     "eslint-plugin-unicorn": "52.0.0",
     "eslint-plugin-vitest": "0.5.4",
     "eslint-plugin-vue": "9.25.0",
     "eslint-plugin-yml": "1.14.0",
     "jsonc-eslint-parser": "2.4.0",
     "typescript-eslint": "7.7.1",
-    "vue-eslint-parser": "9.4.2"
+    "vue-eslint-parser": "9.4.2",
+    "yaml-eslint-parser": "1.2.2"
   },
   "devDependencies": {
     "@types/eslint__eslintrc": "2.1.1",

@@ -1,9 +1,9 @@
-import { IteratorFunction, IteratorPath, Get, FromEntries, MaybeLiteral } from '@unshared/types'
-import { get } from './get'
+import { FromEntries, Get, IteratorFunction, IteratorPath, MaybeLiteral } from '@unshared/types'
 import { isIterable } from './isIterable'
+import { get } from './get'
 
 type GroupedByPath<T, P extends IteratorPath<T>> =
-  T extends readonly unknown[] ? FromEntries<Array<[PropertyKey, unknown]> & { [K in keyof T]: [Get<T[K], P>, T[K]] }> extends infer U ? { -readonly [K in keyof U]: Array<U[K]> } : never
+  T extends readonly unknown[] ? FromEntries<{ [K in keyof T]: [Get<T[K], P>, T[K]] } & Array<[PropertyKey, unknown]>> extends infer U ? { -readonly [K in keyof U]: Array<U[K]> } : never
     : T extends Iterable<infer U> ? { [K in keyof T as Get<U, P> & PropertyKey]: U[] }
       : { -readonly [K in keyof T as Get<T[K], P> & PropertyKey]: Array<T[K]> }
 
@@ -59,6 +59,7 @@ export function group<T, P extends IteratorPath<T>>(collection: T, path: MaybeLi
  */
 export function group<T, R extends PropertyKey>(collection: T, iterator: IteratorFunction<T, R>): GroupedByIterator<T, R>
 export function group(collection: object, iteratorOrPath: IteratorFunction<unknown, PropertyKey> | string) {
+
   // --- If iterator is a string, cast as nested getter function.
   const iterator = typeof iteratorOrPath === 'function'
     ? iteratorOrPath
@@ -88,78 +89,78 @@ export function group(collection: object, iteratorOrPath: IteratorFunction<unkno
   return result as unknown
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
   describe('path', () => {
     it('should group array values by the value of a property at a given path', () => {
       const object = [
-        { id: 1, group: 'a' },
-        { id: 2, group: 'a' },
-        { id: 3, group: 'b' },
-        { id: 4, group: 'b' },
+        { group: 'a', id: 1 },
+        { group: 'a', id: 2 },
+        { group: 'b', id: 3 },
+        { group: 'b', id: 4 },
       ] as const
       const result = group(object, 'group')
-      expect(result).toEqual({
-        a: [{ id: 1, group: 'a' }, { id: 2, group: 'a' }],
-        b: [{ id: 3, group: 'b' }, { id: 4, group: 'b' }],
+      expect(result).toStrictEqual({
+        a: [{ group: 'a', id: 1 }, { group: 'a', id: 2 }],
+        b: [{ group: 'b', id: 3 }, { group: 'b', id: 4 }],
       })
       expectTypeOf(result).toEqualTypeOf<{
-        a: Array<{ readonly id: 1; readonly group: 'a' } | { readonly id: 2; readonly group: 'a' }>
-        b: Array<{ readonly id: 3; readonly group: 'b' } | { readonly id: 4; readonly group: 'b' }>
+        a: Array<{ readonly group: 'a'; readonly id: 1 } | { readonly group: 'a'; readonly id: 2 }>
+        b: Array<{ readonly group: 'b'; readonly id: 3 } | { readonly group: 'b'; readonly id: 4 }>
       }>()
     })
 
     it('should group object values by the value of a property at a given path', () => {
       const object = {
-        a: { id: 1, group: 'a' },
-        b: { id: 2, group: 'a' },
-        c: { id: 3, group: 'b' },
-        d: { id: 4, group: 'b' },
+        a: { group: 'a', id: 1 },
+        b: { group: 'a', id: 2 },
+        c: { group: 'b', id: 3 },
+        d: { group: 'b', id: 4 },
       } as const
       const result = group(object, 'group')
-      expect(result).toEqual({
-        a: [{ id: 1, group: 'a' }, { id: 2, group: 'a' }],
-        b: [{ id: 3, group: 'b' }, { id: 4, group: 'b' }],
+      expect(result).toStrictEqual({
+        a: [{ group: 'a', id: 1 }, { group: 'a', id: 2 }],
+        b: [{ group: 'b', id: 3 }, { group: 'b', id: 4 }],
       })
       expectTypeOf(result).toEqualTypeOf<{
-        a: Array<{ readonly id: 1; readonly group: 'a' } | { readonly id: 2; readonly group: 'a' }>
-        b: Array<{ readonly id: 3; readonly group: 'b' } | { readonly id: 4; readonly group: 'b' }>
+        a: Array<{ readonly group: 'a'; readonly id: 1 } | { readonly group: 'a'; readonly id: 2 }>
+        b: Array<{ readonly group: 'b'; readonly id: 3 } | { readonly group: 'b'; readonly id: 4 }>
       }>()
     })
 
     it('should group Set values by the value of a property at a given path', () => {
       const object = new Set([
-        { id: 1, group: 'a' },
-        { id: 2, group: 'a' },
-        { id: 3, group: 'b' },
-        { id: 4, group: 'b' },
+        { group: 'a', id: 1 },
+        { group: 'a', id: 2 },
+        { group: 'b', id: 3 },
+        { group: 'b', id: 4 },
       ] as const)
       const result = group(object, 'group')
-      expect(result).toEqual({
-        a: [{ id: 1, group: 'a' }, { id: 2, group: 'a' }],
-        b: [{ id: 3, group: 'b' }, { id: 4, group: 'b' }],
+      expect(result).toStrictEqual({
+        a: [{ group: 'a', id: 1 }, { group: 'a', id: 2 }],
+        b: [{ group: 'b', id: 3 }, { group: 'b', id: 4 }],
       })
       expectTypeOf(result).toEqualTypeOf<{
-        a: Array<{ readonly id: 1; readonly group: 'a' } | { readonly id: 2; readonly group: 'a' } | { readonly id: 3; readonly group: 'b' } | { readonly id: 4; readonly group: 'b' }>
-        b: Array<{ readonly id: 1; readonly group: 'a' } | { readonly id: 2; readonly group: 'a' } | { readonly id: 3; readonly group: 'b' } | { readonly id: 4; readonly group: 'b' }>
+        a: Array<{ readonly group: 'a'; readonly id: 1 } | { readonly group: 'a'; readonly id: 2 } | { readonly group: 'b'; readonly id: 3 } | { readonly group: 'b'; readonly id: 4 }>
+        b: Array<{ readonly group: 'a'; readonly id: 1 } | { readonly group: 'a'; readonly id: 2 } | { readonly group: 'b'; readonly id: 3 } | { readonly group: 'b'; readonly id: 4 }>
       }>()
     })
 
     it('should group Map values by the value of a property at a given path', () => {
       const object = new Map([
-        ['a', { id: 1, group: 'a' }],
-        ['b', { id: 2, group: 'a' }],
-        ['c', { id: 3, group: 'b' }],
-        ['d', { id: 4, group: 'b' }],
+        ['a', { group: 'a', id: 1 }],
+        ['b', { group: 'a', id: 2 }],
+        ['c', { group: 'b', id: 3 }],
+        ['d', { group: 'b', id: 4 }],
       ] as const)
       const result = group(object, '1.group')
-      expect(result).toEqual({
-        a: [['a', { id: 1, group: 'a' }], ['b', { id: 2, group: 'a' }]],
-        b: [['c', { id: 3, group: 'b' }], ['d', { id: 4, group: 'b' }]],
+      expect(result).toStrictEqual({
+        a: [['a', { group: 'a', id: 1 }], ['b', { group: 'a', id: 2 }]],
+        b: [['c', { group: 'b', id: 3 }], ['d', { group: 'b', id: 4 }]],
       })
       expectTypeOf(result).toEqualTypeOf<{
-        a: Array<['a' | 'b' | 'c' | 'd', { readonly id: 1; readonly group: 'a' } | { readonly id: 2; readonly group: 'a' } | { readonly id: 3; readonly group: 'b' } | { readonly id: 4; readonly group: 'b' }]>
-        b: Array<['a' | 'b' | 'c' | 'd', { readonly id: 1; readonly group: 'a' } | { readonly id: 2; readonly group: 'a' } | { readonly id: 3; readonly group: 'b' } | { readonly id: 4; readonly group: 'b' }]>
+        a: Array<['a' | 'b' | 'c' | 'd', { readonly group: 'a'; readonly id: 1 } | { readonly group: 'a'; readonly id: 2 } | { readonly group: 'b'; readonly id: 3 } | { readonly group: 'b'; readonly id: 4 }]>
+        b: Array<['a' | 'b' | 'c' | 'd', { readonly group: 'a'; readonly id: 1 } | { readonly group: 'a'; readonly id: 2 } | { readonly group: 'b'; readonly id: 3 } | { readonly group: 'b'; readonly id: 4 }]>
       }>()
     })
   })
@@ -167,80 +168,78 @@ if (import.meta.vitest) {
   describe('iterator', () => {
     it('should group array values by the result of an iterator function', () => {
       const object = [
-        { id: 1, group: 'a' },
-        { id: 2, group: 'a' },
-        { id: 3, group: 'b' },
-        { id: 4, group: 'b' },
+        { group: 'a', id: 1 },
+        { group: 'a', id: 2 },
+        { group: 'b', id: 3 },
       ] as const
-      const callback = vi.fn((item: { id: number; group: string }) => item.group) as <T extends string>(value: { id: number; group: T }) => T
+      const callback = vi.fn((item: { group: string; id: number }) => item.group) as <T extends string>(value: { group: T; id: number }) => T
       const result = group(object, callback)
-      expect(result).toEqual({
-        a: [{ id: 1, group: 'a' }, { id: 2, group: 'a' }],
-        b: [{ id: 3, group: 'b' }, { id: 4, group: 'b' }],
+      expect(result).toStrictEqual({
+        a: [{ group: 'a', id: 1 }, { group: 'a', id: 2 }],
+        b: [{ group: 'b', id: 3 }],
       })
-      expect(callback).toHaveBeenCalledTimes(4)
-      expect(callback).toHaveBeenCalledWith({ id: 1, group: 'a' }, 0, object)
-      expect(callback).toHaveBeenCalledWith({ id: 2, group: 'a' }, 1, object)
-      expect(callback).toHaveBeenCalledWith({ id: 3, group: 'b' }, 2, object)
-      expect(callback).toHaveBeenCalledWith({ id: 4, group: 'b' }, 3, object)
+      expect(callback).toHaveBeenCalledTimes(3)
+      expect(callback).toHaveBeenCalledWith({ group: 'a', id: 1 }, 0, object)
+      expect(callback).toHaveBeenCalledWith({ group: 'a', id: 2 }, 1, object)
+      expect(callback).toHaveBeenCalledWith({ group: 'b', id: 3 }, 2, object)
       expectTypeOf(result).toEqualTypeOf<{
-        a: Array<{ readonly id: 1; readonly group: 'a' } | { readonly id: 2; readonly group: 'a' } | { readonly id: 3; readonly group: 'b' } | { readonly id: 4; readonly group: 'b' }>
-        b: Array<{ readonly id: 1; readonly group: 'a' } | { readonly id: 2; readonly group: 'a' } | { readonly id: 3; readonly group: 'b' } | { readonly id: 4; readonly group: 'b' }>
+        a: Array<{ readonly group: 'a'; readonly id: 1 } | { readonly group: 'a'; readonly id: 2 } | { readonly group: 'b'; readonly id: 3 }>
+        b: Array<{ readonly group: 'a'; readonly id: 1 } | { readonly group: 'a'; readonly id: 2 } | { readonly group: 'b'; readonly id: 3 }>
       }>()
     })
 
     it('should group object values by the result of an iterator function', () => {
       const object = {
-        a: { id: 1, group: 'a' },
-        b: { id: 2, group: 'a' },
-        c: { id: 3, group: 'b' },
-        d: { id: 4, group: 'b' },
+        a: { group: 'a', id: 1 },
+        b: { group: 'a', id: 2 },
+        c: { group: 'b', id: 3 },
+        d: { group: 'b', id: 4 },
       } as const
-      const callback = vi.fn((item: { id: number; group: string }) => item.group) as <T extends string>(value: { id: number; group: T }) => T
+      const callback = vi.fn((item: { group: string; id: number }) => item.group) as <T extends string>(value: { group: T; id: number }) => T
       const result = group(object, callback)
-      expect(result).toEqual({
-        a: [{ id: 1, group: 'a' }, { id: 2, group: 'a' }],
-        b: [{ id: 3, group: 'b' }, { id: 4, group: 'b' }],
+      expect(result).toStrictEqual({
+        a: [{ group: 'a', id: 1 }, { group: 'a', id: 2 }],
+        b: [{ group: 'b', id: 3 }, { group: 'b', id: 4 }],
       })
       expectTypeOf(result).toEqualTypeOf<{
-        a: Array<{ readonly id: 1; readonly group: 'a' } | { readonly id: 2; readonly group: 'a' } | { readonly id: 3; readonly group: 'b' } | { readonly id: 4; readonly group: 'b' }>
-        b: Array<{ readonly id: 1; readonly group: 'a' } | { readonly id: 2; readonly group: 'a' } | { readonly id: 3; readonly group: 'b' } | { readonly id: 4; readonly group: 'b' }>
+        a: Array<{ readonly group: 'a'; readonly id: 1 } | { readonly group: 'a'; readonly id: 2 } | { readonly group: 'b'; readonly id: 3 } | { readonly group: 'b'; readonly id: 4 }>
+        b: Array<{ readonly group: 'a'; readonly id: 1 } | { readonly group: 'a'; readonly id: 2 } | { readonly group: 'b'; readonly id: 3 } | { readonly group: 'b'; readonly id: 4 }>
       }>()
     })
 
     it('should group Set values by the result of an iterator function', () => {
       const object = new Set([
-        { id: 1, group: 'a' },
-        { id: 2, group: 'a' },
-        { id: 3, group: 'b' },
-        { id: 4, group: 'b' },
+        { group: 'a', id: 1 },
+        { group: 'a', id: 2 },
+        { group: 'b', id: 3 },
+        { group: 'b', id: 4 },
       ] as const)
       const result = group(object, item => item.group)
-      expect(result).toEqual({
-        a: [{ id: 1, group: 'a' }, { id: 2, group: 'a' }],
-        b: [{ id: 3, group: 'b' }, { id: 4, group: 'b' }],
+      expect(result).toStrictEqual({
+        a: [{ group: 'a', id: 1 }, { group: 'a', id: 2 }],
+        b: [{ group: 'b', id: 3 }, { group: 'b', id: 4 }],
       })
       expectTypeOf(result).toEqualTypeOf<{
-        a: Array<{ readonly id: 1; readonly group: 'a' } | { readonly id: 2; readonly group: 'a' } | { readonly id: 3; readonly group: 'b' } | { readonly id: 4; readonly group: 'b' }>
-        b: Array<{ readonly id: 1; readonly group: 'a' } | { readonly id: 2; readonly group: 'a' } | { readonly id: 3; readonly group: 'b' } | { readonly id: 4; readonly group: 'b' }>
+        a: Array<{ readonly group: 'a'; readonly id: 1 } | { readonly group: 'a'; readonly id: 2 } | { readonly group: 'b'; readonly id: 3 } | { readonly group: 'b'; readonly id: 4 }>
+        b: Array<{ readonly group: 'a'; readonly id: 1 } | { readonly group: 'a'; readonly id: 2 } | { readonly group: 'b'; readonly id: 3 } | { readonly group: 'b'; readonly id: 4 }>
       }>()
     })
 
     it('should group Map values by the result of an iterator function', () => {
       const object = new Map([
-        ['a', { id: 1, group: 'a' }],
-        ['b', { id: 2, group: 'a' }],
-        ['c', { id: 3, group: 'b' }],
-        ['d', { id: 4, group: 'b' }],
+        ['a', { group: 'a', id: 1 }],
+        ['b', { group: 'a', id: 2 }],
+        ['c', { group: 'b', id: 3 }],
+        ['d', { group: 'b', id: 4 }],
       ] as const)
       const result = group(object, item => item[1].group)
-      expect(result).toEqual({
-        a: [['a', { id: 1, group: 'a' }], ['b', { id: 2, group: 'a' }]],
-        b: [['c', { id: 3, group: 'b' }], ['d', { id: 4, group: 'b' }]],
+      expect(result).toStrictEqual({
+        a: [['a', { group: 'a', id: 1 }], ['b', { group: 'a', id: 2 }]],
+        b: [['c', { group: 'b', id: 3 }], ['d', { group: 'b', id: 4 }]],
       })
       expectTypeOf(result).toEqualTypeOf<{
-        a: Array<['a' | 'b' | 'c' | 'd', { readonly id: 1; readonly group: 'a' } | { readonly id: 2; readonly group: 'a' } | { readonly id: 3; readonly group: 'b' } | { readonly id: 4; readonly group: 'b' }]>
-        b: Array<['a' | 'b' | 'c' | 'd', { readonly id: 1; readonly group: 'a' } | { readonly id: 2; readonly group: 'a' } | { readonly id: 3; readonly group: 'b' } | { readonly id: 4; readonly group: 'b' }]>
+        a: Array<['a' | 'b' | 'c' | 'd', { readonly group: 'a'; readonly id: 1 } | { readonly group: 'a'; readonly id: 2 } | { readonly group: 'b'; readonly id: 3 } | { readonly group: 'b'; readonly id: 4 }]>
+        b: Array<['a' | 'b' | 'c' | 'd', { readonly group: 'a'; readonly id: 1 } | { readonly group: 'a'; readonly id: 2 } | { readonly group: 'b'; readonly id: 3 } | { readonly group: 'b'; readonly id: 4 }]>
       }>()
     })
   })

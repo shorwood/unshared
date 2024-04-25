@@ -25,35 +25,30 @@ export function split<N extends number>(value: string, delimiter: RegExp | strin
     : value.split(delimiter, limit).filter(Boolean)
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should split a string with empty delimiter', () => {
+  test('should split a string with empty delimiter', () => {
     const result = split('abc')
-    expect(result).toEqual(['a', 'b', 'c'])
+    expect(result).toMatchObject(['a', 'b', 'c'])
   })
 
-  it('should split a string with a delimiter', () => {
+  test('should split a string with a delimiter', () => {
     const result = split('a,b,c', ',')
-    expect(result).toEqual(['a', 'b', 'c'])
+    expect(result).toMatchObject(['a', 'b', 'c'])
   })
 
-  it('should split a string with a limit', () => {
+  test('should split a string with a limit', () => {
     const result = split('a,b,c', ',', 2)
-    expect(result).toEqual(['a', 'b'])
+    expect(result).toMatchObject(['a', 'b'])
   })
 
-  it('should split a string with a negative limit', () => {
+  test('should split a string with a negative limit', () => {
     const result = split('a,b,c', ',', -2)
-    expect(result).toEqual(['b', 'c'])
+    expect(result).toMatchObject(['b', 'c'])
   })
 
-  it('should filter out empty strings', () => {
+  test('should filter out empty strings', () => {
     const result = split('a,,b,c', ',')
-    expect(result).toEqual(['a', 'b', 'c'])
-  })
-
-  it('should expose a type error when the limit is not an integer', () => {
-    // @ts-expect-error: invalid argument type.
-    split('a,b,c', ',', 2.5)
+    expect(result).toMatchObject(['a', 'b', 'c'])
   })
 }

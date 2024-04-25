@@ -11,6 +11,7 @@ import { isIterable } from './isIterable'
  * @example clone([1, 2, 3]) // [1, 2, 3]
  */
 export function clone<T>(collection: T, depth = 1): T {
+
   // --- If the value is not an object, or depth limit was reached, return as is.
   if (depth === 0 || typeof collection !== 'object' || collection === null)
     return collection
@@ -29,7 +30,7 @@ export function clone<T>(collection: T, depth = 1): T {
   return result
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
   describe('objects', () => {
     it('should clone objects', () => {
@@ -101,7 +102,7 @@ if (import.meta.vitest) {
     it('should not clone primitives', () => {
       const a = 1
       const b = clone(a)
-      expect(b).toStrictEqual(1)
+      expect(b).toBe(1)
       expectTypeOf(b).toEqualTypeOf(a)
     })
   })

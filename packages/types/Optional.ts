@@ -11,9 +11,9 @@ export type Optional<T> = {
   [K in keyof T]-?: T[K] | undefined
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should make all properties of T optionally `undefined`', () => {
+  test('should make all properties of T optionally `undefined`', () => {
     type Result = Optional<{ a: string; b: number }>
     expectTypeOf<Result>().toEqualTypeOf<{ a: string | undefined; b: number | undefined }>()
   })

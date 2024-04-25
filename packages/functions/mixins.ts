@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-static-only-class */
 import { Constructor, Mixins } from '@unshared/types'
 
 /**
@@ -54,9 +53,9 @@ export function mixins<T extends [Constructor, ...Constructor[]]>(...mixins: T):
   return Object.assign(Mixed, ...mixins) as Mixins<T>
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should mix classes into a single class', () => {
+  test('should mix classes into a single class', () => {
     class ClassA { foo = 'foo' }
     class ClassB { bar = 'bar' }
     class ClassC { baz = 'baz' }
@@ -66,13 +65,13 @@ if (import.meta.vitest) {
     expect(result).toHaveProperty('bar', 'bar')
     expect(result).toHaveProperty('baz', 'baz')
     expectTypeOf(result).toEqualTypeOf<{
-      foo: string
       bar: string
       baz: string
+      foo: string
     }>()
   })
 
-  it('should override properties from right to left', () => {
+  test('should override properties from right to left', () => {
     class ClassA { foo = 'foo' }
     class ClassB { foo = 'bar' }
     class ClassC { foo = 'baz' }
@@ -82,7 +81,7 @@ if (import.meta.vitest) {
     expectTypeOf(result).toEqualTypeOf<{ foo: string }>()
   })
 
-  it('should preserve the prototype chain', () => {
+  test('should preserve the prototype chain', () => {
     class ClassA { foo = 'foo' }
     class ClassB { bar = 'bar' }
     class ClassC { baz = 'baz' }
@@ -93,13 +92,13 @@ if (import.meta.vitest) {
     expect(result).toBeInstanceOf(ClassB)
     expect(result).toBeInstanceOf(ClassA)
     expectTypeOf(result).toEqualTypeOf<{
-      foo: string
       bar: string
       baz: string
+      foo: string
     }>()
   })
 
-  it('should preserve the prototype chain of nested mixins', () => {
+  test('should preserve the prototype chain of nested mixins', () => {
     class ClassA { foo = 'foo' }
     class ClassB { bar = 'bar' }
     class ClassC { baz = 'baz' }
@@ -110,16 +109,16 @@ if (import.meta.vitest) {
     expect(result).toBeInstanceOf(ClassB)
     expect(result).toBeInstanceOf(ClassA)
     expectTypeOf(result).toEqualTypeOf<{
-      foo: string
       bar: string
       baz: string
+      foo: string
     }>()
   })
 
-  it('should preserve the `this` context', () => {
-    class ClassA { _foo = 'foo'; get foo() { return this._foo } constructor() { this._foo = this.foo.toUpperCase() } }
-    class ClassB { _bar = 'bar'; get bar() { return this._bar } constructor() { this._bar = this.bar.toUpperCase() } }
-    class ClassC { _baz = 'baz'; get baz() { return this._baz } constructor() { this._baz = this.baz.toUpperCase() } }
+  test('should preserve the `this` context', () => {
+    class ClassA { _foo = 'foo'; constructor() { this._foo = this.foo.toUpperCase() } get foo() { return this._foo } }
+    class ClassB { _bar = 'bar'; constructor() { this._bar = this.bar.toUpperCase() } get bar() { return this._bar } }
+    class ClassC { _baz = 'baz'; constructor() { this._baz = this.baz.toUpperCase() } get baz() { return this._baz } }
     class Result extends mixins(mixins(ClassA, ClassB), ClassC) {
       fooBarBaz = ''
       constructor() {
@@ -133,17 +132,17 @@ if (import.meta.vitest) {
     expect(result).toHaveProperty('baz', 'BAZ')
     expect(result).toHaveProperty('fooBarBaz', 'FOOBARBAZ')
     expectTypeOf(result).toEqualTypeOf<{
-      foo: string
-      bar: string
-      baz: string
-      _foo: string
       _bar: string
       _baz: string
+      _foo: string
+      bar: string
+      baz: string
+      foo: string
       fooBarBaz: string
     }>()
   })
 
-  it('should preserve private properties', () => {
+  test('should preserve private properties', () => {
     class ClassA { private foo = 'foo' }
     class ClassB { private bar = 'bar' }
     class ClassC { private baz = 'baz' }
@@ -155,7 +154,7 @@ if (import.meta.vitest) {
     expectTypeOf(result).toEqualTypeOf<{}>()
   })
 
-  it('should just return the class if only one class is passed', () => {
+  test('should just return the class if only one class is passed', () => {
     class ClassA { foo = 'foo' }
     class Result extends mixins(ClassA) {}
     const result = new Result()
@@ -164,7 +163,7 @@ if (import.meta.vitest) {
     expectTypeOf(result).toEqualTypeOf<{ foo: string }>()
   })
 
-  it('should preserve getters and setters', () => {
+  test('should preserve getters and setters', () => {
     class ClassA { _foo = 'foo'; get foo() { return this._foo } set foo(value) { this._foo = value } }
     class ClassB { _bar = 'bar'; get bar() { return this._bar } set bar(value) { this._bar = value } }
     class ClassC { _baz = 'baz'; get baz() { return this._baz } set baz(value) { this._baz = value } }
@@ -173,31 +172,31 @@ if (import.meta.vitest) {
     result.foo = 'FOO'
     result.bar = 'BAR'
     result.baz = 'BAZ'
-    expect(result.foo).toEqual('FOO')
-    expect(result.bar).toEqual('BAR')
-    expect(result.baz).toEqual('BAZ')
+    expect(result.foo).toBe('FOO')
+    expect(result.bar).toBe('BAR')
+    expect(result.baz).toBe('BAZ')
     expectTypeOf(result).toEqualTypeOf<{
-      foo: string
-      bar: string
-      baz: string
-      _foo: string
       _bar: string
       _baz: string
+      _foo: string
+      bar: string
+      baz: string
+      foo: string
     }>()
   })
 
-  it('should preserve static properties', () => {
+  test('should preserve static properties', () => {
     class ClassA { static FOO = 'foo' }
     class ClassB { static BAR = 'bar' }
     class ClassC { static BAZ = 'baz' }
     class Result extends mixins(ClassA, ClassB, ClassC) {}
-    expect(Result.FOO).toEqual('foo')
-    expect(Result.BAR).toEqual('bar')
-    expect(Result.BAZ).toEqual('baz')
+    expect(Result.FOO).toBe('foo')
+    expect(Result.BAR).toBe('bar')
+    expect(Result.BAZ).toBe('baz')
 
   })
 
-  it('should preserve static getters and setters', () => {
+  test('should preserve static getters and setters', () => {
     class ClassA { static FOO = 'foo'; static get foo() { return this.FOO } static set foo(value) { this.FOO = value } }
     class ClassB { static BAR = 'bar'; static get bar() { return this.BAR } static set bar(value) { this.BAR = value } }
     class ClassC { static BAZ = 'baz'; static get baz() { return this.BAZ } static set baz(value) { this.BAZ = value } }
@@ -205,12 +204,12 @@ if (import.meta.vitest) {
     Result.foo = 'FOO'
     Result.bar = 'BAR'
     Result.baz = 'BAZ'
-    expect(Result.foo).toEqual('FOO')
-    expect(Result.bar).toEqual('BAR')
-    expect(Result.baz).toEqual('BAZ')
+    expect(Result.foo).toBe('FOO')
+    expect(Result.bar).toBe('BAR')
+    expect(Result.baz).toBe('BAZ')
   })
 
-  it('should preserve statics when nesting mixins', () => {
+  test('should preserve statics when nesting mixins', () => {
     class ClassA { static FOO = 'foo' }
     class ClassB { static BAR = 'bar' }
     class ClassC { static BAZ = 'baz' }
@@ -220,9 +219,9 @@ if (import.meta.vitest) {
     expect(Result).toHaveProperty('BAZ', 'baz')
   })
 
-  it('should throw if no class is passed', () => {
+  test('should throw if no class is passed', () => {
     // @ts-expect-error: invalid arguments
     const shouldThrow = () => mixins()
-    expect(shouldThrow).toThrow()
+    expect(shouldThrow).toThrow('Cannot mix classes: no classes were passed')
   })
 }

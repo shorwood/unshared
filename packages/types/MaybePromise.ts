@@ -10,14 +10,14 @@
  */
 export type MaybePromise<U = unknown> = U extends Promise<infer V> ? Promise<V> : Promise<U> | U
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should return U or a promise of U when U is not a promise', () => {
+  test('should return U or a promise of U when U is not a promise', () => {
     type Result = MaybePromise<number>
     expectTypeOf<Result>().toEqualTypeOf<Promise<number> | number>()
   })
 
-  it('should return a promise of U when U is a promise', () => {
+  test('should return a promise of U when U is a promise', () => {
     type Result = MaybePromise<Promise<number>>
     expectTypeOf<Result>().toEqualTypeOf<Promise<number>>()
   })

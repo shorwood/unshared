@@ -1,6 +1,6 @@
-import { Shortcut } from '@unocss/core'
-import { Theme, parseColor } from '@unocss/preset-mini'
 import { dedent } from '@unshared/string/dedent'
+import { Theme, parseColor } from '@unocss/preset-mini'
+import { Shortcut } from '@unocss/core'
 
 export const shortcutLink: Shortcut = [
   /^link(?:-(.+))?$/,

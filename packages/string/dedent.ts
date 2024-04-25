@@ -9,6 +9,7 @@
  * @example dedent(`\tHello\n\t\tWorld`) // `Hello\n\tWorld`
  */
 export function dedent(string: string): string {
+
   // --- Find the first non-empty line and determine the indentation.
   const lines = string.split('\n')
   const firstContent = lines.find(line => line.trim() !== '')
@@ -31,58 +32,58 @@ export function dedent(string: string): string {
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  it('should return the string as-is if there is no first line', () => {
+  test('should return the string as-is if there is no first line', () => {
     const string = dedent('\n\n\n')
-    expect(string).toEqual('\n\n\n')
+    expect(string).toBe('\n\n\n')
   })
 
-  it('should return the string as is if there is no leading indents', () => {
+  test('should return the string as is if there is no leading indents', () => {
     const string = dedent('Hello\nWorld')
-    expect(string).toEqual('Hello\nWorld')
+    expect(string).toBe('Hello\nWorld')
   })
 
-  it('should removes leading indents from a uniform string', () => {
+  test('should removes leading indents from a uniform string', () => {
     const string = dedent('\tHello\n\tWorld')
-    expect(string).toEqual('Hello\nWorld')
+    expect(string).toBe('Hello\nWorld')
   })
 
-  it('should remove single line indents', () => {
+  test('should remove single line indents', () => {
     const string = dedent('\tHello World')
-    expect(string).toEqual('Hello World')
+    expect(string).toBe('Hello World')
   })
 
-  it('removes leading indents but keep indents in the middle of the string', () => {
+  test('should remove leading indents but keep indents in the middle of the string', () => {
     const string = dedent('\n\tHello\n\t\tWorld')
-    expect(string).toEqual('Hello\n\tWorld')
+    expect(string).toBe('Hello\n\tWorld')
   })
 
-  it('should remove extra newlines at the end of the string', () => {
+  test('should remove extra newlines at the end of the string', () => {
     const string = dedent('\tHello\n\tWorld\n\n\n')
-    expect(string).toEqual('Hello\nWorld\n')
+    expect(string).toBe('Hello\nWorld\n')
   })
 
-  it('should remove extra newlines at the beginning of the string', () => {
+  test('should remove extra newlines at the beginning of the string', () => {
     const string = dedent('\n\n\n\tHello\n\tWorld')
-    expect(string).toEqual('Hello\nWorld')
+    expect(string).toBe('Hello\nWorld')
   })
 
-  it('should not remove leading indents from a string with no leading indents', () => {
+  test('should not remove leading indents from a string with no leading indents', () => {
     const string = dedent('Hello\n\tWorld')
-    expect(string).toEqual('Hello\n\tWorld')
+    expect(string).toBe('Hello\n\tWorld')
   })
 
-  it('should remove leading space indents from all lines', () => {
+  test('should remove leading space indents from all lines', () => {
     const string = dedent('  Hello\n  World')
-    expect(string).toEqual('Hello\nWorld')
+    expect(string).toBe('Hello\nWorld')
   })
 
-  it('should remove leading spaces but keep indents in the middle of the string', () => {
+  test('should remove leading spaces but keep indents in the middle of the string', () => {
     const string = dedent('  Hello\n    World')
-    expect(string).toEqual('Hello\n  World')
+    expect(string).toBe('Hello\n  World')
   })
 
-  it('does not remove leading spaces from a string with no leading spaces', () => {
+  test('should not remove leading spaces from a string with no leading spaces', () => {
     const string = dedent('Hello\n  World')
-    expect(string).toEqual('Hello\n  World')
+    expect(string).toBe('Hello\n  World')
   })
 }

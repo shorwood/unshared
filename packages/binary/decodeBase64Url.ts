@@ -32,24 +32,24 @@ export function decodeBase64Url(base64url: string): Uint8Array {
 if (import.meta.vitest) {
   const { encodeUtf8 } = await import('./encodeUtf8')
 
-  it('should decode a Base64 encoded string with padding into a buffer', () => {
+  test('should decode a Base64 encoded string with padding into a buffer', () => {
     const result = decodeBase64('SGVsbG8sIFdvcmxkIQ==')
     const string = encodeUtf8(result)
-    expect(string).toEqual('Hello, World!')
+    expect(string).toBe('Hello, World!')
   })
 
-  it('should decode a Base64 encoded string without padding into a buffer', () => {
+  test('should decode a Base64 encoded string without padding into a buffer', () => {
     const result = decodeBase64('SGVsbG8sIFdvcmxk')
     const string = encodeUtf8(result)
-    expect(string).toEqual('Hello, World')
+    expect(string).toBe('Hello, World')
   })
 
-  it('should replace the URL-safe characters with the original Base64 characters', () => {
+  test('should replace the URL-safe characters with the original Base64 characters', () => {
     const result = decodeBase64Url('AA-_').toString()
-    expect(result).toEqual('0,15,191')
+    expect(result).toBe('0,15,191')
   })
 
-  it('should throw if the string contains invalid characters', () => {
+  test('should throw if the string contains invalid characters', () => {
     const shouldThrow = () => decodeBase64Url('SGVsbG8sIFdvcmxkIQ!@')
     expect(shouldThrow).toThrow('Could not decode string as Base64: Invalid characters')
   })

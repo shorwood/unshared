@@ -8,6 +8,13 @@ export function jsonTsconfig(): Linter.FlatConfig[] {
         '**/tsconfig.*.json',
       ],
       rules: {
+        'jsonc/sort-array-values': [
+          'error',
+          {
+            order: { type: 'asc' },
+            pathPattern: '^(includes|excludes)$',
+          },
+        ],
         'jsonc/sort-keys': [
           'error',
           {
@@ -23,6 +30,7 @@ export function jsonTsconfig(): Linter.FlatConfig[] {
           },
           {
             order: [
+
               // --- Project Structure
               'incremental',
               'composite',
@@ -132,13 +140,6 @@ export function jsonTsconfig(): Linter.FlatConfig[] {
           {
             order: { type: 'asc' },
             pathPattern: '^compilerOptions\\.paths$',
-          },
-        ],
-        'jsonc/sort-array-values': [
-          'error',
-          {
-            order: { type: 'asc' },
-            pathPattern: '^(includes|excludes)$',
           },
         ],
       },

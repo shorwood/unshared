@@ -1,9 +1,9 @@
-import { toArray } from '@unshared/collection/toArray'
-import { Once } from '@unshared/decorators/Once'
-import { MaybeArray, UnionMerge } from '@unshared/types'
-import { Function } from '@unshared/types/Function'
-import { createRequire } from 'node:module'
 import { Worker, WorkerOptions } from 'node:worker_threads'
+import { createRequire } from 'node:module'
+import { Function } from '@unshared/types/Function'
+import { MaybeArray, UnionMerge } from '@unshared/types'
+import { Once } from '@unshared/decorators/Once'
+import { toArray } from '@unshared/collection/toArray'
 import { workerRequest } from './workerRequest'
 
 /** The result of a function when called from a `WorkerService`. */
@@ -36,6 +36,14 @@ export type Workerized<T extends object> =
 /** The options for the `WorkerService`. */
 export interface WorkerServiceOptions extends WorkerOptions {
   /**
+   * If `true`, the worker thread will be created when the `WorkerService` is
+   * instantiated. If `false`, the worker thread will be created when the first
+   * function is called.
+   *
+   * @default false
+   */
+  eager?: boolean
+  /**
    * The path to the worker to use. This worker will be responsible for importing
    * and executing the functions in the worker thread. Internally, this script will
    * use the `workerRegister` function to register the `WORKER_SERVICE` handler
@@ -45,14 +53,6 @@ export interface WorkerServiceOptions extends WorkerOptions {
    * @default new URL('createWorkerService.worker', import.meta.url)
    */
   workerUrl?: URL
-  /**
-   * If `true`, the worker thread will be created when the `WorkerService` is
-   * instantiated. If `false`, the worker thread will be created when the first
-   * function is called.
-   *
-   * @default false
-   */
-  eager?: boolean
 }
 
 export interface WorkerServicePayload<T extends Function = Function<unknown, unknown[]>> {
@@ -65,14 +65,6 @@ export interface WorkerServicePayload<T extends Function = Function<unknown, unk
    * @example 'node:crypto'
    */
   moduleId: URL | string
-  /**
-   * Additionally, you can provide the `paths` property to specify the
-   * search paths for the module. This is useful when you cannot garantee
-   * the context of the calling module.
-   *
-   * @example ['/path/to/module']
-   */
-  paths?: string[]
   /**
    * The name of the export to get from the module. If the named
    * export is a constant, it will be returned as is. If it is a
@@ -88,6 +80,14 @@ export interface WorkerServicePayload<T extends Function = Function<unknown, unk
    * @example [128]
    */
   parameters?: Parameters<T>
+  /**
+   * Additionally, you can provide the `paths` property to specify the
+   * search paths for the module. This is useful when you cannot garantee
+   * the context of the calling module.
+   *
+   * @example ['/path/to/module']
+   */
+  paths?: string[]
   /**
    * Additional transferable objects to pass to the worker thread. This can be used
    * to pass `ArrayBuffer` or `MessagePort` objects to the worker thread. By default,
@@ -122,6 +122,19 @@ function getWorkerServicePath(): URL {
  */
 export class WorkerService implements Disposable {
   /**
+   * The number of currently running tasks. This is useful to know if the worker thread
+   * is busy or not. Allowing you to better orchestrate and balance the load on the
+   * worker thread.
+   */
+  public running = 0
+
+  /**
+   * The `Worker` instance that is used to execute the functions. This property can
+   * be used to communicate with the worker thread directly.
+   */
+  public worker: Worker | undefined
+
+  /**
    * Create a `Worker` instance with the specified options and return a `WorkerService`
    * instance that can be used to call functions in the worker thread.
    *
@@ -136,17 +149,12 @@ export class WorkerService implements Disposable {
   }
 
   /**
-   * The `Worker` instance that is used to execute the functions. This property can
-   * be used to communicate with the worker thread directly.
+   * Dispose of the worker thread and clean up any resources. This method is called
+   * automatically when the garbage collector runs on the `WorkerService` instance.
    */
-  public worker: Worker | undefined
-
-  /**
-   * The number of currently running tasks. This is useful to know if the worker thread
-   * is busy or not. Allowing you to better orchestrate and balance the load on the
-   * worker thread.
-   */
-  public running = 0
+  [Symbol.dispose]() {
+    void this.terminate()
+  }
 
   /**
    * Create the worker instance and initialize it. This method is called automatically
@@ -180,25 +188,10 @@ export class WorkerService implements Disposable {
     // --- Await for the worker to be online.
     await new Promise((resolve, reject) => {
       this.worker!.on('online', resolve)
+
       // this.worker!.on('error', reject)
       this.worker!.on('messageerror', reject)
     })
-  }
-
-  /**
-   * Destroy the worker instance and terminate the worker thread. This method is called
-   * automatically when the garbage collector runs on the `WorkerService` instance.
-   * You can call this method manually to terminate the worker thread.
-   *
-   * @returns A promise that resolves to the exit code of the worker thread.
-   * @example await workerService.terminate()
-   */
-  @Once()
-  public async terminate(): Promise<number> {
-    if (!this.worker) return -1
-    const exitCode = await this.worker.terminate()
-    this.worker = undefined
-    return exitCode
   }
 
   /**
@@ -224,6 +217,22 @@ export class WorkerService implements Disposable {
   }
 
   /**
+   * Destroy the worker instance and terminate the worker thread. This method is called
+   * automatically when the garbage collector runs on the `WorkerService` instance.
+   * You can call this method manually to terminate the worker thread.
+   *
+   * @returns A promise that resolves to the exit code of the worker thread.
+   * @example await workerService.terminate()
+   */
+  @Once()
+  public async terminate(): Promise<number> {
+    if (!this.worker) return -1
+    const exitCode = await this.worker.terminate()
+    this.worker = undefined
+    return exitCode
+  }
+
+  /**
    * Wraps all exports of a module to be executed in a separate thread. When called, the
    * function will be executed in a separate thread and the result will be returned.
    *
@@ -242,18 +251,10 @@ export class WorkerService implements Disposable {
    */
   public wrap<T extends object>(moduleId: URL | string, paths?: MaybeArray<string>): Workerized<T> {
     return new Proxy({}, {
-      get: (_, name: string & keyof T) =>
+      get: (_, name: keyof T & string) =>
         (...parameters: unknown[]) =>
           this.spawn.call(this, { moduleId, name, parameters, paths: toArray(paths) }),
     }) as Workerized<T>
-  }
-
-  /**
-   * Dispose of the worker thread and clean up any resources. This method is called
-   * automatically when the garbage collector runs on the `WorkerService` instance.
-   */
-  [Symbol.dispose]() {
-    void this.terminate()
   }
 }
 
@@ -276,16 +277,18 @@ if (import.meta.vitest) {
   type Module = typeof import('./__fixtures__/module')
   const moduleId = new URL('__fixtures__/module', import.meta.url)
 
-  it('should create a worker service', () => {
-    const service = createWorkerService()
-    expect(service).toBeInstanceOf(WorkerService)
+  describe('createWorkerService', () => {
+    it('should create a worker service', () => {
+      const service = createWorkerService()
+      expect(service).toBeInstanceOf(WorkerService)
+    })
   })
 
   describe('spawn', () => {
     it('should spawn the default export function and return the result', async() => {
       const service = createWorkerService()
       const result = await service.spawn<Module['factorial']>({ moduleId, parameters: [5] })
-      expect(result).toEqual(120)
+      expect(result).toBe(120)
       expectTypeOf(result).toEqualTypeOf<number>()
       await service.terminate()
     })
@@ -293,7 +296,7 @@ if (import.meta.vitest) {
     it('should spawn a sync function return the result', async() => {
       const service = createWorkerService()
       const result = await service.spawn<Module['factorial']>({ moduleId, name: 'factorial', parameters: [5] })
-      expect(result).toEqual(120)
+      expect(result).toBe(120)
       expectTypeOf(result).toEqualTypeOf<number>()
       await service.terminate()
     })
@@ -301,7 +304,7 @@ if (import.meta.vitest) {
     it('should spawn an async function and return the result', async() => {
       const service = createWorkerService()
       const result = await service.spawn<Module['factorialAsync']>({ moduleId, name: 'factorialAsync', parameters: [5] })
-      expect(result).toEqual(120)
+      expect(result).toBe(120)
       expectTypeOf(result).toEqualTypeOf<number>()
       await service.terminate()
     })
@@ -310,7 +313,7 @@ if (import.meta.vitest) {
       const service = createWorkerService()
       const result = await service.spawn<Module['buffer']>({ moduleId, name: 'buffer' })
       const expected = new Uint8Array([72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33])
-      expect(result).toEqual(expected)
+      expect(result).toStrictEqual(expected)
       expectTypeOf(result).toEqualTypeOf<Uint8Array>()
       await service.terminate()
     })
@@ -332,7 +335,7 @@ if (import.meta.vitest) {
     it('should spawn a function and return the thread ID', async() => {
       const service = createWorkerService()
       const result = await service.spawn<Module['getThreadId']>({ moduleId, name: 'getThreadId' })
-      expect(result).toEqual(service.worker?.threadId)
+      expect(result).toStrictEqual(service.worker?.threadId)
       expectTypeOf(result).toEqualTypeOf<number>()
       await service.terminate()
     })
@@ -365,7 +368,7 @@ if (import.meta.vitest) {
       const service = createWorkerService()
       const { factorial } = service.wrap<Module>(moduleId)
       const result = await factorial(5)
-      expect(result).toEqual(120)
+      expect(result).toBe(120)
       await service.terminate()
     })
 
@@ -373,7 +376,7 @@ if (import.meta.vitest) {
       const service = createWorkerService()
       const { getOwnPropertyNames } = service.wrap<Module>(moduleId)
       const result = await getOwnPropertyNames()
-      expect(result).toEqual([
+      expect(result).toStrictEqual([
         'buffer',
         'constant',
         'default',
@@ -391,15 +394,15 @@ if (import.meta.vitest) {
       const module = service.wrap<Module>(moduleId)
       await service.terminate()
       expectTypeOf(module).toEqualTypeOf<{
-        factorial: (n: number) => Promise<number>
-        factorialAsync: (n: number) => Promise<number>
-        throws: () => Promise<void>
-        rejects: () => Promise<void>
         buffer: () => Promise<Uint8Array>
-        getThreadId: () => Promise<number>
         constant: () => Promise<number>
         default: (n: number) => Promise<number>
+        factorial: (n: number) => Promise<number>
+        factorialAsync: (n: number) => Promise<number>
         getOwnPropertyNames: () => Promise<string[]>
+        getThreadId: () => Promise<number>
+        rejects: () => Promise<void>
+        throws: () => Promise<void>
       }>()
     })
   })
@@ -415,7 +418,7 @@ if (import.meta.vitest) {
       const service = createWorkerService()
       const result = await service.terminate()
       expect(service.worker).toBeUndefined()
-      expect(result).toEqual(-1)
+      expect(result).toBe(-1)
       await service.terminate()
     })
 
@@ -424,7 +427,7 @@ if (import.meta.vitest) {
       await service.spawn({ moduleId, name: 'factorial', parameters: [5] })
       const result = await service.terminate()
       expect(service.worker).toBeUndefined()
-      expect(result).toEqual(1)
+      expect(result).toBe(1)
       await service.terminate()
     })
 
@@ -453,25 +456,25 @@ if (import.meta.vitest) {
   describe('running', () => {
     it('should increment the running count when a function is called', async() => {
       const service = createWorkerService({ eager: true })
-      expect(service.running).toEqual(0)
+      expect(service.running).toBe(0)
       void service.spawn({ moduleId, name: 'factorial', parameters: [5] })
-      expect(service.running).toEqual(1)
+      expect(service.running).toBe(1)
       await service.terminate()
     })
 
     it('should decrement the running count when a function is resolved', async() => {
       const service = createWorkerService({ eager: true })
-      expect(service.running).toEqual(0)
+      expect(service.running).toBe(0)
       await service.spawn({ moduleId, name: 'factorial', parameters: [5] })
-      expect(service.running).toEqual(0)
+      expect(service.running).toBe(0)
       await service.terminate()
     })
 
     it('should decrement the running count when a function is rejected', async() => {
       const service = createWorkerService({ eager: true })
-      expect(service.running).toEqual(0)
+      expect(service.running).toBe(0)
       await service.spawn({ moduleId, name: 'rejects' }).catch(() => {})
-      expect(service.running).toEqual(0)
+      expect(service.running).toBe(0)
       await service.terminate()
     })
   })

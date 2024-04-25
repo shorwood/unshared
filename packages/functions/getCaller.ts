@@ -11,9 +11,9 @@ export function getCaller(): string {
   return stack[3] ?? stack[2] ?? stack[1] ?? stack[0]
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should resolve the caller', () => {
+  test('should resolve the caller', () => {
     const result = getCaller()
     expect(result).toMatch(/vitest/)
   })

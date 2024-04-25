@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/cognitive-complexity */
 /**
  * Compute the [Jaro-Winkler](https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance)
  * distance between two strings. The Jaro-Winkler distance is a measure of
@@ -11,6 +10,7 @@
  * @example distanceJaroWinkler('bar', 'baz') // 0.822
  */
 export function distanceJaroWinkler(a: string, b: string): number {
+
   // --- Early exit if the strings are equal.
   if (a === b) return 1
 
@@ -76,35 +76,35 @@ export function distanceJaroWinkler(a: string, b: string): number {
   return scoreDistance + scorePrefix
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should return the distance between two empty strings', () => {
+  test('should return the distance between two empty strings', () => {
     const result = distanceJaroWinkler('', '')
-    expect(result).toEqual(1)
+    expect(result).toBe(1)
   })
 
-  it('should return the distance between Potato and Tomato', () => {
+  test('should return the distance between Potato and Tomato', () => {
     const result = distanceJaroWinkler('Potato', 'Tomato')
-    expect(result).toEqual(0.6944444444444443)
+    expect(result).toStrictEqual(0.6944444444444443)
   })
 
-  it('should return the distance between Sitting and Kitten', () => {
+  test('should return the distance between Sitting and Kitten', () => {
     const result = distanceJaroWinkler('Sitting', 'Kitten')
-    expect(result).toEqual(0.746031746031746)
+    expect(result).toStrictEqual(0.746031746031746)
   })
 
-  it('should return the distance between Saturday and Sunday', () => {
+  test('should return the distance between Saturday and Sunday', () => {
     const result = distanceJaroWinkler('Saturday', 'Sunday')
-    expect(result).toEqual(0.7475)
+    expect(result).toStrictEqual(0.7475)
   })
 
-  it('should return the distance between wikipedia and wikipédia', () => {
+  test('should return the distance between wikipedia and wikipédia', () => {
     const result = distanceJaroWinkler('wikipedia', 'wikipédia')
-    expect(result).toEqual(0.9555555555555556)
+    expect(result).toStrictEqual(0.9555555555555556)
   })
 
-  it('should return the distance between Mississippi and Missouri', () => {
+  test('should return the distance between Mississippi and Missouri', () => {
     const result = distanceJaroWinkler('Mississippi', 'Missouri')
-    expect(result).toEqual(0.8159090909090909)
+    expect(result).toStrictEqual(0.8159090909090909)
   })
 }

@@ -1,14 +1,14 @@
-import 'dotenv/config'
-import { load as parseYaml } from 'js-yaml'
-import { execFileSync, spawn } from 'node:child_process'
-import { readFile } from 'node:fs/promises'
+import { OpenAI } from 'openai'
 // eslint-disable-next-line n/no-unsupported-features/node-builtins
 import { createInterface } from 'node:readline/promises'
-import { OpenAI } from 'openai'
+import { readFile } from 'node:fs/promises'
+import { execFileSync, spawn } from 'node:child_process'
+import { load as parseYaml } from 'js-yaml'
+import 'dotenv/config'
 
 interface Prompt {
-  role: 'assistant' | 'system' | 'user'
   content: string
+  role: 'assistant' | 'system' | 'user'
 }
 
 /**
@@ -30,18 +30,18 @@ export async function commit() {
 
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   const response = await openai.chat.completions.create({
-    model: 'gpt-4-turbo-preview',
-    stream: true,
     max_tokens: 1024,
-    temperature: 0.7,
     messages: [
       ...promptSystem.messages as Prompt[],
-      { role: 'user', content: `[LAST_COMMITS]\n${lastCommits}\n\n` },
-      { role: 'user', content: `[BRANCH_NAME]\n${branchName}\n\n` },
-      { role: 'user', content: `[DIFF_STAGED_STATS]\n${diffStat}\n\n` },
-      { role: 'user', content: `[DIFF}]\n${diff}` },
-      { role: 'user', content: `[INPUT]\n${input}` },
+      { content: `[LAST_COMMITS]\n${lastCommits}\n\n`, role: 'user' },
+      { content: `[BRANCH_NAME]\n${branchName}\n\n`, role: 'user' },
+      { content: `[DIFF_STAGED_STATS]\n${diffStat}\n\n`, role: 'user' },
+      { content: `[DIFF}]\n${diff}`, role: 'user' },
+      { content: `[INPUT]\n${input}`, role: 'user' },
     ],
+    model: 'gpt-4-turbo-preview',
+    stream: true,
+    temperature: 0.7,
   })
 
   // --- Write the response token by token.

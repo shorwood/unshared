@@ -14,10 +14,10 @@ export function variance(...numbers: number[]): number {
   return result / numbers.length
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should compute the variance of a set of numbers', () => {
+  test('should compute the variance of a set of numbers', () => {
     const result = variance(10, 20, 30)
-    expect(result).toEqual(66.66666666666667)
+    expect(result).toStrictEqual(66.66666666666667)
   })
 }

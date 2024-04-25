@@ -1,20 +1,20 @@
-import { Function } from './Function'
 import { Primitive } from './Primitive'
+import { Function } from './Function'
 
 /**
  * Matches all types except `unknown`.
  */
 export type Any = Function | Primitive | object
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should match all values exept unknown', () => {
+  test('should match all values exept unknown', () => {
     type Result = Any
-    type Expected = Function | bigint | boolean | number | object | string | symbol | null | undefined
+    type Expected = Function | bigint | boolean | null | number | object | string | symbol | undefined
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should not match unknown', () => {
+  test('should not match unknown', () => {
     type Result = Any
     expectTypeOf<Result>().not.toEqualTypeOf<unknown>()
   })

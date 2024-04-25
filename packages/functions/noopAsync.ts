@@ -8,9 +8,9 @@ export function noopAsync(): Promise<void> {
   return Promise.resolve()
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should return a promise that resolves to undefined', async() => {
+  test('should return a promise that resolves to undefined', async() => {
     const result = noopAsync()
     expect(result).toBeInstanceOf(Promise)
     await expect(result).resolves.toBeUndefined()

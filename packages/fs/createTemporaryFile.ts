@@ -1,6 +1,6 @@
-import { writeFile, rm, mkdir } from 'node:fs/promises'
-import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { tmpdir } from 'node:os'
+import { mkdir, rm, writeFile } from 'node:fs/promises'
 
 export interface CreateTemporaryFileOptions {
   /**
@@ -44,8 +44,8 @@ export interface CreateTemporaryFileOptions {
  */
 export async function createTemporaryFile(content?: Parameters<typeof writeFile>[1], options: CreateTemporaryFileOptions = {}) {
   const {
-    extension,
     directory = tmpdir(),
+    extension,
     random = () => Math.random().toString(36).slice(2),
   } = options
 
@@ -65,47 +65,47 @@ export async function createTemporaryFile(content?: Parameters<typeof writeFile>
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  const { statSync, readFileSync, existsSync } = await import('node:fs')
+  const { existsSync, readFileSync, statSync } = await import('node:fs')
 
-  it('should create an empty temporary file in "/tmp/<random>"', async() => {
+  test('should create an empty temporary file in "/tmp/<random>"', async() => {
     const [path] = await createTemporaryFile()
     const isFile = statSync(path).isFile()
     const content = readFileSync(path, 'utf8')
     expect(path).toMatch(/^\/tmp\/[\da-z]+$/)
-    expect (isFile).toEqual(true)
-    expect(content).toEqual('')
+    expect (isFile).toBeTruthy()
+    expect(content).toBe('')
   })
 
-  it('should create a temporary file with the specified content', async() => {
+  test('should create a temporary file with the specified content', async() => {
     const [path] = await createTemporaryFile('Hello, world!')
     const content = readFileSync(path, 'utf8')
-    expect(content).toEqual('Hello, world!')
+    expect(content).toBe('Hello, world!')
   })
 
-  it('should create a temporary file in the specified directory', async() => {
+  test('should create a temporary file in the specified directory', async() => {
     const [path] = await createTemporaryFile(undefined, { directory: '/cache' })
     expect(path).toMatch(/^\/cache\/[\da-z]+$/)
   })
 
-  it('should recursively create the specified directory', async() => {
+  test('should recursively create the specified directory', async() => {
     const [path] = await createTemporaryFile(undefined, { directory: '/tmp/foo/bar' })
     expect(path).toMatch(/^\/tmp\/foo\/bar\/[\da-z]+$/)
   })
 
-  it('should create a temporary file with the specified extension', async() => {
+  test('should create a temporary file with the specified extension', async() => {
     const [path] = await createTemporaryFile(undefined, { extension: 'txt' })
     expect(path).toMatch(/^\/tmp\/[\da-z]+\.txt$/)
   })
 
-  it('should create a temporary file with the given random function', async() => {
+  test('should create a temporary file with the given random function', async() => {
     const [path] = await createTemporaryFile(undefined, { random: () => 'foo' })
     expect(path).toMatch(/^\/tmp\/foo$/)
   })
 
-  it('should remove the temporary file after calling the remove function', async() => {
+  test('should remove the temporary file after calling the remove function', async() => {
     const [path, remove] = await createTemporaryFile()
     await remove()
     const exists = existsSync(path)
-    expect(exists).toEqual(false)
+    expect(exists).toBeFalsy()
   })
 }

@@ -1,5 +1,5 @@
-import { Any } from './Any'
 import { IsUnknown } from './utils'
+import { Any } from './Any'
 
 /**
  * Matches anything that is not a function. If a generic is provided, it will
@@ -11,23 +11,23 @@ import { IsUnknown } from './utils'
  */
 export type NotFunction<T = unknown> =
   IsUnknown<T> extends true
-    ? Any & { apply?: never }
+    ? { apply?: never } & Any
     : T extends Function ? never : T
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should exclude functions', () => {
-    type Result = NotFunction<string | (() => void) | {}>
-    expectTypeOf<Result>().toEqualTypeOf<string | {}>()
+  test('should exclude functions', () => {
+    type Result = NotFunction<(() => void) | {} | string>
+    expectTypeOf<Result>().toEqualTypeOf<{} | string>()
   })
 
-  it('should match a non-function', () => {
+  test('should match a non-function', () => {
     interface Matches {}
     type Result = NotFunction
     expectTypeOf<Matches>().toMatchTypeOf<Result>()
   })
 
-  it('should not match a function', () => {
+  test('should not match a function', () => {
     type Matches = () => void
     type Result = NotFunction
     expectTypeOf<Matches>().not.toMatchTypeOf<Result>()

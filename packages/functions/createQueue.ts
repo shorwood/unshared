@@ -1,10 +1,14 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { MaybeFunction } from '@unshared/types'
-import { Function } from '@unshared/types/Function'
 import { PromiseWrap } from '@unshared/types/PromiseWrap'
+import { Function } from '@unshared/types/Function'
+import { MaybeFunction } from '@unshared/types'
 import { Awaitable, awaitable } from './awaitable'
 
 export interface QueueTask<T = unknown> {
+  /**
+   * Abort the task.
+   */
+  cancel(): void
   /**
    * The queued function.
    */
@@ -13,10 +17,6 @@ export interface QueueTask<T = unknown> {
    * Is the task running?
    */
   isRunning: boolean
-  /**
-   * Abort the task.
-   */
-  cancel(): void
   /**
    * The promise that resolves when the task is complete.
    */
@@ -51,6 +51,27 @@ export interface QueueOptions {
 
 export class Queue extends EventTarget {
 
+  /** The maximum number of functions that can run concurrently. */
+  protected internalConcurency: MaybeFunction<number> = 1
+
+  /** The time in milliseconds to wait before starting the next function. */
+  protected internalCooldown: MaybeFunction<number> = 0
+
+  /**
+   * The number of tasks that are currently running.
+   */
+  protected running = 0
+
+  /**
+   * An array of the queued functions.
+   */
+  protected tasks: QueueTask[] = []
+
+  /**
+   * The number of tasks that are currently waiting for their turn to run.
+   */
+  protected waiting = 0
+
   /**
    * Create a new queue to manage the execution of functions. This
    * allows you to control the concurrency of the executions and the
@@ -75,26 +96,118 @@ export class Queue extends EventTarget {
     })
   }
 
-  /** The maximum number of functions that can run concurrently. */
-  protected internalConcurency: MaybeFunction<number> = 1
-
-  /** The time in milliseconds to wait before starting the next function. */
-  protected internalCooldown: MaybeFunction<number> = 0
+  /**
+   * Dispatch an event to abort a task and remove it from the queue.
+   * Do nothing if the task is already running.
+   *
+   * @param task The task to abort.
+   */
+  private dispatchTaskCancel(task: QueueTask): void {
+    if (task.isRunning) return
+    const error = new Error('Task canceled')
+    this.dispatchTaskError(task, error)
+  }
 
   /**
-   * An array of the queued functions.
+   * Dispatch an event for a task that has completed and remove it from the queue.
+   *
+   * @param task The task that completed.
+   * @param value The result of the task.
    */
-  protected tasks: QueueTask[] = []
+  private dispatchTaskComplete(task: QueueTask, value: unknown): void {
+    const event = new CustomEvent('complete', { detail: { task, value } })
+    this.running--
+    this.tasks.shift()
+    this.dispatchEvent(event)
+  }
 
   /**
-   * The number of tasks that are currently running.
+   * Dispatch an error event for a task and remove it from the queue.
+   *
+   * @param task The task that failed.
+   * @param error The error that caused the task to fail.
    */
-  protected running = 0
+  private dispatchTaskError(task: QueueTask, error: Error): void {
+    const event = new CustomEvent('error', { detail: { error, task } })
+    this.running--
+    this.tasks.shift()
+    this.dispatchEvent(event)
+  }
 
   /**
-   * The number of tasks that are currently waiting for their turn to run.
+   * Check if the next task can be started and start it.
+   *
+   * @returns The result of the next task.
    */
-  protected waiting = 0
+  private startNextTask() {
+    if (this.running >= this.concurency) return
+    const task = this.tasks.find(task => !task.isRunning)
+    if (!task) return
+
+    try {
+      this.running++
+      task.isRunning = true
+      const value = task.fn()
+      if (value instanceof Promise)
+        void value.then(value => this.dispatchTaskComplete(task, value))
+      else this.dispatchTaskComplete(task, value)
+    }
+    catch (error) {
+      return this.dispatchTaskError(task, error as Error)
+    }
+  }
+
+  /**
+   * Queue a function and return a promise that resolves to the result of the function.
+   *
+   * @param fn The function to queue.
+   * @returns A promise that resolves to the result of the function.
+   * @example
+   * const queue = createQueue()
+   * const task = (name: string) => `Hello ${name}!`
+   * await queue.call(task, 'World') // Hello World!
+   */
+  public call<T>(fn: Function<Promise<T> | T>): Awaitable<QueueTask<T>, T> {
+    const task: QueueTask<T> = {
+      cancel: () => this.dispatchTaskCancel(task),
+      fn,
+      isRunning: false,
+      promise: new Promise<T>((resolve, reject) => {
+        this.addEventListener('complete', (event) => {
+          const { detail } = event as CustomEvent<{ task: QueueTask; value: T }>
+          if (detail.task === task) resolve(detail.value)
+        })
+        this.addEventListener('error', (event) => {
+          const { detail } = event as CustomEvent<{ error: Error; task: QueueTask }>
+          if (detail.task === task) reject(detail.error)
+        })
+      }),
+    }
+
+    // --- Listen for the task to complete and resolve the promise with the result.
+    this.tasks.push(task)
+    this.startNextTask()
+    return awaitable(task, task.promise)
+  }
+
+  /**
+   * Wrap a function so that it is queued when called.
+   *
+   * @param fn The function to wrap.
+   * @returns The wrapped function.
+   * @example
+   * const queue = createQueue()
+   * const sayHello = (name: string) => `Hello ${name}!`
+   * const sayHelloAsync = queue.wrap(task)
+   * await sayHelloAsync('World') // Hello World!
+   */
+  public wrap<T extends Function>(fn: T): PromiseWrap<T> {
+    // eslint-disable-next-line unicorn/no-this-assignment, @typescript-eslint/no-this-alias
+    const queue = this
+    return function(this: unknown, ...args: unknown[]) {
+      return queue.call(() => fn.call(this, ...args) as Promise<unknown>)
+    } as PromiseWrap<T>
+  }
 
   /**
    * Get the maximum number of functions that can run concurrently. If the
@@ -129,119 +242,6 @@ export class Queue extends EventTarget {
   get length() {
     return this.tasks.length
   }
-
-  /**
-   * Wrap a function so that it is queued when called.
-   *
-   * @param fn The function to wrap.
-   * @returns The wrapped function.
-   * @example
-   * const queue = createQueue()
-   * const sayHello = (name: string) => `Hello ${name}!`
-   * const sayHelloAsync = queue.wrap(task)
-   * await sayHelloAsync('World') // Hello World!
-   */
-  public wrap<T extends Function>(fn: T): PromiseWrap<T> {
-    // eslint-disable-next-line unicorn/no-this-assignment, @typescript-eslint/no-this-alias
-    const queue = this
-    return function(this: unknown, ...args: unknown[]) {
-      return queue.call(() => fn.call(this, ...args) as Promise<unknown>)
-    } as PromiseWrap<T>
-  }
-
-  /**
-   * Queue a function and return a promise that resolves to the result of the function.
-   *
-   * @param fn The function to queue.
-   * @returns A promise that resolves to the result of the function.
-   * @example
-   * const queue = createQueue()
-   * const task = (name: string) => `Hello ${name}!`
-   * await queue.call(task, 'World') // Hello World!
-   */
-  public call<T>(fn: Function<Promise<T> | T>): Awaitable<QueueTask<T>, T> {
-    const task: QueueTask<T> = {
-      fn,
-      isRunning: false,
-      cancel: () => this.dispatchTaskCancel(task),
-      promise: new Promise<T>((resolve, reject) => {
-        this.addEventListener('complete', (event) => {
-          const { detail } = event as CustomEvent<{ task: QueueTask; value: T }>
-          if (detail.task === task) resolve(detail.value)
-        })
-        this.addEventListener('error', (event) => {
-          const { detail } = event as CustomEvent<{ task: QueueTask; error: Error }>
-          if (detail.task === task) reject(detail.error)
-        })
-      }),
-    }
-
-    // --- Listen for the task to complete and resolve the promise with the result.
-    this.tasks.push(task)
-    this.startNextTask()
-    return awaitable(task, task.promise)
-  }
-
-  /**
-   * Check if the next task can be started and start it.
-   *
-   * @returns The result of the next task.
-   */
-  private startNextTask() {
-    if (this.running >= this.concurency) return
-    const task = this.tasks.find(task => !task.isRunning)
-    if (!task) return
-
-    try {
-      this.running++
-      task.isRunning = true
-      const value = task.fn()
-      if (value instanceof Promise)
-        void value.then(value => this.dispatchTaskComplete(task, value))
-      else this.dispatchTaskComplete(task, value)
-    }
-    catch (error) {
-      return this.dispatchTaskError(task, error as Error)
-    }
-  }
-
-  /**
-   * Dispatch an event for a task that has completed and remove it from the queue.
-   *
-   * @param task The task that completed.
-   * @param value The result of the task.
-   */
-  private dispatchTaskComplete(task: QueueTask, value: unknown): void {
-    const event = new CustomEvent('complete', { detail: { task, value } })
-    this.running--
-    this.tasks.shift()
-    this.dispatchEvent(event)
-  }
-
-  /**
-   * Dispatch an error event for a task and remove it from the queue.
-   *
-   * @param task The task that failed.
-   * @param error The error that caused the task to fail.
-   */
-  private dispatchTaskError(task: QueueTask, error: Error): void {
-    const event = new CustomEvent('error', { detail: { task, error } })
-    this.running--
-    this.tasks.shift()
-    this.dispatchEvent(event)
-  }
-
-  /**
-   * Dispatch an event to abort a task and remove it from the queue.
-   * Do nothing if the task is already running.
-   *
-   * @param task The task to abort.
-   */
-  private dispatchTaskCancel(task: QueueTask): void {
-    if (task.isRunning) return
-    const error = new Error('Task canceled')
-    this.dispatchTaskError(task, error)
-  }
 }
 
 /**
@@ -266,13 +266,13 @@ if (import.meta.vitest) {
       const queue = createQueue()
       const task = vi.fn()
       await queue.call(task)
-      expect(task).toHaveBeenCalled()
+      expect(task).toHaveBeenCalledWith()
     })
 
     it('should queue a function and return the task object', () => {
       const queue = createQueue()
       const task = queue.call(Math.random)
-      expect(task.isRunning).toEqual(true)
+      expect(task.isRunning).toBeTruthy()
       expect(task.fn).toBeTypeOf('function')
       expectTypeOf(task).toEqualTypeOf<Awaitable<QueueTask<number>, number>>()
     })
@@ -280,7 +280,7 @@ if (import.meta.vitest) {
     it('should queue a function and resolve the result', async() => {
       const queue = createQueue()
       const result = await queue.call(() => 'Hello World!')
-      expect(result).toEqual('Hello World!')
+      expect(result).toBe('Hello World!')
       expectTypeOf(result).toEqualTypeOf<string>()
     })
 
@@ -294,14 +294,14 @@ if (import.meta.vitest) {
       const queue = createQueue()
       const task = vi.fn()
       await queue.call(task)
-      expect(queue.length).toEqual(0)
+      expect(queue).toHaveLength(0)
     })
 
     it('should free the queue after a task is rejected', async() => {
       const queue = createQueue()
       const task = vi.fn(() => { throw new Error('Oops!') })
       await queue.call(task).catch(() => {})
-      expect(queue.length).toEqual(0)
+      expect(queue).toHaveLength(0)
     })
 
     it('should abort a task that is not running and reject with an error', async() => {
@@ -319,7 +319,7 @@ if (import.meta.vitest) {
       const wrapped = queue.wrap(task)
       expect(task).not.toHaveBeenCalled()
       wrapped()
-      expect(task).toHaveBeenCalled()
+      expect(task).toHaveBeenCalledWith()
     })
 
     it('should pass the arguments to the wrapped function', () => {
@@ -335,7 +335,7 @@ if (import.meta.vitest) {
       const task = vi.fn(function(this: { value: number }) { return this.value })
       const wrapped = queue.wrap(task)
       const result = await wrapped.call({ value: 42 })
-      expect(result).toEqual(42)
+      expect(result).toBe(42)
     })
 
     it('should infer the type of a wrapped syncronous function', () => {
@@ -354,22 +354,22 @@ if (import.meta.vitest) {
   describe('options', () => {
     it('should set the concurrency option with a number', () => {
       const queue = createQueue({ concurency: 4 })
-      expect(queue.concurency).toEqual(4)
+      expect(queue.concurency).toBe(4)
     })
 
     it('should set the concurrency option with a function', () => {
       const queue = createQueue({ concurency: () => 4 })
-      expect(queue.concurency).toEqual(4)
+      expect(queue.concurency).toBe(4)
     })
 
     it('should set the cooldown option with a number', () => {
       const queue = createQueue({ cooldown: 100 })
-      expect(queue.cooldown).toEqual(100)
+      expect(queue.cooldown).toBe(100)
     })
 
     it('should set the cooldown option with a function', () => {
       const queue = createQueue({ cooldown: () => 100 })
-      expect(queue.cooldown).toEqual(100)
+      expect(queue.cooldown).toBe(100)
     })
   })
 
@@ -381,11 +381,11 @@ if (import.meta.vitest) {
       const task2 = vi.fn(() => sleep(10))
       void queue.call(task1)
       void queue.call(task2)
-      expect(task1).toHaveBeenCalled()
+      expect(task1).toHaveBeenCalledWith()
       expect(task2).not.toHaveBeenCalled()
       vi.advanceTimersByTime(25)
       await new Promise(nextTick)
-      expect(task2).toHaveBeenCalled()
+      expect(task2).toHaveBeenCalledWith()
     })
 
     it('should run multiple functions concurrently', async() => {
@@ -397,12 +397,12 @@ if (import.meta.vitest) {
       void queue.call(task1)
       void queue.call(task2)
       void queue.call(task3)
-      expect(task1).toHaveBeenCalled()
-      expect(task2).toHaveBeenCalled()
+      expect(task1).toHaveBeenCalledWith()
+      expect(task2).toHaveBeenCalledWith()
       expect(task3).not.toHaveBeenCalled()
       vi.advanceTimersByTime(25)
       await new Promise(nextTick)
-      expect(task3).toHaveBeenCalled()
+      expect(task3).toHaveBeenCalledWith()
     })
   })
 
@@ -414,13 +414,13 @@ if (import.meta.vitest) {
       const task2 = vi.fn(() => sleep(10))
       void queue.call(task1)
       void queue.call(task2)
-      expect(task1).toHaveBeenCalled()
+      expect(task1).toHaveBeenCalledWith()
       expect(task2).not.toHaveBeenCalled()
       vi.advanceTimersByTime(15)
       await new Promise(nextTick)
       expect(task2).not.toHaveBeenCalled()
       vi.advanceTimersByTime(10)
-      expect(task2).toHaveBeenCalled()
+      expect(task2).toHaveBeenCalledWith()
     })
   })
 }

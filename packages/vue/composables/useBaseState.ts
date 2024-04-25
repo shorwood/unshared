@@ -1,7 +1,39 @@
-import { toReactive, useVModel } from '@vueuse/core'
 import { ComponentObjectPropsOptions, ExtractPropTypes, Prop, Ref, computed, getCurrentInstance, provide } from 'vue'
+import { toReactive, useVModel } from '@vueuse/core'
 
 export const BASE_STATE_PROPS = {
+  /**
+   * The CSS class to apply when the component is disabled. This allows you
+   * to customize the appearance of the component when it is disabled without
+   * handling the CSS in the component itself.
+   *
+   * @default ''
+   */
+  'classDisabled': { default: '', type: [String] } as Prop<string>,
+  /**
+   * The CSS class to apply when the component is in an error state. This
+   * allows you to customize the appearance of the component when it is in
+   * an error state without handling the CSS in the component itself.
+   *
+   * @default ''
+   */
+  'classError': { default: '', type: [String] } as Prop<string>,
+  /**
+   * The CSS class to apply when the component is loading. This allows you
+   * to customize the appearance of the component when it is loading without
+   * handling the CSS in the component itself.
+   *
+   * @default ''
+   */
+  'classLoading': { default: '', type: [String] } as Prop<string>,
+  /**
+   * The CSS class to apply when the component is read-only. This allows you
+   * to customize the appearance of the component when it is read-only without
+   * handling the CSS in the component itself.
+   *
+   * @default ''
+   */
+  'classReadonly': { default: '', type: [String] } as Prop<string>,
   /**
    * If `true`, all interactions with the component should be disabled.
    * Meaning that the component should not be able to send any `click`,
@@ -10,17 +42,14 @@ export const BASE_STATE_PROPS = {
    * @default false
    */
   'disabled': [Boolean],
-  'onUpdate:disabled': Function as Prop<(disabled: boolean) => void>,
   /**
-   * If `true`, the component should be in a read-only state. Meaning that
-   * the component should not be able to send any `click`, `focus`, `hover`,
-   * or any other interaction event but should still be able to display
-   * the content as if it was enabled.
+   * If `true`, the component should be in an error state. Meaning that
+   * the component should show an error message or a visual indication
+   * that something went wrong.
    *
-   * @default false
+   * @default undefined
    */
-  'readonly': [Boolean],
-  'onUpdate:readonly': Function as Prop<(readonly: boolean) => void>,
+  'error': [Error, String],
   /**
    * If `true`, the component should be in a loading state. Meaning that
    * the component should not be able to send any `click`, `focus`, `hover`,
@@ -30,48 +59,19 @@ export const BASE_STATE_PROPS = {
    * @default false
    */
   'loading': [Boolean],
-  'onUpdate:loading': Function as Prop<(loading: boolean) => void>,
-  /**
-   * If `true`, the component should be in an error state. Meaning that
-   * the component should show an error message or a visual indication
-   * that something went wrong.
-   *
-   * @default undefined
-   */
-  'error': [Error, String],
+  'onUpdate:disabled': Function as Prop<(disabled: boolean) => void>,
   'onUpdate:error': Function as Prop<(error?: Error | string) => void>,
+  'onUpdate:loading': Function as Prop<(loading: boolean) => void>,
+  'onUpdate:readonly': Function as Prop<(readonly: boolean) => void>,
   /**
-   * The CSS class to apply when the component is disabled. This allows you
-   * to customize the appearance of the component when it is disabled without
-   * handling the CSS in the component itself.
+   * If `true`, the component should be in a read-only state. Meaning that
+   * the component should not be able to send any `click`, `focus`, `hover`,
+   * or any other interaction event but should still be able to display
+   * the content as if it was enabled.
    *
-   * @default ''
+   * @default false
    */
-  'classDisabled': { type: [String], default: '' } as Prop<string>,
-  /**
-   * The CSS class to apply when the component is read-only. This allows you
-   * to customize the appearance of the component when it is read-only without
-   * handling the CSS in the component itself.
-   *
-   * @default ''
-   */
-  'classReadonly': { type: [String], default: '' } as Prop<string>,
-  /**
-   * The CSS class to apply when the component is loading. This allows you
-   * to customize the appearance of the component when it is loading without
-   * handling the CSS in the component itself.
-   *
-   * @default ''
-   */
-  'classLoading': { type: [String], default: '' } as Prop<string>,
-  /**
-   * The CSS class to apply when the component is in an error state. This
-   * allows you to customize the appearance of the component when it is in
-   * an error state without handling the CSS in the component itself.
-   *
-   * @default ''
-   */
-  'classError': { type: [String], default: '' } as Prop<string>,
+  'readonly': [Boolean],
 } satisfies ComponentObjectPropsOptions
 
 /** The properties of the base state component. */
@@ -98,17 +98,17 @@ export function useBaseState(props: BaseStateProps) {
 
   // --- Create two-way bindings for the properties.
   const { emit } = instance
-  const loading = useVModel(props, 'loading', emit, { passive: true, defaultValue: false }) as Ref<boolean>
-  const disabled = useVModel(props, 'disabled', emit, { passive: true, defaultValue: false }) as Ref<boolean>
-  const readonly = useVModel(props, 'readonly', emit, { passive: true, defaultValue: false }) as Ref<boolean>
+  const loading = useVModel(props, 'loading', emit, { defaultValue: false, passive: true }) as Ref<boolean>
+  const disabled = useVModel(props, 'disabled', emit, { defaultValue: false, passive: true }) as Ref<boolean>
+  const readonly = useVModel(props, 'readonly', emit, { defaultValue: false, passive: true }) as Ref<boolean>
   const error = useVModel(props, 'error', emit, { passive: true }) as Ref<Error | string | undefined>
 
   // --- Dynamically compute classes.
   const classes = computed(() => ({
-    [props.classLoading ?? '']: loading.value,
     [props.classDisabled ?? '']: disabled.value,
-    [props.classReadonly ?? '']: readonly.value,
     [props.classError ?? '']: !!error.value,
+    [props.classLoading ?? '']: loading.value,
+    [props.classReadonly ?? '']: readonly.value,
   }))
 
   // --- Get the error message if it is an `Error` instance or a string.
@@ -120,18 +120,18 @@ export function useBaseState(props: BaseStateProps) {
 
   // --- Build the props object.
   const attributes = computed(() => ({
-    'aria-busy': loading.value ? true : undefined,
-    'aria-disabled': disabled.value ? true : undefined,
-    'aria-readonly': readonly.value ? true : undefined,
-    'aria-invalid': error.value ? true : undefined,
+    'aria-busy': loading.value,
+    'aria-disabled': disabled.value,
     'aria-errormessage': errorMessage.value,
-    'disabled': disabled.value ? true : undefined,
-    'readonly': readonly.value ? true : undefined,
+    'aria-invalid': error.value,
+    'aria-readonly': readonly.value,
     'class': classes.value,
+    'disabled': disabled.value,
+    'readonly': readonly.value,
   }))
 
   // --- Provide the composable into the component and return it.
-  const composable = toReactive({ attributes, classes, loading, disabled, readonly, error, errorMessage })
+  const composable = toReactive({ attributes, classes, disabled, error, errorMessage, loading, readonly })
   provide('baseState', composable)
   return composable
 }

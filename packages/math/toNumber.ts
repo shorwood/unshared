@@ -17,6 +17,7 @@ export type NumberLike = bigint | boolean | number | string
  * toNumber({}) // 0
  */
 export function toNumber(value: NumberLike): number {
+
   // --- If the value is a string, try to parse it as a number.
   if (typeof value === 'string') {
     const castValue = Number.parseFloat(value)
@@ -43,34 +44,35 @@ export function toNumber(value: NumberLike): number {
   throw new Error(`Cannot cast ${valueToString} to a number.`)
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should cast a number to a number', () => {
+  test('should cast a number to a number', () => {
     const result = toNumber(42)
-    expect(result).toEqual(42)
+    expect(result).toBe(42)
   })
 
-  it('should cast a bigint to a number', () => {
+  test('should cast a bigint to a number', () => {
     const result = toNumber(42n)
-    expect(result).toEqual(42)
+    expect(result).toBe(42)
   })
 
-  it('should cast a boolean to a number', () => {
+  test('should cast a boolean to a number', () => {
     const result = toNumber(true)
-    expect(result).toEqual(1)
+    expect(result).toBe(1)
   })
 
-  it('should cast a string to a number', () => {
+  test('should cast a string to a number', () => {
     const result = toNumber('42.0')
-    expect(result).toEqual(42)
+    expect(result).toBe(42)
   })
 
-  it('should throw an error if the string is not a number', () => {
+  test('should throw an error if the string is not a number', () => {
     const shouldThrow = () => toNumber('foo')
     expect(shouldThrow).toThrow('Cannot cast non-number string "foo" to a number.')
   })
 
-  it('should throw an error if the value is not a number-like value', () => {
+  test('should throw an error if the value is not a number-like value', () => {
+
     // @ts-expect-error: Test non-number-like value
     const shouldThrow = () => toNumber({})
     expect(shouldThrow).toThrow('Cannot cast [object Object] to a number.')

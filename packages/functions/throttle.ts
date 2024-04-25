@@ -40,20 +40,20 @@ export function throttle<T extends Function, N extends number>(fn: T, delay: Num
   return throttled as unknown as Throttled<T>
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
   beforeAll(() => {
     vi.useFakeTimers()
   })
 
-  it('should call the function immediately', () => {
+  test('should call the function immediately', () => {
     const fn = vi.fn()
     const throttled = throttle(fn, 100)
     throttled()
     expect(fn).toHaveBeenCalledTimes(1)
   })
 
-  it('should not call the function more than once within the delay', () => {
+  test('should not call the function more than once within the delay', () => {
     const fn = vi.fn()
     const throttled = throttle(fn, 100)
     void throttled()
@@ -63,7 +63,7 @@ if (import.meta.vitest) {
     expect(fn).toHaveBeenCalledTimes(1)
   })
 
-  it('should pass the parameters of the first call to the function', () => {
+  test('should pass the parameters of the first call to the function', () => {
     const fn = vi.fn()
     const throttled = throttle(fn, 10)
     void throttled(1)
@@ -73,7 +73,7 @@ if (import.meta.vitest) {
     expect(fn).toHaveBeenCalledWith(1)
   })
 
-  it('should call the function again after the delay has passed', () => {
+  test('should call the function again after the delay has passed', () => {
     const fn = vi.fn()
     const throttled = throttle(fn, 100)
     void throttled()
@@ -83,7 +83,7 @@ if (import.meta.vitest) {
     expect(fn).toHaveBeenCalledTimes(2)
   })
 
-  it('should return undefined', () => {
+  test('should return undefined', () => {
     const throttled = throttle(() => 'foobar', 100)
     const result = throttled()
     expect(result).toBeUndefined()

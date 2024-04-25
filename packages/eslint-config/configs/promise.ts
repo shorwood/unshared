@@ -1,5 +1,5 @@
-import { Linter } from 'eslint'
 import promisePlugin from 'eslint-plugin-promise'
+import { Linter } from 'eslint'
 
 export function promise(): Linter.FlatConfig[] {
   return [

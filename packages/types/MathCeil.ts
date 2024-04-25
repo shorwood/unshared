@@ -14,34 +14,34 @@ export type MathCeil<N extends number> =
         : `${N}` extends `${infer S extends number}.${number}` ? Add<S, 1>
           : never
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should ceil a positive decimal', () => {
+  test('should ceil a positive decimal', () => {
     type Result = MathCeil<1.1>
     expectTypeOf<Result>().toEqualTypeOf<2>()
   })
 
-  it('should ceil a negative decimal', () => {
+  test('should ceil a negative decimal', () => {
     type Result = MathCeil<-1.1>
     expectTypeOf<Result>().toEqualTypeOf<-1>()
   })
 
-  it('should ceil a positive integer', () => {
+  test('should ceil a positive integer', () => {
     type Result = MathCeil<1>
     expectTypeOf<Result>().toEqualTypeOf<1>()
   })
 
-  it('should ceil a negative integer', () => {
+  test('should ceil a negative integer', () => {
     type Result = MathCeil<-1>
     expectTypeOf<Result>().toEqualTypeOf<-1>()
   })
 
-  it('should ceil zero', () => {
+  test('should ceil zero', () => {
     type Result = MathCeil<0>
     expectTypeOf<Result>().toEqualTypeOf<0>()
   })
 
-  it('should ceil number', () => {
+  test('should ceil number', () => {
     type Result = MathCeil<number>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })

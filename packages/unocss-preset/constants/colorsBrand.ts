@@ -1,4 +1,5 @@
 export const colorsBrand = {
+  '4ormat': '#ee3440',
   '500px': [
     '#0099e5',
     '#ff4c4c',
@@ -189,7 +190,6 @@ export const colorsBrand = {
   ],
   'askfm': '#db3552',
   'associated-press': '#ff322e',
-  'att': '#00a8e0',
   'atlanta-falcons': [
     '#000000',
     '#a71930',
@@ -210,6 +210,7 @@ export const colorsBrand = {
     '#aea400',
     '#ff6319',
   ],
+  'att': '#00a8e0',
   'audi': [
     '#ffffff',
     '#000000',
@@ -527,6 +528,16 @@ export const colorsBrand = {
     '#766a65',
   ],
   'crunchbase': '#2292a7',
+  'cssd': [
+    '#1b5692',
+    '#c32128',
+    '#43a756',
+    '#999999',
+    '#de8a3d',
+    '#74a2d7',
+    '#f0c33b',
+    '#9fc54d',
+  ],
   'culvers': '#005696',
   'cunard': [
     '#1d1d1b',
@@ -746,10 +757,6 @@ export const colorsBrand = {
     '#f7c8c9',
   ],
   'dwolla': '#ff7404',
-  'etrade': [
-    '#6633cc',
-    '#99cc00',
-  ],
   'e4': '#6d1d7c',
   'easy-jet': [
     '#ff6600',
@@ -808,6 +815,10 @@ export const colorsBrand = {
     '#f784b6',
     '#39b7dd',
     '#ccc900',
+  ],
+  'etrade': [
+    '#6633cc',
+    '#99cc00',
   ],
   'etsy': '#d5641c',
   'evaneos': [
@@ -933,7 +944,6 @@ export const colorsBrand = {
   ],
   'fontawesome': '#228ae6',
   'ford': '#1c396d',
-  '4ormat': '#ee3440',
   'forrst': '#5b9a68',
   'foursquare': [
     '#f94877',
@@ -1060,11 +1070,6 @@ export const colorsBrand = {
     '#d5df00',
     '#475258',
   ],
-  'gwr': [
-    '#0b2d27',
-    '#000000',
-    '#ffffff',
-  ],
   'greenhouse': '#00b2a9',
   'groupon': '#82b548',
   'grunt': [
@@ -1085,6 +1090,11 @@ export const colorsBrand = {
     '#954a97',
     '#009ee3',
     '#13a538',
+  ],
+  'gwr': [
+    '#0b2d27',
+    '#000000',
+    '#ffffff',
   ],
   'hacker-news': '#ff4000',
   'hangouts': '#0f9d58',
@@ -1460,21 +1470,6 @@ export const colorsBrand = {
     '#2d3277',
   ],
   'messenger': '#0084ff',
-  'msu': [
-    '#18453b',
-    '#0db14b',
-    '#97a2a2',
-    '#f08521',
-    '#008183',
-    '#909ab7',
-    '#535054',
-    '#d1de3f',
-    '#e8d9b5',
-    '#c89a58',
-    '#94ae4a',
-    '#6e005f',
-    '#cb5a28',
-  ],
   'microsoft': [
     '#f65314',
     '#7cbb00',
@@ -1547,6 +1542,21 @@ export const colorsBrand = {
     '#c13832',
     '#d7d3c8',
     '#4d4e53',
+  ],
+  'msu': [
+    '#18453b',
+    '#0db14b',
+    '#97a2a2',
+    '#f08521',
+    '#008183',
+    '#909ab7',
+    '#535054',
+    '#d1de3f',
+    '#e8d9b5',
+    '#c89a58',
+    '#94ae4a',
+    '#6e005f',
+    '#cb5a28',
   ],
   'musixmatch': [
     '#ff6050',
@@ -1947,10 +1957,6 @@ export const colorsBrand = {
   ],
   'razer': '#00ff00',
   'rdio': '#007dc3',
-  'remax': [
-    '#e11b22',
-    '#0054a4',
-  ],
   'react': '#00d8ff',
   'readability': '#990000',
   'realex-payments': [
@@ -1971,6 +1977,10 @@ export const colorsBrand = {
     '#e5505a',
     '#854c9e',
   ],
+  'remax': [
+    '#e11b22',
+    '#0054a4',
+  ],
   'renaissance-hotels': [
     '#000000',
     '#999999',
@@ -1986,14 +1996,14 @@ export const colorsBrand = {
     '#c1d72f',
   ],
   'reverbnation': '#e43526',
-  'rochester-institute-of-technology': [
-    '#f36e21',
-    '#513127',
-  ],
   'rit': [
     '#f76902',
     '#ffffff',
     '#000000',
+  ],
+  'rochester-institute-of-technology': [
+    '#f36e21',
+    '#513127',
   ],
   'rockpack': '#0ba6ab',
   'roku': '#6f1ab1',
@@ -2017,16 +2027,6 @@ export const colorsBrand = {
   'rowan-university': [
     '#3f1a0a',
     '#edd51c',
-  ],
-  'cssd': [
-    '#1b5692',
-    '#c32128',
-    '#43a756',
-    '#999999',
-    '#de8a3d',
-    '#74a2d7',
-    '#f0c33b',
-    '#9fc54d',
   ],
   'royal-mail': [
     '#ff0000',
@@ -2321,10 +2321,6 @@ export const colorsBrand = {
   'technorati': '#339900',
   'ted': '#e62b1e',
   'telegram': '#0088cc',
-  'tvtag': [
-    '#e92c4c',
-    '#c82641',
-  ],
   'temple': [
     '#a41e35',
     '#222222',
@@ -2441,6 +2437,10 @@ export const colorsBrand = {
   'turbotax': [
     '#355ebe',
     '#d52b1d',
+  ],
+  'tvtag': [
+    '#e92c4c',
+    '#c82641',
   ],
   'twentythree': [
     '#1ec95b',

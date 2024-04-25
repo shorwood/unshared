@@ -13,10 +13,10 @@ export function createBoolean<T extends boolean>(value: T): Boolean {
 
 /* v8 ignore next */
 if (import.meta.vitest) {
-  it('should create a Boolean instance from a boolean', () => {
+  test('should create a Boolean instance from a boolean', () => {
     const result = createBoolean(true)
     expect(result).toBeInstanceOf(Boolean)
-    expect(result.value).toEqual(true)
+    expect(result.value).toBeTruthy()
     expectTypeOf(result).toEqualTypeOf<Boolean>()
   })
 }

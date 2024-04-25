@@ -19,6 +19,7 @@ import { ComponentInternalInstance, getCurrentInstance, h, nextTick } from 'vue'
 export function exposeToDevtool<T extends object>(object: T, componentInstance?: ComponentInternalInstance | null): void {
   const instance = componentInstance ?? getCurrentInstance()
   if (!instance) return
+
   // @ts-expect-error: `setupState` is not declared in the type definition.
   void nextTick(() => instance.setupState = object)
 }
@@ -28,16 +29,17 @@ export function exposeToDevtool<T extends object>(object: T, componentInstance?:
 if (import.meta.vitest) {
   const { mount } = await import('@vue/test-utils')
 
-  it('should expose an object to the Vue Devtools', async() => {
+  test('should expose an object to the Vue Devtools', async() => {
     const wrapper = mount({ render: () => h('div') })
     const instance = wrapper.getCurrentComponent()
     void exposeToDevtool({ foo: 'bar' }, instance)
     await nextTick()
+
     // @ts-expect-error: `setupState` is not declared in the type definition.
     expect(instance.setupState).toStrictEqual({ foo: 'bar' })
   })
 
-  it('should return undefined', () => {
+  test('should return undefined', () => {
     const result = exposeToDevtool({ foo: 'bar' })
     expect(result).toBeUndefined()
   })

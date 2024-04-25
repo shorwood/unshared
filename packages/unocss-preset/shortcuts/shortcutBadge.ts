@@ -1,5 +1,5 @@
-import { Shortcut } from '@unocss/core'
 import { dedent } from '@unshared/string/dedent'
+import { Shortcut } from '@unocss/core'
 
 export const shortcutBadge: Shortcut = [
   /badge-(.+)/,

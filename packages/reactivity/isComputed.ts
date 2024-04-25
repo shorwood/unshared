@@ -1,5 +1,5 @@
-import { Computed } from './computed'
 import { ComputedFlag } from './constants'
+import { Computed } from './computed'
 
 /**
  * Predicate function that checks if a value is a `Computed` object.
@@ -17,44 +17,42 @@ export function isComputed<T>(value: unknown): value is Computed<T> {
     && value[ComputedFlag] === true
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
   const { computed } = await import('./computed')
   const { reactive } = await import('./reactive')
   const { reference } = await import('./reference')
 
-  it('should return true for computed', () => {
+  test('should return true for computed', () => {
     const value = computed([], () => 1)
     const result = isComputed(value)
-    expect(result).toEqual(true)
+    expect(result).toBeTruthy()
   })
 
-  it('should return false for reactive', () => {
+  test('should return false for reactive', () => {
     const value = reactive({})
     const result = isComputed(value)
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
   })
 
-  it('should return false for references', () => {
+  test('should return false for references', () => {
     const value = reference()
     const result = isComputed(value)
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
   })
 
-  it('should return false for non-reactive', () => {
+  test('should return false for non-reactive', () => {
     const result = isComputed({ foo: 'bar' })
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
   })
 
-  // eslint-disable-next-line vitest/expect-expect
-  it('should predicate the type of a computed', () => {
+  test('should predicate the type of a computed', () => {
     const value = undefined as unknown
     const result = isComputed(value)
     if (result) expectTypeOf(value).toEqualTypeOf<Computed<unknown>>()
   })
 
-  // eslint-disable-next-line vitest/expect-expect
-  it('should predicate the type of a computed with a type', () => {
+  test('should predicate the type of a computed with a type', () => {
     const value = undefined as unknown
     const result = isComputed<string>(value)
     if (result) expectTypeOf(value).toEqualTypeOf<Computed<string>>()

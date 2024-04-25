@@ -1,12 +1,12 @@
-import { BinaryLike, toUint8Array } from '@unshared/binary/toUint8Array'
-import { Awaitable, awaitable } from '@unshared/functions/awaitable'
-import { Function } from '@unshared/types'
-import { ChildProcess, SpawnOptions, spawn } from 'node:child_process'
-import { randomBytes } from 'node:crypto'
-import { createServer } from 'node:net'
-import { join } from 'node:path'
-import { getuid } from 'node:process'
 import { Readable, Writable } from 'node:stream'
+import { getuid } from 'node:process'
+import { join } from 'node:path'
+import { createServer } from 'node:net'
+import { randomBytes } from 'node:crypto'
+import { ChildProcess, SpawnOptions, spawn } from 'node:child_process'
+import { Function } from '@unshared/types'
+import { Awaitable, awaitable } from '@unshared/functions/awaitable'
+import { BinaryLike, toUint8Array } from '@unshared/binary/toUint8Array'
 
 /** Argument that can be passed to `execute`. */
 export type BinaryArgument = BinaryLike | Function<BinaryLike | Readable> | Readable
@@ -102,8 +102,8 @@ export function execute(command: string, parameters: BinaryArgument[] = [], opti
   // --- Spawn the process.
   const argsArray = args.map(({ arg }) => arg)
   const process = spawn(command, argsArray, {
-    stdio: 'pipe',
     shell: '/bin/bash',
+    stdio: 'pipe',
     ...spawnOptions,
   })
 
@@ -152,6 +152,7 @@ export function execute(command: string, parameters: BinaryArgument[] = [], opti
 }
 
 /* v8 ignore start */
+/* eslint-disable sonarjs/no-duplicate-string */
 if (import.meta.vitest) {
   describe('execute', () => {
     it('should return a ChildProcess', () => {
@@ -164,19 +165,19 @@ if (import.meta.vitest) {
     it('should spawn a process and return the output as a buffer', { retry: 3 }, async() => {
       const result = await execute('echo', ['Hello, world!'])
       const string = result.toString('utf8')
-      expect(string).toEqual('Hello, world!\n')
+      expect(string).toBe('Hello, world!\n')
       expectTypeOf(result).toEqualTypeOf<Buffer>()
     })
 
     it('should spawn a process and return the output with a custom encoding', async() => {
       const result = await execute('echo', ['Hello, world!'], { encoding: 'base64' })
-      expect(result).toEqual('SGVsbG8sIHdvcmxkIQo=')
+      expect(result).toBe('SGVsbG8sIHdvcmxkIQo=')
       expectTypeOf(result).toEqualTypeOf<string>()
     })
 
     it('should spawn a process and return the output with a custom encoding using shorthand', async() => {
       const result = await execute('echo', ['Hello, world!'], 'base64')
-      expect(result).toEqual('SGVsbG8sIHdvcmxkIQo=')
+      expect(result).toBe('SGVsbG8sIHdvcmxkIQo=')
       expectTypeOf(result).toEqualTypeOf<string>()
     })
   })
@@ -185,7 +186,7 @@ if (import.meta.vitest) {
     it('should spawn a process and pipe a string to it', async() => {
       const result = await execute('cat', undefined, { stdin: 'Hello, world!' })
       const string = result.toString('utf8')
-      expect(string).toEqual('Hello, world!')
+      expect(string).toBe('Hello, world!')
       expectTypeOf(result).toEqualTypeOf<Buffer>()
     })
 
@@ -193,7 +194,7 @@ if (import.meta.vitest) {
       const buffer = Buffer.from('Hello, world!')
       const result = await execute('cat', undefined, { stdin: buffer })
       const string = result.toString('utf8')
-      expect(string).toEqual('Hello, world!')
+      expect(string).toBe('Hello, world!')
       expectTypeOf(result).toEqualTypeOf<Buffer>()
     })
 
@@ -201,7 +202,7 @@ if (import.meta.vitest) {
       const stream = Readable.from(['Hello, world!'])
       const result = await execute('cat', undefined, { stdin: stream })
       const string = result.toString('utf8')
-      expect(string).toEqual('Hello, world!')
+      expect(string).toBe('Hello, world!')
       expectTypeOf(result).toEqualTypeOf<Buffer>()
     })
 
@@ -209,7 +210,7 @@ if (import.meta.vitest) {
       const result = execute('cat', undefined, 'utf8')
       result.stdin?.write('Hello, world!')
       result.stdin?.end()
-      await expect(result).resolves.toEqual('Hello, world!')
+      await expect(result).resolves.toBe('Hello, world!')
       expectTypeOf(result).toEqualTypeOf<Awaitable<ChildProcess, string>>()
     })
   })
@@ -218,7 +219,7 @@ if (import.meta.vitest) {
     it('should handle Buffer arguments with process substitution', async() => {
       const buffer = Buffer.from('Hello, world!')
       const result = await execute('cat', [buffer], { encoding: 'utf8' })
-      expect(result).toEqual('Hello, world!')
+      expect(result).toBe('Hello, world!')
       expectTypeOf(result).toEqualTypeOf<string>()
     })
 
@@ -226,21 +227,21 @@ if (import.meta.vitest) {
       const a = Buffer.from('Hello')
       const b = Buffer.from(', world?')
       const result = await execute('cat', [a, b], { encoding: 'utf8' })
-      expect(result).toEqual('Hello, world?')
+      expect(result).toBe('Hello, world?')
       expectTypeOf(result).toEqualTypeOf<string>()
     })
 
     it('should handle Readable arguments with process substitution', async() => {
       const stream = Readable.from(['Hello, world!'])
       const result = await execute('cat', [stream], { encoding: 'utf8' })
-      expect(result).toEqual('Hello, world!')
+      expect(result).toBe('Hello, world!')
       expectTypeOf(result).toEqualTypeOf<string>()
     })
 
     it('should handle Array<number> arguments with process substitution', async() => {
       const array = Uint8Array.from([0x48, 0x65, 0x6C, 0x6C, 0x6F])
       const result = await execute('cat', [array], { encoding: 'utf8' })
-      expect(result).toEqual('Hello')
+      expect(result).toBe('Hello')
       expectTypeOf(result).toEqualTypeOf<string>()
     })
   })

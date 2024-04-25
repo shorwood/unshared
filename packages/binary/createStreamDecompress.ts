@@ -1,6 +1,6 @@
-import { randomBytes } from 'node:crypto'
-import { PassThrough, Readable, Transform } from 'node:stream'
 import { Gunzip, Inflate, ZlibOptions, createDeflate, createGunzip, createGzip, createInflate } from 'node:zlib'
+import { PassThrough, Readable, Transform } from 'node:stream'
+import { randomBytes } from 'node:crypto'
 
 const Z_GZIP_HEADER = Buffer.from([0x1F, 0x8B, 0x08])
 const Z_DEFLATE_HEADER_1 = Buffer.from([0x78, 0x9C])
@@ -32,6 +32,9 @@ function isHeaderDeflate(chunk: Buffer) {
  * it is passed through.
  */
 export class Decompress extends Transform {
+  /** The decompressor to use. */
+  private decompressor: Gunzip | Inflate | PassThrough | undefined
+
   /**
    * Create a Transform stream that decompresses data if it is compressed. If
    * the data is not compressed, it is passed through. This functions allows,
@@ -49,9 +52,6 @@ export class Decompress extends Transform {
    */
   constructor(public options: ZlibOptions = {}) { super() }
 
-  /** The decompressor to use. */
-  private decompressor: Gunzip | Inflate | PassThrough | undefined
-
   /**
    * Transform the data.
    *
@@ -61,6 +61,7 @@ export class Decompress extends Transform {
    * @returns The transformed chunk.
    */
   override _transform(chunk: Buffer, encoding: BufferEncoding, callback: (error?: Error | null, data?: any) => void) {
+
     // --- If we already have a decompressor, write to it.
     if (this.decompressor) return this.decompressor.write(chunk, encoding, callback)
 
@@ -99,29 +100,29 @@ if (import.meta.vitest) {
   const buffer = randomBytes(2048)
   const expected = buffer.toString('hex')
 
-  it('should not decompress raw data', async() => {
+  test('should not decompress raw data', async() => {
     const decompress = createStreamDecompress()
     const result = Readable.from(buffer).pipe(decompress)
     const chunks = await result.toArray()
     const data = Buffer.concat(chunks).toString('hex')
-    expect(data).toEqual(expected)
+    expect(data).toStrictEqual(expected)
   })
 
-  it('should decompress gzip data', async() => {
+  test('should decompress gzip data', async() => {
     const compress = createGzip()
     const decompress = createStreamDecompress()
     const result = Readable.from(buffer).pipe(compress).pipe(decompress)
     const chunks = await result.toArray()
     const data = Buffer.concat(chunks).toString('hex')
-    expect(data).toEqual(expected)
+    expect(data).toStrictEqual(expected)
   })
 
-  it('should decompress deflate data', async() => {
+  test('should decompress deflate data', async() => {
     const compress = createDeflate()
     const decompress = createStreamDecompress()
     const result = Readable.from(buffer).pipe(compress).pipe(decompress)
     const chunks = await result.toArray()
     const data = Buffer.concat(chunks).toString('hex')
-    expect(data).toEqual(expected)
+    expect(data).toStrictEqual(expected)
   })
 }

@@ -9,6 +9,7 @@
  * @example mode(10, 20, 30) // 10
  */
 export function mode(...numbers: number[]): number {
+
   // --- Get the occurrences of each number.
   const counts: Record<number, number> = {}
   for (const number of numbers) {
@@ -30,10 +31,10 @@ export function mode(...numbers: number[]): number {
   return result
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should compute the mode of a set of numbers', () => {
+  test('should compute the mode of a set of numbers', () => {
     const result = mode(10, 10, 20, 30)
-    expect(result).toEqual(10)
+    expect(result).toBe(10)
   })
 }

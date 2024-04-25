@@ -1,13 +1,13 @@
-import { createPattern } from '../packages/string/createPattern'
-import { readdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { readdir, writeFile } from 'node:fs/promises'
 import { getPackageMetadata } from './utils'
+import { createPattern } from '../packages/string/createPattern'
 
 interface IndexFile {
-  /** The path to the index file. */
-  path: string
   /** The content of the index file. */
   content: string
+  /** The path to the index file. */
+  path: string
 }
 
 /**
@@ -25,6 +25,7 @@ async function buildIndex(path: string): Promise<IndexFile> {
   // --- Iterate over the directory entities.
   for (const entity of entities) {
     try {
+
       // --- Find subdirectories containing an index file.
       const isDirectory = entity.isDirectory()
       const isFile = entity.isFile()
@@ -63,8 +64,8 @@ async function buildIndex(path: string): Promise<IndexFile> {
 
   // --- Return the index file.
   return {
-    path: join(path, 'index.ts'),
     content: `${indexContent}\n`,
+    path: join(path, 'index.ts'),
   }
 }
 
@@ -102,6 +103,6 @@ export async function buildIndexes(packageName: string): Promise<void> {
     .sort((a, b) => a.path.length - b.path.length)
 
   // --- Write and log the index files.
-  for (const { path, content } of indexes)
+  for (const { content, path } of indexes)
     await writeFile(path, content, 'utf8')
 }

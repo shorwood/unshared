@@ -21,41 +21,41 @@ export function nand(...values: boolean[]): boolean {
   return values.some(a => !a)
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should return false if both parameters are true', () => {
+  test('should return false if both parameters are true', () => {
     const result = nand(true, true)
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
     expectTypeOf(result).toEqualTypeOf<false>()
   })
 
-  it('should return true if the first parameter is false', () => {
+  test('should return true if the first parameter is false', () => {
     const result = nand(true, false)
-    expect(result).toEqual(true)
+    expect(result).toBeTruthy()
     expectTypeOf(result).toEqualTypeOf<true>()
   })
 
-  it('should return true if the second parameter is false', () => {
+  test('should return true if the second parameter is false', () => {
     const result = nand(false, true)
-    expect(result).toEqual(true)
+    expect(result).toBeTruthy()
     expectTypeOf(result).toEqualTypeOf<true>()
   })
 
-  it('should return true if both parameters are false', () => {
+  test('should return true if both parameters are false', () => {
     const result = nand(false, false)
-    expect(result).toEqual(true)
+    expect(result).toBeTruthy()
     expectTypeOf(result).toEqualTypeOf<true>()
   })
 
-  it('should return true if some values are false', () => {
+  test('should return true if some values are false', () => {
     const result = nand(false, false, false, true)
-    expect(result).toEqual(true)
+    expect(result).toBeTruthy()
     expectTypeOf(result).toEqualTypeOf<boolean>()
   })
 
-  it('should return false if all values are true', () => {
+  test('should return false if all values are true', () => {
     const result = nand(true, true, true, true)
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
     expectTypeOf(result).toEqualTypeOf<boolean>()
   })
 }

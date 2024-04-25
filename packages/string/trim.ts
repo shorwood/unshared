@@ -14,11 +14,11 @@ export function trim<S extends string>(string: S): Trim<S> {
   return string.trim() as Trim<S>
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should remove whitespace from both sides of a string', () => {
+  test('should remove whitespace from both sides of a string', () => {
     const result = trim(' Hello world ')
-    expect(result).toEqual('Hello world')
+    expect(result).toBe('Hello world')
     expectTypeOf(result).toEqualTypeOf<'Hello world'>()
   })
 }

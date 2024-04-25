@@ -16,22 +16,22 @@ export type StringCombinaison<S extends string[]> =
 
 /** v8 ignore start */
 if (import.meta.vitest) {
-  it('should return all possible combinations of 2 characters', () => {
+  test('should return all possible combinations of 2 characters', () => {
     type Result = StringCombinaison<['a', 'b']>
     expectTypeOf<Result>().toEqualTypeOf<'ab' | 'ba'>()
   })
 
-  it('should return all possible combinations of 3 characters', () => {
+  test('should return all possible combinations of 3 characters', () => {
     type Result = StringCombinaison<['a', 'b', 'c']>
     expectTypeOf<Result>().toEqualTypeOf<'abc' | 'acb' | 'bac' | 'bca' | 'cab' | 'cba'>()
   })
 
-  it('should return all possible combinations of 4 characters', () => {
+  test('should return all possible combinations of 4 characters', () => {
     type Result = StringCombinaison<['a', 'b', 'c', 'd']>
     expectTypeOf<Result>().toEqualTypeOf<'abcd' | 'abdc' | 'acbd' | 'acdb' | 'adbc' | 'adcb' | 'bacd' | 'bcad' | 'bcda' | 'bdca' | 'cabd' | 'cbad' | 'cbda' | 'cdba' | 'dabc' | 'dacb' | 'dbac' | 'dbca' | 'dcab' | 'dcba'>()
   })
 
-  it('should return all possible combinations of 2 or 3 characters', () => {
+  test('should return all possible combinations of 2 or 3 characters', () => {
     type Result = StringCombinaison<['a', 'b', '' | 'c']>
     expectTypeOf<Result>().toEqualTypeOf<'ab' | 'abc' | 'acb' | 'ba' | 'bac' | 'bca' | 'cab' | 'cba'>()
   })

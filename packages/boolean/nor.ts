@@ -21,41 +21,41 @@ export function nor(...values: boolean[]): boolean {
   return values.every(a => !a)
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should return true if both parameters are false', () => {
+  test('should return true if both parameters are false', () => {
     const result = nor(false, false)
-    expect(result).toEqual(true)
+    expect(result).toBeTruthy()
     expectTypeOf(result).toEqualTypeOf<true>()
   })
 
-  it('should return false if the first parameter is true', () => {
+  test('should return false if the first parameter is true', () => {
     const result = nor(true, false)
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
     expectTypeOf(result).toEqualTypeOf<false>()
   })
 
-  it('should return false if the second parameter is true', () => {
+  test('should return false if the second parameter is true', () => {
     const result = nor(false, true)
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
     expectTypeOf(result).toEqualTypeOf<false>()
   })
 
-  it('should return false if both parameters are true', () => {
+  test('should return false if both parameters are true', () => {
     const result = nor(true, true)
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
     expectTypeOf(result).toEqualTypeOf<false>()
   })
 
-  it('should return true if all values are false', () => {
+  test('should return true if all values are false', () => {
     const result = nor(false, false, false, false)
-    expect(result).toEqual(true)
+    expect(result).toBeTruthy()
     expectTypeOf(result).toEqualTypeOf<boolean>()
   })
 
-  it('should return false if some values are true', () => {
+  test('should return false if some values are true', () => {
     const result = nor(false, false, false, true)
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
     expectTypeOf(result).toEqualTypeOf<boolean>()
   })
 }

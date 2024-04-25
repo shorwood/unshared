@@ -17,39 +17,39 @@ export type MathMultiply<A extends number, B extends number> =
             : IsAnyNegative<A, B> extends true ? Negative<Multiply<Absolute<A>, Absolute<B>>>
               : never
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should compute the product of 10 and 10 as 100', () => {
+  test('should compute the product of 10 and 10 as 100', () => {
     type Result = MathMultiply<5, 10>
     expectTypeOf<Result>().toEqualTypeOf<50>()
   })
 
-  it('should return number when a negative integer is passed', () => {
+  test('should return number when a negative integer is passed', () => {
     type Result = MathMultiply<5, -10>
     expectTypeOf<Result>().toEqualTypeOf<-50>()
   })
 
-  it('should return number when two negative integer are passed', () => {
+  test('should return number when two negative integer are passed', () => {
     type Result = MathMultiply<-5, -10>
     expectTypeOf<Result>().toEqualTypeOf<50>()
   })
 
-  it('should compute the product of 0 and 10 as 0', () => {
+  test('should compute the product of 0 and 10 as 0', () => {
     type Result = MathMultiply<0, 10>
     expectTypeOf<Result>().toEqualTypeOf<0>()
   })
 
-  it('should compute the product of 10 and 0 as 0', () => {
+  test('should compute the product of 10 and 0 as 0', () => {
     type Result = MathMultiply<10, 0>
     expectTypeOf<Result>().toEqualTypeOf<0>()
   })
 
-  it('should compute the product of 0 and 0 as 0', () => {
+  test('should compute the product of 0 and 0 as 0', () => {
     type Result = MathMultiply<0, 0>
     expectTypeOf<Result>().toEqualTypeOf<0>()
   })
 
-  it('should return number when a number is passed', () => {
+  test('should return number when a number is passed', () => {
     type Result = MathMultiply<10, number>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })

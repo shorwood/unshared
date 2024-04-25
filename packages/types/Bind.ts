@@ -1,6 +1,6 @@
-import { Function } from './Function'
-import { TupleLength } from './TupleLength'
 import { TupleSlice } from './TupleSlice'
+import { TupleLength } from './TupleLength'
+import { Function } from './Function'
 
 /**
  * A function where the first parameter is already bound to `this`.
@@ -24,31 +24,31 @@ export type Bind<T extends Function, P extends unknown[] = []> =
 
 /** v8 ignore start */
 if (import.meta.vitest) {
-  it('should return the type as is if no parameters are provided', () => {
+  test('should return the type as is if no parameters are provided', () => {
     type Result = Bind<(x: number, y: number) => boolean>
     type Expected = (x: number, y: number) => boolean
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should return a bound function as is if no other parameters are provided', () => {
+  test('should return a bound function as is if no other parameters are provided', () => {
     type Result = Bind<(this: string, x: number, y: number) => boolean>
     type Expected = (this: string, x: number, y: number) => boolean
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should bind the this parameter if using named tuple parameters', () => {
+  test('should bind the this parameter if using named tuple parameters', () => {
     type Result = Bind<(x: number, y: number) => boolean, [this: string]>
     type Expected = (this: string, x: number, y: number) => boolean
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should bind the this parameter and append the other parameters', () => {
+  test('should bind the this parameter and append the other parameters', () => {
     type Result = Bind<(x: number, y: number) => boolean, [this: string, x: string]>
     type Expected = (this: string, y: number) => boolean
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should only bind the parameters if no this parameter is provided', () => {
+  test('should only bind the parameters if no this parameter is provided', () => {
     type Result = Bind<(x: number, y: number) => boolean, [undefined, x: string]>
     type Expected = (y: number) => boolean
     expectTypeOf<Result>().toEqualTypeOf<Expected>()

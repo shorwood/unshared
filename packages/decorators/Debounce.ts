@@ -1,5 +1,5 @@
-import { debounce } from '@unshared/functions/debounce'
 import { Function, MethodDecorator } from '@unshared/types'
+import { debounce } from '@unshared/functions/debounce'
 
 /**
  * Debounce a method so that it will only execute after the specified delay. If the method
@@ -40,7 +40,7 @@ if (import.meta.vitest) {
     vi.useFakeTimers()
   })
 
-  it('should not call the function if the delay has not passed', () => {
+  test('should not call the function if the delay has not passed', () => {
     const fn = vi.fn()
     class Greeter { @Debounce(100) fn() { fn() } }
     const instance = new Greeter()
@@ -51,7 +51,7 @@ if (import.meta.vitest) {
     expect(fn).not.toHaveBeenCalled()
   })
 
-  it('should call the function once after the delay has passed', () => {
+  test('should call the function once after the delay has passed', () => {
     const fn = vi.fn()
     class Greeter { @Debounce(10) fn() { fn() } }
     const instance = new Greeter()
@@ -62,7 +62,7 @@ if (import.meta.vitest) {
     expect(fn).toHaveBeenCalledTimes(1)
   })
 
-  it('should call the function once with the parameters of the last call', () => {
+  test('should call the function once with the parameters of the last call', () => {
     const fn = vi.fn()
     class Greeter { @Debounce(10) fn(name: string) { fn(name) } }
     const instance = new Greeter()
@@ -73,7 +73,7 @@ if (import.meta.vitest) {
     expect(fn).toHaveBeenCalledWith('Charlie')
   })
 
-  it('should call the function multiple times if the delay has passed', () => {
+  test('should call the function multiple times if the delay has passed', () => {
     const fn = vi.fn()
     class Greeter { @Debounce(10) fn() { fn() } }
     const instance = new Greeter()
@@ -86,7 +86,7 @@ if (import.meta.vitest) {
     expect(fn).toHaveBeenCalledTimes(3)
   })
 
-  it('should return undefined', () => {
+  test('should return undefined', () => {
     const fn = vi.fn(() => 'foobar')
     class Greeter { @Debounce(10) fn() { return fn() } }
     const instance = new Greeter()

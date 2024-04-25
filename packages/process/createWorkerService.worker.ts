@@ -1,6 +1,7 @@
+/* eslint-disable vitest/require-hook */
 import { createRequire } from 'node:module'
-import { WorkerServicePayload } from './createWorkerService'
 import { workerRegister } from './workerRegister'
+import { WorkerServicePayload } from './createWorkerService'
 
 async function callback(request: WorkerServicePayload) {
   const { moduleId, name = 'default', parameters = [], paths } = request

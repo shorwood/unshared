@@ -7,19 +7,19 @@
  */
 export type MaybeArray<U = unknown> = U | U[]
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should return a type that may be an array of unknown', () => {
+  test('should return a type that may be an array of unknown', () => {
     type Result = MaybeArray
-    expectTypeOf<Result>().toEqualTypeOf<unknown[] | unknown>()
+    expectTypeOf<Result>().toEqualTypeOf<unknown>()
   })
 
-  it('should return a type that may be an array of U', () => {
+  test('should return a type that may be an array of U', () => {
     type Result = MaybeArray<number>
-    expectTypeOf<Result>().toEqualTypeOf<number[] | number>()
+    expectTypeOf<Result>().toEqualTypeOf<number | number[]>()
   })
 
-  it('should return a type that may be an array of U when U is an array', () => {
+  test('should return a type that may be an array of U when U is an array', () => {
     type Result = MaybeArray<number[]>
     expectTypeOf<Result>().toEqualTypeOf<number[] | number[][]>()
   })

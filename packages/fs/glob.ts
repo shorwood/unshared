@@ -1,10 +1,10 @@
-import { Awaitable, awaitable } from '@unshared/functions/awaitable'
-import { createPattern } from '@unshared/string/createPattern'
-import { MaybeArray } from '@unshared/types'
-import { Stats } from 'node:fs'
-import { readdir, stat } from 'node:fs/promises'
-import { join, relative } from 'node:path'
 import { cwd as getCwd } from 'node:process'
+import { join, relative } from 'node:path'
+import { readdir, stat } from 'node:fs/promises'
+import { Stats } from 'node:fs'
+import { MaybeArray } from '@unshared/types'
+import { createPattern } from '@unshared/string/createPattern'
+import { Awaitable, awaitable } from '@unshared/functions/awaitable'
 
 /**
  * An entry in the glob result iterator or array.
@@ -28,12 +28,11 @@ export interface GlobOptions<Stat extends boolean = boolean> {
    */
   cwd?: string
   /**
-   * Return the file stats instead of the file path. Allowing you to filter-out
-   * files based on their stats.
+   * A list of patterns to exclude from the result.
    *
-   * @default false
+   * @default []
    */
-  getStats?: Stat
+  exclude?: MaybeArray<string>
   /**
    * Return the paths relative to the current working directory. Will be ignored
    * if `stats` is `true`.
@@ -42,12 +41,12 @@ export interface GlobOptions<Stat extends boolean = boolean> {
    */
   getRelative?: boolean
   /**
-   * Only return entries that matches the path of a file.
+   * Return the file stats instead of the file path. Allowing you to filter-out
+   * files based on their stats.
    *
    * @default false
-   * @example glob('src/**', { onlyFiles: true }) // ['src/foo.ts', 'src/foo/bar.ts']
    */
-  onlyFiles?: boolean
+  getStats?: Stat
   /**
    * If `true` and the glob pattern will only match directories.
    *
@@ -56,11 +55,12 @@ export interface GlobOptions<Stat extends boolean = boolean> {
    */
   onlyDirectories?: boolean
   /**
-   * A list of patterns to exclude from the result.
+   * Only return entries that matches the path of a file.
    *
-   * @default []
+   * @default false
+   * @example glob('src/**', { onlyFiles: true }) // ['src/foo.ts', 'src/foo/bar.ts']
    */
-  exclude?: MaybeArray<string>
+  onlyFiles?: boolean
 }
 
 /**
@@ -79,11 +79,11 @@ export function glob<T extends boolean>(pattern: MaybeArray<string>, options?: G
 export function glob(pattern: MaybeArray<string>, options: GlobOptions = {}): GlobResult {
   const {
     cwd = getCwd(),
-    getStats = false,
-    getRelative = false,
-    onlyFiles = false,
-    onlyDirectories = false,
     exclude = [],
+    getRelative = false,
+    getStats = false,
+    onlyDirectories = false,
+    onlyFiles = false,
   } = options
 
   // --- Convert the pattern to an array of RegExp.
@@ -122,8 +122,8 @@ export function glob(pattern: MaybeArray<string>, options: GlobOptions = {}): Gl
 
         // --- Return the result.
         let result: GlobEntry = pathAbsolute
-        if (getRelative) result = `./${pathRelative}`
         if (getStats) result = await stat(pathAbsolute)
+        if (getRelative) result = `./${pathRelative}`
         yield result
       }
     }
@@ -136,76 +136,75 @@ export function glob(pattern: MaybeArray<string>, options: GlobOptions = {}): Gl
   return awaitable(iterator) as GlobResult
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  // eslint-disable-next-line n/no-extraneous-import
   const { vol } = await import('memfs')
 
   beforeEach(() => {
     vol.fromJSON({
-      '/project/foo.ts': '',
       '/project/bar.ts': '',
       '/project/baz.ts': '',
-      '/project/README.md': '',
-      '/project/dist/foo.js': '',
       '/project/dist/bar.js': '',
       '/project/dist/baz.js': '',
-      '/project/dist/docs/README.md': '',
       '/project/dist/docs/CHANGELOG.md': '',
+      '/project/dist/docs/README.md': '',
+      '/project/dist/foo.js': '',
+      '/project/foo.ts': '',
+      '/project/README.md': '',
     })
   })
 
-  it('should yield the paths matching a glob pattern', async() => {
+  test('should yield the paths matching a glob pattern', async() => {
     const files = glob('*.ts', { cwd: '/project' })
     const result = []
     for await (const file of files) result.push(file)
-    expect(result).toEqual([
+    expect(result).toStrictEqual([
       '/project/bar.ts',
       '/project/baz.ts',
       '/project/foo.ts',
     ])
   })
 
-  it('should find the absolute path matching a glob pattern', async() => {
+  test('should find the absolute path matching a glob pattern', async() => {
     const files = await glob('*.ts', { cwd: '/project' })
-    expect(files).toEqual([
+    expect(files).toStrictEqual([
       '/project/bar.ts',
       '/project/baz.ts',
       '/project/foo.ts',
     ])
   })
 
-  it('should find the relative path matching a glob pattern', async() => {
+  test('should find the relative path matching a glob pattern', async() => {
     const files = await glob('*.ts', { cwd: '/project', getRelative: true })
-    expect(files).toEqual([
+    expect(files).toStrictEqual([
       './bar.ts',
       './baz.ts',
       './foo.ts',
     ])
   })
 
-  it('should find the stats matching a glob pattern', async() => {
+  test('should find the stats matching a glob pattern', async() => {
     const files = await glob('*.ts', { cwd: '/project', getStats: true })
     const expected = [
       vol.statSync('/project/foo.ts'),
       vol.statSync('/project/bar.ts'),
       vol.statSync('/project/baz.ts'),
     ]
-    expect(files.map(x => x.uid)).toEqual(expected.map(x => x.uid))
+    expect(files.map(x => x.uid)).toStrictEqual(expected.map(x => x.uid))
   })
 
-  it('should find the paths matching an exclude pattern', async() => {
+  test('should find the paths matching an exclude pattern', async() => {
     const files = await glob('*.ts', { cwd: '/project', exclude: 'baz.ts' })
     const expected = [
       '/project/bar.ts',
       '/project/foo.ts',
     ]
-    expect(files).toEqual(expected)
+    expect(files).toStrictEqual(expected)
   })
 
-  it('should find nested and non-nested files', async() => {
+  test('should find nested and non-nested files', async() => {
     const files = await glob('**/*', { cwd: '/project', onlyFiles: true })
-    expect(files).toEqual([
+    expect(files).toStrictEqual([
       '/project/README.md',
       '/project/bar.ts',
       '/project/baz.ts',
@@ -218,17 +217,17 @@ if (import.meta.vitest) {
     ])
   })
 
-  it('should find nested and non-nested directories', async() => {
+  test('should find nested and non-nested directories', async() => {
     const files = await glob('**/*', { cwd: '/project', onlyDirectories: true })
-    expect(files).toEqual([
+    expect(files).toStrictEqual([
       '/project/dist',
       '/project/dist/docs',
     ])
   })
 
-  it('should find files but exclude the dist directory', async() => {
+  test('should find files but exclude the dist directory', async() => {
     const files = await glob('*', { cwd: '/project', exclude: 'dist/**' })
-    expect(files).toEqual([
+    expect(files).toStrictEqual([
       '/project/README.md',
       '/project/bar.ts',
       '/project/baz.ts',
@@ -236,17 +235,17 @@ if (import.meta.vitest) {
     ])
   })
 
-  it('should infer the return type as a collection of `Stats`', () => {
+  test('should infer the return type as a collection of `Stats`', () => {
     const files = glob('*.ts', { cwd: '/project', getStats: true })
     expectTypeOf(files).toEqualTypeOf<Awaitable<AsyncIterable<Stats>, Stats[]>>()
   })
 
-  it('should infer the return type as a collection of `string`', () => {
+  test('should infer the return type as a collection of `string`', () => {
     const files = glob('*.ts', { cwd: '/project', getStats: false })
     expectTypeOf(files).toEqualTypeOf<Awaitable<AsyncIterable<string>, string[]>>()
   })
 
-  it('should infer the return type as a collection of `Stats` or `string`', () => {
+  test('should infer the return type as a collection of `Stats` or `string`', () => {
     const files = glob('*.ts', { cwd: '/project', getStats: true as boolean })
     expectTypeOf(files).toEqualTypeOf<Awaitable<AsyncIterable<Stats>, Stats[]> | Awaitable<AsyncIterable<string>, string[]>>()
   })

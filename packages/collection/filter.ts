@@ -44,6 +44,7 @@ export function filter(object: Collection, iterator: IteratorFunction) {
 
   // --- If the value is an iterable, use the iterator method.
   if (Symbol.iterator in object)
+
     // @ts-expect-error: `object` has a `Symbol.iterator` property but it's not recognized.
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return [...object].filter((value, key) => iterator(value, key, object))
@@ -58,33 +59,33 @@ if (import.meta.vitest) {
   describe('object', () => {
     it('should filter-in the values of a readonly object using a predicator', () => {
       const iterator = (value: unknown): value is number => typeof value === 'number'
-      const result = filter({ foo: 1, bar: '2', baz: [3] } as const, iterator)
-      expect(result).toEqual({ foo: 1 })
+      const result = filter({ bar: '2', baz: [3], foo: 1 } as const, iterator)
+      expect(result).toStrictEqual({ foo: 1 })
       expectTypeOf(result).toEqualTypeOf<{ foo: 1 }>()
     })
 
     it('should filter-in non-nullable values of a readonly object', () => {
       // eslint-disable-next-line unicorn/no-null
-      const result = filter({ foo: 1, bar: null, baz: undefined } as const, Boolean)
-      expect(result).toEqual({ foo: 1 })
+      const result = filter({ bar: null, baz: undefined, foo: 1 } as const, Boolean)
+      expect(result).toStrictEqual({ foo: 1 })
       expectTypeOf(result).toEqualTypeOf<{ foo: 1 }>()
     })
 
     it('should filter-in the values of an object using a predicator', () => {
       const iterator = (value: unknown): value is number => typeof value === 'number'
-      const result = filter({ foo: 1, bar: '2', baz: [3] }, iterator)
-      expect(result).toEqual({ foo: 1 })
+      const result = filter({ bar: '2', baz: [3], foo: 1 }, iterator)
+      expect(result).toStrictEqual({ foo: 1 })
       expectTypeOf(result).toEqualTypeOf<{ foo: number }>()
     })
 
     it('should filter-in the values of an object using a non-predicator', () => {
       const iterator = (value: unknown) => typeof value === 'number'
-      const result = filter({ foo: 1, bar: '2', baz: [3] }, iterator)
-      expect(result).toEqual({ foo: 1 })
+      const result = filter({ bar: '2', baz: [3], foo: 1 }, iterator)
+      expect(result).toStrictEqual({ foo: 1 })
       expectTypeOf(result).toEqualTypeOf<{
-        foo?: number
         bar?: string
         baz?: number[]
+        foo?: number
       }>()
     })
   })
@@ -93,44 +94,44 @@ if (import.meta.vitest) {
     it('should filter-in the values of a readonly array using a predicator', () => {
       const iterator = (value: unknown): value is number => typeof value === 'number'
       const result = filter([1, '2', [3]] as const, iterator)
-      expect(result).toEqual([1])
+      expect(result).toStrictEqual([1])
       expectTypeOf(result).toEqualTypeOf<Array<1>>()
     })
 
     it('should filter-in the values of an array using a predicator', () => {
       const iterator = (value: unknown): value is number => typeof value === 'number'
       const result = filter([1, '2', [3]], iterator)
-      expect(result).toEqual([1])
+      expect(result).toStrictEqual([1])
       expectTypeOf(result).toEqualTypeOf<number[]>()
     })
 
     it('should filter-in the values of an array using a non-predicator', () => {
       const iterator = (value: unknown) => typeof value === 'number'
       const result = filter([1, '2', [3]], iterator)
-      expect(result).toEqual([1])
-      expectTypeOf(result).toEqualTypeOf<Array<number[] | number | string>>()
+      expect(result).toStrictEqual([1])
+      expectTypeOf(result).toEqualTypeOf<Array<number | number[] | string>>()
     })
   })
 
   describe('iterables', () => {
     it('should filter-in the values of a Map using a predicator', () => {
-      const map = new Map<string, number | string>([['foo', 1], ['bar', '2']])
+      const map = new Map<string, number | string>([['bar', '2'], ['foo', 1]])
       const result = filter(map, (value): value is [string, number] => typeof value[1] === 'number')
-      expect(result).toEqual([['foo', 1]])
+      expect(result).toStrictEqual([['foo', 1]])
       expectTypeOf(result).toEqualTypeOf<Array<[string, number]>>()
     })
 
     it('should filter-in the values of a Set using a predicator', () => {
       const set = new Set([1, '2', 3] as const)
       const result = filter(set, (value: unknown): value is number => typeof value === 'number')
-      expect(result).toEqual([1, 3])
+      expect(result).toStrictEqual([1, 3])
       expectTypeOf(result).toEqualTypeOf<Array<1 | 3>>()
     })
 
     it('should filter-in the values of a Set using a non-predicator', () => {
       const set = new Set([1, '2', 3])
       const result = filter(set, (value: unknown) => typeof value === 'number')
-      expect(result).toEqual([1, 3])
+      expect(result).toStrictEqual([1, 3])
       expectTypeOf(result).toEqualTypeOf<Array<number | string>>()
     })
   })

@@ -14,34 +14,34 @@ export type MathFloor<N extends number> =
         : `${N}` extends `${infer S extends number}.${number}` ? S
           : never
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should floor a positive decimal', () => {
+  test('should floor a positive decimal', () => {
     type Result = MathFloor<1.1>
     expectTypeOf<Result>().toEqualTypeOf<1>()
   })
 
-  it('should floor a negative decimal', () => {
+  test('should floor a negative decimal', () => {
     type Result = MathFloor<-1.1>
     expectTypeOf<Result>().toEqualTypeOf<-2>()
   })
 
-  it('should floor a positive integer', () => {
+  test('should floor a positive integer', () => {
     type Result = MathFloor<1>
     expectTypeOf<Result>().toEqualTypeOf<1>()
   })
 
-  it('should floor a negative integer', () => {
+  test('should floor a negative integer', () => {
     type Result = MathFloor<-1>
     expectTypeOf<Result>().toEqualTypeOf<-1>()
   })
 
-  it('should floor zero to zero', () => {
+  test('should floor zero to zero', () => {
     type Result = MathFloor<0>
     expectTypeOf<Result>().toEqualTypeOf<0>()
   })
 
-  it('should return number when given number', () => {
+  test('should return number when given number', () => {
     type Result = MathFloor<number>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })

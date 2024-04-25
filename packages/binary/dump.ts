@@ -1,5 +1,12 @@
 export interface DumpOptions {
   /**
+   * The number of bytes to dump per line. It also affects the number of bytes
+   * displayed per group and can be adjusted to fit the terminal width.
+   *
+   * @default 16
+   */
+  bytesPerLine?: number
+  /**
    * The string representation of the characters on the right side of the dump.
    * It is recommended to keep it as 'ascii' as `utf8` may display multi-byte
    * characters as a single character and may reduce the readability of the dump.
@@ -7,13 +14,6 @@ export interface DumpOptions {
    * @default 'ascii'
    */
   encoding?: 'ascii' | 'utf8'
-  /**
-   * The number of bytes to dump per line. It also affects the number of bytes
-   * displayed per group and can be adjusted to fit the terminal width.
-   *
-   * @default 16
-   */
-  bytesPerLine?: number
   /**
    * Skip zero-filled lines in the dump. Typically, zero-filled lines are not
    * useful and can be skipped to reduce the output size and improve readability.
@@ -33,8 +33,8 @@ export interface DumpOptions {
  */
 export function dump(buffer: Buffer, options: DumpOptions = {}): string {
   const {
-    encoding = 'ascii',
     bytesPerLine = 16,
+    encoding = 'ascii',
     skipZeroLines = true,
   } = options
 
@@ -66,15 +66,15 @@ export function dump(buffer: Buffer, options: DumpOptions = {}): string {
   return lines.join('\n')
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should dump the given buffer', () => {
+  test('should dump the given buffer', () => {
     const buffer = Buffer.from('Hello, world!')
     const result = dump(buffer)
-    expect(result).toEqual('00000000 │ 48 65 6c 6c 6f 2c 20 77 6f 72 6c 64 21          │ Hello, world!')
+    expect(result).toBe('00000000 │ 48 65 6c 6c 6f 2c 20 77 6f 72 6c 64 21          │ Hello, world!')
   })
 
-  it('should split into lines of 16 bytes', () => {
+  test('should split into lines of 16 bytes', () => {
     const buffer = Buffer.from('The quick brown fox jumps over the lazy dog')
     const result = dump(buffer)
     const expected = [
@@ -82,57 +82,57 @@ if (import.meta.vitest) {
       '00000016 │ 66 6f 78 20 6a 75 6d 70 73 20 6f 76 65 72 20 74 │ fox jumps over t',
       '00000032 │ 68 65 20 6c 61 7a 79 20 64 6f 67                │ he lazy dog',
     ].join('\n')
-    expect(result).toEqual(expected)
+    expect(result).toStrictEqual(expected)
   })
 
-  it('should split it into lines of 8 bytes', () => {
+  test('should split it into lines of 8 bytes', () => {
     const buffer = Buffer.from('Hello, world!')
     const result = dump(buffer, { bytesPerLine: 8 })
     const expected = [
       '00000000 │ 48 65 6c 6c 6f 2c 20 77 │ Hello, w',
       '00000008 │ 6f 72 6c 64 21          │ orld!',
     ].join('\n')
-    expect(result).toEqual(expected)
+    expect(result).toStrictEqual(expected)
   })
 
-  it('should remove zero-filled lines by default', () => {
+  test('should remove zero-filled lines by default', () => {
     const buffer = Buffer.from([65, 65, 65, 65, 0, 0, 0, 0, 66, 66, 66, 66])
     const result = dump(buffer, { bytesPerLine: 4 })
     const expected = [
       '00000000 │ 41 41 41 41 │ AAAA',
       '00000008 │ 42 42 42 42 │ BBBB',
     ].join('\n')
-    expect(result).toEqual(expected)
+    expect(result).toStrictEqual(expected)
   })
 
-  it('should not remove zero-filled lines', () => {
+  test('should not remove zero-filled lines', () => {
     const buffer = Buffer.from([65, 65, 65, 65, 0, 0, 0, 0, 66, 66, 66, 66])
-    const result = dump(buffer, { skipZeroLines: false, bytesPerLine: 4 })
+    const result = dump(buffer, { bytesPerLine: 4, skipZeroLines: false })
     const expected = [
       '00000000 │ 41 41 41 41 │ AAAA',
       '00000004 │ 00 00 00 00 │ ....',
       '00000008 │ 42 42 42 42 │ BBBB',
     ].join('\n')
-    expect(result).toEqual(expected)
+    expect(result).toStrictEqual(expected)
   })
 
-  it('should dump the given buffer as ASCII', () => {
+  test('should dump the given buffer as ASCII', () => {
     const buffer = Buffer.from('Hello, world! 你好，世界')
     const result = dump(buffer)
     const expected = [
       '00000000 │ 48 65 6c 6c 6f 2c 20 77 6f 72 6c 64 21 20 e4 bd │ Hello, world! d=',
       '00000016 │ a0 e5 a5 bd ef bc 8c e4 b8 96 e7 95 8c          │  e%=o<.d8.g..',
     ].join('\n')
-    expect(result).toEqual(expected)
+    expect(result).toStrictEqual(expected)
   })
 
-  it('should dump the given buffer as UTF-8', () => {
+  test('should dump the given buffer as UTF-8', () => {
     const buffer = Buffer.from('Hello, world! 你好，世界')
     const result = dump(buffer, { encoding: 'utf8' })
     const expected = [
       '00000000 │ 48 65 6c 6c 6f 2c 20 77 6f 72 6c 64 21 20 e4 bd │ Hello, world! �',
       '00000016 │ a0 e5 a5 bd ef bc 8c e4 b8 96 e7 95 8c          │ �好，世界',
     ].join('\n')
-    expect(result).toEqual(expected)
+    expect(result).toStrictEqual(expected)
   })
 }

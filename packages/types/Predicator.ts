@@ -9,30 +9,30 @@ export type Predicator<T = unknown> = (value: any, ...args: any[]) => value is T
 
 /** v8 ignore start */
 if (import.meta.vitest) {
-  it('should return a predicator for unknowns', () => {
+  test('should return a predicator for unknowns', () => {
     type Result = Predicator
     type Expected = (value: any, ...args: any[]) => value is unknown
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should return a predicator for strings', () => {
+  test('should return a predicator for strings', () => {
     type Result = Predicator<string>
     type Expected = (value: any, ...args: any[]) => value is string
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should return a predicator for numbers', () => {
+  test('should return a predicator for numbers', () => {
     type Result = Predicator<number>
     type Expected = (value: any, ...args: any[]) => value is number
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should match the predicator', () => {
+  test('should match the predicator', () => {
     type Match = (value: unknown) => value is string
     expectTypeOf<Match>().toMatchTypeOf<Predicator>()
   })
 
-  it('should not match functions that return a boolean', () => {
+  test('should not match functions that return a boolean', () => {
     type Match = (value: unknown) => boolean
     expectTypeOf<Match>().not.toMatchTypeOf<Predicator>()
   })

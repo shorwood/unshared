@@ -1,10 +1,10 @@
 export interface Pixel {
+  maxIterations: number
   x: number
   y: number
-  maxIterations: number
 }
 
-export function computePixel({ x, y, maxIterations }: Pixel): number {
+export function computePixel({ maxIterations, x, y }: Pixel): number {
   let zx = 0
   let zy = 0
   let index = 0
@@ -19,16 +19,17 @@ export function computePixel({ x, y, maxIterations }: Pixel): number {
 }
 
 export interface RenderOptions {
-  width: number
   height: number
-  xMin: number
-  xMax: number
-  yMin: number
-  yMax: number
-  zoom: number
   maxIterations: number
+  width: number
+  xMax: number
+  xMin: number
+  yMax: number
+  yMin: number
+  zoom: number
 }
 function generateCharMap(): string[] {
+
   // --- Generate a color map using the hue.
   const charMap = []
   for (let i = 0; i < 256; i++) {
@@ -70,7 +71,7 @@ export function renderBox(props: Record<string, any>) {
 }
 
 export function render(options: RenderOptions) {
-  const { width, height, xMin, xMax, yMin, yMax, maxIterations, zoom } = options
+  const { height, maxIterations, width, xMax, xMin, yMax, yMin, zoom } = options
 
   const xCenter = (xMin + xMax) / 2
   const yCenter = (yMin + yMax) / 2
@@ -85,7 +86,7 @@ export function render(options: RenderOptions) {
 
   for (let y = yStart; y < yStart + ySize; y += ySize / height) {
     for (let x = xStart; x < xStart + xSize; x += xSize / width) {
-      const value = computePixel({ x, y, maxIterations })
+      const value = computePixel({ maxIterations, x, y })
       const char = renderChar(value)
       output += char
     }

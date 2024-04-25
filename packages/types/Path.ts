@@ -47,61 +47,61 @@ export type Path<T, N extends number = 8, P extends string = ''> =
     // --- If T is not an object, return never.
     : never
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should infer the path of a nested object', () => {
+  test('should infer the path of a nested object', () => {
     type Result = Path<{ foo: { bar: { baz: string } } }>
-    type Expected = 'foo.bar.baz' | 'foo.bar' | 'foo'
+    type Expected = 'foo' | 'foo.bar' | 'foo.bar.baz'
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should not infer nested paths if the recursion threshold is reached', () => {
+  test('should not infer nested paths if the recursion threshold is reached', () => {
     type Result = Path<{ foo: { bar: { baz: string } } }, 1>
     type Expected = 'foo'
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should infer the path of a nested array', () => {
+  test('should infer the path of a nested array', () => {
     type Result = Path<{ foo: { bar: { baz: string[] } } }>
-    type Expected = 'foo.bar.baz' | 'foo.bar' | 'foo' | `foo.bar.baz.${number}`
+    type Expected = 'foo' | 'foo.bar' | 'foo.bar.baz' | `foo.bar.baz.${number}`
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should infer the path of a nested object with a number key', () => {
-    type Result = Path<{ foo: string; [x: number]: string }>
+  test('should infer the path of a nested object with a number key', () => {
+    type Result = Path<{ [x: number]: string; foo: string }>
     type Expected = 'foo' | `${number}`
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should infer the path of a nested object with a symbol key', () => {
-    type Result = Path<{ foo: string; [x: symbol]: string }>
+  test('should infer the path of a nested object with a symbol key', () => {
+    type Result = Path<{ [x: symbol]: string; foo: string }>
     type Expected = 'foo'
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should ignore nested symbol keys', () => {
+  test('should ignore nested symbol keys', () => {
     type Result = Path<{ foo: Record<symbol, string> }>
     type Expected = 'foo'
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should infer the path of an array of strings', () => {
+  test('should infer the path of an array of strings', () => {
     type Result = Path<string[]>
     type Expected = `${number}`
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should infer the path of a string to never', () => {
+  test('should infer the path of a string to never', () => {
     type Result = Path<string>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
-  it('should infer the path of a number to never', () => {
+  test('should infer the path of a number to never', () => {
     type Result = Path<number>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
-  it('should infer the path of a boolean to never', () => {
+  test('should infer the path of a boolean to never', () => {
     type Result = Path<boolean>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })

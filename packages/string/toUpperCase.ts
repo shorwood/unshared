@@ -11,11 +11,11 @@ export function toUpperCase<S extends string>(value: S): Uppercase<S> {
   return value.toUpperCase() as Uppercase<S>
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should convert a string to upper case', () => {
+  test('should convert a string to upper case', () => {
     const result = toUpperCase('foo_bar_1')
-    expect(result).toEqual('FOO_BAR_1')
+    expect(result).toBe('FOO_BAR_1')
     expectTypeOf(result).toEqualTypeOf<'FOO_BAR_1'>()
   })
 }

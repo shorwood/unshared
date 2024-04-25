@@ -34,72 +34,72 @@ export function colorHexToRgb(color: string): RGB {
   }
 
   // --- Return RGB object.
-  return createColorRgb({ r, g, b, a })
+  return createColorRgb({ a, b, g, r })
 }
 
 /** v8 ignore start */
 if (import.meta.vitest) {
-  it('should parse an hex3 into an RGB object', () => {
+  test('should parse an hex3 into an RGB object', () => {
     const result = colorHexToRgb('123')
-    expect(result).toEqual({
-      r: 0x11,
-      g: 0x22,
-      b: 0x33,
+    expect(result).toStrictEqual({
       a: 0xFF,
+      b: 0x33,
+      g: 0x22,
+      r: 0x11,
     })
   })
 
-  it('should parse an hex4 into an RGB object', () => {
+  test('should parse an hex4 into an RGB object', () => {
     const result = colorHexToRgb('1234')
-    expect(result).toEqual({
-      r: 0x11,
-      g: 0x22,
-      b: 0x33,
+    expect(result).toStrictEqual({
       a: 0x44,
+      b: 0x33,
+      g: 0x22,
+      r: 0x11,
     })
   })
 
-  it('should parse a color in hex6 into an RGB object', () => {
+  test('should parse a color in hex6 into an RGB object', () => {
     const result = colorHexToRgb('123456')
-    expect(result).toEqual({
-      r: 0x12,
-      g: 0x34,
-      b: 0x56,
+    expect(result).toStrictEqual({
       a: 0xFF,
+      b: 0x56,
+      g: 0x34,
+      r: 0x12,
     })
   })
 
-  it('should parse a color in hex8 into an RGB object', () => {
+  test('should parse a color in hex8 into an RGB object', () => {
     const result = colorHexToRgb('12345678')
-    expect(result).toEqual({
-      r: 0x12,
-      g: 0x34,
-      b: 0x56,
+    expect(result).toStrictEqual({
       a: 0x78,
+      b: 0x56,
+      g: 0x34,
+      r: 0x12,
     })
   })
 
-  it('should omit the # prefix', () => {
+  test('should omit the # prefix', () => {
     const result = colorHexToRgb('#12345678')
-    expect(result).toEqual({
-      r: 0x12,
-      g: 0x34,
-      b: 0x56,
+    expect(result).toStrictEqual({
       a: 0x78,
+      b: 0x56,
+      g: 0x34,
+      r: 0x12,
     })
   })
 
-  it('should throw if the color is too short', () => {
+  test('should throw if the color is too short', () => {
     const shouldThrow = () => colorHexToRgb('12')
     expect(shouldThrow).toThrow('Could not parse hexadecimal color from string: "12"')
   })
 
-  it('should throw if the color is too long', () => {
+  test('should throw if the color is too long', () => {
     const shouldThrow = () => colorHexToRgb('123456789')
     expect(shouldThrow).toThrow('Could not parse hexadecimal color from string: "123456789"')
   })
 
-  it('should throw if the color has invalid characters', () => {
+  test('should throw if the color has invalid characters', () => {
     const shouldThrow = () => colorHexToRgb('1234GG')
     expect(shouldThrow).toThrow('Could not parse hexadecimal color from string: "1234GG"')
   })

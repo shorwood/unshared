@@ -1,9 +1,9 @@
-import { defineConfig } from 'rollup'
-import RollupDts from 'rollup-plugin-dts'
 import RollupEsbuild from 'rollup-plugin-esbuild'
-import { glob } from '../packages/fs/glob'
-import { PackageName, TSCONFIG_PATH } from './constants'
+import RollupDts from 'rollup-plugin-dts'
+import { defineConfig } from 'rollup'
 import { getPackageMetadata } from './utils'
+import { PackageName, TSCONFIG_PATH } from './constants'
+import { glob } from '../packages/fs/glob'
 
 /**
  * Build a single package in the current working directory. This will generate
@@ -15,7 +15,7 @@ import { getPackageMetadata } from './utils'
  * @returns A promise that resolves when the build is complete.
  */
 export async function buildBundle(packageName: PackageName) {
-  const { packagePath, outputDirectory, packageDependencies } = await getPackageMetadata(packageName)
+  const { outputDirectory, packageDependencies, packagePath } = await getPackageMetadata(packageName)
 
   // --- Get the input files and external dependencies.
   const inputPaths = await glob('*.ts', { cwd: packagePath, exclude: ['*.d.ts'] })
@@ -24,59 +24,59 @@ export async function buildBundle(packageName: PackageName) {
 
   // --- Base Rollup configuration.
   const rollupConfig = defineConfig({
-    input: inputPaths,
     external,
-    plugins: [
-      RollupEsbuild({
-        target: 'esnext',
-        platform: 'node',
-        tsconfig: TSCONFIG_PATH,
-        sourceMap: true,
-        treeShaking: true,
-        minifySyntax: true,
-        define: { 'import.meta.vitest': 'false' },
-      }),
-    ],
+    input: inputPaths,
     output: [
       {
-        dir: outputDirectory,
-        format: 'esm',
-        sourcemap: true,
-        entryFileNames: '[name].js',
         assetFileNames: 'assets/[name].js',
         chunkFileNames: 'chunks/[hash].js',
+        dir: outputDirectory,
+        entryFileNames: '[name].js',
+        format: 'esm',
+        sourcemap: true,
       },
       {
-        dir: outputDirectory,
-        format: 'cjs',
-        sourcemap: true,
-        entryFileNames: '[name].cjs',
         assetFileNames: 'assets/[name].cjs',
         chunkFileNames: 'chunks/[hash].cjs',
+        dir: outputDirectory,
+        entryFileNames: '[name].cjs',
+        format: 'cjs',
+        sourcemap: true,
       },
+    ],
+    plugins: [
+      RollupEsbuild({
+        define: { 'import.meta.vitest': 'false' },
+        minifySyntax: true,
+        platform: 'node',
+        sourceMap: true,
+        target: 'esnext',
+        treeShaking: true,
+        tsconfig: TSCONFIG_PATH,
+      }),
     ],
   })
 
   // --- Rollup configuration for `.d.ts` files.
   const rollupConfigDts = defineConfig({
-    input: inputPaths,
     external,
+    input: inputPaths,
+    output: {
+      assetFileNames: 'assets/[name].d.ts',
+      chunkFileNames: 'chunks/[hash].d.ts',
+      dir: outputDirectory,
+      entryFileNames: '[name].d.ts',
+      format: 'esm',
+    },
     plugins: [
       RollupDts({
-        tsconfig: TSCONFIG_PATH,
-        respectExternal: true,
         compilerOptions: {
           strict: true,
         },
+        respectExternal: true,
+        tsconfig: TSCONFIG_PATH,
       }),
     ],
-    output: {
-      dir: outputDirectory,
-      format: 'esm',
-      entryFileNames: '[name].d.ts',
-      chunkFileNames: 'chunks/[hash].d.ts',
-      assetFileNames: 'assets/[name].d.ts',
-    },
   })
 
   // --- Return the configuration.

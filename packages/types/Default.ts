@@ -1,5 +1,5 @@
-import { DefaultObject } from './DefaultObject'
 import { DefaultValue } from './DefaultValue'
+import { DefaultObject } from './DefaultObject'
 
 /**
  * Default a value or collection by another value or collection. Meaning that if
@@ -16,6 +16,7 @@ import { DefaultValue } from './DefaultValue'
  * @example Default<number | undefined, string> // number | string
  */
 export type Default<T1, T2, N extends number = 0, C extends boolean = false> =
+
   // --- Default arrays and tuples.
   ([T1, T2] extends [infer V1 extends readonly any[], infer V2 extends readonly any[]]
     ? C extends true
@@ -34,33 +35,33 @@ export type Default<T1, T2, N extends number = 0, C extends boolean = false> =
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  it('should default objects', () => {
+  test('should default objects', () => {
     type Result = Default<{ a: number; b: string | undefined }, { a: number; b: string }>
     expectTypeOf<Result>().toEqualTypeOf<{ a: number; b: string }>()
   })
 
-  it('should default tuples', () => {
+  test('should default tuples', () => {
     type Result = Default<[number, boolean] | undefined, [number, boolean]>
     expectTypeOf<Result>().toEqualTypeOf<[number, boolean]>()
   })
 
-  it('should default arrays', () => {
+  test('should default arrays', () => {
     type Result = Default<number[] | undefined, string[]>
     expectTypeOf<Result>().toEqualTypeOf<number[] | string[]>()
   })
 
-  it('should concat tuples', () => {
+  test('should concat tuples', () => {
     type Result = Default<[number, boolean], [number, string], 0, true>
     expectTypeOf<Result>().toEqualTypeOf<[number, string, number, boolean]>()
   })
 
-  it('should default primitives', () => {
+  test('should default primitives', () => {
     type Result = Default<number | undefined, string>
     expectTypeOf<Result>().toEqualTypeOf<number | string>()
   })
 
-  it('should default non matching types from left to right', () => {
+  test('should default non matching types from left to right', () => {
     type Result = Default<number | undefined, string[]>
-    expectTypeOf<Result>().toEqualTypeOf<string[] | number>()
+    expectTypeOf<Result>().toEqualTypeOf<number | string[]>()
   })
 }

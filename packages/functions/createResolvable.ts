@@ -1,30 +1,65 @@
 export interface Resolvable<T = unknown> extends Promise<T> {
-  /** Whether the promise has been resolved. */
-  resolved: boolean
+  /**
+   * Whether the promise is still pending. This is `true` until the promise is
+   * either resolved or rejected and becomes `false`.
+   *
+   * @example
+   * const resolvable = createResolvable()
+   * resolvable.pending // => true
+   *
+   * // Resolving the promise
+   * resolvable.resolve()
+   * resolvable.pending // => false
+   */
+  pending: boolean
+  /**
+   * The resolvable promise. This is the promise instance that is currently
+   * being resolved or rejected until `resolve` or `reject` is called.
+   *
+   * @example
+   * const resolvable = createResolvable()
+   * resolvable.promise // => Promise { <pending> }
+   *
+   * // Resolving the promise
+   * resolvable.resolve('resolved')
+   * resolvable.promise // => Promise { 'resolved' }
+   */
+  promise: Promise<T>
+  /**
+   * Reject the promise with a cause. This will mark the promise as rejected and
+   * set the reason for the rejection.
+   *
+   * @param cause The reason for the rejection.
+   * @example
+   * const resolvable = createResolvable()
+   * resolvable.reject('reason')
+   * resolvable.rejected // => true
+   */
+  reject: (cause?: any) => void
   /** Whether the promise has been rejected. */
   rejected: boolean
-  /** Whether the promise is still pending. */
-  pending: boolean
-  /** The resolvable promise. */
-  promise: Promise<T>
+  /**
+   * Reset the promise to its initial state. This will internally instantiate a
+   * new promise that can be resolved or rejected from outside the promise.
+   *
+   * @returns The `this` instance.
+   * @example
+   * const resolvable = createResolvable()
+   * resolvable.resolve('resolved')
+   * resolvable.reset()
+   *
+   * // The promise is now pending again
+   * resolvable.pending // => true
+   */
+  reset: () => void
   /**
    * Resolve the promise with a value.
    *
    * @param value The value to resolve the promise with.
    */
   resolve: T extends unknown ? (value?: PromiseLike<T> | T) => void : (value: PromiseLike<T> | T) => void
-  /**
-   * Reject the promise with a value.
-   *
-   * @param reason The reason for the rejection.
-   */
-  reject: (reason?: any) => void
-  /**
-   * Reset the promise to its initial state.
-   *
-   * @returns The `this` instance.
-   */
-  reset: () => void
+  /** Whether the promise has been resolved. */
+  resolved: boolean
 }
 
 /**
@@ -79,87 +114,87 @@ export function createResolvable<T>(): Resolvable<T> {
   return state as Resolvable<T>
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should initialize a resolvable promise', () => {
+  test('should initialize a resolvable promise', () => {
     const result = createResolvable()
-    expect(result.pending).toEqual(true)
-    expect(result.resolved).toEqual(false)
-    expect(result.rejected).toEqual(false)
+    expect(result.pending).toBeTruthy()
+    expect(result.resolved).toBeFalsy()
+    expect(result.rejected).toBeFalsy()
     expect(result.promise).toBeInstanceOf(Promise)
     expectTypeOf(result).toEqualTypeOf<Resolvable<unknown>>()
   })
 
-  it('should be an instance of Promise', () => {
+  test('should be an instance of Promise', () => {
     const result = createResolvable()
     expect(result).toBeInstanceOf(Promise)
   })
 
-  it('should be resolved after resolve is called', async() => {
+  test('should be resolved after resolve is called', async() => {
     const result = createResolvable<string>()
     result.resolve('test')
-    await expect(result.promise).resolves.toEqual('test')
-    expect(result.pending).toEqual(false)
-    expect(result.resolved).toEqual(true)
-    expect(result.rejected).toEqual(false)
+    await expect(result.promise).resolves.toBe('test')
+    expect(result.pending).toBeFalsy()
+    expect(result.resolved).toBeTruthy()
+    expect(result.rejected).toBeFalsy()
     expect(result.promise).toBeInstanceOf(Promise)
     expectTypeOf(result.promise).toEqualTypeOf<Promise<string>>()
   })
 
-  it('should reject a value after reject is called', async() => {
+  test('should reject a value after reject is called', async() => {
     const result = createResolvable<string>()
     result.reject('test')
     await expect(result.promise).rejects.toThrow('test')
-    expect(result.pending).toEqual(false)
-    expect(result.resolved).toEqual(false)
-    expect(result.rejected).toEqual(true)
+    expect(result.pending).toBeFalsy()
+    expect(result.resolved).toBeFalsy()
+    expect(result.rejected).toBeTruthy()
     expect(result.promise).toBeInstanceOf(Promise)
     expectTypeOf(result.promise).toEqualTypeOf<Promise<string>>()
   })
 
-  it('should be resolved after reset is called if already resolved', () => {
+  test('should be resolved after reset is called if already resolved', () => {
     const result = createResolvable()
     result.resolve()
     result.reset()
-    expect(result.pending).toEqual(true)
-    expect(result.resolved).toEqual(false)
-    expect(result.rejected).toEqual(false)
+    expect(result.pending).toBeTruthy()
+    expect(result.resolved).toBeFalsy()
+    expect(result.rejected).toBeFalsy()
     expect(result.promise).toBeInstanceOf(Promise)
     expectTypeOf(result.promise).toEqualTypeOf<Promise<unknown>>()
   })
 
-  it('should be pending after reset is called if already rejected', async() => {
+  test('should be pending after reset is called if already rejected', async() => {
     const result = createResolvable<void>()
     result.reject('test')
     await expect(result.promise).rejects.toThrow('test')
     result.reset()
-    expect(result.pending).toEqual(true)
-    expect(result.resolved).toEqual(false)
-    expect(result.rejected).toEqual(false)
+    expect(result.pending).toBeTruthy()
+    expect(result.resolved).toBeFalsy()
+    expect(result.rejected).toBeFalsy()
     expect(result.promise).toBeInstanceOf(Promise)
     expectTypeOf(result.promise).toEqualTypeOf<Promise<void>>()
   })
 
-  it('should return an awaitable object that resolves to the value', async() => {
+  test('should return an awaitable object that resolves to the value', async() => {
     const result = createResolvable<string>()
     result.resolve('test')
     const value = await result
-    expect(value).toEqual('test')
+    expect(value).toBe('test')
   })
 
-  it('should return an awaitable object that rejects with the reason', async() => {
+  test('should return an awaitable object that rejects with the reason', async() => {
     const result = createResolvable<string>()
     result.reject('test')
     await expect(result).rejects.toThrow('test')
   })
 
-  it('should call the finally method when the promise is resolved', async() => {
+  test('should call the finally method when the promise is resolved', async() => {
     const result = createResolvable()
     const callback = vi.fn()
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     result.finally(callback)
     result.resolve()
     await result
-    expect(callback).toHaveBeenCalled()
+    expect(callback).toHaveBeenCalledWith()
   })
 }

@@ -13,31 +13,33 @@ export function sleep<N extends number>(delay: NumberIntegerPositive<N>): Promis
   return new Promise(resolve => setTimeout(resolve, delay))
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
   beforeAll(() => {
     vi.useFakeTimers()
   })
 
-  it('should resolve after a given delay', async() => {
+  test('should resolve after a given delay', async() => {
     const result = sleep(1000)
     vi.advanceTimersByTime(1000)
     await expect(result).resolves.toBeUndefined()
   })
 
-  it('should throw an error if the delay is negative', () => {
+  test('should throw an error if the delay is negative', () => {
+
     // @ts-expect-error: Delay is negative
     const shouldThrow = () => sleep(-1)
     expect(shouldThrow).toThrow(RangeError)
   })
 
-  it('should throw an error if the delay is not an integer', () => {
+  test('should throw an error if the delay is not an integer', () => {
+
     // @ts-expect-error: Delay is not an integer
     const shouldThrow = () => sleep(1.5)
     expect(shouldThrow).toThrow(TypeError)
   })
 
-  it('should throw an error if the delay is not finite', () => {
+  test('should throw an error if the delay is not finite', () => {
     const shouldThrow = () => sleep(Number.NaN)
     expect(shouldThrow).toThrow(TypeError)
   })

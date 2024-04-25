@@ -7,19 +7,19 @@
  */
 export type NotPromise<U = unknown> = U extends PromiseLike<unknown> ? never : U
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should return the type when it is not a promise', () => {
+  test('should return the type when it is not a promise', () => {
     type Result = NotPromise<number>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
-  it('should exclude the promise type when unioned with a promise', () => {
+  test('should exclude the promise type when unioned with a promise', () => {
     type Result = NotPromise<Promise<number> | number>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
-  it('should return never when the type is a promise', () => {
+  test('should return never when the type is a promise', () => {
     type Result = NotPromise<Promise<number>>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })

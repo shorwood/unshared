@@ -11,40 +11,48 @@ const exclude = [
 
 export default defineConfig({
   test: {
-    open: false,
+
+    exclude,
     globals: true,
-    testTimeout: process.env.DEBUGGER ? 100 : 0,
+    include: [],
+    includeSource,
     reporters: ['basic'],
     setupFiles: './packages/setupTest.ts',
-    includeSource,
-    include: [],
-    exclude,
+    testTimeout: process.env.DEBUGGER ? 100 : 0,
 
-    // --- Type-checking configuration.
-    typecheck: {
-      enabled: false,
-      checker: 'tsc',
-      ignoreSourceErrors: true,
-      include: includeSource,
+    // --- UI configuration.
+    api: {
+      host: '0.0.0.0',
+      port: 5000,
+    },
+    open: true,
+    ui: true,
+
+    // --- Benchmark configuration.
+    benchmark: {
       exclude,
+      includeSource,
+      outputFile: './benchmark/results.json',
+      reporters: ['verbose'],
     },
 
     // --- V8 coverage configuration.
     coverage: {
-      enabled: false,
       clean: true,
       cleanOnRerun: true,
+      enabled: false,
       reporter: ['lcovonly', 'html-spa'],
-      reportsDirectory: './coverage',
       reportOnFailure: true,
+      reportsDirectory: './coverage',
     },
 
-    // --- Benchmark configuration.
-    benchmark: {
-      includeSource,
+    // --- Type-checking configuration.
+    typecheck: {
+      checker: 'tsc',
+      enabled: false,
       exclude,
-      outputFile: './benchmark/results.json',
-      reporters: ['verbose'],
+      ignoreSourceErrors: true,
+      include: includeSource,
     },
   },
 })

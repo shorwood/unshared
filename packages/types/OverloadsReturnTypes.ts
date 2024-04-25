@@ -1,5 +1,5 @@
-import { Function } from './Function'
 import { Overloads } from './Overloads'
+import { Function } from './Function'
 
 /**
  * Extract the return types of all functions in a tuple.
@@ -19,15 +19,15 @@ type ExtractTupleReturnTypes<T extends Array<Function<any, any[]>>> = {
  */
 export type OverloadsReturnTypes<T extends Function<any, any[]>> = ExtractTupleReturnTypes<Overloads<T>>
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should infer the return type of a function with no overloads', () => {
+  test('should infer the return type of a function with no overloads', () => {
     type Method = (a: number, b: string) => boolean
     type Result = OverloadsReturnTypes<Method>
     expectTypeOf<Result>().toEqualTypeOf<boolean>()
   })
 
-  it('should infer the return type of a function with multiple overloads', () => {
+  test('should infer the return type of a function with multiple overloads', () => {
     interface Method {
       (a: number, b: string): string
       (a: string, b: number): number

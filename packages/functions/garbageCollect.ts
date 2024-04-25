@@ -1,5 +1,5 @@
-import { GCProfiler, setFlagsFromString } from 'node:v8'
 import { runInNewContext } from 'node:vm'
+import { GCProfiler, setFlagsFromString } from 'node:v8'
 
 /**
  * Force the garbage collector to run. It allows you to free up memory that is
@@ -20,7 +20,7 @@ export function garbageCollect(): void {
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  it('should trigger a garbage collection', () => {
+  test('should trigger a garbage collection', () => {
     const gcProfiler = new GCProfiler()
     gcProfiler.start()
     garbageCollect()
@@ -28,7 +28,7 @@ if (import.meta.vitest) {
     expect(gcProfilerResult.statistics).toHaveLength(1)
   })
 
-  it('should trigger multiple garbage collections', () => {
+  test('should trigger multiple garbage collections', () => {
     const gcProfiler = new GCProfiler()
     gcProfiler.start()
     garbageCollect()

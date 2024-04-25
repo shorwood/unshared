@@ -1,5 +1,5 @@
-import { createResolvable } from './createResolvable'
 import { garbageCollect } from './garbageCollect'
+import { createResolvable } from './createResolvable'
 
 /** Global finalization registry used to track garbage collection. */
 let REGISTRY: FinalizationRegistry<unknown> | undefined
@@ -37,13 +37,13 @@ export function garbageCollected<T extends WeakKey>(value: T, timeout = 0): Prom
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  it('should resolve once the object is garbage collected', async() => {
+  test('should resolve once the object is garbage collected', async() => {
     const result = garbageCollected({ foo: 'bar' })
     garbageCollect()
     await expect(result).resolves.toBeUndefined()
   })
 
-  it('should resolve once an object in a child context is garbage collected', async() => {
+  test('should resolve once an object in a child context is garbage collected', async() => {
     const createChildContext = () => {
       const object = { foo: 'bar' }
       return garbageCollected(object)
@@ -54,7 +54,7 @@ if (import.meta.vitest) {
     await expect(result).resolves.toBeUndefined()
   })
 
-  it('should call the callback function when a class instance is garbage collected', async() => {
+  test('should call the callback function when a class instance is garbage collected', async() => {
     const callback = vi.fn()
     class Example {
       constructor() { void garbageCollected(this).then(callback) }
@@ -63,11 +63,11 @@ if (import.meta.vitest) {
     const createChildContext = () => { new Example() }
     createChildContext()
     garbageCollect()
-    await new Promise(resolve => setTimeout(resolve, 1))
-    expect(callback).toHaveBeenCalled()
+    await new Promise(resolve => setTimeout(resolve, 10))
+    expect(callback).toHaveBeenCalledOnce()
   })
 
-  it('should reject if the object is not garbage collected before the timeout', async() => {
+  test('should reject if the object is not garbage collected before the timeout', async() => {
     const object = { foo: 'bar' }
     const createChildContext = () => garbageCollected(object, 10)
     const result = createChildContext()

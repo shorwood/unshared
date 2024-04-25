@@ -1,5 +1,5 @@
-import { createSharedComposable } from '@vueuse/core'
 import { defineComponent, getCurrentInstance, onUnmounted } from 'vue'
+import { createSharedComposable } from '@vueuse/core'
 
 // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
 interface EventMap {
@@ -13,11 +13,6 @@ type Unsubscribe = () => void
 
 export interface EventBus<T extends EventMap = EventMap> {
   /**
-   * The listener that will be used to emit events. This is an `EventTarget` that
-   * will be shared across all components and will receive and emit events.
-   */
-  listener: EventTarget
-  /**
    * Emit a change event to notify the panel that the item being displayed has
    * been saved, updated, or deleted. This allows us to trigger a refresh of the
    * data in other components.
@@ -25,8 +20,7 @@ export interface EventBus<T extends EventMap = EventMap> {
    * @param eventName The name of the event to emit.
    * @param data The data to send with the event.
    */
-  emit<K extends string & keyof T>(eventName: K, ...data: T[K]): void
-
+  emit<K extends keyof T & string>(eventName: K, ...data: T[K]): void
   /**
    * Add a listener to the panel to listen for changes to the data being displayed.
    * This allows us to trigger a refresh of the data in other components.
@@ -35,7 +29,13 @@ export interface EventBus<T extends EventMap = EventMap> {
    * @param callback The callback to call when the event is emitted.
    * @returns The unsubscribe function.
    */
-  listen<K extends string & keyof T>(eventName: K, callback: EventCallback<T, K>): Unsubscribe
+  listen<K extends keyof T & string>(eventName: K, callback: EventCallback<T, K>): Unsubscribe
+
+  /**
+   * The listener that will be used to emit events. This is an `EventTarget` that
+   * will be shared across all components and will receive and emit events.
+   */
+  listener: EventTarget
 }
 
 /**
@@ -60,14 +60,12 @@ export interface EventBus<T extends EventMap = EventMap> {
 export const useEventBus = createSharedComposable(<T extends EventMap>(): EventBus<T> => {
   const listener = new EventTarget()
   return {
-    listener,
-
-    emit<K extends string & keyof T>(eventName: K, ...data: T[K]) {
+    emit<K extends keyof T & string>(eventName: K, ...data: T[K]) {
       const event = new CustomEvent(eventName, { detail: data })
       listener.dispatchEvent(event)
     },
 
-    listen<K extends string & keyof T>(eventName: K, callback: EventCallback<T, K>) {
+    listen<K extends keyof T & string>(eventName: K, callback: EventCallback<T, K>) {
       const callbackWrapped = (event: CustomEvent) => callback(...event.detail as T[K])
       listener.addEventListener(eventName, callbackWrapped as EventListener)
 
@@ -77,24 +75,27 @@ export const useEventBus = createSharedComposable(<T extends EventMap>(): EventB
       if (instance) onUnmounted(unsubscribe, instance)
       return unsubscribe
     },
+
+    listener,
   }
 })
 
 /* v8 ignore start */
 if (import.meta.vitest) {
+
   // @vitest-environment happy-dom
   const { mount } = await import('@vue/test-utils')
   interface EventMap {
-    foo: [string]
-    bar: [string]
     [key: string]: unknown[]
+    bar: [string]
+    foo: [string]
 
   }
 
   describe('event', () => {
     it('should send and receive events', () => {
       const callback = vi.fn()
-      const bus = useEventBus<{ foo: [string]; bar: [string] }>()
+      const bus = useEventBus<{ bar: [string]; foo: [string] }>()
       bus.listen('foo', callback)
       bus.emit('foo', 'bar')
       expect(callback).toHaveBeenCalledWith('bar')
@@ -102,7 +103,7 @@ if (import.meta.vitest) {
 
     it('should unsubscribe from events', () => {
       const callback = vi.fn()
-      const bus = useEventBus<{ foo: [string]; bar: [string] }>()
+      const bus = useEventBus<{ bar: [string]; foo: [string] }>()
       const unsubscribe = bus.listen('foo', callback)
       unsubscribe()
       bus.emit('foo', 'bar')
@@ -115,8 +116,8 @@ if (import.meta.vitest) {
       const callback = vi.fn()
       const bus = useEventBus<EventMap>()
       const wrapper = mount({
-        template: '<div></div>',
         setup: () => { bus.listen('foo', callback) },
+        template: '<div></div>',
       })
 
       wrapper.unmount()
@@ -127,12 +128,12 @@ if (import.meta.vitest) {
     it('should send and receive events within the same component', async() => {
       const callback = vi.fn()
       const wrapper = mount({
-        template: '<div @click="onClick"></div>',
         setup: () => {
           const bus = useEventBus<EventMap>()
           bus.listen('foo', callback)
           return { onClick: () => bus.emit('foo', 'bar') }
         },
+        template: '<div @click="onClick"></div>',
       })
 
       await wrapper.trigger('click')
@@ -142,23 +143,23 @@ if (import.meta.vitest) {
     it('should send and receive events across multiple components', async() => {
       const callback = vi.fn()
       const listener = defineComponent({
-        template: '<div></div>',
         setup: () => {
           const bus = useEventBus<EventMap>()
           bus.listen('foo', callback)
         },
+        template: '<div></div>',
       })
 
       const emitter = defineComponent({
-        template: '<button @click="onClick"></button>',
         setup: () => {
           const bus = useEventBus<EventMap>()
           return { onClick: () => bus.emit('foo', 'bar') }
         },
+        template: '<button @click="onClick"></button>',
       })
 
       const parent = mount({
-        components: { listener, emitter },
+        components: { emitter, listener },
         template: '<div><listener /><emitter /></div>',
       })
 

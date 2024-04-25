@@ -23,7 +23,7 @@ export function toUnique(array: unknown[], iteratorOrPath?: IteratorFunction<unk
 
   // --- Pick unseen elements.
   array.forEach((item, key) => {
-    // eslint-disable-next-line sonarjs/no-extra-arguments
+
     const identifier = iterator(item, key, array)
     const isSeen = seen.has(identifier)
     if (isSeen) return
@@ -37,25 +37,25 @@ export function toUnique(array: unknown[], iteratorOrPath?: IteratorFunction<unk
 
 /** v8 ignore start */
 if (import.meta.vitest) {
-  it('returns a new array containing only unique items', () => {
+  test('should return a new array containing only unique items', () => {
     const result = toUnique([1, 2, 3, 2, 1, 3])
-    expect(result).toEqual([1, 2, 3])
+    expect(result).toStrictEqual([1, 2, 3])
     expectTypeOf(result).toEqualTypeOf<number[]>()
   })
 
-  it('should use strict equality comparison', () => {
+  test('should use strict equality comparison', () => {
     const result = toUnique([1, 2, 3, '1', '2', '3'])
-    expect(result).toEqual([1, 2, 3, '1', '2', '3'])
+    expect(result).toStrictEqual([1, 2, 3, '1', '2', '3'])
     expectTypeOf(result).toEqualTypeOf<Array<number | string>>()
   })
 
-  it('returns a new array containing only unique items, based on a given key', () => {
+  test('should return a new array containing only unique items, based on a given key', () => {
     const result = toUnique([
       { id: 1, name: 'John' },
       { id: 2, name: 'Jane' },
       { id: 3, name: 'John' },
     ], 'name')
-    expect(result).toEqual([
+    expect(result).toStrictEqual([
       { id: 1, name: 'John' },
       { id: 2, name: 'Jane' },
     ])
@@ -65,30 +65,30 @@ if (import.meta.vitest) {
     }>>()
   })
 
-  it('returns a new array containing only unique items, based on a given nested key', () => {
+  test('should return a new array containing only unique items, based on a given nested key', () => {
     const result = toUnique([
-      { id: 1, name: 'John', address: { city: 'Paris' } },
-      { id: 2, name: 'Jane', address: { city: 'Paris' } },
-      { id: 3, name: 'John', address: { city: 'London' } },
+      { address: { city: 'Paris' }, id: 1, name: 'John' },
+      { address: { city: 'Paris' }, id: 2, name: 'Jane' },
+      { address: { city: 'London' }, id: 3, name: 'John' },
     ], 'address.city')
-    expect(result).toEqual([
-      { id: 1, name: 'John', address: { city: 'Paris' } },
-      { id: 3, name: 'John', address: { city: 'London' } },
+    expect(result).toStrictEqual([
+      { address: { city: 'Paris' }, id: 1, name: 'John' },
+      { address: { city: 'London' }, id: 3, name: 'John' },
     ])
     expectTypeOf(result).toEqualTypeOf<Array<{
+      address: { city: string }
       id: number
       name: string
-      address: { city: string }
     }>>()
   })
 
-  it('returns a new array containing only unique items, based on a given iterator function', () => {
+  test('should return a new array containing only unique items, based on a given iterator function', () => {
     const result = toUnique([
       { id: 1, name: 'John' },
       { id: 2, name: 'Jane' },
       { id: 3, name: 'John' },
     ], item => item.name)
-    expect(result).toEqual([
+    expect(result).toStrictEqual([
       { id: 1, name: 'John' },
       { id: 2, name: 'Jane' },
     ])

@@ -1,5 +1,5 @@
-import { Linter } from 'eslint'
 import eslintCommentsPlugin from 'eslint-plugin-eslint-comments'
+import { Linter } from 'eslint'
 
 /**
  * Provide configuration for eslint-comments plugin rules. This

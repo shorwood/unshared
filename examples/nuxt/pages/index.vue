@@ -1,34 +1,34 @@
 <script setup lang="ts">
 import { Button, InputToggle } from '@unshared/vue';
-const state = ref<symbol | 'bar' | 'foo'>('foo')
+const state = ref<'bar' | 'foo' | symbol>('foo')
 </script>
 
 <template>
   <main class="flex flex-col items-center justify-center h-screen w-screen">
     <InputToggle
-      v-model="state"
-      value="bar"
-      type="radio"
       class-active="bg-red"
-      v-slot="{ isActive }">
+      type="checkbox"
+      v-model="state"
+      v-slot="{ isActive }"
+      value="bar">
       {{ isActive }}
     </InputToggle>
 
     <InputToggle
-      v-model="state"
-      value="foo"
-      type="radio"
       class-active="bg-red"
-      v-slot="{ isActive }">
+      type="radio"
+      v-model="state"
+      v-slot="{ isActive }"
+      value="foo">
       {{ isActive }}
     </InputToggle>
 
     <Button
-      class="bg-blue text-black active:text-black p-4 cursor-pointer"
-      label="YES"
-      :as="state === 'foo' ? 'a' : 'button'"
+      :as="state.value === 'foo' ? 'a' : 'button'"
       :debounce="500"
       :disabled="state === 'foo'"
+      class="bg-blue text-black active:text-black p-4 cursor-pointer"
+      label="YES"
       v-slot="{ isLink }">
       {{ isLink }}
     </Button>

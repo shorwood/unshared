@@ -26,12 +26,12 @@ const jsonRegexp = /^\s*["[{]|^\s*-?\d[\d.]{0,14}\s*$/
  * @returns The parsed JSON value.
  * @example parseJson('{"foo": "bar", "__proto__": "foo"}') // { foo: 'bar' }
  */
-export function parseJson<T>(json: string): T | undefined {
-  // --- Trim the whitespaces.
-  json = json.trim()
 
-  // --- If the input is surrounded by (single) quotes, it's a string.
-  const firstChar = json[0]
+export function parseJson<T>(json: string): T | undefined {
+
+  // --- If the input is surrounded by quotes, it's a string.
+  json = json.trim()
+  const firstChar = json.at(0)
   const lastChar = json.at(-1)
   if (firstChar === '"' && lastChar === '"') return json.slice(1, -1) as T
   if (firstChar === '\'' && lastChar === '\'') return json.slice(1, -1) as T
@@ -71,91 +71,91 @@ export function parseJson<T>(json: string): T | undefined {
   catch { return undefined }
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should parse a quoted string into a string', () => {
+  test('should parse a quoted string into a string', () => {
     const result = parseJson('"foo"')
-    expect(result).toEqual('foo')
+    expect(result).toBe('foo')
   })
 
-  it('should parse a single quoted string into a string', () => {
+  test('should parse a single quoted string into a string', () => {
     const result = parseJson('\'foo\'')
-    expect(result).toEqual('foo')
+    expect(result).toBe('foo')
   })
 
-  it('should parse a "true" into a boolean', () => {
+  test('should parse a "true" into a boolean', () => {
     const result = parseJson('true')
-    expect(result).toEqual(true)
+    expect(result).toBeTruthy()
   })
 
-  it('should parse a "false" into a boolean', () => {
+  test('should parse a "false" into a boolean', () => {
     const result = parseJson('false')
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
   })
 
-  it('should parse a "undefined" into undefined', () => {
+  test('should parse a "undefined" into undefined', () => {
     const result = parseJson('undefined')
-    expect(result).toEqual(undefined)
+    expect(result).toBeUndefined()
   })
 
-  it('should parse a "null" into null', () => {
+  test('should parse a "null" into null', () => {
     const result = parseJson('null')
-    // eslint-disable-next-line unicorn/no-null
-    expect(result).toEqual(null)
+
+    expect(result).toBeNull()
   })
 
-  it('should parse a "NaN" into Number.NaN', () => {
+  test('should parse a "NaN" into Number.NaN', () => {
     const result = parseJson('NaN')
-    expect(result).toEqual(Number.NaN)
+    expect(result).toStrictEqual(Number.NaN)
   })
 
-  it('should parse a "Infinity" into Number.POSITIVE_INFINITY', () => {
+  test('should parse a "Infinity" into Number.POSITIVE_INFINITY', () => {
     const result = parseJson('Infinity')
-    expect(result).toEqual(Number.POSITIVE_INFINITY)
+    expect(result).toStrictEqual(Number.POSITIVE_INFINITY)
   })
 
-  it('should parse a "-Infinity" into Number.NEGATIVE_INFINITY', () => {
+  test('should parse a "-Infinity" into Number.NEGATIVE_INFINITY', () => {
     const result = parseJson('-Infinity')
-    expect(result).toEqual(Number.NEGATIVE_INFINITY)
+    expect(result).toStrictEqual(Number.NEGATIVE_INFINITY)
   })
 
-  it('should parse a string integer into a number', () => {
+  test('should parse a string integer into a number', () => {
     const result = parseJson('123')
-    expect(result).toEqual(123)
+    expect(result).toBe(123)
   })
 
-  it('should parse a string float into a number', () => {
+  test('should parse a string float into a number', () => {
     const result = parseJson('123.456')
-    expect(result).toEqual(123.456)
+    expect(result).toStrictEqual(123.456)
   })
 
-  it('should parse a string negative integer into a number', () => {
+  test('should parse a string negative integer into a number', () => {
     const result = parseJson('-123')
-    expect(result).toEqual(-123)
+    expect(result).toBe(-123)
   })
 
-  it('should parse a string negative float into a number', () => {
+  test('should parse a string negative float into a number', () => {
     const result = parseJson('-123.456')
-    expect(result).toEqual(-123.456)
+    expect(result).toBe(-123.456)
   })
 
-  it('should return undefined if the input is not a valid JSON string', () => {
+  test('should return undefined if the input is not a valid JSON string', () => {
     const result = parseJson('foo')
-    expect(result).toEqual(undefined)
+    expect(result).toBeUndefined()
   })
 
-  it('should return remove the __proto__ property if the input is a valid JSON string', () => {
+  test('should return remove the __proto__ property if the input is a valid JSON string', () => {
     const result = parseJson('{"__proto__": "foo", "bar": "baz"}')
-    expect(result).toEqual({ bar: 'baz' })
+    expect(result).toStrictEqual({ bar: 'baz' })
   })
 
-  it('should return remove the constructor property if the input is a valid JSON string', () => {
+  test('should return remove the constructor property if the input is a valid JSON string', () => {
     const result = parseJson('{"constructor": "foo", "bar": "baz"}')
-    expect(result).toEqual({ bar: 'baz' })
+    expect(result).toStrictEqual({ bar: 'baz' })
   })
 
-  it('should parse a JSON string into an object', () => {
+  test('should parse a JSON string into an object', () => {
     const result = parseJson('{"foo": "bar"}')
-    expect(result).toEqual({ foo: 'bar' })
+    expect(result).toStrictEqual({ foo: 'bar' })
   })
 }

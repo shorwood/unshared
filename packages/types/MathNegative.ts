@@ -12,34 +12,34 @@ export type MathNegative<N extends number> =
     : IsZero<N> extends true ? 0
       : Negative<N>
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should negate a positive integer', () => {
+  test('should negate a positive integer', () => {
     type Result = MathNegative<1>
     expectTypeOf<Result>().toEqualTypeOf<-1>()
   })
 
-  it('should negate a negative integer', () => {
+  test('should negate a negative integer', () => {
     type Result = MathNegative<-1>
     expectTypeOf<Result>().toEqualTypeOf<1>()
   })
 
-  it('should negate a positive decimal', () => {
+  test('should negate a positive decimal', () => {
     type Result = MathNegative<1.1>
     expectTypeOf<Result>().toEqualTypeOf<-1.1>()
   })
 
-  it('should negate a negative decimal', () => {
+  test('should negate a negative decimal', () => {
     type Result = MathNegative<-1.1>
     expectTypeOf<Result>().toEqualTypeOf<1.1>()
   })
 
-  it('should not negate zero', () => {
+  test('should not negate zero', () => {
     type Result = MathNegative<0>
     expectTypeOf<Result>().toEqualTypeOf<0>()
   })
 
-  it('should negate number', () => {
+  test('should negate number', () => {
     type Result = MathNegative<number>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })

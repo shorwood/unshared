@@ -1,3 +1,5 @@
+import { Function } from '@unshared/types'
+
 /**
  * Make a function expect the first argument to be the `this` context.
  *
@@ -25,22 +27,27 @@ export type UnboundFunction<T, K extends keyof T> =
  */
 export function unbind<T, K extends keyof T>(prototype: T, property: K): UnboundFunction<T, K> {
   return function(value: T, ...args: unknown[]) {
-    // @ts-expect-error: ignore
-    return prototype[property].apply(value, args)
+    const fn = prototype[property] as Function
+    return fn.apply(value, args) as unknown
   } as UnboundFunction<T, K>
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should unbind the "toFixed" method', () => {
+  test('should unbind the "toFixed" method', () => {
     const toFixed = unbind(Number.prototype, 'toFixed')
     const result = toFixed(1, 2)
-    expect(result).toEqual('1.00')
+    expect(result).toBe('1.00')
   })
 
-  it('should unbind the "toUpperCase" method', () => {
+  test('should unbind the "toUpperCase" method', () => {
     const toUpperCase = unbind(String.prototype, 'toUpperCase')
     const result = toUpperCase('a')
-    expect(result).toEqual('A')
+    expect(result).toBe('A')
+  })
+
+  test('should infer the type of the unbound function', () => {
+    const toFixed = unbind(Number.prototype, 'toFixed')
+    expectTypeOf(toFixed).toEqualTypeOf<(value: Number, fractionDigits?: number | undefined) => string>()
   })
 }

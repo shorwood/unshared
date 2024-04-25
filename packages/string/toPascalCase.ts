@@ -14,55 +14,55 @@ export function toPascalCase(...values: string[]): string {
     .join('')
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should convert camel-case to pascal-case', () => {
+  test('should convert camel-case to pascal-case', () => {
     const result = toPascalCase('camelCase')
-    expect(result).toEqual('CamelCase')
+    expect(result).toBe('CamelCase')
   })
 
-  it('should convert constant-case to pascal-case', () => {
+  test('should convert constant-case to pascal-case', () => {
     const result = toPascalCase('CONSTANT_CASE')
-    expect(result).toEqual('ConstantCase')
+    expect(result).toBe('ConstantCase')
   })
 
-  it('should convert dot-case to pascal-case', () => {
+  test('should convert dot-case to pascal-case', () => {
     const result = toPascalCase('dot.case')
-    expect(result).toEqual('DotCase')
+    expect(result).toBe('DotCase')
   })
 
-  it('should convert header-case to pascal-case', () => {
+  test('should convert header-case to pascal-case', () => {
     const result = toPascalCase('Header-Case')
-    expect(result).toEqual('HeaderCase')
+    expect(result).toBe('HeaderCase')
   })
 
-  it('should convert kebab-case to pascal-case', () => {
+  test('should convert kebab-case to pascal-case', () => {
     const result = toPascalCase('kebab-case')
-    expect(result).toEqual('KebabCase')
+    expect(result).toBe('KebabCase')
   })
 
-  it('should convert pascal-case to pascal-case', () => {
+  test('should convert pascal-case to pascal-case', () => {
     const result = toPascalCase('PascalCase')
-    expect(result).toEqual('PascalCase')
+    expect(result).toBe('PascalCase')
   })
 
-  it('should convert path-case to pascal-case', () => {
+  test('should convert path-case to pascal-case', () => {
     const result = toPascalCase('path/case')
-    expect(result).toEqual('PathCase')
+    expect(result).toBe('PathCase')
   })
 
-  it('should convert snake_case to pascal-case', () => {
+  test('should convert snake_case to pascal-case', () => {
     const result = toPascalCase('snake_case')
-    expect(result).toEqual('SnakeCase')
+    expect(result).toBe('SnakeCase')
   })
 
-  it('should convert title-case to pascal-case', () => {
+  test('should convert title-case to pascal-case', () => {
     const result = toPascalCase('Title Case')
-    expect(result).toEqual('TitleCase')
+    expect(result).toBe('TitleCase')
   })
 
-  it('should convert multiple strings to pascal-case', () => {
+  test('should convert multiple strings to pascal-case', () => {
     const result = toPascalCase('foo', 'bar', 'baz')
-    expect(result).toEqual('FooBarBaz')
+    expect(result).toBe('FooBarBaz')
   })
 }

@@ -20,37 +20,37 @@ export function toUint8Array(value: BinaryLike) {
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  it('should convert a string to an Uint8Array', () => {
+  test('should convert a string to an Uint8Array', () => {
     const result = toUint8Array('Hello, World!')
     const expected = new Uint8Array([72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33])
-    expect(result).toEqual(expected)
+    expect(result).toStrictEqual(expected)
   })
 
-  it('should convert an Uint8Array to an Uint8Array', () => {
+  test('should convert an Uint8Array to an Uint8Array', () => {
     const buffer = new Uint8Array([72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100])
     const result = toUint8Array(buffer)
-    expect(result).toEqual(buffer)
+    expect(result).toStrictEqual(buffer)
   })
 
-  it('should convert an ArrayBuffer to an Uint8Array', () => {
+  test('should convert an ArrayBuffer to an Uint8Array', () => {
     const buffer = new Uint8Array([72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100]).buffer
     const result = toUint8Array(buffer)
-    expect(result).toEqual(new Uint8Array(buffer))
+    expect(result).toStrictEqual(new Uint8Array(buffer))
   })
 
-  it('should convert a Buffer to an Uint8Array', () => {
+  test('should convert a Buffer to an Uint8Array', () => {
     const buffer = Buffer.from('Hello, World!')
     const result = toUint8Array(buffer)
-    expect(result).toEqual(new Uint8Array(buffer))
+    expect(result).toStrictEqual(new Uint8Array(buffer))
   })
 
-  it('should convert an array-like object to an Uint8Array', () => {
+  test('should convert an array-like object to an Uint8Array', () => {
     const buffer = [72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100]
     const result = toUint8Array(buffer)
-    expect(result).toEqual(new Uint8Array(buffer))
+    expect(result).toStrictEqual(new Uint8Array(buffer))
   })
 
-  it('should convert an Iterator to an Uint8Array', () => {
+  test('should convert an Iterator to an Uint8Array', () => {
     const createIterator = function* () {
       yield 72
       yield 101

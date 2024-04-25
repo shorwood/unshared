@@ -18,34 +18,34 @@ export type StringNumber<N extends string> =
     N extends `${infer S extends number}` ? S
       : never
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should infer a positive integer', () => {
+  test('should infer a positive integer', () => {
     type Result = StringNumber<'42'>
     expectTypeOf<Result>().toEqualTypeOf<42>()
   })
 
-  it('should infer a negative integer', () => {
+  test('should infer a negative integer', () => {
     type Result = StringNumber<'-42'>
     expectTypeOf<Result>().toEqualTypeOf<-42>()
   })
 
-  it('should infer a positive decimal', () => {
+  test('should infer a positive decimal', () => {
     type Result = StringNumber<'42.1'>
     expectTypeOf<Result>().toEqualTypeOf<42.1>()
   })
 
-  it('should infer a negative decimal', () => {
+  test('should infer a negative decimal', () => {
     type Result = StringNumber<'-42.1'>
     expectTypeOf<Result>().toEqualTypeOf<-42.1>()
   })
 
-  it('should infer number from a string', () => {
+  test('should infer number from a string', () => {
     type Result = StringNumber<string>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
-  it('should return never when a non-number is passed', () => {
+  test('should return never when a non-number is passed', () => {
     type Result = StringNumber<'a'>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })

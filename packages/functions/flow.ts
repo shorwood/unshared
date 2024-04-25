@@ -48,6 +48,7 @@ export function flow(value: unknown, ...transformers: Function[]) {
     // --- If the result is a promise, wait for it to resolve.
     if (result instanceof Promise) {
       const nextTransformers = transformers.slice(i + 1)
+
       // @ts-expect-error: Spread argument is of the correct type.
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return result.then(value => flow(value, ...nextTransformers))
@@ -56,17 +57,17 @@ export function flow(value: unknown, ...transformers: Function[]) {
   return result
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should transform a value using the given transformers', () => {
+  test('should transform a value using the given transformers', () => {
     const result = flow(1, n => n + 1, n => n * 2, n => n.toString())
-    expect(result).toEqual('4')
+    expect(result).toBe('4')
     expectTypeOf(result).toEqualTypeOf<string>()
   })
 
-  it('should be able to transform a value using async transformers', async() => {
+  test('should be able to transform a value using async transformers', async() => {
     const result = flow(1, n => Promise.resolve(n), n => n.toFixed(1) )
-    await expect(result).resolves.toEqual('1.0')
+    await expect(result).resolves.toBe('1.0')
     expectTypeOf(result).toEqualTypeOf<Promise<string>>()
   })
 }

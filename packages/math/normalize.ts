@@ -19,25 +19,25 @@ export function normalize(n: number, min: number, max: number): number {
   return (n - min) / (max - min)
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should normalize a number to a given range', () => {
+  test('should normalize a number to a given range', () => {
     const result = normalize(5, 0, 10)
-    expect(result).toEqual(0.5)
+    expect(result).toStrictEqual(0.5)
   })
 
-  it('should normalize a number to a given range with negative numbers', () => {
+  test('should normalize a number to a given range with negative numbers', () => {
     const result = normalize(0, -10, 10)
-    expect(result).toEqual(0.5)
+    expect(result).toStrictEqual(0.5)
   })
 
-  it('should normalize and clamp max values', () => {
+  test('should normalize and clamp max values', () => {
     const result = normalize(15, 0, 10)
-    expect(result).toEqual(1)
+    expect(result).toBe(1)
   })
 
-  it('should normalize and clamp min values', () => {
+  test('should normalize and clamp min values', () => {
     const result = normalize(-5, 0, 10)
-    expect(result).toEqual(0)
+    expect(result).toBe(0)
   })
 }

@@ -13,30 +13,30 @@ export function isConstructor<T extends Constructor>(value: unknown): value is T
     && value.prototype?.constructor === value
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should return true for a constructor function', () => {
+  test('should return true for a constructor function', () => {
     const result = isConstructor(Boolean)
-    expect(result).toEqual(true)
+    expect(result).toBeTruthy()
   })
 
-  it('should return false for a non-constructor function', () => {
+  test('should return false for a non-constructor function', () => {
     const result = isConstructor(() => {})
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
   })
 
-  it('should return false for a non-function value', () => {
+  test('should return false for a non-function value', () => {
     const result = isConstructor(10)
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
   })
 
-  it('should predicate a constructor function', () => {
+  test('should predicate a constructor function', () => {
     const value: unknown = Boolean
     const result = isConstructor(value)
     if (result) expectTypeOf(value).toEqualTypeOf<Constructor>()
   })
 
-  it('should predicate a constructor function with a given type', () => {
+  test('should predicate a constructor function with a given type', () => {
     const value: unknown = Boolean
     const result = isConstructor<BooleanConstructor>(value)
     if (result) expectTypeOf(value).toEqualTypeOf<BooleanConstructor>()

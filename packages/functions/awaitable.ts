@@ -114,7 +114,7 @@ export function awaitable(object: object, createPromise?: FunctionAsync<unknown>
       const value = Reflect.get(target, property) as unknown
 
       // --- Handle non-promises properties.
-      const isPromiseMethod = ['then', 'catch', 'finally'].includes((property as string))
+      const isPromiseMethod = ['catch', 'finally', 'then'].includes((property as string))
       if (!isPromiseMethod) return typeof value === 'function' ? value.bind(receiver) as unknown : value
 
       // --- Create the promise and return the bound promise method.
@@ -126,32 +126,32 @@ export function awaitable(object: object, createPromise?: FunctionAsync<unknown>
   })
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
   describe('awaitable', () => {
     it('should wrap an object with a promise that resolves to undefined', async() => {
       const object = { foo: 'bar' }
       const promise = new Promise<void>(resolve => setTimeout(() => { object.foo = 'baz'; resolve() }, 1))
       const result = awaitable(object, promise)
-      expect(result).toEqual(object)
+      expect(result).toMatchObject(object)
       await expect(result).resolves.toBeUndefined()
-      expectTypeOf(result).toEqualTypeOf<Promise<void> & { foo: string }>()
+      expectTypeOf(result).toEqualTypeOf<{ foo: string } & Promise<void>>()
     })
 
     it('should wrap an object with a promise that resolves to a value', async() => {
       const object = { foo: 'bar' } as const
       const result = awaitable(object, Promise.resolve('baz' as const))
-      expect(result).toEqual({ foo: 'bar' })
-      await expect(result).resolves.toEqual('baz')
-      expectTypeOf(result).toEqualTypeOf<Promise<'baz'> & { readonly foo: 'bar' }>()
+      expect(result).toMatchObject({ foo: 'bar' })
+      await expect(result).resolves.toBe('baz')
+      expectTypeOf(result).toEqualTypeOf<{ readonly foo: 'bar' } & Promise<'baz'>>()
     })
 
     it('should wrap an object with a promise factory that resolves with a value', async() => {
       const object = { foo: 'bar' } as const
       const result = awaitable(object, () => Promise.resolve('bar' as const))
-      expect(result).toEqual({ foo: 'bar' })
-      await expect(result).resolves.toEqual('bar')
-      expectTypeOf(result).toEqualTypeOf<Promise<'bar'> & { readonly foo: 'bar' }>()
+      expect(result).toMatchObject({ foo: 'bar' })
+      await expect(result).resolves.toBe('bar')
+      expectTypeOf(result).toEqualTypeOf<{ readonly foo: 'bar' } & Promise<'bar'>>()
     })
 
     it('should lazily evaluate the promise factory', async() => {
@@ -160,25 +160,27 @@ if (import.meta.vitest) {
       const result = awaitable(object, callback)
       expect(callback).not.toHaveBeenCalled()
       await result
-      expect(callback).toHaveBeenCalled()
+      expect(callback).toHaveBeenCalledWith()
     })
 
     it('should preserve the `this` context of the result object', () => {
       const object = { _value: 'bar', get value() { return this._value } }
       const result = awaitable(object, Promise.resolve())
-      expect(result._value).toEqual('bar')
-      expect(result.value).toEqual('bar')
+      expect(result._value).toBe('bar')
+      expect(result.value).toBe('bar')
     })
 
     it('should throw an error if the promise is not a promise', () => {
-    // @ts-expect-error: invalid parameter.
+
+      // @ts-expect-error: invalid parameter.
       const shouldThrow = () => awaitable({ foo: 'bar' }, 'foo')
       expect(shouldThrow).toThrow(TypeError)
       expect(shouldThrow).toThrow('Cannot create awaitable object: Second parameter must be a promise or an asyncronous function')
     })
 
     it('should reject an error if the promise factory does not resolve a promise', async() => {
-    // @ts-expect-error: invalid parameter return type.
+
+      // @ts-expect-error: invalid parameter return type.
       const shouldReject = async() => await awaitable({ foo: 'bar' }, () => 'foo')
       await expect(shouldReject).rejects.toThrow(TypeError)
       await expect(shouldReject).rejects.toThrow('Cannot create awaitable object: Second parameter must be a promise or an asyncronous function')
@@ -195,7 +197,7 @@ if (import.meta.vitest) {
     it('should wrap an async iterable with a promise that resolves to an array', async() => {
       const generator = createGenerator()
       const result = await awaitable(generator)
-      expect(result).toEqual([1, 2, 3])
+      expect(result).toStrictEqual([1, 2, 3])
     })
 
     it('should wrap an async iterable and still be able to iterate over it', async() => {
@@ -203,7 +205,7 @@ if (import.meta.vitest) {
       const result = awaitable(generator)
       const values = []
       for await (const value of result) values.push(value)
-      expect(values).toEqual([1, 2, 3])
+      expect(values).toStrictEqual([1, 2, 3])
     })
 
     it('should wrap an async iterable and catch when an error is thrown', async() => {

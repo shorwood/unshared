@@ -26,6 +26,7 @@ export function get(object: unknown, path: string) {
   let result = object
   for (const key of keys) {
     if (result === undefined || result === null) return
+
     // @ts-expect-error: Invalid keys will be caught by the try/catch.
     result = result[key] as unknown
   }
@@ -34,49 +35,49 @@ export function get(object: unknown, path: string) {
   return result
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
   const object = {
-    firstName: 'John',
-    lastName: 'Doe',
     emails: [
       'jdoe@example.com',
       'jdoe@acme.com',
     ],
+    firstName: 'John',
     friends: [
       { firstName: 'Jane', lastName: 'Doe' },
       { firstName: 'Jack', lastName: 'Doe' },
     ],
+    lastName: 'Doe',
   } as const
 
-  it('should return value at the path of an object', () => {
+  test('should return value at the path of an object', () => {
     const result = get(object, 'firstName')
-    expect(result).toEqual('John')
+    expect(result).toBe('John')
     expectTypeOf(result).toEqualTypeOf<'John'>()
   })
 
-  it('should return value at the path of a nested object with array index', () => {
+  test('should return value at the path of a nested object with array index', () => {
     const result = get(object, 'friends.0.firstName')
-    expect(result).toEqual('Jane')
+    expect(result).toBe('Jane')
     expectTypeOf(result).toEqualTypeOf<'Jane'>()
   })
 
-  it('should return undefined if the path does not exist', () => {
+  test('should return undefined if the path does not exist', () => {
     const result = get(object, 'invalid.path')
-    expect(result).toEqual(undefined)
+    expect(result).toBeUndefined()
     expectTypeOf(result).toEqualTypeOf<unknown>()
   })
 
-  it('should return undefined if one of the path segment is null', () => {
+  test('should return undefined if one of the path segment is null', () => {
     // eslint-disable-next-line unicorn/no-null
     const result = get({ foo: null }, 'foo.bar')
-    expect(result).toEqual(undefined)
+    expect(result).toBeUndefined()
     expectTypeOf(result).toEqualTypeOf<unknown>()
   })
 
-  it('should return the value of a Proxied property', () => {
+  test('should return the value of a Proxied property', () => {
     const object = new Proxy({}, { get(_, property) { return property } })
     const result = get(object, 'foo')
-    expect(result).toEqual('foo')
+    expect(result).toBe('foo')
   })
 }

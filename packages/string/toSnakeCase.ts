@@ -14,60 +14,60 @@ export function toSnakeCase(...values: string[]): string {
     .join('_')
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should convert camel-case to snake-case', () => {
+  test('should convert camel-case to snake-case', () => {
     const result = toSnakeCase('camelCase')
-    expect(result).toEqual('camel_case')
+    expect(result).toBe('camel_case')
   })
 
-  it('should convert constant-case to snake-case', () => {
+  test('should convert constant-case to snake-case', () => {
     const result = toSnakeCase('CONSTANT_CASE')
-    expect(result).toEqual('constant_case')
+    expect(result).toBe('constant_case')
   })
 
-  it('should convert dot-case to snake-case', () => {
+  test('should convert dot-case to snake-case', () => {
     const result = toSnakeCase('dot.case')
-    expect(result).toEqual('dot_case')
+    expect(result).toBe('dot_case')
   })
 
-  it('should convert header-case to snake-case', () => {
+  test('should convert header-case to snake-case', () => {
     const result = toSnakeCase('Header-Case')
-    expect(result).toEqual('header_case')
+    expect(result).toBe('header_case')
   })
 
-  it('should convert kebab-case to snake-case', () => {
+  test('should convert kebab-case to snake-case', () => {
     const result = toSnakeCase('kebab-case')
-    expect(result).toEqual('kebab_case')
+    expect(result).toBe('kebab_case')
   })
 
-  it('should convert pascal-case to snake-case', () => {
+  test('should convert pascal-case to snake-case', () => {
     const result = toSnakeCase('PascalCase')
-    expect(result).toEqual('pascal_case')
+    expect(result).toBe('pascal_case')
   })
 
-  it('should convert path-case to snake-case', () => {
+  test('should convert path-case to snake-case', () => {
     const result = toSnakeCase('path/case')
-    expect(result).toEqual('path_case')
+    expect(result).toBe('path_case')
   })
 
-  it('should convert snake_case to snake-case', () => {
+  test('should convert snake_case to snake-case', () => {
     const result = toSnakeCase('snake_case')
-    expect(result).toEqual('snake_case')
+    expect(result).toBe('snake_case')
   })
 
-  it('should convert title-case to snake-case', () => {
+  test('should convert title-case to snake-case', () => {
     const result = toSnakeCase('Title Case')
-    expect(result).toEqual('title_case')
+    expect(result).toBe('title_case')
   })
 
-  it('should convert lower-case to snake-case', () => {
+  test('should convert lower-case to snake-case', () => {
     const result = toSnakeCase('lower case')
-    expect(result).toEqual('lower_case')
+    expect(result).toBe('lower_case')
   })
 
-  it('should convert multiple strings to snake-case', () => {
+  test('should convert multiple strings to snake-case', () => {
     const result = toSnakeCase('foo', 'bar', 'baz')
-    expect(result).toEqual('foo_bar_baz')
+    expect(result).toBe('foo_bar_baz')
   })
 }

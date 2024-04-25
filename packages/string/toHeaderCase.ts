@@ -14,60 +14,60 @@ export function toHeaderCase(...values: string[]): string {
     .join('-')
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should convert camel-case to header-case', () => {
+  test('should convert camel-case to header-case', () => {
     const result = toHeaderCase('camelCase')
-    expect(result).toEqual('Camel-Case')
+    expect(result).toBe('Camel-Case')
   })
 
-  it('should convert constant-case to header-case', () => {
+  test('should convert constant-case to header-case', () => {
     const result = toHeaderCase('CONSTANT_CASE')
-    expect(result).toEqual('Constant-Case')
+    expect(result).toBe('Constant-Case')
   })
 
-  it('should convert dot-case to header-case', () => {
+  test('should convert dot-case to header-case', () => {
     const result = toHeaderCase('dot.case')
-    expect(result).toEqual('Dot-Case')
+    expect(result).toBe('Dot-Case')
   })
 
-  it('should convert header-case to header-case', () => {
+  test('should convert header-case to header-case', () => {
     const result = toHeaderCase('Header-Case')
-    expect(result).toEqual('Header-Case')
+    expect(result).toBe('Header-Case')
   })
 
-  it('should convert kebab-case to header-case', () => {
+  test('should convert kebab-case to header-case', () => {
     const result = toHeaderCase('kebab-case')
-    expect(result).toEqual('Kebab-Case')
+    expect(result).toBe('Kebab-Case')
   })
 
-  it('should convert pascal-case to header-case', () => {
+  test('should convert pascal-case to header-case', () => {
     const result = toHeaderCase('PascalCase')
-    expect(result).toEqual('Pascal-Case')
+    expect(result).toBe('Pascal-Case')
   })
 
-  it('should convert path-case to header-case', () => {
+  test('should convert path-case to header-case', () => {
     const result = toHeaderCase('path/case')
-    expect(result).toEqual('Path-Case')
+    expect(result).toBe('Path-Case')
   })
 
-  it('should convert snake_case to header-case', () => {
+  test('should convert snake_case to header-case', () => {
     const result = toHeaderCase('snake_case')
-    expect(result).toEqual('Snake-Case')
+    expect(result).toBe('Snake-Case')
   })
 
-  it('should convert title-case to header-case', () => {
+  test('should convert title-case to header-case', () => {
     const result = toHeaderCase('Title Case')
-    expect(result).toEqual('Title-Case')
+    expect(result).toBe('Title-Case')
   })
 
-  it('should convert lower-case to header-case', () => {
+  test('should convert lower-case to header-case', () => {
     const result = toHeaderCase('lower case')
-    expect(result).toEqual('Lower-Case')
+    expect(result).toBe('Lower-Case')
   })
 
-  it('should convert multiple strings to header-case', () => {
+  test('should convert multiple strings to header-case', () => {
     const result = toHeaderCase('foo', 'bar', 'baz')
-    expect(result).toEqual('Foo-Bar-Baz')
+    expect(result).toBe('Foo-Bar-Baz')
   })
 }

@@ -1,5 +1,5 @@
-import { MaybeReadonly } from './MaybeReadonly'
 import { IsArray } from './utils'
+import { MaybeReadonly } from './MaybeReadonly'
 
 /**
  * Filter the elements of an array or tuple that match the given type.
@@ -23,39 +23,39 @@ export type TupleFilter<T extends MaybeReadonly<any[]>, U = unknown> =
       // --- If U does not match type, skip it.
       : []
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should filter out elements that do not match the given type in a tuple', () => {
+  test('should filter out elements that do not match the given type in a tuple', () => {
     type Result = TupleFilter<[1, 'a', 2, 'b', 3], boolean>
     expectTypeOf<Result>().toEqualTypeOf<[]>()
   })
 
-  it('should filter in elements that match the given type in a tuple', () => {
+  test('should filter in elements that match the given type in a tuple', () => {
     type Result = TupleFilter<[1, 'a', 2, 'b', 3], number>
     expectTypeOf<Result>().toEqualTypeOf<[1, 2, 3]>()
   })
 
-  it('should filter all elements that match the given type in a tuple', () => {
+  test('should filter all elements that match the given type in a tuple', () => {
     type Result = TupleFilter<[1, 'a', 2, 'b', 3], any>
     expectTypeOf<Result>().toEqualTypeOf<[1, 'a', 2, 'b', 3]>()
   })
 
-  it('should filter out elements that do not match the given type in an array', () => {
+  test('should filter out elements that do not match the given type in an array', () => {
     type Result = TupleFilter<Array<number | string>, number>
     expectTypeOf<Result>().toEqualTypeOf<number[]>()
   })
 
-  it('should filter in elements that match the given type in an array', () => {
+  test('should filter in elements that match the given type in an array', () => {
     type Result = TupleFilter<[1, 'a', 2, 'b', 3], number | string>
     expectTypeOf<Result>().toEqualTypeOf<[1, 'a', 2, 'b', 3]>()
   })
 
-  it('should filter out elements that do not match the given type in an array', () => {
+  test('should filter out elements that do not match the given type in an array', () => {
     type Result = TupleFilter<Array<number | string>, boolean>
     expectTypeOf<Result>().toEqualTypeOf<never[]>()
   })
 
-  it('should filter readonly tuples', () => {
+  test('should filter readonly tuples', () => {
     type Result = TupleFilter<readonly [1, 'a', 2, 'b', 3], number>
     expectTypeOf<Result>().toEqualTypeOf<[1, 2, 3]>()
   })

@@ -22,20 +22,20 @@ export function percentile(numbers: number[], percentile: number): number {
   return sorted[lower] * (1 - weight) + sorted[upper] * weight
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should compute the 25th percentile of a set of numbers', () => {
+  test('should compute the 25th percentile of a set of numbers', () => {
     const result = percentile([10, 20, 30, 40, 50], 0.25)
-    expect(result).toEqual(20)
+    expect(result).toBe(20)
   })
 
-  it('should compute the 50th percentile of a set of numbers', () => {
+  test('should compute the 50th percentile of a set of numbers', () => {
     const result = percentile([10, 20, 30, 40, 50], 0.5)
-    expect(result).toEqual(30)
+    expect(result).toBe(30)
   })
 
-  it('should compute the 75th percentile of a set of numbers', () => {
+  test('should compute the 75th percentile of a set of numbers', () => {
     const result = percentile([10, 20, 30, 40, 50], 0.75)
-    expect(result).toEqual(40)
+    expect(result).toBe(40)
   })
 }

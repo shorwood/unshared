@@ -1,5 +1,5 @@
-import { encodeBase64 } from './encodeBase64'
 import { BinaryLike } from './toUint8Array'
+import { encodeBase64 } from './encodeBase64'
 
 /**
  * Encode a `BinaryLike` into a Base64-encoded string. This implementation is
@@ -20,18 +20,18 @@ export function encodeBase64Url(value: BinaryLike): string {
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  it('should encode a `Buffer` into a URL-safe Base64', () => {
+  test('should encode a `Buffer` into a URL-safe Base64', () => {
     const result = encodeBase64Url([0x00, 0x0F, 0xBF])
-    expect(result).toEqual('AA-_')
+    expect(result).toBe('AA-_')
   })
 
-  it('should encode an `ArrayBuffer` into a URL-safe Base64', () => {
+  test('should encode an `ArrayBuffer` into a URL-safe Base64', () => {
     const result = encodeBase64Url('Hello, World!')
-    expect(result).toEqual('SGVsbG8sIFdvcmxkIQ')
+    expect(result).toBe('SGVsbG8sIFdvcmxkIQ')
   })
 
-  it('should encode a buffer into a URL-safe Base64 string and omit padding', () => {
+  test('should encode a buffer into a URL-safe Base64 string and omit padding', () => {
     const result = encodeBase64Url('Hello, World!')
-    expect(result).toEqual('SGVsbG8sIFdvcmxkIQ')
+    expect(result).toBe('SGVsbG8sIFdvcmxkIQ')
   })
 }

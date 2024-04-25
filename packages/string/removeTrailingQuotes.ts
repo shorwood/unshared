@@ -14,23 +14,23 @@ export function removeTrailingQuotes(string: string) {
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  it('should remove trailing quotes from a string', () => {
+  test('should remove trailing quotes from a string', () => {
     const result = removeTrailingQuotes('"Hello, world!"')
-    expect(result).toEqual('Hello, world!')
+    expect(result).toBe('Hello, world!')
   })
 
-  it('should not remove quotes from the middle of a string', () => {
+  test('should not remove quotes from the middle of a string', () => {
     const result = removeTrailingQuotes('Hello, "world!"')
-    expect(result).toEqual('Hello, "world!"')
+    expect(result).toBe('Hello, "world!"')
   })
 
-  it('should not remove quotes from the beginning of a string', () => {
+  test('should not remove quotes from the beginning of a string', () => {
     const result = removeTrailingQuotes('"Hello", world!')
-    expect(result).toEqual('"Hello", world!')
+    expect(result).toBe('"Hello", world!')
   })
 
-  it('should return the string as is if it is not quoted', () => {
+  test('should return the string as is if it is not quoted', () => {
     const result = removeTrailingQuotes('Hello, world!')
-    expect(result).toEqual('Hello, world!')
+    expect(result).toBe('Hello, world!')
   })
 }

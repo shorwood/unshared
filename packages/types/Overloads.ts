@@ -1,5 +1,5 @@
-import { Function } from './Function'
 import { Unique } from './Unique'
+import { Function } from './Function'
 
 /**
  * Tuple of all possible overloads of a function. This is useful when you want to
@@ -42,15 +42,15 @@ T extends {
   ]>
   : never
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should return a single signature if function has no overloads', () => {
+  test('should return a single signature if function has no overloads', () => {
     type Method = (a: string, b: string) => boolean
     type Result = Overloads<Method>
     expectTypeOf<Result>().toEqualTypeOf<[Method]>()
   })
 
-  it('should return a union of signatures if function has 2 overloads', () => {
+  test('should return a union of signatures if function has 2 overloads', () => {
     interface Method {
       (a: number, b: number): boolean
       (a: string, b: number): boolean
@@ -63,7 +63,7 @@ if (import.meta.vitest) {
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should return a union of signatures if function has 10 overloads', () => {
+  test('should return a union of signatures if function has 10 overloads', () => {
     interface Method {
       (a: number, b: string): boolean
       (a: string, b: number): boolean

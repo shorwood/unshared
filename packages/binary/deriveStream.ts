@@ -1,11 +1,17 @@
-import { Transform, Readable } from 'node:stream'
-import { awaitable, Awaitable } from '@unshared/functions/awaitable'
+import { Readable, Transform } from 'node:stream'
+import { Awaitable, awaitable } from '@unshared/functions/awaitable'
 
 /** Callback that is executed with the stream chunks. */
 export type DeriveStreamFunction<T> = (value: { chunk: Buffer; encoding: BufferEncoding; value: T }) => T
 
 /** A transform stream that derives a value from the stream chunks. */
 export class Derive<T = unknown> extends Transform {
+  /** The chunks read from the stream. */
+  private resolveDerivedValue!: (value: T) => void
+
+  /** Promise that resolves to the value returned from the callback. */
+  public value: Promise<T>
+
   /**
    * Create a transform stream that derives a value from the stream chunks.
    * The chunks are passed-through to the stream, and the derived value is
@@ -31,22 +37,16 @@ export class Derive<T = unknown> extends Transform {
     this.value = new Promise(resolve => this.resolveDerivedValue = resolve)
   }
 
-  /** The chunks read from the stream. */
-  private resolveDerivedValue!: (value: T) => void
-
-  /** Promise that resolves to the value returned from the callback. */
-  public value: Promise<T>
+  // --- Resolves the promise once the stream has been consumed.
+  override _final(callback: () => void) {
+    this.resolveDerivedValue(this._value)
+    callback()
+  }
 
   // --- Intercepts the chunks read from the stream and executes the callback.
   override _transform(chunk: Buffer, encoding: BufferEncoding, callback: () => void) {
     this._value = this.derive({ chunk, encoding, value: this._value })
     this.push(chunk, encoding)
-    callback()
-  }
-
-  // --- Resolves the promise once the stream has been consumed.
-  override _final(callback: () => void) {
-    this.resolveDerivedValue(this._value)
     callback()
   }
 }
@@ -89,25 +89,25 @@ export function deriveStream<T>(derive: DeriveStreamFunction<T>, initialValue: T
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  it('should synchroneously return the initial stream value', () => {
+  test('should synchroneously return the initial stream value', () => {
     const result = deriveStream(({ value }) => value, 42)
     expect(result).toBeInstanceOf(Derive)
   })
 
-  it('should derive a value from the stream chunks', async() => {
+  test('should derive a value from the stream chunks', async() => {
     const stream = Readable.from('Hello, world!')
     const result = deriveStream(({ chunk, value }) => value + chunk.length, 0)
     void stream.pipe(result)
     const length = await result
-    expect(length).toEqual(13)
+    expect(length).toBe(13)
   })
 
-  it('should not consume the stream chunks', async() => {
+  test('should not consume the stream chunks', async() => {
     const stream = Readable.from('Hello, world!')
     const result = deriveStream(({ chunk, value }) => value + chunk.length, 0)
     void stream.pipe(result)
     const chunks = await result.toArray()
     const buffer = Buffer.concat(chunks).toString('utf8')
-    expect(buffer).toEqual('Hello, world!')
+    expect(buffer).toBe('Hello, world!')
   })
 }

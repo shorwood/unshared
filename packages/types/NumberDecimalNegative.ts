@@ -13,34 +13,34 @@ export type NumberDecimalNegative<N extends number = number> =
       ? IsNegative<N> extends true ? N
         : never : never
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should not match a positive decimal', () => {
+  test('should not match a positive decimal', () => {
     type Result = NumberDecimalNegative<1.1>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
-  it('should not match a positive integer', () => {
+  test('should not match a positive integer', () => {
     type Result = NumberDecimalNegative<1>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
-  it('should match a negative decimal', () => {
+  test('should match a negative decimal', () => {
     type Result = NumberDecimalNegative<-1.1>
     expectTypeOf<Result>().toEqualTypeOf<-1.1>()
   })
 
-  it('should not match a negative integer', () => {
+  test('should not match a negative integer', () => {
     type Result = NumberDecimalNegative<-1>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
-  it('should not match zero', () => {
+  test('should not match zero', () => {
     type Result = NumberDecimalNegative<0>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
-  it('should match number', () => {
+  test('should match number', () => {
     type Result = NumberDecimalNegative<number>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })

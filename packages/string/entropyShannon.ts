@@ -31,35 +31,35 @@ export function entropyShannon(string: string): number {
   return result
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should compute the entropy of an unsafe password', () => {
+  test('should compute the entropy of an unsafe password', () => {
     const result = entropyShannon('123')
-    expect(result).toEqual(1.584962500721156)
+    expect(result).toStrictEqual(1.584962500721156)
   })
 
-  it('should compute the entropy of a weak password', () => {
+  test('should compute the entropy of a weak password', () => {
     const result = entropyShannon('Azerty')
-    expect(result).toEqual(2.584962500721156)
+    expect(result).toStrictEqual(2.584962500721156)
   })
 
-  it('should compute the entropy of a medium password', () => {
+  test('should compute the entropy of a medium password', () => {
     const result = entropyShannon('nKdCKkBBcIAn')
-    expect(result).toEqual(3.084962500721156)
+    expect(result).toStrictEqual(3.084962500721156)
   })
 
-  it('should compute the entropy of a strong password', () => {
+  test('should compute the entropy of a strong password', () => {
     const result = entropyShannon('eELEu4Zlgjbuno3Qtzf3vex9')
-    expect(result).toEqual(4.251629167387823)
+    expect(result).toStrictEqual(4.251629167387823)
   })
 
-  it('should compute the entropy of a very strong password', () => {
+  test('should compute the entropy of a very strong password', () => {
     const result = entropyShannon('uÒ¶îs¾ìÞÈ¾¥qÄ!bÑ¶ZfâE}ÆÂÓydW¾µò]Ð,KÒÈ0QDÎÂÀ5VÚç')
-    expect(result).toEqual(5.283208266525225)
+    expect(result).toStrictEqual(5.283208266525225)
   })
 
-  it('should return 0 for an empty string', () => {
+  test('should return 0 for an empty string', () => {
     const result = entropyShannon('')
-    expect(result).toEqual(0)
+    expect(result).toBe(0)
   })
 }

@@ -1,29 +1,29 @@
-import { CharacterDigit } from './CharacterDigit'
-import { CharacterLower } from './CharacterLower'
 import { CharacterUpper } from './CharacterUpper'
+import { CharacterLower } from './CharacterLower'
+import { CharacterDigit } from './CharacterDigit'
 
 /**
  * A character symbol that is not a letter or a digit.
  */
 export type CharacterSymbol =
-  ' ' | '-' | ',' | ';' | ':' | '!' | '?' | '.' | '"' | '(' | ')' | '@'
-  |'*'| '/' | '\'' | '&' | '#' | '%' | '+' | '<' | '=' | '>' | '$'
+  ' ' | '!' | '"' | '#' | '$' | '%' | '&' | '(' | ')' | '*' | '+' | ','
+  |'.'| '/' | ':' | ';' | '<' | '=' | '>' | '?' | '@' | '\'' | '-'
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should not match lowercase letters', () => {
+  test('should not match lowercase letters', () => {
     expectTypeOf<CharacterLower>().not.toMatchTypeOf<CharacterSymbol>()
   })
 
-  it('should not match uppercase letters', () => {
+  test('should not match uppercase letters', () => {
     expectTypeOf<CharacterUpper>().not.toMatchTypeOf<CharacterSymbol>()
   })
 
-  it('should not match a digit', () => {
+  test('should not match a digit', () => {
     expectTypeOf<CharacterDigit>().not.toMatchTypeOf<CharacterSymbol>()
   })
 
-  it('should match a symbol', () => {
+  test('should match a symbol', () => {
     expectTypeOf<'!'>().toMatchTypeOf<CharacterSymbol>()
   })
 }

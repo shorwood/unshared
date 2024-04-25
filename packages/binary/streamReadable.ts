@@ -1,5 +1,5 @@
-import { nextTick } from 'node:process'
 import { Readable } from 'node:stream'
+import { nextTick } from 'node:process'
 
 export interface StreamReadableOptions {
   /**
@@ -33,6 +33,7 @@ export async function streamReadable(stream: Readable, options: StreamReadableOp
   await new Promise(nextTick)
 
   return new Promise((resolve, reject) => {
+
     // --- If the stream is destroyed, has ended or the timeout, (if any) has exceeded, reject the promise.
     if (stream.readableEnded) {
       const error = new Error('Cannot read the stream: The stream has ended.')
@@ -59,20 +60,20 @@ export async function streamReadable(stream: Readable, options: StreamReadableOp
 if (import.meta.vitest) {
   const { PassThrough } = await import('node:stream')
 
-  it('should resolve if the stream is readable', async() => {
+  test('should resolve if the stream is readable', async() => {
     const stream = Readable.from('Hello')
     const result = streamReadable(stream)
     await expect(result).resolves.toBeUndefined()
   })
 
-  it('should reject if the stream has been destroyed', async() => {
+  test('should reject if the stream has been destroyed', async() => {
     const stream = new Readable()
     stream.destroy()
     const shouldReject = streamReadable(stream)
     await expect(shouldReject).rejects.toThrow('Cannot read the stream: The stream has been destroyed.')
   })
 
-  it('should reject if the stream has ended', async() => {
+  test('should reject if the stream has ended', async() => {
     const stream = new Readable()
     // eslint-disable-next-line unicorn/no-null
     stream.push(null)
@@ -81,7 +82,7 @@ if (import.meta.vitest) {
     await expect(shouldReject).rejects.toThrow('Cannot read the stream: The stream has ended.')
   })
 
-  it('should reject if the timeout has exceeded', async() => {
+  test('should reject if the timeout has exceeded', async() => {
     const stream = new PassThrough()
     const shouldReject = streamReadable(stream, { timeout: 1 })
     await expect(shouldReject).rejects.toThrow('Cannot read the stream: Timeout exceeded.')

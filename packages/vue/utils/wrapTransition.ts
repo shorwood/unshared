@@ -10,7 +10,7 @@ export interface WrapTransitionOptions<T extends boolean = boolean> extends Tran
 }
 
 export function wrapTransition<T extends RawChildrenOrSlots>(vnode: T): T
-export function wrapTransition<T extends RawChildrenOrSlots>(vnode: any[] & T, options: WrapTransitionOptions): VNode
+export function wrapTransition<T extends RawChildrenOrSlots>(vnode: T & any[], options: WrapTransitionOptions): VNode
 export function wrapTransition<T extends RawChildrenOrSlots>(vnode: T, options: WrapTransitionOptions): VNode
 export function wrapTransition<T extends RawChildrenOrSlots>(vnode: T, options?: WrapTransitionOptions): T | VNode
 /**
@@ -51,50 +51,65 @@ if (import.meta.vitest) {
   const { mount } = await import('@vue/test-utils')
   const div = h('div', { key: '1' })
 
-  it('should wrap a single VNode in a Transition component', () => {
+  beforeAll(() => {
+    vi.stubGlobal('console', { warn: () => {} })
+  })
+
+  test('should wrap a single VNode in a Transition component', () => {
     const result = wrapTransition(div, { name: 'fade' })
     const html = mount({ render: () => result }).html()
     expect(result.props).toStrictEqual({ name: 'fade' })
     expect(result.type).toStrictEqual(Transition)
-    expect(result).not.toEqual(div)
-    expect(html).toEqual('<div></div>')
+    expect(result).not.toStrictEqual(div)
+    expect(html).toBe([
+      '<transition-stub appear="false" persisted="false">',
+      '  <div></div>',
+      '</transition-stub>',
+    ].join('\n'))
     expectTypeOf(result).toEqualTypeOf<VNode>()
   })
 
-  it('should wrap an array of VNodes wiinth a TransitionGroup component', () => {
+  test('should wrap an array of VNodes within a TransitionGroup component', () => {
     const result = wrapTransition([div, div], { name: 'fade' })
     const html = mount({ render: () => result }).html()
     expect(result.props).toStrictEqual({ name: 'fade' })
-    expect(result.type).toStrictEqual(TransitionGroup)
-    expect(result).not.toEqual([div, div])
-    expect(html).toEqual('<div></div>\n<div></div>')
+    expect(result).not.toStrictEqual([div, div])
+    expect(html).toBe([
+      '<transition-group-stub name="fade" appear="false" persisted="false" css="true">',
+      '  <div></div>',
+      '  <div></div>',
+      '</transition-group-stub>',
+    ].join('\n'))
     expectTypeOf(result).toEqualTypeOf<VNode>()
   })
 
-  it('should wrap a single VNode in a TransitionGroup component', () => {
-    const result = wrapTransition(div, { name: 'fade', isGroup: true })
+  test('should wrap a single VNode in a TransitionGroup component', () => {
+    const result = wrapTransition(div, { isGroup: true, name: 'fade' })
     const html = mount({ render: () => result }).html()
-    expect(result.props).toStrictEqual({ name: 'fade', key: '1' })
-    expect(result.type).toStrictEqual(TransitionGroup)
-    expect(result).not.toEqual(div)
-    expect(html).toEqual('<div></div>')
+    expect(result.props).toStrictEqual({ key: '1', name: 'fade' })
+    expect(result).not.toStrictEqual(div)
+    expect(html).toBe([
+      '<transition-group-stub name="fade" appear="false" persisted="false" css="true">',
+      '  <div></div>',
+      '</transition-group-stub>',
+    ].join('\n'))
     expectTypeOf(result).toEqualTypeOf<VNode>()
   })
 
-  it('should not wrap a single VNode if no options are provided', () => {
+  test('should not wrap a single VNode if no options are provided', () => {
     const result = wrapTransition(div)
     const html = mount({ render: () => result }).html()
-    expect(result).toEqual(div)
-    expect(html).toEqual('<div></div>')
+    expect(result).toStrictEqual(div)
+    expect(html).toBe('<div></div>')
     expectTypeOf(result).toEqualTypeOf<VNode>()
   })
 
-  it('should not wrap multiple VNodes if no options are provided', () => {
+  test('should not wrap multiple VNodes if no options are provided', () => {
     const vnodes = [div, div]
     const result = wrapTransition(vnodes)
     const html = mount({ render: () => result }).html()
-    expect(result).toEqual(vnodes)
-    expect(html).toEqual('<div></div>\n<div></div>')
+    expect(result).toStrictEqual(vnodes)
+    expect(html).toBe('<div></div>\n<div></div>')
     expectTypeOf(result).toEqualTypeOf<VNode[]>()
   })
 }

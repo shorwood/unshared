@@ -1,8 +1,8 @@
 import { clamp } from '@unshared/math/clamp'
-import { colorHexToRgb } from './colorHexToRgb'
-import { colorHslToRgb } from './colorHslToRgb'
-import { colorRgbToHex } from './colorRgbToHex'
 import { colorRgbToHsl } from './colorRgbToHsl'
+import { colorRgbToHex } from './colorRgbToHex'
+import { colorHslToRgb } from './colorHslToRgb'
+import { colorHexToRgb } from './colorHexToRgb'
 
 /** The default stops for a color palette. */
 const COLOR_PALETTE_DEFAULT_STOPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900] as const
@@ -102,11 +102,11 @@ export function createColorPalette<K extends number = ColorPaletteDefaultStops>(
   return Object.fromEntries(shades) as ColorPalette<K>
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should generate a palette', () => {
+  test('should generate a palette', () => {
     const result = createColorPalette('#6c50ff')
-    expect(result).toEqual({
+    expect(result).toStrictEqual({
       100: '#f5f3ff',
       200: '#d2caff',
       300: '#b0a1ff',
@@ -120,14 +120,14 @@ if (import.meta.vitest) {
     })
   })
 
-  it('should generate a palette with a custom base stop', () => {
+  test('should generate a palette with a custom base stop', () => {
     const result = createColorPalette('#6c50ff', { baseStop: 400 })
-    expect(result).toEqual({
-      50: '#e3deff',
+    expect(result).toStrictEqual({
       100: '#d2caff',
       200: '#b0a1ff',
       300: '#8e78ff',
       400: '#6c50ff',
+      50: '#e3deff',
       500: '#3c17ff',
       600: '#2300de',
       700: '#1a00a6',
@@ -136,9 +136,9 @@ if (import.meta.vitest) {
     })
   })
 
-  it('should generate a palette with custom stops', () => {
+  test('should generate a palette with custom stops', () => {
     const result = createColorPalette('#6c50ff', { stops: [100, 200, 300, 400, 500] })
-    expect(result).toEqual({
+    expect(result).toStrictEqual({
       100: '#f5f3ff',
       200: '#d2caff',
       300: '#b0a1ff',
@@ -147,14 +147,14 @@ if (import.meta.vitest) {
     })
   })
 
-  it('should generate a palette of colors from a single hex color with custom parameters', () => {
+  test('should generate a palette of colors from a single hex color with custom parameters', () => {
     const result = createColorPalette('#B8B6FF', { hueShift: -20, stepDown: 5, stepUp: 3 })
-    expect(result).toEqual({
-      50: '#fafbff',
+    expect(result).toStrictEqual({
       100: '#f3f4ff',
       200: '#e3e5ff',
       300: '#d4d6ff',
       400: '#c5c5ff',
+      50: '#fafbff',
       500: '#b7b6ff',
       600: '#a29cff',
       700: '#8e83ff',
@@ -163,7 +163,7 @@ if (import.meta.vitest) {
     })
   })
 
-  it('should infer the type of the palette', () => {
+  test('should infer the type of the palette', () => {
     const result = createColorPalette('#6c50ff', { stops: [1, 2, 3] })
     expectTypeOf(result).toEqualTypeOf<{ 1: string; 2: string; 3: string }>()
   })

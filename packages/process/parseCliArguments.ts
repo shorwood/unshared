@@ -3,6 +3,10 @@ import { parseOption } from './parseCliOption'
 
 export interface ParseArgvReturnType<T extends object> {
   /**
+   * The path to the Node.js executable.
+   */
+  nodePath: string
+  /**
    * Extracted options.
    *
    * @example
@@ -16,10 +20,6 @@ export interface ParseArgvReturnType<T extends object> {
    * parseArgv(['-f', '-b', '-q', '--foo', 'bar', 'baz']) // returns ['baz']
    */
   parameters: string[]
-  /**
-   * The path to the Node.js executable.
-   */
-  nodePath: string
   /**
    * The path to the current script.
    */
@@ -59,27 +59,27 @@ export function parseCliArguments<T extends object>(argv = processArgv): ParseAr
   }
 
   // --- Return the result.
-  return { parameters, options, nodePath, scriptPath }
+  return { nodePath, options, parameters, scriptPath }
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  it('should parse one argument', () => {
+  test('should parse one argument', () => {
     const result = parseCliArguments(['/node', 'index.js', 'foo'])
-    expect(result).toEqual({
-      parameters: ['foo'],
-      options: {},
+    expect(result).toStrictEqual({
       nodePath: '/node',
+      options: {},
+      parameters: ['foo'],
       scriptPath: 'index.js',
     })
   })
 
-  it('should parse multiple arguments', () => {
+  test('should parse multiple arguments', () => {
     const result = parseCliArguments(['/node', 'index.js', 'foo', 'bar'])
-    expect(result).toEqual({
-      parameters: ['foo', 'bar'],
-      options: {},
+    expect(result).toStrictEqual({
       nodePath: '/node',
+      options: {},
+      parameters: ['foo', 'bar'],
       scriptPath: 'index.js',
     })
   })
@@ -87,50 +87,50 @@ if (import.meta.vitest) {
   describe('options', () => {
     it('should parse one boolean option', () => {
       const result = parseCliArguments(['/node', 'index.js', '--foo'])
-      expect(result).toEqual({
-        parameters: [],
-        options: { foo: true },
+      expect(result).toStrictEqual({
         nodePath: '/node',
+        options: { foo: true },
+        parameters: [],
         scriptPath: 'index.js',
       })
     })
 
     it('should parse multiple boolean options', () => {
       const result = parseCliArguments(['/node', 'index.js', '--foo', '--bar'])
-      expect(result).toEqual({
-        parameters: [],
-        options: { foo: true, bar: true },
+      expect(result).toStrictEqual({
         nodePath: '/node',
+        options: { bar: true, foo: true },
+        parameters: [],
         scriptPath: 'index.js',
       })
     })
 
     it('should parse nested options', () => {
       const result = parseCliArguments(['/node', 'index.js', '--foo.bar', 'baz'])
-      expect(result).toEqual({
-        parameters: [],
-        options: { foo: { bar: 'baz' } },
+      expect(result).toStrictEqual({
         nodePath: '/node',
+        options: { foo: { bar: 'baz' } },
+        parameters: [],
         scriptPath: 'index.js',
       })
     })
 
     it('should parse short options', () => {
       const result = parseCliArguments(['/node', 'index.js', '-f'])
-      expect(result).toEqual({
-        parameters: [],
-        options: { f: true },
+      expect(result).toStrictEqual({
         nodePath: '/node',
+        options: { f: true },
+        parameters: [],
         scriptPath: 'index.js',
       })
     })
 
     it('should parse multiple short options', () => {
       const result = parseCliArguments(['/node', 'index.js', '-f', '-b'])
-      expect(result).toEqual({
-        parameters: [],
-        options: { f: true, b: true },
+      expect(result).toStrictEqual({
         nodePath: '/node',
+        options: { b: true, f: true },
+        parameters: [],
         scriptPath: 'index.js',
       })
     })
@@ -147,10 +147,10 @@ if (import.meta.vitest) {
         'bar',
         '--bar',
       ])
-      expect(result).toEqual({
-        parameters: ['baz'],
-        options: { foo: 'bar', bar: true, f: true, b: true, q: true },
+      expect(result).toStrictEqual({
         nodePath: '/node',
+        options: { b: true, bar: true, f: true, foo: 'bar', q: true },
+        parameters: ['baz'],
         scriptPath: 'index.js',
       })
     })

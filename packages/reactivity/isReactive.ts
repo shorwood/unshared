@@ -1,5 +1,5 @@
-import { ReactiveFlag } from './constants'
 import { Reactive } from './reactive'
+import { ReactiveFlag } from './constants'
 
 /**
  * Predicate function that checks if a value is a `Reactive` object.
@@ -17,44 +17,42 @@ export function isReactive<T>(value: unknown): value is Reactive<T> {
     && value[ReactiveFlag] === true
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
   const { computed } = await import('./computed')
   const { reactive } = await import('./reactive')
   const { reference } = await import('./reference')
 
-  it('should return true for computed', () => {
+  test('should return true for computed', () => {
     const value = computed([], () => 1)
     const result = isReactive(value)
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
   })
 
-  it('should return false for reactive', () => {
+  test('should return false for reactive', () => {
     const value = reactive({})
     const result = isReactive(value)
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
   })
 
-  it('should return false for references', () => {
+  test('should return false for references', () => {
     const value = reference()
     const result = isReactive(value)
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
   })
 
-  it('should return false for non-reactive', () => {
+  test('should return false for non-reactive', () => {
     const result = isReactive({ foo: 'bar' })
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
   })
 
-  // eslint-disable-next-line vitest/expect-expect
-  it('should predicate the type of a reactive', () => {
+  test('should predicate the type of a reactive', () => {
     const value = undefined as unknown
     const result = isReactive(value)
     if (result) expectTypeOf(value).toEqualTypeOf<Reactive<unknown>>()
   })
 
-  // eslint-disable-next-line vitest/expect-expect
-  it('should predicate the type of a reactive with a type', () => {
+  test('should predicate the type of a reactive with a type', () => {
     const value = undefined as unknown
     const result = isReactive<{ value: 'foobar' }>(value)
     if (result) expectTypeOf(value).toEqualTypeOf<Reactive<{ value: 'foobar' }>>()

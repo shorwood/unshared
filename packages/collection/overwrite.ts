@@ -42,52 +42,52 @@ export function overwrite(object: object, source: object): object {
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  it('should return the object with the source values', () => {
-    const object = { foo: 'foo', bar: 'bar' }
-    const source = { foo: 1, bar: 2 }
+  test('should return the object with the source values', () => {
+    const object = { bar: 'bar', foo: 'foo' }
+    const source = { bar: 2, foo: 1 }
     const result = overwrite(object, source)
-    expect(result).toStrictEqual({ foo: 1, bar: 2 })
+    expect(result).toStrictEqual({ bar: 2, foo: 1 })
   })
 
-  it('should mutate the object with the source values', () => {
-    const object = { foo: 'foo', bar: 'bar' }
-    const source = { foo: 1, bar: 2 }
+  test('should mutate the object with the source values', () => {
+    const object = { bar: 'bar', foo: 'foo' }
+    const source = { bar: 2, foo: 1 }
     const result = overwrite(object, source)
     expect(object).toBe(result)
-    expect(object).toStrictEqual({ foo: 1, bar: 2 })
+    expect(object).toStrictEqual({ bar: 2, foo: 1 })
   })
 
-  it('should delete properties that are not in the source', () => {
-    const object = { foo: 'foo', bar: 'bar' }
+  test('should delete properties that are not in the source', () => {
+    const object = { bar: 'bar', foo: 'foo' }
     const source = { foo: 1 }
     const result = overwrite(object, source)
     const resultKeys = Object.keys(result)
-    expect(resultKeys).toEqual(['foo'])
+    expect(resultKeys).toStrictEqual(['foo'])
   })
 
-  it('should add properties that are not in the object', () => {
+  test('should add properties that are not in the object', () => {
     const object = { foo: 'foo' }
-    const source = { foo: 1, bar: 2 }
+    const source = { bar: 2, foo: 1 }
     const result = overwrite(object, source)
     const resultKeys = Object.keys(result)
-    expect(resultKeys).toEqual(['foo', 'bar'])
+    expect(resultKeys).toStrictEqual(['foo', 'bar'])
   })
 
-  it('should return an object with the type of the source', () => {
-    const object = { foo: 'foo', bar: 'bar' }
-    const source = { foo: 1, baz: 2 }
+  test('should return an object with the type of the source', () => {
+    const object = { bar: 'bar', foo: 'foo' }
+    const source = { baz: 2, foo: 1 }
     const result = overwrite(object, source)
-    expectTypeOf(result).toEqualTypeOf<{ foo: number; baz: number }>()
+    expectTypeOf(result).toEqualTypeOf<{ baz: number; foo: number }>()
   })
 
-  it('should overwrite an array and set the length', () => {
+  test('should overwrite an array and set the length', () => {
     const array = [1, 2, 3]
     const source = [101, 102]
     const result = overwrite(array, source)
     expect(result).toStrictEqual([101, 102])
   })
 
-  it('should throw an error if the object and source are not both arrays or objects', () => {
+  test('should throw an error if the object and source are not both arrays or objects', () => {
     const shouldThrow = () => overwrite({}, [])
     expect(shouldThrow).toThrow(TypeError)
   })

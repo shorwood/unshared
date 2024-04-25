@@ -13,14 +13,14 @@ import { clamp } from '@unshared/math/clamp'
  * @see https://en.wikipedia.org/wiki/SRGB
  */
 export interface RGB {
-  /** Red channel from 0 to 255. */
-  r: number
-  /** Green channel from 0 to 255. */
-  g: number
-  /** Blue channel from 0 to 255. */
-  b: number
   /** Alpha channel from 0 to 255. */
   a: number
+  /** Blue channel from 0 to 255. */
+  b: number
+  /** Green channel from 0 to 255. */
+  g: number
+  /** Red channel from 0 to 255. */
+  r: number
 }
 
 /**
@@ -40,41 +40,41 @@ export interface RGB {
  */
 export function createColorRgb(rgb: Partial<RGB> = {}): RGB {
   return {
-    r: clamp(rgb.r ?? 0x00, 0, 0xFF),
-    g: clamp(rgb.g ?? 0x00, 0, 0xFF),
-    b: clamp(rgb.b ?? 0x00, 0, 0xFF),
     a: clamp(rgb.a ?? 0xFF, 0, 0xFF),
+    b: clamp(rgb.b ?? 0x00, 0, 0xFF),
+    g: clamp(rgb.g ?? 0x00, 0, 0xFF),
+    r: clamp(rgb.r ?? 0x00, 0, 0xFF),
   }
 }
 
 /** v8 ignore start */
 if (import.meta.vitest) {
-  it('should create a color in the RGB color space', () => {
-    const result = createColorRgb({ g: 0x80, a: 0x80, r: 0x01, b: 0x00 })
-    expect(result).toEqual({ g: 0x80, a: 0x80, r: 0x01, b: 0x00 })
+  test('should create a color in the RGB color space', () => {
+    const result = createColorRgb({ a: 0x80, b: 0x00, g: 0x80, r: 0x01 })
+    expect(result).toStrictEqual({ a: 0x80, b: 0x00, g: 0x80, r: 0x01 })
   })
 
-  it('should default the alpha channel to 255', () => {
-    const result = createColorRgb({ r: 0xFF, g: 0, b: 0 })
-    expect(result).toEqual({ r: 0xFF, g: 0, b: 0, a: 0xFF })
+  test('should default the alpha channel to 255', () => {
+    const result = createColorRgb({ b: 0, g: 0, r: 0xFF })
+    expect(result).toStrictEqual({ a: 0xFF, b: 0, g: 0, r: 0xFF })
   })
 
-  it('should default the red, green, and blue channels to 0', () => {
+  test('should default the red, green, and blue channels to 0', () => {
     const result = createColorRgb({ a: 0x80 })
-    expect(result).toEqual({ r: 0, g: 0, b: 0, a: 0x80 })
+    expect(result).toStrictEqual({ a: 0x80, b: 0, g: 0, r: 0 })
   })
 
-  it('should default the color to black', () => {
+  test('should default the color to black', () => {
     const result = createColorRgb()
-    expect(result).toEqual({ r: 0, g: 0, b: 0, a: 0xFF })
+    expect(result).toStrictEqual({ a: 0xFF, b: 0, g: 0, r: 0 })
   })
 
-  it('should clamp RGB channels that are out of range', () => {
-    const result = createColorRgb({ r: -1, g: -0, b: 0x100, a: 0x100 })
-    expect(result).toEqual({ r: 0, g: 0, b: 0xFF, a: 0xFF })
+  test('should clamp RGB channels that are out of range', () => {
+    const result = createColorRgb({ a: 0x100, b: 0x100, g: -0, r: -1 })
+    expect(result).toStrictEqual({ a: 0xFF, b: 0xFF, g: 0, r: 0 })
   })
 
-  it('should return a type-safe RGB object', () => {
+  test('should return a type-safe RGB object', () => {
     const result = createColorRgb()
     expectTypeOf(result).toEqualTypeOf<RGB>()
   })

@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-duplicate-string */
 import { MaybeArray } from '@unshared/types'
 
 /** A distinguished name attributes. */
@@ -44,43 +43,43 @@ export function parseDistinguishedName(name: string): DistinguishedName {
   return attributes
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should parse a simple DN', () => {
+  test('should parse a simple DN', () => {
     const result = parseDistinguishedName('CN=example.com,O=Example')
-    expect(result).toEqual({
+    expect(result).toStrictEqual({
       CN: 'example.com',
       O: 'Example',
     })
   })
 
-  it('should parse a DN with spaces', () => {
+  test('should parse a DN with spaces', () => {
     const result = parseDistinguishedName('CN=example.com, O=Example')
-    expect(result).toEqual({
+    expect(result).toStrictEqual({
       CN: 'example.com',
       O: 'Example',
     })
   })
 
-  it('should parse a DN with escaped commas', () => {
+  test('should parse a DN with escaped commas', () => {
     const result = parseDistinguishedName('CN=example\\,com,O=Example')
-    expect(result).toEqual({
+    expect(result).toStrictEqual({
       CN: 'example,com',
       O: 'Example',
     })
   })
 
-  it('should parse a DN with escaped equal sign', () => {
+  test('should parse a DN with escaped equal sign', () => {
     const result = parseDistinguishedName('CN=example\\=com,O=Example')
-    expect(result).toEqual({
+    expect(result).toStrictEqual({
       CN: 'example=com',
       O: 'Example',
     })
   })
 
-  it('should parse a DN with multiple values', () => {
+  test('should parse a DN with multiple values', () => {
     const result = parseDistinguishedName('CN=example.com,O=Example,O=Example2')
-    expect(result).toEqual({
+    expect(result).toStrictEqual({
       CN: 'example.com',
       O: ['Example', 'Example2'],
     })

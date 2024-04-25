@@ -1,15 +1,15 @@
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
-  format: ['esm'],
+  clean: true,
   entry: {
     index: './index.ts',
     render: './render.ts',
   },
-  clean: true,
-  silent: true,
   esbuildOptions: (options) => {
     options.define = { 'import.meta.vitest': 'false' }
   },
+  format: ['esm'],
   minifySyntax: true,
+  silent: true,
 })

@@ -10,6 +10,7 @@ import { Substract } from './utils'
  * @example StringConstraint<'a' | 'b', 1 | 2> // 'a' | 'b' | 'aa' | 'ab' | 'ba' | 'bb'
  */
 export type StringConstraint<C extends string, L extends number, P extends string = ''> =
+
   // --- Assert C is a literal and L is a positive integer.
   string extends C ? string
     : number extends L ? string
@@ -21,44 +22,44 @@ export type StringConstraint<C extends string, L extends number, P extends strin
           // --- Append character recursively
           : `${P}${C}${StringConstraint<C, Substract<L, 1>>}`
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should return a literal constrained with single character and fixed length', () => {
+  test('should return a literal constrained with single character and fixed length', () => {
     type Result = StringConstraint<'a', 3>
     expectTypeOf<Result>().toEqualTypeOf<'aaa'>()
   })
 
-  it('should return a literal constrained with multiple characters and fixed length', () => {
+  test('should return a literal constrained with multiple characters and fixed length', () => {
     type Result = StringConstraint<'a' | 'b', 2>
     expectTypeOf<Result>().toEqualTypeOf<'aa' | 'ab' | 'ba' | 'bb'>()
   })
 
-  it('should return a literal constrained with single character and variable length', () => {
+  test('should return a literal constrained with single character and variable length', () => {
     type Result = StringConstraint<'a', 2 | 3>
     expectTypeOf<Result>().toEqualTypeOf<'aa' | 'aaa'>()
   })
 
-  it('should return a literal constrained with multiple characters and variable length', () => {
+  test('should return a literal constrained with multiple characters and variable length', () => {
     type Result = StringConstraint<'a' | 'b', 1 | 2>
     expectTypeOf<Result>().toEqualTypeOf<'a' | 'aa' | 'ab' | 'b' | 'ba' | 'bb'>()
   })
 
-  it('should return "" if length is 0', () => {
+  test('should return "" if length is 0', () => {
     type Result = StringConstraint<'a', 0>
     expectTypeOf<Result>().toEqualTypeOf<''>()
   })
 
-  it('should return string if length is number', () => {
+  test('should return string if length is number', () => {
     type Result = StringConstraint<'a', number>
     expectTypeOf<Result>().toEqualTypeOf<string>()
   })
 
-  it('should return string if character is string', () => {
+  test('should return string if character is string', () => {
     type Result = StringConstraint<string, 2>
     expectTypeOf<Result>().toEqualTypeOf<string>()
   })
 
-  it('should return never if length is negative', () => {
+  test('should return never if length is negative', () => {
     type Result = StringConstraint<'a', -1>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })

@@ -1,16 +1,18 @@
-import { antfu } from './antfu'
-import { eslintComments } from './eslintComments'
-import { javascript } from './javascript'
-import { jsdoc } from './jsdoc'
-import { configJson } from './json'
-import { jsonPackage } from './jsonPackage'
-import { jsonTsconfig } from './jsonTsconfig'
-import { markdown } from './markdown'
-import { node } from './node'
-import { typescript } from './typescript'
-import { unicorn } from './unicorn'
-import { vitest } from './vitest'
 import { vue } from './vue'
+import { vitest } from './vitest'
+import { unicorn } from './unicorn'
+import { typescript } from './typescript'
+import { stylistic } from './stylistic'
+import { sonarjs } from './sonarjs'
+import { perfectionist } from './perfectionist'
+import { node } from './node'
+import { jsonTsconfig } from './jsonTsconfig'
+import { jsonPackage } from './jsonPackage'
+import { configJson } from './json'
+import { jsdoc } from './jsdoc'
+import { javascript } from './javascript'
+import { eslintComments } from './eslintComments'
+import { antfu } from './antfu'
 
 export function all() {
   return [
@@ -21,13 +23,17 @@ export function all() {
     ...configJson(),
     ...jsonPackage(),
     ...jsonTsconfig(),
-    ...markdown(),
     ...node(),
-    // ...promise(),
+    ...perfectionist(),
+    ...sonarjs(),
+    ...stylistic(),
     ...typescript(),
     ...unicorn(),
     ...vitest(),
     ...vue(),
+
+    // ...promise(),
+    // ...markdown(),
     {
       ignores: [
         '**/dist',
@@ -37,6 +43,7 @@ export function all() {
         '**/output',
         '**/coverage',
         '**/public',
+        '**/__wip__',
         '**/__snapshots__',
         '**/LICENSE*',
         '**/CHANGELOG*',
@@ -45,11 +52,6 @@ export function all() {
         'yarn.lock',
       ],
     },
-    // env: {
-    //   browser: true,
-    //   es6: true,
-    //   node: true,
-    // },
   ]
 }
 

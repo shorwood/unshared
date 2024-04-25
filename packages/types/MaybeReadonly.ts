@@ -9,17 +9,17 @@ export type MaybeReadonly<T = unknown> = Readonly<T> | T
 
 /* v8 ignore next */
 if (import.meta.vitest) {
-  it('should match a tuple that is either readonly or not', () => {
+  test('should match a tuple that is either readonly or not', () => {
     type Result = MaybeReadonly<[number, string]>
-    expectTypeOf<Result>().toEqualTypeOf<Readonly<[number, string]> | [number, string]>()
+    expectTypeOf<Result>().toEqualTypeOf<[number, string] | Readonly<[number, string]>>()
   })
 
-  it('should match an object that is either readonly or not', () => {
+  test('should match an object that is either readonly or not', () => {
     type Result = MaybeReadonly<{ a: number; b: string }>
-    expectTypeOf<Result>().toEqualTypeOf<Readonly<{ a: number; b: string }> | { a: number; b: string }>()
+    expectTypeOf<Result>().toEqualTypeOf<{ a: number; b: string } | Readonly<{ a: number; b: string }>>()
   })
 
-  it('should match an unknown type by default', () => {
+  test('should match an unknown type by default', () => {
     type Result = MaybeReadonly
     expectTypeOf<Result>().toEqualTypeOf<unknown>()
   })

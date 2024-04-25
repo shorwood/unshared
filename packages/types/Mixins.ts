@@ -1,7 +1,6 @@
-/* eslint-disable unicorn/no-static-only-class */
-import { Constructor } from './Constructor'
-import { ConstructorStatics } from './ConstructorStatics'
 import { Extends } from './Extends'
+import { ConstructorStatics } from './ConstructorStatics'
+import { Constructor } from './Constructor'
 
 /**
  * Mixes multiple classes into a single class from left to right.
@@ -20,9 +19,9 @@ export type Mixins<T extends Constructor[]> =
       : T extends [infer T1 extends Constructor, ...infer TRest extends Constructor[]] ? Extends<T1, Mixins<TRest>>
         : never
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should extend two classes', () => {
+  test('should extend two classes', () => {
     class A { a = 1 }
     class B { b = 2 }
     class Expected { a = 1; b = 2 }
@@ -32,7 +31,7 @@ if (import.meta.vitest) {
     expectTypeOf<InstanceType<Result>>().toEqualTypeOf<InstanceType<typeof Expected>>()
   })
 
-  it('should mix three classes', () => {
+  test('should mix three classes', () => {
     class A { a = 1 }
     class B { b = 2 }
     class C { c = 3 }
@@ -43,7 +42,7 @@ if (import.meta.vitest) {
     expectTypeOf<InstanceType<Result>>().toEqualTypeOf<InstanceType<typeof Expected>>()
   })
 
-  it('should mix static properties', () => {
+  test('should mix static properties', () => {
     class A { static a = 1 }
     class B { static b = 2 }
     class C { static c = 3 }
@@ -54,7 +53,7 @@ if (import.meta.vitest) {
     expectTypeOf<InstanceType<Result>>().toEqualTypeOf<InstanceType<typeof Expected>>()
   })
 
-  it('should override static properties from left to right', () => {
+  test('should override static properties from left to right', () => {
     class A { static a = 1 as const }
     class B { static b = 2 as const }
     class C { static c = 3 as const }
@@ -65,7 +64,7 @@ if (import.meta.vitest) {
     expectTypeOf<InstanceType<Result>>().toEqualTypeOf<InstanceType<typeof Expected>>()
   })
 
-  it('should not mix classes with different constructor signatures', () => {
+  test('should not mix classes with different constructor signatures', () => {
     class A {constructor(_a: number) {}}
     class B {constructor(_b: string) {}}
     class Expected {constructor(_a: number) {}}

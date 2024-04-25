@@ -1,6 +1,6 @@
-import { access, constants } from 'node:fs/promises'
-import { dirname, resolve } from 'node:path'
 import { cwd } from 'node:process'
+import { dirname, resolve } from 'node:path'
+import { access, constants } from 'node:fs/promises'
 
 /**
  * Find the first ancestor of a file from a given path. The search will start
@@ -36,38 +36,38 @@ export async function findAncestor(name: string, from: string = cwd()): Promise<
 if (import.meta.vitest) {
   const { vol } = await import('memfs')
 
-  it('should resolve ancestor from current directory', async() => {
+  test('should resolve ancestor from current directory', async() => {
     vi.mock('node:process', () => ({ cwd: () => '/home/user/project' }))
     vol.fromJSON({ '/home/user/project/.npmrc': '' })
     const result = await findAncestor('.npmrc')
-    expect(result).toEqual('/home/user/project/.npmrc')
+    expect(result).toBe('/home/user/project/.npmrc')
   })
 
-  it('should resolve ancestor from given directory', async() => {
+  test('should resolve ancestor from given directory', async() => {
     vol.fromJSON({ '/home/user/.npmrc': '' })
     const result = await findAncestor('.npmrc', '/home/user/project')
-    expect(result).toEqual('/home/user/.npmrc')
+    expect(result).toBe('/home/user/.npmrc')
   })
 
-  it('should resolve ancestor at root directory', async() => {
+  test('should resolve ancestor at root directory', async() => {
     vol.fromJSON({ '/.npmrc': '' })
     const result = await findAncestor('.npmrc', '/home/user/project')
-    expect(result).toEqual('/.npmrc')
+    expect(result).toBe('/.npmrc')
   })
 
-  it('should resolve the first ancestor', async() => {
+  test('should resolve the first ancestor', async() => {
     vol.fromJSON({
-      '/home/user/project/.npmrc': '',
-      '/home/user/.npmrc': '',
       '/.npmrc': '',
+      '/home/user/.npmrc': '',
+      '/home/user/project/.npmrc': '',
     })
     const result = await findAncestor('.npmrc', '/home/user/project')
-    expect(result).toEqual('/home/user/project/.npmrc')
+    expect(result).toBe('/home/user/project/.npmrc')
   })
 
-  it('should return undefined if no ancestor was found', async() => {
+  test('should return undefined if no ancestor was found', async() => {
     vol.fromJSON({})
     const result = await findAncestor('file', '/')
-    expect(result).toEqual(undefined)
+    expect(result).toBeUndefined()
   })
 }

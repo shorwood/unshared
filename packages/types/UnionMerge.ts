@@ -11,50 +11,50 @@ export type UnionMerge<T> =
     ? OmitNever<{ [P in keyof U]: U[P] }>
     : never
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should merge a union of objects', () => {
+  test('should merge a union of objects', () => {
     type Result = UnionMerge<{ a: number } | { b: string }>
     expectTypeOf<Result>().toEqualTypeOf<{ a: number; b: string }>()
   })
 
-  it('should merge a union of 3 objects', () => {
+  test('should merge a union of 3 objects', () => {
     type Result = UnionMerge<{ a: number } | { b: string } | { c: boolean }>
     expectTypeOf<Result>().toEqualTypeOf<{ a: number; b: string; c: boolean }>()
   })
 
-  it('should return an empty object for a union of objects with incompatible property types', () => {
+  test('should return an empty object for a union of objects with incompatible property types', () => {
     type Result = UnionMerge<{ a: number } | { a: string }>
     expectTypeOf<Result>().toEqualTypeOf<{}>()
   })
 
-  it('should omit never properties from the result', () => {
+  test('should omit never properties from the result', () => {
     type Result = UnionMerge<{ a: number } | { b: string } | { c: never }>
     expectTypeOf<Result>().toEqualTypeOf<{ a: number; b: string }>()
   })
 
-  it('should merge a union of objects with compatible property types', () => {
+  test('should merge a union of objects with compatible property types', () => {
     // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
     type Result = UnionMerge<{ a: number } | { a: number }>
     expectTypeOf<Result>().toEqualTypeOf<{ a: number }>()
   })
 
-  it('should merge a union of objects with overlapping property types', () => {
-    type Result = UnionMerge<{ a: number } | { a: number | string }>
+  test('should merge a union of objects with overlapping property types', () => {
+    type Result = UnionMerge<{ a: number | string } | { a: number }>
     expectTypeOf<Result>().toEqualTypeOf<{ a: number }>()
   })
 
-  it('should merge a union of objects with one optional properties', () => {
+  test('should merge a union of objects with one optional properties', () => {
     type Result = UnionMerge<{ a: number } | { a?: number }>
     expectTypeOf<Result>().toEqualTypeOf<{ a: number }>()
   })
 
-  it('should merge a union of objects with optional properties', () => {
+  test('should merge a union of objects with optional properties', () => {
     type Result = UnionMerge<{ a?: number } | { a?: string }>
     expectTypeOf<Result>().toEqualTypeOf<{ a?: undefined }>()
   })
 
-  it('should merge a union of objects with rest properties', () => {
+  test('should merge a union of objects with rest properties', () => {
     type Result = UnionMerge<Record<string, number> | Record<symbol, number>>
     expectTypeOf<Result>().toEqualTypeOf<Record<string | symbol, number>>()
   })

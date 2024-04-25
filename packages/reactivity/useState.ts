@@ -35,28 +35,28 @@ export function useState<T>(value?: T): ReactiveState<T> {
   ]
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should create a state and get its value', () => {
+  test('should create a state and get its value', () => {
     const [getState] = useState(0)
     const result = getState()
-    expect(result).toEqual(0)
+    expect(result).toBe(0)
     expectTypeOf(result).toEqualTypeOf<number>()
   })
 
-  it('should create a state and set its value', () => {
+  test('should create a state and set its value', () => {
     const [getState, setState] = useState(0)
     setState(1)
     const result = getState()
-    expect(result).toEqual(1)
+    expect(result).toBe(1)
     expectTypeOf(result).toEqualTypeOf<number>()
   })
 
-  it('should allow generic types to be passed', () => {
+  test('should allow generic types to be passed', () => {
     const [getState, setState] = useState<number>()
     setState(1)
     const result = getState()
-    expect(result).toEqual(1)
+    expect(result).toBe(1)
     expectTypeOf(result).toEqualTypeOf<number | undefined>()
   })
 }

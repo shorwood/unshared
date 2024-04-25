@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
-import { PathLike } from 'node:fs'
 import { open, readFile, writeFile } from 'node:fs/promises'
+import { PathLike } from 'node:fs'
 import { MaybePromise } from '@unshared/types'
 
 /**
@@ -43,22 +43,22 @@ export async function updateFile(path: PathLike, callback: UpdateFileCallback<an
 if (import.meta.vitest) {
   const { vol } = await import('memfs')
 
-  it('should update a file with a callback using buffer', async() => {
+  test('should update a file with a callback using buffer', async() => {
     vol.fromJSON({ '/foo.txt': 'Hello, world!' })
     await updateFile('/foo.txt', content => content.toString('utf8').toUpperCase())
     const result = await readFile('/foo.txt', 'utf8')
-    expect(result).toEqual('HELLO, WORLD!')
+    expect(result).toBe('HELLO, WORLD!')
   })
 
-  it('should update a file with a callback using utf8 encoding', async() => {
+  test('should update a file with a callback using utf8 encoding', async() => {
     vol.fromJSON({ '/foo.txt': 'Hello, world!' })
     await updateFile('/foo.txt', content => content.toUpperCase(), 'utf8')
     const result = await readFile('/foo.txt', 'utf8')
-    expect(result).toEqual('HELLO, WORLD!')
+    expect(result).toBe('HELLO, WORLD!')
   })
 
-  it('should throw an error if the file does not exist', async() => {
+  test('should throw an error if the file does not exist', async() => {
     const shouldThrow = updateFile('/foo.txt', content => content)
-    await expect(shouldThrow).rejects.toThrow()
+    await expect(shouldThrow).rejects.toThrow('ENOENT: no such file or directory, open')
   })
 }

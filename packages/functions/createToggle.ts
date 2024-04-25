@@ -1,15 +1,11 @@
 export interface Toggle {
   /**
-   * The current value of this switch.
-   */
-  value: boolean
-  /**
-   * Toggles the value of this switch.
+   * Set the value of this switch to `false`.
    *
    * @returns The new value of this switch.
-   * @example createToggle(true).toggle() // false
+   * @example createToggle(true).off() // false
    */
-  toggle(): boolean
+  off(): boolean
   /**
    * Set the value of this switch to `true`.
    *
@@ -18,12 +14,16 @@ export interface Toggle {
    */
   on(): boolean
   /**
-   * Set the value of this switch to `false`.
+   * Toggles the value of this switch.
    *
    * @returns The new value of this switch.
-   * @example createToggle(true).off() // false
+   * @example createToggle(true).toggle() // false
    */
-  off(): boolean
+  toggle(): boolean
+  /**
+   * The current value of this switch.
+   */
+  value: boolean
 }
 
 /**
@@ -35,59 +35,59 @@ export interface Toggle {
  */
 export function createToggle(value = false): Toggle {
   return {
-    value,
-    toggle() {
-      this.value = !this.value
+    off() {
+      this.value = false
       return this.value
     },
     on() {
       this.value = true
       return this.value
     },
-    off() {
-      this.value = false
+    toggle() {
+      this.value = !this.value
       return this.value
     },
+    value,
   }
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should create a Toggle instance', () => {
+  test('should create a Toggle instance', () => {
     const result = createToggle(true)
-    expect(result.value).toEqual(true)
+    expect(result.value).toBeTruthy()
   })
 
-  it('should create a Toggle instance with the default value', () => {
+  test('should create a Toggle instance with the default value', () => {
     const result = createToggle()
-    expect(result.value).toEqual(false)
+    expect(result.value).toBeFalsy()
   })
 
-  it('should toggle the value of a Toggle instance to false', () => {
+  test('should toggle the value of a Toggle instance to false', () => {
     const result = createToggle(true)
     const resultToggle = result.toggle()
-    expect(result.value).toEqual(false)
-    expect(resultToggle).toEqual(false)
+    expect(result.value).toBeFalsy()
+    expect(resultToggle).toBeFalsy()
   })
 
-  it('should toggle the value of a Toggle instance to true', () => {
+  test('should toggle the value of a Toggle instance to true', () => {
     const result = createToggle(false)
     const resultToggle = result.toggle()
-    expect(result.value).toEqual(true)
-    expect(resultToggle).toEqual(true)
+    expect(result.value).toBeTruthy()
+    expect(resultToggle).toBeTruthy()
   })
 
-  it('should set the value of a Toggle instance to true', () => {
+  test('should set the value of a Toggle instance to true', () => {
     const result = createToggle(false)
     const resultOn = result.on()
-    expect(result.value).toEqual(true)
-    expect(resultOn).toEqual(true)
+    expect(result.value).toBeTruthy()
+    expect(resultOn).toBeTruthy()
   })
 
-  it('should set the value of a Toggle instance to false', () => {
+  test('should set the value of a Toggle instance to false', () => {
     const result = createToggle(true)
     const resultOff = result.off()
-    expect(result.value).toEqual(false)
-    expect(resultOff).toEqual(false)
+    expect(result.value).toBeFalsy()
+    expect(resultOff).toBeFalsy()
   })
 }

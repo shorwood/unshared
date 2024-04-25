@@ -1,7 +1,7 @@
-import { ESLint, Linter } from 'eslint'
-import vuePlugin from 'eslint-plugin-vue'
-import tslint from 'typescript-eslint'
 import vueParser from 'vue-eslint-parser'
+import tslint from 'typescript-eslint'
+import vuePlugin from 'eslint-plugin-vue'
+import { ESLint, Linter } from 'eslint'
 
 // @ts-expect-error: `eslint-plugin-vue` has no types declaration.
 const VUE_RECOMMENDED_RULES = vuePlugin.configs?.['flat/recommended'].rules as Linter.RulesRecord
@@ -9,18 +9,10 @@ const VUE_RECOMMENDED_RULES = vuePlugin.configs?.['flat/recommended'].rules as L
 export function vue(): Linter.FlatConfig[] {
   return [
     {
-      plugins: {
-        'vue': vuePlugin,
-        '@typescript-eslint': tslint.plugin as ESLint.Plugin,
-      },
+      files: [
+        '**/*.vue',
+      ],
       languageOptions: {
-        parser: vueParser,
-        parserOptions: {
-          ecmaFeatures: { jsx: false },
-          ecmaVersion: 'latest',
-          sourceType: 'module',
-          parser: tslint.parser,
-        },
         globals: {
           computed: 'readonly',
           defineEmits: 'readonly',
@@ -37,18 +29,20 @@ export function vue(): Linter.FlatConfig[] {
           watch: 'readonly',
           watchEffect: 'readonly',
         },
+        parser: vueParser,
+        parserOptions: {
+          ecmaFeatures: { jsx: false },
+          ecmaVersion: 'latest',
+          parser: tslint.parser,
+          sourceType: 'module',
+        },
       },
-      files: [
-        '**/*.vue',
-      ],
+      plugins: {
+        '@typescript-eslint': tslint.plugin as ESLint.Plugin,
+        'vue': vuePlugin,
+      },
       rules: {
         ...VUE_RECOMMENDED_RULES,
-
-        /**
-         * Disable the `no-unused-vars` rule because as it may trigger false positives
-         * when using the Composition API.
-         */
-        'no-unused-vars': 'off',
 
         /**
          * Enforces consistent usage of type imports. This rule will enforce the use
@@ -64,6 +58,13 @@ export function vue(): Linter.FlatConfig[] {
           prefer: 'type-imports',
         }],
 
+        'no-undef': 'off',
+
+        /**
+         * Disable the `no-unused-vars` rule because as it may trigger false positives
+         * when using the Composition API.
+         */
+        'no-unused-vars': 'off',
         /**
          * Since we may use the auto-import feature of Nuxt / unplugin-autoimport,
          * we may have access to global variables that are not known to ESLint.
@@ -71,36 +72,13 @@ export function vue(): Linter.FlatConfig[] {
          * @see https://eslint.org/docs/latest/rules/no-undef
          */
         'semi': 'off',
-        'no-undef': 'off',
 
-        /**
-         * Enforce the component name casing to be PascalCase. This rules helps identify
-         * and distinguish between components and HTML elements. It also helps to avoid
-         * conflicts with existing and future HTML elements.
-         *
-         * @see https://eslint.vuejs.org/rules/component-name-in-template-casing.html
-         */
-        'vue/component-name-in-template-casing': ['error', 'PascalCase', {
-          registeredComponentsOnly: false,
-          ignores: ['/\\./'],
-        }],
+        // extensions
+        'vue/array-bracket-spacing': ['error', 'never'],
 
-        /**
-         * Allow single-word component names. This rule is disabled because we use
-         * pascal-casing to distinguish between components and HTML elements.
-         *
-         * @see https://eslint.vuejs.org/rules/multi-word-component-names.html
-         */
-        'vue/multi-word-component-names': 'off',
+        'vue/arrow-spacing': ['error', { after: true, before: true }],
 
-        /**
-         * Reports the destructuring or member expression of props passed to setup
-         * causing the value to lose reactivity. This rule helps to avoid common
-         * pitfalls when using the Composition API.
-         *
-         * @see https://eslint.vuejs.org/rules/no-setup-props-reactivity-loss.html
-         */
-        'vue/no-setup-props-reactivity-loss': 'error',
+        'vue/block-lang': ['error', { script: { lang: 'ts' } }],
 
         /**
          * Enforce the order of the top-level properties in the component. This rule
@@ -118,6 +96,18 @@ export function vue(): Linter.FlatConfig[] {
           ],
         }],
 
+        'vue/block-spacing': ['error', 'always'],
+
+        // reactivity transform
+        'vue/block-tag-newline': ['error', {
+          multiline: 'always',
+          singleline: 'always',
+        }],
+        'vue/brace-style': ['error', 'stroustrup', { allowSingleLine: true }],
+
+        'vue/comma-dangle': ['error', 'always-multiline'],
+        'vue/comma-spacing': ['error', { after: true, before: false }],
+        'vue/comma-style': ['error', 'last'],
         /**
          * Enforce use of the Composition API and TypeScript. This rule forbids the
          * use of the Options API and JavaScript in Vue components for better
@@ -126,8 +116,61 @@ export function vue(): Linter.FlatConfig[] {
          * @see https://eslint.vuejs.org/rules/vue/prefer-define-options.html
          */
         'vue/component-api-style': ['error', ['script-setup']],
-        'vue/prefer-define-options': 'error',
-        'vue/block-lang': ['error', { script: { lang: 'ts' } }],
+        /**
+         * Enforce the component name casing to be PascalCase. This rules helps identify
+         * and distinguish between components and HTML elements. It also helps to avoid
+         * conflicts with existing and future HTML elements.
+         *
+         * @see https://eslint.vuejs.org/rules/component-name-in-template-casing.html
+         */
+        'vue/component-name-in-template-casing': ['error', 'PascalCase', {
+          ignores: ['/\\./'],
+          registeredComponentsOnly: false,
+        }],
+
+        'vue/component-options-name-casing': ['error', 'PascalCase'],
+        'vue/custom-event-name-casing': ['error', 'camelCase'],
+
+        'vue/define-macros-order': ['error', {
+          order: ['defineProps', 'defineEmits'],
+        }],
+        'vue/dot-location': ['error', 'property'],
+        'vue/dot-notation': ['error', { allowKeywords: true }],
+
+        'vue/eqeqeq': ['error', 'smart'],
+        'vue/first-attribute-linebreak': ['error', {
+          multiline: 'below',
+          singleline: 'beside',
+        }],
+
+        'vue/html-closing-bracket-newline': ['error', {
+          multiline: 'never',
+          selfClosingTag: {
+            multiline: 'always',
+            singleline: 'never',
+          },
+          singleline: 'never',
+        }],
+        'vue/html-comment-content-newline': ['error', {
+          multiline: 'always',
+          singleline: 'never',
+        }],
+
+        /**
+         * Enforce consistent spacing between HTML comments and their content.
+         *
+         * @see https://eslint.vuejs.org/rules/html-comment-content-spacing.html
+         * @see https://eslint.vuejs.org/rules/html-comment-content-newline.html
+         */
+        'vue/html-comment-content-spacing': ['error', 'always'],
+        /**
+         * Enforce consistent spacing between HTML / Component tags. This makes it
+         * easier to read and understand the structure of the component.
+         *
+         * @see https://eslint.vuejs.org/rules/padding-line-between-blocks.html
+         * @see https://eslint.vuejs.org/rules/padding-line-between-tags.html
+         */
+        'vue/html-comment-indent': ['error', 2],
 
         /**
          * Enforce consistent spacing and newlines in the template. This rule helps
@@ -138,127 +181,35 @@ export function vue(): Linter.FlatConfig[] {
          * @see https://eslint.vuejs.org/rules/html-closing-bracket-newline.html
          */
         'vue/html-indent': ['error', 2, {
+          alignAttributesVertically: true,
           attribute: 1,
           baseIndent: 1,
           closeBracket: 0,
-          alignAttributesVertically: true,
           ignores: [],
         }],
+
+        // 'vue/func-call-spacing': ['off', 'never'],
+        'vue/key-spacing': ['error', { afterColon: true, beforeColon: false }],
+        'vue/keyword-spacing': ['error', { after: true, before: true }],
         'vue/max-attributes-per-line': ['error', {
-          singleline: { max: 5 },
           multiline: { max: 1 },
+          singleline: { max: 5 },
         }],
-        'vue/html-closing-bracket-newline': ['error', {
-          singleline: 'never',
-          multiline: 'never',
-          selfClosingTag: {
-            singleline: 'never',
-            multiline: 'always',
-          },
-        }],
-        'vue/first-attribute-linebreak': ['error', {
-          singleline: 'beside',
-          multiline: 'below',
-        }],
+        /**
+         * Allow single-word component names. This rule is disabled because we use
+         * pascal-casing to distinguish between components and HTML elements.
+         *
+         * @see https://eslint.vuejs.org/rules/multi-word-component-names.html
+         */
+        'vue/multi-word-component-names': 'off',
         'vue/multiline-html-element-content-newline': ['error', {
-          ignoreWhenEmpty: true,
           allowEmptyLines: true,
           ignores: [],
+          ignoreWhenEmpty: true,
         }],
 
-        /**
-         * Disallow v-if in v-for. This rule helps to avoid common pitfalls when
-         * using v-if and v-for together in the same element.
-         *
-         * @see https://eslint.vuejs.org/rules/no-use-v-if-with-v-for.html
-         */
-        'vue/no-use-v-if-with-v-for': 'error',
-        'vue/no-use-v-else-with-v-for': 'error',
-
-        /**
-         * Enforce consistent spacing between HTML / Component tags. This makes it
-         * easier to read and understand the structure of the component.
-         *
-         * @see https://eslint.vuejs.org/rules/padding-line-between-blocks.html
-         * @see https://eslint.vuejs.org/rules/padding-line-between-tags.html
-         */
-        'vue/html-comment-indent': ['error', 2],
-        'vue/padding-line-between-blocks': ['error', 'always'],
-        'vue/padding-line-between-tags': ['error', [
-          { blankLine: 'consistent', prev: '*', next: '*' },
-        ]],
-
-        /**
-         * Enforce consistent spacing between HTML comments and their content.
-         *
-         * @see https://eslint.vuejs.org/rules/html-comment-content-spacing.html
-         * @see https://eslint.vuejs.org/rules/html-comment-content-newline.html
-         */
-        'vue/html-comment-content-spacing': ['error', 'always'],
-        'vue/html-comment-content-newline': ['error', {
-          singleline: 'never',
-          multiline: 'always',
-        }],
-
-        /**
-         * Enforce the declaration of emits in the setup function and warn on unused
-         * emits declarations. This rule helps reduce the risk stale code.
-         *
-         * @see https://eslint.vuejs.org/rules/require-explicit-emits.html
-         * @see https://eslint.vuejs.org/rules/no-unused-emit-declarations.html
-         */
-        'vue/require-explicit-emits': 'error',
-        'vue/no-unused-emit-declarations': 'error',
-
-        /**
-         * Enforce the `@` shorthand over `v-on:` and only allow inline callbacks.
-         * This rule helps to maintain consistency and readability by enforcing a
-         * predictable order of the event handlers in the component.
-         *
-         * @see https://eslint.vuejs.org/rules/v-on-style.html
-         * @see https://eslint.vuejs.org/rules/v-on-handler-style.html
-         */
-        'vue/v-on-style': ['error', 'shorthand'],
-        'vue/v-on-handler-style': ['error', 'inline'],
-
-        'vue/object-curly-newline': ['error', { multiline: true, consistent: true }],
-        'vue/object-curly-spacing': ['error', 'always'],
-        'vue/no-v-html': 'off',
-        'vue/require-prop-types': 'off',
-        'vue/require-default-prop': 'off',
-        'vue/prefer-import-from-vue': 'off',
-
-        // reactivity transform
-        'vue/block-tag-newline': ['error', {
-          singleline: 'always',
-          multiline: 'always',
-        }],
-
-        'vue/component-options-name-casing': ['error', 'PascalCase'],
-        'vue/custom-event-name-casing': ['error', 'camelCase'],
-        'vue/define-macros-order': ['error', {
-          order: ['defineProps', 'defineEmits'],
-        }],
-        'vue/no-restricted-v-bind': ['error', '/^v-/'],
-        'vue/no-useless-v-bind': 'error',
-        'vue/no-v-text-v-html-on-component': 'error',
-        'vue/prefer-separate-static-class': 'error',
-
-        // extensions
-        'vue/array-bracket-spacing': ['error', 'never'],
-        'vue/arrow-spacing': ['error', { before: true, after: true }],
-        'vue/block-spacing': ['error', 'always'],
-        'vue/brace-style': ['error', 'stroustrup', { allowSingleLine: true }],
-        'vue/comma-dangle': ['error', 'always-multiline'],
-        'vue/comma-spacing': ['error', { before: false, after: true }],
-        'vue/comma-style': ['error', 'last'],
-        'vue/dot-location': ['error', 'property'],
-        'vue/dot-notation': ['error', { allowKeywords: true }],
-        'vue/eqeqeq': ['error', 'smart'],
-        // 'vue/func-call-spacing': ['off', 'never'],
-        'vue/key-spacing': ['error', { beforeColon: false, afterColon: true }],
-        'vue/keyword-spacing': ['error', { before: true, after: true }],
         'vue/no-constant-condition': 'warn',
+
         'vue/no-empty-pattern': 'error',
         'vue/no-extra-parens': ['error', 'functions'],
         'vue/no-irregular-whitespace': 'error',
@@ -269,22 +220,74 @@ export function vue(): Linter.FlatConfig[] {
           'LabeledStatement',
           'WithStatement',
         ],
+        'vue/no-restricted-v-bind': ['error', '/^v-/'],
+        /**
+         * Reports the destructuring or member expression of props passed to setup
+         * causing the value to lose reactivity. This rule helps to avoid common
+         * pitfalls when using the Composition API.
+         *
+         * @see https://eslint.vuejs.org/rules/no-setup-props-reactivity-loss.html
+         */
+        'vue/no-setup-props-reactivity-loss': 'error',
+
         'vue/no-sparse-arrays': 'error',
+        'vue/no-unused-emit-declarations': 'error',
+        'vue/no-use-v-else-with-v-for': 'error',
+        /**
+         * Disallow v-if in v-for. This rule helps to avoid common pitfalls when
+         * using v-if and v-for together in the same element.
+         *
+         * @see https://eslint.vuejs.org/rules/no-use-v-if-with-v-for.html
+         */
+        'vue/no-use-v-if-with-v-for': 'error',
+        'vue/no-useless-v-bind': 'error',
+        'vue/no-v-html': 'off',
+        'vue/no-v-text-v-html-on-component': 'error',
+        'vue/object-curly-newline': ['error', { consistent: true, multiline: true }],
+        'vue/object-curly-spacing': ['error', 'always'],
         'vue/object-shorthand': [
           'error',
           'always',
           {
-            ignoreConstructors: false,
             avoidQuotes: true,
+            ignoreConstructors: false,
           },
         ],
+
         'vue/operator-linebreak': ['error', 'before'],
+        'vue/padding-line-between-blocks': ['error', 'always'],
+        'vue/padding-line-between-tags': ['error', [
+          { blankLine: 'consistent', next: '*', prev: '*' },
+        ]],
+        'vue/prefer-define-options': 'error',
+        'vue/prefer-import-from-vue': 'off',
+        'vue/prefer-separate-static-class': 'error',
         'vue/prefer-template': 'error',
         'vue/quote-props': ['error', 'consistent-as-needed'],
+        'vue/require-default-prop': 'off',
+        /**
+         * Enforce the declaration of emits in the setup function and warn on unused
+         * emits declarations. This rule helps reduce the risk stale code.
+         *
+         * @see https://eslint.vuejs.org/rules/require-explicit-emits.html
+         * @see https://eslint.vuejs.org/rules/no-unused-emit-declarations.html
+         */
+        'vue/require-explicit-emits': 'error',
+        'vue/require-prop-types': 'off',
         'vue/space-in-parens': ['error', 'never'],
         'vue/space-infix-ops': 'error',
-        'vue/space-unary-ops': ['error', { words: true, nonwords: false }],
+        'vue/space-unary-ops': ['error', { nonwords: false, words: true }],
         'vue/template-curly-spacing': 'error',
+        'vue/v-on-handler-style': ['error', 'inline'],
+        /**
+         * Enforce the `@` shorthand over `v-on:` and only allow inline callbacks.
+         * This rule helps to maintain consistency and readability by enforcing a
+         * predictable order of the event handlers in the component.
+         *
+         * @see https://eslint.vuejs.org/rules/v-on-style.html
+         * @see https://eslint.vuejs.org/rules/v-on-handler-style.html
+         */
+        'vue/v-on-style': ['error', 'shorthand'],
       },
     },
   ]

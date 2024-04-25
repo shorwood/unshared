@@ -1,6 +1,6 @@
-import { ReactiveData } from './constants'
-import { Reactive } from './reactive'
 import { Unwrapped, unwrap } from './unwrap'
+import { Reactive } from './reactive'
+import { ReactiveData } from './constants'
 
 /** Stop watching a reactive object. */
 export type Unwatch = () => void
@@ -40,13 +40,13 @@ export function watch<T extends Reactive>(value: T, callback: WatchCallback<T>):
   }
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
   const { reference } = await import('./reference')
   const { reactive } = await import('./reactive')
   const { computed } = await import('./computed')
 
-  it('should watch a reactive object', () => {
+  test('should watch a reactive object', () => {
     const callback = vi.fn()
     const value = reactive({ foo: 'bar' })
     watch(value, callback)
@@ -54,7 +54,7 @@ if (import.meta.vitest) {
     expect(callback).toHaveBeenCalledWith({ foo: 'baz' })
   })
 
-  it('should watch nested properties', () => {
+  test('should watch nested properties', () => {
     const callback = vi.fn()
     const value = reactive({ foo: { bar: 'baz' } }, { deep: true })
     watch(value, callback)
@@ -62,7 +62,7 @@ if (import.meta.vitest) {
     expect(callback).toHaveBeenCalledWith({ foo: { bar: 'qux' } })
   })
 
-  it('should watch a reactive reference', () => {
+  test('should watch a reactive reference', () => {
     const callback = vi.fn()
     const value = reference('foo')
     watch(value, callback)
@@ -70,7 +70,7 @@ if (import.meta.vitest) {
     expect(callback).toHaveBeenCalledWith('bar')
   })
 
-  it('should watch a computed value', () => {
+  test('should watch a computed value', () => {
     const callback = vi.fn()
     const a = reference(1)
     const b = reference(2)
@@ -80,7 +80,7 @@ if (import.meta.vitest) {
     expect(callback).toHaveBeenCalledWith(4)
   })
 
-  it('should return a function to stop watching', () => {
+  test('should return a function to stop watching', () => {
     const callback = vi.fn()
     const value = reactive({ foo: 'bar' })
     const stop = watch(value, callback)
@@ -89,7 +89,7 @@ if (import.meta.vitest) {
     expect(callback).not.toHaveBeenCalled()
   })
 
-  it('should infer the parameters of  the callback', () => {
+  test('should infer the parameters of  the callback', () => {
     const value = reference<'foo'>('foo')
     watch(value, (value) => {
       expectTypeOf(value).toEqualTypeOf<'foo'>()

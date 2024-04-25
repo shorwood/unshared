@@ -8,7 +8,7 @@ import { NumberIntegerPositive } from '@unshared/types'
  * @returns The ceiled number.
  * @example ceil(1.234, 2) // 1.23
  */
-export function ceil<N extends number>(number: number, precision: NumberIntegerPositive<N> | 0 = 0): number {
+export function ceil<N extends number>(number: number, precision: 0 | NumberIntegerPositive<N> = 0): number {
 
   // --- Handle the edge cases.
   if (Number.isSafeInteger(number)) return number
@@ -21,30 +21,32 @@ export function ceil<N extends number>(number: number, precision: NumberIntegerP
   return Math.ceil(number * factor) / factor
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should ceil an integer', () => {
+  test('should ceil an integer', () => {
     const result = ceil(1)
-    expect(result).toEqual(1)
+    expect(result).toBe(1)
   })
 
-  it('should ceil a number', () => {
+  test('should ceil a number', () => {
     const result = ceil(1.234)
-    expect(result).toEqual(2)
+    expect(result).toBe(2)
   })
 
-  it('should ceil a number to a given precision', () => {
+  test('should ceil a number to a given precision', () => {
     const result = ceil(1.234, 2)
-    expect(result).toEqual(1.24)
+    expect(result).toStrictEqual(1.24)
   })
 
-  it('should throw an error if the precision is negative', () => {
+  test('should throw an error if the precision is negative', () => {
+
     // @ts-expect-error: Precision is negative
     const shouldThrow = () => ceil(1.234, -1)
     expect(shouldThrow).toThrow(RangeError)
   })
 
-  it('should throw an error if the precision is not an integer', () => {
+  test('should throw an error if the precision is not an integer', () => {
+
     // @ts-expect-error: Precision is not an integer
     const shouldThrow = () => ceil(1.234, 1.5)
     expect(shouldThrow).toThrow(RangeError)

@@ -1,6 +1,6 @@
-import { ReactiveFlag, ReferenceFlag } from './constants'
-import { isReference } from './isReference'
 import { Reactive, ReactiveOptions, reactive } from './reactive'
+import { isReference } from './isReference'
+import { ReactiveFlag, ReferenceFlag } from './constants'
 
 /**
  * A reactive reference to a value. This is a wrapper around a primitive value
@@ -56,6 +56,7 @@ export function reference<T>(): Reference<T | undefined>
 export function reference<T>(value: Reference<T>, options?: ReactiveOptions<ReferenceObject<T>>): Reference<T>
 export function reference<T>(value: T, options?: ReactiveOptions<ReferenceObject<T>>): Reference<T>
 export function reference<T>(value?: Reference<T> | T, options?: ReactiveOptions<ReferenceObject<T | undefined>>) {
+
   // --- Prevent nested references.
   if (isReference<T>(value)) return value
 
@@ -63,40 +64,44 @@ export function reference<T>(value?: Reference<T> | T, options?: ReactiveOptions
   return reactive({ [ReferenceFlag]: true, value }, options as ReactiveOptions)
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should create a reference', () => {
+  test('should create a reference', () => {
     const callback = vi.fn()
     const result = reference(1, { callbacks: [callback] })
-    expect(result[ReferenceFlag]).toEqual(true)
-    expect(result[ReactiveFlag]).toEqual(true)
-    expect(result.value).toEqual(1)
+    expect(result[ReferenceFlag]).toBeTruthy()
+    expect(result[ReactiveFlag]).toBeTruthy()
+    expect(result.value).toBe(1)
   })
 
-  it('should create a reference with no value', () => {
+  test('should create a reference with no value', () => {
     const result = reference<number>()
-    expect(result[ReferenceFlag]).toEqual(true)
-    expect(result[ReactiveFlag]).toEqual(true)
-    expect(result.value).toEqual(undefined)
+    expect(result[ReferenceFlag]).toBeTruthy()
+    expect(result[ReactiveFlag]).toBeTruthy()
+    expect(result.value).toBeUndefined()
   })
 
-  it('should call callbacks when the value changes', () => {
+  test('should call callbacks when the value changes', () => {
     const callback = vi.fn()
     const result = reference(1, { callbacks: [callback] })
     result.value = 2
     expect(callback).toHaveBeenCalledOnce()
-    expect(callback).toHaveBeenCalledWith({ value: 2, [ReferenceFlag]: true })
+    expect(callback).toHaveBeenCalledWith({ [ReferenceFlag]: true, value: 2 })
   })
 
-  it('should return as-is if the value is already reactive reference', () => {
+  test('should return as-is if the value is already reactive reference', () => {
     const value1 = reference(1)
     const value2 = reference(value1)
-    expect(value2).toEqual(value1)
+    expect(value2).toMatchObject(value1)
   })
 
-  // eslint-disable-next-line vitest/expect-expect
-  it('should infer the type of the value', () => {
+  test('should infer the type of the value', () => {
     const value = reference('foo')
     expectTypeOf(value).toEqualTypeOf<Reference<string>>()
+  })
+
+  test('should pass the type of the value as a generic', () => {
+    const value = reference<'bar' | 'foo'>('foo')
+    expectTypeOf(value).toEqualTypeOf<Reference<'bar' | 'foo'>>()
   })
 }

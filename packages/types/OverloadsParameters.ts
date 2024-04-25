@@ -1,5 +1,5 @@
-import { Function } from './Function'
 import { Overloads } from './Overloads'
+import { Function } from './Function'
 
 /**
  * Extract the parameters of all functions in a tuple.
@@ -19,15 +19,15 @@ type ExtractTupleParameters<T extends Array<Function<any, any[]>>> = {
  */
 export type OverloadsParameters<T extends Function<any, any[]>> = ExtractTupleParameters<Overloads<T>>
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should infer the parameters of a function with no overloads', () => {
+  test('should infer the parameters of a function with no overloads', () => {
     type Method = (a: number, b: string) => boolean
     type Result = OverloadsParameters<Method>
     expectTypeOf<Result>().toEqualTypeOf<[number, string]>()
   })
 
-  it('should infer the parameters of a function with multiple overloads', () => {
+  test('should infer the parameters of a function with multiple overloads', () => {
     interface Method {
       (a: number, b: string): string
       (a: string, b: number): number

@@ -1,5 +1,5 @@
-import { toReactive } from '@vueuse/core'
 import { Component, ExtractPropTypes, Prop, computed, provide, resolveComponent } from 'vue'
+import { toReactive } from '@vueuse/core'
 
 export const BASE_RENDERABLE_PROPS = {
   /**
@@ -8,7 +8,7 @@ export const BASE_RENDERABLE_PROPS = {
    *
    * @default 'div'
    */
-  as: { type: [String, Object], default: 'div' } as Prop<Component | keyof HTMLElementTagNameMap | string & {}>,
+  as: [String, Object] as Prop<{} & string | Component | keyof HTMLElementTagNameMap>,
 }
 
 /** The properties of the base renderable component. */

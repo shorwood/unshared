@@ -1,14 +1,8 @@
-import { get } from '@unshared/collection/get'
 import { Collection } from '@unshared/types'
+import { get } from '@unshared/collection/get'
 import { escapeRegexp } from './escapeRegexp'
 
 export interface TemplateOptions<T> {
-  /**
-   * String used to delimit the start of an interpolation.
-   *
-   * @default '{{'
-   */
-  delimiterStart?: string
   /**
    * String used to delimit the end of an interpolation. This string must not
    * contain the start delimiter otherwise it will be considered as part of the
@@ -17,6 +11,12 @@ export interface TemplateOptions<T> {
    * @default '}}'
    */
   delimiterEnd?: string
+  /**
+   * String used to delimit the start of an interpolation.
+   *
+   * @default '{{'
+   */
+  delimiterStart?: string
   /**
    * Function used to transform the value before it is inserted into the
    * template. This function is called for each match and receives the value,
@@ -52,8 +52,8 @@ export interface TemplateOptions<T> {
  */
 export function template<T extends Collection>(template: string, data: T, options: TemplateOptions<T> = {}): string {
   const {
-    delimiterStart = '{{',
     delimiterEnd = '}}',
+    delimiterStart = '{{',
     transform = String,
   } = options
 
@@ -73,36 +73,36 @@ export function template<T extends Collection>(template: string, data: T, option
   })
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should template a string with default options', () => {
+  test('should template a string with default options', () => {
     const result = template('Hello {{name}}', { name: 'World' })
-    expect(result).toEqual('Hello World')
+    expect(result).toBe('Hello World')
   })
 
-  it('should template a string with nested data', () => {
+  test('should template a string with nested data', () => {
     const data = { name: { first: 'John', last: 'Doe' } }
     const result = template('Hello {{name.first}} {{name.last}}', data)
-    expect(result).toEqual('Hello John Doe')
+    expect(result).toBe('Hello John Doe')
   })
 
-  it('should template a string with custom delimiters', () => {
+  test('should template a string with custom delimiters', () => {
     const result = template('Hello <%name%>', { name: 'World' }, {
-      delimiterStart: '<%',
       delimiterEnd: '%>',
+      delimiterStart: '<%',
     })
-    expect(result).toEqual('Hello World')
+    expect(result).toBe('Hello World')
   })
 
-  it('should template a string with a custom transform', () => {
+  test('should template a string with a custom transform', () => {
     const result = template('Hello {{name}}', { name: 'World' }, {
       transform: value => (value as string).toUpperCase(),
     })
-    expect(result).toEqual('Hello WORLD')
+    expect(result).toBe('Hello WORLD')
   })
 
-  it('should template a value and transform it into a string by default', () => {
+  test('should template a value and transform it into a string by default', () => {
     const result = template('Hello {{name}}', { name: { toString: () => 'World' } })
-    expect(result).toEqual('Hello World')
+    expect(result).toBe('Hello World')
   })
 }

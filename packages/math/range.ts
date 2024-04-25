@@ -21,29 +21,29 @@ export function range(start: number, end: number, step = 1): number[] {
   return result
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should create a range of numbers', () => {
+  test('should create a range of numbers', () => {
     const result = range(0, 5)
-    expect(result).toEqual([0, 1, 2, 3, 4])
+    expect(result).toStrictEqual([0, 1, 2, 3, 4])
   })
 
-  it('should create a range of numbers with a step', () => {
+  test('should create a range of numbers with a step', () => {
     const result = range(0, 10, 2)
-    expect(result).toEqual([0, 2, 4, 6, 8])
+    expect(result).toStrictEqual([0, 2, 4, 6, 8])
   })
 
-  it('should create a range of numbers with a negative step', () => {
+  test('should create a range of numbers with a negative step', () => {
     const result = range(10, 0, -2)
-    expect(result).toEqual([10, 8, 6, 4, 2])
+    expect(result).toStrictEqual([10, 8, 6, 4, 2])
   })
 
-  it('should throw an error if the step is positive and the start is greater than the end', () => {
+  test('should throw an error if the step is positive and the start is greater than the end', () => {
     const shouldThrow = () => range(10, 0, 2)
     expect(shouldThrow).toThrow(Error)
   })
 
-  it('should throw an error if the step is negative and the start is less than the end', () => {
+  test('should throw an error if the step is negative and the start is less than the end', () => {
     const shouldThrow = () => range(0, 10, -2)
     expect(shouldThrow).toThrow(Error)
   })

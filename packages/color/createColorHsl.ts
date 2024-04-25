@@ -9,14 +9,14 @@ import { clamp } from '@unshared/math/clamp'
  * @see https://en.wikipedia.org/wiki/HSL_and_HSV
  */
 export interface HSL {
-  /** Hue channel from 0 to 360. */
-  h: number
-  /** Saturation channel from 0 to 1. */
-  s: number
-  /** Lightness channel from 0 to 1. */
-  l: number
   /** Alpha channel from 0 to 1. */
   a: number
+  /** Hue channel from 0 to 360. */
+  h: number
+  /** Lightness channel from 0 to 1. */
+  l: number
+  /** Saturation channel from 0 to 1. */
+  s: number
 }
 
 /**
@@ -32,42 +32,42 @@ export interface HSL {
  */
 export function createColorHsl(hsl: Partial<HSL>): HSL {
   return {
-    h: (hsl.h ?? 0) % 360,
-    s: clamp(hsl.s ?? 0, 0, 1),
-    l: clamp(hsl.l ?? 0, 0, 1),
     a: clamp(hsl.a ?? 1, 0, 1) || 1,
+    h: (hsl.h ?? 0) % 360,
+    l: clamp(hsl.l ?? 0, 0, 1),
+    s: clamp(hsl.s ?? 0, 0, 1),
   }
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should create a color in the HSL color space', () => {
-    const result = createColorHsl({ h: 0, s: 1, l: 0.5, a: 0.5 })
-    expect(result).toEqual({ h: 0, s: 1, l: 0.5, a: 0.5 })
+  test('should create a color in the HSL color space', () => {
+    const result = createColorHsl({ a: 0.5, h: 0, l: 0.5, s: 1 })
+    expect(result).toStrictEqual({ a: 0.5, h: 0, l: 0.5, s: 1 })
   })
 
-  it('should default the alpha channel to 1', () => {
-    const result = createColorHsl({ h: 0, s: 1, l: 0.5 })
-    expect(result).toEqual({ h: 0, s: 1, l: 0.5, a: 1 })
+  test('should default the alpha channel to 1', () => {
+    const result = createColorHsl({ h: 0, l: 0.5, s: 1 })
+    expect(result).toStrictEqual({ a: 1, h: 0, l: 0.5, s: 1 })
   })
 
-  it('should rotate the hue channel if it is out of range', () => {
-    const result = createColorHsl({ h: 420, s: 1, l: 0.5 })
-    expect(result).toEqual({ h: 60, s: 1, l: 0.5, a: 1 })
+  test('should rotate the hue channel if it is out of range', () => {
+    const result = createColorHsl({ h: 420, l: 0.5, s: 1 })
+    expect(result).toStrictEqual({ a: 1, h: 60, l: 0.5, s: 1 })
   })
 
-  it('should clamp the values if they are out of range', () => {
-    const result = createColorHsl({ h: 0, s: -1, l: 2, a: 2 })
-    expect(result).toEqual({ h: 0, s: 0, l: 1, a: 1 })
+  test('should clamp the values if they are out of range', () => {
+    const result = createColorHsl({ a: 2, h: 0, l: 2, s: -1 })
+    expect(result).toStrictEqual({ a: 1, h: 0, l: 1, s: 0 })
   })
 
-  it('should default component channels to 0', () => {
+  test('should default component channels to 0', () => {
     const result = createColorHsl({})
-    expect(result).toEqual({ h: 0, s: 0, l: 0, a: 1 })
+    expect(result).toStrictEqual({ a: 1, h: 0, l: 0, s: 0 })
   })
 
-  it('should return a type-safe HSL object', () => {
-    const result = createColorHsl({ h: 0, s: 1, l: 0.5, a: 1 })
+  test('should return a type-safe HSL object', () => {
+    const result = createColorHsl({ a: 1, h: 0, l: 0.5, s: 1 })
     expectTypeOf(result).toEqualTypeOf<HSL>()
   })
 }

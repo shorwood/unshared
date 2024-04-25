@@ -30,81 +30,81 @@ export function getPrototypeChain(target: unknown): unknown[] {
   return result
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should return the prototype chain of a class', () => {
+  test('should return the prototype chain of a class', () => {
     class ClassA {}
     class ClassB extends ClassA {}
     class ClassC extends ClassB {}
     const classC = new ClassC()
     const result = getPrototypeChain(classC)
-    expect(result).toEqual([ClassB.prototype, ClassA.prototype, Object.prototype])
+    expect(result).toStrictEqual([ClassC.prototype, ClassB.prototype, ClassA.prototype])
   })
 
-  it('should omit the prototype of Object', () => {
+  test('should omit the prototype of Object', () => {
     const result = getPrototypeChain({})
-    expect(result).toEqual([])
+    expect(result).toStrictEqual([])
   })
 
-  it('should return the prototype chain of null', () => {
+  test('should return the prototype chain of null', () => {
     // eslint-disable-next-line unicorn/no-null
     const result = getPrototypeChain(null)
-    expect(result).toEqual([])
+    expect(result).toStrictEqual([])
   })
 
-  it('should return the prototype chain of undefined', () => {
+  test('should return the prototype chain of undefined', () => {
     // eslint-disable-next-line unicorn/no-useless-undefined
     const result = getPrototypeChain(undefined)
-    expect(result).toEqual([])
+    expect(result).toStrictEqual([])
   })
 
-  it('should return the prototype chain of an object', () => {
+  test('should return the prototype chain of an object', () => {
     const result = getPrototypeChain({})
-    expect(result).toEqual([])
+    expect(result).toStrictEqual([])
   })
 
-  it('should return the prototype chain of a number', () => {
+  test('should return the prototype chain of a number', () => {
     const result = getPrototypeChain(1)
-    expect(result).toEqual([Number.prototype])
+    expect(result).toStrictEqual([Number.prototype])
   })
 
-  it('should return the prototype chain of a string', () => {
+  test('should return the prototype chain of a string', () => {
     const result = getPrototypeChain('foo')
-    expect(result).toEqual([String.prototype])
+    expect(result).toStrictEqual([String.prototype])
   })
 
-  it('should return the prototype chain of a boolean', () => {
+  test('should return the prototype chain of a boolean', () => {
     const result = getPrototypeChain(true)
-    expect(result).toEqual([Boolean.prototype])
+    expect(result).toStrictEqual([Boolean.prototype])
   })
 
-  it('should return the prototype chain of a symbol', () => {
+  test('should return the prototype chain of a symbol', () => {
     const result = getPrototypeChain(Symbol('foo'))
-    expect(result).toEqual([Symbol.prototype])
+    expect(result).toStrictEqual([Symbol.prototype])
   })
 
-  it('should return the prototype chain of an array', () => {
+  test('should return the prototype chain of an array', () => {
     const result = getPrototypeChain([])
-    expect(result).toEqual([Array.prototype])
+    expect(result).toStrictEqual([Array.prototype])
   })
 
-  it('should return the prototype chain of a date', () => {
+  test('should return the prototype chain of a date', () => {
     const result = getPrototypeChain(new Date())
-    expect(result).toEqual([Date.prototype])
+    expect(result).toStrictEqual([Date.prototype])
   })
 
-  it('should return the prototype chain of a regexp', () => {
+  test('should return the prototype chain of a regexp', () => {
     const result = getPrototypeChain(/foo/)
-    expect(result).toEqual([RegExp.prototype])
+    expect(result).toStrictEqual([RegExp.prototype])
   })
 
-  it('should return the prototype chain of a weakmap', () => {
+  test('should return the prototype chain of a weakmap', () => {
     const result = getPrototypeChain(new WeakMap())
-    expect(result).toEqual([WeakMap.prototype])
+    expect(result).toStrictEqual([WeakMap.prototype])
   })
 
-  it('should return the prototype chain of a function', () => {
+  test('should return the prototype chain of a function', () => {
     const result = getPrototypeChain(() => {})
-    expect(result).toEqual([Function.prototype])
+    expect(result).toStrictEqual([Function.prototype])
   })
 }

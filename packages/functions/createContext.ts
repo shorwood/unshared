@@ -51,6 +51,7 @@ export function createContext<T = unknown>(initialValue: NonNullable<T>): Contex
 
   // --- Create a function that can be used to run a function in the context.
   const runInContext = (fn: (context: T) => unknown) => {
+
     // --- If already in context, just run the function.
     const context = asl.getStore()
     if (context) return fn(context)
@@ -70,40 +71,40 @@ export function createContext<T = unknown>(initialValue: NonNullable<T>): Contex
   } as Context<T>
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should create a context with an initial value', () => {
+  test('should create a context with an initial value', () => {
     const context = createContext({ foo: 'bar' })
-    expect(context.value).toEqual({ foo: 'bar' })
+    expect(context.value).toStrictEqual({ foo: 'bar' })
     expectTypeOf(context).toMatchTypeOf<{
       runInContext: <U>(fn: (context: { foo: string }) => U) => U
       value: { foo: string }
     }>()
   })
 
-  it('should set the context value globally', () => {
+  test('should set the context value globally', () => {
     const context = createContext({ foo: 'bar' })
     context.value = { foo: 'baz' }
-    expect(context.value).toEqual({ foo: 'baz' })
+    expect(context.value).toStrictEqual({ foo: 'baz' })
   })
 
-  it('should run a function in the context and return the result', () => {
+  test('should run a function in the context and return the result', () => {
     const context = createContext({ foo: 'bar' })
     const result = context.runInContext(context => context.foo)
-    expect(result).toEqual('bar')
+    expect(result).toBe('bar')
     expectTypeOf(result).toEqualTypeOf<string>()
   })
 
-  it('should run a function that modifies the context', () => {
+  test('should run a function that modifies the context', () => {
     const context = createContext({ foo: 'bar' })
     context.runInContext(context => context.foo = 'baz')
-    expect(context.value).toEqual({ foo: 'baz' })
+    expect(context.value).toStrictEqual({ foo: 'baz' })
   })
 
-  it('should run with the context being isolated even when modified from the outside', async() => {
+  test('should run with the context being isolated even when modified from the outside', async() => {
     const context = createContext({ foo: 'bar' })
     const result = await context.runInContext(context => new Promise(resolve => setTimeout(() => resolve(context.foo), 10)))
     context.value.foo = 'baz'
-    expect(result).toEqual('bar')
+    expect(result).toBe('bar')
   })
 }

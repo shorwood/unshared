@@ -1,16 +1,16 @@
-import { rm } from 'node:fs/promises'
-import { argv, stdout } from 'node:process'
 import { rollup, watch as rollupWatch } from 'rollup'
-import { toArray } from '../packages/collection/toArray'
-import { parseCliArguments } from '../packages/process/parseCliArguments'
-import { buildBundle } from './buildBundle'
-import { buildIndexes } from './buildIndexes'
-import { buildPackageJson } from './buildPackageJson'
-import { PACKAGES_NAMES } from './constants'
+import { argv, stdout } from 'node:process'
+import { rm } from 'node:fs/promises'
 import { getPackageMetadata } from './utils'
+import { PACKAGES_NAMES } from './constants'
+import { buildPackageJson } from './buildPackageJson'
+import { buildIndexes } from './buildIndexes'
+import { buildBundle } from './buildBundle'
+import { parseCliArguments } from '../packages/process/parseCliArguments'
+import { toArray } from '../packages/collection/toArray'
 
 export async function build() {
-  const { parameters, options } = parseCliArguments<{ watch: boolean }>(argv)
+  const { options, parameters } = parseCliArguments<{ watch: boolean }>(argv)
   const { watch = false } = options
 
   // --- Get the package names to build.
@@ -21,7 +21,7 @@ export async function build() {
   // --- Cleanup the output directories.
   for (const packageName of packageNames) {
     const { outputDirectory } = await getPackageMetadata(packageName)
-    await rm(outputDirectory, { recursive: true, force: true })
+    await rm(outputDirectory, { force: true, recursive: true })
   }
 
   // --- Create the configuration for each package.

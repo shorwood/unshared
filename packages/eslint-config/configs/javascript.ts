@@ -1,5 +1,5 @@
-import javascriptPlugin from '@eslint/js'
 import { Linter } from 'eslint'
+import javascriptPlugin from '@eslint/js'
 
 /**
  * ESLint configuration for JavaScript files.
@@ -16,28 +16,10 @@ export function javascript(): Linter.FlatConfig[] {
          */
         ...javascriptPlugin.configs.recommended.rules,
 
-        /**
-         * Allow `void` operator. It's useful to discard the result of an expression, especially
-         * when calling asynchronous functions that return a promise.
-         *
-         * @see https://eslint.org/docs/rules/no-void
-         */
-        'no-void': 'off',
-
-        /**
-         * Enforce a consistent linebreak style. Reduces merge conflicts and makes the code
-         * more consistent between different iterations of the same file.
-         *
-         * @see https://eslint.org/docs/rules/linebreak-style
-         */
-        'no-multiple-empty-lines': ['error', {
-          max: 1,
-          maxBOF: 0,
-          maxEOF: 1,
-        }],
-
         'array-bracket-spacing': ['error', 'never'],
+
         'array-callback-return': 'error',
+
         'arrow-body-style': ['error', 'as-needed'],
         'arrow-parens': ['error', 'as-needed', { requireForBlockBody: true }],
         'block-scoped-var': 'error',
@@ -54,7 +36,7 @@ export function javascript(): Linter.FlatConfig[] {
         'eqeqeq': ['error', 'smart'],
         'func-call-spacing': ['off', 'never'],
         'generator-star-spacing': 'off',
-        'indent': ['error', 2, { SwitchCase: 1, VariableDeclarator: 1, outerIIFEBody: 1 }],
+        'indent': ['error', 2, { outerIIFEBody: 1, SwitchCase: 1, VariableDeclarator: 1 }],
         'key-spacing': ['error', { afterColon: true, beforeColon: false }],
         'n/no-callback-literal': 'off',
         'no-alert': 'error',
@@ -68,6 +50,17 @@ export function javascript(): Linter.FlatConfig[] {
         'no-implied-eval': 'error',
         'no-multi-spaces': 'error',
         'no-multi-str': 'error',
+        /**
+         * Enforce a consistent linebreak style. Reduces merge conflicts and makes the code
+         * more consistent between different iterations of the same file.
+         *
+         * @see https://eslint.org/docs/rules/linebreak-style
+         */
+        'no-multiple-empty-lines': ['error', {
+          max: 1,
+          maxBOF: 0,
+          maxEOF: 1,
+        }],
         'no-param-reassign': 'off',
         'no-restricted-syntax': ['error', 'DebuggerStatement', 'LabeledStatement', 'WithStatement'],
         'no-return-assign': 'off',
@@ -77,6 +70,13 @@ export function javascript(): Linter.FlatConfig[] {
         'no-use-before-define': ['error', { classes: false, functions: false, variables: true }],
         'no-useless-escape': 'off',
         'no-var': 'error',
+        /**
+         * Allow `void` operator. It's useful to discard the result of an expression, especially
+         * when calling asynchronous functions that return a promise.
+         *
+         * @see https://eslint.org/docs/rules/no-void
+         */
+        'no-void': 'off',
         'no-with': 'error',
         'object-curly-spacing': ['error', 'always'],
         'object-shorthand': ['error', 'always', { avoidQuotes: true, ignoreConstructors: false }],

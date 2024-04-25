@@ -13,32 +13,32 @@ export type DefaultValue<T1, T2> = T1 extends Nil ? T2 : T1
 
 /** v8 ignore start */
 if (import.meta.vitest) {
-  it('should default undefined to string', () => {
+  test('should default undefined to string', () => {
     type Result = DefaultValue<number | undefined, string>
     expectTypeOf<Result>().toEqualTypeOf<number | string>()
   })
 
-  it('should default null to string', () => {
-    type Result = DefaultValue<number | null, string>
+  test('should default null to string', () => {
+    type Result = DefaultValue<null | number, string>
     expectTypeOf<Result>().toEqualTypeOf<number | string>()
   })
 
-  it('should default void to string', () => {
+  test('should default void to string', () => {
     type Result = DefaultValue<number | void, string>
     expectTypeOf<Result>().toEqualTypeOf<number | string>()
   })
 
-  it('should not default when not undefined or null', () => {
+  test('should not default when not undefined or null', () => {
     type Result = DefaultValue<number, string>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
-  it('should default undefined to null', () => {
+  test('should default undefined to null', () => {
     type Result = DefaultValue<undefined, null>
     expectTypeOf<Result>().toEqualTypeOf<null>()
   })
 
-  it('should default null to undefined', () => {
+  test('should default null to undefined', () => {
     type Result = DefaultValue<null, undefined>
     expectTypeOf<Result>().toEqualTypeOf<undefined>()
   })

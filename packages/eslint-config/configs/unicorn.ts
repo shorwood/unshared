@@ -1,5 +1,5 @@
-import { Linter } from 'eslint'
 import unicornPlugin from 'eslint-plugin-unicorn'
+import { Linter } from 'eslint'
 
 // @ts-expect-error: untyped module
 const UNICORN_RECOMMENDED_RULES = unicornPlugin.configs!.recommended.rules as Linter.RulesRecord
@@ -35,16 +35,9 @@ export function unicorn(): Linter.FlatConfig[] {
           name: 'error',
         }],
 
-        /**
-         * Enforces a convention of grouping digits using numeric separators.
-         * Long numbers can become really hard to read, so cutting it into groups
-         * of digits, separated with a _, is important to keep your code clear.
-         *
-         * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/numeric-separators-style.md
-         */
-        'unicorn/numeric-separators-style': ['error', {
-          onlyIfContainsSeparator: true,
-        }],
+        'unicorn/consistent-function-scoping': 'off',
+        'unicorn/error-message': 'error',
+        'unicorn/escape-case': 'error',
 
         /**
          * Enforce the use of camelCase or PascalCase when naming folders, files and
@@ -58,8 +51,10 @@ export function unicorn(): Linter.FlatConfig[] {
             camelCase: true,
             pascalCase: true,
           },
+          ignore: [
+            '^[A-Z]+(.md)?$',
+          ],
         }],
-
         /**
          * Disable the recommended import style rules. We want to be able to use both
          * named and default imports in our codebase.
@@ -68,21 +63,11 @@ export function unicorn(): Linter.FlatConfig[] {
          */
         'unicorn/import-style': 'off',
 
-        'unicorn/consistent-function-scoping': 'off',
-        'unicorn/prevent-abbreviations': ['error', {
-          allowList: {
-            x: true,
-            y: true,
-            i: true,
-            j: true,
-            dir: true,
-            props: true,
-            Props: true,
-            args: true,
-            fn: true,
-            ref: true,
-          },
-        }],
+        'unicorn/no-array-callback-reference': 'off',
+        'unicorn/no-array-for-each': 'off',
+        'unicorn/no-array-instanceof': 'error',
+        'unicorn/no-new-buffer': 'error',
+        'unicorn/no-static-only-class': 'off',
 
         /**
          * Disallow unsafe regular expressions. Regular expressions can be unsafe
@@ -93,22 +78,45 @@ export function unicorn(): Linter.FlatConfig[] {
          */
         'unicorn/no-unsafe-regex': 'error',
 
-        'unicorn/error-message': 'error',
-        'unicorn/escape-case': 'error',
-        'unicorn/no-array-instanceof': 'error',
-        'unicorn/no-new-buffer': 'error',
         'unicorn/number-literal-case': 'error',
-        'unicorn/prefer-switch': 'off',
+
+        /**
+         * Enforces a convention of grouping digits using numeric separators.
+         * Long numbers can become really hard to read, so cutting it into groups
+         * of digits, separated with a _, is important to keep your code clear.
+         *
+         * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/numeric-separators-style.md
+         */
+        'unicorn/numeric-separators-style': ['error', {
+          onlyIfContainsSeparator: true,
+        }],
+
+        'unicorn/prefer-code-point': 'off',
         'unicorn/prefer-exponentiation-operator': 'error',
         'unicorn/prefer-includes': 'error',
+        'unicorn/prefer-module': 'off',
         'unicorn/prefer-starts-ends-with': 'error',
+        'unicorn/prefer-switch': 'off',
         'unicorn/prefer-text-content': 'error',
         'unicorn/prefer-type-error': 'error',
+        'unicorn/prevent-abbreviations': ['error', {
+          allowList: {
+            args: true,
+            dir: true,
+            fn: true,
+            i: true,
+            j: true,
+            k: true,
+            props: true,
+            Props: true,
+            ref: true,
+            v: true,
+            x: true,
+            y: true,
+            z: true,
+          },
+        }],
         'unicorn/throw-new-error': 'error',
-        'unicorn/no-array-callback-reference': 'off',
-        'unicorn/prefer-code-point': 'off',
-        'unicorn/prefer-module': 'off',
-        'unicorn/no-array-for-each': 'off',
       },
     },
   ]

@@ -1,10 +1,16 @@
-import { computed } from './computed'
-import { Reactive } from './reactive'
-import { reference } from './reference'
-import { Unwrapped, unwrap } from './unwrap'
 import { watch } from './watch'
+import { Unwrapped, unwrap } from './unwrap'
+import { reference } from './reference'
+import { Reactive } from './reactive'
+import { computed } from './computed'
 
 export interface TimelineOptions<T, U> {
+  /**
+   * The maximum number of changes to store.
+   *
+   * @default Infinity
+   */
+  limit?: number
   /**
    * The function to transform the value before storing it in the timeline.
    * This is useful if you want to store a clone of the value instead of
@@ -15,12 +21,6 @@ export interface TimelineOptions<T, U> {
    * @example timeline(a, { transform: (value) => Object.assign({}, value) })
    */
   transform?: (value: Unwrapped<T>) => U
-  /**
-   * The maximum number of changes to store.
-   *
-   * @default Infinity
-   */
-  limit?: number
 }
 
 /**
@@ -39,10 +39,10 @@ export interface TimelineOptions<T, U> {
  * const ref = reference(1)
  * const changes = timeline(a)
  * ref.value = 2
- * expect(changes).toEqual([1, 2])
+ * expect(changes).toStrictEqual([1, 2])
  */
 export function timeline<T extends Reactive, U = Unwrapped<T>>(value: T, options: TimelineOptions<T, U> = {}): U[] {
-  const { transform, limit = Number.POSITIVE_INFINITY } = options
+  const { limit = Number.POSITIVE_INFINITY, transform } = options
   const timeline: U[] = []
 
   // --- Register a change in the timeline.
@@ -61,55 +61,55 @@ export function timeline<T extends Reactive, U = Unwrapped<T>>(value: T, options
   return timeline
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should store changes of a reactive', () => {
+  test('should store changes of a reactive', () => {
     const value = reference(1)
     const changes = timeline(value)
     value.value = 2
-    expect(changes).toEqual([1, 2])
+    expect(changes).toStrictEqual([1, 2])
   })
 
-  it('should store changes of a reference', () => {
+  test('should store changes of a reference', () => {
     const value = reference(1)
     const changes = timeline(value)
     value.value = 2
-    expect(changes).toEqual([1, 2])
+    expect(changes).toStrictEqual([1, 2])
   })
 
-  it('should store changes of a computed', async() => {
+  test('should store changes of a computed', async() => {
     const a = reference(1)
     const b = reference(2)
     const sum = computed([a, b], (a, b) => a + b, { eager: true, immediate: true })
     const changes = timeline(sum)
     a.value = 2
     await new Promise(resolve => setTimeout(resolve, 10))
-    expect(changes).toEqual([3, 4])
+    expect(changes).toStrictEqual([3, 4])
   })
 
-  it('should transform values', () => {
+  test('should transform values', () => {
     const value = reference(1)
     const changes = timeline(value, { transform: String })
     value.value = 2
-    expect(changes).toEqual(['1', '2'])
+    expect(changes).toStrictEqual(['1', '2'])
   })
 
-  it('should limit the number of changes', () => {
+  test('should limit the number of changes', () => {
     const a = reference(1)
     const changes = timeline(a, { limit: 2 })
     a.value = 2
     a.value = 3
     a.value = 4
-    expect(changes).toEqual([3, 4])
+    expect(changes).toStrictEqual([3, 4])
   })
 
-  it('should infer the type of the timeline if no transform is provided', () => {
+  test('should infer the type of the timeline if no transform is provided', () => {
     const value = reference(1)
     const changes = timeline(value)
     expectTypeOf(changes).toEqualTypeOf<number[]>()
   })
 
-  it('should infer the type of the timeline if a transform is provided', () => {
+  test('should infer the type of the timeline if a transform is provided', () => {
     const value = reference(1)
     const changes = timeline(value, { transform: String })
     expectTypeOf(changes).toEqualTypeOf<string[]>()

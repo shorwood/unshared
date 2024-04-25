@@ -1,5 +1,5 @@
-import { VariantObject } from '@unocss/core'
 import { MaybeArray } from '@unshared/types'
+import { VariantObject } from '@unocss/core'
 
 /**
  * Create an UnoCSS variant based on a keyword.
@@ -11,7 +11,6 @@ import { MaybeArray } from '@unshared/types'
  */
 export function createVariant(name: string, template: MaybeArray<string>): VariantObject {
   return {
-    name,
     autocomplete: `${name}:`,
     match: (input: string) => {
       const regexp = new RegExp(`^${name}[:-]`)
@@ -24,5 +23,6 @@ export function createVariant(name: string, template: MaybeArray<string>): Varia
         }
       }
     },
+    name,
   }
 }

@@ -1,21 +1,19 @@
 import { reactive } from 'vue'
 
 export interface Alert {
+  /** Duration of the alert in ms. */
+  duration?: number
   /** Unique id for lifecycle handling. Defaults to auto-generated one. */
   id?: string
   /** Content of the alert. */
   text?: string
   /** Type of alert. Defines the design of the toast. */
   type?: 'error' | 'info' | 'success' | 'warning'
-  /** Duration of the alert in ms. */
-  duration?: number
 }
 
 type Dismiss = () => void
 
 export interface UseAlertReturnType {
-  /** The active alerts pool. */
-  alerts: Alert[]
   /**
    * Create an alert that is displayed for a duration, then automatically dismissed.
    *
@@ -44,16 +42,18 @@ export interface UseAlertReturnType {
    * @returns A function that can be used to dismiss the alert manually
    */
   alertWarning: (text: string) => Dismiss
+  /** The active alerts pool. */
+  alerts: Alert[]
+  /**
+   * Clear all alerts
+   */
+  clear: () => void
   /**
    * Dismiss an alert or all allerts
    *
    * @param alert The alert to dismiss. If undefined, all alerts will be dismissed
    */
   dismiss: (alert: Alert) => void
-  /**
-   * Clear all alerts
-   */
-  clear: () => void
 }
 
 /**
@@ -89,13 +89,13 @@ export function useAlert(): UseAlertReturnType {
 
   // --- Return pool and methods.
   return {
-    alerts,
     alert,
     alertError,
+    alerts,
     alertSuccess,
     alertWarning,
-    dismiss,
     clear,
+    dismiss,
   }
 }
 
@@ -104,73 +104,73 @@ export function useAlert(): UseAlertReturnType {
 if (import.meta.vitest) {
   const { sleep } = await import('@unshared/functions/sleep')
 
-  it('should register a new alert', () => {
+  test('should register a new alert', () => {
     const { alertError, alerts } = useAlert()
     alertError('This is an error')
-    expect(alerts).toEqual([{
+    expect(alerts).toStrictEqual([{
       id: expect.stringMatching(/[\da-z]{9}/),
       text: 'This is an error',
       type: 'error',
     }])
   })
 
-  it('should register a new success', () => {
-    const { alertSuccess, alerts } = useAlert()
+  test('should register a new success', () => {
+    const { alerts, alertSuccess } = useAlert()
     alertSuccess('This is a success')
-    expect(alerts).toEqual([{
+    expect(alerts).toStrictEqual([{
       id: expect.stringMatching(/[\da-z]{9}/),
       text: 'This is a success',
       type: 'success',
     }])
   })
 
-  it('should register a new warning', () => {
-    const { alertWarning, alerts } = useAlert()
+  test('should register a new warning', () => {
+    const { alerts, alertWarning } = useAlert()
     alertWarning('This is a warning')
-    expect(alerts).toEqual([{
+    expect(alerts).toStrictEqual([{
       id: expect.stringMatching(/[\da-z]{9}/),
       text: 'This is a warning',
       type: 'warning',
     }])
   })
 
-  it('should register a new info', () => {
+  test('should register a new info', () => {
     const { alert, alerts } = useAlert()
     alert({ text: 'This is an info', type: 'info' })
-    expect(alerts).toEqual([{
+    expect(alerts).toStrictEqual([{
       id: expect.stringMatching(/[\da-z]{9}/),
       text: 'This is an info',
       type: 'info',
     }])
   })
 
-  it('should register a new alert and dismiss it after 10ms', async() => {
+  test('should register a new alert and dismiss it after 10ms', async() => {
     const { alert, alerts } = useAlert()
-    alert({ text: 'This is an alert', type: 'info', duration: 10 })
+    alert({ duration: 10, text: 'This is an alert', type: 'info' })
     await sleep(15)
-    expect(alerts).toEqual([])
+    expect(alerts).toStrictEqual([])
   })
 
-  it('should be dismissed once we call the returned "dismiss" function', () => {
-    const { alertWarning, alerts } = useAlert()
+  test('should be dismissed once we call the returned "dismiss" function', () => {
+    const { alerts, alertWarning } = useAlert()
     const dismiss = alertWarning('This is a warning')
     dismiss()
-    expect(alerts).toEqual([])
+    expect(alerts).toStrictEqual([])
   })
 
-  it('should dismiss all alerts', () => {
-    const { alertWarning, alerts, clear } = useAlert()
+  test('should dismiss all alerts', () => {
+    const { alerts, alertWarning, clear } = useAlert()
     alertWarning('This is a warning')
     alertWarning('This is a warning 2')
     clear()
-    expect(alerts).toEqual([])
+    expect(alerts).toStrictEqual([])
   })
 
-  it('should dismiss a specific alert', () => {
+  test('should dismiss a specific alert', () => {
     const { alert, alerts, dismiss } = useAlert()
-    alert({ text: 'Hello, World', id: '1' })
-    alert({ text: 'Goodbye, World', id: '2' })
+    alert({ id: '1', text: 'Hello, World' })
+    alert({ id: '2', text: 'Goodbye, World' })
     dismiss({ id: '1' })
-    expect(alerts).toEqual([{ text: 'Goodbye, World', id: '2' }])
+    expect(alerts).toStrictEqual([{ id: '2', text: 'Goodbye, World' }])
   })
 }

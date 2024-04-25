@@ -8,7 +8,7 @@ import { NumberIntegerPositive } from '@unshared/types'
  * @returns The floored number.
  * @example floor(1.234, 2) // 1.23
  */
-export function floor<N extends number>(number: number, precision: NumberIntegerPositive<N> | 0 = 0): number {
+export function floor<N extends number>(number: number, precision: 0 | NumberIntegerPositive<N> = 0): number {
 
   // --- Handle the edge cases.
   if (Number.isSafeInteger(number)) return number
@@ -21,30 +21,32 @@ export function floor<N extends number>(number: number, precision: NumberInteger
   return Math.floor(number * factor) / factor
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should floor an integer', () => {
+  test('should floor an integer', () => {
     const result = floor(1)
-    expect(result).toEqual(1)
+    expect(result).toBe(1)
   })
 
-  it('should floor a number', () => {
+  test('should floor a number', () => {
     const result = floor(1.234)
-    expect(result).toEqual(1)
+    expect(result).toBe(1)
   })
 
-  it('should floor a number to a given precision', () => {
+  test('should floor a number to a given precision', () => {
     const result = floor(1.234, 2)
-    expect(result).toEqual(1.23)
+    expect(result).toStrictEqual(1.23)
   })
 
-  it('should throw an error if the precision is negative', () => {
+  test('should throw an error if the precision is negative', () => {
+
     // @ts-expect-error: Precision is negative
     const shouldThrow = () => floor(1.234, -1)
     expect(shouldThrow).toThrow(RangeError)
   })
 
-  it('should throw an error if the precision is not an integer', () => {
+  test('should throw an error if the precision is not an integer', () => {
+
     // @ts-expect-error: Precision is not an integer
     const shouldThrow = () => floor(1.234, 1.5)
     expect(shouldThrow).toThrow(RangeError)

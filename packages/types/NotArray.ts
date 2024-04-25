@@ -7,34 +7,34 @@
  */
 export type NotArray<U = unknown> = U extends ArrayLike<any> ? never : U
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should return the type when it is not an array', () => {
+  test('should return the type when it is not an array', () => {
     type Result = NotArray<number>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
-  it('should exclude the array type when the type is an array', () => {
-    type Result = NotArray<number[] | number>
+  test('should exclude the array type when the type is an array', () => {
+    type Result = NotArray<number | number[]>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
-  it('should return never when the type is an array', () => {
+  test('should return never when the type is an array', () => {
     type Result = NotArray<number[]>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
-  it('should return never when the type is a readonly array', () => {
+  test('should return never when the type is a readonly array', () => {
     type Result = NotArray<readonly number[]>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
-  it('should return never when the type is a tuple', () => {
+  test('should return never when the type is a tuple', () => {
     type Result = NotArray<[number, string]>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
-  it('should return never when the type is an array-like object', () => {
+  test('should return never when the type is an array-like object', () => {
     interface arrayLike { [key: number]: string; length: number }
     type Result = NotArray<arrayLike>
     expectTypeOf<Result>().toEqualTypeOf<never>()

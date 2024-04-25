@@ -1,10 +1,10 @@
-import { Computed } from './computed'
-import { ReactiveData } from './constants'
-import { isComputed } from './isComputed'
-import { isReactive } from './isReactive'
-import { isReference } from './isReference'
-import { Reactive } from './reactive'
 import { Reference } from './reference'
+import { Reactive } from './reactive'
+import { isReference } from './isReference'
+import { isReactive } from './isReactive'
+import { isComputed } from './isComputed'
+import { ReactiveData } from './constants'
+import { Computed } from './computed'
 
 /**
  * Dereference a `Reactive` object or unwrap a `Reference`.
@@ -37,35 +37,43 @@ export function unwrap<T>(value: T): Unwrapped<T> {
   return value as Unwrapped<T>
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
   const { computed } = await import('./computed')
   const { reactive } = await import('./reactive')
   const { reference } = await import('./reference')
 
-  it('should unwrap reactive object', () => {
+  test('should unwrap reactive object', () => {
     const source = { foo: 'bar' }
     const value = reactive(source)
     const result = unwrap(value)
-    expect(result).toEqual(source)
+    expect(result).toMatchObject(source)
+    expect(result).not.toStrictEqual(source)
     expectTypeOf(result).toEqualTypeOf<{ foo: string }>()
   })
 
-  it('should unwrap reactive value', () => {
+  test('should unwrap reactive value', () => {
     const value = reference('foo')
     const result = unwrap(value)
-    expect(result).toEqual('foo')
+    expect(result).toBe('foo')
     expectTypeOf(result).toEqualTypeOf<string>()
   })
 
-  it('should unwrap a computed value', () => {
+  test('should unwrap a computed value', () => {
     const value = computed([], () => 'foo')
     const result = unwrap(value)
-    expect(result).toEqual('foo')
+    expect(result).toBe('foo')
     expectTypeOf(result).toEqualTypeOf<string>()
   })
 
-  it('should return non-reactive values as-is', () => {
+  test('should return non-reactive object as-is', () => {
+    const value = { foo: 'bar' }
+    const result = unwrap(value)
+    expect(result).toStrictEqual(value)
+    expectTypeOf(result).toEqualTypeOf<{ foo: string }>()
+  })
+
+  test('should return non-reactive string as-is', () => {
     const value = 'foo'
     const result = unwrap(value)
     expect(result).toStrictEqual(value)

@@ -12,39 +12,39 @@ export type MathSum<N extends number[]> =
     ? MathAdd<A, MathSum<B>>
     : N extends [infer A extends number] ? A : 0
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should compute the sum of positive integers', () => {
+  test('should compute the sum of positive integers', () => {
     type Result = MathSum<[1, 2, 3]>
     expectTypeOf<Result>().toEqualTypeOf<6>()
   })
 
-  it('should compute the sum of negative integers', () => {
+  test('should compute the sum of negative integers', () => {
     type Result = MathSum<[-1, -2, -3]>
     expectTypeOf<Result>().toEqualTypeOf<-6>()
   })
 
-  it('should compute the sum of mixed integers', () => {
+  test('should compute the sum of mixed integers', () => {
     type Result = MathSum<[-1, 2, -3]>
     expectTypeOf<Result>().toEqualTypeOf<-2>()
   })
 
-  it('should compute the sum of a single integer', () => {
+  test('should compute the sum of a single integer', () => {
     type Result = MathSum<[1]>
     expectTypeOf<Result>().toEqualTypeOf<1>()
   })
 
-  it('should compute the sum of an empty tuple', () => {
+  test('should compute the sum of an empty tuple', () => {
     type Result = MathSum<[]>
     expectTypeOf<Result>().toEqualTypeOf<0>()
   })
 
-  it('should compute the sum of decimals to a number', () => {
+  test('should compute the sum of decimals to a number', () => {
     type Result = MathSum<[1, 2.5, 3]>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
-  it('should compute the sum of a tuple of numbers to a number', () => {
+  test('should compute the sum of a tuple of numbers to a number', () => {
     type Result = MathSum<[1, 2, number]>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })

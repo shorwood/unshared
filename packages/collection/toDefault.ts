@@ -2,22 +2,6 @@ import { Default, NumberIntegerPositive } from '@unshared/types'
 
 export interface ToDefaultOptions<N extends number, C extends boolean> {
   /**
-   * The depth at which to default the objects. If an object is deeper than the
-   * specified depth, the reference of the source object will be used.
-   *
-   * @default 1
-   * @example
-   * const object = { a: { b: 1 } }
-   * const source = { a: { b: 2, c: 3 } }
-   *
-   * // Merge nested objects.
-   * toDefault(object, source, { depth: 1 }) // { a: { b: 1, c: 3 }
-   *
-   * // Merge only the first level of the object.
-   * toDefault(object, source) // { a: { b: 1 } }
-   */
-  depth?: NumberIntegerPositive<N>
-  /**
    * If `true`, arrays will be concatenated instead of replaced,
    * when merging objects. This also applies to nested arrays.
    *
@@ -33,6 +17,22 @@ export interface ToDefaultOptions<N extends number, C extends boolean> {
    * toDefault(object, source, { concat: true }) // { a: [1, 2, 3, 4] }
    */
   concat?: C
+  /**
+   * The depth at which to default the objects. If an object is deeper than the
+   * specified depth, the reference of the source object will be used.
+   *
+   * @default 1
+   * @example
+   * const object = { a: { b: 1 } }
+   * const source = { a: { b: 2, c: 3 } }
+   *
+   * // Merge nested objects.
+   * toDefault(object, source, { depth: 1 }) // { a: { b: 1, c: 3 }
+   *
+   * // Merge only the first level of the object.
+   * toDefault(object, source) // { a: { b: 1 } }
+   */
+  depth?: NumberIntegerPositive<N>
 }
 
 /**
@@ -58,7 +58,7 @@ export interface ToDefaultOptions<N extends number, C extends boolean> {
  * toDefault(object, source) // => { foo: 2, deep: { bar: 2, baz: 4 } }
  */
 export function toDefault<T1, T2, N extends number, C extends boolean>(target: T1, source: T2, options: ToDefaultOptions<N, C> = {}): Default<T1, T2, N, C> {
-  const { depth = 1, concat = false } = options
+  const { concat = false, depth = 1 } = options
 
   // --- If the depth is reached, return the first non-nil value.
   if (depth === 0) return (target ?? source) as Default<T1, T2, N, C>
@@ -79,7 +79,7 @@ export function toDefault<T1, T2, N extends number, C extends boolean>(target: T
     const result: Record<PropertyKey, unknown> = {}
     const keys = [...Object.keys(target), ...Object.keys(source)] as Array<keyof T1 & keyof T2>
     const keysUnique = new Set(keys)
-    for (const key of keysUnique) result[key] = toDefault(target[key], source[key], { depth: depth - 1, concat: concat as C })
+    for (const key of keysUnique) result[key] = toDefault(target[key], source[key], { concat: concat as C, depth: depth - 1 })
     return result as Default<T1, T2, N, C>
   }
 
@@ -165,15 +165,15 @@ if (import.meta.vitest) {
     it('should default undefined to null', () => {
       // eslint-disable-next-line unicorn/no-null
       const result = toDefault(undefined, null)
-      // eslint-disable-next-line unicorn/no-null
-      expect(result).toBe(null)
+
+      expect(result).toBeNull()
       expectTypeOf(result).toEqualTypeOf<null>()
     })
 
     it('should default null to undefined', () => {
       // eslint-disable-next-line unicorn/no-null, unicorn/no-useless-undefined
       const result = toDefault(null, undefined)
-      expect(result).toBe(undefined)
+      expect(result).toBeUndefined()
       expectTypeOf(result).toEqualTypeOf<undefined>()
     })
   })
@@ -209,7 +209,7 @@ if (import.meta.vitest) {
       const source = { a: [4, [5, [6]]] }
       const result = toDefault(target, source, { depth: 2 })
       expect(result).toStrictEqual({ a: [1, [2, [3]]] })
-      expectTypeOf(result).toEqualTypeOf<{ a: Array<Array<number[] | number> | number> }>()
+      expectTypeOf(result).toEqualTypeOf<{ a: Array<Array<number | number[]> | number> }>()
     })
   })
 

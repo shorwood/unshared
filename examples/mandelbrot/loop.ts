@@ -1,9 +1,10 @@
-import { createWorkerPool } from '@unshared/process/createWorkerPool'
-import { performance } from 'node:perf_hooks'
 import { emitKeypressEvents } from 'node:readline'
+import { performance } from 'node:perf_hooks'
+import { createWorkerPool } from '@unshared/process/createWorkerPool'
 import { renderBox } from './render'
 
 export async function loop() {
+
   // --- Hide the cursor.
   process.stdout.write('\u001B[?25l')
 
@@ -61,27 +62,27 @@ export async function loop() {
     zoom = Math.max(zoom + zoomVel * timescale, 1)
 
     const stats = {
-      width: process.stdout.columns - 1,
-      xMin: -2.5 + xPos,
-      xMax: 1 + xPos,
-      yMin: -1 + yPos,
-      yMax: 1 + yPos,
       maxIterations: Math.max(zoom, 100),
+      width: process.stdout.columns - 1,
+      xMax: 1 + xPos,
+      xMin: -2.5 + xPos,
+      yMax: 1 + yPos,
+      yMin: -1 + yPos,
       zoom,
     }
 
     // --- Write the stats in the top left corner in a box.
     const box = renderBox({
+      'CPU Usage': `${(process.cpuUsage().user / process.cpuUsage().system).toFixed(2)}%`,
       'Elapsed': `${Math.round(elapsed / 1000)}s`,
       'FPS': `${fps}`,
-      'Zoom': `${stats.zoom.toFixed(2)}`,
-      'Position': `(${xPos.toFixed(4)}, ${yPos.toFixed(4)})`,
-      'Velocity': `(${xVel.toFixed(4)}, ${yVel.toFixed(4)})`,
       'Iterations': `${stats.maxIterations.toFixed(0)}`,
-      'Refresh Rate': `${refreshRate.toFixed(0)}ms`,
-      'CPU Usage': `${(process.cpuUsage().user / process.cpuUsage().system).toFixed(2)}%`,
       'Memory Usage': `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB`,
+      'Position': `(${xPos.toFixed(4)}, ${yPos.toFixed(4)})`,
       'Press': 'WASD to move, QE to zoom, CTRL+C to exit',
+      'Refresh Rate': `${refreshRate.toFixed(0)}ms`,
+      'Velocity': `(${xVel.toFixed(4)}, ${yVel.toFixed(4)})`,
+      'Zoom': `${stats.zoom.toFixed(2)}`,
     })
 
     // --- Write the output in a box below the stats.

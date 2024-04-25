@@ -9,14 +9,14 @@ export type OmitNever<T> =
     ? { [K in keyof U]: U[K] }
     : never
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should omit properties with value of never', () => {
+  test('should omit properties with value of never', () => {
     type Result = OmitNever<{ a: string; b: never; c: number }>
     expectTypeOf<Result>().toEqualTypeOf<{ a: string; c: number }>()
   })
 
-  it('should omit properties with value of never from a union', () => {
+  test('should omit properties with value of never from a union', () => {
     type Result = OmitNever<{ a: string; b: never } | { a: string; c: number }>
     expectTypeOf<Result>().toEqualTypeOf<{ a: string } | { a: string; c: number }>()
   })

@@ -1,10 +1,11 @@
-import { cp } from 'node:fs/promises'
 import { argv } from 'node:process'
-import { execute as $ } from '../packages/process/execute'
-import { parseCliArguments } from '../packages/process/parseCliArguments'
-import { createSemver } from '../packages/string/createSemver'
-import { PACKAGES_NAMES } from './constants'
+// eslint-disable-next-line n/no-unsupported-features/node-builtins
+import { cp } from 'node:fs/promises'
 import { getPackageMetadata } from './utils'
+import { PACKAGES_NAMES } from './constants'
+import { createSemver } from '../packages/string/createSemver'
+import { parseCliArguments } from '../packages/process/parseCliArguments'
+import { execute as $ } from '../packages/process/execute'
 
 /**
  * Set the version of the package to the version in the package.json file.
@@ -40,7 +41,9 @@ export async function publishPackage(packageName: string) {
     version.build = undefined
   }
 
-  else { throw new Error(`Invalid tag ${gitTag}`) }
+  else {
+    throw new Error(`Invalid tag ${gitTag}`)
+  }
 
   // --- Check if the current version is already released.
   // --- Get the latest version from the registry.
@@ -67,6 +70,7 @@ export async function publishPackage(packageName: string) {
     '--tag',
     isNext ? 'next' : 'latest',
     ...registry,
+
     // '--dry-run',
     '--no-git-checks',
   ], {

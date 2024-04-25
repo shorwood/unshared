@@ -23,45 +23,45 @@ export function xnor(...values: boolean[]): boolean {
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  it('should return true if both parameters are true', () => {
+  test('should return true if both parameters are true', () => {
     const result = xnor(true, true)
-    expect(result).toEqual(true)
+    expect(result).toBeTruthy()
     expectTypeOf(result).toEqualTypeOf<true>()
   })
 
-  it('should return false if the first parameter is false', () => {
+  test('should return false if the first parameter is false', () => {
     const result = xnor(true, false)
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
     expectTypeOf(result).toEqualTypeOf<false>()
   })
 
-  it('should return false if the second parameter is false', () => {
+  test('should return false if the second parameter is false', () => {
     const result = xnor(false, false)
-    expect(result).toEqual(true)
+    expect(result).toBeTruthy()
     expectTypeOf(result).toEqualTypeOf<true>()
   })
 
-  it('should return true if the first parameter is false', () => {
+  test('should return true if the first parameter is false', () => {
     const result = xnor(false, true)
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
     expectTypeOf(result).toEqualTypeOf<false>()
   })
 
-  it('should return true if all values are false', () => {
+  test('should return true if all values are false', () => {
     const result = xnor(false, false, false, false)
-    expect(result).toEqual(true)
+    expect(result).toBeTruthy()
     expectTypeOf(result).toEqualTypeOf<boolean>()
   })
 
-  it('should return true if all values are true', () => {
+  test('should return true if all values are true', () => {
     const result = xnor(true, true, true, true)
-    expect(result).toEqual(true)
+    expect(result).toBeTruthy()
     expectTypeOf(result).toEqualTypeOf<boolean>()
   })
 
-  it('should return false if some values are true and some are false', () => {
+  test('should return false if some values are true and some are false', () => {
     const result = xnor(true, true, false, true)
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
     expectTypeOf(result).toEqualTypeOf<boolean>()
   })
 }

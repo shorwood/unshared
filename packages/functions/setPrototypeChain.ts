@@ -31,9 +31,9 @@ export function setPrototypeChain<T>(target: T, ...sources: any[]): T {
   return target
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should set the prototype chain of a class', () => {
+  test('should set the prototype chain of a class', () => {
     class ClassA {}
     class ClassB {}
     class ClassC {}
@@ -41,7 +41,7 @@ if (import.meta.vitest) {
     const classB = new ClassB()
     const classC = new ClassC()
     const result = setPrototypeChain(classC, classB, classA)
-    expect(result).toEqual(classC)
+    expect(result).toStrictEqual(classC)
     expect(classC).toBeInstanceOf(ClassA)
     expect(classC).toBeInstanceOf(ClassB)
     expect(classC).toBeInstanceOf(ClassC)

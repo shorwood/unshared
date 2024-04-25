@@ -25,54 +25,54 @@ export type TypeOf<T extends string> = T extends 'number'
                 ? Function
                 : never
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should infer the type of "number"', () => {
+  test('should infer the type of "number"', () => {
     type Result = TypeOf<'number'>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
-  it('should infer the type of "string"', () => {
+  test('should infer the type of "string"', () => {
     type Result = TypeOf<'string'>
     expectTypeOf<Result>().toEqualTypeOf<string>()
   })
 
-  it('should infer the type of "boolean"', () => {
+  test('should infer the type of "boolean"', () => {
     type Result = TypeOf<'boolean'>
     expectTypeOf<Result>().toEqualTypeOf<boolean>()
   })
 
-  it('should infer the type of "object"', () => {
+  test('should infer the type of "object"', () => {
     type Result = TypeOf<'object'>
     expectTypeOf<Result>().toEqualTypeOf<object>()
   })
 
-  it('should infer the type of "symbol"', () => {
+  test('should infer the type of "symbol"', () => {
     type Result = TypeOf<'symbol'>
     expectTypeOf<Result>().toEqualTypeOf<symbol>()
   })
 
-  it('should infer the type of "bigint"', () => {
+  test('should infer the type of "bigint"', () => {
     type Result = TypeOf<'bigint'>
     expectTypeOf<Result>().toEqualTypeOf<bigint>()
   })
 
-  it('should infer the type of "undefined"', () => {
+  test('should infer the type of "undefined"', () => {
     type Result = TypeOf<'undefined'>
     expectTypeOf<Result>().toEqualTypeOf<undefined>()
   })
 
-  it('should infer the type of "function"', () => {
+  test('should infer the type of "function"', () => {
     type Result = TypeOf<'function'>
     expectTypeOf<Result>().toEqualTypeOf<Function>()
   })
 
-  it('should infer "never" for non-matching literals', () => {
+  test('should infer "never" for non-matching literals', () => {
     type Result = TypeOf<'foo'>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
-  it('should infer "never" for non-literal strings', () => {
+  test('should infer "never" for non-literal strings', () => {
     type Result = TypeOf<string>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })

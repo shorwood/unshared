@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-duplicate-string */
 /**
  * Escape the special characters in HTML strings. This allows you to display text that
  * contains HTML characters without the browser interpreting them as HTML elements.
@@ -19,39 +18,40 @@ export function escapeHtml(value: string): string {
   })
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should escape HTML ampersands', () => {
+  test('should escape HTML ampersands', () => {
     const result = escapeHtml('foo&bar')
-    expect(result).toEqual('foo&amp;bar')
+    expect(result).toBe('foo&amp;bar')
   })
 
-  it('should not escape already escaped HTML ampersands', () => {
+  test('should not escape already escaped HTML ampersands', () => {
     const result = escapeHtml('foo&amp;bar')
-    expect(result).toEqual('foo&amp;bar')
+    expect(result).toBe('foo&amp;bar')
   })
 
-  it('should escape HTML less-than signs', () => {
+  test('should escape HTML less-than signs', () => {
     const result = escapeHtml('foo<bar')
-    expect(result).toEqual('foo&lt;bar')
+    expect(result).toBe('foo&lt;bar')
   })
 
-  it('should escape HTML greater-than signs', () => {
+  test('should escape HTML greater-than signs', () => {
     const result = escapeHtml('foo>bar')
-    expect(result).toEqual('foo&gt;bar')
+    expect(result).toBe('foo&gt;bar')
   })
 
-  it('should escape HTML double quotes', () => {
+  test('should escape HTML double quotes', () => {
     const result = escapeHtml('foo"bar')
-    expect(result).toEqual('foo&quot;bar')
+    expect(result).toBe('foo&quot;bar')
   })
 
-  it('should escape HTML single quotes', () => {
+  test('should escape HTML single quotes', () => {
     const result = escapeHtml('foo\'bar')
-    expect(result).toEqual('foo&#39;bar')
+    expect(result).toBe('foo&#39;bar')
   })
 
-  it('should throw if value is not a string', () => {
+  test('should throw if value is not a string', () => {
+
     // @ts-expect-error: invalid argument type.
     const shouldThrow = () => escapeHtml(1)
     expect(shouldThrow).toThrow(TypeError)

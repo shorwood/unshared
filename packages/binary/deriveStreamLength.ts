@@ -24,23 +24,23 @@ export function deriveStreamLength(): Awaitable<Derive, number> {
   return deriveStream(({ chunk, value }) => value + chunk.length, 0)
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
   const { Readable } = await import('node:stream')
 
-  it('should not consume the stream chunks', async() => {
+  test('should not consume the stream chunks', async() => {
     const stream = Readable.from('Hello, world!')
     const length = deriveStreamLength()
     void stream.pipe(length)
     const chunks = await length.toArray()
     const buffer = Buffer.concat(chunks).toString('utf8')
-    expect(buffer).toEqual('Hello, world!')
+    expect(buffer).toBe('Hello, world!')
   })
 
-  it('should derive the length from the stream chunks', async() => {
+  test('should derive the length from the stream chunks', async() => {
     const stream = Readable.from('Hello, world!')
     const length = deriveStreamLength()
     void stream.pipe(length)
-    await expect(length).resolves.toEqual(13)
+    await expect(length).resolves.toBe(13)
   })
 }

@@ -1,5 +1,5 @@
-import { ReferenceFlag } from './constants'
 import { Reference } from './reference'
+import { ReferenceFlag } from './constants'
 
 /**
  * Predicate for checking if a value is a `Reference` object.
@@ -17,44 +17,42 @@ export function isReference<T>(value: unknown): value is Reference<T> {
     && value[ReferenceFlag] === true
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
   const { computed } = await import('./computed')
   const { reactive } = await import('./reactive')
   const { reference } = await import('./reference')
 
-  it('should return false for computed', () => {
+  test('should return false for computed', () => {
     const value = computed([], () => 1)
     const result = isReference(value)
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
   })
 
-  it('should return false for reactive', () => {
+  test('should return false for reactive', () => {
     const value = reactive({})
     const result = isReference(value)
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
   })
 
-  it('should return true for references', () => {
+  test('should return true for references', () => {
     const value = reference()
     const result = isReference(value)
-    expect(result).toEqual(true)
+    expect(result).toBeTruthy()
   })
 
-  it('should return false for non-reactive', () => {
+  test('should return false for non-reactive', () => {
     const result = isReference({ foo: 'bar' })
-    expect(result).toEqual(false)
+    expect(result).toBeFalsy()
   })
 
-  // eslint-disable-next-line vitest/expect-expect
-  it('should predicate the type of a reference', () => {
+  test('should predicate the type of a reference', () => {
     const value = undefined as unknown
     const result = isReference(value)
     if (result) expectTypeOf(value).toEqualTypeOf<Reference<unknown>>()
   })
 
-  // eslint-disable-next-line vitest/expect-expect
-  it('should predicate the type of a reference with a type', () => {
+  test('should predicate the type of a reference with a type', () => {
     const value = undefined as unknown
     const result = isReference<string>(value)
     if (result) expectTypeOf(value).toEqualTypeOf<Reference<string>>()

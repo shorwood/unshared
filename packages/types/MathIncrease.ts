@@ -9,24 +9,24 @@ import { MathAdd } from './MathAdd'
  */
 export type MathIncrease<N extends number> = MathAdd<N, 1>
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should increase a positive integer', () => {
+  test('should increase a positive integer', () => {
     type Result = MathIncrease<1>
     expectTypeOf<Result>().toEqualTypeOf<2>()
   })
 
-  it('should increase a negative integer', () => {
+  test('should increase a negative integer', () => {
     type Result = MathIncrease<-1>
     expectTypeOf<Result>().toEqualTypeOf<0>()
   })
 
-  it('should increase zero', () => {
+  test('should increase zero', () => {
     type Result = MathIncrease<0>
     expectTypeOf<Result>().toEqualTypeOf<1>()
   })
 
-  it('should increase number', () => {
+  test('should increase number', () => {
     type Result = MathIncrease<number>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })

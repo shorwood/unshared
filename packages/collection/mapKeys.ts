@@ -1,9 +1,9 @@
-import { Collection, IteratorFunction, IteratorPath, Get, FromEntries, MaybeLiteral } from '@unshared/types'
-import { get } from './get'
+import { Collection, FromEntries, Get, IteratorFunction, IteratorPath, MaybeLiteral } from '@unshared/types'
 import { isIterable } from './isIterable'
+import { get } from './get'
 
 type MappedKeysByPath<T, P extends string> =
-  T extends readonly unknown[] ? FromEntries<Array<[PropertyKey, unknown]> & { [K in keyof T]: [Get<T[K], P>, T[K]] }> extends infer U ? { -readonly [K in keyof U]: U[K] } : never
+  T extends readonly unknown[] ? FromEntries<{ [K in keyof T]: [Get<T[K], P>, T[K]] } & Array<[PropertyKey, unknown]>> extends infer U ? { -readonly [K in keyof U]: U[K] } : never
     : T extends Iterable<infer U> ? { [K in keyof T as Get<U, P> & PropertyKey]: U }
       : { -readonly [K in keyof T as Get<T[K], P> & PropertyKey]: T[K] }
 
@@ -50,6 +50,7 @@ export function mapKeys<T, P extends IteratorPath<T>>(collection: T, path: Maybe
  */
 export function mapKeys<T, R extends PropertyKey>(collection: T, iterator: IteratorFunction<T, R>): MappedKeysByIterator<T, R>
 export function mapKeys(collection: Collection, iteratorOrPath: IteratorFunction<unknown, PropertyKey> | string) {
+
   // --- If iterator is a string, cast as nested getter function.
   const iterator = typeof iteratorOrPath === 'function'
     ? iteratorOrPath
@@ -81,17 +82,17 @@ if (import.meta.vitest) {
   describe('path', () => {
     it('should map the keys of an object using a path', () => {
       const object = {
-        foo: { bar: { baz: 'FOO' } },
         bar: { bar: { baz: 'BAR' } },
+        foo: { bar: { baz: 'FOO' } },
       } as const
       const result = mapKeys(object, 'bar.baz')
-      expect(result).toEqual({
-        FOO: { bar: { baz: 'FOO' } },
+      expect(result).toStrictEqual({
         BAR: { bar: { baz: 'BAR' } },
+        FOO: { bar: { baz: 'FOO' } },
       })
       expectTypeOf(result).toEqualTypeOf<{
-        FOO: { readonly bar: { readonly baz: 'FOO' } }
         BAR: { readonly bar: { readonly baz: 'BAR' } }
+        FOO: { readonly bar: { readonly baz: 'FOO' } }
       }>()
     })
 
@@ -101,20 +102,20 @@ if (import.meta.vitest) {
         { bar: { baz: 'BAR' } },
       ] as const
       const result = mapKeys(array, 'bar.baz')
-      expect(result).toEqual({
-        FOO: { bar: { baz: 'FOO' } },
+      expect(result).toStrictEqual({
         BAR: { bar: { baz: 'BAR' } },
+        FOO: { bar: { baz: 'FOO' } },
       })
       expectTypeOf(result).toEqualTypeOf<{
-        FOO: { readonly bar: { readonly baz: 'FOO' } }
         BAR: { readonly bar: { readonly baz: 'BAR' } }
+        FOO: { readonly bar: { readonly baz: 'FOO' } }
       }>()
     })
 
     it('should map the keys of a Set using a path', () => {
       const set = new Set([{ foo: 'BAR' }, { foo: 'BAZ' }] as const)
       const result = mapKeys(set, 'foo')
-      expect(result).toEqual({ BAR: { foo: 'BAR' }, BAZ: { foo: 'BAZ' } })
+      expect(result).toStrictEqual({ BAR: { foo: 'BAR' }, BAZ: { foo: 'BAZ' } })
       expectTypeOf(result).toEqualTypeOf<{
         BAR: { readonly foo: 'BAR' } | { readonly foo: 'BAZ' }
         BAZ: { readonly foo: 'BAR' } | { readonly foo: 'BAZ' }
@@ -124,7 +125,7 @@ if (import.meta.vitest) {
     it('should map the keys of a Map using a path', () => {
       const map = new Map([['a', { foo: 'BAR' }], ['b', { foo: 'BAZ' }]] as const)
       const result = mapKeys(map, '1.foo')
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         BAR: ['a', { foo: 'BAR' }],
         BAZ: ['b', { foo: 'BAZ' }],
       })
@@ -140,15 +141,15 @@ if (import.meta.vitest) {
       const object = { a: 'foo', b: 'bar', c: 'baz' } as const
       const callback = vi.fn((v: string) => v.toUpperCase()) as <T extends string>(value: T) => Uppercase<T>
       const result = mapKeys(object, callback)
-      expect(result).toEqual({ FOO: 'foo', BAR: 'bar', BAZ: 'baz' })
+      expect(result).toStrictEqual({ BAR: 'bar', BAZ: 'baz', FOO: 'foo' })
       expect(callback).toHaveBeenCalledTimes(3)
       expect(callback).toHaveBeenCalledWith('foo', 'a', object)
       expect(callback).toHaveBeenCalledWith('bar', 'b', object)
       expect(callback).toHaveBeenCalledWith('baz', 'c', object)
       expectTypeOf(result).toEqualTypeOf<{
-        FOO: 'bar' | 'baz' | 'foo'
         BAR: 'bar' | 'baz' | 'foo'
         BAZ: 'bar' | 'baz' | 'foo'
+        FOO: 'bar' | 'baz' | 'foo'
       }>()
     })
 
@@ -156,15 +157,15 @@ if (import.meta.vitest) {
       const array = ['foo', 'bar', 'baz'] as const
       const callback = vi.fn((v: string) => v.toUpperCase()) as <T extends string>(value: T) => Uppercase<T>
       const result = mapKeys(array, callback)
-      expect(result).toEqual({ FOO: 'foo', BAR: 'bar', BAZ: 'baz' })
+      expect(result).toStrictEqual({ BAR: 'bar', BAZ: 'baz', FOO: 'foo' })
       expect(callback).toHaveBeenCalledTimes(3)
       expect(callback).toHaveBeenCalledWith('foo', 0, array)
       expect(callback).toHaveBeenCalledWith('bar', 1, array)
       expect(callback).toHaveBeenCalledWith('baz', 2, array)
       expectTypeOf(result).toEqualTypeOf<{
-        FOO: 'bar' | 'baz' | 'foo'
         BAR: 'bar' | 'baz' | 'foo'
         BAZ: 'bar' | 'baz' | 'foo'
+        FOO: 'bar' | 'baz' | 'foo'
       }>()
     })
 
@@ -172,15 +173,15 @@ if (import.meta.vitest) {
       const set = new Set(['foo', 'bar', 'baz'] as const)
       const callback = vi.fn((v: string) => v.toUpperCase()) as <T extends string>(value: T) => Uppercase<T>
       const result = mapKeys(set, callback)
-      expect(result).toEqual({ FOO: 'foo', BAR: 'bar', BAZ: 'baz' })
+      expect(result).toStrictEqual({ BAR: 'bar', BAZ: 'baz', FOO: 'foo' })
       expect(callback).toHaveBeenCalledTimes(3)
       expect(callback).toHaveBeenCalledWith('foo', 0, set)
       expect(callback).toHaveBeenCalledWith('bar', 1, set)
       expect(callback).toHaveBeenCalledWith('baz', 2, set)
       expectTypeOf(result).toEqualTypeOf<{
-        FOO: 'bar' | 'baz' | 'foo'
         BAR: 'bar' | 'baz' | 'foo'
         BAZ: 'bar' | 'baz' | 'foo'
+        FOO: 'bar' | 'baz' | 'foo'
       }>()
     })
 
@@ -188,15 +189,15 @@ if (import.meta.vitest) {
       const map = new Map([['a', 'foo'], ['b', 'bar'], ['c', 'baz']] as const)
       const callback = vi.fn((v: [string, string]) => v[1].toUpperCase()) as <T extends string>(value: [string, T]) => Uppercase<T>
       const result = mapKeys(map, callback)
-      expect(result).toEqual({ FOO: ['a', 'foo'], BAR: ['b', 'bar'], BAZ: ['c', 'baz'] })
+      expect(result).toStrictEqual({ BAR: ['b', 'bar'], BAZ: ['c', 'baz'], FOO: ['a', 'foo'] })
       expect(callback).toHaveBeenCalledTimes(3)
       expect(callback).toHaveBeenCalledWith(['a', 'foo'], 0, map)
       expect(callback).toHaveBeenCalledWith(['b', 'bar'], 1, map)
       expect(callback).toHaveBeenCalledWith(['c', 'baz'], 2, map)
       expectTypeOf(result).toEqualTypeOf<{
-        FOO: ['a' | 'b' | 'c', 'bar' | 'baz' | 'foo']
         BAR: ['a' | 'b' | 'c', 'bar' | 'baz' | 'foo']
         BAZ: ['a' | 'b' | 'c', 'bar' | 'baz' | 'foo']
+        FOO: ['a' | 'b' | 'c', 'bar' | 'baz' | 'foo']
       }>()
     })
   })

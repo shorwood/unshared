@@ -1,8 +1,7 @@
-/* eslint-disable unicorn/no-static-only-class */
-import { Constructor } from './Constructor'
-import { ConstructorStatics } from './ConstructorStatics'
-import { DefaultObject } from './DefaultObject'
 import { UnionMerge } from './UnionMerge'
+import { DefaultObject } from './DefaultObject'
+import { ConstructorStatics } from './ConstructorStatics'
+import { Constructor } from './Constructor'
 
 /**
  * Extends one class with another. The first class will be extended with the
@@ -25,7 +24,7 @@ export type Extends<T1 extends Constructor, T2 extends Constructor> =
 
 /** v8 ignore start */
 if (import.meta.vitest) {
-  it('should extends prototype properties from left to right', () => {
+  test('should extends prototype properties from left to right', () => {
     class A { a = 1; c = 3 }
     class B { b = 2; c = '3' }
     class Expected { a = 1; b = 2; c = 3 }
@@ -35,7 +34,7 @@ if (import.meta.vitest) {
     expectTypeOf<InstanceType<Result>>().toEqualTypeOf<InstanceType<typeof Expected>>()
   })
 
-  it('should extend static properties from left to right', () => {
+  test('should extend static properties from left to right', () => {
     class A { static a = 1 }
     class B { static b = 2 }
     class Expected { static a = 1; static b = 2 }
@@ -45,7 +44,7 @@ if (import.meta.vitest) {
     expectTypeOf<InstanceType<Result>>().toEqualTypeOf<InstanceType<typeof Expected>>()
   })
 
-  it('should override constructor parameters from left to right', () => {
+  test('should override constructor parameters from left to right', () => {
     class A { constructor(_a: number) {} }
     class B { constructor(_a: string, _b: number) {} }
     class Expected { constructor(_a: number) {} }
@@ -55,7 +54,7 @@ if (import.meta.vitest) {
     expectTypeOf<InstanceType<Result>>().toEqualTypeOf<InstanceType<typeof Expected>>()
   })
 
-  it('should override static properties from left to right', () => {
+  test('should override static properties from left to right', () => {
     class A { static a = 1; static b = 2 }
     class B { static a = true }
     class Expected { static a = true; static b = 2 }

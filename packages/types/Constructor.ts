@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-static-only-class */
 import { ConstructorStatics } from './ConstructorStatics'
 
 /**
@@ -23,7 +22,7 @@ export type Constructor<R extends object = {}, P extends any[] = any[], S extend
 
 /** v8 ignore start */
 if (import.meta.vitest) {
-  it('should build the instance properties of a class', () => {
+  test('should build the instance properties of a class', () => {
     type Result = Constructor<{ a: number }>
     class Expected { a = 1; constructor(..._: any[]) {} }
     expectTypeOf<ConstructorParameters<Result>>().toEqualTypeOf<ConstructorParameters<typeof Expected>>()
@@ -31,7 +30,7 @@ if (import.meta.vitest) {
     expectTypeOf<InstanceType<Result>>().toEqualTypeOf<InstanceType<typeof Expected>>()
   })
 
-  it('should build the parameters of a class', () => {
+  test('should build the parameters of a class', () => {
     type Result = Constructor<{}, [_a: number, _b: string]>
     class Expected { constructor(_a: number, _b: string) {} }
     expectTypeOf<ConstructorParameters<Result>>().toEqualTypeOf<ConstructorParameters<typeof Expected>>()
@@ -39,7 +38,7 @@ if (import.meta.vitest) {
     expectTypeOf<InstanceType<Result>>().toEqualTypeOf<InstanceType<typeof Expected>>()
   })
 
-  it('should build the type of a class with static properties', () => {
+  test('should build the type of a class with static properties', () => {
     type Result = Constructor<{}, [], { a: number }>
     class Expected { static a = 1 }
     expectTypeOf<ConstructorParameters<Result>>().toEqualTypeOf<ConstructorParameters<typeof Expected>>()
@@ -47,7 +46,7 @@ if (import.meta.vitest) {
     expectTypeOf<InstanceType<Result>>().toEqualTypeOf<InstanceType<typeof Expected>>()
   })
 
-  it('should build an empty class', () => {
+  test('should build an empty class', () => {
     type Result = Constructor
     class Expected { constructor(..._: any[]) {} }
     expectTypeOf<ConstructorParameters<Result>>().toEqualTypeOf<ConstructorParameters<typeof Expected>>()

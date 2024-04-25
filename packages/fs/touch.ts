@@ -1,6 +1,6 @@
-import { TimeLike } from 'node:fs'
-import { mkdir, stat, utimes, writeFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
+import { mkdir, stat, utimes, writeFile } from 'node:fs/promises'
+import { TimeLike } from 'node:fs'
 
 export interface TouchOptions {
   /**
@@ -31,8 +31,8 @@ export interface TouchOptions {
  *
  * // Check the file's access and modified times.
  * const stats = await stat('/foo/bar.txt')
- * expect(stats.atimeMs).toEqual(1000)
- * expect(stats.mtimeMs).toEqual(2000)
+ * expect(stats.atimeMs).toStrictEqual(1000)
+ * expect(stats.mtimeMs).toStrictEqual(2000)
  */
 export async function touch(path: string, options: TouchOptions = {}): Promise<void> {
   const {
@@ -55,7 +55,7 @@ export async function touch(path: string, options: TouchOptions = {}): Promise<v
   await utimes(path, accessTime, modifiedTime)
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
   const { vol } = await import('memfs')
 
@@ -63,33 +63,33 @@ if (import.meta.vitest) {
     vi.useFakeTimers()
   })
 
-  it('should create a file if it does not exist', async() => {
+  test('should create a file if it does not exist', async() => {
     await touch('/foo.txt')
     const now = Date.now() * 1000
     const stats = await stat('/foo.txt')
-    expect(stats.atimeMs).toEqual(now)
-    expect(stats.mtimeMs).toEqual(now)
+    expect(stats.atimeMs).toStrictEqual(now)
+    expect(stats.mtimeMs).toStrictEqual(now)
   })
 
-  it('should create a nested file if the parent folder does not exist', async() => {
+  test('should create a nested file if the parent folder does not exist', async() => {
     await touch('/foo/bar.txt')
     const now = Date.now() * 1000
     const stats = await stat('/foo/bar.txt')
-    expect(stats.atimeMs).toEqual(now)
-    expect(stats.mtimeMs).toEqual(now)
+    expect(stats.atimeMs).toStrictEqual(now)
+    expect(stats.mtimeMs).toStrictEqual(now)
   })
 
-  it('should update the access and modified times of an existing file', async() => {
+  test('should update the access and modified times of an existing file', async() => {
     vol.fromJSON({ '/foo.txt': 'Hello, world!' })
     await touch('/foo.txt', { accessTime: 1000 })
     const stats = await stat('/foo.txt')
-    expect(stats.atimeMs).toEqual(1000 * 1000)
+    expect(stats.atimeMs).toStrictEqual(1000 * 1000)
   })
 
-  it('should update the modified time of an existing file', async() => {
+  test('should update the modified time of an existing file', async() => {
     vol.fromJSON({ '/foo.txt': 'Hello, world!' })
     await touch('/foo.txt', { modifiedTime: 1000 })
     const stats = await stat('/foo.txt')
-    expect(stats.mtimeMs).toEqual(1000 * 1000)
+    expect(stats.mtimeMs).toStrictEqual(1000 * 1000)
   })
 }

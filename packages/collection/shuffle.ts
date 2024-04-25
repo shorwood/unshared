@@ -25,9 +25,9 @@ export function shuffle<T>(array: T[]): T[] {
   return result
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should shuffle an array', () => {
+  test('should shuffle an array', () => {
     const array = Array.from({ length: 100 }, (_, index) => index)
     const result = shuffle(array)
     expect(result).toHaveLength(100)
@@ -35,14 +35,14 @@ if (import.meta.vitest) {
       expect(result).toContain(index)
   })
 
-  it('should not modify the original array', () => {
+  test('should not modify the original array', () => {
     const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     const result = shuffle(array)
     expect(result).not.toBe(array)
-    expect(array).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    expect(array).toStrictEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
   })
 
-  it('should contain the same elements', () => {
+  test('should contain the same elements', () => {
     const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     const result = shuffle(array)
     expect(result).toHaveLength(10)
@@ -50,13 +50,13 @@ if (import.meta.vitest) {
       expect(result).toContain(index)
   })
 
-  it('should shuffle an empty array', () => {
+  test('should shuffle an empty array', () => {
     const result = shuffle([])
-    expect(result).toEqual([])
+    expect(result).toStrictEqual([])
   })
 
-  it('should shuffle an empty array with a single item', () => {
+  test('should shuffle an empty array with a single item', () => {
     const result = shuffle([1])
-    expect(result).toEqual([1])
+    expect(result).toStrictEqual([1])
   })
 }

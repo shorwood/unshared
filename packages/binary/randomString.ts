@@ -22,7 +22,7 @@ const DEFAULT_CHARACTERS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOP
  * @example randomString(8, { characters: '01', allowUnsafe: true }) // '01010101'
  */
 export function randomString(length = 16, options: RandomStringOptions = {}): string {
-  const { characters = DEFAULT_CHARACTERS, allowUnsafe } = options
+  const { allowUnsafe, characters = DEFAULT_CHARACTERS } = options
   let result = ''
 
   // --- Generate the string
@@ -36,23 +36,23 @@ export function randomString(length = 16, options: RandomStringOptions = {}): st
 
 /** v8 ignore next */
 if (import.meta.vitest) {
-  it('should return a random string with default options', () => {
+  test('should return a random string with default options', () => {
     const result = randomString()
     const every = [...result].every(c => DEFAULT_CHARACTERS.includes(c))
-    expect(every).toBe(true)
+    expect(every).toBeTruthy()
   })
 
-  it('should return a random string with custom length', () => {
+  test('should return a random string with custom length', () => {
     const result = randomString(8)
     expect(result).toMatch(/^[\dA-Za-z]{8}$/)
   })
 
-  it('should return a random string with custom characters', () => {
+  test('should return a random string with custom characters', () => {
     const result = randomString(8, { characters: '01' })
     expect(result).toMatch(/^[01]{8}$/)
   })
 
-  it('should pass the `allowUnsafe` option to `randomInt`', () => {
+  test('should pass the `allowUnsafe` option to `randomInt`', () => {
     vi.mock('./randomInt', () => ({ randomInt: vi.fn(() => 0) }))
     randomString(8, { allowUnsafe: true })
     expect(randomInt).toHaveBeenCalledWith({ allowUnsafe: true })

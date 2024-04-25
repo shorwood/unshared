@@ -1,6 +1,6 @@
-import { IteratorFunction, Get, Values, IteratorPath } from '@unshared/types'
-import { get } from './get'
+import { Get, IteratorFunction, IteratorPath, Values } from '@unshared/types'
 import { isIterable } from './isIterable'
+import { get } from './get'
 
 type MappedValuesByPath<T, P extends string> =
   T extends readonly unknown[] ? { -readonly [K in keyof T]: Get<T[K], P> }
@@ -46,6 +46,7 @@ export function mapValues<T, P extends string = string>(collection: T, path: Ite
  */
 export function mapValues<T, R>(collection: T, iterator: IteratorFunction<T, R>): MappedValuesByIterator<T, R>
 export function mapValues(collection: object, iteratorOrPath?: IteratorFunction | string) {
+
   // --- If iterator is a value, cast as nested getter function.
   const iterator = typeof iteratorOrPath === 'function'
     ? iteratorOrPath
@@ -62,52 +63,52 @@ export function mapValues(collection: object, iteratorOrPath?: IteratorFunction 
   return Object.fromEntries(entries)
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
   describe('path', () => {
     it('should map the values of an object by path', () => {
       const object = { a: { foo: { bar: 'baz' } }, b: { foo: { bar: 'qux' } } } as const
       const result = mapValues(object, 'foo.bar')
-      expect(result).toEqual({ a: 'baz', b: 'qux' })
+      expect(result).toStrictEqual({ a: 'baz', b: 'qux' })
       expectTypeOf(result).toEqualTypeOf<{ a: 'baz'; b: 'qux' }>()
     })
 
     it('should map the values of an array by path', () => {
       const array = [{ foo: { bar: 'baz' } }, { foo: { bar: 'qux' } }] as const
       const result = mapValues(array, 'foo.bar')
-      expect(result).toEqual(['baz', 'qux'])
+      expect(result).toStrictEqual(['baz', 'qux'])
       expectTypeOf(result).toEqualTypeOf<['baz', 'qux']>()
     })
 
     it('should map the values of a Set by path', () => {
       const set = new Set([{ foo: 'bar' }, { foo: 'baz' }])
       const result = mapValues(set, 'foo')
-      expect(result).toEqual(['bar', 'baz'])
+      expect(result).toStrictEqual(['bar', 'baz'])
       expectTypeOf(result).toEqualTypeOf<string[]>()
     })
 
     it('should map the values of a Map by path', () => {
       const map = new Map([['a', { foo: 'bar' }], ['b', { foo: 'baz' }]])
       const result = mapValues(map, '1.foo')
-      expect(result).toEqual(['bar', 'baz'])
+      expect(result).toStrictEqual(['bar', 'baz'])
       expectTypeOf(result).toEqualTypeOf<string[]>()
     })
   })
 
   describe('iterator', () => {
     it('should map the values of an object using a predicator function', () => {
-      const object = { foo: 1, bar: 2, baz: 3 } as const
+      const object = { bar: 2, baz: 3, foo: 1 } as const
       const callback = vi.fn((v: number) => v.toString()) as <N extends number>(value: N) => `${N}`
-      const result = mapValues({ foo: 1, bar: 2, baz: 3 } as const, callback)
-      expect(result).toEqual({ foo: '1', bar: '2', baz: '3' })
+      const result = mapValues({ bar: 2, baz: 3, foo: 1 } as const, callback)
+      expect(result).toStrictEqual({ bar: '2', baz: '3', foo: '1' })
       expect(callback).toHaveBeenCalledTimes(3)
       expect(callback).toHaveBeenCalledWith(1, 'foo', object)
       expect(callback).toHaveBeenCalledWith(2, 'bar', object)
       expect(callback).toHaveBeenCalledWith(3, 'baz', object)
       expectTypeOf(result).toEqualTypeOf<{
-        foo: '1' | '2' | '3'
         bar: '1' | '2' | '3'
         baz: '1' | '2' | '3'
+        foo: '1' | '2' | '3'
       }>()
     })
 
@@ -115,7 +116,7 @@ if (import.meta.vitest) {
       const array = [1, 2, 3] as const
       const callback = vi.fn((v: number) => v.toString()) as <N extends number>(value: N) => `${N}`
       const result = mapValues(array, callback)
-      expect(result).toEqual(['1', '2', '3'])
+      expect(result).toStrictEqual(['1', '2', '3'])
       expect(callback).toHaveBeenCalledTimes(3)
       expect(callback).toHaveBeenCalledWith(1, 0, array)
       expect(callback).toHaveBeenCalledWith(2, 1, array)
@@ -131,7 +132,7 @@ if (import.meta.vitest) {
       const set = new Set([1, 2, 3])
       const callback = vi.fn((v: number) => v.toString()) as <N extends number>(value: N) => `${N}`
       const result = mapValues(set, callback)
-      expect(result).toEqual(['1', '2', '3'])
+      expect(result).toStrictEqual(['1', '2', '3'])
       expect(callback).toHaveBeenCalledTimes(3)
       expect(callback).toHaveBeenCalledWith(1, 0, set)
       expect(callback).toHaveBeenCalledWith(2, 1, set)
@@ -143,7 +144,7 @@ if (import.meta.vitest) {
       const map = new Map([['a', 1], ['b', 2], ['c', 3]])
       const callback = vi.fn((v: [string, number]) => v[1].toString()) as <N extends number>(v: [string, N]) => `${N}`
       const result = mapValues(map, callback)
-      expect(result).toEqual(['1', '2', '3'])
+      expect(result).toStrictEqual(['1', '2', '3'])
       expect(callback).toHaveBeenCalledTimes(3)
       expect(callback).toHaveBeenCalledWith(['a', 1], 0, map)
       expect(callback).toHaveBeenCalledWith(['b', 2], 1, map)

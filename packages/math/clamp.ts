@@ -17,29 +17,29 @@ export function clamp(number: number, min: number, max: number): number {
   return number
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should be in range', () => {
+  test('should be in range', () => {
     const result = clamp(5, 0, 10)
-    expect(result).toEqual(5)
+    expect(result).toBe(5)
   })
 
-  it('should clamp to a positive number', () => {
+  test('should clamp to a positive number', () => {
     const result = clamp(30, 0, 20)
-    expect(result).toEqual(20)
+    expect(result).toBe(20)
   })
 
-  it('should clamp to a negative number', () => {
+  test('should clamp to a negative number', () => {
     const result = clamp(-20, -10, 10)
-    expect(result).toEqual(-10)
+    expect(result).toBe(-10)
   })
 
-  it('should clamp to a positive zero', () => {
+  test('should clamp to a positive zero', () => {
     const result = clamp(-0, -10, 0)
-    expect(result).toEqual(0)
+    expect(result).toBe(0)
   })
 
-  it('should throw an error if min is greater than max', () => {
+  test('should throw an error if min is greater than max', () => {
     const shouldThrow = () => clamp(0, 10, 0)
     expect(shouldThrow).toThrow(RangeError)
     expect(shouldThrow).toThrow('Expected the minimum value to be less than or equal to the maximum value')

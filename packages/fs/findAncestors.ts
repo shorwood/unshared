@@ -1,7 +1,7 @@
-import { access, constants } from 'node:fs/promises'
-import { dirname, resolve } from 'node:path'
 import { cwd } from 'node:process'
-import { awaitable, Awaitable } from '@unshared/functions/awaitable'
+import { dirname, resolve } from 'node:path'
+import { access, constants } from 'node:fs/promises'
+import { Awaitable, awaitable } from '@unshared/functions/awaitable'
 
 /**
  * Find all ancestors of a file from a given path. The search will start
@@ -44,16 +44,16 @@ export function findAncestors(name: string, from: string = cwd()): Awaitable<Asy
 if (import.meta.vitest) {
   const { vol } = await import('memfs')
 
-  it('should resolve ancestors from current directory', async() => {
+  test('should resolve ancestors from current directory', async() => {
     vi.mock('node:process', () => ({ cwd: () => '/home/user/project' }))
     vol.fromJSON({
-      '/home/user/project/file': '',
-      '/home/user/file': '',
-      '/home/file': '',
       '/file': '',
+      '/home/file': '',
+      '/home/user/file': '',
+      '/home/user/project/file': '',
     })
     const result = await findAncestors('file')
-    expect(result).toEqual([
+    expect(result).toStrictEqual([
       '/home/user/project/file',
       '/home/user/file',
       '/home/file',
@@ -61,15 +61,15 @@ if (import.meta.vitest) {
     ])
   })
 
-  it('should resolve ancestors at from given directory', async() => {
+  test('should resolve ancestors at from given directory', async() => {
     vol.fromJSON({
-      '/home/user/project/file': '',
-      '/home/user/file': '',
-      '/home/file': '',
       '/file': '',
+      '/home/file': '',
+      '/home/user/file': '',
+      '/home/user/project/file': '',
     })
     const result = await findAncestors('file', '/home/user/project')
-    expect(result).toEqual([
+    expect(result).toStrictEqual([
       '/home/user/project/file',
       '/home/user/file',
       '/home/file',
@@ -77,17 +77,17 @@ if (import.meta.vitest) {
     ])
   })
 
-  it('should be iterable', async() => {
+  test('should be iterable', async() => {
     vol.fromJSON({
-      '/home/user/project/file': '',
-      '/home/user/file': '',
-      '/home/file': '',
       '/file': '',
+      '/home/file': '',
+      '/home/user/file': '',
+      '/home/user/project/file': '',
     })
     const result = findAncestors('file', '/home/user/project')
     const items = []
     for await (const item of result) items.push(item)
-    expect(items).toEqual([
+    expect(items).toStrictEqual([
       '/home/user/project/file',
       '/home/user/file',
       '/home/file',
@@ -95,8 +95,8 @@ if (import.meta.vitest) {
     ])
   })
 
-  it('should return empty array if no ancestors were found', async() => {
+  test('should return empty array if no ancestors were found', async() => {
     const result = await findAncestors('filename')
-    expect(result).toEqual([])
+    expect(result).toStrictEqual([])
   })
 }

@@ -2,17 +2,17 @@ import { Optional } from '@unshared/types'
 
 export interface CollapseOptions {
   /**
-   * Keep `null` properties in the collection.
-   *
-   * @default false
-   */
-  keepNull?: boolean
-  /**
    * Keep empty objects in the collection.
    *
    * @default false
    */
   keepEmptyObjects?: boolean
+  /**
+   * Keep `null` properties in the collection.
+   *
+   * @default false
+   */
+  keepNull?: boolean
   /**
    * Keep the keys of empty objects in the collection, meaning
    * it wont delete the key from the object, but set it to `undefined`.
@@ -37,6 +37,7 @@ export interface CollapseOptions {
  * type CollapsedCollection = Collapsed<Collection> // { a: string } | undefined
  */
 export type Collapsed<T, O extends CollapseOptions = {}> =
+
   // --- If value is `null` or `undefined`, discard it.
   T extends null ? O['keepNull'] extends true ? T : undefined
     : T extends undefined ? undefined
@@ -88,8 +89,8 @@ export type Collapsed<T, O extends CollapseOptions = {}> =
 export function collapse<T, O extends CollapseOptions>(object: T, options?: O): Collapsed<T, O>
 export function collapse(object?: unknown, options: CollapseOptions = {}) {
   const {
-    keepNull = false,
     keepEmptyObjects = false,
+    keepNull = false,
     keepPropertyKeys = false,
   } = options
 
@@ -100,6 +101,7 @@ export function collapse(object?: unknown, options: CollapseOptions = {}) {
   // --- Recursively collapse the collection if it's an object.
   if (typeof object === 'object' && object !== null && !Array.isArray(object)) {
     for (const key in object) {
+
       // @ts-expect-error: We know the key exists.
       object[key] = collapse(object[key], options) as unknown
 
@@ -130,7 +132,7 @@ if (import.meta.vitest) {
     it('should collapse null values', () => {
       // eslint-disable-next-line unicorn/no-null
       const result = collapse(null)
-      expect(result).toEqual(undefined)
+      expect(result).toBeUndefined()
       expectTypeOf(result).toEqualTypeOf<undefined>()
     })
 
@@ -138,35 +140,35 @@ if (import.meta.vitest) {
       // eslint-disable-next-line unicorn/no-null
       const result = collapse({ a: null }, { keepNull: true })
       // eslint-disable-next-line unicorn/no-null
-      expect(result).toEqual({ a: null })
+      expect(result).toStrictEqual({ a: null })
       expectTypeOf(result).toEqualTypeOf<{ a: null }>()
     })
 
     it('should collapse nested null values recursively', () => {
       // eslint-disable-next-line unicorn/no-null
       const result = collapse({ a: null })
-      expect(result).toEqual(undefined)
+      expect(result).toBeUndefined()
       expectTypeOf(result).toEqualTypeOf<undefined>()
     })
 
     it('should partially collapse nested null values', () => {
       // eslint-disable-next-line unicorn/no-null
       const result = collapse({ a: null, b: { c: null } })
-      expect(result).toEqual(undefined)
+      expect(result).toBeUndefined()
       expectTypeOf(result).toEqualTypeOf<undefined>()
     })
 
     it('should collapse nested null values recursively but keep the keys', () => {
       // eslint-disable-next-line unicorn/no-null
       const result = collapse({ a: null }, { keepPropertyKeys: true })
-      expect(result).toEqual({ a: undefined })
+      expect(result).toStrictEqual({ a: undefined })
       expectTypeOf(result).toEqualTypeOf<{ a: undefined } | undefined>()
     })
 
     it('should maybe collapse null values', () => {
       // eslint-disable-next-line unicorn/no-null
-      const result = collapse({ a: null as string | null })
-      expect(result).toEqual(undefined)
+      const result = collapse({ a: null as null | string })
+      expect(result).toBeUndefined()
       expectTypeOf(result).toEqualTypeOf<{ a: string } | undefined>()
     })
   })
@@ -175,24 +177,24 @@ if (import.meta.vitest) {
     it('should collapse undefined values', () => {
       // eslint-disable-next-line unicorn/no-useless-undefined
       const result = collapse(undefined)
-      expect(result).toEqual(undefined)
+      expect(result).toBeUndefined()
       expectTypeOf(result).toEqualTypeOf<undefined>()
     })
 
     it('should collapse properties with undefined values', () => {
       const result = collapse({ a: undefined })
-      expect(result).toEqual(undefined)
+      expect(result).toBeUndefined()
       expectTypeOf(result).toEqualTypeOf<undefined>()
     })
 
     it('should replace undefined values with undefined', () => {
       const result = collapse({ a: undefined }, { keepPropertyKeys: true })
-      expect(result).toEqual({ a: undefined })
+      expect(result).toStrictEqual({ a: undefined })
     })
 
     it('should maybe collapse undefined values', () => {
       const result = collapse({ a: undefined as string | undefined })
-      expect(result).toEqual(undefined)
+      expect(result).toBeUndefined()
       expectTypeOf(result).toEqualTypeOf<{ a: string } | undefined>()
     })
   })
@@ -200,13 +202,13 @@ if (import.meta.vitest) {
   describe('arrays', () => {
     it('should keep nested arrays with values', () => {
       const result = collapse({ a: [1, 2, 3] as number[] })
-      expect(result).toEqual({ a: [1, 2, 3] })
+      expect(result).toStrictEqual({ a: [1, 2, 3] })
       expectTypeOf(result).toEqualTypeOf<{ a: number[] }>()
     })
 
     it('should not collapse empty array values', () => {
       const result = collapse([])
-      expect(result).toEqual([])
+      expect(result).toStrictEqual([])
       expectTypeOf(result).toEqualTypeOf<never[]>()
     })
   })
@@ -214,43 +216,43 @@ if (import.meta.vitest) {
   describe('objects', () => {
     it('should keep nested objects with values', () => {
       const result = collapse({ a: { b: 1 } }, { keepEmptyObjects: true })
-      expect(result).toEqual({ a: { b: 1 } })
+      expect(result).toStrictEqual({ a: { b: 1 } })
       expectTypeOf(result).toEqualTypeOf<{ a: { b: number } }>()
     })
 
     it('should collapse empty objects values', () => {
       const result = collapse({})
-      expect(result).toEqual(undefined)
+      expect(result).toBeUndefined()
       expectTypeOf(result).toEqualTypeOf<undefined>()
     })
 
     it('should not collapse nested empty objects values when keepEmptyObjects is true', () => {
       const result = collapse({ a: {} }, { keepEmptyObjects: true })
-      expect(result).toEqual({ a: {} })
+      expect(result).toStrictEqual({ a: {} })
       expectTypeOf(result).toEqualTypeOf<{ a: {} }>()
     })
 
     it('should collapse nested empty objects values', () => {
       const result = collapse({ a: {} })
-      expect(result).toEqual(undefined)
+      expect(result).toBeUndefined()
       expectTypeOf(result).toEqualTypeOf<undefined>()
     })
 
     it('should collapse nested empty objects values recursively', () => {
       const result = collapse({ a: {}, b: { c: {} } })
-      expect(result).toEqual(undefined)
+      expect(result).toBeUndefined()
       expectTypeOf(result).toEqualTypeOf<undefined>()
     })
 
     it('should collapse empty objects but keep the keys', () => {
       const result = collapse({ a: {} }, { keepPropertyKeys: true })
-      expect(result).toEqual({ a: undefined })
+      expect(result).toStrictEqual({ a: undefined })
       expectTypeOf(result).toEqualTypeOf<{ a: undefined } | undefined>()
     })
 
     it('should maybe collapse empty objects values', () => {
       const result = collapse({ a: {} as Record<string, string> })
-      expect(result).toEqual(undefined)
+      expect(result).toBeUndefined()
       expectTypeOf(result).toEqualTypeOf<{ a: Record<string, string> } | undefined>()
     })
   })
@@ -258,32 +260,32 @@ if (import.meta.vitest) {
   describe('recursion', () => {
     it('should keep nested falsey values', () => {
       const result = collapse({ a: { b: 0 } })
-      expect(result).toEqual({ a: { b: 0 } })
+      expect(result).toStrictEqual({ a: { b: 0 } })
       expectTypeOf(result).toEqualTypeOf<{ a: { b: number } }>()
     })
 
     it('should recursively collapse objects', () => {
       const result = collapse({
         withArrays: { a: [], keep: true },
-        withObjects: { a: {}, keep: true },
+        withNestedArrays: { a: [{ b: [] }], keep: true },
         // eslint-disable-next-line unicorn/no-null
         withNull: { a: null, keep: true },
+        withObjects: { a: {}, keep: true },
         withUndefined: { a: undefined, keep: true },
-        withNestedArrays: { a: [{ b: [] }], keep: true },
       })
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         withArrays: { a: [], keep: true },
-        withObjects: { keep: true },
-        withNull: { keep: true },
-        withUndefined: { keep: true },
         withNestedArrays: { a: [{ b: [] }], keep: true },
+        withNull: { keep: true },
+        withObjects: { keep: true },
+        withUndefined: { keep: true },
       })
       expectTypeOf(result).toEqualTypeOf<{
         withArrays: { a: never[]; keep: boolean }
-        withObjects: { keep: boolean }
-        withNull: { keep: boolean }
-        withUndefined: { keep: boolean }
         withNestedArrays: { a: Array<{ b: never[] }>; keep: boolean }
+        withNull: { keep: boolean }
+        withObjects: { keep: boolean }
+        withUndefined: { keep: boolean }
       }>()
     })
   })

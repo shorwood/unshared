@@ -8,7 +8,7 @@ import { Function } from '@unshared/types'
  * @template T The type of the function.
  * @example Once<() => number> // => () => number & { reset: () => void }
  */
-export type Once<T extends Function = Function> = T & { reset: () => void }
+export type Once<T extends Function = Function> = { reset: () => void } & T
 
 /**
  * Returns a function that will be executed at most one time, no matter how
@@ -59,7 +59,7 @@ export function once<T extends Function>(fn: T): Once<T> {
 
 /** v8 ignore start */
 if (import.meta.vitest) {
-  it('should only call the function once', () => {
+  test('should only call the function once', () => {
     const fn = vi.fn()
     const wrapped = once(fn)
     wrapped()
@@ -68,30 +68,30 @@ if (import.meta.vitest) {
     expect(fn).toHaveBeenCalledOnce()
   })
 
-  it('should always return the same result', () => {
+  test('should always return the same result', () => {
     const wrapped = once(Math.random)
     const resultFirst = wrapped()
     const resultSecond = wrapped()
     const resultThird = wrapped()
-    expect(resultFirst).toEqual(resultSecond)
-    expect(resultSecond).toEqual(resultThird)
+    expect(resultFirst).toStrictEqual(resultSecond)
+    expect(resultSecond).toStrictEqual(resultThird)
     expectTypeOf(wrapped).toEqualTypeOf<(() => number) & { reset: () => void }>()
   })
 
-  it('should take parameters but ignore them after the first call', () => {
+  test('should take parameters but ignore them after the first call', () => {
     const fn = vi.fn((n: number) => n)
     const wrapped = once(fn)
     const resultFirst = wrapped(1)
     const resultSecond = wrapped(2)
     const resultThird = wrapped(3)
-    expect(resultFirst).toEqual(1)
-    expect(resultSecond).toEqual(1)
-    expect(resultThird).toEqual(1)
+    expect(resultFirst).toBe(1)
+    expect(resultSecond).toBe(1)
+    expect(resultThird).toBe(1)
     expect(fn).toHaveBeenCalledOnce()
     expect(fn).toHaveBeenCalledWith(1)
   })
 
-  it('should call the function again after reset', () => {
+  test('should call the function again after reset', () => {
     const fn = vi.fn()
     const wrapped = once(fn)
     wrapped()
@@ -100,20 +100,20 @@ if (import.meta.vitest) {
     expect(fn).toHaveBeenCalledTimes(2)
   })
 
-  it('should preserve the `this` context when calling the function', () => {
+  test('should preserve the `this` context when calling the function', () => {
     const context = { value: 42 }
     const fn = vi.fn(function(this: typeof context) {
       return this.value
     })
     const wrapped = once(fn)
     const result = wrapped.call(context)
-    expect(result).toEqual(42)
+    expect(result).toBe(42)
   })
 
-  it('should return different results for different `this` contexts', () => {
+  test('should return different results for different `this` contexts', () => {
     const wrapped = once(Math.random)
     const result1 = wrapped.call({})
     const result2 = wrapped.call({})
-    expect(result1).not.toEqual(result2)
+    expect(result1).not.toStrictEqual(result2)
   })
 }

@@ -1,5 +1,5 @@
-import { throttle } from '@unshared/functions/throttle'
 import { Function, MethodDecorator } from '@unshared/types'
+import { throttle } from '@unshared/functions/throttle'
 
 /**
  * Throttle a method so that it will only execute once every specified delay.
@@ -37,11 +37,9 @@ export function Throttle<T extends Function<void>>(delay: number): MethodDecorat
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  beforeAll(() => {
-    vi.useFakeTimers()
-  })
+  beforeEach(() => vi.useFakeTimers)
 
-  it('should call the function immediately', () => {
+  test('should call the function immediately', () => {
     const fn = vi.fn()
     class Greeter { @Throttle(100) fn() { fn() } }
     const instance = new Greeter()
@@ -49,7 +47,7 @@ if (import.meta.vitest) {
     expect(fn).toHaveBeenCalledTimes(1)
   })
 
-  it('should not call the function more than once within the delay', () => {
+  test('should not call the function more than once within the delay', () => {
     const fn = vi.fn()
     class Greeter { @Throttle(100) fn() { fn() } }
     const instance = new Greeter()
@@ -60,7 +58,7 @@ if (import.meta.vitest) {
     expect(fn).toHaveBeenCalledTimes(1)
   })
 
-  it('should pass the parameters of the first call to the function', () => {
+  test('should pass the parameters of the first call to the function', () => {
     const fn = vi.fn()
     class Greeter { @Throttle(10) fn(name: string) { fn(name) } }
     const instance = new Greeter()
@@ -71,7 +69,7 @@ if (import.meta.vitest) {
     expect(fn).toHaveBeenCalledWith('Alice')
   })
 
-  it('should call the function again after the delay has passed', () => {
+  test('should call the function again after the delay has passed', () => {
     const fn = vi.fn()
     class Greeter { @Throttle(100) fn() { fn() } }
     const instance = new Greeter()
@@ -82,7 +80,7 @@ if (import.meta.vitest) {
     expect(fn).toHaveBeenCalledTimes(2)
   })
 
-  it('should return undefined', () => {
+  test('should return undefined', () => {
     const fn = vi.fn(() => 'foobar')
     class Greeter { @Throttle(100) fn() { return fn() } }
     const instance = new Greeter()

@@ -1,5 +1,5 @@
-export * from './and'
 export * from './Boolean'
+export * from './and'
 export * from './createBoolean'
 export * from './nand'
 export * from './nor'

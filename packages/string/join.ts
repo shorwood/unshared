@@ -12,15 +12,15 @@ export function join(values: string[], separator = ''): string {
   return values.join(separator)
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should join an array of strings', () => {
+  test('should join an array of strings', () => {
     const result = join(['a', 'b', 'c'], ',')
-    expect(result).toEqual('a,b,c')
+    expect(result).toBe('a,b,c')
   })
 
-  it('should join an array of strings with no separator', () => {
+  test('should join an array of strings with no separator', () => {
     const result = join(['a', 'b', 'c'])
-    expect(result).toEqual('abc')
+    expect(result).toBe('abc')
   })
 }

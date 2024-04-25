@@ -12,18 +12,14 @@ export type SemverComponents = 'build' | 'major' | 'minor' | 'patch' | 'prerelea
  */
 export class Semver {
   /**
-   * Create a new `Semver` instance from the given semver object.
+   * The build version number. Build versions are used to identify the build
+   * number of a version. This number is incremented when a new version
+   * contains bug fixes. This number is reset to 0 when the minor or major
+   * version number is incremented.
    *
-   * @param semver A object that defines the components of a sementic version.
-   * @example new Semver({ major: 1 }) // '1.0.0'
+   * @example 'build.0'
    */
-  constructor(semver: Partial<Semver> = {}) {
-    if (semver.major !== undefined) this.major = semver.major
-    if (semver.minor !== undefined) this.minor = semver.minor
-    if (semver.patch !== undefined) this.patch = semver.patch
-    if (semver.prerelease !== undefined) this.prerelease = semver.prerelease
-    if (semver.build !== undefined) this.build = semver.build
-  }
+  build?: string = undefined
 
   /**
    * The major version number. This number is incremented when a new version
@@ -62,14 +58,18 @@ export class Semver {
   prerelease?: string = undefined
 
   /**
-   * The build version number. Build versions are used to identify the build
-   * number of a version. This number is incremented when a new version
-   * contains bug fixes. This number is reset to 0 when the minor or major
-   * version number is incremented.
+   * Create a new `Semver` instance from the given semver object.
    *
-   * @example 'build.0'
+   * @param semver A object that defines the components of a sementic version.
+   * @example new Semver({ major: 1 }) // '1.0.0'
    */
-  build?: string = undefined
+  constructor(semver: Partial<Semver> = {}) {
+    if (semver.major !== undefined) this.major = semver.major
+    if (semver.minor !== undefined) this.minor = semver.minor
+    if (semver.patch !== undefined) this.patch = semver.patch
+    if (semver.prerelease !== undefined) this.prerelease = semver.prerelease
+    if (semver.build !== undefined) this.build = semver.build
+  }
 
   /**
    * Parse a semver string into a [Semver](https://en.wikipedia.org/wiki/Software_versioning) object.
@@ -82,11 +82,11 @@ export class Semver {
     const match = version.match(SEMVER_REGEXP)
     if (!match) throw new Error(`Invalid semver version: ${version}`)
     return new Semver({
+      build: match.groups!.buildmetadata,
       major: Number.parseInt(match.groups!.major, 10),
       minor: Number.parseInt(match.groups!.minor, 10),
       patch: Number.parseInt(match.groups!.patch, 10),
       prerelease: match.groups!.prerelease,
-      build: match.groups!.buildmetadata,
     })
   }
 
@@ -106,10 +106,10 @@ export class Semver {
   bump<N extends number>(component: 'major' | 'minor' | 'patch', value?: NumberIntegerPositive<N>): Semver
   bump<N extends number>(component: SemverComponents, value?: NumberIntegerPositive<N>): Semver
   bump(component: string, value?: number | string): Semver {
-    let { major, minor, patch, prerelease, build } = this
+    let { build, major, minor, patch, prerelease } = this
 
     // --- If a value is provided, set the component to the given value.
-    if (value !== undefined) return new Semver({ major, minor, patch, prerelease, build, [component]: value })
+    if (value !== undefined) return new Semver({ build, [component]: value, major, minor, patch, prerelease })
 
     // --- Bump the component.
     if (component === 'major') { major += 1; minor = 0; patch = 0; prerelease = undefined; build = undefined }
@@ -121,21 +121,7 @@ export class Semver {
       throw new Error(`You must provide a value when bumping the ${component} component.`)
 
     // --- Return the bumped semver.
-    return new Semver({ major, minor, patch, prerelease, build })
-  }
-
-  /**
-   * Return a string representation of the Sementic Version.
-   *
-   * @returns A string representation of the Sementic Version.
-   * @example new Semver({ major: 1 }).stringify() // '1.0.0'
-   */
-  toString(): string {
-    const { major, minor, patch, prerelease, build } = this
-    const version = `${major}.${minor}.${patch}`
-    const prereleaseString = prerelease ? `-${prerelease}` : ''
-    const buildString = build ? `+${build}` : ''
-    return `${version}${prereleaseString}${buildString}`
+    return new Semver({ build, major, minor, patch, prerelease })
   }
 
   /**
@@ -147,6 +133,7 @@ export class Semver {
    * @example new Semver({ major: 1 }).satisfies('>=1.0.0') // true
    */
   satisfies(range: string): boolean {
+
     // --- Get the comparison operator and the version to compare.
     const rangeMatch = range.match(/^(>=|<=|>|<|=|\^|~)?\s*(.*)$/)
     if (!rangeMatch) throw new Error(`Invalid semver range: ${range}`)
@@ -192,6 +179,20 @@ export class Semver {
     // --- Temporary return `true`.
     return true
   }
+
+  /**
+   * Return a string representation of the Sementic Version.
+   *
+   * @returns A string representation of the Sementic Version.
+   * @example new Semver({ major: 1 }).stringify() // '1.0.0'
+   */
+  toString(): string {
+    const { build, major, minor, patch, prerelease } = this
+    const version = `${major}.${minor}.${patch}`
+    const prereleaseString = prerelease ? `-${prerelease}` : ''
+    const buildString = build ? `+${build}` : ''
+    return `${version}${prereleaseString}${buildString}`
+  }
 }
 
 /**
@@ -215,58 +216,59 @@ export function createSemver(semver?: Partial<Semver> | string): Semver {
   return typeof semver === 'string' ? Semver.parse(semver) : new Semver(semver)
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
   const semverString = '1.2.3-alpha4+build5'
-  const semverObject = { major: 1, minor: 2, patch: 3, prerelease: 'alpha4', build: 'build5' }
+  const semverObject = { build: 'build5', major: 1, minor: 2, patch: 3, prerelease: 'alpha4' }
 
-  it('should create a Semver instance with default values', () => {
+  test('should create a Semver instance with default values', () => {
     const version = createSemver()
-    const expected = new Semver({ major: 0, minor: 0, patch: 0, prerelease: undefined, build: undefined })
-    expect(version).toEqual(expected)
+    const expected = new Semver({ build: undefined, major: 0, minor: 0, patch: 0, prerelease: undefined })
+    expect(version).toStrictEqual(expected)
   })
 
-  it('should create a Semver instance from the given object', () => {
+  test('should create a Semver instance from the given object', () => {
     const version = createSemver(semverObject)
-    expect(version).toEqual(semverObject)
+    expect(version).toMatchObject(semverObject)
   })
 
-  it('should create a Semver instance from parsing the given string', () => {
+  test('should create a Semver instance from parsing the given string', () => {
     const version = createSemver(semverString)
-    expect(version).toEqual(semverObject)
+    expect(version).toMatchObject(semverObject)
   })
 
-  it('should throw an error when parsing an invalid semver string', () => {
+  test('should throw an error when parsing an invalid semver string', () => {
     const shouldThrow = () => createSemver('invalid')
-    expect(shouldThrow).toThrowError()
+    expect(shouldThrow).toThrow('Invalid semver version: invalid')
   })
 
-  it('should bump the major component', () => {
+  test('should bump the major component', () => {
     const version = createSemver(semverString).bump('major')
-    expect(version).toEqual({ major: 2, minor: 0, patch: 0, prerelease: undefined, build: undefined })
+    expect(version).toMatchObject({ build: undefined, major: 2, minor: 0, patch: 0, prerelease: undefined })
   })
 
-  it('should bump the minor component', () => {
+  test('should bump the minor component', () => {
     const version = createSemver(semverString).bump('minor')
-    expect(version).toEqual({ major: 1, minor: 3, patch: 0, prerelease: undefined, build: undefined })
+    expect(version).toMatchObject({ build: undefined, major: 1, minor: 3, patch: 0, prerelease: undefined })
   })
 
-  it('should bump the patch component', () => {
+  test('should bump the patch component', () => {
     const version = createSemver(semverString).bump('patch')
-    expect(version).toEqual({ major: 1, minor: 2, patch: 4, prerelease: undefined, build: undefined })
+    expect(version).toMatchObject({ build: undefined, major: 1, minor: 2, patch: 4, prerelease: undefined })
   })
 
-  it('should set a component to the given value', () => {
+  test('should set a component to the given value', () => {
     const version = createSemver(semverString).bump('prerelease', 'beta')
-    expect(version).toEqual({ major: 1, minor: 2, patch: 3, prerelease: 'beta', build: 'build5' })
+    expect(version).toMatchObject({ build: 'build5', major: 1, minor: 2, patch: 3, prerelease: 'alpha4' })
   })
 
-  it('should stringify the semver', () => {
+  test('should stringify the semver', () => {
     const version = createSemver(semverString).toString()
-    expect(version).toEqual(semverString)
+    expect(version).toStrictEqual(semverString)
   })
 
-  it.each([
+  test.each([
+
     // --- Operator ">="
     ['1.0.0', '>=1.0.0', true],
     ['1.0.1', '>=1.0.0', true],
@@ -325,6 +327,6 @@ if (import.meta.vitest) {
 
   ])('should check if %s satisfies %s and return %s', (version: string, range: string, expected: boolean) => {
     const result = createSemver(version).satisfies(range)
-    expect(result).toEqual(expected)
+    expect(result).toStrictEqual(expected)
   })
 }

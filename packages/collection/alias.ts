@@ -1,7 +1,7 @@
 import { Fallback, Get, Path } from '@unshared/types'
-import { deleteProperty } from './deleteProperty'
-import { get } from './get'
 import { set } from './set'
+import { get } from './get'
+import { deleteProperty } from './deleteProperty'
 
 /**
  * A map of aliases to use for the collection.
@@ -10,7 +10,7 @@ import { set } from './set'
  * @returns A map of aliases to use for the collection.
  * @example AliasMap<{ abc: 'a.b.c' }> // { abc: 'a.b.c' }
  */
-export type AliasMap<T extends object = object> = Record<string, Path<T> | (string & {})>
+export type AliasMap<T extends object = object> = Record<string, ({} & string) | Path<T>>
 
 /**
  * Map nested properties to top-level properties. Allows for easier access to nested
@@ -46,9 +46,9 @@ export type AliasMap<T extends object = object> = Record<string, Path<T> | (stri
  * }
  */
 export type Aliased<T extends object, A extends AliasMap<T>> =
-  T & {
+  {
     -readonly [K in keyof A]-?: Fallback<Get<T, A[K]>, unknown>
-  }
+  } & T
 
 /**
  * Wrap a collection in a `Proxy` that will map nested properties to top-level. Allows for
@@ -87,12 +87,28 @@ export function alias<U extends object>(object: object, aliases: AliasMap): U
 export function alias(object: object, aliases: AliasMap) {
   return new Proxy(object, {
 
+    // --- Deleting an aliased property will delete the real property.
+    deleteProperty(target, property) {
+      const aliasedProperty = aliases[property as string]
+      if (typeof aliasedProperty !== 'string')
+        return Reflect.deleteProperty(target, property)
+      deleteProperty(target, aliasedProperty)
+      return true
+    },
+
     // --- Getting an aliased property will get the real property.
     get(target, property, receiver) {
       const aliasedProperty = aliases[property as string]
       if (typeof aliasedProperty !== 'string')
-        return Reflect.get(target, property, receiver)
+        return Reflect.get(target, property, receiver) as unknown
       return get(target, aliasedProperty)
+    },
+
+    // --- Expose the aliased properties keys.
+    ownKeys(target) {
+      const keys = Reflect.ownKeys(target)
+      const aliasedKeys = Object.keys(aliases)
+      return [...keys, ...aliasedKeys]
     },
 
     // --- Setting an aliased property will set the real property.
@@ -104,52 +120,36 @@ export function alias(object: object, aliases: AliasMap) {
       return true
     },
 
-    // --- Deleting an aliased property will delete the real property.
-    deleteProperty(target, property) {
-      const aliasedProperty = aliases[property as string]
-      if (typeof aliasedProperty !== 'string')
-        return Reflect.deleteProperty(target, property)
-      deleteProperty(target, aliasedProperty)
-      return true
-    },
-
-    // --- Expose the aliased properties keys.
-    ownKeys(target) {
-      const keys = Reflect.ownKeys(target)
-      const aliasedKeys = Object.keys(aliases)
-      return [...keys, ...aliasedKeys]
-    },
-
   })
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
   describe('alias', () => {
     it('should get the value of a nested aliased property', () => {
       const result = alias({ a: { b: { c: 1 } } }, { abc: 'a.b.c' } as const)
-      expect(result.abc).toEqual(1)
+      expect(result.abc).toBe(1)
       expectTypeOf(result.abc).toEqualTypeOf<number>()
     })
 
     it('should get the value of a nested aliased property in an array', () => {
       const result = alias([1, 2, 3], { first: '0', last: '2' } as const)
-      expect(result.first).toEqual(1)
-      expect(result.last).toEqual(3)
+      expect(result.first).toBe(1)
+      expect(result.last).toBe(3)
       expectTypeOf(result.first).toEqualTypeOf<number>()
       expectTypeOf(result.last).toEqualTypeOf<number>()
     })
 
     it('should get the value of an optional aliased property in an object', () => {
       const result = alias({ a: 1 } as { a?: number }, { abc: 'a' } as const)
-      expect(result.abc).toEqual(1)
+      expect(result.abc).toBe(1)
       expectTypeOf(result.abc).toEqualTypeOf<number | undefined>()
     })
 
     it('should set the value of an aliased property in an object', () => {
       const result = alias({ a: 1 }, { abc: 'a' } as const)
       result.abc = 2
-      expect(result.abc).toEqual(2)
+      expect(result.abc).toBe(2)
       expectTypeOf(result.abc).toEqualTypeOf<number>()
     })
 
@@ -163,33 +163,33 @@ if (import.meta.vitest) {
     it('should include the aliased properties in the keys', () => {
       const result = alias({ a: 1 }, { abc: 'a' } as const)
       const keys = Object.getOwnPropertyNames(result)
-      expect(keys).toEqual(['a', 'abc'])
+      expect(keys).toStrictEqual(['a', 'abc'])
     })
   })
 
-  describe('Aliased', () => {
+  describe('aliased', () => {
     it('should alias a nested property', () => {
       interface Source { foo: { bar: string } }
       type Result = Aliased<Source, { fooBar: 'foo.bar' }>
-      expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: string }>()
+      expectTypeOf<Result>().toEqualTypeOf<{ fooBar: string } & Source>()
     })
 
     it('should alias a nested array index', () => {
       interface Source { foo: { bar: [string] } }
       type Result = Aliased<Source, { fooBar: 'foo.bar.0' }>
-      expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: string }>()
+      expectTypeOf<Result>().toEqualTypeOf<{ fooBar: string } & Source>()
     })
 
     it('should alias new properties as mutable', () => {
       interface Source { foo: { bar: string } }
       type Result = Aliased<Source, { readonly fooBar: 'foo.bar' }>
-      expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: string }>()
+      expectTypeOf<Result>().toEqualTypeOf<{ fooBar: string } & Source>()
     })
 
     it('should alias as uknown if the path does not exist', () => {
       interface Source { foo: { bar: string } }
       type Result = Aliased<Source, { fooBar: 'foo.baz' }>
-      expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: unknown }>()
+      expectTypeOf<Result>().toEqualTypeOf<{ fooBar: unknown } & Source>()
     })
   })
 }

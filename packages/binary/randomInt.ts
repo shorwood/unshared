@@ -34,7 +34,7 @@ export function randomInt(options: RandomOptions = {}): number {
   // --- If not running in Node.js, fallback to `globalThis.crypto`.
   catch {
     if (globalThis.crypto?.getRandomValues) {
-      const array = new Uint32Array(128)
+      const array = new Uint32Array(1)
       const values = globalThis.crypto.getRandomValues(array)
       return values[0]
     }
@@ -54,41 +54,41 @@ if (import.meta.vitest) {
     vi.unstubAllGlobals()
   })
 
-  it('returns a random unsigned 32-bit integer', () => {
+  test('should return a random unsigned 32-bit integer', () => {
     const result = randomInt()
     const isInteger = Number.isInteger(result)
-    expect(isInteger).toBe(true)
+    expect(isInteger).toBeTruthy()
     expect(result).not.toBeNaN()
     expect(result).toBeLessThanOrEqual(0xFFFFFFFF)
     expect(result).toBeGreaterThanOrEqual(0x00000000)
   })
 
-  it('should fallback to `globalThis.crypto`', () => {
+  test('should fallback to `globalThis.crypto`', () => {
     require('node:crypto').randomInt = undefined
     vi.stubGlobal('crypto', { getRandomValues: vi.fn(() => new Uint32Array([0x7FFFFFFF])) })
     const result = randomInt()
     const isInteger = Number.isInteger(result)
-    expect(isInteger).toBe(true)
-    expect(result).toEqual(0x7FFFFFFF)
+    expect(isInteger).toBeTruthy()
+    expect(result).toBe(0x7FFFFFFF)
     // eslint-disable-next-line @typescript-eslint/unbound-method
-    expect(globalThis.crypto.getRandomValues).toHaveBeenCalled()
+    expect(globalThis.crypto.getRandomValues).toHaveBeenCalledOnce()
   })
 
-  it('should fallback to `Math.random()` if `allowUnsafe` is true', () => {
+  test('should fallback to `Math.random()` if `allowUnsafe` is true', () => {
     require('node:crypto').randomInt = undefined
     vi.stubGlobal('crypto', { getRandomValues: undefined })
-    vi.stubGlobal('Math', { random: vi.fn(() => 0.5), floor: Math.floor })
+    vi.stubGlobal('Math', { floor: Math.floor, random: vi.fn(() => 0.5) })
     const result = randomInt({ allowUnsafe: true })
     const isInteger = Number.isInteger(result)
-    expect(isInteger).toBe(true)
-    expect(result).toEqual(0x7FFFFFFF)
-    expect(Math.random).toHaveBeenCalled()
+    expect(isInteger).toBeTruthy()
+    expect(result).toBe(0x7FFFFFFF)
+    expect(Math.random).toHaveBeenCalledOnce()
   })
 
-  it('should throw if allowUnsafe is false and crypto is not available', () => {
+  test('should throw if allowUnsafe is false and crypto is not available', () => {
     vi.stubGlobal('crypto', { randomInt: undefined })
     require('node:crypto').randomInt = undefined
     const shouldThrow = () => randomInt()
-    expect(shouldThrow).toThrow()
+    expect(shouldThrow).toThrow('No cryptographically secure random number generator available')
   })
 }

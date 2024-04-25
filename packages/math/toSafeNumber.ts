@@ -35,29 +35,30 @@ export function toSafeNumber(number: number): number {
   return number
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should return zero when the value is NaN', () => {
+  test('should return zero when the value is NaN', () => {
     const result = toSafeNumber(Number.NaN)
-    expect(result).toEqual(0)
+    expect(result).toBe(0)
   })
 
-  it('should return Number.MAX_SAFE_INTEGER when the value is greater than Number.MAX_SAFE_INTEGER', () => {
+  test('should return Number.MAX_SAFE_INTEGER when the value is greater than Number.MAX_SAFE_INTEGER', () => {
     const result = toSafeNumber(Number.MAX_SAFE_INTEGER + 1)
-    expect(result).toEqual(Number.MAX_SAFE_INTEGER)
+    expect(result).toStrictEqual(Number.MAX_SAFE_INTEGER)
   })
 
-  it('should return Number.MIN_SAFE_INTEGER when the value is less than Number.MIN_SAFE_INTEGER', () => {
+  test('should return Number.MIN_SAFE_INTEGER when the value is less than Number.MIN_SAFE_INTEGER', () => {
     const result = toSafeNumber(Number.MIN_SAFE_INTEGER - 1)
-    expect(result).toEqual(Number.MIN_SAFE_INTEGER)
+    expect(result).toStrictEqual(Number.MIN_SAFE_INTEGER)
   })
 
-  it('should return numbers as is', () => {
+  test('should return numbers as is', () => {
     const result = toSafeNumber(5)
-    expect(result).toEqual(5)
+    expect(result).toBe(5)
   })
 
-  it('should throw a TypeError if the input is not a number', () => {
+  test('should throw a TypeError if the input is not a number', () => {
+
     // @ts-expect-error: This is intentionally passing an undefined value
     const shouldThrow = () => toSafeNumber()
     expect(shouldThrow).toThrow(TypeError)

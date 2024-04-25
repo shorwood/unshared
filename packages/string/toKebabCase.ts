@@ -14,60 +14,60 @@ export function toKebabCase(...values: string[]): string {
     .join('-')
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should convert camel-case to kebab-case', () => {
+  test('should convert camel-case to kebab-case', () => {
     const result = toKebabCase('camelCase')
-    expect(result).toEqual('camel-case')
+    expect(result).toBe('camel-case')
   })
 
-  it('should convert constant-case to kebab-case', () => {
+  test('should convert constant-case to kebab-case', () => {
     const result = toKebabCase('CONSTANT_CASE')
-    expect(result).toEqual('constant-case')
+    expect(result).toBe('constant-case')
   })
 
-  it('should convert dot-case to kebab-case', () => {
+  test('should convert dot-case to kebab-case', () => {
     const result = toKebabCase('dot.case')
-    expect(result).toEqual('dot-case')
+    expect(result).toBe('dot-case')
   })
 
-  it('should convert header-case to kebab-case', () => {
+  test('should convert header-case to kebab-case', () => {
     const result = toKebabCase('Header-Case')
-    expect(result).toEqual('header-case')
+    expect(result).toBe('header-case')
   })
 
-  it('should convert kebab-case to kebab-case', () => {
+  test('should convert kebab-case to kebab-case', () => {
     const result = toKebabCase('kebab-case')
-    expect(result).toEqual('kebab-case')
+    expect(result).toBe('kebab-case')
   })
 
-  it('should convert pascal-case to kebab-case', () => {
+  test('should convert pascal-case to kebab-case', () => {
     const result = toKebabCase('PascalCase')
-    expect(result).toEqual('pascal-case')
+    expect(result).toBe('pascal-case')
   })
 
-  it('should convert path-case to kebab-case', () => {
+  test('should convert path-case to kebab-case', () => {
     const result = toKebabCase('path/case')
-    expect(result).toEqual('path-case')
+    expect(result).toBe('path-case')
   })
 
-  it('should convert snake_case to kebab-case', () => {
+  test('should convert snake_case to kebab-case', () => {
     const result = toKebabCase('snake_case')
-    expect(result).toEqual('snake-case')
+    expect(result).toBe('snake-case')
   })
 
-  it('should convert title-case to kebab-case', () => {
+  test('should convert title-case to kebab-case', () => {
     const result = toKebabCase('Title Case')
-    expect(result).toEqual('title-case')
+    expect(result).toBe('title-case')
   })
 
-  it('should convert lower-case to kebab-case', () => {
+  test('should convert lower-case to kebab-case', () => {
     const result = toKebabCase('lower case')
-    expect(result).toEqual('lower-case')
+    expect(result).toBe('lower-case')
   })
 
-  it('should convert multiple strings to kebab-case', () => {
+  test('should convert multiple strings to kebab-case', () => {
     const result = toKebabCase('foo', 'bar', 'baz')
-    expect(result).toEqual('foo-bar-baz')
+    expect(result).toBe('foo-bar-baz')
   })
 }

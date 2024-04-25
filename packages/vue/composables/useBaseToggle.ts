@@ -1,5 +1,5 @@
-import { toReactive, useVModel } from '@vueuse/core'
 import { Ref, computed, getCurrentInstance, provide } from 'vue'
+import { toReactive, useVModel } from '@vueuse/core'
 
 export type ToggleType = 'checkbox' | 'radio' | 'switch'
 
@@ -10,29 +10,6 @@ export type ToggleValue<T, U extends ToggleType> =
         never
 
 export interface BaseToggleProps<T, U extends ToggleType> {
-  /**
-   * The type of the toggle. This can be either `checkbox`, `radio`, or `switch`.
-   * This will determine how the toggle will behave when it is clicked.
-   *
-   * @default 'switch'
-   */
-  type?: U
-  /**
-   * The model value of the toggle. This holds the current state of the toggle
-   * and should be updated when the toggle is clicked.
-   *
-   * @default undefined
-   */
-  modelValue: ToggleValue<T, U>
-  'onUpdate:modelValue'?: (value: ToggleValue<T, U>) => void
-  /**
-   * The value to set or push when the toggle is active. This is only used when
-   * the type of the toggle is either `checkbox` or `radio`. By default, it
-   * will use the `key` of the current instance.
-   *
-   * @default useCurrentInstance().key
-   */
-  value?: U extends 'switch' ? never : T
   /**
    * The class to apply when the toggle is active. This allows you to customize
    * the appearance of the toggle when it is active without handling the CSS in
@@ -49,14 +26,37 @@ export interface BaseToggleProps<T, U extends ToggleType> {
    * @default undefined
    */
   classInactive?: string
+  /**
+   * The model value of the toggle. This holds the current state of the toggle
+   * and should be updated when the toggle is clicked.
+   *
+   * @default undefined
+   */
+  modelValue: ToggleValue<T, U>
+  'onUpdate:modelValue'?: (value: ToggleValue<T, U>) => void
+  /**
+   * The type of the toggle. This can be either `checkbox`, `radio`, or `switch`.
+   * This will determine how the toggle will behave when it is clicked.
+   *
+   * @default 'switch'
+   */
+  type?: U
+  /**
+   * The value to set or push when the toggle is active. This is only used when
+   * the type of the toggle is either `checkbox` or `radio`. By default, it
+   * will use the `key` of the current instance.
+   *
+   * @default useCurrentInstance().key
+   */
+  value?: U extends 'switch' ? never : T
 }
 
 export const BASE_TOGGLE_PROPS = {
-  type: { type: String, default: 'switch' },
-  modelValue: { type: [Boolean, Array, String, Number], default: undefined },
-  value: { type: [Boolean, Array, String, Number], default: undefined },
-  classActive: { type: [String], default: '' },
-  classInactive: { type: [String], default: '' },
+  classActive: { default: '', type: [String] },
+  classInactive: { default: '', type: [String] },
+  modelValue: { default: undefined, type: [Boolean, Array, String, Number] },
+  type: { default: 'switch', type: String },
+  value: { default: undefined, type: [Boolean, Array, String, Number] },
 }
 
 /**
@@ -115,16 +115,16 @@ export function useBaseToggle<T, U extends ToggleType>(props: BaseToggleProps<T,
   // --- Properties to assign to the element.
   const attributes = computed(() => ({
     'aria-checked': props.type === 'radio' ? undefined : isActive.value,
-    'aria-selected': props.type === 'radio' ? isActive.value : undefined,
     'aria-pressed': isActive.value,
+    'aria-selected': props.type === 'radio' ? isActive.value : undefined,
+    'class': classes.value || undefined,
+    'onClick': toggle,
     'role': props.type === 'radio' ? 'radio' : 'checkbox',
     'tabindex': 0,
-    'class': classes.value,
-    'onClick': toggle,
   }))
 
   // --- Provide the composable into the component and return it.
-  const composable = toReactive({ model: model as Ref<T>, isActive, attributes, classes, toggle })
+  const composable = toReactive({ attributes, classes, isActive, model: model as Ref<T>, toggle })
   provide('baseToggle', composable)
   return composable
 }

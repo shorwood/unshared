@@ -16,48 +16,6 @@ export class Boolean {
   constructor(public value = false) {}
 
   /**
-   * Function to check if the value is `true`.
-   *
-   * @returns `true` if the value of this boolean is `true`.
-   * @example new Boolean(true).isTrue // true
-   */
-  get isTrue(): boolean {
-    return this.value === true
-  }
-
-  /**
-   * Function to check if the value is `false`.
-   *
-   * @returns `true` if the value of this boolean is `false`.
-   * @example new Boolean(true).isFalse // false
-   */
-  get isFalse(): boolean {
-    return this.value === false
-  }
-
-  /**
-   * Set the value of the Boolean to `true`.
-   *
-   * @returns The Boolean instance with the value set to `true`.
-   * @example Boolean.true // Boolean { value: true }
-   */
-  get true(): this {
-    this.value = true
-    return this
-  }
-
-  /**
-   * Set the value of the Boolean to `false`.
-   *
-   * @returns The Boolean instance with the value set to `false`.
-   * @example Boolean.false // Boolean { value: false }
-   */
-  get false(): this {
-    this.value = false
-    return this
-  }
-
-  /**
    * Performs a logical [AND](https://en.wikipedia.org/wiki/AND_gate) operation
    * on `this` boolean with another boolean.
    *
@@ -146,82 +104,125 @@ export class Boolean {
     this.value = this.value !== value
     return this
   }
+
+  /**
+   * Set the value of the Boolean to `false`.
+   *
+   * @returns The Boolean instance with the value set to `false`.
+   * @example Boolean.false // Boolean { value: false }
+   */
+  get false(): this {
+    this.value = false
+    return this
+  }
+
+  /**
+   * Function to check if the value is `false`.
+   *
+   * @returns `true` if the value of this boolean is `false`.
+   * @example new Boolean(true).isFalse // false
+   */
+  get isFalse(): boolean {
+    return this.value === false
+  }
+
+  /**
+   * Function to check if the value is `true`.
+   *
+   * @returns `true` if the value of this boolean is `true`.
+   * @example new Boolean(true).isTrue // true
+   */
+  get isTrue(): boolean {
+    return this.value === true
+  }
+
+  /**
+   * Set the value of the Boolean to `true`.
+   *
+   * @returns The Boolean instance with the value set to `true`.
+   * @example Boolean.true // Boolean { value: true }
+   */
+  get true(): this {
+    this.value = true
+    return this
+  }
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  it('should create a Boolean instance', () => {
+  test('should create a Boolean instance', () => {
     const result = new Boolean()
     expect(result).toBeInstanceOf(Boolean)
     expectTypeOf(result).toEqualTypeOf<Boolean>()
   })
 
-  it('should default to false', () => {
+  test('should default to false', () => {
     const result = new Boolean()
-    expect(result.value).toEqual(false)
+    expect(result.value).toBeFalsy()
   })
 
-  it('should set the value to true', () => {
+  test('should set the value to true', () => {
     const result = new Boolean(true)
-    expect(result.value).toEqual(true)
+    expect(result.value).toBeTruthy()
   })
 
-  it('should check if a Boolean is true', () => {
+  test('should check if a Boolean is true', () => {
     const boolean = new Boolean(true)
-    expect(boolean.isTrue).toEqual(true)
+    expect(boolean.isTrue).toBeTruthy()
   })
 
-  it('should check if a Boolean is false', () => {
+  test('should check if a Boolean is false', () => {
     const boolean = new Boolean(false)
-    expect(boolean.isFalse).toEqual(true)
+    expect(boolean.isFalse).toBeTruthy()
   })
 
-  it('should and a boolean', () => {
+  test('should and a boolean', () => {
     const result = new Boolean(true)
     result.and(false)
-    expect(result.value).toEqual(false)
+    expect(result.value).toBeFalsy()
   })
 
-  it('should nand a boolean', () => {
+  test('should nand a boolean', () => {
     const result = new Boolean(true)
     result.nand(false)
-    expect(result.value).toEqual(true)
+    expect(result.value).toBeTruthy()
   })
 
-  it('should nor a boolean', () => {
+  test('should nor a boolean', () => {
     const result = new Boolean(true)
     result.nor(false)
-    expect(result.value).toEqual(false)
+    expect(result.value).toBeFalsy()
   })
 
-  it('should not a boolean', () => {
+  test('should not a boolean', () => {
     const result = new Boolean(true)
     result.not()
-    expect(result.value).toEqual(false)
+    expect(result.value).toBeFalsy()
   })
 
-  it('should or a boolean', () => {
+  test('should or a boolean', () => {
     const result = new Boolean(true)
     result.or(false)
-    expect(result.value).toEqual(true)
+    expect(result.value).toBeTruthy()
   })
 
-  it('should xor a boolean', () => {
+  test('should xor a boolean', () => {
     const result = new Boolean(true)
     result.xor(false)
-    expect(result.value).toEqual(true)
+    expect(result.value).toBeTruthy()
   })
 
-  it('should xnor a boolean', () => {
+  test('should xnor a boolean', () => {
     const result = new Boolean(true)
     result.xnor(false)
-    expect(result.value).toEqual(false)
+    expect(result.value).toBeFalsy()
   })
 
-  it('should be chainable', () => {
+  test('should be chainable', () => {
+
     // const boolean = new Boolean(true)
     // const result = boolean.and(false).nand(false).nor(false).not.or(false).xor(false).xnor(false).value
-    // expect(result).toEqual(false)
+    // expect(result).toStrictEqual(false)
     // expectTypeOf(result).toEqualTypeOf<false>()
     const result = new Boolean(true)
     result.and(false)
@@ -231,6 +232,6 @@ if (import.meta.vitest) {
       .or(false)
       .xor(false)
       .xnor(false)
-    expect(result.value).toEqual(false)
+    expect(result.value).toBeFalsy()
   })
 }

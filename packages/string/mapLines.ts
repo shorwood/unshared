@@ -21,10 +21,10 @@ export function mapLines(value: string, iterator: MapLinesIterator): string {
   return value.split('\n').map(iterator).join('\n')
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should map each line of a string to a new string', () => {
+  test('should map each line of a string to a new string', () => {
     const result = mapLines('foo\nbar\nbaz', (line, index, lines) => `${index + 1}/${lines.length}:${line}`)
-    expect(result).toEqual('1/3:foo\n2/3:bar\n3/3:baz')
+    expect(result).toBe('1/3:foo\n2/3:bar\n3/3:baz')
   })
 }

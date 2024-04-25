@@ -1,5 +1,5 @@
-import { Function } from '@unshared/types'
 import { MessagePort, TransferListItem, isMainThread, parentPort } from 'node:worker_threads'
+import { Function } from '@unshared/types'
 import { WorkerRequest } from './workerRequest'
 
 /** Unregister a function from being called using worker threads messaging. */
@@ -11,17 +11,17 @@ export type Unregister = () => void
  */
 export interface WorkerResponse<T = unknown, E = Error> {
   /**
-   * The value returned from the function.
-   *
-   * @internal
-   */
-  value: T | undefined
-  /**
    * If the function threw an error, this will be the error that was thrown.
    *
    * @internal
    */
   error: E | undefined
+  /**
+   * The value returned from the function.
+   *
+   * @internal
+   */
+  value: T | undefined
 }
 
 /** A map of registered functions. */
@@ -56,7 +56,7 @@ async function requestCallback(request: WorkerRequest): Promise<void> {
 
   // --- Destructure the request and get the function to call.
   const { name, parameters, port } = request
-  const response: WorkerResponse = { value: undefined, error: undefined }
+  const response: WorkerResponse = { error: undefined, value: undefined }
   const fn = WORKER_HANDLERS.get(name)
 
   // --- Send a heartbeat message to the worker.
@@ -93,8 +93,8 @@ async function requestCallback(request: WorkerRequest): Promise<void> {
  * const result = await workerRequest(workerPath, 'add', 1, 2) // 3
  */
 export function workerRegister(name: string, callback: Function): Unregister {
-  if (!parentPort) throw new Error('Cannot register handler: parentPort is not defined.')
   if (isMainThread) throw new Error('Cannot register handler: workerRegister must be called in a worker thread.')
+  if (!parentPort) throw new Error('Cannot register handler: parentPort is not defined.')
 
   // --- Register and start listening for messages.
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -119,25 +119,25 @@ if (import.meta.vitest) {
   vi.mock('node:worker_threads', async() => {
     const workerThreads = await vi.importActual<WorkerThreads>('node:worker_threads')
     class MessagePortMock extends EventTarget {
-      postMessage(data: unknown): void {
-        const event = new MessageEvent('message', { data })
-        super.dispatchEvent(event)
-      }
       addListener(type: string, listener: Function<void>): void {
         // @ts-expect-error: event is expected to have a `data` property.
         super.addEventListener('message', (event: MessageEvent) => listener(event.data))
       }
+      postMessage(data: unknown): void {
+        const event = new MessageEvent('message', { data })
+        super.dispatchEvent(event)
+      }
     }
     const state = {
-      parentPort: new MessagePortMock(),
       isMainThread: false,
+      parentPort: new MessagePortMock(),
     }
     return {
       ...workerThreads,
-      get parentPort() { return state.parentPort },
-      set parentPort(value) { state.parentPort = value },
       get isMainThread() { return state.isMainThread },
       set isMainThread(value) { state.isMainThread = value },
+      get parentPort() { return state.parentPort },
+      set parentPort(value) { state.parentPort = value },
     }
   })
 
@@ -188,9 +188,9 @@ if (import.meta.vitest) {
           if (data.data !== 'heartbeat') resolve(data)
         })
       })
-      expect(message.data).toEqual({
-        value: 'Hello, world!',
+      expect(message.data).toStrictEqual({
         error: undefined,
+        value: 'Hello, world!',
       })
     })
 
@@ -203,9 +203,9 @@ if (import.meta.vitest) {
           if (data.data !== 'heartbeat') resolve(data)
         })
       })
-      expect(message.data).toEqual({
-        value: undefined,
+      expect(message.data).toStrictEqual({
         error: new Error('test'),
+        value: undefined,
       })
     })
 
@@ -217,9 +217,9 @@ if (import.meta.vitest) {
           if (data.data !== 'heartbeat') resolve(data)
         })
       })
-      expect(message.data).toEqual({
-        value: undefined,
+      expect(message.data).toStrictEqual({
         error: new Error('Cannot execute handler: fn is not registered.'),
+        value: undefined,
       })
     })
   })
@@ -229,13 +229,13 @@ if (import.meta.vitest) {
     // eslint-disable-next-line unicorn/no-null
       workerThreads.parentPort = null
       const shouldThrow = () => workerRegister('add', () => {})
-      expect(shouldThrow).toThrowError()
+      expect(shouldThrow).toThrow('Cannot register handler: parentPort is not defined.')
     })
 
     it('should throw an error if workerRegister is called in the main thread', () => {
       workerThreads.isMainThread = true
       const shouldThrow = () => workerRegister('add', () => {})
-      expect(shouldThrow).toThrowError()
+      expect(shouldThrow).toThrow('Cannot register handler: workerRegister must be called in a worker thread.')
     })
   })
 
@@ -256,49 +256,49 @@ if (import.meta.vitest) {
 
     it('should handle message when in a worker thread and return the result', async() => {
       const response = await send('factorial', [5])
-      expect(response).toEqual({
-        value: 120,
+      expect(response).toStrictEqual({
         error: undefined,
+        value: 120,
       })
     })
 
     it('should handle message when in a worker thread and return an promise value', async() => {
       const response = await send('factorialAsync', [5])
-      expect(response).toEqual({
-        value: 120,
+      expect(response).toStrictEqual({
         error: undefined,
+        value: 120,
       })
     })
 
     it('should handle message when in a worker thread and return an error', async() => {
       const response = await send('throws', [])
-      expect(response).toEqual({
-        value: undefined,
+      expect(response).toStrictEqual({
         error: new SyntaxError('Thrown'),
+        value: undefined,
       })
     })
 
     it('should handle message when in a worker thread and return a rejected promise', async() => {
       const response = await send('rejects', [])
-      expect(response).toEqual({
-        value: undefined,
+      expect(response).toStrictEqual({
         error: new SyntaxError('Rejected'),
+        value: undefined,
       })
     })
 
     it('should handle message when in a worker thread and return a buffer', async() => {
       const response = await send('buffer', [])
-      expect(response).toEqual({
-        value: Uint8Array.from(Buffer.from('Hello, World!')),
+      expect(response).toStrictEqual({
         error: undefined,
+        value: Uint8Array.from(Buffer.from('Hello, World!')),
       })
     })
 
     it('should handle message when in a worker thread and return the thread ID', async() => {
       const response = await send('threadId', [])
-      expect(response).toEqual({
-        value: worker.threadId,
+      expect(response).toStrictEqual({
         error: undefined,
+        value: worker.threadId,
       })
     })
   })

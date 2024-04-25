@@ -11,60 +11,60 @@ export function tokenize(string: string): string[] {
   return [...string.trim().matchAll(/[A-Z]?[a-z]+|[A-Z]+|\d+/gs)].map(match => match[0])
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should tokenize empty string', () => {
+  test('should tokenize empty string', () => {
     const result = tokenize('\n\t\r ')
-    expect(result).toEqual([])
+    expect(result).toStrictEqual([])
   })
 
-  it('should tokenize camel case', () => {
+  test('should tokenize camel case', () => {
     const result = tokenize('fooBar123')
-    expect(result).toEqual(['foo', 'Bar', '123'])
+    expect(result).toStrictEqual(['foo', 'Bar', '123'])
   })
 
-  it('should tokenize pascal case', () => {
+  test('should tokenize pascal case', () => {
     const result = tokenize('FooBar123')
-    expect(result).toEqual(['Foo', 'Bar', '123'])
+    expect(result).toStrictEqual(['Foo', 'Bar', '123'])
   })
 
-  it('should tokenize snake case', () => {
+  test('should tokenize snake case', () => {
     const result = tokenize('foo_bar_123')
-    expect(result).toEqual(['foo', 'bar', '123'])
+    expect(result).toStrictEqual(['foo', 'bar', '123'])
   })
 
-  it('should tokenize kebab case', () => {
+  test('should tokenize kebab case', () => {
     const result = tokenize('foo-bar-123')
-    expect(result).toEqual(['foo', 'bar', '123'])
+    expect(result).toStrictEqual(['foo', 'bar', '123'])
   })
 
-  it('should tokenize title case', () => {
+  test('should tokenize title case', () => {
     const result = tokenize('Foo Bar 123')
-    expect(result).toEqual(['Foo', 'Bar', '123'])
+    expect(result).toStrictEqual(['Foo', 'Bar', '123'])
   })
 
-  it('should tokenize dot case', () => {
+  test('should tokenize dot case', () => {
     const result = tokenize('foo.bar.123')
-    expect(result).toEqual(['foo', 'bar', '123'])
+    expect(result).toStrictEqual(['foo', 'bar', '123'])
   })
 
-  it('should tokenize header case', () => {
+  test('should tokenize header case', () => {
     const result = tokenize('Foo-Bar-123')
-    expect(result).toEqual(['Foo', 'Bar', '123'])
+    expect(result).toStrictEqual(['Foo', 'Bar', '123'])
   })
 
-  it('should tokenize path case', () => {
+  test('should tokenize path case', () => {
     const result = tokenize('foo/bar/123')
-    expect(result).toEqual(['foo', 'bar', '123'])
+    expect(result).toStrictEqual(['foo', 'bar', '123'])
   })
 
-  it('should tokenize constant case', () => {
+  test('should tokenize constant case', () => {
     const result = tokenize('FOO_BAR_123')
-    expect(result).toEqual(['FOO', 'BAR', '123'])
+    expect(result).toStrictEqual(['FOO', 'BAR', '123'])
   })
 
-  it('should tokenize mixed case', () => {
+  test('should tokenize mixed case', () => {
     const result = tokenize('FOO_Bar.123')
-    expect(result).toEqual(['FOO', 'Bar', '123'])
+    expect(result).toStrictEqual(['FOO', 'Bar', '123'])
   })
 }

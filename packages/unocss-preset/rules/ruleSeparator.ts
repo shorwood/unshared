@@ -1,5 +1,5 @@
-import { Rule } from '@unocss/core'
 import { Theme, parseColor } from '@unocss/preset-mini'
+import { Rule } from '@unocss/core'
 import { separators } from '../constants/separators'
 
 /**
@@ -17,6 +17,7 @@ export const ruleSeparator: Rule = [
 
   // --- Resolve the image URL and return CSS properties.
   ([, separator, color, opacity]: string[], { theme }: { theme: Theme }) => {
+
     // --- Resolve color.
     const themeColor = parseColor(color, theme)
     if (!themeColor?.color) return

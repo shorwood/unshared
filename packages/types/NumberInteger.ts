@@ -12,34 +12,34 @@ export type NumberInteger<N extends number> =
     : IsInteger<N> extends true ? N
       : never
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should match a positive integer', () => {
+  test('should match a positive integer', () => {
     type Result = NumberInteger<1>
     expectTypeOf<Result>().toEqualTypeOf<1>()
   })
 
-  it('should not match a positive decimal', () => {
+  test('should not match a positive decimal', () => {
     type Result = NumberInteger<1.1>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
-  it('should match a negative integer', () => {
+  test('should match a negative integer', () => {
     type Result = NumberInteger<-1>
     expectTypeOf<Result>().toEqualTypeOf<-1>()
   })
 
-  it('should not match a negative decimal', () => {
+  test('should not match a negative decimal', () => {
     type Result = NumberInteger<-1.1>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
-  it('should match zero', () => {
+  test('should match zero', () => {
     type Result = NumberInteger<0>
     expectTypeOf<Result>().toEqualTypeOf<0>()
   })
 
-  it('should match number', () => {
+  test('should match number', () => {
     type Result = NumberInteger<number>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })

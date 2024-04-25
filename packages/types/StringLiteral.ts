@@ -15,14 +15,14 @@ export type StringLiteral<T extends string> =
     ? T extends string ? never
       : T : T
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should not match a string type', () => {
+  test('should not match a string type', () => {
     type Result = StringLiteral<string>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
-  it('should match a literal string', () => {
+  test('should match a literal string', () => {
     type Result = StringLiteral<'foo'>
     expectTypeOf<Result>().toEqualTypeOf<'foo'>()
   })

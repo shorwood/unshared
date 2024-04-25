@@ -1,5 +1,5 @@
-import { MathAdd } from './MathAdd'
 import { MathNegative } from './MathNegative'
+import { MathAdd } from './MathAdd'
 
 /**
  * Difference of two positive integers.
@@ -10,49 +10,49 @@ import { MathNegative } from './MathNegative'
  */
 export type MathSubstract<A extends number, B extends number> = MathAdd<A, MathNegative<B>>
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should compute the difference of 10 and 10 as 0', () => {
+  test('should compute the difference of 10 and 10 as 0', () => {
     type Result = MathSubstract<10, 10>
     expectTypeOf<Result>().toEqualTypeOf<0>()
   })
 
-  it('should compute the difference of -10 and -10 as 0', () => {
+  test('should compute the difference of -10 and -10 as 0', () => {
     type Result = MathSubstract<-10, -10>
     expectTypeOf<Result>().toEqualTypeOf<0>()
   })
 
-  it('should compute the difference of -5 and 10 as -15', () => {
+  test('should compute the difference of -5 and 10 as -15', () => {
     type Result = MathSubstract<-5, 10>
     expectTypeOf<Result>().toEqualTypeOf<-15>()
   })
 
-  it('should compute the difference of 10 and -5 as 15', () => {
+  test('should compute the difference of 10 and -5 as 15', () => {
     type Result = MathSubstract<10, -5>
     expectTypeOf<Result>().toEqualTypeOf<15>()
   })
 
-  it('should compute the difference of -5 and 5 as -10', () => {
+  test('should compute the difference of -5 and 5 as -10', () => {
     type Result = MathSubstract<-5, 5>
     expectTypeOf<Result>().toEqualTypeOf<-10>()
   })
 
-  it('should compute the difference of 5 and -5 as 10', () => {
+  test('should compute the difference of 5 and -5 as 10', () => {
     type Result = MathSubstract<5, -5>
     expectTypeOf<Result>().toEqualTypeOf<10>()
   })
 
-  it('should compute the difference of 0 and 0 as 0', () => {
+  test('should compute the difference of 0 and 0 as 0', () => {
     type Result = MathSubstract<0, 0>
     expectTypeOf<Result>().toEqualTypeOf<0>()
   })
 
-  it('should return number the first argument is number', () => {
+  test('should return number the first argument is number', () => {
     type Result = MathSubstract<number, 0>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
-  it('should return number the second argument is number', () => {
+  test('should return number the second argument is number', () => {
     type Result = MathSubstract<0, number>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })

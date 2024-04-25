@@ -10,24 +10,24 @@ export function isLower(value: number): boolean {
   return value >= 97 && value <= 122
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
   const upperCase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
   const lowerCase = 'abcdefghijklmnopqrstuvwxyz'
   const numbers = '0123456789'
   const symbols = '!@#$%^&*()_+-=[]{};:,./<>?`~'
 
-  it('should return true for lower case character codes', () => {
+  test('should return true for lower case character codes', () => {
     for (const char of lowerCase) {
       const result = isLower(char.charCodeAt(0))
-      expect(result).toEqual(true)
+      expect(result).toBeTruthy()
     }
   })
 
-  it('should return false for non lower case character codes', () => {
+  test('should return false for non lower case character codes', () => {
     for (const char of upperCase + numbers + symbols) {
       const result = isLower(char.charCodeAt(0))
-      expect(result).toEqual(false)
+      expect(result).toBeFalsy()
     }
   })
 }

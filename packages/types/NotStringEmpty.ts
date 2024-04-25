@@ -9,19 +9,19 @@
  */
 export type NotStringEmpty<T extends string> = T extends '' ? never : T
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should match a string type', () => {
+  test('should match a string type', () => {
     type Result = NotStringEmpty<string>
     expectTypeOf<Result>().toEqualTypeOf<string>()
   })
 
-  it('should match a literal string', () => {
+  test('should match a literal string', () => {
     type Result = NotStringEmpty<'bar' | 'foo'>
     expectTypeOf<Result>().toEqualTypeOf<'bar' | 'foo'>()
   })
 
-  it('should exclude an empty string', () => {
+  test('should exclude an empty string', () => {
     type Result = NotStringEmpty<''>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })

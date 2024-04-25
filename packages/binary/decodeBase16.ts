@@ -43,24 +43,24 @@ export function decodeBase16(value: string): Uint8Array {
 if (import.meta.vitest) {
   const { encodeUtf8 } = await import('./encodeUtf8')
 
-  it('should decode uppercase hexadecimal string into a buffer', () => {
+  test('should decode uppercase hexadecimal string into a buffer', () => {
     const result = decodeBase16('48656C6C6F2C20576F726C6421')
     const string = encodeUtf8(result)
-    expect(string).toEqual('Hello, World!')
+    expect(string).toBe('Hello, World!')
   })
 
-  it('should decode lowercase hexadecimal string into a buffer', () => {
+  test('should decode lowercase hexadecimal string into a buffer', () => {
     const result = decodeBase16('48656c6c6f2c20576f726c6421')
     const string = encodeUtf8(result)
-    expect(string).toEqual('Hello, World!')
+    expect(string).toBe('Hello, World!')
   })
 
-  it('should throw if the string is not a multiple of 2', () => {
+  test('should throw if the string is not a multiple of 2', () => {
     const shouldThrow = () => decodeBase16('123')
     expect(shouldThrow).toThrow('Could not decode string as Base16: Length is not a multiple of 2')
   })
 
-  it('should throw if the string contains non-hexadecimal characters', () => {
+  test('should throw if the string contains non-hexadecimal characters', () => {
     const shouldThrow = () => decodeBase16('0G')
     expect(shouldThrow).toThrow('Could not decode string as Base16: Invalid characters')
   })

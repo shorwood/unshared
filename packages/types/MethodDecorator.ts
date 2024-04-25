@@ -12,12 +12,12 @@ export type MethodDecorator<T extends Function = Function> = (target: unknown, p
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  it('should return a method decorator type', () => {
+  test('should return a method decorator type', () => {
     type Result = MethodDecorator
     expectTypeOf<Result>().toEqualTypeOf<(target: unknown, propertyName: string, descriptor: TypedPropertyDescriptor<Function>) => TypedPropertyDescriptor<Function>>()
   })
 
-  it('should return a method decorator type with a specific method type', () => {
+  test('should return a method decorator type with a specific method type', () => {
     type Method = (a: number, b: number) => number
     type Result = MethodDecorator<Method>
     expectTypeOf<Result>().toEqualTypeOf<(target: unknown, propertyName: string, descriptor: TypedPropertyDescriptor<Method>) => TypedPropertyDescriptor<Method>>()

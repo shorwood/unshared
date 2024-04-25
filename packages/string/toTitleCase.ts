@@ -14,60 +14,60 @@ export function toTitleCase(...values: string[]): string {
     .join(' ')
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should convert camel-case to title-case', () => {
+  test('should convert camel-case to title-case', () => {
     const result = toTitleCase('camelCase')
-    expect(result).toEqual('Camel Case')
+    expect(result).toBe('Camel Case')
   })
 
-  it('should convert constant-case to title-case', () => {
+  test('should convert constant-case to title-case', () => {
     const result = toTitleCase('CONSTANT_CASE')
-    expect(result).toEqual('Constant Case')
+    expect(result).toBe('Constant Case')
   })
 
-  it('should convert dot-case to title-case', () => {
+  test('should convert dot-case to title-case', () => {
     const result = toTitleCase('dot.case')
-    expect(result).toEqual('Dot Case')
+    expect(result).toBe('Dot Case')
   })
 
-  it('should convert header-case to title-case', () => {
+  test('should convert header-case to title-case', () => {
     const result = toTitleCase('Header-Case')
-    expect(result).toEqual('Header Case')
+    expect(result).toBe('Header Case')
   })
 
-  it('should convert kebab-case to title-case', () => {
+  test('should convert kebab-case to title-case', () => {
     const result = toTitleCase('kebab-case')
-    expect(result).toEqual('Kebab Case')
+    expect(result).toBe('Kebab Case')
   })
 
-  it('should convert pascal-case to title-case', () => {
+  test('should convert pascal-case to title-case', () => {
     const result = toTitleCase('PascalCase')
-    expect(result).toEqual('Pascal Case')
+    expect(result).toBe('Pascal Case')
   })
 
-  it('should convert path-case to title-case', () => {
+  test('should convert path-case to title-case', () => {
     const result = toTitleCase('path/case')
-    expect(result).toEqual('Path Case')
+    expect(result).toBe('Path Case')
   })
 
-  it('should convert snake_case to title-case', () => {
+  test('should convert snake_case to title-case', () => {
     const result = toTitleCase('snake_case')
-    expect(result).toEqual('Snake Case')
+    expect(result).toBe('Snake Case')
   })
 
-  it('should convert title-case to title-case', () => {
+  test('should convert title-case to title-case', () => {
     const result = toTitleCase('Title Case')
-    expect(result).toEqual('Title Case')
+    expect(result).toBe('Title Case')
   })
 
-  it('should convert lower-case to title-case', () => {
+  test('should convert lower-case to title-case', () => {
     const result = toTitleCase('lower case')
-    expect(result).toEqual('Lower Case')
+    expect(result).toBe('Lower Case')
   })
 
-  it('should convert multiple strings to title-case', () => {
+  test('should convert multiple strings to title-case', () => {
     const result = toTitleCase('foo', 'bar', 'baz')
-    expect(result).toEqual('Foo Bar Baz')
+    expect(result).toBe('Foo Bar Baz')
   })
 }

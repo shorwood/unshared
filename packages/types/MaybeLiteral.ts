@@ -8,17 +8,17 @@
  * @returns Literal type wrapped in a union with `string & {}`.
  * @example MaybeLiteral<'foo'> // 'foo' | (string & {})
  */
-export type MaybeLiteral<T extends string> = T | (string & {})
+export type MaybeLiteral<T extends string> = ({} & string) | T
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should match a string type', () => {
+  test('should match a string type', () => {
     type Result = MaybeLiteral<string>
     expectTypeOf<Result>().toEqualTypeOf<string>()
   })
 
-  it('should match a literal string', () => {
+  test('should match a literal string', () => {
     type Result = MaybeLiteral<'bar' | 'foo'>
-    expectTypeOf<Result>().toEqualTypeOf<'bar' | 'foo' | string & {}>()
+    expectTypeOf<Result>().toEqualTypeOf<'bar' | 'foo' | {} & string>()
   })
 }

@@ -12,6 +12,7 @@
  * getType(RegExp) // 'RegExp'
  */
 export function kindOf(value?: unknown): string {
+
   // --- Is null
   if (value === null) return 'null'
 
@@ -25,65 +26,65 @@ export function kindOf(value?: unknown): string {
 
 /** v8 ignore start */
 if (import.meta.vitest) {
-  it('should return the kind of a null', () => {
+  test('should return the kind of a null', () => {
     // eslint-disable-next-line unicorn/no-null
     const result = kindOf(null)
-    expect(result).toEqual('null')
+    expect(result).toBe('null')
   })
 
-  it('should return the kind of an undefined', () => {
+  test('should return the kind of an undefined', () => {
     const result = kindOf()
-    expect(result).toEqual('undefined')
+    expect(result).toBe('undefined')
   })
 
-  it('should return the kind of a boolean', () => {
+  test('should return the kind of a boolean', () => {
     const result = kindOf(true)
-    expect(result).toEqual('boolean')
+    expect(result).toBe('boolean')
   })
 
-  it('should return the kind of a number', () => {
+  test('should return the kind of a number', () => {
     const result = kindOf(1)
-    expect(result).toEqual('number')
+    expect(result).toBe('number')
   })
 
-  it('should return the kind of a String', () => {
+  test('should return the kind of a String', () => {
     const result = kindOf('foo')
-    expect(result).toEqual('string')
+    expect(result).toBe('string')
   })
 
-  it('should return the kind of a Symbol', () => {
+  test('should return the kind of a Symbol', () => {
     const value = Symbol('foo')
     const result = kindOf(value)
-    expect(result).toEqual('symbol')
+    expect(result).toBe('symbol')
   })
 
-  it('should return the kind of a BigInt', () => {
+  test('should return the kind of a BigInt', () => {
     const result = kindOf(1n)
-    expect(result).toEqual('bigint')
+    expect(result).toBe('bigint')
   })
 
-  it('should return the kind of a Function', () => {
+  test('should return the kind of a Function', () => {
     const value = () => {}
     const result = kindOf(value)
-    expect(result).toEqual('function')
+    expect(result).toBe('function')
   })
 
-  it('should return the kind of an Array', () => {
+  test('should return the kind of an Array', () => {
     const value: unknown[] = []
     const result = kindOf(value)
-    expect(result).toEqual('Array')
+    expect(result).toBe('Array')
   })
 
-  it('should return the kind of an Object', () => {
+  test('should return the kind of an Object', () => {
     const value = { foo: 'bar' }
     const result = kindOf(value)
-    expect(result).toEqual('object')
+    expect(result).toBe('object')
   })
 
-  it('should return the kind of a class instance', () => {
+  test('should return the kind of a class instance', () => {
     class Foo {}
     const value = new Foo()
     const result = kindOf(value)
-    expect(result).toEqual('Foo')
+    expect(result).toBe('Foo')
   })
 }

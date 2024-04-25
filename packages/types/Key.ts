@@ -12,47 +12,47 @@ export type Key<T = unknown> =
 
 /** v8 ignore start */
 if (import.meta.vitest) {
-  it('should return the keys of an object', () => {
+  test('should return the keys of an object', () => {
     type Result = Key<{ readonly a: 1; b: 2; c?: 3 }>
     expectTypeOf<Result>().toEqualTypeOf<'a' | 'b' | 'c'>()
   })
 
-  it('should return the keys of an array', () => {
+  test('should return the keys of an array', () => {
     type Result = Key<number[]>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
-  it('should return the keys of a tuple', () => {
+  test('should return the keys of a tuple', () => {
     type Result = Key<readonly [1, 2, 3]>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
-  it('should return the keys of a readonly array', () => {
+  test('should return the keys of a readonly array', () => {
     type Result = Key<readonly number[]>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
-  it('should return the keys of a set', () => {
+  test('should return the keys of a set', () => {
     type Result = Key<Set<number>>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
-  it('should return the keys of a map', () => {
+  test('should return the keys of a map', () => {
     type Result = Key<Map<string, number>>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
-  it('should return the keys of a string', () => {
+  test('should return the keys of a string', () => {
     type Result = Key<string>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
-  it('should return the keys of a literal string', () => {
+  test('should return the keys of a literal string', () => {
     type Result = Key<'abc'>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
-  it('should fallback to PropertyKey', () => {
+  test('should fallback to PropertyKey', () => {
     type Result = Key
     expectTypeOf<Result>().toEqualTypeOf<PropertyKey>()
   })

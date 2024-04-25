@@ -47,6 +47,7 @@
     "vue-router": "^4.0.0"
   },
   "dependencies": {
+    "@unshared/collection": "workspace:*",
     "@unshared/functions": "workspace:*",
     "@vueuse/core": "10.9.0",
     "leaflet": "1.9.4",

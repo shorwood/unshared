@@ -1,6 +1,6 @@
 import { join, relative } from 'node:path'
-import { glob } from '../packages/fs/glob'
 import { getGitRemoteUrl, getPackageMetadata } from './utils'
+import { glob } from '../packages/fs/glob'
 
 async function createPackageExports(outPath: string, packagePath: string) {
   const packageOutFiles = glob('*.{js,mjs,cjs,d.ts}', { cwd: outPath, getRelative: true, onlyFiles: true })
@@ -40,11 +40,11 @@ async function createPackageExports(outPath: string, packagePath: string) {
  */
 export async function buildPackageJson(packageName: string) {
   const {
-    packagePath,
     packageJson,
     packageJsonFS,
-    rootPackageJson,
+    packagePath,
     packageRelativePath,
+    rootPackageJson,
   } = await getPackageMetadata(packageName)
   const outPath = join(packagePath, 'dist')
 
@@ -71,9 +71,9 @@ export async function buildPackageJson(packageName: string) {
   packageJson.bugs = `${packageRemoteUrlHttps}/issues`
   packageJson.homepage = `${packageRemoteUrlHttps}#readme`
   packageJson.repository = {
+    directory: packageRelativePath,
     type: 'git',
     url: packageRemoteUrlGit,
-    directory: packageRelativePath,
   }
 
   // --- Save the package.json file.

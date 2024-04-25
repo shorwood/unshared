@@ -83,5 +83,8 @@
     "@unshared/reactivity": "workspace:*",
     "@unshared/string": "workspace:*",
     "@unshared/types": "workspace:*"
+  },
+  "devDependencies": {
+    "memfs": "4.8.2"
   }
 }

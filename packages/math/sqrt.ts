@@ -10,10 +10,10 @@ export function sqrt(n: number): number {
   return Math.sqrt(n)
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should compute the square root of a number', () => {
+  test('should compute the square root of a number', () => {
     const result = sqrt(9)
-    expect(result).toEqual(3)
+    expect(result).toBe(3)
   })
 }

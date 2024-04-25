@@ -26,22 +26,22 @@ export type PromiseWrap<T = unknown> =
 
 /* v8 ignore next */
 if (import.meta.vitest) {
-  it('should wrap a type in a promise', () => {
+  test('should wrap a type in a promise', () => {
     type Result = PromiseWrap<number>
     expectTypeOf<Result>().toEqualTypeOf<Promise<number>>()
   })
 
-  it('should keep a promise as-is', () => {
+  test('should keep a promise as-is', () => {
     type Result = PromiseWrap<Promise<number>>
     expectTypeOf<Result>().toEqualTypeOf<Promise<number>>()
   })
 
-  it('should wrap the return type of a function in a promise', () => {
+  test('should wrap the return type of a function in a promise', () => {
     type Result = PromiseWrap<() => number>
     expectTypeOf<Result>().toEqualTypeOf<() => Promise<number>>()
   })
 
-  it('should extract the return type of an async function as-is', () => {
+  test('should extract the return type of an async function as-is', () => {
     type Result = PromiseWrap<() => Promise<number>>
     expectTypeOf<Result>().toEqualTypeOf<() => Promise<number>>()
   })

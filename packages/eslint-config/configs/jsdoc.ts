@@ -1,5 +1,5 @@
-import { Linter } from 'eslint'
 import pluginJsdoc from 'eslint-plugin-jsdoc'
+import { Linter } from 'eslint'
 
 export function jsdoc(): Linter.FlatConfig[] {
   return [
@@ -26,6 +26,18 @@ export function jsdoc(): Linter.FlatConfig[] {
         'jsdoc/check-indentation': 'error',
 
         /**
+         * Enforce a strict set of tags for the JSDoc comment. This rule also includes
+         * some custom tags that are used in our projects.
+         *
+         * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/.README/rules/check-tag-names.md
+         */
+        'jsdoc/check-tag-names': ['error', {
+          definedTags: [
+            'category',
+          ],
+        }],
+
+        /**
          * Checks for multi-line-style comments which fail to meet the criteria of a jsdoc block,
          * namely that it should begin with two and only two asterisks.
          *
@@ -42,6 +54,15 @@ export function jsdoc(): Linter.FlatConfig[] {
          */
         'jsdoc/require-hyphen-before-param-description': ['error', 'never'],
 
+        'jsdoc/require-jsdoc': 'off',
+        'jsdoc/require-param-type': 'off',
+        /**
+         * Since we are using TypeScript, we don't need to enforce types in JSDoc.
+         *
+         * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/.README/rules/require-return-type.md
+         */
+        'jsdoc/require-returns-type': 'off',
+
         /**
          * Enforce a new-line between the JSDoc summary and tags. Aims to improve
          * readability by separating the summary and tags.
@@ -49,27 +70,6 @@ export function jsdoc(): Linter.FlatConfig[] {
          * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/tag-lines.md#readme
          */
         'jsdoc/tag-lines': ['error', 'any', { startLines: 1 }],
-
-        /**
-         * Since we are using TypeScript, we don't need to enforce types in JSDoc.
-         *
-         * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/.README/rules/require-return-type.md
-         */
-        'jsdoc/require-returns-type': 'off',
-        'jsdoc/require-param-type': 'off',
-        'jsdoc/require-jsdoc': 'off',
-
-        /**
-         * Enforce a strict set of tags for the JSDoc comment. This rule also includes
-         * some custom tags that are used in our projects.
-         *
-         * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/.README/rules/check-tag-names.md
-         */
-        'jsdoc/check-tag-names': ['error', {
-          definedTags: [
-            'category',
-          ],
-        }],
       },
     },
   ]

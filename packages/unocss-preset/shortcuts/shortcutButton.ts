@@ -1,6 +1,6 @@
-import { Shortcut } from '@unocss/core'
-import { Theme, parseColor } from '@unocss/preset-mini'
 import { dedent } from '@unshared/string/dedent'
+import { Theme, parseColor } from '@unocss/preset-mini'
+import { Shortcut } from '@unocss/core'
 
 export const shortcutButton: Shortcut = [
   /^btn(-\w{2,3})?$/,
@@ -26,7 +26,8 @@ export const shortcutButton: Shortcut = [
 export const shortcutButtonOutlined: Shortcut = [
   /^btn(-outlined)?-(.+)$/,
   ([, outlined, color]: string[], { theme }: { theme: Theme }) => {
-  // --- Resolve color.
+
+    // --- Resolve color.
     const themeColor = parseColor(color, theme)
     if (!themeColor?.color) return
 

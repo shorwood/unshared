@@ -19,17 +19,17 @@ export function escapeRegexp(value: string, escaped = regExpSpecialCharacters): 
   return value.replace(replacementExp, '\\$&')
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should escape RegExp special characters', () => {
+  test('should escape RegExp special characters', () => {
     const result = escapeRegexp('foo$foo(foo)foo*foo+foo.foo?foo[foo]foo^foo{foo}foo|foo')
     const expected = 'foo\\$foo\\(foo\\)foo\\*foo\\+foo\\.foo\\?foo\\[foo\\]foo\\^foo\\{foo\\}foo\\|foo'
-    expect(result).toEqual(expected)
+    expect(result).toStrictEqual(expected)
   })
 
-  it('should only escape the specified RegExp special characters', () => {
+  test('should only escape the specified RegExp special characters', () => {
     const result = escapeRegexp('foo$foo(foo)foo*foo+foo.foo?foo[foo]foo^foo{foo}foo|foo', ['*'])
     const expected = 'foo$foo(foo)foo\\*foo+foo.foo?foo[foo]foo^foo{foo}foo|foo'
-    expect(result).toEqual(expected)
+    expect(result).toStrictEqual(expected)
   })
 }

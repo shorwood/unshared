@@ -1,6 +1,5 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-import { NotUndefined, Function } from '@unshared/types'
-import { ReactiveFlag, ReactiveData } from './constants'
+import { Function, NotUndefined } from '@unshared/types'
+import { ReactiveData, ReactiveFlag } from './constants'
 
 /**
  * A callback to call when an object is changed.
@@ -10,6 +9,15 @@ import { ReactiveFlag, ReactiveData } from './constants'
 export type ReactiveCallback<T = unknown> = (object: T) => void
 
 export interface ReactiveOptions<T = unknown> {
+  /**
+   * An array of functions that will be called when the object is changed.
+   * This is used internally to pass the callbacks to nested reactive objects.
+   * You should not use this option directly and instead use the `watch`
+   * function.
+   *
+   * @internal
+   */
+  callbacks?: Array<ReactiveCallback<T>>
   /**
    * Whether to recursively watch the nested objects and arrays. Be careful
    * when using this option, as it can cause performance issues if the object
@@ -41,15 +49,6 @@ export interface ReactiveOptions<T = unknown> {
    * @internal
    */
   root?: T
-  /**
-   * An array of functions that will be called when the object is changed.
-   * This is used internally to pass the callbacks to nested reactive objects.
-   * You should not use this option directly and instead use the `watch`
-   * function.
-   *
-   * @internal
-   */
-  callbacks?: Array<ReactiveCallback<T>>
 }
 
 /**
@@ -61,13 +60,13 @@ export interface ReactiveOptions<T = unknown> {
  * @returns A reactive object.
  * @example Reactive<{ foo: string }>
  */
-export type Reactive<T = unknown> = T & {
-  [ReactiveFlag]: true
+export type Reactive<T = unknown> = {
   [ReactiveData]: {
     callbacks: Array<ReactiveCallback<T extends unknown ? any : T>>
     source: T extends unknown ? any : T
   }
-}
+  [ReactiveFlag]: true
+} & T
 
 /**
  * An object that might be reactive.
@@ -151,23 +150,25 @@ function wrapOperation(operation: keyof ProxyHandler<object>, callback: Function
  * value.foo = 'baz' // 'Object changed!'
  */
 export function reactive<T>(source: T, options: ReactiveOptions<T> = {}): Reactive<T> {
-  const { deep = false, root = source, hooks = [], callbacks = [] } = options
+  const { callbacks = [], deep = false, hooks = [], root = source } = options
 
   // --- Check if the source is an object.
   if (typeof source !== 'object' || source === null)
     throw new TypeError('The source must be an object or array.')
 
-  // --- Assign the callback function.
+  // --- Define a function that will call all the callbacks associated with the object.
   const callback = () => { for (const callback of callbacks) callback(root) }
 
   // --- Create the proxy.
   return new Proxy(source, {
+    defineProperty: wrapOperation('defineProperty', callback, source, root),
+    deleteProperty: wrapOperation('deleteProperty', callback, source, root),
+    setPrototypeOf: wrapOperation('setPrototypeOf', callback, source, root),
+
+    // --- Get the value of a property.
     get(target, property) {
-      // --- Hidden properties.
       if (property === ReactiveFlag) return true
       if (property === ReactiveData) return { callbacks, source }
-
-      // --- Get the value.
       let value: unknown = Reflect.get(target, property, source)
 
       // --- Bind functions to the target.
@@ -180,30 +181,25 @@ export function reactive<T>(source: T, options: ReactiveOptions<T> = {}): Reacti
 
       // --- If deep and the value is an object, watch it.
       if (deep && typeof value === 'object' && value !== null)
-        value = reactive(value as T, { deep, root, hooks, callbacks })
+        value = reactive(value as T, { callbacks, deep, hooks, root })
 
       // --- Return the value.
       return value
     },
-
-    // --- Wrap write operations.
-    defineProperty: wrapOperation('defineProperty', callback, source, root),
-    deleteProperty: wrapOperation('deleteProperty', callback, source, root),
-    setPrototypeOf: wrapOperation('setPrototypeOf', callback, source, root),
   }) as Reactive<T>
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('shoult return a proxy of the object', () => {
+  test('should return a proxy of the object', () => {
     const object = { foo: 'bar' }
     const result = reactive(object)
-    expect(result).toEqual(object)
+    expect(result).toMatchObject(object)
     expect(result).not.toStrictEqual(object)
     expectTypeOf(result).toEqualTypeOf<Reactive<typeof object>>()
   })
 
-  it('should trigger when a property is set', () => {
+  test('should trigger when a property is set', () => {
     const callback = vi.fn() as () => {}
     const object = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
@@ -213,18 +209,19 @@ if (import.meta.vitest) {
     expectTypeOf(result).toEqualTypeOf<Reactive<typeof object>>()
   })
 
-  it('should trigger when a property is ad2ded', () => {
+  test('should trigger when a property is ad2ded', () => {
     const callback = vi.fn() as () => {}
     const object = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
+
     // @ts-expect-error: ignore
     result.baz = 'qux'
-    expect(callback).toHaveBeenCalledWith({ foo: 'bar', baz: 'qux' })
+    expect(callback).toHaveBeenCalledWith({ baz: 'qux', foo: 'bar' })
     expect(callback).toHaveBeenCalledOnce()
     expectTypeOf(result).toEqualTypeOf<Reactive<typeof object>>()
   })
 
-  it('should trigger when a property is deleted', () => {
+  test('should trigger when a property is deleted', () => {
     const callback = vi.fn() as () => {}
     const object: { foo?: string } = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
@@ -233,16 +230,16 @@ if (import.meta.vitest) {
     expect(callback).toHaveBeenCalledOnce()
   })
 
-  it('should trigger when Object.assign is used', () => {
+  test('should trigger when Object.assign is used', () => {
     const callback = vi.fn() as () => {}
     const object = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
     Object.assign(result, { baz: 'qux' })
-    expect(callback).toHaveBeenCalledWith({ foo: 'bar', baz: 'qux' })
+    expect(callback).toHaveBeenCalledWith({ baz: 'qux', foo: 'bar' })
     expect(callback).toHaveBeenCalledOnce()
   })
 
-  it('should trigger when a property is set with Object.defineProperty', () => {
+  test('should trigger when a property is set with Object.defineProperty', () => {
     const callback = vi.fn() as () => {}
     const object = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
@@ -251,7 +248,7 @@ if (import.meta.vitest) {
     expect(callback).toHaveBeenCalledOnce()
   })
 
-  it('should trigger when a property is set with Object.defineProperties', () => {
+  test('should trigger when a property is set with Object.defineProperties', () => {
     const callback = vi.fn() as () => {}
     const object = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
@@ -260,7 +257,7 @@ if (import.meta.vitest) {
     expect(callback).toHaveBeenCalledOnce()
   })
 
-  it('should trigger when the prototype is set', () => {
+  test('should trigger when the prototype is set', () => {
     const callback = vi.fn() as () => {}
     const object = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
@@ -269,7 +266,7 @@ if (import.meta.vitest) {
     expect(callback).toHaveBeenCalledOnce()
   })
 
-  it('should trigger when a nested property is set', () => {
+  test('should trigger when a nested property is set', () => {
     const callback = vi.fn() as () => {}
     const object = { foo: { bar: { baz: 'qux' } } }
     const result = reactive(object, { callbacks: [callback], deep: true })
@@ -278,27 +275,27 @@ if (import.meta.vitest) {
     expect(callback).toHaveBeenCalledOnce()
   })
 
-  it('should trigger when an item is pushed to an array', () => {
+  test('should trigger when an item is pushed to an array', () => {
     const callback = vi.fn() as () => {}
     const object = ['bar']
     const result = reactive(object, { callbacks: [callback], hooks: ['push'] })
     const resultPush = result.push('baz')
-    expect(resultPush).toEqual(2)
+    expect(resultPush).toBe(2)
     expect(callback).toHaveBeenCalledWith(['bar', 'baz'])
     expect(callback).toHaveBeenCalledOnce()
   })
 
-  it('should trigger when an items is pushed to a nested array', () => {
+  test('should trigger when an items is pushed to a nested array', () => {
     const callback = vi.fn() as () => {}
     const object = { foo: ['bar'] }
     const result = reactive(object, { callbacks: [callback], deep: true, hooks: ['push'] })
     const resultPush = result.foo.push('baz')
-    expect(resultPush).toEqual(2)
+    expect(resultPush).toBe(2)
     expect(callback).toHaveBeenCalledWith({ foo: ['bar', 'baz'] })
     expect(callback).toHaveBeenCalledOnce()
   })
 
-  it('should not trigger when a property is set to the same value', () => {
+  test('should not trigger when a property is set to the same value', () => {
     const callback = vi.fn() as () => {}
     const object = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })

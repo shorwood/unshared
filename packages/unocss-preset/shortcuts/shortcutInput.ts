@@ -1,5 +1,5 @@
-import { Shortcut } from '@unocss/core'
 import { dedent } from '@unshared/string'
+import { Shortcut } from '@unocss/core'
 
 export const shortcutInput: Shortcut = [
   /^input(?:-(.+))?$/,

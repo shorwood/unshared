@@ -13,24 +13,24 @@ export type TupleShift<T extends unknown[]> =
     ? T extends Array<infer U> ? [T, U] : never
     : T extends [infer U, ...infer V] ? [V, U] : [[], undefined]
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should shift a tuple to the left by one', () => {
+  test('should shift a tuple to the left by one', () => {
     type Result = TupleShift<[1, 2, 3]>
     expectTypeOf<Result>().toEqualTypeOf<[[2, 3], 1]>()
   })
 
-  it('should shift an empty tuple and return undefined', () => {
+  test('should shift an empty tuple and return undefined', () => {
     type Result = TupleShift<[]>
     expectTypeOf<Result>().toEqualTypeOf<[[], undefined]>()
   })
 
-  it('should shift a tuple with one element and return an empty tuple', () => {
+  test('should shift a tuple with one element and return an empty tuple', () => {
     type Result = TupleShift<[1]>
     expectTypeOf<Result>().toEqualTypeOf<[[], 1]>()
   })
 
-  it('should shift an array', () => {
+  test('should shift an array', () => {
     type Result = TupleShift<number[]>
     expectTypeOf<Result>().toEqualTypeOf<[number[], number]>()
   })

@@ -1,6 +1,6 @@
-import { MathSubstract } from './MathSubstract'
-import { TupleLength } from './TupleLength'
 import { IsNumber, IsZero } from './utils'
+import { TupleLength } from './TupleLength'
+import { MathSubstract } from './MathSubstract'
 
 /**
  * Extract a slice of a tuple type.
@@ -21,27 +21,27 @@ export type TupleSlice<T extends unknown[], I extends number = 0, J extends numb
         : TupleSlice<Tail, MathSubstract<I, 1>, MathSubstract<J, 1>>
       : []
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should extract a slice of a tuple type from the beginning', () => {
+  test('should extract a slice of a tuple type from the beginning', () => {
     type Result = TupleSlice<[1, 2, 3, 4, 5], 1>
     type Expected = [2, 3, 4, 5]
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should extract a slice of a tuple type from the end', () => {
+  test('should extract a slice of a tuple type from the end', () => {
     type Result = TupleSlice<[1, 2, 3, 4, 5], 0, 4>
     type Expected = [1, 2, 3, 4]
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should extract a slice of a tuple type from the middle', () => {
+  test('should extract a slice of a tuple type from the middle', () => {
     type Result = TupleSlice<[1, 2, 3, 4, 5], 2, 4>
     type Expected = [3, 4]
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 
-  it('should return as-is if the starting index is number', () => {
+  test('should return as-is if the starting index is number', () => {
     type Result = TupleSlice<[1, 2, 3, 4, 5], number>
     type Expected = [1, 2, 3, 4, 5]
     expectTypeOf<Result>().toEqualTypeOf<Expected>()

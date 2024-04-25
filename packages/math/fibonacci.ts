@@ -11,7 +11,8 @@ import { NumberIntegerPositive } from '@unshared/types'
  * @returns The Fibonacci number at position N
  * @example fibonacci(10) // 55
  */
-export function fibonacci<N extends number>(n: NumberIntegerPositive<N> | 0): number {
+export function fibonacci<N extends number>(n: 0 | NumberIntegerPositive<N>): number {
+
   // --- Handle edge cases.
   if (Number.isSafeInteger(n) === false) throw new TypeError('Cannot calculate Fibonacci number at non-integer index')
   if (n < 0) throw new RangeError('Cannot calculate Fibonacci number at negative index')
@@ -34,36 +35,38 @@ export function fibonacci<N extends number>(n: NumberIntegerPositive<N> | 0): nu
   return Number(c)
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should compute Fibonacci number at 0', () => {
+  test('should compute Fibonacci number at 0', () => {
     const result = fibonacci(0)
-    expect(result).toEqual(0)
+    expect(result).toBe(0)
   })
 
-  it('should compute Fibonacci number at 1', () => {
+  test('should compute Fibonacci number at 1', () => {
     const result = fibonacci(1)
-    expect(result).toEqual(1)
+    expect(result).toBe(1)
   })
 
-  it('should compute Fibonacci number at N', () => {
+  test('should compute Fibonacci number at N', () => {
     const result = fibonacci(50)
-    expect(result).toEqual(12586269025)
+    expect(result).toBe(12586269025)
   })
 
-  it('should throw when the argument is negative', () => {
+  test('should throw when the argument is negative', () => {
+
     // @ts-expect-error: Test negative number
     const shouldThrow = () => fibonacci(-1)
     expect(shouldThrow).toThrow('Cannot calculate Fibonacci number at negative index')
   })
 
-  it('should throw when the argument is not an integer', () => {
+  test('should throw when the argument is not an integer', () => {
+
     // @ts-expect-error: Test non-integer number
     const shouldThrow = () => fibonacci(1.5)
     expect(shouldThrow).toThrow('Cannot calculate Fibonacci number at non-integer index')
   })
 
-  it('should throw when the argument is not a safe integer', () => {
+  test('should throw when the argument is not a safe integer', () => {
     const shouldThrow = () => fibonacci(Number.MAX_SAFE_INTEGER + 1)
     expect(shouldThrow).toThrow('Cannot calculate Fibonacci number at non-integer index')
   })

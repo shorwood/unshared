@@ -10,6 +10,7 @@
  * @example distanceLevenshtein('bar', 'baz') // 1
  */
 export function distanceLevenshtein(a: string, b: string): number {
+
   // --- Early exit if the strings are equal.
   if (a === b) return 0
 
@@ -50,35 +51,35 @@ export function distanceLevenshtein(a: string, b: string): number {
   return matrix[b.length][a.length]
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should return the distance between two empty strings', () => {
+  test('should return the distance between two empty strings', () => {
     const result = distanceLevenshtein('', '')
-    expect(result).toEqual(0)
+    expect(result).toBe(0)
   })
 
-  it('should return the distance between Potato and Tomato', () => {
+  test('should return the distance between Potato and Tomato', () => {
     const result = distanceLevenshtein('Potato', 'Tomato')
-    expect(result).toEqual(2)
+    expect(result).toBe(2)
   })
 
-  it('should return the distance between Sitting and Kitten', () => {
+  test('should return the distance between Sitting and Kitten', () => {
     const result = distanceLevenshtein('Sitting', 'Kitten')
-    expect(result).toEqual(3)
+    expect(result).toBe(3)
   })
 
-  it('should return the distance between Saturday and Sunday', () => {
+  test('should return the distance between Saturday and Sunday', () => {
     const result = distanceLevenshtein('Saturday', 'Sunday')
-    expect(result).toEqual(3)
+    expect(result).toBe(3)
   })
 
-  it('should return the distance between wikipedia and wikipédia', () => {
+  test('should return the distance between wikipedia and wikipédia', () => {
     const result = distanceLevenshtein('wikipedia', 'wikipédia')
-    expect(result).toEqual(1)
+    expect(result).toBe(1)
   })
 
-  it('should return the distance between Mississippi and Missouri', () => {
+  test('should return the distance between Mississippi and Missouri', () => {
     const result = distanceLevenshtein('Mississippi', 'Missouri')
-    expect(result).toEqual(6)
+    expect(result).toBe(6)
   })
 }

@@ -10,8 +10,8 @@ import { MaybePromise, NotPromise } from '@unshared/types'
  * @example Result<string, Error> // [string | undefined, Error | undefined]
  */
 export type Result<T = unknown, E extends Error = Error> =
-  { value: T; error: undefined } |
-  { value: undefined; error: E }
+  { error: E; value: undefined } |
+  { error: undefined; value: T }
 
 /**
  * Run a function and return the value or error in an array. If the function
@@ -65,37 +65,37 @@ export function attempt(fn: () => unknown) {
   }
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should returns value using a valid sync function', () => {
+  test('should returns value using a valid sync function', () => {
     const result = attempt(() => 'Hello, world!')
     expect(result).toStrictEqual({ value: 'Hello, world!' })
     expectTypeOf(result).toEqualTypeOf<Result<string, Error>>()
   })
 
-  it('should returns error using a failing sync function', () => {
+  test('should returns error using a failing sync function', () => {
     const result = attempt(() => { throw new Error('Uh oh! Something went wrong!') })
     expect(result).toStrictEqual({ error: new Error('Uh oh! Something went wrong!') })
     expectTypeOf(result).toEqualTypeOf<Result<never, Error>>()
   })
 
-  it('should returns value using a valid async function', async() => {
+  test('should returns value using a valid async function', async() => {
     // eslint-disable-next-line @typescript-eslint/require-await
     const result = await attempt(async() => 'Hello, world!')
     expect(result).toStrictEqual({ value: 'Hello, world!' })
     expectTypeOf(result).toEqualTypeOf<Result<string, Error>>()
   })
 
-  it('should returns error using a failing async function', async() => {
+  test('should returns error using a failing async function', async() => {
     // eslint-disable-next-line @typescript-eslint/require-await
     const result = await attempt(async() => { throw new Error('Uh oh! Something went wrong!') })
     expect(result).toStrictEqual({ error: new Error('Uh oh! Something went wrong!') })
     expectTypeOf(result).toEqualTypeOf<Result<never, Error>>()
   })
 
-  it('should return a discriminated union type', () => {
+  test('should return a discriminated union type', () => {
     const result = attempt(() => 'Hello, world!')
-    if (result.error) expectTypeOf(result).toEqualTypeOf<{ value: undefined; error: Error }>()
-    if (result.value) expectTypeOf(result).toEqualTypeOf<{ value: string; error: undefined }>()
+    if (result.error) expectTypeOf(result).toEqualTypeOf<{ error: Error; value: undefined }>()
+    if (result.value) expectTypeOf(result).toEqualTypeOf<{ error: undefined; value: string }>()
   })
 }

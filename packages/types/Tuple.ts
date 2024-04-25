@@ -24,39 +24,39 @@ export type Tuple<L extends number = number, U = unknown, T extends U[] = []> =
               : BuildTuple<L, U, [...T, U]>
             : T
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should build a tuple of length 3', () => {
+  test('should build a tuple of length 3', () => {
     type Result = Tuple<3>
     expectTypeOf<Result>().toEqualTypeOf<[unknown, unknown, unknown]>()
   })
 
-  it('should build a tuple of length 0', () => {
+  test('should build a tuple of length 0', () => {
     type Result = Tuple<0>
     expectTypeOf<Result>().toEqualTypeOf<[]>()
   })
 
-  it('should build a tuple of length 3 with string', () => {
+  test('should build a tuple of length 3 with string', () => {
     type Result = Tuple<3, string>
     expectTypeOf<Result>().toEqualTypeOf<[string, string, string]>()
   })
 
-  it('should build an array if L is number', () => {
+  test('should build an array if L is number', () => {
     type Result = Tuple<number, string>
     expectTypeOf<Result>().toEqualTypeOf<string[]>()
   })
 
-  it('should build an array of unknown by default', () => {
+  test('should build an array of unknown by default', () => {
     type Result = Tuple
     expectTypeOf<Result>().toEqualTypeOf<unknown[]>()
   })
 
-  it('should return never if L is negative', () => {
+  test('should return never if L is negative', () => {
     type Result = Tuple<-1>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })
 
-  it('should return never if L is a decimal', () => {
+  test('should return never if L is a decimal', () => {
     type Result = Tuple<1.1>
     expectTypeOf<Result>().toEqualTypeOf<never>()
   })

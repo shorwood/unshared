@@ -1,11 +1,19 @@
-import { debounce } from '@unshared/functions/debounce'
-import { throttle } from '@unshared/functions/throttle'
-import { toReactive } from '@vueuse/core'
 import { ExtractPropTypes, Prop, computed, inject, provide } from 'vue'
+import { toReactive } from '@vueuse/core'
+import { throttle } from '@unshared/functions/throttle'
+import { debounce } from '@unshared/functions/debounce'
 import { BASE_STATE_PROPS, useBaseState } from './useBaseState'
 
 export const BASE_CLICKABLE_PROPS = {
   ...BASE_STATE_PROPS,
+  /**
+   * The debounce time to wait before calling the `onClick` method. This is
+   * used to debounce the click event and prevent multiple clicks from being
+   * called in a short amount of time.
+   *
+   * @default 0
+   */
+  debounce: { default: 0, type: Number } as Prop<number>,
   /**
    * The callback to call when the component is clicked. This is used to
    * handle the click event of the component and should be called when the
@@ -21,15 +29,7 @@ export const BASE_CLICKABLE_PROPS = {
    *
    * @default 0
    */
-  throttle: { type: Number, default: 0 } as Prop<number>,
-  /**
-   * The debounce time to wait before calling the `onClick` method. This is
-   * used to debounce the click event and prevent multiple clicks from being
-   * called in a short amount of time.
-   *
-   * @default 0
-   */
-  debounce: { type: Number, default: 0 } as Prop<number>,
+  throttle: { default: 0, type: Number } as Prop<number>,
 }
 
 /** The properties of the base clickable component. */
@@ -82,7 +82,7 @@ export function useBaseClickable(props: BaseClickableProps) {
   }))
 
   // --- Provide the composable into the component and return it.
-  const composable = toReactive({ onClick, onClickRaw, attributes })
+  const composable = toReactive({ attributes, onClick, onClickRaw })
   provide('baseClickable', composable)
   return composable
 }

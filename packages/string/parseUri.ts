@@ -1,52 +1,52 @@
 export interface UriComponents {
-  /** The protocol (e.g. `http`) */
-  protocol?: string
   /** The authority (e.g. `user:pass@www.example.com:443`) */
   authority?: string
-  /** The origin (e.g. `http://www.example.com`) */
-  origin?: string
-  /** The userinfo (e.g. `user:pass`) */
-  userinfo?: string
-  /** The username (e.g. `user`) */
-  username?: string
-  /** The password (e.g. `pass`) */
-  password?: string
-  /** The host (e.g. `www.example.com:433`) */
-  host?: string
-  /** The host name (e.g. `www.example.com`) */
-  hostName?: string
-  /** The host port (e.g. `443`) */
-  hostPort?: string
-  /** The host port as a number (e.g. `433`) */
-  hostPortNumber?: number
-  /** The host IP (e.g. `127.0.0.1`) */
-  hostIp?: string
-  /** The host IP as an IPv4 address (e.g. `127.0.0.1`) */
-  hostIpv4?: string
-  /** The host IP as an IPv6 address (e.g. `::1`) */
-  hostIpv6?: string
   /** The domain name (e.g. `example`) */
   domain?: string
+  /** Domain name with the top level domain (e.g. `www.example.com`) */
+  domainFull?: string
   /** The root domain (e.g. `example.com`) */
   domainRoot?: string
   /** The subdomain (e.g. `www`) */
   domainSub?: string
   /** The top level domain (e.g. `com`) */
   domainTop?: string
-  /** Domain name with the top level domain (e.g. `www.example.com`) */
-  domainFull?: string
-  /** The path (e.g. `/path/to/file.html`) */
-  path?: string
-  /** The path name (e.g. `file.html`) */
-  pathName?: string
-  /** The path extension (e.g. `html`) */
-  pathExtension?: string
-  /** The path directory (e.g. `/path/to`) */
-  pathDirectory?: string
-  /** The search query (e.g. `?q=search`) */
-  query?: string
   /** The hash (e.g. `#hash`) */
   hash?: string
+  /** The host (e.g. `www.example.com:433`) */
+  host?: string
+  /** The host IP (e.g. `127.0.0.1`) */
+  hostIp?: string
+  /** The host IP as an IPv4 address (e.g. `127.0.0.1`) */
+  hostIpv4?: string
+  /** The host IP as an IPv6 address (e.g. `::1`) */
+  hostIpv6?: string
+  /** The host name (e.g. `www.example.com`) */
+  hostName?: string
+  /** The host port (e.g. `443`) */
+  hostPort?: string
+  /** The host port as a number (e.g. `433`) */
+  hostPortNumber?: number
+  /** The origin (e.g. `http://www.example.com`) */
+  origin?: string
+  /** The password (e.g. `pass`) */
+  password?: string
+  /** The path (e.g. `/path/to/file.html`) */
+  path?: string
+  /** The path directory (e.g. `/path/to`) */
+  pathDirectory?: string
+  /** The path extension (e.g. `html`) */
+  pathExtension?: string
+  /** The path name (e.g. `file.html`) */
+  pathName?: string
+  /** The protocol (e.g. `http`) */
+  protocol?: string
+  /** The search query (e.g. `?q=search`) */
+  query?: string
+  /** The userinfo (e.g. `user:pass`) */
+  userinfo?: string
+  /** The username (e.g. `user`) */
+  username?: string
 }
 
 /**
@@ -278,15 +278,15 @@ function isStringIPv6(maybeIpv6: string): boolean {
  */
 // TODO: Improve unsafe regular expressions.
 export function parseUri(uri: string): UriComponents {
+
   // --- Extract components
-  const [, protocol, authority, path, query, hash] = uri.match(URI_REGEXP) || []
-  const [, userinfo, host] = authority?.match(URI_AUTHORITY_REGEXP) || []
+  const [, protocol, authority, path, query, hash] = uri.match(URI_REGEXP) ?? []
+  const [, userinfo, host] = authority?.match(URI_AUTHORITY_REGEXP) ?? []
   const [username, password] = userinfo?.split(':') || []
-  const [, pathDirectory, pathName, pathExtension] = path?.match(URI_PATH_REGEXP) || []
+  const [, pathDirectory, pathName, pathExtension] = path?.match(URI_PATH_REGEXP) ?? []
 
   // --- Extract hostname and port or Ipv6
-
-  const [, hostName, maybeIpv6, hostPort] = host?.match(/^(?<hostName>[\w.-]+?|(?:\[(?<ipv6>.+)]))(?::(?<port>\d{1,5}))?$/) || []
+  const [, hostName, maybeIpv6, hostPort] = host?.match(/^(?<hostName>[\w.-]+?|(?:\[(?<ipv6>.+)]))(?::(?<port>\d{1,5}))?$/) ?? []
   const hostPortNumber = hostPort ? Number.parseInt(hostPort) || undefined : undefined
 
   // --- Extract domain parts or IP.
@@ -346,97 +346,97 @@ export function parseUri(uri: string): UriComponents {
 
   // --- Return all components
   return {
-    protocol,
     authority,
-    origin,
-    userinfo,
-    username,
-    password,
-    host,
-    hostName,
-    hostPort,
-    hostPortNumber,
-    hostIp,
-    hostIpv4,
-    hostIpv6,
     domain,
+    domainFull,
     domainRoot,
     domainSub,
     domainTop,
-    domainFull,
-    path,
-    pathName,
-    pathExtension,
-    pathDirectory,
-    query,
     hash,
+    host,
+    hostIp,
+    hostIpv4,
+    hostIpv6,
+    hostName,
+    hostPort,
+    hostPortNumber,
+    origin,
+    password,
+    path,
+    pathDirectory,
+    pathExtension,
+    pathName,
+    protocol,
+    query,
+    userinfo,
+    username,
   }
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it.each([
+  test.each([
 
     ['https://user:pass@eu3.www.example.co.uk:443/path/to/file.html?query=string#hash', {
-      protocol: 'https',
       authority: 'user:pass@eu3.www.example.co.uk:443',
-      origin: 'https://eu3.www.example.co.uk',
-      userinfo: 'user:pass',
-      username: 'user',
-      password: 'pass',
+      domain: 'example',
+      domainFull: 'eu3.www.example.co.uk',
+      domainRoot: 'example.co.uk',
+      domainSub: 'eu3.www',
+      domainTop: 'co.uk',
+      hash: '#hash',
       host: 'eu3.www.example.co.uk:443',
       hostName: 'eu3.www.example.co.uk',
       hostPort: '443',
       hostPortNumber: 443,
-      domain: 'example',
-      domainRoot: 'example.co.uk',
-      domainSub: 'eu3.www',
-      domainTop: 'co.uk',
-      domainFull: 'eu3.www.example.co.uk',
+      origin: 'https://eu3.www.example.co.uk',
+      password: 'pass',
       path: '/path/to/file.html',
-      pathName: 'file.html',
-      pathExtension: 'html',
       pathDirectory: '/path/to',
+      pathExtension: 'html',
+      pathName: 'file.html',
+      protocol: 'https',
       query: '?query=string',
-      hash: '#hash',
+      userinfo: 'user:pass',
+      username: 'user',
     }],
 
     ['www.example.com', {
       authority: 'www.example.com',
-      origin: 'www.example.com',
-      host: 'www.example.com',
-      hostName: 'www.example.com',
       domain: 'example',
+      domainFull: 'www.example.com',
       domainRoot: 'example.com',
       domainSub: 'www',
       domainTop: 'com',
-      domainFull: 'www.example.com',
+      host: 'www.example.com',
+      hostName: 'www.example.com',
+      origin: 'www.example.com',
     }],
 
     ['user@localhost:22', {
       authority: 'user@localhost:22',
-      origin: 'localhost',
-      userinfo: 'user',
-      username: 'user',
       host: 'localhost:22',
       hostName: 'localhost',
       hostPort: '22',
       hostPortNumber: 22,
+      origin: 'localhost',
+      userinfo: 'user',
+      username: 'user',
     }],
 
     ['ssh://user:password@127.0.0.1:8080', {
-      protocol: 'ssh',
       authority: 'user:password@127.0.0.1:8080',
-      origin: 'ssh://127.0.0.1',
-      userinfo: 'user:password',
-      username: 'user',
-      password: 'password',
       host: '127.0.0.1:8080',
+      hostIp: '127.0.0.1',
+      hostIpv4: '127.0.0.1',
       hostName: '127.0.0.1',
       hostPort: '8080',
       hostPortNumber: 8080,
-      hostIp: '127.0.0.1',
-      hostIpv4: '127.0.0.1',
+      origin: 'ssh://127.0.0.1',
+      password: 'password',
+      protocol: 'ssh',
+      userinfo: 'user:password',
+      username: 'user',
     }],
 
     ['::1', {
@@ -445,16 +445,16 @@ if (import.meta.vitest) {
     }],
 
     ['https://[::1]:8080?q=1#hash', {
-      protocol: 'https',
       authority: '[::1]:8080',
-      origin: 'https://[::1]',
+      hash: '#hash',
       host: '[::1]:8080',
+      hostIpv6: '::1',
       hostName: '[::1]',
       hostPort: '8080',
       hostPortNumber: 8080,
-      hostIpv6: '::1',
+      origin: 'https://[::1]',
+      protocol: 'https',
       query: '?q=1',
-      hash: '#hash',
     }],
 
     ['//', {
@@ -464,26 +464,26 @@ if (import.meta.vitest) {
 
     ['//:', {
       path: '//:',
-      pathName: ':',
       pathDirectory: '/',
+      pathName: ':',
     }],
 
     ['//@', {
       path: '//@',
-      pathName: '@',
       pathDirectory: '/',
+      pathName: '@',
     }],
 
     ['http://', {
-      protocol: 'http',
       origin: 'http',
+      protocol: 'http',
     }],
 
     ['-', {
       authority: '-',
-      origin: '-',
       host: '-',
       hostName: '-',
+      origin: '-',
     }],
 
   ])('should extract the components of "%s"', (url: string, expected: object) => {

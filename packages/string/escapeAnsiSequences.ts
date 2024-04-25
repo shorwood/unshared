@@ -16,20 +16,20 @@ export function escapeAnsiSequences(text: string): string {
   return text.replaceAll(ANSI_REGEX, '')
 }
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should escape ANSI sequences from a string', () => {
+  test('should escape ANSI sequences from a string', () => {
     const result = escapeAnsiSequences('\u001B[1mHello\u001B[22m')
-    expect(result).toEqual('Hello')
+    expect(result).toBe('Hello')
   })
 
-  it('should escape ANSI sequences from a string with multiple sequences', () => {
+  test('should escape ANSI sequences from a string with multiple sequences', () => {
     const result = escapeAnsiSequences('\u001B[1mHello\u001B[22m \u001B[2mWorld\u001B[22m')
-    expect(result).toEqual('Hello World')
+    expect(result).toBe('Hello World')
   })
 
-  it('should escape hyperlinks', () => {
+  test('should escape hyperlinks', () => {
     const result = escapeAnsiSequences('\u001B]8;;https://example.com\u0007Hello\u001B]8;;\u0007')
-    expect(result).toEqual('Hello')
+    expect(result).toBe('Hello')
   })
 }

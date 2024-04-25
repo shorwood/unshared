@@ -11,12 +11,12 @@ import {
 } from '../composables'
 
 interface SlotProps {
+  error: Error | string | undefined
+  errorMessage: string | undefined
   isExternalLink: boolean
   isInternalLink: boolean
   isLink: boolean
   isLoading: boolean
-  error: Error | string | undefined
-  errorMessage: string | undefined
 }
 
 export const Button = /* #__PURE__ */ defineComponent(
@@ -37,12 +37,12 @@ export const Button = /* #__PURE__ */ defineComponent(
 
     // --- Build the slot properties.
     const slotProps = computed<SlotProps>(() => ({
+      error: state.error,
+      errorMessage: state.errorMessage,
       isExternalLink: linkable.isExternalLink,
       isInternalLink: linkable.isInternalLink,
       isLink: linkable.isLink,
       isLoading: state.loading,
-      error: state.error,
-      errorMessage: state.errorMessage,
     }))
 
     // --- Return virtual DOM node.
@@ -53,6 +53,13 @@ export const Button = /* #__PURE__ */ defineComponent(
     )
   },
   {
+    emits: [
+      'click',
+      'update:loading',
+      'update:error',
+      'update:disabled',
+      'update:readonly',
+    ] as unknown as undefined,
     name: 'Button',
     props: {
       label: [String],
@@ -61,13 +68,6 @@ export const Button = /* #__PURE__ */ defineComponent(
       ...BASE_CLICKABLE_PROPS,
       ...BASE_RENDERABLE_PROPS,
     },
-    emits: [
-      'click',
-      'update:loading',
-      'update:error',
-      'update:disabled',
-      'update:readonly',
-    ] as unknown as undefined,
     slots: {
       [Symbol()]: {
         default: {} as (props: SlotProps) => VNode,

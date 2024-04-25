@@ -58,9 +58,9 @@ export function sample(object: Collection, size = 1) {
   return size === 1 ? result[0] : result
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should samples a single item from an array', () => {
+  test('should samples a single item from an array', () => {
     const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     const result = sample(array)
     expect(array).not.toBe(result)
@@ -68,7 +68,7 @@ if (import.meta.vitest) {
     expectTypeOf(result).toEqualTypeOf<number>()
   })
 
-  it('should samples a single item from an object', () => {
+  test('should samples a single item from an object', () => {
     const object = { a: 1, b: 2, c: 3, d: 4, e: 5 }
     const objectValues = Object.values(object)
     const result = sample(object)
@@ -77,7 +77,7 @@ if (import.meta.vitest) {
     expectTypeOf(result).toEqualTypeOf<number>()
   })
 
-  it('should samples an array of random items from an array', () => {
+  test('should samples an array of random items from an array', () => {
     const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     const result = sample(array, 3)
     expect(array).not.toBe(result)
@@ -88,7 +88,7 @@ if (import.meta.vitest) {
     expectTypeOf(result).toEqualTypeOf<[number, number, number]>()
   })
 
-  it('should samples an array of random items from an object', () => {
+  test('should samples an array of random items from an object', () => {
     const object = { a: 1, b: 2, c: 3, d: 4, e: 5 }
     const objectValues = Object.values(object)
     const result = sample(object, 3)
@@ -100,39 +100,32 @@ if (import.meta.vitest) {
     expectTypeOf(result).toEqualTypeOf<[number, number, number]>()
   })
 
-  it('should throw an error if the chunk size is less than 1', () => {
+  test('should throw an error if the chunk size is less than 1', () => {
+
     // @ts-expect-error: Testing invalid input.
     const shouldThrow = () => sample([1, 2, 3], 0)
     expect(shouldThrow).toThrow(RangeError)
   })
 
-  it('should return undefined when sampling a single element from an empty array', () => {
+  test('should return undefined when sampling a single element from an empty array', () => {
     const result = sample([])
     expect(result).toBeUndefined()
     expectTypeOf(result).toEqualTypeOf<never>()
   })
 
-  it('should return undefined when sampling a single element from an empty object', () => {
+  test('should return undefined when sampling a single element from an empty object', () => {
     const result = sample({})
     expect(result).toBeUndefined()
     expectTypeOf(result).toEqualTypeOf<unknown>()
   })
 
-  it('should return a copy of the array when the sample size is the same as the array length', () => {
+  test('should return a copy of the array when the sample size is the same as the array length', () => {
     const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     const result = sample(array, array.length)
+    const sorted = [...array].sort((a, b) => a - b)
     expect(array).not.toBe(result)
     expect(result).lengthOf(10)
-    expect(result).toContain(1)
-    expect(result).toContain(2)
-    expect(result).toContain(3)
-    expect(result).toContain(4)
-    expect(result).toContain(5)
-    expect(result).toContain(6)
-    expect(result).toContain(7)
-    expect(result).toContain(8)
-    expect(result).toContain(9)
-    expect(result).toContain(10)
+    expect(sorted).toStrictEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     expectTypeOf(result).toEqualTypeOf<number[]>()
   })
 }

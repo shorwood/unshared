@@ -1,10 +1,10 @@
-import { execFile } from 'node:child_process'
-import { relative, resolve } from 'node:path'
-import { cwd as getCwd } from 'node:process'
 import { PackageJSON } from 'types-pkg-json'
-import { loadObject } from '../packages/fs/loadObject'
-import { toPascalCase } from '../packages/string/toPascalCase'
+import { cwd as getCwd } from 'node:process'
+import { relative, resolve } from 'node:path'
+import { execFile } from 'node:child_process'
 import { ROOT_PATH } from './constants'
+import { toPascalCase } from '../packages/string/toPascalCase'
+import { loadObject } from '../packages/fs/loadObject'
 
 /** The current working directory. */
 const cwd = getCwd()
@@ -41,17 +41,17 @@ export async function getPackageMetadata(packageName: string) {
   })
 
   return {
-    packageName,
     globalName,
     outputDirectory,
-    packagePath,
+    packageDependencies,
     packageJson,
     packageJsonFS,
     packageJsonPath,
+    packageName,
+    packagePath,
     packageRelativePath,
-    packageDependencies,
-    rootPackageJsonPath,
     rootPackageJson,
+    rootPackageJsonPath,
   }
 }
 

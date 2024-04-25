@@ -30,35 +30,37 @@ export function setBit<N extends number>(value: NumberInteger<N>, index: BitInde
     : value & ~(0b00000001 << index)
 }
 
-/* c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should set the first bit to 1', () => {
+  test('should set the first bit to 1', () => {
     const result = setBit(0, 0, true)
-    expect(result).toEqual(1)
+    expect(result).toBe(1)
   })
 
-  it('should set the first bit to 0', () => {
+  test('should set the first bit to 0', () => {
     const result = setBit(1, 0, false)
-    expect(result).toEqual(0)
+    expect(result).toBe(0)
   })
 
-  it('should set the last bit to 1', () => {
+  test('should set the last bit to 1', () => {
     const result = setBit(0, 31, true)
-    expect(result).toEqual(-0b10000000000000000000000000000000)
+    expect(result).toBe(-0b10000000000000000000000000000000)
   })
 
-  it('should set the last bit to 0', () => {
+  test('should set the last bit to 0', () => {
     const result = setBit(0b100000000000000000000000000000000, 31, false)
-    expect(result).toEqual(0)
+    expect(result).toBe(0)
   })
 
-  it('should throw if the index is greater than 31', () => {
+  test('should throw if the index is greater than 31', () => {
+
     // @ts-expect-error: Testing invalid input.
     const shouldThrow = () => setBit(0, 32, true)
     expect(shouldThrow).toThrow(RangeError)
   })
 
-  it('should throw if the index is less than 0', () => {
+  test('should throw if the index is less than 0', () => {
+
     // @ts-expect-error: Testing invalid input.
     const shouldThrow = () => setBit(0, -1, true)
     expect(shouldThrow).toThrow(RangeError)

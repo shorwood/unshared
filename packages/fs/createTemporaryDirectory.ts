@@ -1,6 +1,6 @@
-import { mkdir, rm } from 'node:fs/promises'
-import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { tmpdir } from 'node:os'
+import { mkdir, rm } from 'node:fs/promises'
 
 export interface CreateTemporaryDirectoryOptions {
   /**
@@ -49,40 +49,40 @@ export async function createTemporaryDirectory(options: CreateTemporaryDirectory
   await mkdir(path, { recursive: true })
 
   // --- Return the path and a function to remove the directory.
-  const remove = () => rm(path, { recursive: true, force: true })
+  const remove = () => rm(path, { force: true, recursive: true })
   return [path, remove] as const
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  const { statSync, existsSync } = await import('node:fs')
+  const { existsSync, statSync } = await import('node:fs')
 
-  it('should create an empty temporary directory in "/tmp/<random>"', async() => {
+  test('should create an empty temporary directory in "/tmp/<random>"', async() => {
     const [path] = await createTemporaryDirectory()
     const isDirectory = statSync(path).isDirectory()
     expect(path).toMatch(/^\/tmp\/[\da-z]+$/)
-    expect (isDirectory).toEqual(true)
+    expect (isDirectory).toBeTruthy()
   })
 
-  it('should create a temporary directory in the specified directory', async() => {
+  test('should create a temporary directory in the specified directory', async() => {
     const [path] = await createTemporaryDirectory({ directory: '/cache' })
     expect(path).toMatch(/^\/cache\/[\da-z]+$/)
   })
 
-  it('should recursively create the specified directory', async() => {
+  test('should recursively create the specified directory', async() => {
     const [path] = await createTemporaryDirectory({ directory: '/tmp/foo/bar' })
     expect(path).toMatch(/^\/tmp\/foo\/bar\/[\da-z]+$/)
   })
 
-  it('should create a temporary file with the given random function', async() => {
+  test('should create a temporary file with the given random function', async() => {
     const [path] = await createTemporaryDirectory({ random: () => 'foo' })
     expect(path).toMatch(/^\/tmp\/foo$/)
   })
 
-  it('should remove the temporary file after calling the remove function', async() => {
+  test('should remove the temporary file after calling the remove function', async() => {
     const [path, remove] = await createTemporaryDirectory()
     await remove()
     const exists = existsSync(path)
-    expect(exists).toEqual(false)
+    expect(exists).toBeFalsy()
   })
 }

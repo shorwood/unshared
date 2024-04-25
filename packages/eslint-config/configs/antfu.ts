@@ -1,5 +1,5 @@
-import { Linter } from 'eslint'
 import pluginAntfu from 'eslint-plugin-antfu'
+import { Linter } from 'eslint'
 
 export function antfu(): Linter.FlatConfig[] {
   return [
@@ -8,15 +8,7 @@ export function antfu(): Linter.FlatConfig[] {
         antfu: pluginAntfu,
       },
       rules: {
-        /**
-         * Enforce consistent line breaks inside braces of object/array/named imports/exports and
-         * function parameters. Reduces the cognitive load of reasoning about code style.
-         *
-         * @see https://github.com/antfu/eslint-plugin-antfu/blob/main/src/rules/consistent-list-newline.md
-         */
-        'object-curly-newline': 'off',
         'antfu/consistent-list-newline': 'error',
-
         /**
          * Auto-fix import duplication. The TypeScript compiler already detects and removes
          * duplicate imports, but this rule can be used to fix the issue automatically in the editor.
@@ -36,6 +28,14 @@ export function antfu(): Linter.FlatConfig[] {
          * @see https://github.com/antfu/eslint-plugin-antfu/blob/main/src/rules/top-level-function.md
          */
         'antfu/top-level-function': 'error',
+
+        /**
+         * Enforce consistent line breaks inside braces of object/array/named imports/exports and
+         * function parameters. Reduces the cognitive load of reasoning about code style.
+         *
+         * @see https://github.com/antfu/eslint-plugin-antfu/blob/main/src/rules/consistent-list-newline.md
+         */
+        'object-curly-newline': 'off',
       },
     },
   ]

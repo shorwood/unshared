@@ -20,9 +20,9 @@ export function decodeUtf8(value: string): Uint8Array {
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  it('should decode a UTF8 string into a buffer', () => {
+  test('should decode a UTF8 string into a buffer', () => {
     const result = decodeUtf8('Hello, World!')
     const buffer = Buffer.from(result).toString()
-    expect(buffer).toEqual('Hello, World!')
+    expect(buffer).toBe('Hello, World!')
   })
 }

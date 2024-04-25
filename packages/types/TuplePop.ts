@@ -13,24 +13,24 @@ export type TuplePop<T extends unknown[]> =
     ? T extends Array<infer U> ? [T, U] : never
     : T extends [...infer U, infer V] ? [U, V] : [[], undefined]
 
-/** c8 ignore next */
+/* v8 ignore next */
 if (import.meta.vitest) {
-  it('should pop the last element of a tuple', () => {
+  test('should pop the last element of a tuple', () => {
     type Result = TuplePop<[1, 2, 3]>
     expectTypeOf<Result>().toEqualTypeOf<[[1, 2], 3]>()
   })
 
-  it('should pop an empty tuple and return undefined', () => {
+  test('should pop an empty tuple and return undefined', () => {
     type Result = TuplePop<[]>
     expectTypeOf<Result>().toEqualTypeOf<[[], undefined]>()
   })
 
-  it('should pop a tuple with one element and return an empty tuple', () => {
+  test('should pop a tuple with one element and return an empty tuple', () => {
     type Result = TuplePop<[1]>
     expectTypeOf<Result>().toEqualTypeOf<[[], 1]>()
   })
 
-  it('should pop an array', () => {
+  test('should pop an array', () => {
     type Result = TuplePop<number[]>
     expectTypeOf<Result>().toEqualTypeOf<[number[], number]>()
   })

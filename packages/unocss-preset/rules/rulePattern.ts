@@ -1,5 +1,5 @@
-import { Rule } from '@unocss/core'
 import { Theme, parseColor } from '@unocss/preset-mini'
+import { Rule } from '@unocss/core'
 import { patterns } from '../constants/patterns'
 
 export const rulePattern: Rule = [
@@ -7,6 +7,7 @@ export const rulePattern: Rule = [
 
   // --- Resolve the pattern name, color, and opacity and return CSS properties.
   ([,pattern, color, opacity]: string[], { theme }: { theme: Theme }) => {
+
     // --- Resolve color.
     const themeColor = parseColor(color, theme)
     if (!themeColor?.color) return
