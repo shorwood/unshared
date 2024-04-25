@@ -1,7 +1,7 @@
 {
   "name": "@unshared/monorepo",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "license": "MIT",
   "private": true,
   "author": "Stanley Horwood <stanley@hsjm.io>",
@@ -38,6 +38,7 @@
     "commit": "tsx ./scripts/commit.ts",
     "commit:lint": "commitlint --edit",
     "publish:ci": "tsx ./scripts/publish.ts",
+    "release": "tsx ./scripts/release.ts",
     "preinstall": "node ./scripts/forcePnpm.js",
     "prepare": "husky"
   },
