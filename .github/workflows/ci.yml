@@ -1,5 +1,4 @@
-name: Continuous Integration
-
+name: CI
 permissions:
   id-token: write
   contents: write
@@ -10,52 +9,38 @@ on:
       - v*
     branches:
       - main
-      - next
   pull_request:
     branches:
       - main
-      - next
-  merge_group: {}
 
 jobs:
   ci:
-    name: Node.js ${{ matrix.node }} on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: true
-      matrix:
-        node: [18.x]
-        os: [ubuntu-latest]
-        # node: [18.x, 16.x, 14.x]
-        # os: [ubuntu-latest, windows-latest, macos-latest]
-
+    name: Continuous Integration & Deployment
+    runs-on: ubuntu-latest
     steps:
-
-      # Set up Node.js and PNPM
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
         with:
-          fetch-depth: 0
-
-      - uses: pnpm/action-setup@v2
+          version: 9.x
+      - uses: actions/setup-node@v4
         with:
-          version: 8
-      - uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node }}
-          registry-url: https://registry.npmjs.org/
+          node-version: 20.x
           cache: "pnpm"
 
-      # Run tests and lint
+      # --- Install, build, and test.
       - run: pnpm install
-      # - run: pnpm lint # Disabled until linting issues are resolved
+      - run: pnpm build
+      - run: pnpm lint:ci
       - run: pnpm test:ci
 
-      # Publish to NPM
-      - name: Publish development version to NPM
-        if: github.ref == 'refs/heads/main' && matrix.node == 18
-        run: pnpm publish:ci
+      # --- Publish to private registry on main branch.
+      - if: github.event_name != 'pull_request'
+        run: pnpm publish:ci --registry https://npm.hsjm.dev
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN_PRIVATE}}
+
+      # --- Publish to NPM registry on main branch.
+      - if: github.event_name != 'pull_request' && github.ref.tags == 'v*'
+        run: pnpm publish:ci --registry https://registry.npmjs.org
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-          NPM_CONFIG_PROVENANCE: true
-          NODE_OPTIONS: --max-old-space-size=6144
