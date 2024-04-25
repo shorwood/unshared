@@ -13,29 +13,6 @@ type GroupedByIterator<T, R extends PropertyKey> =
       : { [K in keyof T as R]: Array<T[K]> } extends infer U ? { -readonly [K in keyof U]: U[K] } : never
 
 /**
- * Groups a collection by the value of a property at a given path.
- *
- * @param collection The collection to group.
- * @param path The path to the property to group by.
- * @returns An object where the keys are the groups and the values are the items in each group.
- * @example
- * // Declare a collection.
- * const collection = [
- *   { id: 1, group: 'a' },
- *   { id: 2, group: 'a' },
- *   { id: 3, group: 'b' },
- *   { id: 4, group: 'b' },
- * ]
- *
- * // Group the collection by the value of the `group` property.
- * groupBy(collection, 'group')
- * // {
- * //   a: [{ id: 1, group: 'a' }, { id: 2, group: 'a' }],
- * //   b: [{ id: 3, group: 'b' }, { id: 4, group: 'b' }],
- * // }
- */
-export function groupBy<T, P extends IteratorPath<T>>(collection: T, path: MaybeLiteral<P>): GroupedByPath<T, P>
-/**
  * Groups a collection by the result of an iterator function.
  *
  * @param collection The collection to group.
@@ -58,7 +35,31 @@ export function groupBy<T, P extends IteratorPath<T>>(collection: T, path: Maybe
  * // }
  */
 export function groupBy<T, R extends PropertyKey>(collection: T, iterator: IteratorFunction<T, R>): GroupedByIterator<T, R>
-export function groupBy(collection: object, iteratorOrPath: IteratorFunction<unknown, PropertyKey> | string) {
+/**
+ * Groups a collection by the value of a property at a given path.
+ *
+ * @param collection The collection to group.
+ * @param path The path to the property to group by.
+ * @returns An object where the keys are the groups and the values are the items in each group.
+ * @example
+ * // Declare a collection.
+ * const collection = [
+ *   { id: 1, group: 'a' },
+ *   { id: 2, group: 'a' },
+ *   { id: 3, group: 'b' },
+ *   { id: 4, group: 'b' },
+ * ]
+ *
+ * // Group the collection by the value of the `group` property.
+ * groupBy(collection, 'group')
+ * // {
+ * //   a: [{ id: 1, group: 'a' }, { id: 2, group: 'a' }],
+ * //   b: [{ id: 3, group: 'b' }, { id: 4, group: 'b' }],
+ * // }
+ */
+export function groupBy<T, P extends IteratorPath<T>>(collection: T, path: MaybeLiteral<P>): GroupedByPath<T, P>
+export function groupBy(collection: object, iteratorOrPath: IteratorFunction<unknown, PropertyKey> | string): unknown
+export function groupBy(collection: object, iteratorOrPath: IteratorFunction<unknown, PropertyKey> | string): unknown {
 
   // --- If iterator is a string, cast as nested getter function.
   const iterator = typeof iteratorOrPath === 'function'
