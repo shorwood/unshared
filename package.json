@@ -28,6 +28,7 @@
     "build": "tsx ./scripts/build.ts",
     "examples:nuxt": "pnpm -F @unshared/examples-nuxt dev",
     "lint": "DEBUG=eslint:eslint eslint . --cache",
+    "lint:ci": "eslint . --cache",
     "lint:fix": "DEBUG=eslint:eslint eslint . --fix --cache",
     "test": "vitest --watch",
     "test:ci": "vitest --run --typecheck --coverage",
