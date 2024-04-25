@@ -2,6 +2,7 @@ node_modules/
 docs/api
 docs/**/metadata.json
 *.log
+.eslintcache
 
 # Dotenv
 .env
