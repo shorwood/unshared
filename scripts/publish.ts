@@ -1,6 +1,7 @@
 import { argv } from 'node:process'
 // eslint-disable-next-line n/no-unsupported-features/node-builtins
 import { cp } from 'node:fs/promises'
+import { mapValues } from '@unshared/collection'
 import { getPackageMetadata } from './utils'
 import { PACKAGES_NAMES } from './constants'
 import { createSemver } from '../packages/string/createSemver'
@@ -13,12 +14,12 @@ import { execute as $ } from '../packages/process/execute'
  * hash will be appended to the version.
  *
  * @param packageName The name of the package to set the version for.
+ * @param registry The registry to publish the package to.
  * @returns A promise that resolves when the version is set.
  */
-export async function publishPackage(packageName: string) {
+export async function pnpmPublish(packageName: string, registry: string) {
   const { packageJson, packageJsonFS, packagePath } = await getPackageMetadata(packageName)
   const version = createSemver(packageJson.version)
-  const registry = ['--registry', 'https://npm.hsjm.dev/']
 
   // --- If the current hash has a tag, get the tag.
   const hash = await $('git', ['rev-parse', 'HEAD'], 'utf8')
@@ -47,7 +48,7 @@ export async function publishPackage(packageName: string) {
 
   // --- Check if the current version is already released.
   // --- Get the latest version from the registry.
-  const npmViewJSON = await $('pnpm', ['view', packageJson.name!, '--json', ...registry], 'utf8')
+  const npmViewJSON = await $('pnpm', ['view', packageJson.name!, '--json'], 'utf8')
     .then((json: string) => JSON.parse(json) as { version: string })
     .catch(() => ({})) as { 'dist-tags': Record<string, string> }
 
@@ -61,6 +62,9 @@ export async function publishPackage(packageName: string) {
 
   // --- Set the version in the package.json file.
   packageJson.version = versionPublished
+  packageJson.dependencies = mapValues(packageJson.dependencies ?? {}, version =>
+    (version.startsWith('workspace:') ? versionPublished : version))
+
   await packageJsonFS.commit()
   const isNext = version.prerelease !== undefined
   await $('pnpm', [
@@ -69,24 +73,32 @@ export async function publishPackage(packageName: string) {
     isNext ? 'restricted' : 'public',
     '--tag',
     isNext ? 'next' : 'latest',
-    ...registry,
-
-    // '--dry-run',
+    '--registry',
+    registry,
     '--no-git-checks',
   ], {
     cwd: packagePath,
     stdio: 'inherit',
-  }).catch(() => {})
-
-  // --- Reset the version in the package.json file.
-  version.prerelease = undefined
-  packageJson.version = version.toString()
-  await packageJsonFS.commit()
+  })
 }
 
 export async function publish() {
-  const { parameters } = parseCliArguments(argv)
+  const { options, parameters } = parseCliArguments<{ registry?: string }>(argv)
+  const { registry } = options
 
+  // --- If not in CI, abort the process.
+  if (!process.env.CI) {
+    console.log('This script is intended to be run in a CI environment.')
+    return
+  }
+
+  // --- Registry must be explicitly set to avoid accidental publishing.
+  const token = process.env.NODE_AUTH_TOKEN
+  if (!registry) throw new Error('The NPM_REGISTRY environment variable is not set.')
+  if (!token) throw new Error('The NODE_AUTH_TOKEN environment variable is not set.')
+  await $('pnpm', ['set', `//${registry.replace('https://', '')}/:_authToken=${token}`])
+
+  // --- If package name(s) are provided, only publish the specified packages.
   const packageNames = parameters.length > 0
     ? PACKAGES_NAMES.filter(argument => parameters.includes(argument))
     : PACKAGES_NAMES
@@ -94,9 +106,8 @@ export async function publish() {
   // --- Prepare the package for publishing.
   for (const packageName of packageNames) {
     await cp('LICENSE.md', `packages/${packageName}/LICENSE.md`)
-    await publishPackage(packageName)
+    await pnpmPublish(packageName, registry)
   }
 }
 
-// --- Run the build script.
 await publish()
