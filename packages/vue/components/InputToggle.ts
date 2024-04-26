@@ -14,6 +14,16 @@ import {
   useBaseToggle,
 } from '../composables'
 
+const PROPS = {
+  ...BASE_TOGGLE_PROPS,
+  ...BASE_STATE_PROPS,
+  ...BASE_RENDERABLE_PROPS,
+}
+
+const SLOTS = {
+  default: {} as (props: SlotProps) => VNode,
+}
+
 interface Props<T, U extends ToggleType> extends
   BaseStateProps,
   BaseToggleProps<T, U>,
@@ -29,9 +39,7 @@ interface SlotProps {
   modelValue: unknown
 }
 
-type Context = SetupContext<[], Record<symbol, {
-  default?: (props: SlotProps) => VNode
-}>>
+type Context = SetupContext<[], Record<symbol, Partial<typeof SLOTS>>>
 
 export const InputToggle = /* #__PURE__ */ defineComponent(
   <T, U extends ToggleType>(props: Props<T, U>, context: Context) => {
@@ -40,10 +48,8 @@ export const InputToggle = /* #__PURE__ */ defineComponent(
     const toggle = useBaseToggle<T, U>(props)
     const renderable = useBaseRenderable(props)
 
-    // --- Compute the type of the toggle.
+    // --- Compute the type of the HTML/Component to render and the type of input.
     const is = computed(() => renderable.is ?? 'input')
-
-    // --- Compute the type attribute in case the tag is an input.
     const type = computed(() => {
       if (is.value !== 'input') return
       return props.type === 'radio' ? 'radio' : 'checkbox'
@@ -84,16 +90,8 @@ export const InputToggle = /* #__PURE__ */ defineComponent(
   },
   {
     name: 'InputToggle',
-    props: {
-      ...BASE_TOGGLE_PROPS,
-      ...BASE_STATE_PROPS,
-      ...BASE_RENDERABLE_PROPS,
-    } as unknown as undefined,
-    slots: {
-      [Symbol()]: {
-        default: {} as (props: SlotProps) => VNode,
-      },
-    },
+    props: PROPS as unknown as undefined,
+    slots: { [Symbol()]: SLOTS },
   },
 )
 

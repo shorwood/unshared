@@ -8,15 +8,6 @@ export const BASE_CLICKABLE_PROPS = {
   ...BASE_STATE_PROPS,
 
   /**
-   * The debounce time to wait before calling the `onClick` method. This is
-   * used to debounce the click event and prevent multiple clicks from being
-   * called in a short amount of time.
-   *
-   * @default 0
-   */
-  debounce: { default: 0, type: Number } as Prop<number>,
-
-  /**
    * The callback to call when the component is clicked. This is used to
    * handle the click event of the component and should be called when the
    * component is clicked.
@@ -26,13 +17,22 @@ export const BASE_CLICKABLE_PROPS = {
   onClick: Function as Prop<() => Promise<void> | void>,
 
   /**
+   * The debounce time to wait before calling the `onClick` method. This is
+   * used to debounce the click event and prevent multiple clicks from being
+   * called in a short amount of time.
+   *
+   * @default 0
+   */
+  debounce: { type: Number, default: 0 } as Prop<number>,
+
+  /**
    * The throttle time to wait before calling the `onClick` method. This is
    * used to throttle the click event and prevent multiple clicks from being
    * called in a short amount of time.
    *
    * @default 0
    */
-  throttle: { default: 0, type: Number } as Prop<number>,
+  throttle: { type: Number, default: 0 } as Prop<number>,
 }
 
 /** The properties of the base clickable component. */

@@ -57,8 +57,8 @@ export interface BaseToggleProps<T, U extends ToggleType> {
 }
 
 export const BASE_TOGGLE_PROPS = {
-  classActive: { default: '', type: [String] },
-  classInactive: { default: '', type: [String] },
+  classActive: { default: '', type: String },
+  classInactive: { default: '', type: String },
   modelValue: { default: undefined, type: [Boolean, Array, String, Number] },
   type: { default: 'switch', type: String },
   value: { default: undefined, type: [Boolean, Array, String, Number] },

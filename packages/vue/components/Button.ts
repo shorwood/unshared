@@ -1,4 +1,4 @@
-import { VNode, computed, defineComponent, h, mergeProps } from 'vue'
+import { ExtractPropTypes, Prop, VNode, computed, defineComponent, h, mergeProps } from 'vue'
 import {
   BASE_CLICKABLE_PROPS,
   BASE_LINKABLE_PROPS,
@@ -19,8 +19,18 @@ interface SlotProps {
   isLoading: boolean
 }
 
+const PROPS = {
+  label: String as Prop<string>,
+  ...BASE_STATE_PROPS,
+  ...BASE_LINKABLE_PROPS,
+  ...BASE_CLICKABLE_PROPS,
+  ...BASE_RENDERABLE_PROPS,
+}
+
+type Props = ExtractPropTypes<typeof PROPS>
+
 export const Button = /* #__PURE__ */ defineComponent(
-  (props, { attrs, slots }) => {
+  (props: Props, { attrs, slots }) => {
     const state = useBaseState(props)
     const linkable = useBaseLinkable(props)
     const clickable = useBaseClickable(props)
@@ -59,15 +69,9 @@ export const Button = /* #__PURE__ */ defineComponent(
       'update:error',
       'update:disabled',
       'update:readonly',
-    ] as unknown as undefined,
+    ],
     name: 'Button',
-    props: {
-      label: [String],
-      ...BASE_STATE_PROPS,
-      ...BASE_LINKABLE_PROPS,
-      ...BASE_CLICKABLE_PROPS,
-      ...BASE_RENDERABLE_PROPS,
-    },
+    props: PROPS as unknown as undefined,
     slots: {
       [Symbol()]: {
         default: {} as (props: SlotProps) => VNode,

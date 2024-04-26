@@ -11,7 +11,7 @@ export const BASE_LINKABLE_PROPS = {
    *
    * @default undefined
    */
-  classActive: { default: '', type: [String] } as Prop<string>,
+  classActive: { type: String, default: '' } as Prop<string>,
 
   /**
    * The class to apply when the link is active and the URL matches exactly.
@@ -21,7 +21,7 @@ export const BASE_LINKABLE_PROPS = {
    *
    * @default undefined
    */
-  classActiveExact: { default: '', type: [String] } as Prop<string>,
+  classActiveExact: { type: String, default: '' } as Prop<string>,
 
   /**
    * If `true`, the link should open in a new tab. By default, the link will

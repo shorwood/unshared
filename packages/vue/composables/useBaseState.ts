@@ -4,49 +4,14 @@ import { toReactive, useVModel } from '@vueuse/core'
 export const BASE_STATE_PROPS = {
 
   /**
-   * The CSS class to apply when the component is disabled. This allows you
-   * to customize the appearance of the component when it is disabled without
-   * handling the CSS in the component itself.
-   *
-   * @default ''
-   */
-  'classDisabled': { default: '', type: [String] } as Prop<string>,
-
-  /**
-   * The CSS class to apply when the component is in an error state. This
-   * allows you to customize the appearance of the component when it is in
-   * an error state without handling the CSS in the component itself.
-   *
-   * @default ''
-   */
-  'classError': { default: '', type: [String] } as Prop<string>,
-
-  /**
-   * The CSS class to apply when the component is loading. This allows you
-   * to customize the appearance of the component when it is loading without
-   * handling the CSS in the component itself.
-   *
-   * @default ''
-   */
-  'classLoading': { default: '', type: [String] } as Prop<string>,
-
-  /**
-   * The CSS class to apply when the component is read-only. This allows you
-   * to customize the appearance of the component when it is read-only without
-   * handling the CSS in the component itself.
-   *
-   * @default ''
-   */
-  'classReadonly': { default: '', type: [String] } as Prop<string>,
-
-  /**
    * If `true`, all interactions with the component should be disabled.
    * Meaning that the component should not be able to send any `click`,
    * `focus`, `hover`, or any other interaction event.
    *
    * @default false
    */
-  'disabled': [Boolean],
+  'disabled': Boolean as Prop<boolean | undefined>,
+  'onUpdate:disabled': Function as Prop<(disabled: boolean) => void | undefined>,
 
   /**
    * If `true`, the component should be in an error state. Meaning that
@@ -55,7 +20,8 @@ export const BASE_STATE_PROPS = {
    *
    * @default undefined
    */
-  'error': [Error, String],
+  'error': [Error, String] as Prop<Error | string | undefined>,
+  'onUpdate:error': Function as Prop<(error?: Error | string) => void | undefined>,
 
   /**
    * If `true`, the component should be in a loading state. Meaning that
@@ -66,10 +32,7 @@ export const BASE_STATE_PROPS = {
    * @default false
    */
   'loading': [Boolean],
-  'onUpdate:disabled': Function as Prop<(disabled: boolean) => void>,
-  'onUpdate:error': Function as Prop<(error?: Error | string) => void>,
-  'onUpdate:loading': Function as Prop<(loading: boolean) => void>,
-  'onUpdate:readonly': Function as Prop<(readonly: boolean) => void>,
+  'onUpdate:loading': Function as Prop<(loading: boolean) => void | undefined>,
 
   /**
    * If `true`, the component should be in a read-only state. Meaning that
@@ -80,6 +43,43 @@ export const BASE_STATE_PROPS = {
    * @default false
    */
   'readonly': [Boolean],
+  'onUpdate:readonly': Function as Prop<(readonly: boolean) => void | undefined>,
+
+  /**
+   * The CSS class to apply when the component is disabled. This allows you
+   * to customize the appearance of the component when it is disabled without
+   * handling the CSS in the component itself.
+   *
+   * @default ''
+   */
+  'classDisabled': { type: [String], default: '' } as Prop<string | undefined>,
+
+  /**
+   * The CSS class to apply when the component is in an error state. This
+   * allows you to customize the appearance of the component when it is in
+   * an error state without handling the CSS in the component itself.
+   *
+   * @default ''
+   */
+  'classError': { type: [String], default: '' } as Prop<string | undefined>,
+
+  /**
+   * The CSS class to apply when the component is loading. This allows you
+   * to customize the appearance of the component when it is loading without
+   * handling the CSS in the component itself.
+   *
+   * @default ''
+   */
+  'classLoading': { type: [String], default: '' } as Prop<string | undefined>,
+
+  /**
+   * The CSS class to apply when the component is read-only. This allows you
+   * to customize the appearance of the component when it is read-only without
+   * handling the CSS in the component itself.
+   *
+   * @default ''
+   */
+  'classReadonly': { type: [String], default: '' } as Prop<string | undefined>,
 } satisfies ComponentObjectPropsOptions
 
 /** The properties of the base state component. */

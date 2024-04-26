@@ -9,7 +9,7 @@ export const BASE_RENDERABLE_PROPS = {
    *
    * @default 'div'
    */
-  as: [String, Object] as Prop<{} & string | Component | keyof HTMLElementTagNameMap>,
+  as: [String, Object] as Prop<{} & string | Component | keyof HTMLElementTagNameMap | undefined>,
 }
 
 /** The properties of the base renderable component. */
