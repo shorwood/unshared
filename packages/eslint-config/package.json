@@ -40,6 +40,8 @@
     "@eslint/eslintrc": "3.0.2",
     "@eslint/js": "9.1.1",
     "@stylistic/eslint-plugin": "1.7.2",
+    "@unshared/collection": "workspace:*",
+    "@unshared/types": "workspace:*",
     "eslint-plugin-antfu": "2.1.2",
     "eslint-plugin-eslint-comments": "3.2.0",
     "eslint-plugin-html": "8.1.1",
@@ -63,8 +65,6 @@
   "devDependencies": {
     "@types/eslint__eslintrc": "2.1.1",
     "@types/eslint__js": "8.42.3",
-    "@unshared/collection": "workspace:*",
-    "@unshared/types": "workspace:*",
     "eslint": "9.1.1",
     "typescript": "5.4.5"
   }
