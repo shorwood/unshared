@@ -221,6 +221,12 @@ importers:
       '@types/eslint__js':
         specifier: 8.42.3
         version: 8.42.3
+      '@unshared/collection':
+        specifier: workspace:*
+        version: link:../collection
+      '@unshared/types':
+        specifier: workspace:*
+        version: link:../types
       eslint:
         specifier: 9.1.1
         version: 9.1.1

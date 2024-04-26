@@ -63,6 +63,8 @@
   "devDependencies": {
     "@types/eslint__eslintrc": "2.1.1",
     "@types/eslint__js": "8.42.3",
+    "@unshared/collection": "workspace:*",
+    "@unshared/types": "workspace:*",
     "eslint": "9.1.1",
     "typescript": "5.4.5"
   }

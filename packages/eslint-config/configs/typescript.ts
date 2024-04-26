@@ -3,12 +3,7 @@ import perfectionist from 'eslint-plugin-perfectionist'
 import { ESLint, Linter } from 'eslint'
 import stylistic from '@stylistic/eslint-plugin'
 import javascript from '@eslint/js'
-
-function flattenRules(config: unknown[]): Linter.RulesRecord {
-  const configs = config.flat() as Array<{ rules: Linter.RulesRecord }>
-  const rules = configs.map(x => x.rules)
-  return Object.assign({}, ...rules) as Linter.RulesRecord
-}
+import { getConfigRules } from '../utils'
 
 export function typescript(): Linter.FlatConfig[] {
   return [
@@ -19,8 +14,7 @@ export function typescript(): Linter.FlatConfig[] {
         parser: tslint.parser,
         parserOptions: {
           tsconfigRootDir: import.meta.dirname,
-          extraFileExtensions: ['.vue'],
-          project: true,
+          project: ['./tsconfig.json'],
         },
       },
       plugins: {
@@ -31,7 +25,6 @@ export function typescript(): Linter.FlatConfig[] {
       files: [
         '**/*.{ts,tsx,cts,mts}',
         '**/*.{js,jsx,cjs,mjs}',
-        '**/*.vue',
       ],
       rules: {
 
@@ -39,8 +32,8 @@ export function typescript(): Linter.FlatConfig[] {
          * Inherit all recommended rules from the `@eslint/js` plugin. This is the base
          * configuration for JavaScript files.
          */
-        ...flattenRules(tslint.configs.recommendedTypeChecked),
-        ...flattenRules(tslint.configs.stylisticTypeChecked),
+        ...getConfigRules(tslint.configs.recommendedTypeChecked),
+        ...getConfigRules(tslint.configs.stylisticTypeChecked),
 
         /**
          * Age-old debate over how to style braces. This rule aims to reduce the

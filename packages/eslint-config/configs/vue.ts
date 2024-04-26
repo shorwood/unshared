@@ -9,6 +9,10 @@ const VUE_RECOMMENDED_RULES = vuePlugin.configs?.['flat/recommended'].rules as L
 export function vue(): Linter.FlatConfig[] {
   return [
     {
+      plugins: {
+        '@typescript-eslint': tslint.plugin as ESLint.Plugin,
+        'vue': vuePlugin,
+      },
       languageOptions: {
         globals: {
           computed: 'readonly',
@@ -32,11 +36,8 @@ export function vue(): Linter.FlatConfig[] {
           ecmaVersion: 'latest',
           parser: tslint.parser,
           sourceType: 'module',
+
         },
-      },
-      plugins: {
-        '@typescript-eslint': tslint.plugin as ESLint.Plugin,
-        'vue': vuePlugin,
       },
       files: [
         '**/*.vue',
@@ -115,6 +116,10 @@ export function vue(): Linter.FlatConfig[] {
          * @see https://eslint.vuejs.org/rules/padding-line-between-tags.html
          */
         'vue/html-comment-indent': ['error', 2],
+        'vue/padding-line-between-tags': ['error', [
+          { blankLine: 'consistent', next: '*', prev: '*' },
+          { blankLine: 'always', next: '*', prev: 'comment' },
+        ]],
 
         /**
          * Enforce consistent spacing and newlines in the template. This rule helps
@@ -162,10 +167,6 @@ export function vue(): Linter.FlatConfig[] {
          */
         'vue/no-setup-props-reactivity-loss': 'error',
 
-        'vue/no-sparse-arrays': 'error',
-        'vue/no-unused-emit-declarations': 'error',
-        'vue/no-use-v-else-with-v-for': 'error',
-
         /**
          * Disallow v-if in v-for. This rule helps to avoid common pitfalls when
          * using v-if and v-for together in the same element.
@@ -193,6 +194,9 @@ export function vue(): Linter.FlatConfig[] {
          */
         'vue/v-on-style': ['error', 'shorthand'],
 
+        'vue/no-sparse-arrays': 'error',
+        'vue/no-unused-emit-declarations': 'error',
+        'vue/no-use-v-else-with-v-for': 'error',
         'vue/no-useless-v-bind': 'error',
         'vue/no-v-html': 'off',
         'vue/no-v-text-v-html-on-component': 'error',
@@ -206,12 +210,8 @@ export function vue(): Linter.FlatConfig[] {
             ignoreConstructors: false,
           },
         ],
-
         'vue/operator-linebreak': ['error', 'before'],
         'vue/padding-line-between-blocks': ['error', 'always'],
-        'vue/padding-line-between-tags': ['error', [
-          { blankLine: 'consistent', next: '*', prev: '*' },
-        ]],
         'vue/prefer-define-options': 'error',
         'vue/prefer-import-from-vue': 'off',
         'vue/prefer-separate-static-class': 'error',
