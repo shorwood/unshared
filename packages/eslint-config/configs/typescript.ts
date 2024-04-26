@@ -1,11 +1,12 @@
 import tslint from 'typescript-eslint'
 import perfectionist from 'eslint-plugin-perfectionist'
 import { ESLint, Linter } from 'eslint'
+import { toArray } from '@unshared/collection/toArray'
 import stylistic from '@stylistic/eslint-plugin'
 import javascript from '@eslint/js'
-import { getConfigRules } from '../utils'
+import { ESLintConfigOptions, getConfigRules } from '../utils'
 
-export function typescript(): Linter.FlatConfig[] {
+export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
   return [
     javascript.configs.recommended,
     {
@@ -13,8 +14,10 @@ export function typescript(): Linter.FlatConfig[] {
         // @ts-expect-error: ignore
         parser: tslint.parser,
         parserOptions: {
+          ecmaVersion: 'latest',
+          sourceType: 'module',
+          project: toArray(options.tsConfigPaths ?? 'tsconfig.json'),
           tsconfigRootDir: import.meta.dirname,
-          project: ['./tsconfig.json'],
         },
       },
       plugins: {
@@ -195,7 +198,7 @@ export function typescript(): Linter.FlatConfig[] {
         '@stylistic/lines-around-comment': ['error', {
           beforeBlockComment: true,
           beforeLineComment: true,
-          ignorePattern: '^(?! ?---|@)',
+          ignorePattern: '^(?! ?---|\\*)',
           applyDefaultIgnorePatterns: true,
           afterHashbangComment: true,
         }],

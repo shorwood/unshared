@@ -92,14 +92,19 @@ importers:
         version: 4.7.2
 
   examples/nuxt:
-    dependencies:
-      '@unocss/nuxt':
-        specifier: 0.59.4
-        version: 0.59.4(postcss@8.4.38)(rollup@4.16.4)(vite@5.2.10(@types/node@20.12.7)(terser@5.30.4))(webpack@5.91.0(esbuild@0.20.2))
     devDependencies:
       '@nuxt/test-utils':
         specifier: 3.12.1
         version: 3.12.1(@vitest/ui@1.5.1(vitest@1.5.1))(@vue/test-utils@2.4.5)(h3@1.11.1)(happy-dom@14.7.1)(rollup@4.16.4)(vite@5.2.10(@types/node@20.12.7)(terser@5.30.4))(vitest@1.5.1(@types/node@20.12.7)(@vitest/ui@1.5.1)(happy-dom@14.7.1)(terser@5.30.4))(vue-router@4.3.2(vue@3.4.25(typescript@5.4.5)))(vue@3.4.25(typescript@5.4.5))
+      '@unocss/nuxt':
+        specifier: 0.59.4
+        version: 0.59.4(postcss@8.4.38)(rollup@4.16.4)(vite@5.2.10(@types/node@20.12.7)(terser@5.30.4))(webpack@5.91.0(esbuild@0.20.2))
+      '@unocss/reset':
+        specifier: 0.59.4
+        version: 0.59.4
+      '@unshared/unocss-preset':
+        specifier: workspace:*
+        version: link:../../packages/unocss-preset
       '@unshared/vue':
         specifier: workspace:*
         version: link:../../packages/vue
@@ -157,6 +162,15 @@ importers:
       '@stylistic/eslint-plugin':
         specifier: 1.7.2
         version: 1.7.2(eslint@9.1.1)(typescript@5.4.5)
+      '@unshared/collection':
+        specifier: workspace:*
+        version: link:../collection
+      '@unshared/types':
+        specifier: workspace:*
+        version: link:../types
+      eslint-merge-processors:
+        specifier: 0.1.0
+        version: 0.1.0(eslint@9.1.1)
       eslint-plugin-antfu:
         specifier: 2.1.2
         version: 2.1.2(eslint@9.1.1)
@@ -202,6 +216,9 @@ importers:
       eslint-plugin-yml:
         specifier: 1.14.0
         version: 1.14.0(eslint@9.1.1)
+      eslint-processor-vue-blocks:
+        specifier: 0.1.2
+        version: 0.1.2(@vue/compiler-sfc@3.4.25)(eslint@9.1.1)
       jsonc-eslint-parser:
         specifier: 2.4.0
         version: 2.4.0
@@ -221,12 +238,6 @@ importers:
       '@types/eslint__js':
         specifier: 8.42.3
         version: 8.42.3
-      '@unshared/collection':
-        specifier: workspace:*
-        version: link:../collection
-      '@unshared/types':
-        specifier: workspace:*
-        version: link:../types
       eslint:
         specifier: 9.1.1
         version: 9.1.1
@@ -321,6 +332,8 @@ importers:
       '@unocss/preset-mini':
         specifier: 0.59.4
         version: 0.59.4
+
+  packages/unshared: {}
 
   packages/vue:
     dependencies:
@@ -2912,6 +2925,11 @@ packages:
   eslint-import-resolver-node@0.3.9:
     resolution: {integrity: sha512-WFj2isz22JahUv+B788TlO3N6zL3nNJGU8CcZbPZvVEkBPaJdCV4vy5wyghty5ROFbCRnm132v8BScu5/1BQ8g==}
 
+  eslint-merge-processors@0.1.0:
+    resolution: {integrity: sha512-IvRXXtEajLeyssvW4wJcZ2etxkR9mUf4zpNwgI+m/Uac9RfXHskuJefkHUcawVzePnd6xp24enp5jfgdHzjRdQ==}
+    peerDependencies:
+      eslint: '*'
+
   eslint-module-utils@2.8.0:
     resolution: {integrity: sha512-aWajIYfsqCKRDgUfjEXNN/JlrzauMuSEy5sbd7WXbtW3EH6A6MpwEh42c7qD+MqQo9QMJ6fWLAeIJynx0g6OAw==}
     engines: {node: '>=4'}
@@ -3048,6 +3066,12 @@ packages:
     engines: {node: ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: '>=6.0.0'
+
+  eslint-processor-vue-blocks@0.1.2:
+    resolution: {integrity: sha512-PfpJ4uKHnqeL/fXUnzYkOax3aIenlwewXRX8jFinA1a2yCFnLgMuiH3xvCgvHHUlV2xJWQHbCTdiJWGwb3NqpQ==}
+    peerDependencies:
+      '@vue/compiler-sfc': ^3.3.0
+      eslint: ^8.50.0 || ^9.0.0
 
   eslint-scope@5.1.1:
     resolution: {integrity: sha512-2NxwbF/hZ0KpepYN0cNbo+FN6XoK7GaHlQhgx/hIZl6Va0bF45RQOOwhLIy8lQDbuCiadSLCBnH2CFYquit5bw==}
@@ -9167,6 +9191,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  eslint-merge-processors@0.1.0(eslint@9.1.1):
+    dependencies:
+      eslint: 9.1.1
+
   eslint-module-utils@2.8.0(@typescript-eslint/parser@7.7.1(eslint@9.1.1)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint@9.1.1):
     dependencies:
       debug: 3.2.7
@@ -9346,6 +9374,11 @@ snapshots:
       yaml-eslint-parser: 1.2.2
     transitivePeerDependencies:
       - supports-color
+
+  eslint-processor-vue-blocks@0.1.2(@vue/compiler-sfc@3.4.25)(eslint@9.1.1):
+    dependencies:
+      '@vue/compiler-sfc': 3.4.25
+      eslint: 9.1.1
 
   eslint-scope@5.1.1:
     dependencies:

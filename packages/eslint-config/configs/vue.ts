@@ -1,17 +1,24 @@
 import vueParser from 'vue-eslint-parser'
 import tslint from 'typescript-eslint'
+import vueProcessorBlocks from 'eslint-processor-vue-blocks'
 import vuePlugin from 'eslint-plugin-vue'
-import { ESLint, Linter } from 'eslint'
+import { mergeProcessors } from 'eslint-merge-processors'
+import { Linter } from 'eslint'
+import { typescript } from './typescript'
+import { ESLintConfigOptions } from '../utils'
 
 // @ts-expect-error: `eslint-plugin-vue` has no types declaration.
 const VUE_RECOMMENDED_RULES = vuePlugin.configs?.['flat/recommended'].rules as Linter.RulesRecord
+// @ts-expect-error: `eslint-plugin-vue` has no types declaration.
+const VUE_BASE_RULES = vuePlugin.configs?.base.rules as Linter.RulesRecord
 
-export function vue(): Linter.FlatConfig[] {
+export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
+  const TYPESCRIPT_CONFIG = typescript(options).at(1)
   return [
     {
       plugins: {
-        '@typescript-eslint': tslint.plugin as ESLint.Plugin,
-        'vue': vuePlugin,
+        vue: vuePlugin,
+        ...TYPESCRIPT_CONFIG!.plugins,
       },
       languageOptions: {
         globals: {
@@ -32,22 +39,25 @@ export function vue(): Linter.FlatConfig[] {
         },
         parser: vueParser,
         parserOptions: {
-          ecmaFeatures: { jsx: false },
-          ecmaVersion: 'latest',
           parser: tslint.parser,
-          sourceType: 'module',
-
+          extraFileExtensions: ['.vue'],
+          ...TYPESCRIPT_CONFIG!.languageOptions!.parserOptions,
         },
       },
+      processor: mergeProcessors([
+        // @ts-expect-error: ignore
+        vuePlugin.processors['.vue'],
+        vueProcessorBlocks(),
+      ]),
       files: [
         '**/*.vue',
       ],
       rules: {
+        ...VUE_BASE_RULES,
         ...VUE_RECOMMENDED_RULES,
-
-        'no-unused-vars': 'off',
-        'no-undef': 'off',
-        'semi': 'off',
+        ...TYPESCRIPT_CONFIG!.rules,
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
 
         /**
          * Enforces consistent usage of type imports. This rule will enforce the use

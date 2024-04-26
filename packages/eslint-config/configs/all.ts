@@ -10,8 +10,9 @@ import { configJson } from './json'
 import { jsdoc } from './jsdoc'
 import { eslintComments } from './eslintComments'
 import { antfu } from './antfu'
+import { ESLintConfigOptions } from '../utils'
 
-export function all() {
+export function all(options: ESLintConfigOptions = {}) {
   return [
     ...antfu(),
     ...eslintComments(),
@@ -21,10 +22,10 @@ export function all() {
     ...jsonTsconfig(),
     ...node(),
     ...sonarjs(),
-    ...typescript(),
+    ...typescript(options),
     ...unicorn(),
     ...vitest(),
-    ...vue(),
+    ...vue(options),
 
     // ...promise(),
     // ...markdown(),
