@@ -4,8 +4,6 @@ import { Rule } from '@unocss/core'
  * Generate classes for dynamic background images from Unsplash.
  */
 export const ruleUnsplash: Rule = [
-
-  // --- Match any class starting with `bg-unsplash-`.
   /^bg-unsplash-(.{11})-?(\d+)?$/,
 
   // --- Resolve the image URL and return CSS properties.
@@ -18,8 +16,8 @@ export const ruleUnsplash: Rule = [
   // --- Provide autocomplete suggestions.
   {
     autocomplete: [
-      'bg-unsplash-<any>',
-      'bg-unsplash-<any>-<480|720|1280|1920>',
+      'bg-unsplash-<num>',
+      'bg-unsplash-<num>-<480|720|1280|1920>',
     ],
   },
 ]
