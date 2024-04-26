@@ -4,9 +4,9 @@ import * as SHORTCUTS from './shortcuts'
 import * as RULES from './rules'
 import { colorsBrand, colorsNord } from './constants'
 
-export interface PresetUnshared {}
+export interface PresetUnsharedOptions {}
 
-export const presetUnshared: PresetFactory<object, PresetUnshared> = (options = {}) => ({
+export const presetUnshared: PresetFactory<object, PresetUnsharedOptions> = (options = {}) => ({
   name: '@hsjm/unocss-preset',
   options,
   rules: Object.values(RULES),
