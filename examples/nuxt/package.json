@@ -7,11 +7,11 @@
     "build": "nuxi build",
     "start": "node .output/server/index.mjs"
   },
-  "dependencies": {
-    "@unocss/nuxt": "0.59.4"
-  },
   "devDependencies": {
     "@nuxt/test-utils": "3.12.1",
+    "@unocss/nuxt": "0.59.4",
+    "@unocss/reset": "0.59.4",
+    "@unshared/unocss-preset": "workspace:*",
     "@unshared/vue": "workspace:*",
     "nuxt": "3.11.2",
     "unocss": "0.59.4"

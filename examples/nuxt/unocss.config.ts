@@ -1,6 +1,10 @@
-import uno from 'unocss/preset-uno'
+import { presetUno } from 'unocss/preset-uno'
 import { defineConfig } from 'unocss'
+import { presetUnshared } from '@unshared/unocss-preset'
 
 export default defineConfig({
-  presets: [uno()],
+  presets: [
+    presetUno(),
+    presetUnshared(),
+  ],
 })
