@@ -1,4 +1,3 @@
-/* eslint-disable vitest/require-hook */
 import { createRequire } from 'node:module'
 import { workerRegister } from './workerRegister'
 import { WorkerServicePayload } from './createWorkerService'

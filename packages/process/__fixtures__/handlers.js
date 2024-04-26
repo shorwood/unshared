@@ -1,4 +1,3 @@
-/* eslint-disable vitest/require-hook */
 import { threadId } from 'node:worker_threads'
 import { Buffer } from 'node:buffer'
 import { workerRegister } from '../dist/workerRegister.js'
