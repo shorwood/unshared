@@ -56,10 +56,12 @@ export function vitest(): Linter.FlatConfig[] {
         'vitest/no-conditional-tests': 'off',
 
         /**
-         * Allow hooks to be defined at the top-level of the test file.
+         * Since we use in-source testing, we need to disable the rule as it may prevent
+         * us from using top level evaluation that are not part of the test suite.
          *
          * @see https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/no-hooks.md
          */
+        'vitest/require-hook': 'off',
         'vitest/no-hooks': 'off',
 
         /**
