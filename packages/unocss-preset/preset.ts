@@ -4,12 +4,13 @@ import * as SHORTCUTS from './shortcuts'
 import * as RULES from './rules'
 import { colorsBrand, colorsNord } from './constants'
 
-export interface PresetHsjmOptions {}
+export interface PresetUnshared {}
 
-export const presetHsjm: PresetFactory<object, PresetHsjmOptions> = (options = {}) => ({
+export const presetUnshared: PresetFactory<object, PresetUnshared> = (options = {}) => ({
   name: '@hsjm/unocss-preset',
   options,
   rules: Object.values(RULES),
+  variants: Object.values(VARIANTS),
   shortcuts: Object.values(SHORTCUTS),
   theme: {
     colors: {
@@ -21,5 +22,4 @@ export const presetHsjm: PresetFactory<object, PresetHsjmOptions> = (options = {
       landing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
     },
   },
-  variants: Object.values(VARIANTS),
 })
