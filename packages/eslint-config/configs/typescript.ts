@@ -1,4 +1,5 @@
 import tslint from 'typescript-eslint'
+import { cwd } from 'node:process'
 import perfectionist from 'eslint-plugin-perfectionist'
 import { ESLint, Linter } from 'eslint'
 import { toArray } from '@unshared/collection/toArray'
@@ -16,8 +17,8 @@ export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
         parserOptions: {
           ecmaVersion: 'latest',
           sourceType: 'module',
-          project: toArray(options.tsConfigPaths ?? 'tsconfig.json'),
-          tsconfigRootDir: import.meta.dirname,
+          project: toArray(options.tsConfigPaths ?? './tsconfig.json'),
+          tsconfigRootDir: cwd(),
         },
       },
       plugins: {
