@@ -48,12 +48,6 @@ jobs:
           NPM_CONFIG_PROVENANCE: true
 
       # --- If all goes well, create a release on GitHub.
-      - if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-        run: pnpm release:ci
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-      # --- If all goes well, create a release on GitHub.
       - run: npx changelogithub --no-group
         continue-on-error: true
         env:
