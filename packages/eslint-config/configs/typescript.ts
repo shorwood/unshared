@@ -5,7 +5,8 @@ import { ESLint, Linter } from 'eslint'
 import { toArray } from '@unshared/collection/toArray'
 import stylistic from '@stylistic/eslint-plugin'
 import javascript from '@eslint/js'
-import { ESLintConfigOptions, getConfigRules } from '../utils'
+import { ESLintConfigOptions } from './all'
+import { getConfigRules } from '../utils'
 
 export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
   return [
@@ -17,7 +18,7 @@ export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
         parserOptions: {
           ecmaVersion: 'latest',
           sourceType: 'module',
-          project: toArray(options.tsConfigPaths ?? './tsconfig.json'),
+          project: toArray(options.tsConfigPath ?? './tsconfig.json'),
           tsconfigRootDir: cwd(),
         },
       },
@@ -95,7 +96,7 @@ export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
         '@stylistic/no-multiple-empty-lines': ['error', {
           max: 1,
           maxBOF: 0,
-          maxEOF: 1,
+          maxEOF: 0,
         }],
 
         /**

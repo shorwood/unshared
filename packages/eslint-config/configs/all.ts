@@ -1,3 +1,4 @@
+import { MaybeArray } from '@unshared/types'
 import { vue } from './vue'
 import { vitest } from './vitest'
 import { unicorn } from './unicorn'
@@ -10,7 +11,10 @@ import { configJson } from './json'
 import { jsdoc } from './jsdoc'
 import { eslintComments } from './eslintComments'
 import { antfu } from './antfu'
-import { ESLintConfigOptions } from '../utils'
+
+export interface ESLintConfigOptions {
+  tsConfigPath?: MaybeArray<string>
+}
 
 export function all(options: ESLintConfigOptions = {}) {
   return [
@@ -49,4 +53,3 @@ export function all(options: ESLintConfigOptions = {}) {
     },
   ]
 }
-
