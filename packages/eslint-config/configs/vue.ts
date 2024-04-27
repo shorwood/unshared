@@ -5,20 +5,23 @@ import vuePlugin from 'eslint-plugin-vue'
 import { mergeProcessors } from 'eslint-merge-processors'
 import { Linter } from 'eslint'
 import { typescript } from './typescript'
-import { ESLintConfigOptions } from '../utils'
+import { ESLintConfigOptions } from './all'
 
-// @ts-expect-error: `eslint-plugin-vue` has no types declaration.
-const VUE_RECOMMENDED_RULES = vuePlugin.configs?.['flat/recommended'].rules as Linter.RulesRecord
-// @ts-expect-error: `eslint-plugin-vue` has no types declaration.
-const VUE_BASE_RULES = vuePlugin.configs?.base.rules as Linter.RulesRecord
+const VUE_CONFIGS = [
+  ...vuePlugin.configs?.['flat/base'] as Linter.FlatConfig[],
+  ...vuePlugin.configs?.['flat/recommended'] as Linter.FlatConfig[],
+  ...vuePlugin.configs?.['flat/strongly-recommended'] as Linter.FlatConfig[],
+  ...vuePlugin.configs?.['flat/essential'] as Linter.FlatConfig[],
+]
 
 export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
-  const TYPESCRIPT_CONFIG = typescript(options).at(1)
+  const TYPESCRIPT_CONFIG = typescript(options).at(1)!
   return [
+    ...VUE_CONFIGS,
     {
       plugins: {
         vue: vuePlugin,
-        ...TYPESCRIPT_CONFIG!.plugins,
+        ...TYPESCRIPT_CONFIG.plugins,
       },
       languageOptions: {
         globals: {
@@ -41,7 +44,7 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
         parserOptions: {
           parser: tslint.parser,
           extraFileExtensions: ['.vue'],
-          ...TYPESCRIPT_CONFIG!.languageOptions!.parserOptions,
+          ...TYPESCRIPT_CONFIG.languageOptions!.parserOptions,
         },
       },
       processor: mergeProcessors([
@@ -53,11 +56,10 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
         '**/*.vue',
       ],
       rules: {
-        ...VUE_BASE_RULES,
-        ...VUE_RECOMMENDED_RULES,
-        ...TYPESCRIPT_CONFIG!.rules,
-        '@typescript-eslint/no-unsafe-assignment': 'off',
+        ...TYPESCRIPT_CONFIG.rules,
         '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-misused-promises': 'off',
+        '@typescript-eslint/no-unsafe-assignment': 'off',
 
         /**
          * Enforces consistent usage of type imports. This rule will enforce the use
@@ -67,11 +69,11 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
          * @see https://typescript-eslint.io/rules/consistent-type-imports
          * @see https://vuejs.github.io/vetur/guide/FAQ.html#why-does-vetur-show-cannot-find-module-xxx
          */
-        '@typescript-eslint/consistent-type-imports': ['error', {
-          disallowTypeAnnotations: false,
-          fixStyle: 'inline-type-imports',
-          prefer: 'type-imports',
-        }],
+        // '@typescript-eslint/consistent-type-imports': ['error', {
+        //   disallowTypeAnnotations: false,
+        //   fixStyle: 'inline-type-imports',
+        //   prefer: 'type-imports',
+        // }],
 
         /**
          * Enforce the order of the top-level properties in the component. This rule
