@@ -20,8 +20,7 @@ async function main(type = 'patch') {
 
   // --- Bump the version of the root package.
   if (!['major', 'minor', 'patch'].includes(type)) throw new Error(`Invalid bump type "${type}".`)
-  rootPackage.version = createSemver(rootPackage.version).bump(type as SemverComponents)
-    .toString()
+  rootPackage.version = createSemver(rootPackage.version).bump(type as SemverComponents).toString()
   await rootPackageFS.commit()
 
   // --- Set the version of all packages to the root package version.

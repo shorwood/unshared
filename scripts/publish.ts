@@ -8,6 +8,10 @@ import { createSemver } from '../packages/string/createSemver'
 import { parseCliArguments } from '../packages/process/parseCliArguments'
 import { execute as $ } from '../packages/process/execute'
 
+interface NPMView {
+  versions: string[]
+}
+
 /**
  * Set the version of the package to the version in the package.json file.
  * If the published version is a release candidate or a build, the commit
@@ -19,7 +23,7 @@ import { execute as $ } from '../packages/process/execute'
  */
 export async function pnpmPublish(packageName: string, registry: string) {
   const { packageJson, packageJsonFS, packagePath } = await getPackageMetadata(packageName)
-  const version = createSemver(packageJson.version)
+  const semver = createSemver(packageJson.version)
 
   // --- If the current hash has a tag, get the tag.
   const hash = await $('git', ['rev-parse', 'HEAD'], 'utf8')
@@ -29,44 +33,43 @@ export async function pnpmPublish(packageName: string, registry: string) {
 
   if (!gitTag) {
     const hash = await $('git', ['rev-parse', 'HEAD'], 'utf8')
-    version.prerelease = `build-${hash.slice(0, 7)}`
-    packageJson.version = version.toString()
+    semver.prerelease = `build-${hash.slice(0, 7)}`
+    packageJson.version = semver.toString()
   }
 
   else if (gitTag.startsWith('v')) {
     const tagVersion = createSemver(gitTag.slice(1))
-    version.major = tagVersion.major
-    version.minor = tagVersion.minor
-    version.patch = tagVersion.patch
-    version.prerelease = tagVersion.prerelease
-    version.build = undefined
+    semver.major = tagVersion.major
+    semver.minor = tagVersion.minor
+    semver.patch = tagVersion.patch
+    semver.prerelease = tagVersion.prerelease
+    semver.build = undefined
+    packageJson.version = semver.toString()
   }
 
   else {
     throw new Error(`Invalid tag ${gitTag}`)
   }
 
-  // --- Check if the current version is already released.
   // --- Get the latest version from the registry.
-  const npmViewJSON = await $('pnpm', ['view', packageJson.name!, '--json'], 'utf8')
-    .then((json: string) => JSON.parse(json) as { version: string })
-    .catch(() => ({})) as { 'dist-tags': Record<string, string> }
+  const npmViewJSON = await $('pnpm', ['view', packageJson.name!, '--registry', registry, '--json'], 'utf8')
+  const npmView = JSON.parse(npmViewJSON) as NPMView
 
   // --- Check if the current version is already released.
-  const versionNpm = npmViewJSON?.['dist-tags']?.latest
-  const versionPublished = version.toString()
-  if (versionPublished === versionNpm) {
-    console.log(`The package "${packageJson.name!}@${version.toString()}" already exists in the registry.`)
+  if (npmView.versions.includes(packageJson.version)) {
+    console.log(`The package "${packageJson.name!}@${semver.toString()}" already exists in the registry.`)
     return
   }
 
   // --- Set the version in the package.json file.
-  packageJson.version = versionPublished
-  packageJson.dependencies = mapValues(packageJson.dependencies ?? {}, version =>
-    (version.startsWith('workspace:') ? versionPublished : version))
+  packageJson.dependencies = mapValues(packageJson.dependencies ?? {}, dependency =>
+    (dependency.startsWith('workspace:')
+      ? packageJson.version!
+      : dependency
+    ))
 
   await packageJsonFS.commit()
-  const isNext = version.prerelease !== undefined
+  const isNext = semver.prerelease !== undefined
   await $('pnpm', [
     'publish',
     '--access',
@@ -83,7 +86,7 @@ export async function pnpmPublish(packageName: string, registry: string) {
 }
 
 export async function publish() {
-  const { options, parameters } = parseCliArguments<{ registry?: string }>(argv)
+  const { options } = parseCliArguments<{ registry?: string }>(argv)
   const { registry } = options
 
   // --- If not in CI, abort the process.
@@ -98,13 +101,8 @@ export async function publish() {
   if (!token) throw new Error('The NODE_AUTH_TOKEN environment variable is not set.')
   await $('pnpm', ['set', `//${registry.replace('https://', '')}/:_authToken=${token}`])
 
-  // --- If package name(s) are provided, only publish the specified packages.
-  const packageNames = parameters.length > 0
-    ? PACKAGES_NAMES.filter(argument => parameters.includes(argument))
-    : PACKAGES_NAMES
-
   // --- Prepare the package for publishing.
-  for (const packageName of packageNames) {
+  for (const packageName of PACKAGES_NAMES) {
     await cp('LICENSE.md', `packages/${packageName}/LICENSE.md`)
     await pnpmPublish(packageName, registry)
   }
