@@ -10,7 +10,7 @@
   "repository": {
     "directory": "packages/reactivity",
     "type": "git",
-    "url": "git+ssh://git@github.com:shorwood/unshared.git"
+    "url": "git@github.com:shorwood/unshared.git"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

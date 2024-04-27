@@ -50,7 +50,6 @@ export async function buildPackageJson(packageName: string) {
 
   // --- Load the root and current package.json files.
   const packageRemoteUrl = await getGitRemoteUrl(packagePath)
-  const packageRemoteUrlGit = `git+ssh://${packageRemoteUrl}`
   const packageRemoteUrlHttps = packageRemoteUrl?.replace(/^git@(.+):(.+).git$/, 'https://$1/$2')
   const packageExports = await createPackageExports(outPath, packagePath)
 
@@ -71,7 +70,7 @@ export async function buildPackageJson(packageName: string) {
   packageJson.repository = {
     directory: packageRelativePath,
     type: 'git',
-    url: packageRemoteUrlGit,
+    url: packageRemoteUrl,
   }
 
   // --- Save the package.json file.

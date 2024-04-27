@@ -10,7 +10,7 @@
   "repository": {
     "directory": "packages/types",
     "type": "git",
-    "url": "git+ssh://git@github.com:shorwood/unshared.git"
+    "url": "git@github.com:shorwood/unshared.git"
   },
   "types": "./dist/index.d.ts",
   "exports": {
