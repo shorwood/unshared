@@ -78,7 +78,7 @@ export function execute(command: string, parameters: BinaryArgument[] | undefine
 export function execute(command: string, parameters?: BinaryArgument[]): Awaitable<ChildProcess, Buffer>
 export function execute(command: string, parameters: BinaryArgument[] = [], options: BufferEncoding | ExecuteOptions = {}): Awaitable<ChildProcess, Buffer | string> {
   if (typeof options === 'string') options = { encoding: options }
-  const { encoding, stdin, timeout = 0, ...spawnOptions } = options
+  const { encoding, stdin, ...spawnOptions } = options
 
   // --- If the argument is a buffer, write it to a temporary socket for IPC.
   const uid = getuid ? getuid().toString() : '0'
@@ -114,34 +114,29 @@ export function execute(command: string, parameters: BinaryArgument[] = [], opti
   if (stdin && process.stdin) writeToStream(process.stdin, stdin)
 
   const createPromise = () => new Promise<Buffer | string>((resolve, reject) => {
-
-    // --- Kill the process if it takes too long.
-    if (timeout > 0) {
-      setTimeout(() => {
-        process.kill('SIGABRT')
-        reject(new Error('Process timed out.'))
-      }, timeout)
-    }
-
-    // --- Collect the output.
     const stdoutChunks: Buffer[] = []
     const stderrChunks: Buffer[] = []
+
     process.stdout?.on('data', (data: Buffer) => stdoutChunks.push(data))
     process.stderr?.on('data', (data: Buffer) => stderrChunks.push(data))
-    process.stdout?.on('error', reject)
-    process.stderr?.on('error', reject)
     process.on('error', reject)
-
-    // --- Handle the process exit.
     process.on('exit', (code) => {
+
+      // --- If process substitution was used, close the sockets.
+      for (const { socket } of args) if (socket) socket.close()
+
+      // --- The process exited successfully.
       if (code === 0) {
         const output = Buffer.concat(stdoutChunks)
         const result = encoding ? output.toString(encoding) : output
         return resolve(result)
       }
 
-      // --- If process substitution was used, close the sockets.
-      for (const { socket } of args) if (socket) socket.close()
+      // --- The process was killed due to a timeout.
+      if (code === null) {
+        process.kill()
+        return reject(new Error('Process timed out.'))
+      }
 
       // --- The process exited with an error.
       const errorMessage = Buffer.concat(stderrChunks).toString('utf8') || `Process exited with code ${code}`
