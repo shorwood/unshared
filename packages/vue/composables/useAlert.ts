@@ -23,7 +23,7 @@ type Dismiss = () => void
  * @returns A composable to manage the global alert pool.
  */
 export function useAlert() {
-  const alerts = reactive<Alert[]>([])
+  const alerts = reactive([]) as Alert[]
 
   // --- Dismiss an alert.
   const dismiss = (alert: Alert) => {
