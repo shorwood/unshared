@@ -1,10 +1,11 @@
 import unicornPlugin from 'eslint-plugin-unicorn'
 import { Linter } from 'eslint'
+import { ESLintConfigOptions } from './all'
 
 // @ts-expect-error: untyped module
 const UNICORN_RECOMMENDED_RULES = unicornPlugin.configs!.recommended.rules as Linter.RulesRecord
 
-export function unicorn(): Linter.FlatConfig[] {
+export function unicorn(options: ESLintConfigOptions): Linter.FlatConfig[] {
   return [
     {
       plugins: {
@@ -116,6 +117,9 @@ export function unicorn(): Linter.FlatConfig[] {
         }],
         'unicorn/throw-new-error': 'error',
       },
+
+      /** User-defined rules */
+      ...options.rules,
     },
   ]
 }

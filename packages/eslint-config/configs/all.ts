@@ -1,3 +1,4 @@
+import { Linter } from 'eslint'
 import { MaybeArray } from '@unshared/types'
 import { vue } from './vue'
 import { vitest } from './vitest'
@@ -14,21 +15,22 @@ import { antfu } from './antfu'
 
 export interface ESLintConfigOptions {
   tsConfigPath?: MaybeArray<string>
+  rules?: Linter.RulesRecord
 }
 
 export function all(options: ESLintConfigOptions = {}) {
   return [
-    ...antfu(),
-    ...eslintComments(),
-    ...jsdoc(),
-    ...configJson(),
+    ...antfu(options),
+    ...eslintComments(options),
+    ...jsdoc(options),
+    ...configJson(options),
     ...jsonPackage(),
     ...jsonTsconfig(),
-    ...node(),
-    ...sonarjs(),
+    ...node(options),
+    ...sonarjs(options),
     ...typescript(options),
-    ...unicorn(),
-    ...vitest(),
+    ...unicorn(options),
+    ...vitest(options),
     ...vue(options),
     {
       ignores: [

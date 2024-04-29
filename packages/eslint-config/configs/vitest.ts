@@ -1,7 +1,8 @@
 import vitestPlugin from 'eslint-plugin-vitest'
 import { Linter } from 'eslint'
+import { ESLintConfigOptions } from './all'
 
-export function vitest(): Linter.FlatConfig[] {
+export function vitest(options: ESLintConfigOptions): Linter.FlatConfig[] {
   return [
     {
       plugins: {
@@ -93,6 +94,9 @@ export function vitest(): Linter.FlatConfig[] {
             test: ['^should'],
           },
         }],
+
+        /** User-defined rules */
+        ...options.rules,
       },
     },
   ]

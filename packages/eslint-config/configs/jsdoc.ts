@@ -1,7 +1,8 @@
 import pluginJsdoc from 'eslint-plugin-jsdoc'
 import { Linter } from 'eslint'
+import { ESLintConfigOptions } from './all'
 
-export function jsdoc(): Linter.FlatConfig[] {
+export function jsdoc(options: ESLintConfigOptions): Linter.FlatConfig[] {
   return [
     pluginJsdoc.configs['flat/recommended-typescript-flavor-error'],
     {
@@ -71,6 +72,9 @@ export function jsdoc(): Linter.FlatConfig[] {
          * @see https://github.com/gajus/eslint-plugin-jsdoc/blob/main/docs/rules/tag-lines.md
          */
         'jsdoc/tag-lines': ['error', 'any', { startLines: 1 }],
+
+        /** User-defined rules */
+        ...options.rules,
       },
     },
   ]

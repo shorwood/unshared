@@ -1,7 +1,8 @@
 import nodePlugin from 'eslint-plugin-n'
 import { Linter } from 'eslint'
+import { ESLintConfigOptions } from './all'
 
-export function node(): Linter.FlatConfig[] {
+export function node(options: ESLintConfigOptions): Linter.Config[] {
   return [
     {
       plugins: {
@@ -57,6 +58,9 @@ export function node(): Linter.FlatConfig[] {
          * @see https://github.com/eslint-community/eslint-plugin-n/blob/HEAD/docs/rules/prefer-node-protocol.md
          */
         'n/prefer-node-protocol': 'error',
+
+        /** User-defined rules */
+        ...options.rules,
       },
       settings: {
         node: {

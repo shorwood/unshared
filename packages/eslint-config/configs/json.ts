@@ -1,11 +1,13 @@
 import jsonc from 'eslint-plugin-jsonc'
 import { Linter } from 'eslint'
+import { ESLintConfigOptions } from './all'
 
 /**
+ * @param options The configuration options.
  * @returns The configuration for JSON files.
  * @see https://ota-meshi.github.io/eslint-plugin-jsonc/
  */
-export function configJson(): Linter.FlatConfig[] {
+export function configJson(options: ESLintConfigOptions): Linter.FlatConfig[] {
   return [
     ...jsonc.configs['flat/recommended-with-json'],
     {
@@ -21,6 +23,9 @@ export function configJson(): Linter.FlatConfig[] {
          * @see https://ota-meshi.github.io/eslint-plugin-jsonc/rules/auto.html
          */
         'jsonc/auto': 'error',
+
+        /** User-defined rules */
+        ...options.rules,
       },
     },
   ]

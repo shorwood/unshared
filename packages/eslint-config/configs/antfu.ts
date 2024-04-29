@@ -1,7 +1,8 @@
 import pluginAntfu from 'eslint-plugin-antfu'
 import { Linter } from 'eslint'
+import { ESLintConfigOptions } from './all'
 
-export function antfu(): Linter.FlatConfig[] {
+export function antfu(options: ESLintConfigOptions): Linter.FlatConfig[] {
   return [
     {
       plugins: {
@@ -37,6 +38,9 @@ export function antfu(): Linter.FlatConfig[] {
          * @see https://github.com/antfu/eslint-plugin-antfu/blob/main/src/rules/consistent-list-newline.md
          */
         'object-curly-newline': 'off',
+
+        /** User-defined rules */
+        ...options.rules,
       },
     },
   ]

@@ -289,6 +289,9 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
         'vue/space-unary-ops': ['error', { nonwords: false, words: true }],
         'vue/template-curly-spacing': 'error',
         'vue/v-on-handler-style': ['error', 'inline'],
+
+        /** User-defined rules */
+        ...options.rules,
       },
     },
   ]

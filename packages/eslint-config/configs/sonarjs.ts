@@ -1,7 +1,8 @@
 import { Linter } from 'eslint'
 import { FlatCompat } from '@eslint/eslintrc'
+import { ESLintConfigOptions } from './all'
 
-export function sonarjs(): Linter.FlatConfig[] {
+export function sonarjs(options: ESLintConfigOptions): Array<Linter.FlatConfig<Linter.RulesRecord>> {
   return new FlatCompat().config({
     extends: [
       'plugin:sonarjs/recommended',
@@ -42,6 +43,9 @@ export function sonarjs(): Linter.FlatConfig[] {
       'sonarjs/no-redundant-jump': 'off',
       'sonarjs/no-unused-collection': 'off',
       'sonarjs/no-use-of-empty-return-value': 'off',
+
+      /** User-defined rules */
+      ...options.rules,
     },
   })
 }

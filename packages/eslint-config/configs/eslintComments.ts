@@ -1,14 +1,16 @@
 import eslintCommentsPlugin from 'eslint-plugin-eslint-comments'
 import { Linter } from 'eslint'
+import { ESLintConfigOptions } from './all'
 
 /**
  * Provide configuration for eslint-comments plugin rules. This
  * plugin is used to enforce certain rules for eslint comments.
  *
+ * @param options The configuration options for eslint-comments plugin.
  * @returns The configuration for eslint-comments plugin.
  * @see https://mysticatea.github.io/eslint-plugin-eslint-comments/
  */
-export function eslintComments(): Linter.FlatConfig[] {
+export function eslintComments(options: ESLintConfigOptions): Linter.FlatConfig[] {
   return [
     {
       plugins: {
@@ -57,6 +59,9 @@ export function eslintComments(): Linter.FlatConfig[] {
          * @see https://mysticatea.github.io/eslint-plugin-eslint-comments/rules/no-unused-disable
          */
         'eslint-comments/no-unused-disable': 'error',
+
+        /** User-defined rules */
+        ...options.rules,
       },
     },
   ]

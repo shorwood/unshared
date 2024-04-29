@@ -1,8 +1,9 @@
 import yamlParser from 'yaml-eslint-parser'
 import yamlPlugin from 'eslint-plugin-yml'
 import { ESLint, Linter } from 'eslint'
+import { ESLintConfigOptions } from './all'
 
-export function yaml(): Linter.FlatConfig[] {
+export function yaml(options: ESLintConfigOptions): Linter.FlatConfig[] {
   return [
     {
       files: [
@@ -48,6 +49,9 @@ export function yaml(): Linter.FlatConfig[] {
           avoidEscape: false,
           prefer: 'single',
         }],
+
+        /** User-defined rules */
+        ...options.rules,
       },
     },
   ]
