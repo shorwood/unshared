@@ -33,7 +33,7 @@ export interface UseAlertReturnType {
    * @param text The text to be displayed in the error alert
    * @returns A function that can be used to dismiss the alert manually
    */
-  alertError: (text: string) => Dismiss
+  error: (text: string) => Dismiss
 
   /**
    * Create a success alert that is displayed for a duration, then automatically dismissed.
@@ -41,7 +41,7 @@ export interface UseAlertReturnType {
    * @param text The text to be displayed in the success alert
    * @returns A function that can be used to dismiss the alert manually
    */
-  alertSuccess: (text: string) => Dismiss
+  sucess: (text: string) => Dismiss
 
   /**
    * Create a warning alert that is displayed for a duration, then automatically dismissed.
@@ -49,7 +49,7 @@ export interface UseAlertReturnType {
    * @param text The text to be displayed in the warning alert
    * @returns A function that can be used to dismiss the alert manually
    */
-  alertWarning: (text: string) => Dismiss
+  warn: (text: string) => Dismiss
 
   /** The active alerts pool. */
   alerts: Alert[]
@@ -95,17 +95,17 @@ export function useAlert(): UseAlertReturnType {
   }
 
   // --- Shortcut methods.
-  const alertError = (text: string) => alert({ text, type: 'error' })
-  const alertSuccess = (text: string) => alert({ text, type: 'success' })
-  const alertWarning = (text: string) => alert({ text, type: 'warning' })
+  const error = (text: string) => alert({ text, type: 'error' })
+  const sucess = (text: string) => alert({ text, type: 'success' })
+  const warn = (text: string) => alert({ text, type: 'warning' })
 
   // --- Return pool and methods.
   return {
     alert,
-    alertError,
+    error,
     alerts,
-    alertSuccess,
-    alertWarning,
+    sucess,
+    warn,
     clear,
     dismiss,
   }
@@ -117,8 +117,8 @@ if (import.meta.vitest) {
   const { sleep } = await import('@unshared/functions/sleep')
 
   test('should register a new alert', () => {
-    const { alertError, alerts } = useAlert()
-    alertError('This is an error')
+    const { error, alerts } = useAlert()
+    error('This is an error')
     expect(alerts).toStrictEqual([{
       id: expect.stringMatching(/[\da-z]{9}/) as string,
       text: 'This is an error',
@@ -127,8 +127,8 @@ if (import.meta.vitest) {
   })
 
   test('should register a new success', () => {
-    const { alerts, alertSuccess } = useAlert()
-    alertSuccess('This is a success')
+    const { alerts, sucess } = useAlert()
+    sucess('This is a success')
     expect(alerts).toStrictEqual([{
       id: expect.stringMatching(/[\da-z]{9}/) as string,
       text: 'This is a success',
@@ -137,8 +137,8 @@ if (import.meta.vitest) {
   })
 
   test('should register a new warning', () => {
-    const { alerts, alertWarning } = useAlert()
-    alertWarning('This is a warning')
+    const { alerts, warn } = useAlert()
+    warn('This is a warning')
     expect(alerts).toStrictEqual([{
       id: expect.stringMatching(/[\da-z]{9}/) as string,
       text: 'This is a warning',
@@ -164,16 +164,16 @@ if (import.meta.vitest) {
   })
 
   test('should be dismissed once we call the returned "dismiss" function', () => {
-    const { alerts, alertWarning } = useAlert()
-    const dismiss = alertWarning('This is a warning')
+    const { alerts, warn } = useAlert()
+    const dismiss = warn('This is a warning')
     dismiss()
     expect(alerts).toStrictEqual([])
   })
 
   test('should dismiss all alerts', () => {
-    const { alerts, alertWarning, clear } = useAlert()
-    alertWarning('This is a warning')
-    alertWarning('This is a warning 2')
+    const { alerts, warn, clear } = useAlert()
+    warn('This is a warning')
+    warn('This is a warning 2')
     clear()
     expect(alerts).toStrictEqual([])
   })
