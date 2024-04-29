@@ -7,17 +7,10 @@ import { Linter } from 'eslint'
 import { typescript } from './typescript'
 import { ESLintConfigOptions } from './all'
 
-const VUE_CONFIGS = [
-  ...vuePlugin.configs?.['flat/base'] as Linter.FlatConfig[],
-  ...vuePlugin.configs?.['flat/recommended'] as Linter.FlatConfig[],
-  ...vuePlugin.configs?.['flat/strongly-recommended'] as Linter.FlatConfig[],
-  ...vuePlugin.configs?.['flat/essential'] as Linter.FlatConfig[],
-]
-
 export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
   const TYPESCRIPT_CONFIG = typescript(options).at(1)!
   return [
-    ...VUE_CONFIGS,
+    ...vuePlugin.configs?.['flat/base'] as Linter.FlatConfig[],
     {
       plugins: {
         vue: vuePlugin,
@@ -56,7 +49,13 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
         '**/*.vue',
       ],
       rules: {
-        ...TYPESCRIPT_CONFIG.rules,
+        ...TYPESCRIPT_CONFIG.rules as Linter.RulesRecord,
+        // @ts-expect-error: ignore
+        ...vuePlugin.configs['flat/recommended'].rules as Linter.RulesRecord,
+        // @ts-expect-error: ignore
+        ...vuePlugin.configs['flat/strongly-recommended'].rules as Linter.RulesRecord,
+        // @ts-expect-error: ignore
+        ...vuePlugin.configs['flat/essential'].rules as Linter.RulesRecord,
         '@typescript-eslint/no-unsafe-call': 'off',
         '@typescript-eslint/no-misused-promises': 'off',
         '@typescript-eslint/no-unsafe-assignment': 'off',
@@ -97,7 +96,9 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
          * consistency and maintainability.
          *
          * @see https://eslint.vuejs.org/rules/vue/prefer-define-options.html
+         * @see https://eslint.vuejs.org/rules/vue/component-api-style.html
          */
+        'vue/prefer-define-options': 'error',
         'vue/component-api-style': ['error', ['script-setup']],
 
         /**
@@ -119,6 +120,10 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
          * @see https://eslint.vuejs.org/rules/html-comment-content-newline.html
          */
         'vue/html-comment-content-spacing': ['error', 'always'],
+        'vue/html-comment-content-newline': ['error', {
+          multiline: 'always',
+          singleline: 'never',
+        }],
 
         /**
          * Enforce consistent spacing between HTML / Component tags. This makes it
@@ -127,11 +132,18 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
          * @see https://eslint.vuejs.org/rules/padding-line-between-blocks.html
          * @see https://eslint.vuejs.org/rules/padding-line-between-tags.html
          */
-        'vue/html-comment-indent': ['error', 2],
+        'vue/padding-line-between-blocks': ['error', 'always'],
         'vue/padding-line-between-tags': ['error', [
           { blankLine: 'consistent', next: '*', prev: '*' },
           { blankLine: 'always', next: '*', prev: 'comment' },
         ]],
+
+        'vue/html-comment-indent': ['error', 2],
+        'vue/multiline-html-element-content-newline': ['error', {
+          allowEmptyLines: true,
+          ignores: [],
+          ignoreWhenEmpty: true,
+        }],
 
         /**
          * Enforce consistent spacing and newlines in the template. This rule helps
@@ -164,11 +176,7 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
          * @see https://eslint.vuejs.org/rules/multi-word-component-names.html
          */
         'vue/multi-word-component-names': 'off',
-        'vue/multiline-html-element-content-newline': ['error', {
-          allowEmptyLines: true,
-          ignores: [],
-          ignoreWhenEmpty: true,
-        }],
+        'vue/no-reserved-component-names': 'off',
 
         /**
          * Reports the destructuring or member expression of props passed to setup
@@ -206,6 +214,7 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
          */
         'vue/v-on-style': ['error', 'shorthand'],
 
+        'vue/return-in-computed-property': 'off',
         'vue/no-sparse-arrays': 'error',
         'vue/no-unused-emit-declarations': 'error',
         'vue/no-use-v-else-with-v-for': 'error',
@@ -223,8 +232,6 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
           },
         ],
         'vue/operator-linebreak': ['error', 'before'],
-        'vue/padding-line-between-blocks': ['error', 'always'],
-        'vue/prefer-define-options': 'error',
         'vue/prefer-import-from-vue': 'off',
         'vue/prefer-separate-static-class': 'error',
         'vue/prefer-template': 'error',
@@ -262,10 +269,6 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
             multiline: 'always',
             singleline: 'never',
           },
-          singleline: 'never',
-        }],
-        'vue/html-comment-content-newline': ['error', {
-          multiline: 'always',
           singleline: 'never',
         }],
         'vue/no-constant-condition': 'warn',
