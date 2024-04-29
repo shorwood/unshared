@@ -70,10 +70,10 @@ export function useAlert() {
      * @param text The text to be displayed in the info alert
      * @returns A function that can be used to dismiss the alert manually
      */
-    success: (text: string): Dismiss => alert({
-      text,
+    success: (text: Alert | string): Dismiss => alert({
       type: 'success',
       title: 'Success',
+      ...typeof text === 'string' ? { text } : text,
     }),
 
     /**
@@ -82,10 +82,10 @@ export function useAlert() {
      * @param text The text to be displayed in the info alert
      * @returns A function that can be used to dismiss the alert manually
      */
-    info: (text: string): Dismiss => alert({
-      text,
+    info: (text: Alert | string): Dismiss => alert({
       type: 'info',
       title: 'Info',
+      ...typeof text === 'string' ? { text } : text,
     }),
 
     /**
@@ -94,11 +94,12 @@ export function useAlert() {
      * @param error The error to be displayed in the error alert.
      * @returns A function that can be used to dismiss the alert manually
      */
-    error: (error: Error | string) => alert({
-      text: error instanceof Error ? error.message : error,
-      title: 'Error',
-      type: 'error',
-    }),
+    error: (error: Alert | Error | string) => {
+      const alertObject = { type: 'error', title: 'Error' } as Alert
+      if (error instanceof Error) return alert({ ...alertObject, text: error.message })
+      if (typeof error === 'string') return alert({ ...alertObject, text: error })
+      return alert({ ...alertObject, ...error })
+    },
 
     /**
      * Create a warning alert that is displayed for a duration.
@@ -106,11 +107,12 @@ export function useAlert() {
      * @param error The error to be displayed in the warning alert.
      * @returns A function that can be used to dismiss the alert manually
      */
-    warn: (error: Error | string): Dismiss => alert({
-      text: error instanceof Error ? error.message : error,
-      title: 'Warning',
-      type: 'warning',
-    }),
+    warn: (error: Alert | Error | string): Dismiss => {
+      const alertObject = { type: 'warning', title: 'Warning' } as Alert
+      if (error instanceof Error) return alert({ ...alertObject, text: error.message })
+      if (typeof error === 'string') return alert({ ...alertObject, text: error })
+      return alert({ ...alertObject, ...error })
+    },
 
     /**
      * Clear all alerts from the pool.
@@ -156,7 +158,7 @@ if (import.meta.vitest) {
     })
   })
 
-  describe('shorthand methods', () => {
+  describe('success', () => {
     it('should register a new success', () => {
       const { alerts, success } = useAlert()
       success('This is a success')
@@ -167,6 +169,42 @@ if (import.meta.vitest) {
       }])
     })
 
+    it('should register a new success from an object', () => {
+      const { alerts, success } = useAlert()
+      success({ text: 'This is a success', title: 'Great news !' })
+      expect(alerts).toMatchObject([{
+        id: expect.stringMatching(/[\da-z]{9}/) as string,
+        text: 'This is a success',
+        title: 'Great news !',
+        type: 'success',
+      }])
+    })
+  })
+
+  describe('info', () => {
+    it('should register a new info', () => {
+      const { alert, alerts } = useAlert()
+      alert({ text: 'This is an info', type: 'info' })
+      expect(alerts).toMatchObject([{
+        id: expect.stringMatching(/[\da-z]{9}/) as string,
+        text: 'This is an info',
+        type: 'info',
+      }])
+    })
+
+    it('should register a new info from an object', () => {
+      const { alerts, info } = useAlert()
+      info({ text: 'This is an info', title: 'Information' })
+      expect(alerts).toMatchObject([{
+        id: expect.stringMatching(/[\da-z]{9}/) as string,
+        text: 'This is an info',
+        title: 'Information',
+        type: 'info',
+      }])
+    })
+  })
+
+  describe('warn', () => {
     it('should register a new warning from a string', () => {
       const { alerts, warn } = useAlert()
       warn('This is a warning')
@@ -187,6 +225,19 @@ if (import.meta.vitest) {
       }])
     })
 
+    it('should register a new warning from an object', () => {
+      const { alerts, warn } = useAlert()
+      warn({ text: 'This is a warning', title: 'Warning!' })
+      expect(alerts).toMatchObject([{
+        id: expect.stringMatching(/[\da-z]{9}/) as string,
+        text: 'This is a warning',
+        title: 'Warning!',
+        type: 'warning',
+      }])
+    })
+  })
+
+  describe('error', () => {
     it('should register a new error from a string', () => {
       const { alerts, error } = useAlert()
       error('This is an error')
@@ -207,13 +258,14 @@ if (import.meta.vitest) {
       }])
     })
 
-    it('should register a new info', () => {
-      const { alert, alerts } = useAlert()
-      alert({ text: 'This is an info', type: 'info' })
+    it('should register a new error from an object', () => {
+      const { alerts, error } = useAlert()
+      error({ text: 'This is an error', title: 'Error!' })
       expect(alerts).toMatchObject([{
         id: expect.stringMatching(/[\da-z]{9}/) as string,
-        text: 'This is an info',
-        type: 'info',
+        text: 'This is an error',
+        title: 'Error!',
+        type: 'error',
       }])
     })
   })
