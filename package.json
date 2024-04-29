@@ -14,15 +14,6 @@
     "node": ">=20.0.0",
     "pnpm": ">=9.0.0"
   },
-  "pnpm": {
-    "peerDependencyRules": {
-      "allowAny": [
-        "eslint",
-        "typescript",
-        "meow"
-      ]
-    }
-  },
   "scripts": {
     "dev": "tsx ./scripts/build.ts --watch true",
     "build": "tsx ./scripts/build.ts",
