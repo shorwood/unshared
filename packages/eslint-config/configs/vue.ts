@@ -61,6 +61,7 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
          * Disable some TypeScript rules that may conflict with the Vue SFC parser.
          */
         '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-return': 'off',
         '@typescript-eslint/no-misused-promises': 'off',
         '@typescript-eslint/no-unsafe-assignment': 'off',
         '@typescript-eslint/no-unsafe-member-access': 'off',
