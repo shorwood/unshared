@@ -1,3 +1,4 @@
+// eslint-disable vue/no-unused-emit-declarations
 import { ExtractPropTypes, Prop, VNode, computed, defineComponent, h, mergeProps } from 'vue'
 import {
   BASE_CLICKABLE_PROPS,
@@ -63,6 +64,8 @@ export const Button = /* #__PURE__ */ defineComponent(
     )
   },
   {
+    name: 'Button',
+    props: PROPS as unknown as undefined,
     emits: [
       'click',
       'update:loading',
@@ -70,8 +73,6 @@ export const Button = /* #__PURE__ */ defineComponent(
       'update:disabled',
       'update:readonly',
     ],
-    name: 'Button',
-    props: PROPS as unknown as undefined,
     slots: {
       [Symbol()]: {
         default: {} as (props: SlotProps) => VNode,

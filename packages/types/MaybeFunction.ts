@@ -27,4 +27,3 @@ if (import.meta.vitest) {
     expectTypeOf<Result>().toEqualTypeOf<((n: number) => number) | number>()
   })
 }
-

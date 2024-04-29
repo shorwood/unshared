@@ -112,7 +112,7 @@ export function useAlert(): UseAlertReturnType {
 }
 
 /* v8 ignore start */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 if (import.meta.vitest) {
   const { sleep } = await import('@unshared/functions/sleep')
 
@@ -120,7 +120,7 @@ if (import.meta.vitest) {
     const { alertError, alerts } = useAlert()
     alertError('This is an error')
     expect(alerts).toStrictEqual([{
-      id: expect.stringMatching(/[\da-z]{9}/),
+      id: expect.stringMatching(/[\da-z]{9}/) as string,
       text: 'This is an error',
       type: 'error',
     }])
@@ -130,7 +130,7 @@ if (import.meta.vitest) {
     const { alerts, alertSuccess } = useAlert()
     alertSuccess('This is a success')
     expect(alerts).toStrictEqual([{
-      id: expect.stringMatching(/[\da-z]{9}/),
+      id: expect.stringMatching(/[\da-z]{9}/) as string,
       text: 'This is a success',
       type: 'success',
     }])
@@ -140,7 +140,7 @@ if (import.meta.vitest) {
     const { alerts, alertWarning } = useAlert()
     alertWarning('This is a warning')
     expect(alerts).toStrictEqual([{
-      id: expect.stringMatching(/[\da-z]{9}/),
+      id: expect.stringMatching(/[\da-z]{9}/) as string,
       text: 'This is a warning',
       type: 'warning',
     }])
@@ -150,7 +150,7 @@ if (import.meta.vitest) {
     const { alert, alerts } = useAlert()
     alert({ text: 'This is an info', type: 'info' })
     expect(alerts).toStrictEqual([{
-      id: expect.stringMatching(/[\da-z]{9}/),
+      id: expect.stringMatching(/[\da-z]{9}/) as string,
       text: 'This is an info',
       type: 'info',
     }])

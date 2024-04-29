@@ -54,4 +54,3 @@ if (import.meta.vitest) {
     expectTypeOf<Result>().toEqualTypeOf<Expected>()
   })
 }
-

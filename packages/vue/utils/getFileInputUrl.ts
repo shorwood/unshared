@@ -23,6 +23,7 @@
 export function getFileInputUrl(item?: File | string): string | undefined {
   if (typeof window === 'undefined') return
   if (typeof item === 'string') return item
+  // eslint-disable-next-line n/no-unsupported-features/node-builtins
   if (item instanceof File) return window.URL.createObjectURL(item)
 }
 

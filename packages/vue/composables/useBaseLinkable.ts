@@ -75,6 +75,7 @@ export function useBaseLinkable(props: BaseLinkableProps) {
   const isInternalLink = computed(() => isLink.value && !isExternalLink.value)
 
   // --- Compute component type.
+
   const is = computed(() => {
     if (isInternalLink.value) return RouterLink
     if (isExternalLink.value) return 'a'

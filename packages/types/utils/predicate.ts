@@ -228,4 +228,3 @@ if (import.meta.vitest) {
     expectTypeOf<ExcludeEmptyArray<[] | {}>>().toEqualTypeOf<{}>()
   })
 }
-

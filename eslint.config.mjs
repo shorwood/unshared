@@ -1,7 +1,7 @@
 import unsharedConfig from './packages/eslint-config/dist/index.js'
 
 export default unsharedConfig({
-  tsConfigPaths: [
+  tsConfigPath: [
     './tsconfig.json',
     './examples/nuxt/tsconfig.json',
   ],
