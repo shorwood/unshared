@@ -56,9 +56,14 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
         ...vuePlugin.configs['flat/strongly-recommended'].rules as Linter.RulesRecord,
         // @ts-expect-error: ignore
         ...vuePlugin.configs['flat/essential'].rules as Linter.RulesRecord,
+
+        /**
+         * Disable some TypeScript rules that may conflict with the Vue SFC parser.
+         */
         '@typescript-eslint/no-unsafe-call': 'off',
         '@typescript-eslint/no-misused-promises': 'off',
         '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
 
         /**
          * Enforces consistent usage of type imports. This rule will enforce the use
