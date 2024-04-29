@@ -1,4 +1,5 @@
 import { reactive } from 'vue'
+import { createSharedComposable } from '@vueuse/core'
 
 export interface Alert {
 
@@ -25,7 +26,7 @@ type Dismiss = () => void
  *
  * @returns A composable to manage the global alert pool.
  */
-export function useAlert() {
+export const useAlert = createSharedComposable(() => {
   const alerts = reactive([]) as Alert[]
 
   // --- Dismiss an alert.
@@ -122,12 +123,17 @@ export function useAlert() {
     },
 
   }
-}
+})
 
 /* v8 ignore start */
 
 if (import.meta.vitest) {
   const { sleep } = await import('@unshared/functions/sleep')
+
+  beforeEach(() => {
+    const { clear } = useAlert()
+    clear()
+  })
 
   describe('useAlert', () => {
     it('should register a new alert', () => {
