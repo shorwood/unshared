@@ -30,9 +30,6 @@ export function all(options: ESLintConfigOptions = {}) {
     ...unicorn(),
     ...vitest(),
     ...vue(options),
-
-    // ...promise(),
-    // ...markdown(),
     {
       ignores: [
         '**/dist',
