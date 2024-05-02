@@ -32,7 +32,7 @@ export function garbageCollected<T extends WeakKey>(value: T, timeout = 0): Prom
   REGISTRY.register(value, resolvable.resolve)
 
   // --- Return the promise.
-  return resolvable.promise
+  return resolvable.promise.finally(() => REGISTRY!.unregister(resolvable.resolve))
 }
 
 /* v8 ignore start */
@@ -65,6 +65,15 @@ if (import.meta.vitest) {
     garbageCollect()
     await new Promise(resolve => setTimeout(resolve, 10))
     expect(callback).toHaveBeenCalledOnce()
+  })
+
+  test('should unregister the object from the finalization registry once resolved', async() => {
+    const result = garbageCollected({ foo: 'bar' }, 10)
+    vi.spyOn(REGISTRY!, 'unregister')
+    garbageCollect()
+    await expect(result).resolves.toBeUndefined()
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    expect(REGISTRY!.unregister).toHaveBeenCalledOnce()
   })
 
   test('should reject if the object is not garbage collected before the timeout', async() => {
