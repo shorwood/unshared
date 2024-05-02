@@ -1,4 +1,6 @@
 export * from './Any'
+export * from './Asserted'
+export * from './Assertor'
 export * from './Bind'
 export * from './BooleanAnd'
 export * from './BooleanNand'

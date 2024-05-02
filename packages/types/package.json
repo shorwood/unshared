@@ -17,6 +17,12 @@
     "./Any": {
       "types": "./dist/Any.d.ts"
     },
+    "./Asserted": {
+      "types": "./dist/Asserted.d.ts"
+    },
+    "./Assertor": {
+      "types": "./dist/Assertor.d.ts"
+    },
     "./Bind": {
       "types": "./dist/Bind.d.ts"
     },
