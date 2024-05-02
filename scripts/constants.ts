@@ -18,6 +18,7 @@ export const PACKAGES_NAMES = [
   'reactivity',
   'string',
   'unocss-preset',
+  'validation',
   'vue',
 ] as const
 

@@ -1,0 +1,73 @@
+{
+  "name": "@unshared/validation",
+  "type": "module",
+  "version": "0.0.3",
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
+  "repository": {
+    "directory": "packages/validation",
+    "type": "git",
+    "url": "git@github.com:shorwood/unshared.git"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./ValidationError": {
+      "require": "./dist/ValidationError.cjs",
+      "types": "./dist/ValidationError.d.ts",
+      "import": "./dist/ValidationError.js"
+    },
+    "./assert": {
+      "require": "./dist/assert.cjs",
+      "types": "./dist/assert.d.ts",
+      "import": "./dist/assert.js"
+    },
+    "./createParser": {
+      "require": "./dist/createParser.cjs",
+      "types": "./dist/createParser.d.ts",
+      "import": "./dist/createParser.js"
+    },
+    "./createRule": {
+      "require": "./dist/createRule.cjs",
+      "types": "./dist/createRule.d.ts",
+      "import": "./dist/createRule.js"
+    },
+    "./createRuleChain": {
+      "require": "./dist/createRuleChain.cjs",
+      "types": "./dist/createRuleChain.d.ts",
+      "import": "./dist/createRuleChain.js"
+    },
+    "./createRuleSet": {
+      "require": "./dist/createRuleSet.cjs",
+      "types": "./dist/createRuleSet.d.ts",
+      "import": "./dist/createRuleSet.js"
+    },
+    "./createSchema": {
+      "require": "./dist/createSchema.cjs",
+      "types": "./dist/createSchema.d.ts",
+      "import": "./dist/createSchema.js"
+    },
+    "./isRuleLike": {
+      "require": "./dist/isRuleLike.cjs",
+      "types": "./dist/isRuleLike.d.ts",
+      "import": "./dist/isRuleLike.js"
+    },
+    ".": {
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "dependencies": {
+    "@unshared/functions": "workspace:*"
+  }
+}
