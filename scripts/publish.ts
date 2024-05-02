@@ -8,10 +8,6 @@ import { createSemver } from '../packages/string/createSemver'
 import { parseCliArguments } from '../packages/process/parseCliArguments'
 import { execute as $ } from '../packages/process/execute'
 
-interface NPMView {
-  versions: string[]
-}
-
 /**
  * Set the version of the package to the version in the package.json file.
  * If the published version is a release candidate or a build, the commit
@@ -52,11 +48,12 @@ export async function pnpmPublish(packageName: string, registry: string) {
   }
 
   // --- Get the latest version from the registry.
-  const npmViewJSON = await $('pnpm', ['view', packageJson.name!, '--registry', registry, '--json'], 'utf8')
-  const npmView = JSON.parse(npmViewJSON) as NPMView
+  const npmView = await $('pnpm', ['view', packageJson.name!, '--registry', registry, '--json'], 'utf8')
+    .then(JSON.parse)
+    .catch(() => ({ versions: [] })) as { versions?: string[] } | undefined
 
   // --- Check if the current version is already released.
-  if (npmView.versions.includes(packageJson.version)) {
+  if (npmView?.versions?.includes(packageJson.version)) {
     console.log(`The package "${packageJson.name!}@${semver.toString()}" already exists in the registry.`)
     return
   }
