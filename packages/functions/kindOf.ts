@@ -6,21 +6,19 @@
  * @param value The value to check
  * @returns The type or constructor name of the value
  * @example
- * getType([]) // 'Array'
- * getType(null) // 'null'
- * getType(true) // 'Boolean'
- * getType(RegExp) // 'RegExp'
+ * kindOf([]) // 'Array'
+ * kindOf(null) // 'null'
+ * kindOf(true) // 'boolean'
+ * kindOf(RegExp) // 'RegExp'
  */
 export function kindOf(value?: unknown): string {
 
-  // --- Is null
+  // --- If the value is an object, return the constructor name
   if (value === null) return 'null'
-
-  // --- Get the constructor name
   if (typeof value === 'object' && value.constructor.name !== 'Object')
     return value.constructor.name
 
-  // --- Primitive types
+  // --- Otherwise, return the primitive type.
   return typeof value
 }
 
