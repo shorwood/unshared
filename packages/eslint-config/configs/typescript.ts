@@ -274,6 +274,10 @@ export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
           disallowTypeAnnotations: false,
           prefer: 'no-type-imports',
         }],
+        'perfectionist/sort-exports': ['error', {
+          'type': 'alphabetical',
+          'ignore-case': false,
+        }],
         'perfectionist/sort-named-imports': ['error', { type: 'natural' }],
         'perfectionist/sort-imports': ['error', {
           'newlines-between': 'never',

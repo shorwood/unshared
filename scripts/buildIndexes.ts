@@ -53,8 +53,7 @@ async function buildIndex(path: string): Promise<IndexFile> {
       if (!isFile || !isPatternMath || isIndexFile) continue
 
       // --- Push the import.
-      const importId = entity.name.split('.').slice(0, -1)
-        .join('.')
+      const importId = entity.name.split('.').slice(0, -1).join('.')
       imports.push(importId)
     }
     catch { /** Ignore */ }
@@ -62,7 +61,7 @@ async function buildIndex(path: string): Promise<IndexFile> {
 
   // ---Sort the imports alphabetically and generate the index file content.
   const indexContent = [...new Set(imports)]
-    .sort()
+    .sort((a, b) => a.localeCompare(b))
     .map(script => `export * from './${script}'`)
     .join('\n')
 
@@ -104,7 +103,6 @@ export async function buildIndexes(packageName: string): Promise<void> {
   const indexes = indexFiles
     .filter(indexFile => indexFile.content.trim() !== '')
     .filter(indexFile => ['dist', 'node_modules'].every(path => !indexFile.path.includes(path)))
-    .sort((a, b) => a.path.length - b.path.length)
 
   // --- Write and log the index files.
   for (const { content, path } of indexes)
