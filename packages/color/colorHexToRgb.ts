@@ -1,7 +1,7 @@
 import { RGB, createColorRgb } from './createColorRgb'
 
 /** Regular expression to match a hexadecimal color. */
-const COLOR_HEX_REGEX = /^#?([\da-f]{3,4}|[\da-f]{6}|[\da-f]{8})$/i
+const EXP_COLOR_HEX = /^#?([\da-f]{3,4}|[\da-f]{6}|[\da-f]{8})$/i
 
 /**
  * Takes an hexadecimal color and converts it into an RGBA color. This function
@@ -13,7 +13,7 @@ const COLOR_HEX_REGEX = /^#?([\da-f]{3,4}|[\da-f]{6}|[\da-f]{8})$/i
  * @example colorHexToRgb('#fff') // => { r: 1, g: 1, b: 1, a: 1 }
  */
 export function colorHexToRgb(color: string): RGB {
-  const hex = color.match(COLOR_HEX_REGEX)?.[1]
+  const hex = color.match(EXP_COLOR_HEX)?.[1]
   if (!hex) throw new Error(`Could not parse hexadecimal color from string: "${color}"`)
 
   // --- Compute slice factor based on whether it's a 3/4 or 6/8 digit hex.
@@ -41,52 +41,27 @@ export function colorHexToRgb(color: string): RGB {
 if (import.meta.vitest) {
   test('should parse an hex3 into an RGB object', () => {
     const result = colorHexToRgb('123')
-    expect(result).toStrictEqual({
-      a: 0xFF,
-      b: 0x33,
-      g: 0x22,
-      r: 0x11,
-    })
+    expect(result).toStrictEqual({ a: 0xFF, b: 0x33, g: 0x22, r: 0x11 })
   })
 
   test('should parse an hex4 into an RGB object', () => {
     const result = colorHexToRgb('1234')
-    expect(result).toStrictEqual({
-      a: 0x44,
-      b: 0x33,
-      g: 0x22,
-      r: 0x11,
-    })
+    expect(result).toStrictEqual({ a: 0x44, b: 0x33, g: 0x22, r: 0x11 })
   })
 
   test('should parse a color in hex6 into an RGB object', () => {
     const result = colorHexToRgb('123456')
-    expect(result).toStrictEqual({
-      a: 0xFF,
-      b: 0x56,
-      g: 0x34,
-      r: 0x12,
-    })
+    expect(result).toStrictEqual({ a: 0xFF, b: 0x56, g: 0x34, r: 0x12 })
   })
 
   test('should parse a color in hex8 into an RGB object', () => {
     const result = colorHexToRgb('12345678')
-    expect(result).toStrictEqual({
-      a: 0x78,
-      b: 0x56,
-      g: 0x34,
-      r: 0x12,
-    })
+    expect(result).toStrictEqual({ a: 0x78, b: 0x56, g: 0x34, r: 0x12 })
   })
 
   test('should omit the # prefix', () => {
     const result = colorHexToRgb('#12345678')
-    expect(result).toStrictEqual({
-      a: 0x78,
-      b: 0x56,
-      g: 0x34,
-      r: 0x12,
-    })
+    expect(result).toStrictEqual({ a: 0x78, b: 0x56, g: 0x34, r: 0x12 })
   })
 
   test('should throw if the color is too short', () => {
