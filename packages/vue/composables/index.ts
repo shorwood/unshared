@@ -1,4 +1,4 @@
-export * from './useAlert'
+export * from './useAlerts'
 export * from './useBaseClickable'
 export * from './useBaseLinkable'
 export * from './useBaseRenderable'
