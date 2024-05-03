@@ -26,6 +26,11 @@
       "types": "./dist/composables.d.ts",
       "import": "./dist/composables.js"
     },
+    "./nuxt": {
+      "require": "./dist/nuxt.cjs",
+      "types": "./dist/nuxt.d.ts",
+      "import": "./dist/nuxt.js"
+    },
     "./utils": {
       "require": "./dist/utils.cjs",
       "types": "./dist/utils.d.ts",
@@ -43,18 +48,36 @@
     "LICENSE.md"
   ],
   "peerDependencies": {
+    "@nuxt/kit": "^3.0.0",
+    "@nuxt/schema": "^3.0.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "vue": {
+      "optional": false
+    },
+    "vue-router": {
+      "optional": true
+    },
+    "@nuxt/kit": {
+      "optional": true
+    },
+    "@nuxt/schema": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@unshared/collection": "workspace:*",
     "@unshared/functions": "workspace:*",
-    "@vueuse/core": "10.9.0",
-    "leaflet": "1.9.4",
-    "markdown-it": "14.1.0"
+    "@vueuse/core": "10.9.0"
   },
   "devDependencies": {
+    "@nuxt/kit": "3.11.2",
+    "@nuxt/schema": "3.11.2",
     "@vue/test-utils": "2.4.5",
-    "vue": "3.4.25"
+    "leaflet": "1.9.4",
+    "markdown-it": "14.1.0",
+    "vue": "3.4.26"
   }
 }
