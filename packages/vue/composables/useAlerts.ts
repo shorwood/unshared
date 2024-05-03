@@ -26,7 +26,7 @@ type Dismiss = () => void
  *
  * @returns A composable to manage the global alert pool.
  */
-export const useAlert = createSharedComposable(() => {
+export const useAlerts = createSharedComposable(() => {
   const alerts = reactive([]) as Alert[]
 
   // --- Dismiss an alert.
@@ -131,13 +131,13 @@ if (import.meta.vitest) {
   const { sleep } = await import('@unshared/functions/sleep')
 
   beforeEach(() => {
-    const { clear } = useAlert()
+    const { clear } = useAlerts()
     clear()
   })
 
   describe('useAlert', () => {
     it('should register a new alert', () => {
-      const { alert, alerts } = useAlert()
+      const { alert, alerts } = useAlerts()
       alert({
         text: 'This is an alert',
         type: 'info',
@@ -150,7 +150,7 @@ if (import.meta.vitest) {
     })
 
     it('should allow a custom id', () => {
-      const { alert, alerts } = useAlert()
+      const { alert, alerts } = useAlerts()
       alert({
         id: '1',
         text: 'This is an alert',
@@ -166,7 +166,7 @@ if (import.meta.vitest) {
 
   describe('success', () => {
     it('should register a new success', () => {
-      const { alerts, success } = useAlert()
+      const { alerts, success } = useAlerts()
       success('This is a success')
       expect(alerts).toMatchObject([{
         id: expect.stringMatching(/[\da-z]{9}/) as string,
@@ -176,7 +176,7 @@ if (import.meta.vitest) {
     })
 
     it('should register a new success from an object', () => {
-      const { alerts, success } = useAlert()
+      const { alerts, success } = useAlerts()
       success({ text: 'This is a success', title: 'Great news !' })
       expect(alerts).toMatchObject([{
         id: expect.stringMatching(/[\da-z]{9}/) as string,
@@ -189,7 +189,7 @@ if (import.meta.vitest) {
 
   describe('info', () => {
     it('should register a new info', () => {
-      const { alert, alerts } = useAlert()
+      const { alert, alerts } = useAlerts()
       alert({ text: 'This is an info', type: 'info' })
       expect(alerts).toMatchObject([{
         id: expect.stringMatching(/[\da-z]{9}/) as string,
@@ -199,7 +199,7 @@ if (import.meta.vitest) {
     })
 
     it('should register a new info from an object', () => {
-      const { alerts, info } = useAlert()
+      const { alerts, info } = useAlerts()
       info({ text: 'This is an info', title: 'Information' })
       expect(alerts).toMatchObject([{
         id: expect.stringMatching(/[\da-z]{9}/) as string,
@@ -212,7 +212,7 @@ if (import.meta.vitest) {
 
   describe('warn', () => {
     it('should register a new warning from a string', () => {
-      const { alerts, warn } = useAlert()
+      const { alerts, warn } = useAlerts()
       warn('This is a warning')
       expect(alerts).toMatchObject([{
         id: expect.stringMatching(/[\da-z]{9}/) as string,
@@ -222,7 +222,7 @@ if (import.meta.vitest) {
     })
 
     it('should register a new warning from an error', () => {
-      const { alerts, warn } = useAlert()
+      const { alerts, warn } = useAlerts()
       warn(new Error('This is an error'))
       expect(alerts).toMatchObject([{
         id: expect.stringMatching(/[\da-z]{9}/) as string,
@@ -232,7 +232,7 @@ if (import.meta.vitest) {
     })
 
     it('should register a new warning from an object', () => {
-      const { alerts, warn } = useAlert()
+      const { alerts, warn } = useAlerts()
       warn({ text: 'This is a warning', title: 'Warning!' })
       expect(alerts).toMatchObject([{
         id: expect.stringMatching(/[\da-z]{9}/) as string,
@@ -245,7 +245,7 @@ if (import.meta.vitest) {
 
   describe('error', () => {
     it('should register a new error from a string', () => {
-      const { alerts, error } = useAlert()
+      const { alerts, error } = useAlerts()
       error('This is an error')
       expect(alerts).toMatchObject([{
         id: expect.stringMatching(/[\da-z]{9}/) as string,
@@ -255,7 +255,7 @@ if (import.meta.vitest) {
     })
 
     it('should register a new warning from an error', () => {
-      const { alerts, warn } = useAlert()
+      const { alerts, warn } = useAlerts()
       warn(new Error('This is an error'))
       expect(alerts).toMatchObject([{
         id: expect.stringMatching(/[\da-z]{9}/) as string,
@@ -265,7 +265,7 @@ if (import.meta.vitest) {
     })
 
     it('should register a new error from an object', () => {
-      const { alerts, error } = useAlert()
+      const { alerts, error } = useAlerts()
       error({ text: 'This is an error', title: 'Error!' })
       expect(alerts).toMatchObject([{
         id: expect.stringMatching(/[\da-z]{9}/) as string,
@@ -278,21 +278,21 @@ if (import.meta.vitest) {
 
   describe('dismiss', () => {
     it('should register a new alert and dismiss it after 10ms', async() => {
-      const { alert, alerts } = useAlert()
+      const { alert, alerts } = useAlerts()
       alert({ duration: 10, text: 'This is an alert', type: 'info' })
       await sleep(15)
       expect(alerts).toMatchObject([])
     })
 
     it('should be dismissed once we call the returned "dismiss" function', () => {
-      const { alerts, warn } = useAlert()
+      const { alerts, warn } = useAlerts()
       const dismiss = warn('This is a warning')
       dismiss()
       expect(alerts).toMatchObject([])
     })
 
     it('should dismiss all alerts', () => {
-      const { alerts, warn, clear } = useAlert()
+      const { alerts, warn, clear } = useAlerts()
       warn('This is a warning')
       warn('This is a warning 2')
       clear()
@@ -300,7 +300,7 @@ if (import.meta.vitest) {
     })
 
     it('should dismiss a specific alert', () => {
-      const { alert, alerts, dismiss } = useAlert()
+      const { alert, alerts, dismiss } = useAlerts()
       alert({ id: '1', text: 'Hello, World' })
       alert({ id: '2', text: 'Goodbye, World' })
       dismiss({ id: '1' })
