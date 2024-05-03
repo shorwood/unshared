@@ -3,7 +3,7 @@
 import { MaybeArray } from '@unshared/types'
 
 /** An object that can be converted to a query string. */
-export type SearchParamsObject = Record<string, MaybeArray<boolean | number | string>>
+export type SearchParamsObject = Record<string, MaybeArray<boolean | number | string> | undefined>
 
 /** Options for the query string conversion. */
 export interface SearchParamsOptions {
@@ -39,7 +39,9 @@ export function toSearchParams(object: SearchParamsObject, options: SearchParams
 
   // --- Convert all entries to query string parameters.
   for (const [key, value] of Object.entries(object)) {
+    if (value === undefined) continue
 
+    // --- Convert arrays based on the format.
     if (Array.isArray(value)) {
       if (formatArray === 'brackets') value.map(v => search.append(`${key}[]`, v.toString()))
       else if (formatArray === 'indices') value.map((v, i) => search.append(`${key}[${i}]`, v.toString()))
