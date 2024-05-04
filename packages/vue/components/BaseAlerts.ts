@@ -29,7 +29,7 @@ const PROPS = {
 
 type Props = ExtractPropTypes<typeof PROPS>
 
-export const Alerts = /* #__PURE__ */ defineComponent(
+export const BaseAlerts = /* #__PURE__ */ defineComponent(
   (props: Props, { attrs, slots }) => {
     const alerts = useAlerts()
     const renderable = useBaseRenderable(props)
@@ -66,7 +66,7 @@ export const Alerts = /* #__PURE__ */ defineComponent(
     )
   },
   {
-    name: 'Alerts',
+    name: 'BaseAlerts',
     props: PROPS as unknown as undefined,
     emits: [
       'update:alerts',

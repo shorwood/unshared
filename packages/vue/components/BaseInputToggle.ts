@@ -41,7 +41,7 @@ interface SlotProps {
 
 type Context = SetupContext<[], Record<symbol, Partial<typeof SLOTS>>>
 
-export const InputToggle = /* #__PURE__ */ defineComponent(
+export const BaseInputToggle = /* #__PURE__ */ defineComponent(
   <T, U extends ToggleType>(props: Props<T, U>, context: Context) => {
     const { attrs, slots } = context
     const state = useBaseState(props)
@@ -89,7 +89,7 @@ export const InputToggle = /* #__PURE__ */ defineComponent(
     )
   },
   {
-    name: 'InputToggle',
+    name: 'BaseInputToggle',
     props: PROPS as unknown as undefined,
     slots: { [Symbol()]: SLOTS },
   },
@@ -102,7 +102,7 @@ if (import.meta.vitest) {
 
   describe('inputToggle', () => {
     it('should render a simple button by default', () => {
-      const wrapper = mount(InputToggle)
+      const wrapper = mount(BaseInputToggle)
       const html = wrapper.html()
       expect(html).toBe('<input role="checkbox" type="checkbox">')
     })

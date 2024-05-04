@@ -30,7 +30,7 @@ const PROPS = {
 
 type Props = ExtractPropTypes<typeof PROPS>
 
-export const Button = /* #__PURE__ */ defineComponent(
+export const BaseButton = /* #__PURE__ */ defineComponent(
   (props: Props, { attrs, slots }) => {
     const state = useBaseState(props)
     const linkable = useBaseLinkable(props)
@@ -64,7 +64,7 @@ export const Button = /* #__PURE__ */ defineComponent(
     )
   },
   {
-    name: 'Button',
+    name: 'BaseButton',
     props: PROPS as unknown as undefined,
     emits: [
       'click',
@@ -72,7 +72,7 @@ export const Button = /* #__PURE__ */ defineComponent(
       'update:error',
       'update:disabled',
       'update:readonly',
-    ],
+    ] as unknown as undefined,
     slots: {
       [Symbol()]: {
         default: {} as (props: SlotProps) => VNode,

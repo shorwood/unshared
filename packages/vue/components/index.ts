@@ -1,3 +1,3 @@
-export * from './Alerts'
-export * from './Button'
-export * from './InputToggle'
+export * from './BaseAlerts'
+export * from './BaseButton'
+export * from './BaseInputToggle'
