@@ -1,4 +1,4 @@
-import { kindOf } from '@unshared/functions'
+import { kindOf } from '@unshared/functions/kindOf'
 import { ValidationError } from '../ValidationError'
 
 /**
