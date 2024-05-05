@@ -1,6 +1,6 @@
 import { PassThrough, Readable, TransformCallback, TransformOptions } from 'node:stream'
 import { nextTick } from 'node:process'
-import { createResolvable } from '@unshared/functions'
+import { createResolvable } from '@unshared/functions/createResolvable'
 
 /**
  * In Node, when you start listening to a `data` event, it automatically
