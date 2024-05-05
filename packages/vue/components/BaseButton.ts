@@ -60,7 +60,7 @@ export const BaseButton = /* #__PURE__ */ defineComponent(
     return () => h(
       linkable.is ?? renderable.is ?? 'button',
       attributes.value,
-      () => slots.default?.(slotProps.value) ?? props.label,
+      slots.default?.(slotProps.value) ?? props.label,
     )
   },
   {
