@@ -1,3 +1,5 @@
 export * from './BaseAlerts'
 export * from './BaseButton'
+export * from './BaseIcon'
+export * from './BaseInputText'
 export * from './BaseInputToggle'
