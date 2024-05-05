@@ -52,7 +52,7 @@ if (import.meta.vitest) {
     const promise = ready(reference)
     expect(promise).toBeInstanceOf(Promise)
     reference.value = true
-    await expect(promise).resolves.toBeTruthy()
+    await expect(promise).resolves.toBe(true)
     expectTypeOf(promise).toEqualTypeOf<Promise<boolean | undefined>>()
   })
 
