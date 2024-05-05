@@ -2,6 +2,10 @@
 import { LocationQuery, RouterLink } from 'vue-router'
 import { ComponentObjectPropsOptions, ExtractPropTypes, Prop, computed, getCurrentInstance } from 'vue'
 import { toReactive } from '@vueuse/core'
+import { cleanAttributes } from '../utils/cleanAttributes'
+
+/** The symbol to provide the composable into the component. */
+export const BASE_LINKABLE_SYMBOL = Symbol('baseLinkable')
 
 /** The properties of the base linkable component. */
 export const BASE_LINKABLE_PROPS = {
@@ -52,6 +56,9 @@ export const BASE_LINKABLE_PROPS = {
 } satisfies ComponentObjectPropsOptions
 
 /** The properties of the base linkable component. */
+export type BaseLinkableProps = ExtractPropTypes<typeof BASE_LINKABLE_PROPS>
+
+/** The properties of the base linkable composable. */
 export interface BaseLinkable {
 
   /** The component to render the link as. */
@@ -70,12 +77,6 @@ export interface BaseLinkable {
   isInternalLink: boolean
 }
 
-/** The properties of the base linkable component. */
-export type BaseLinkableProps = ExtractPropTypes<typeof BASE_LINKABLE_PROPS>
-
-/** The symbol to provide the composable into the component. */
-export const BASE_LINKABLE_SYMBOL = Symbol('baseLinkable')
-
 declare module '@vue/runtime-core' {
   interface ComponentInternalInstance {
     [BASE_LINKABLE_SYMBOL]?: BaseLinkable
@@ -88,6 +89,7 @@ declare module '@vue/runtime-core' {
  * link to use based on the provided properties.
  *
  * @param props The properties of the component passed by the `setup` function.
+ * @param instance The instance of the component to provide the composable.
  * @returns An object with the computed classes and attributes.
  * @example
  * defineComponent({
@@ -98,8 +100,7 @@ declare module '@vue/runtime-core' {
  *   }
  * })
  */
-export function useBaseLinkable(props: BaseLinkableProps = {}): BaseLinkable {
-  const instance = getCurrentInstance()
+export function useBaseLinkable(props: BaseLinkableProps = {}, instance = getCurrentInstance()): BaseLinkable {
   if (instance?.[BASE_LINKABLE_SYMBOL]) return instance[BASE_LINKABLE_SYMBOL]
 
   // --- Determine the type of link based on the provided properties.
@@ -114,18 +115,18 @@ export function useBaseLinkable(props: BaseLinkableProps = {}): BaseLinkable {
   })
 
   // --- Compute internal link props.
-  const attributes = computed(() => ({
+  const attributes = computed(() => cleanAttributes({
 
     // --- Internal link properties.
-    activeClass: isInternalLink.value ? props.classActive : undefined,
-    exactActiveClass: isInternalLink.value ? props.classActiveExact : undefined,
-    replace: isInternalLink.value ? props.replace : undefined,
-    to: isInternalLink.value ? props.to : undefined,
+    activeClass: isInternalLink.value && props.classActive,
+    exactActiveClass: isInternalLink.value && props.classActiveExact,
+    replace: isInternalLink.value && props.replace,
+    to: isInternalLink.value && props.to,
 
     // --- External link properties.
-    href: isExternalLink.value ? props.to : undefined,
-    rel: isExternalLink.value ? (props.newtab ? 'noreferrer' : undefined) : undefined,
-    target: isExternalLink.value ? (props.newtab ? '_blank' : undefined) : undefined,
+    href: isExternalLink.value && props.to,
+    rel: isExternalLink.value && props.newtab && 'noreferrer',
+    target: isExternalLink.value && props.newtab && '_blank',
   }))
 
   // --- Provide the composable into the component and return it.
@@ -197,10 +198,6 @@ if (import.meta.vitest) {
       expect(result.attributes).toStrictEqual({
         activeClass: 'active',
         exactActiveClass: 'exact-active',
-        href: undefined,
-        rel: undefined,
-        replace: undefined,
-        target: undefined,
         to: '/path',
       })
     })
@@ -208,12 +205,7 @@ if (import.meta.vitest) {
     it('should pass the `replace` property to the internal link', () => {
       const result = useBaseLinkable({ to: '/path', replace: true })
       expect(result.attributes).toStrictEqual({
-        activeClass: undefined,
-        exactActiveClass: undefined,
-        href: undefined,
-        rel: undefined,
         replace: true,
-        target: undefined,
         to: '/path',
       })
     })
@@ -221,12 +213,6 @@ if (import.meta.vitest) {
     it('should ignore the `newtab` property for internal links', () => {
       const result = useBaseLinkable({ to: '/path', newtab: true })
       expect(result.attributes).toStrictEqual({
-        activeClass: undefined,
-        exactActiveClass: undefined,
-        href: undefined,
-        rel: undefined,
-        replace: undefined,
-        target: undefined,
         to: '/path',
       })
     })
@@ -256,39 +242,25 @@ if (import.meta.vitest) {
     it('should set the `attributes` property with the external link properties', () => {
       const result = useBaseLinkable({ to: 'https://example.com', newtab: true })
       expect(result.attributes).toStrictEqual({
-        activeClass: undefined,
-        exactActiveClass: undefined,
         href: 'https://example.com',
         rel: 'noreferrer',
-        replace: undefined,
         target: '_blank',
-        to: undefined,
       })
     })
 
     it('should pass the `newtab` property to the external link', () => {
       const result = useBaseLinkable({ to: 'https://example.com', newtab: true })
       expect(result.attributes).toStrictEqual({
-        activeClass: undefined,
-        exactActiveClass: undefined,
         href: 'https://example.com',
         rel: 'noreferrer',
-        replace: undefined,
         target: '_blank',
-        to: undefined,
       })
     })
 
     it('should ignore the `replace` property for external links', () => {
       const result = useBaseLinkable({ to: 'https://example.com', replace: true })
       expect(result.attributes).toStrictEqual({
-        activeClass: undefined,
-        exactActiveClass: undefined,
         href: 'https://example.com',
-        rel: undefined,
-        replace: undefined,
-        target: undefined,
-        to: undefined,
       })
     })
   })
