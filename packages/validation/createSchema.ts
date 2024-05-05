@@ -1,17 +1,34 @@
-import { Function, Immutable } from '@unshared/types'
+import { Function, Immutable, Pretty } from '@unshared/types'
+import { tries } from '@unshared/functions/tries'
 import { ValidationError } from './ValidationError'
-import { isRuleLike } from './isRuleLike'
-import { RuleSetLike, RuleSetResult } from './createRuleSet'
-import { RuleChainLike, RuleChainResult } from './createRuleChain'
+import { RuleSetLike, RuleSetResult, createRuleSet } from './createRuleSet'
+import { RuleChainLike, RuleChainResult, createRuleChain } from './createRuleChain'
 import { RuleLike, RuleResult } from './createRule'
-import { createParser } from './createParser'
+import { isBoolean } from './assert'
 
 /**
  * A map of properties and their corresponding rules or sets of rules.
  *
  * @example { name: [isString, /\w+/] }
  */
-export type SchemaLike = Record<string, RuleChainLike | RuleLike | RuleSetLike>
+export interface SchemaLike {
+  [key: string]: RuleChainLike | RuleLike | RuleSetLike | SchemaLike
+}
+
+/**
+ * The return type of a schema parser.
+ *
+ * @template T The type of the schema.
+ * @example Schema<{ name: RegExp> = { name: string }
+ */
+export type SchemaResult<T extends SchemaLike> = Pretty<{
+  [K in keyof T]:
+  T[K] extends SchemaLike ? SchemaResult<T[K]>
+    : T[K] extends RuleLike ? RuleResult<T[K]>
+      : T[K] extends RuleSetLike ? RuleSetResult<T[K]>
+        : T[K] extends RuleChainLike ? RuleChainResult<T[K]>
+          : never
+}>
 
 /**
  * A schema parser that can be used to validate and transform an object
@@ -20,13 +37,7 @@ export type SchemaLike = Record<string, RuleChainLike | RuleLike | RuleSetLike>
  * @template T The type of the schema.
  * @example Schema<{ name: [RegExp, (value: string) => string] }>
  */
-export type Schema<T extends SchemaLike> = (value: object) => {
-  [K in keyof T]:
-  T[K] extends RuleSetLike ? RuleSetResult<T[K]>
-    :T[K] extends RuleChainLike ? RuleChainResult<T[K]>
-      : T[K] extends RuleLike ? RuleResult<T[K]>
-        : never
-}
+export type Schema<T extends SchemaLike> = (value: object) => SchemaResult<T>
 
 /**
  * Create a parser function given an object of rules or sets of rules.
@@ -49,9 +60,16 @@ export function createSchema<T extends SchemaLike>(schema: Immutable<T>): Schema
   const compiled: Record<string, Function> = {}
   for (const key in schema) {
     const rules: unknown = schema[key]
-    compiled[key] = isRuleLike(rules)
-      ? createParser(rules)
-      : createParser(...rules as RuleChainLike)
+    const parse = tries(
+      () => createRuleChain(rules as RuleLike),
+      () => createRuleChain(...rules as RuleChainLike),
+      () => createRuleSet(...rules as RuleSetLike),
+      () => createSchema(rules as SchemaLike),
+    )
+
+    // --- If none of the functions return a valid parser, throw an error.
+    if (!parse) throw new TypeError('The value passed to createSchema is not a valid rule, rule chain, rule set, or schema.')
+    compiled[key] = parse
   }
 
   // --- Return a function that validates the value against the schema.
@@ -59,9 +77,16 @@ export function createSchema<T extends SchemaLike>(schema: Immutable<T>): Schema
   return function(object: Record<PropertyKey, unknown>) {
     const result: Record<string, unknown> = {}
     for (const key in compiled) {
-      const rule = compiled[key]
-      const value = object[key]
-      result[key] = rule.call(object, value)
+      try {
+        const rule = compiled[key]
+        const value = object[key]
+        result[key] = rule.call(object, value)
+      }
+      catch (error) {
+        if (error instanceof ValidationError)
+          error.message = error.message.replace('Expected value', `Expected the value of the property "${key}"`)
+        throw error
+      }
     }
 
     return result
@@ -77,14 +102,28 @@ if (import.meta.vitest) {
       name: isString,
       email: [isString, /\w+@example\.com/],
       age: [[isString, Number], [isUndefined]],
+      flags: { isAdmin: isBoolean, isVerified: isBoolean },
     })
 
-    const result = parse({ name: 'John', age: '25', email: 'example@example.com' })
-    expect(result).toMatchObject({ name: 'John', age: 25 })
+    const result = parse({
+      name: 'John',
+      age: '25',
+      email: 'example@example.com',
+      flags: { isAdmin: true, isVerified: false },
+    })
+
+    expect(result).toMatchObject({
+      name: 'John',
+      age: 25,
+      email: 'example@example.com',
+      flags: { isAdmin: true, isVerified: false },
+    })
+
     expectTypeOf(result).toEqualTypeOf<{
       name: string
       email: string
       age: number | undefined
+      flags: { isAdmin: boolean; isVerified: boolean }
     }>()
   })
 
@@ -97,6 +136,6 @@ if (import.meta.vitest) {
 
     const shouldThrow = () => parse({ name: 'John', age: '25', email: false })
     expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('The value did not match any rule chain in the set.')
+    expect(shouldThrow).toThrow('Expected the value of the property "email" to be a string but received: boolean')
   })
 }
