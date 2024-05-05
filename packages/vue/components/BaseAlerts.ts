@@ -27,6 +27,7 @@ const PROPS = {
   'onDismiss': Function as Prop<(alert: Alert) => void>,
 }
 
+/** The properties of the `BaseAlerts` component. */
 type Props = ExtractPropTypes<typeof PROPS>
 
 export const BaseAlerts = /* #__PURE__ */ defineComponent(
@@ -50,19 +51,22 @@ export const BaseAlerts = /* #__PURE__ */ defineComponent(
       },
     ), Boolean))
 
+    // --- Get the slot content.
+    const getSlots = () => {
+      if (slots.default) return slots.default(slotProps.value)
+      if (slots.alert) {
+        return alerts.alerts.map(alert => slots.alert({
+          alert,
+          dismiss: () => alerts.dismiss(alert),
+        }))
+      }
+    }
+
     // --- Return virtual DOM node.
     return () => h(
       renderable.is ?? 'aside',
       attributes.value,
-      () => {
-        if (slots.default) return slots.default(slotProps.value)
-        if (slots.alert) {
-          return alerts.alerts.map(alert => slots.alert({
-            alert,
-            dismiss: () => alerts.dismiss(alert),
-          }))
-        }
-      },
+      getSlots(),
     )
   },
   {
