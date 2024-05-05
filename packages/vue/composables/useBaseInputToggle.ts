@@ -221,12 +221,14 @@ export function useBaseInputToggle<T, U extends ToggleType>(
 
   // --- Properties to assign to the element.
   const attributes = computed(() => cleanAttributes({
-    'aria-pressed': is.value === 'button' && isActive.value,
-    'aria-checked': props.type !== 'radio' && isActive.value,
-    'class': classes.value,
     'onClick': toggle,
-    'role': is.value !== 'input' && (props.type === 'radio' ? 'radio' : 'checkbox'),
-    'tabindex': is.value !== 'input' && 0,
+    'class': classes.value,
+    'tabindex': is.value === 'input' ? undefined : 0,
+    'checked': (is.value === 'input' && isActive.value) ? true : undefined,
+    'aria-pressed': (is.value !== 'input' && props.type !== 'checkbox') ? isActive.value : undefined,
+    'aria-checked': (is.value !== 'input' && props.type === 'checkbox') ? isActive.value : undefined,
+    'role': is.value !== 'input' && (props.type === 'radio' ? 'radio' : 'checkbox') || undefined,
+    'type': is.value === 'input' && (props.type === 'radio' ? 'radio' : 'checkbox') || undefined,
   }))
 
   // --- Provide the composable into the component and return it.
@@ -358,6 +360,45 @@ if (import.meta.vitest) {
         expect(emit).toHaveBeenNthCalledWith(3, 'update:modelValue', false)
       })
     })
+
+    describe('attributes', () => {
+      it('should set the attribute when active and tag `input`', () => {
+        const result = useBaseInputToggle({ modelValue: true, type: 'switch', as: 'input' })
+        expect(result.attributes).toStrictEqual({
+          checked: true,
+          onClick: result.toggle,
+          type: 'checkbox',
+        })
+      })
+
+      it('should set the attribute when active and tag is `button`', () => {
+        const result = useBaseInputToggle({ modelValue: true, type: 'switch', as: 'button' })
+        expect(result.attributes).toStrictEqual({
+          'aria-pressed': true,
+          'onClick': result.toggle,
+          'role': 'checkbox',
+          'tabindex': 0,
+        })
+      })
+
+      it('should set the attribute when inactive and tag is `input`', () => {
+        const result = useBaseInputToggle({ modelValue: false, type: 'switch', as: 'input' })
+        expect(result.attributes).toStrictEqual({
+          onClick: result.toggle,
+          type: 'checkbox',
+        })
+      })
+
+      it('should set the attribute when inactive and tag is `button`', () => {
+        const result = useBaseInputToggle({ modelValue: false, type: 'switch', as: 'button' })
+        expect(result.attributes).toStrictEqual({
+          'aria-pressed': false,
+          'onClick': result.toggle,
+          'role': 'checkbox',
+          'tabindex': 0,
+        })
+      })
+    })
   })
 
   describe('radio', () => {
@@ -453,6 +494,45 @@ if (import.meta.vitest) {
         expect(emit).not.toHaveBeenCalled()
       })
     })
+
+    describe('attributes', () => {
+      it('should set the attribute when active and tag `input`', () => {
+        const result = useBaseInputToggle({ modelValue: 'one', value: 'one', type: 'radio', as: 'input' })
+        expect(result.attributes).toStrictEqual({
+          checked: true,
+          onClick: result.toggle,
+          type: 'radio',
+        })
+      })
+
+      it('should set the attribute when active and tag is `button`', () => {
+        const result = useBaseInputToggle({ modelValue: 'one', value: 'one', type: 'radio', as: 'button' })
+        expect(result.attributes).toStrictEqual({
+          'aria-pressed': true,
+          'onClick': result.toggle,
+          'role': 'radio',
+          'tabindex': 0,
+        })
+      })
+
+      it('should set the attribute when inactive and tag is `input`', () => {
+        const result = useBaseInputToggle({ modelValue: 'two', value: 'one', type: 'radio', as: 'input' })
+        expect(result.attributes).toStrictEqual({
+          onClick: result.toggle,
+          type: 'radio',
+        })
+      })
+
+      it('should set the attribute when inactive and tag is `button`', () => {
+        const result = useBaseInputToggle({ modelValue: 'two', value: 'one', type: 'radio', as: 'button' })
+        expect(result.attributes).toStrictEqual({
+          'aria-pressed': false,
+          'onClick': result.toggle,
+          'role': 'radio',
+          'tabindex': 0,
+        })
+      })
+    })
   })
 
   describe('checkbox', () => {
@@ -541,6 +621,110 @@ if (import.meta.vitest) {
         expect(result.model).toStrictEqual(['three'])
       })
     })
+
+    describe('emit', () => {
+      it('should push the value when the model is undefined', async() => {
+        const emit = vi.fn()
+        // @ts-expect-error: ignore
+        const result = useBaseInputToggle({ modelValue: undefined, value: 'one', type: 'checkbox' }, { emit })
+        result.toggle()
+        await new Promise(nextTick)
+        expect(emit).toHaveBeenNthCalledWith(1, 'toggle')
+        expect(emit).toHaveBeenNthCalledWith(2, 'off')
+        expect(emit).toHaveBeenNthCalledWith(3, 'update:modelValue', ['one'])
+      })
+
+      it('should push the value when the model does not contain the value', async() => {
+        const emit = vi.fn()
+        // @ts-expect-error: ignore
+        const result = useBaseInputToggle({ modelValue: ['two'], value: 'one', type: 'checkbox' }, { emit })
+        result.toggle()
+        await new Promise(nextTick)
+        expect(emit).toHaveBeenNthCalledWith(1, 'toggle')
+        expect(emit).toHaveBeenNthCalledWith(2, 'off')
+        expect(emit).toHaveBeenNthCalledWith(3, 'update:modelValue', ['two', 'one'])
+      })
+
+      it('should push the values when the model does not contain all the values', async() => {
+        const emit = vi.fn()
+        // @ts-expect-error: ignore
+        const result = useBaseInputToggle({ modelValue: ['two'], value: ['one', 'two'], type: 'checkbox' }, { emit })
+        result.toggle()
+        await new Promise(nextTick)
+        expect(emit).toHaveBeenNthCalledWith(1, 'toggle')
+        expect(emit).toHaveBeenNthCalledWith(2, 'off')
+        expect(emit).toHaveBeenNthCalledWith(3, 'update:modelValue', ['two', 'one'])
+      })
+
+      it('should remove the value when the model contains the value', async() => {
+        const emit = vi.fn()
+        // @ts-expect-error: ignore
+        const result = useBaseInputToggle({ modelValue: ['one', 'two'], value: 'one', type: 'checkbox' }, { emit })
+        result.toggle()
+        await new Promise(nextTick)
+        expect(emit).toHaveBeenNthCalledWith(1, 'toggle')
+        expect(emit).toHaveBeenNthCalledWith(2, 'on')
+        expect(emit).toHaveBeenNthCalledWith(3, 'update:modelValue', ['two'])
+      })
+    })
+
+    describe('attributes', () => {
+      it('should set the attribute when active and tag `input`', () => {
+        const result = useBaseInputToggle({ modelValue: ['one', 'two'], value: 'one', type: 'checkbox', as: 'input' })
+        expect(result.attributes).toStrictEqual({
+          checked: true,
+          onClick: result.toggle,
+          type: 'checkbox',
+        })
+      })
+
+      it('should set the attribute when mixed and tag `input`', () => {
+        const result = useBaseInputToggle({ modelValue: ['one'], value: ['one', 'two'], type: 'checkbox', as: 'input' })
+        expect(result.attributes).toStrictEqual({
+          checked: true,
+          onClick: result.toggle,
+          type: 'checkbox',
+        })
+      })
+
+      it('should set the attribute when inactive and tag is `input`', () => {
+        const result = useBaseInputToggle({ modelValue: ['two'], value: 'one', type: 'checkbox', as: 'input' })
+        expect(result.attributes).toStrictEqual({
+          onClick: result.toggle,
+          type: 'checkbox',
+        })
+      })
+
+      it('should set the attribute when active and tag is `button`', () => {
+        const result = useBaseInputToggle({ modelValue: ['one', 'two'], value: 'one', type: 'checkbox', as: 'button' })
+        expect(result.attributes).toStrictEqual({
+          'aria-checked': true,
+          'onClick': result.toggle,
+          'role': 'checkbox',
+          'tabindex': 0,
+        })
+      })
+
+      it('should set the attribute when mixed and tag is `button`', () => {
+        const result = useBaseInputToggle({ modelValue: ['one'], value: ['one', 'two'], type: 'checkbox', as: 'button' })
+        expect(result.attributes).toStrictEqual({
+          'aria-checked': 'mixed',
+          'onClick': result.toggle,
+          'role': 'checkbox',
+          'tabindex': 0,
+        })
+      })
+
+      it('should set the attribute when inactive and tag is `button`', () => {
+        const result = useBaseInputToggle({ modelValue: ['two'], value: 'one', type: 'checkbox', as: 'button' })
+        expect(result.attributes).toStrictEqual({
+          'aria-checked': false,
+          'onClick': result.toggle,
+          'role': 'checkbox',
+          'tabindex': 0,
+        })
+      })
+    })
   })
 
   describe('classes', () => {
@@ -557,62 +741,6 @@ if (import.meta.vitest) {
     it('should return the mixed class when the model is mixed', () => {
       const result = useBaseInputToggle({ modelValue: ['one'], value: ['one', 'two'], classMixed: 'mixed', type: 'checkbox' })
       expect(result.classes).toStrictEqual({ mixed: true })
-    })
-  })
-
-  describe('attributes', () => {
-    it('should set the attribute when active and the component is an input', () => {
-      const result = useBaseInputToggle({ modelValue: true, type: 'switch', as: 'input' })
-      expect(result.attributes).toStrictEqual({
-        'aria-checked': true,
-        'onClick': result.toggle,
-      })
-    })
-
-    it('should set the attribute when inactive and the component is an input', () => {
-      const result = useBaseInputToggle({ modelValue: false, type: 'switch', as: 'input' })
-      expect(result.attributes).toStrictEqual({
-        onClick: result.toggle,
-      })
-    })
-
-    it('should set the attribute when active and the component is a button', () => {
-      const result = useBaseInputToggle({ modelValue: true, type: 'switch', as: 'button' })
-      expect(result.attributes).toStrictEqual({
-        'aria-checked': true,
-        'aria-pressed': true,
-        'onClick': result.toggle,
-        'role': 'checkbox',
-        'tabindex': 0,
-      })
-    })
-
-    it('should set the attribute when inactive and the component is a button', () => {
-      const result = useBaseInputToggle({ modelValue: false, type: 'switch', as: 'button' })
-      expect(result.attributes).toStrictEqual({
-        onClick: result.toggle,
-        role: 'checkbox',
-        tabindex: 0,
-      })
-    })
-
-    it('should set the attribute when active and the component is not a div', () => {
-      const result = useBaseInputToggle({ modelValue: true, type: 'switch', as: 'div' })
-      expect(result.attributes).toStrictEqual({
-        'aria-checked': true,
-        'onClick': result.toggle,
-        'role': 'checkbox',
-        'tabindex': 0,
-      })
-    })
-
-    it('should set the attribute when inactive and the component is not a div', () => {
-      const result = useBaseInputToggle({ modelValue: false, type: 'switch', as: 'div' })
-      expect(result.attributes).toStrictEqual({
-        onClick: result.toggle,
-        role: 'checkbox',
-        tabindex: 0,
-      })
     })
   })
 }
