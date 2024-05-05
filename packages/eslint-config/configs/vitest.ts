@@ -95,6 +95,16 @@ export function vitest(options: ESLintConfigOptions): Linter.FlatConfig[] {
           },
         }],
 
+        /**
+         * Disable the prefer-truthy/false rule as we want to allow the use of strict equality checks
+         * with boolean values.
+         *
+         * @see https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/prefer-to-be-truthy.md
+         * @see https://github.com/veritem/eslint-plugin-vitest/blob/main/docs/rules/prefer-to-be-falsy.md
+         */
+        'vitest/prefer-to-be-truthy': 'off',
+        'vitest/prefer-to-be-falsy': 'off',
+
         /** User-defined rules */
         ...options.rules,
       },
