@@ -156,6 +156,11 @@
       "types": "./dist/throttle.d.ts",
       "import": "./dist/throttle.js"
     },
+    "./toPredicate": {
+      "require": "./dist/toPredicate.cjs",
+      "types": "./dist/toPredicate.d.ts",
+      "import": "./dist/toPredicate.js"
+    },
     "./tries": {
       "require": "./dist/tries.cjs",
       "types": "./dist/tries.d.ts",
