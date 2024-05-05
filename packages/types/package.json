@@ -272,6 +272,9 @@
     "./Predicator": {
       "types": "./dist/Predicator.d.ts"
     },
+    "./Pretty": {
+      "types": "./dist/Pretty.d.ts"
+    },
     "./Primitive": {
       "types": "./dist/Primitive.d.ts"
     },
