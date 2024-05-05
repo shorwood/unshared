@@ -1,3 +1,5 @@
+export * from './cleanAttributes'
+export * from './cleanClasses'
 export * from './exposeToDevtool'
 export * from './getFileInputUrl'
 export * from './ready'
