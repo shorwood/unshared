@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable sonarjs/no-duplicate-string */
 import { LocationQuery, RouterLink } from 'vue-router'
 import { ComponentObjectPropsOptions, ExtractPropTypes, Prop, computed, getCurrentInstance } from 'vue'
@@ -118,15 +119,15 @@ export function useBaseLinkable(props: BaseLinkableProps = {}, instance = getCur
   const attributes = computed(() => cleanAttributes({
 
     // --- Internal link properties.
-    activeClass: isInternalLink.value && props.classActive,
-    exactActiveClass: isInternalLink.value && props.classActiveExact,
-    replace: isInternalLink.value && props.replace,
-    to: isInternalLink.value && props.to,
+    activeClass: isInternalLink.value && props.classActive || undefined,
+    exactActiveClass: isInternalLink.value && props.classActiveExact || undefined,
+    replace: isInternalLink.value && props.replace || undefined,
+    to: isInternalLink.value && props.to || undefined,
 
     // --- External link properties.
-    href: isExternalLink.value && props.to,
-    rel: isExternalLink.value && props.newtab && 'noreferrer',
-    target: isExternalLink.value && props.newtab && '_blank',
+    href: isExternalLink.value && props.to || undefined,
+    rel: isExternalLink.value && props.newtab && 'noreferrer' || undefined,
+    target: isExternalLink.value && props.newtab && '_blank' || undefined,
   }))
 
   // --- Provide the composable into the component and return it.
