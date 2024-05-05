@@ -60,28 +60,28 @@ if (import.meta.vitest) {
       const result = createPattern('foo/*')
       const test = result.test('foo/bar')
       expect(result).toStrictEqual(/^foo\/[^/]+$/)
-      expect(test).toBeTruthy()
+      expect(test).toBe(true)
     })
 
     it('should create RegExp from double globstar pattern', () => {
       const result = createPattern('foo/**')
       const test = result.test('foo/bar/baz')
       expect(result).toStrictEqual(/^foo(:?\/?.*)?$/)
-      expect(test).toBeTruthy()
+      expect(test).toBe(true)
     })
 
     it('should create RegExp for nested paths with file extension', () => {
       const result = createPattern('*/*.ts')
       const test = result.test('foo/bar.ts')
       expect(result).toStrictEqual(/^[^/]+\/[^/]+\.ts$/)
-      expect(test).toBeTruthy()
+      expect(test).toBe(true)
     })
 
     it('should create RegExp for deeply nested paths with file extension', () => {
       const result = createPattern('**/src/*.ts')
       const test = result.test('foo/bar/src/baz.ts')
       expect(result).toStrictEqual(/^(:?\/?.*\/)?src\/[^/]+\.ts$/)
-      expect(test).toBeTruthy()
+      expect(test).toBe(true)
     })
   })
 
@@ -186,29 +186,29 @@ if (import.meta.vitest) {
       const result = createPattern('!foo*')
       const testPositive = result.test('foobar')
       const testNegative = result.test('barfoo')
-      expect(testPositive).toBeFalsy()
-      expect(testNegative).toBeTruthy()
+      expect(testPositive).toBe(false)
+      expect(testNegative).toBe(true)
     })
 
     it('should omit leading ./ from the pattern', () => {
       const result = createPattern('./foo/*')
       const test = result.test('foo/bar')
       expect(result).toStrictEqual(/^foo\/[^/]+$/)
-      expect(test).toBeTruthy()
+      expect(test).toBe(true)
     })
 
     it('should remove duplicate slashes from the pattern', () => {
       const result = createPattern('foo//bar')
       const test = result.test('foo/bar')
       expect(result).toStrictEqual(/^foo\/bar$/)
-      expect(test).toBeTruthy()
+      expect(test).toBe(true)
     })
 
     it('should remove trailing slash from the pattern', () => {
       const result = createPattern('foo/')
       const test = result.test('foo')
       expect(result).toStrictEqual(/^foo$/)
-      expect(test).toBeTruthy()
+      expect(test).toBe(true)
     })
 
     it('should escape certain RegExp special characters', () => {

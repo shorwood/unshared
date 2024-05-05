@@ -184,7 +184,7 @@ if (import.meta.vitest) {
     it('should create a rule from a Boolean constructor and return a boolean', () => {
       const rule = createRule(Boolean)
       const result = rule(0)
-      expect(result).toBeFalsy()
+      expect(result).toBe(false)
       expectTypeOf(rule).toEqualTypeOf<(value?: unknown) => boolean>()
     })
 

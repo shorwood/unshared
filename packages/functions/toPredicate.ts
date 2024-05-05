@@ -38,12 +38,12 @@ if (import.meta.vitest) {
   test('should return true if value is a string', () => {
     const isString = toPredicate(assertIsString)
     const result = isString('hello')
-    expect(result).toBeTruthy()
+    expect(result).toBe(true)
   })
 
   test('should return false if value is not a string', () => {
     const isString = toPredicate(assertIsString)
     const result = isString(1)
-    expect(result).toBeFalsy()
+    expect(result).toBe(false)
   })
 }

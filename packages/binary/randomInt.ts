@@ -58,7 +58,7 @@ if (import.meta.vitest) {
   test('should return a random unsigned 32-bit integer', () => {
     const result = randomInt()
     const isInteger = Number.isInteger(result)
-    expect(isInteger).toBeTruthy()
+    expect(isInteger).toBe(true)
     expect(result).not.toBeNaN()
     expect(result).toBeLessThanOrEqual(0xFFFFFFFF)
     expect(result).toBeGreaterThanOrEqual(0x00000000)
@@ -69,7 +69,7 @@ if (import.meta.vitest) {
     vi.stubGlobal('crypto', { getRandomValues: vi.fn(() => new Uint32Array([0x7FFFFFFF])) })
     const result = randomInt()
     const isInteger = Number.isInteger(result)
-    expect(isInteger).toBeTruthy()
+    expect(isInteger).toBe(true)
     expect(result).toBe(0x7FFFFFFF)
     // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(globalThis.crypto.getRandomValues).toHaveBeenCalledOnce()
@@ -81,7 +81,7 @@ if (import.meta.vitest) {
     vi.stubGlobal('Math', { floor: Math.floor, random: vi.fn(() => 0.5) })
     const result = randomInt({ allowUnsafe: true })
     const isInteger = Number.isInteger(result)
-    expect(isInteger).toBeTruthy()
+    expect(isInteger).toBe(true)
     expect(result).toBe(0x7FFFFFFF)
     expect(Math.random).toHaveBeenCalledOnce()
   })

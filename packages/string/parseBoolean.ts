@@ -30,37 +30,37 @@ export function parseBoolean<S extends string>(string: S): ParseBoolean<S> {
 if (import.meta.vitest) {
   test('should return true if the value is "true"', () => {
     const result = parseBoolean('true')
-    expect(result).toBeTruthy()
+    expect(result).toBe(true)
     expectTypeOf(result).toEqualTypeOf<true>()
   })
 
   test('should return true if the value is "TRUE"', () => {
     const result = parseBoolean('TRUE')
-    expect(result).toBeTruthy()
+    expect(result).toBe(true)
     expectTypeOf(result).toEqualTypeOf<true>()
   })
 
   test('should return true if the value is "True"', () => {
     const result = parseBoolean('True')
-    expect(result).toBeTruthy()
+    expect(result).toBe(true)
     expectTypeOf(result).toEqualTypeOf<true>()
   })
 
   test('should return true if the value is "1"', () => {
     const result = parseBoolean('1')
-    expect(result).toBeTruthy()
+    expect(result).toBe(true)
     expectTypeOf(result).toEqualTypeOf<true>()
   })
 
   test('should return true even if the value is padded with spaces', () => {
     const result = parseBoolean(' 1 ')
-    expect(result).toBeTruthy()
+    expect(result).toBe(true)
     expectTypeOf(result).toEqualTypeOf<true>()
   })
 
   test('should return false if the value is not one of the above', () => {
     const result = parseBoolean('false')
-    expect(result).toBeFalsy()
+    expect(result).toBe(false)
     expectTypeOf(result).toEqualTypeOf<false>()
   })
 }

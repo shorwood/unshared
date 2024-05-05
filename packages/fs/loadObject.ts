@@ -419,11 +419,11 @@ if (import.meta.vitest) {
     it('should set the `isLoading` flag to `true` when loading', async() => {
       vol.fromJSON({ '/app/packages.json': '{"foo":"bar"}' })
       const result = new FSObject('/app/packages.json')
-      expect(result.isLoading).toBeFalsy()
+      expect(result.isLoading).toBe(false)
       const loaded = result.load()
-      expect(result.isLoading).toBeTruthy()
+      expect(result.isLoading).toBe(true)
       await loaded
-      expect(result.isLoading).toBeFalsy()
+      expect(result.isLoading).toBe(false)
     })
 
     it('should call the `load` event when the file is loaded', async() => {
@@ -440,18 +440,18 @@ if (import.meta.vitest) {
       vol.fromJSON({ '/app/packages.json': '{"foo":"bar"}' })
       const result = loadObject('/app/packages.json')
       void result.load()
-      expect(result.isLoading).toBeTruthy()
+      expect(result.isLoading).toBe(true)
       await expect(result.untilLoaded).resolves.toBeUndefined()
-      expect(result.isLoading).toBeFalsy()
+      expect(result.isLoading).toBe(false)
     })
 
     it('should resolve the `untilLoaded` property immediately if the file is already loaded', async() => {
       vol.fromJSON({ '/app/packages.json': '{"foo":"bar"}' })
       const result = new FSObject('/app/packages.json')
       await result.load()
-      expect(result.isLoading).toBeFalsy()
+      expect(result.isLoading).toBe(false)
       await expect(result.untilLoaded).resolves.toBeUndefined()
-      expect(result.isLoading).toBeFalsy()
+      expect(result.isLoading).toBe(false)
     })
 
     it('should create the file if it does not exist and the `createIfNotExists` option is set to `true`', async() => {
@@ -536,9 +536,9 @@ if (import.meta.vitest) {
 
     it('should set the `isCommitting` flag to `true` when committing', () => {
       const result = new FSObject('/app/packages.json')
-      expect(result.isCommitting).toBeFalsy()
+      expect(result.isCommitting).toBe(false)
       void result.commit()
-      expect(result.isCommitting).toBeTruthy()
+      expect(result.isCommitting).toBe(true)
     })
 
     it('should call the `commit` event when the file is isCommitting', async() => {
@@ -559,11 +559,11 @@ if (import.meta.vitest) {
 
     it('should resolve the `untilCommitted` promise once the file is committed', async() => {
       const result = new FSObject('/app/packages.json')
-      expect(result.isCommitting).toBeFalsy()
+      expect(result.isCommitting).toBe(false)
       void result.commit()
-      expect(result.isCommitting).toBeTruthy()
+      expect(result.isCommitting).toBe(true)
       await expect(result.untilCommitted).resolves.toBeUndefined()
-      expect(result.isCommitting).toBeFalsy()
+      expect(result.isCommitting).toBe(false)
     })
 
     it('should resolve the `untilCommitted` promise immediately if the file is already committed', async() => {
@@ -606,9 +606,9 @@ if (import.meta.vitest) {
   describe('destroy', () => {
     it('should set the `isDestroyed` flag to `true` when destroyed', async() => {
       const result = new FSObject('/app/packages.json')
-      expect(result.isDestroyed).toBeFalsy()
+      expect(result.isDestroyed).toBe(false)
       await result.destroy()
-      expect(result.isDestroyed).toBeTruthy()
+      expect(result.isDestroyed).toBe(true)
     })
 
     it('should emit the `destroy` event when the object is destroyed', async() => {
@@ -621,12 +621,12 @@ if (import.meta.vitest) {
 
     it('should resolve the `untilDestroyed` promise when the object is destroyed', async() => {
       const result = new FSObject('/app/packages.json')
-      expect(result.isDestroyed).toBeFalsy()
+      expect(result.isDestroyed).toBe(false)
       const untilDestroyed = result.untilDestroyed
       void result.destroy()
-      expect(result.isDestroyed).toBeTruthy()
+      expect(result.isDestroyed).toBe(true)
       await expect(untilDestroyed).resolves.toBeUndefined()
-      expect(result.isDestroyed).toBeTruthy()
+      expect(result.isDestroyed).toBe(true)
     })
 
     it('should resolve the `untilDestroyed` promise immediately if the object is already destroyed', async() => {
@@ -641,7 +641,7 @@ if (import.meta.vitest) {
       const result = new FSObject('/app/packages.json', { deleteOnDestroy: true })
       await result.destroy()
       const fileExists = existsSync('/app/packages.json')
-      expect(fileExists).toBeFalsy()
+      expect(fileExists).toBe(false)
     })
   })
 }

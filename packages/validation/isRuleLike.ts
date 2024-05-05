@@ -28,11 +28,11 @@ if (import.meta.vitest) {
   test('should return true if value is a rule', () => {
     const rule = (value: any) => value > 0
     const result = isRuleLike(rule)
-    expect(result).toBeTruthy()
+    expect(result).toBe(true)
   })
 
   test('should return false if value is not a rule', () => {
     const result = isRuleLike(5)
-    expect(result).toBeFalsy()
+    expect(result).toBe(false)
   })
 }

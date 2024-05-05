@@ -159,64 +159,64 @@ if (import.meta.vitest) {
 
   test('should default to false', () => {
     const result = new Boolean()
-    expect(result.value).toBeFalsy()
+    expect(result.value).toBe(false)
   })
 
   test('should set the value to true', () => {
     const result = new Boolean(true)
-    expect(result.value).toBeTruthy()
+    expect(result.value).toBe(true)
   })
 
   test('should check if a Boolean is true', () => {
     const boolean = new Boolean(true)
-    expect(boolean.isTrue).toBeTruthy()
+    expect(boolean.isTrue).toBe(true)
   })
 
   test('should check if a Boolean is false', () => {
     const boolean = new Boolean(false)
-    expect(boolean.isFalse).toBeTruthy()
+    expect(boolean.isFalse).toBe(true)
   })
 
   test('should and a boolean', () => {
     const result = new Boolean(true)
     result.and(false)
-    expect(result.value).toBeFalsy()
+    expect(result.value).toBe(false)
   })
 
   test('should nand a boolean', () => {
     const result = new Boolean(true)
     result.nand(false)
-    expect(result.value).toBeTruthy()
+    expect(result.value).toBe(true)
   })
 
   test('should nor a boolean', () => {
     const result = new Boolean(true)
     result.nor(false)
-    expect(result.value).toBeFalsy()
+    expect(result.value).toBe(false)
   })
 
   test('should not a boolean', () => {
     const result = new Boolean(true)
     result.not()
-    expect(result.value).toBeFalsy()
+    expect(result.value).toBe(false)
   })
 
   test('should or a boolean', () => {
     const result = new Boolean(true)
     result.or(false)
-    expect(result.value).toBeTruthy()
+    expect(result.value).toBe(true)
   })
 
   test('should xor a boolean', () => {
     const result = new Boolean(true)
     result.xor(false)
-    expect(result.value).toBeTruthy()
+    expect(result.value).toBe(true)
   })
 
   test('should xnor a boolean', () => {
     const result = new Boolean(true)
     result.xnor(false)
-    expect(result.value).toBeFalsy()
+    expect(result.value).toBe(false)
   })
 
   test('should be chainable', () => {
@@ -233,6 +233,6 @@ if (import.meta.vitest) {
       .or(false)
       .xor(false)
       .xnor(false)
-    expect(result.value).toBeFalsy()
+    expect(result.value).toBe(false)
   })
 }

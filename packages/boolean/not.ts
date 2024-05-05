@@ -15,13 +15,13 @@ export function not<A extends boolean>(a: A): BooleanNot<A> {
 if (import.meta.vitest) {
   test('should return true if the parameter is false', () => {
     const result = not(false)
-    expect(result).toBeTruthy()
+    expect(result).toBe(true)
     expectTypeOf(result).toEqualTypeOf<true>()
   })
 
   test('should return false if the parameter is true', () => {
     const result = not(true)
-    expect(result).toBeFalsy()
+    expect(result).toBe(false)
     expectTypeOf(result).toEqualTypeOf<false>()
   })
 

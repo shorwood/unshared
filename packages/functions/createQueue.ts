@@ -277,7 +277,7 @@ if (import.meta.vitest) {
     it('should queue a function and return the task object', () => {
       const queue = createQueue()
       const task = queue.call(Math.random)
-      expect(task.isRunning).toBeTruthy()
+      expect(task.isRunning).toBe(true)
       expect(task.fn).toBeTypeOf('function')
       expectTypeOf(task).toEqualTypeOf<Awaitable<QueueTask<number>, number>>()
     })

@@ -42,7 +42,7 @@ if (import.meta.vitest) {
   test('should call a function with one temporary file', async() => {
     await withTemporaryFiles(1, (path) => {
       const exists = existsSync(path)
-      expect(exists).toBeTruthy()
+      expect(exists).toBe(true)
     })
   })
 
@@ -50,8 +50,8 @@ if (import.meta.vitest) {
     await withTemporaryFiles(2, (path1, path2) => {
       const exists1 = existsSync(path1)
       const exists2 = existsSync(path2)
-      expect(exists1).toBeTruthy()
-      expect(exists2).toBeTruthy()
+      expect(exists1).toBe(true)
+      expect(exists2).toBe(true)
     })
   })
 
@@ -64,8 +64,8 @@ if (import.meta.vitest) {
     })
     const exists1 = existsSync(temporaryPath1!)
     const exists2 = existsSync(temporaryPath2!)
-    expect(exists1).toBeFalsy()
-    expect(exists2).toBeFalsy()
+    expect(exists1).toBe(false)
+    expect(exists2).toBe(false)
   })
 
   test('should remove the temporary files after the function throws an error', async() => {
@@ -78,8 +78,8 @@ if (import.meta.vitest) {
     }).catch(() => {})
     const exists1 = existsSync(temporaryPath1!)
     const exists2 = existsSync(temporaryPath2!)
-    expect(exists1).toBeFalsy()
-    expect(exists2).toBeFalsy()
+    expect(exists1).toBe(false)
+    expect(exists2).toBe(false)
   })
 
   test('should call a function with a temporary file in the specified directory', async() => {

@@ -23,7 +23,7 @@ if (import.meta.vitest) {
     expect(result).toBeTypeOf('number')
     expect(result).toBeGreaterThanOrEqual(0)
     expect(result).toBeLessThanOrEqual(1)
-    expect(Number.isInteger(result)).toBeFalsy()
+    expect(Number.isInteger(result)).toBe(false)
   })
 
   test('should return a random float between min and max', () => {
@@ -31,6 +31,6 @@ if (import.meta.vitest) {
     expect(result).toBeTypeOf('number')
     expect(result).toBeGreaterThanOrEqual(10)
     expect(result).toBeLessThanOrEqual(20)
-    expect(Number.isInteger(result)).toBeFalsy()
+    expect(Number.isInteger(result)).toBe(false)
   })
 }

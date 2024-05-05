@@ -76,7 +76,7 @@ if (import.meta.vitest) {
     const isFile = statSync(path).isFile()
     const content = readFileSync(path, 'utf8')
     expect(path).toMatch(/^\/tmp\/[\da-z]+$/)
-    expect(isFile).toBeTruthy()
+    expect(isFile).toBe(true)
     expect(content).toBe('')
   })
 
@@ -110,6 +110,6 @@ if (import.meta.vitest) {
     const [path, remove] = await createTemporaryFile()
     await remove()
     const exists = existsSync(path)
-    expect(exists).toBeFalsy()
+    expect(exists).toBe(false)
   })
 }

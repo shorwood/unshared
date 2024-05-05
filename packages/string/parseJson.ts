@@ -85,12 +85,12 @@ if (import.meta.vitest) {
 
   test('should parse a "true" into a boolean', () => {
     const result = parseJson('true')
-    expect(result).toBeTruthy()
+    expect(result).toBe(true)
   })
 
   test('should parse a "false" into a boolean', () => {
     const result = parseJson('false')
-    expect(result).toBeFalsy()
+    expect(result).toBe(false)
   })
 
   test('should parse a "undefined" into undefined', () => {

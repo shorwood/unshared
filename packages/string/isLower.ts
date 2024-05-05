@@ -20,14 +20,14 @@ if (import.meta.vitest) {
   test('should return true for lower case character codes', () => {
     for (const char of lowerCase) {
       const result = isLower(char.charCodeAt(0))
-      expect(result).toBeTruthy()
+      expect(result).toBe(true)
     }
   })
 
   test('should return false for non lower case character codes', () => {
     for (const char of upperCase + numbers + symbols) {
       const result = isLower(char.charCodeAt(0))
-      expect(result).toBeFalsy()
+      expect(result).toBe(false)
     }
   })
 }

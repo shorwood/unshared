@@ -70,15 +70,15 @@ if (import.meta.vitest) {
   test('should create a reference', () => {
     const callback = vi.fn()
     const result = reference(1, { callbacks: [callback] })
-    expect(result[ReferenceFlag]).toBeTruthy()
-    expect(result[ReactiveFlag]).toBeTruthy()
+    expect(result[ReferenceFlag]).toBe(true)
+    expect(result[ReactiveFlag]).toBe(true)
     expect(result.value).toBe(1)
   })
 
   test('should create a reference with no value', () => {
     const result = reference<number>()
-    expect(result[ReferenceFlag]).toBeTruthy()
-    expect(result[ReactiveFlag]).toBeTruthy()
+    expect(result[ReferenceFlag]).toBe(true)
+    expect(result[ReactiveFlag]).toBe(true)
     expect(result.value).toBeUndefined()
   })
 

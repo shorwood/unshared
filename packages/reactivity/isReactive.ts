@@ -26,24 +26,24 @@ if (import.meta.vitest) {
   test('should return true for computed', () => {
     const value = computed([], () => 1)
     const result = isReactive(value)
-    expect(result).toBeFalsy()
+    expect(result).toBe(false)
   })
 
   test('should return false for reactive', () => {
     const value = reactive({})
     const result = isReactive(value)
-    expect(result).toBeFalsy()
+    expect(result).toBe(false)
   })
 
   test('should return false for references', () => {
     const value = reference()
     const result = isReactive(value)
-    expect(result).toBeFalsy()
+    expect(result).toBe(false)
   })
 
   test('should return false for non-reactive', () => {
     const result = isReactive({ foo: 'bar' })
-    expect(result).toBeFalsy()
+    expect(result).toBe(false)
   })
 
   test('should predicate the type of a reactive', () => {

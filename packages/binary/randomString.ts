@@ -40,7 +40,7 @@ if (import.meta.vitest) {
   test('should return a random string with default options', () => {
     const result = randomString()
     const every = [...result].every(c => DEFAULT_CHARACTERS.includes(c))
-    expect(every).toBeTruthy()
+    expect(every).toBe(true)
   })
 
   test('should return a random string with custom length', () => {

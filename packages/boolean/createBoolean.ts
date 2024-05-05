@@ -16,7 +16,7 @@ if (import.meta.vitest) {
   test('should create a Boolean instance from a boolean', () => {
     const result = createBoolean(true)
     expect(result).toBeInstanceOf(Boolean)
-    expect(result.value).toBeTruthy()
+    expect(result.value).toBe(true)
     expectTypeOf(result).toEqualTypeOf<Boolean>()
   })
 }

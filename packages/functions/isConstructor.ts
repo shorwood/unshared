@@ -17,17 +17,17 @@ export function isConstructor<T extends Constructor>(value: unknown): value is T
 if (import.meta.vitest) {
   test('should return true for a constructor function', () => {
     const result = isConstructor(Boolean)
-    expect(result).toBeTruthy()
+    expect(result).toBe(true)
   })
 
   test('should return false for a non-constructor function', () => {
     const result = isConstructor(() => {})
-    expect(result).toBeFalsy()
+    expect(result).toBe(false)
   })
 
   test('should return false for a non-function value', () => {
     const result = isConstructor(10)
-    expect(result).toBeFalsy()
+    expect(result).toBe(false)
   })
 
   test('should predicate a constructor function', () => {

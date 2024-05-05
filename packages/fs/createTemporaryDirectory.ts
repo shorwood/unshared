@@ -65,7 +65,7 @@ if (import.meta.vitest) {
     const [path] = await createTemporaryDirectory()
     const isDirectory = statSync(path).isDirectory()
     expect(path).toMatch(/^\/tmp\/[\da-z]+$/)
-    expect(isDirectory).toBeTruthy()
+    expect(isDirectory).toBe(true)
   })
 
   test('should create a temporary directory in the specified directory', async() => {
@@ -87,6 +87,6 @@ if (import.meta.vitest) {
     const [path, remove] = await createTemporaryDirectory()
     await remove()
     const exists = existsSync(path)
-    expect(exists).toBeFalsy()
+    expect(exists).toBe(false)
   })
 }
