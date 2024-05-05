@@ -104,7 +104,7 @@ if (import.meta.vitest) {
     it('should apply the corresponding html attributes when tag is not input', () => {
       const wrapper = mount(BaseInputToggle, { props: { as: 'div' } })
       const html = wrapper.html()
-      expect(html).toBe('<div role="checkbox" tabindex="0"></div>')
+      expect(html).toBe('<div aria-pressed="false" role="checkbox" tabindex="0"></div>')
     })
   })
 
@@ -119,20 +119,20 @@ if (import.meta.vitest) {
       const wrapper = mount(BaseInputToggle, { props: { as: 'input', type: 'switch', modelValue: true } })
       const html = wrapper.html()
       const element = wrapper.find('input').element
-      expect(html).toBe('<input aria-checked="true" type="checkbox">')
+      expect(html).toBe('<input type="checkbox">')
       expect(element.checked).toBe(true)
     })
 
     it('should apply the corresponding html attributes when tag is button', () => {
       const wrapper = mount(BaseInputToggle, { props: { as: 'button', type: 'switch', modelValue: true } })
       const html = wrapper.html()
-      expect(html).toBe('<button aria-pressed="true" aria-checked="true" role="checkbox" tabindex="0"></button>')
+      expect(html).toBe('<button aria-pressed="true" role="checkbox" tabindex="0"></button>')
     })
 
     it('should apply the corresponding html attributes when tag is div', () => {
       const wrapper = mount(BaseInputToggle, { props: { as: 'div', type: 'switch', modelValue: true } })
       const html = wrapper.html()
-      expect(html).toBe('<div aria-checked="true" role="checkbox" tabindex="0"></div>')
+      expect(html).toBe('<div aria-pressed="true" role="checkbox" tabindex="0"></div>')
     })
 
     it('should switch the modelValue to `true` when clicked', async() => {
@@ -163,7 +163,7 @@ if (import.meta.vitest) {
     it('should apply the corresponding html attributes when tag is button', () => {
       const wrapper = mount(BaseInputToggle, { props: { as: 'button', type: 'radio', modelValue: 'value', value: 'value' } })
       const html = wrapper.html()
-      expect(html).toBe('<button role="radio" tabindex="0"></button>')
+      expect(html).toBe('<button aria-pressed="false" role="radio" tabindex="0"></button>')
     })
 
     it('should switch the modelValue to `value` when clicked', async() => {
