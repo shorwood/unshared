@@ -1,46 +1,110 @@
 <script setup lang="ts">
-import { Button, InputToggle } from '@unshared/vue'
-import '@unocss/reset/sanitize'
+import { BaseIcon, BaseInputText, BaseInputToggle } from '@unshared/vue/components'
+import { createParser, isStringEmail, isStringEmpty, isStringNumber } from '@unshared/validation'
 
-const state = ref<'bar' | 'foo' | symbol>('foo')
+const values = [
+  { label: 'Foo', value: 'foo' },
+  { label: 'Bar', value: 'bar' },
+  { label: 'Baz', value: 'baz' },
+]
+
+type Value = typeof values[number]['value']
+
+const valueSwitch = ref(false)
+const valueRadio = ref<Value>('foo')
+const valueCheckbox = ref<Value[]>(['foo'])
+
+const valueText = ref('')
+const valueParser = createParser(
+  [x => x.trim(), isStringEmpty],
+  [x => x.trim(), isStringEmail, x => x.toUpperCase()],
+  [x => x.trim(), isStringNumber],
+)
 </script>
 
 <template>
   <main class="flex flex-col items-center justify-center h-screen w-screen">
-    <InputToggle
-      v-slot="{ isActive }"
-      v-model="state"
-      class-active="bg-red"
-      type="radio"
-      value="bar">
-      {{ isActive }}
-    </InputToggle>
 
-    <InputToggle
-      v-slot="{ isActive }"
-      v-model="state"
-      class-active="bg-red"
-      type="radio"
-      value="foo">
-      {{ isActive }}
-    </InputToggle>
+    <!-- Checkbox -->
+    <div class="flex space-x-4">
+      <BaseInputToggle
+        as="div"
+        v-for="value in values"
+        v-slot="{ isActive }"
+        v-model="valueCheckbox"
+        class="bg-blue w-12 h-12"
+        class-active="bg-red"
+        type="checkbox"
+        :value="value.value">
+        {{ isActive }}
+      </BaseInputToggle>
+    </div>
 
-    <Button
+    <!-- Radio -->
+    <div class="flex space-x-4">
+      <BaseInputToggle
+        as="div"
+        v-for="value in values"
+        v-slot="{ isActive }"
+        v-model="valueRadio"
+        class="bg-blue w-12 h-12"
+        class-active="bg-red"
+        type="radio"
+        :value="value.value">
+        {{ isActive }}
+      </BaseInputToggle>
+    </div>
+
+    <!-- Switch -->
+    <BaseInputToggle
+      as="div"
+      v-model="valueSwitch"
+      class="bg-blue w-12 h-12"
+      class-active="bg-red"
+      type="switch">
+      {{ valueSwitch }}
+    </BaseInputToggle>
+
+    <hr class="w-1/2 my-4" />
+
+    <!-- Text input -->
+    <div>
+
+      <BaseIcon
+        as="div"
+        icon="i-carbon:search"
+      />
+
+      <BaseInputText
+        v-model="valueText"
+        class="bg-blue text-black p-4 placeholder-black"
+        class-disabled="bg-gray text-gray"
+        class-error="!bg-red text-white"
+        placeholder="Type here..."
+        :parse="valueParser"
+      />
+    </div>
+
+    <!--
+      <BaseButton
       v-slot="{ isLink }"
       :debounce="500"
-      :disabled="state === 'foo'"
-      class="bg-blue gradient-mask-tr-50/80 text-black active:text-black p-4 cursor-pointer"
+      :disabled="valueRadio === 'foo'"
+      class="bg-blue text-black active:text-black p-4 cursor-pointer"
+      class-disabled="bg-gray text-gray"
       label="YES">
       {{ isLink }}
-    </Button>
+      </BaseButton>
+    -->
 
     <div class="flex flex-col items-center justify-center">
       <p>Hello, world!</p>
       <p>Hello, world!</p>
       <p>Hello, world!</p>
     </div>
+
+    <NuxtPage />
   </main>
-  <NuxtPage />
 </template>
 
 <style>

@@ -1,18 +1,28 @@
 import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
-  devtools: true,
+  devtools: {
+    enabled: true,
+  },
 
   modules: [
     '@unocss/nuxt',
-    '@nuxt/test-utils/module',
   ],
 
+  unocss: {
+    preflight: true,
+    configFile: 'uno.config.ts',
+  },
+
   vite: {
-    esbuild: {
-      define: {
-        'import.meta.vitest': 'false',
-      },
+    optimizeDeps: {
+      exclude: [
+        '@unshared/vue',
+      ],
     },
+    // esbuild: {
+    //   minifySyntax: true,
+    //   define: { 'import.meta.vitest': 'false' },
+    // },
   },
 })
