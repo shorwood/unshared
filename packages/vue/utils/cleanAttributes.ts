@@ -14,7 +14,6 @@ export function cleanAttributes(attributes: Record<string, unknown>): Record<str
 
   for (const key in attributes) {
     const value = attributes[key]
-    if (value === false) continue
     if (value === null) continue
     if (value === undefined) continue
 
@@ -51,11 +50,6 @@ if (import.meta.vitest) {
   })
 
   describe('exclude', () => {
-    it('should collapse false attributes', () => {
-      const result = cleanAttributes({ value: false })
-      expect(result).toStrictEqual({})
-    })
-
     it('should collapse null attributes', () => {
     // eslint-disable-next-line unicorn/no-null
       const result = cleanAttributes({ value: null })
