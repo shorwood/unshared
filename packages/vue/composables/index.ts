@@ -1,5 +1,6 @@
 export * from './useAlerts'
 export * from './useBaseClickable'
+export * from './useBaseInputText'
 export * from './useBaseInputToggle'
 export * from './useBaseLinkable'
 export * from './useBaseRenderable'
