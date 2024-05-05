@@ -145,7 +145,7 @@ if (import.meta.vitest) {
     it('should return a reactive object', () => {
       const result = useBaseLinkable()
       const reactive = isReactive(result)
-      expect(reactive).toBeTruthy()
+      expect(reactive).toBe(true)
     })
 
     it('should provide the composable into the component', () => {
@@ -175,17 +175,17 @@ if (import.meta.vitest) {
   describe('internal link', () => {
     it('should set the `isInternalLink` property to `true`', () => {
       const result = useBaseLinkable({ to: '/path' })
-      expect(result.isInternalLink).toBeTruthy()
+      expect(result.isInternalLink).toBe(true)
     })
 
     it('should set the `isExternalLink` property to `false`', () => {
       const result = useBaseLinkable({ to: '/path' })
-      expect(result.isExternalLink).toBeFalsy()
+      expect(result.isExternalLink).toBe(false)
     })
 
     it('should set the `isLink` property to `true`', () => {
       const result = useBaseLinkable({ to: '/path' })
-      expect(result.isLink).toBeTruthy()
+      expect(result.isLink).toBe(true)
     })
 
     it('should set the `is` property to `RouterLink`', () => {
@@ -221,17 +221,17 @@ if (import.meta.vitest) {
   describe('external link', () => {
     it('should set the `isInternalLink` property to `false`', () => {
       const result = useBaseLinkable({ to: 'https://example.com' })
-      expect(result.isInternalLink).toBeFalsy()
+      expect(result.isInternalLink).toBe(false)
     })
 
     it('should set the `isExternalLink` property to `true`', () => {
       const result = useBaseLinkable({ to: 'https://example.com' })
-      expect(result.isExternalLink).toBeTruthy()
+      expect(result.isExternalLink).toBe(true)
     })
 
     it('should set the `isLink` property to `true`', () => {
       const result = useBaseLinkable({ to: 'https://example.com' })
-      expect(result.isLink).toBeTruthy()
+      expect(result.isLink).toBe(true)
     })
 
     it('should set the `is` property to `a`', () => {
