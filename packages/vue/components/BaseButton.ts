@@ -1,10 +1,10 @@
 // eslint-disable vue/no-unused-emit-declarations
 import { ExtractPropTypes, Prop, VNode, computed, defineComponent, h, mergeProps } from 'vue'
 import {
-  BASE_CLICKABLE_PROPS,
-  BASE_LINKABLE_PROPS,
-  BASE_RENDERABLE_PROPS,
-  BASE_STATE_PROPS,
+  BASE_CLICKABLE_OPTIONS,
+  BASE_LINKABLE_OPTIONS,
+  BASE_RENDERABLE_OPTIONS,
+  BASE_STATE_OPTIONS,
   useBaseClickable,
   useBaseLinkable,
   useBaseRenderable,
@@ -20,18 +20,20 @@ interface SlotProps {
   isLoading: boolean
 }
 
-const PROPS = {
+/** The props for the `BaseButton` component. */
+export const BASE_BUTTON_PROPS = {
   label: String as Prop<string>,
-  ...BASE_STATE_PROPS,
-  ...BASE_LINKABLE_PROPS,
-  ...BASE_CLICKABLE_PROPS,
-  ...BASE_RENDERABLE_PROPS,
+  ...BASE_STATE_OPTIONS,
+  ...BASE_LINKABLE_OPTIONS,
+  ...BASE_CLICKABLE_OPTIONS,
+  ...BASE_RENDERABLE_OPTIONS,
 }
 
-type Props = ExtractPropTypes<typeof PROPS>
+/** The props for the `BaseButton` component. */
+export type BaseButtonProps = ExtractPropTypes<typeof BASE_BUTTON_PROPS>
 
 export const BaseButton = /* #__PURE__ */ defineComponent(
-  (props: Props, { attrs, slots }) => {
+  (props: BaseButtonProps, { attrs, slots }) => {
     const state = useBaseState(props)
     const linkable = useBaseLinkable(props)
     const clickable = useBaseClickable(props)
@@ -60,12 +62,12 @@ export const BaseButton = /* #__PURE__ */ defineComponent(
     return () => h(
       linkable.is ?? renderable.is ?? 'button',
       attributes.value,
-      slots.default?.(slotProps.value) ?? props.label,
+      () => slots.default?.(slotProps.value) ?? props.label,
     )
   },
   {
     name: 'BaseButton',
-    props: PROPS as unknown as undefined,
+    props: BASE_BUTTON_PROPS as unknown as undefined,
     emits: [
       'click',
       'update:loading',

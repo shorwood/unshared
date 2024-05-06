@@ -1,7 +1,7 @@
 import { Component, Ref, computed, getCurrentInstance } from 'vue'
 import { toReactive, useVModel } from '@vueuse/core'
 import { MaybeArray } from '@unshared/types'
-import { BASE_RENDERABLE_PROPS, BaseRenderableProps, useBaseRenderable } from './useBaseRenderable'
+import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions, useBaseRenderable } from './useBaseRenderable'
 import { cleanClasses } from '../utils/cleanClasses'
 import { cleanAttributes } from '../utils/cleanAttributes'
 
@@ -15,10 +15,10 @@ export type ToggleValue<T, U extends ToggleType> =
       U extends 'radio' ? T :
         never
 
-export interface BaseInputToggleProps<
+export interface BaseInputToggleOptions<
   T = unknown,
   U extends ToggleType = ToggleType,
-> extends BaseRenderableProps {
+> extends BaseRenderableOptions {
 
   /**
    * The type of the toggle. This can be either `checkbox`, `radio`, or `switch`.
@@ -99,8 +99,8 @@ export interface BaseInputToggleProps<
   classMixed?: string
 }
 
-export const BASE_INPUT_TOGGLE_PROPS = {
-  ...BASE_RENDERABLE_PROPS,
+export const BASE_INPUT_TOGGLE_OPTIONS = {
+  ...BASE_RENDERABLE_OPTIONS,
   type: { type: String, default: 'switch' },
   modelValue: [Boolean, Array, String, Number, Object],
   value: [Boolean, Array, String, Number],
@@ -146,7 +146,7 @@ declare module '@vue/runtime-core' {
  * })
  */
 export function useBaseInputToggle<T, U extends ToggleType>(
-  props: BaseInputToggleProps<T, U> = {} as BaseInputToggleProps<T, U>,
+  props: BaseInputToggleOptions<T, U> = {} as BaseInputToggleOptions<T, U>,
   instance = getCurrentInstance(),
 ): BaseInputToggleComposable<T, U> {
   if (instance?.[BASE_INPUT_TOGGLE_SYMBOL])
@@ -295,7 +295,7 @@ if (import.meta.vitest) {
       })
 
       it('should change `isActive` when `modelValue` changes', async() => {
-        const props = reactive({ modelValue: false, type: 'switch' }) as BaseInputToggleProps
+        const props = reactive({ modelValue: false, type: 'switch' }) as BaseInputToggleOptions
         const result = useBaseInputToggle(props)
         props.modelValue = true
         await new Promise(nextTick)
@@ -303,7 +303,7 @@ if (import.meta.vitest) {
       })
 
       it('should change `model` to `true` when `modelValue` changes to `true`', async() => {
-        const props = reactive({ modelValue: false, type: 'switch' }) as BaseInputToggleProps
+        const props = reactive({ modelValue: false, type: 'switch' }) as BaseInputToggleOptions
         const result = useBaseInputToggle(props)
         props.modelValue = true
         await new Promise(nextTick)
@@ -414,7 +414,7 @@ if (import.meta.vitest) {
       })
 
       it('should change `isActive` when `modelValue` changes', async() => {
-        const props = reactive({ modelValue: 'two', value: 'one', type: 'radio' }) as BaseInputToggleProps
+        const props = reactive({ modelValue: 'two', value: 'one', type: 'radio' }) as BaseInputToggleOptions
         const result = useBaseInputToggle(props)
         props.modelValue = 'one'
         await new Promise(nextTick)
@@ -422,7 +422,7 @@ if (import.meta.vitest) {
       })
 
       it('should change `model` to the provided value when `modelValue` changes to the provided value', async() => {
-        const props = reactive({ modelValue: 'two', value: 'one', type: 'radio' }) as BaseInputToggleProps
+        const props = reactive({ modelValue: 'two', value: 'one', type: 'radio' }) as BaseInputToggleOptions
         const result = useBaseInputToggle(props)
         props.modelValue = 'one'
         await new Promise(nextTick)
@@ -564,7 +564,7 @@ if (import.meta.vitest) {
       })
 
       it('should change `isActive` to `true` when `modelValue` changes', async() => {
-        const props = reactive({ modelValue: ['two'], value: 'one', type: 'checkbox' }) as BaseInputToggleProps
+        const props = reactive({ modelValue: ['two'], value: 'one', type: 'checkbox' }) as BaseInputToggleOptions
         const result = useBaseInputToggle(props)
         props.modelValue = ['one']
         await new Promise(nextTick)
@@ -572,7 +572,7 @@ if (import.meta.vitest) {
       })
 
       it('should change `model` to the provided value when `modelValue` changes to the provided value', async() => {
-        const props = reactive({ modelValue: ['two'], value: 'one', type: 'checkbox' }) as BaseInputToggleProps
+        const props = reactive({ modelValue: ['two'], value: 'one', type: 'checkbox' }) as BaseInputToggleOptions
         const result = useBaseInputToggle(props)
         props.modelValue = ['one']
         await new Promise(nextTick)

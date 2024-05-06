@@ -1,7 +1,7 @@
 // eslint-disable vue/no-unused-emit-declarations
 import { ExtractPropTypes, Prop, VNode, computed, defineComponent, h, mergeProps } from 'vue'
 import { pick } from '@unshared/collection/pick'
-import { Alert, BASE_RENDERABLE_PROPS, useAlerts, useBaseRenderable } from '../composables'
+import { Alert, BASE_RENDERABLE_OPTIONS, useAlerts, useBaseRenderable } from '../composables'
 
 interface SlotDefaultProps {
   alerts: Alert[]
@@ -14,7 +14,7 @@ interface SlotAlertProps {
 }
 
 const PROPS = {
-  ...BASE_RENDERABLE_PROPS,
+  ...BASE_RENDERABLE_OPTIONS,
 
   /**
    * The alert message to be displayed. It is an array of `Alert` objects

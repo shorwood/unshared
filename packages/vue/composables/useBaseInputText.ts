@@ -1,14 +1,14 @@
 import { Component, ExtractPropTypes, Prop, computed, getCurrentInstance } from 'vue'
 import { toReactive, useVModel } from '@vueuse/core'
-import { BASE_STATE_PROPS, useBaseState } from './useBaseState'
+import { BASE_STATE_OPTIONS, useBaseState } from './useBaseState'
 import { cleanAttributes } from '../utils/cleanAttributes'
 
 /** The symbol to inject the base input text composable. */
 export const BASE_INPUT_TEXT_SYMBOL = Symbol()
 
 /** The properties of the base input text composables. */
-export const BASE_INPUT_TEXT_PROPS = {
-  ...BASE_STATE_PROPS,
+export const BASE_INPUT_TEXT_OPTIONS = {
+  ...BASE_STATE_OPTIONS,
 
   /**
    * The type of the input. This is used to determine the type of input to render.
@@ -65,7 +65,7 @@ export const BASE_INPUT_TEXT_PROPS = {
 }
 
 /** The properties of the base input text composables. */
-export type BaseInputTextProps = ExtractPropTypes<typeof BASE_INPUT_TEXT_PROPS>
+export type BaseInputTextOptions = ExtractPropTypes<typeof BASE_INPUT_TEXT_OPTIONS>
 
 /** The composable properties returned by the `useBaseInputText` composable. */
 export interface BaseInputTextComposable {
@@ -81,7 +81,7 @@ declare module '@vue/runtime-core' {
   }
 }
 
-export function useBaseInputText(props: BaseInputTextProps, instance = getCurrentInstance()) {
+export function useBaseInputText(props: BaseInputTextOptions, instance = getCurrentInstance()) {
   if (instance?.[BASE_INPUT_TEXT_SYMBOL]) return instance[BASE_INPUT_TEXT_SYMBOL]
 
   const emit = instance?.emit

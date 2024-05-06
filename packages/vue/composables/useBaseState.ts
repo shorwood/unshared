@@ -8,7 +8,7 @@ import { cleanAttributes } from '../utils/cleanAttributes'
 /** The symbol to provide the composable into the component. */
 const BASE_STATE_SYMBOL = Symbol('baseState')
 
-export const BASE_STATE_PROPS = {
+export const BASE_STATE_OPTIONS = {
 
   /**
    * If `true`, all interactions with the component should be disabled.
@@ -90,7 +90,7 @@ export const BASE_STATE_PROPS = {
 } satisfies ComponentObjectPropsOptions
 
 /** The properties of the base state component. */
-export type BaseStateProps = ExtractPropTypes<typeof BASE_STATE_PROPS>
+export type BaseStateOptions = ExtractPropTypes<typeof BASE_STATE_OPTIONS>
 
 /** The properties of the composable returned by `useBaseState`. */
 export interface BaseStateComposable {
@@ -125,7 +125,7 @@ declare module '@vue/runtime-core' {
  *   }
  * })
  */
-export function useBaseState(props: BaseStateProps = {}, instance = getCurrentInstance()): BaseStateComposable {
+export function useBaseState(props: BaseStateOptions = {}, instance = getCurrentInstance()): BaseStateComposable {
   if (instance?.[BASE_STATE_SYMBOL]) return instance[BASE_STATE_SYMBOL]
 
   // --- Create two-way bindings for the properties.

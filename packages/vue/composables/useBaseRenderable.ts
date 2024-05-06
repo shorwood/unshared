@@ -5,7 +5,7 @@ import { toReactive } from '@vueuse/core'
 export const BASE_RENDERABLE_SYMBOL = Symbol('baseRenderable')
 
 /** The properties of the base renderable component. */
-export const BASE_RENDERABLE_PROPS = {
+export const BASE_RENDERABLE_OPTIONS = {
 
   /**
    * The HTML tag or component (constructor or name) to render. This represents what will
@@ -17,16 +17,16 @@ export const BASE_RENDERABLE_PROPS = {
 }
 
 /** The properties of the base renderable component. */
-export type BaseRenderableProps = ExtractPropTypes<typeof BASE_RENDERABLE_PROPS>
+export type BaseRenderableOptions = ExtractPropTypes<typeof BASE_RENDERABLE_OPTIONS>
 
 /** The base properties of the renderable composable. */
-export interface BaseRenderable {
+export interface BaseRenderableComposable {
   is: Component | string | undefined
 }
 
 declare module '@vue/runtime-core' {
   interface ComponentInternalInstance {
-    [BASE_RENDERABLE_SYMBOL]?: BaseRenderable
+    [BASE_RENDERABLE_SYMBOL]?: BaseRenderableComposable
   }
 }
 
@@ -47,7 +47,7 @@ declare module '@vue/runtime-core' {
  *   }
  * })
  */
-export function useBaseRenderable(props: BaseRenderableProps = {}, instance = getCurrentInstance()) {
+export function useBaseRenderable(props: BaseRenderableOptions = {}, instance = getCurrentInstance()) {
   if (instance?.[BASE_RENDERABLE_SYMBOL]) return instance[BASE_RENDERABLE_SYMBOL]
 
   // --- Compute component type.

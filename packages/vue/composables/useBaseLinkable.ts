@@ -9,7 +9,7 @@ import { cleanAttributes } from '../utils/cleanAttributes'
 export const BASE_LINKABLE_SYMBOL = Symbol('baseLinkable')
 
 /** The properties of the base linkable component. */
-export const BASE_LINKABLE_PROPS = {
+export const BASE_LINKABLE_OPTIONS = {
 
   /**
    * The class to apply when the link is active. This allows you to customize
@@ -57,10 +57,10 @@ export const BASE_LINKABLE_PROPS = {
 } satisfies ComponentObjectPropsOptions
 
 /** The properties of the base linkable component. */
-export type BaseLinkableProps = ExtractPropTypes<typeof BASE_LINKABLE_PROPS>
+export type BaseLinkableOptions = ExtractPropTypes<typeof BASE_LINKABLE_OPTIONS>
 
 /** The properties of the base linkable composable. */
-export interface BaseLinkable {
+export interface BaseLinkableComposable {
 
   /** The component to render the link as. */
   is: string | typeof RouterLink | undefined
@@ -80,7 +80,7 @@ export interface BaseLinkable {
 
 declare module '@vue/runtime-core' {
   interface ComponentInternalInstance {
-    [BASE_LINKABLE_SYMBOL]?: BaseLinkable
+    [BASE_LINKABLE_SYMBOL]?: BaseLinkableComposable
   }
 }
 
@@ -101,7 +101,7 @@ declare module '@vue/runtime-core' {
  *   }
  * })
  */
-export function useBaseLinkable(props: BaseLinkableProps = {}, instance = getCurrentInstance()): BaseLinkable {
+export function useBaseLinkable(props: BaseLinkableOptions = {}, instance = getCurrentInstance()): BaseLinkableComposable {
   if (instance?.[BASE_LINKABLE_SYMBOL]) return instance[BASE_LINKABLE_SYMBOL]
 
   // --- Determine the type of link based on the provided properties.

@@ -2,14 +2,14 @@ import { ExtractPropTypes, Prop, computed, getCurrentInstance } from 'vue'
 import { toReactive } from '@vueuse/core'
 import { throttle } from '@unshared/functions/throttle'
 import { debounce } from '@unshared/functions/debounce'
-import { BASE_STATE_PROPS, useBaseState } from './useBaseState'
+import { BASE_STATE_OPTIONS, useBaseState } from './useBaseState'
 
 /** The symbol to inject the base clickable composable. */
 export const BASE_CLICKABLE_SYMBOL = Symbol('baseClickable')
 
 /** The base clickable properties. */
-export const BASE_CLICKABLE_PROPS = {
-  ...BASE_STATE_PROPS,
+export const BASE_CLICKABLE_OPTIONS = {
+  ...BASE_STATE_OPTIONS,
 
   /**
    * The callback to call when the component is clicked. This is used to
@@ -40,7 +40,7 @@ export const BASE_CLICKABLE_PROPS = {
 }
 
 /** The properties of the base clickable component. */
-export type BaseClickableProps = ExtractPropTypes<typeof BASE_CLICKABLE_PROPS>
+export type BaseClickableOptions = ExtractPropTypes<typeof BASE_CLICKABLE_OPTIONS>
 
 /** The composable properties returned by the `useBaseClickable` composable. */
 export interface BaseClickableComposable {
@@ -69,7 +69,7 @@ declare module '@vue/runtime-core' {
  *   }
  * })
  */
-export function useBaseClickable(props: BaseClickableProps = {}, instance = getCurrentInstance()): BaseClickableComposable {
+export function useBaseClickable(props: BaseClickableOptions = {}, instance = getCurrentInstance()): BaseClickableComposable {
   if (instance?.[BASE_CLICKABLE_SYMBOL]) return instance[BASE_CLICKABLE_SYMBOL]
 
   // --- Inject the base state composable to get the state properties.

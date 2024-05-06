@@ -1,9 +1,9 @@
 import { ExtractPropTypes, Prop, computed, defineComponent, h, mergeProps } from 'vue'
-import { BASE_RENDERABLE_PROPS, useBaseRenderable } from '../composables/useBaseRenderable'
+import { BASE_RENDERABLE_OPTIONS, useBaseRenderable } from '../composables/useBaseRenderable'
 
 /** The base props for the `Icon` component. */
-const PROPS = {
-  ...BASE_RENDERABLE_PROPS,
+export const BASE_ICON_PROPS = {
+  ...BASE_RENDERABLE_OPTIONS,
 
   /**
    * The class name of the icon to display. This is expected to be a valid
@@ -24,10 +24,10 @@ const PROPS = {
 }
 
 /** The properties of the `Icon` component. */
-type Props = ExtractPropTypes<typeof PROPS>
+export type BaseIconProps = ExtractPropTypes<typeof BASE_ICON_PROPS>
 
 export const BaseIcon = /* #__PURE__ */ defineComponent(
-  (props: Props, { attrs }) => {
+  (props: BaseIconProps, { attrs }) => {
     const renderable = useBaseRenderable(props)
 
     // --- Build the attributes.
@@ -42,7 +42,7 @@ export const BaseIcon = /* #__PURE__ */ defineComponent(
     return () => h(renderable.is ?? 'div', attributes.value)
   },
   {
-    name: 'Icon',
-    props: PROPS as unknown as undefined,
+    name: 'BaseIcon',
+    props: BASE_ICON_PROPS as unknown as undefined,
   },
 )

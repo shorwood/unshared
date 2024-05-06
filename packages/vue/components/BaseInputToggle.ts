@@ -1,28 +1,31 @@
 import { SetupContext, VNode, computed, defineComponent, h, mergeProps } from 'vue'
 import { exposeToDevtool } from '../utils'
 import {
-  BASE_INPUT_TOGGLE_PROPS,
-  BASE_RENDERABLE_PROPS,
-  BASE_STATE_PROPS,
-  BaseInputToggleProps,
-  BaseRenderableProps,
-  BaseStateProps,
+  BASE_INPUT_TOGGLE_OPTIONS,
+  BASE_RENDERABLE_OPTIONS,
+  BASE_STATE_OPTIONS,
+  BaseInputToggleOptions,
+  BaseRenderableOptions,
+  BaseStateOptions,
   ToggleType,
   useBaseInputToggle,
   useBaseState,
 } from '../composables'
 
-const PROPS = {
-  ...BASE_INPUT_TOGGLE_PROPS,
-  ...BASE_STATE_PROPS,
-  ...BASE_RENDERABLE_PROPS,
+/** The base props for the `BaseInputToggle` component. */
+export const BASE_INPUT_TOGGLE_PROPS = {
+  ...BASE_INPUT_TOGGLE_OPTIONS,
+  ...BASE_STATE_OPTIONS,
+  ...BASE_RENDERABLE_OPTIONS,
 }
 
-interface Props<T, U extends ToggleType> extends
-  BaseStateProps,
-  BaseInputToggleProps<T, U>,
-  BaseRenderableProps {}
+/** The properties of the `BaseInputToggle` component. */
+export interface BaseInputToggleProps<T, U extends ToggleType> extends
+  BaseStateOptions,
+  BaseInputToggleOptions<T, U>,
+  BaseRenderableOptions {}
 
+/** The properties of the `BaseInputToggle` default slot. */
 interface SlotProps {
   error?: Error | string
   errorMessage?: string | undefined
@@ -39,7 +42,7 @@ const SLOTS = {
 type Context = SetupContext<[], Record<symbol, Partial<typeof SLOTS>>>
 
 export const BaseInputToggle = /* #__PURE__ */ defineComponent(
-  <T, U extends ToggleType>(props: Props<T, U>, context: Context) => {
+  <T, U extends ToggleType>(props: BaseInputToggleProps<T, U>, context: Context) => {
     const { attrs, slots } = context
     const state = useBaseState(props)
     const toggle = useBaseInputToggle<T, U>(props)
@@ -77,7 +80,7 @@ export const BaseInputToggle = /* #__PURE__ */ defineComponent(
   },
   {
     name: 'BaseInputToggle',
-    props: PROPS as unknown as undefined,
+    props: BASE_INPUT_TOGGLE_PROPS as unknown as undefined,
     slots: { [Symbol()]: SLOTS },
   },
 )
