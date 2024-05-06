@@ -1,6 +1,5 @@
 export * from './constants'
 export * from './preset'
 export * from './rules'
-export * from './shortcuts'
 export * from './utils'
 export * from './variants'

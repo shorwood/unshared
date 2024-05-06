@@ -1,6 +1,5 @@
 import { PresetFactory } from '@unocss/core'
 import * as VARIANTS from './variants'
-import * as SHORTCUTS from './shortcuts'
 import * as RULES from './rules'
 import { colorsBrand, colorsNord } from './constants'
 
@@ -11,7 +10,6 @@ export const presetUnshared: PresetFactory<object, PresetUnsharedOptions> = (opt
   options,
   rules: Object.values(RULES),
   variants: Object.values(VARIANTS),
-  shortcuts: Object.values(SHORTCUTS),
   theme: {
     colors: {
       ...colorsNord,
