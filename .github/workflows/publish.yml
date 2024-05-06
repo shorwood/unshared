@@ -1,0 +1,49 @@
+name: Publish
+permissions:
+  id-token: write
+  contents: write
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  deploy:
+    name: Deployment to Private Registry & NPM
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9.x
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: "pnpm"
+          registry-url: "https://registry.npmjs.org/"
+
+      # --- Install, build, and test.
+      - run: pnpm install
+      - run: pnpm build
+      - run: pnpm lint:ci
+      - run: pnpm test:ci
+
+      # --- Publish to private registry on main branch.
+      - run: pnpm publish:ci --registry https://npm.hsjm.dev
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN_PRIVATE}}
+
+      # --- Publish to NPM registry on main branch. (Only on tags)
+      - run: pnpm publish:ci --registry https://registry.npmjs.org
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NPM_CONFIG_PROVENANCE: true
+
+      # --- If all goes well, create a release on GitHub.
+      - run: npx changelogithub --no-group
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

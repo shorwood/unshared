@@ -5,8 +5,6 @@ permissions:
 
 on:
   push:
-    tags:
-      - v*
     branches:
       - main
   pull_request:
@@ -15,7 +13,7 @@ on:
 
 jobs:
   ci:
-    name: Continuous Integration & Deployment
+    name: Continuous Integration & Deployment to Private Registry
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,7 +26,7 @@ jobs:
         with:
           node-version: 20.x
           cache: "pnpm"
-          registry-url: "https://registry.npmjs.org/"
+          registry-url: "https://npm.hsjm.dev"
 
       # --- Install, build, and test.
       - run: pnpm install
@@ -41,17 +39,3 @@ jobs:
         run: pnpm publish:ci --registry https://npm.hsjm.dev
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN_PRIVATE}}
-
-      # --- Publish to NPM registry on main branch. (Only on tags)
-      - if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-        run: pnpm publish:ci --registry https://registry.npmjs.org
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-          NPM_CONFIG_PROVENANCE: true
-
-      # --- If all goes well, create a release on GitHub.
-      - if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-        run: npx changelogithub --no-group
-        continue-on-error: true
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
