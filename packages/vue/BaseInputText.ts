@@ -1,7 +1,7 @@
 import { ExtractPropTypes, computed, defineComponent, getCurrentInstance, h, mergeProps } from 'vue'
-import { BASE_STATE_OPTIONS, useBaseState } from '../composables/useBaseState'
-import { BASE_RENDERABLE_OPTIONS } from '../composables/useBaseRenderable'
-import { BASE_INPUT_TEXT_OPTIONS, useBaseInputText } from '../composables/useBaseInputText'
+import { BASE_STATE_OPTIONS, useBaseState } from './useBaseState'
+import { BASE_RENDERABLE_OPTIONS } from './useBaseRenderable'
+import { BASE_INPUT_TEXT_OPTIONS, useBaseInputText } from './useBaseInputText'
 
 /** The base props for the `BaseInputText` component. */
 export const BASE_INPUT_TEXT_PROPS = {

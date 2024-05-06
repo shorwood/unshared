@@ -1,15 +1,9 @@
 // eslint-disable vue/no-unused-emit-declarations
 import { ExtractPropTypes, Prop, VNode, computed, defineComponent, h, mergeProps } from 'vue'
-import {
-  BASE_CLICKABLE_OPTIONS,
-  BASE_LINKABLE_OPTIONS,
-  BASE_RENDERABLE_OPTIONS,
-  BASE_STATE_OPTIONS,
-  useBaseClickable,
-  useBaseLinkable,
-  useBaseRenderable,
-  useBaseState,
-} from '../composables'
+import { BASE_STATE_OPTIONS, useBaseState } from './useBaseState'
+import { BASE_RENDERABLE_OPTIONS, useBaseRenderable } from './useBaseRenderable'
+import { BASE_LINKABLE_OPTIONS, useBaseLinkable } from './useBaseLinkable'
+import { BASE_CLICKABLE_OPTIONS, useBaseClickable } from './useBaseClickable'
 
 interface SlotProps {
   error: Error | string | undefined
@@ -62,7 +56,7 @@ export const BaseButton = /* #__PURE__ */ defineComponent(
     return () => h(
       linkable.is ?? renderable.is ?? 'button',
       attributes.value,
-      () => slots.default?.(slotProps.value) ?? props.label,
+      slots.default?.(slotProps.value) ?? props.label,
     )
   },
   {

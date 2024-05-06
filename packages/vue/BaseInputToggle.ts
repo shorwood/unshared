@@ -1,16 +1,8 @@
 import { SetupContext, VNode, computed, defineComponent, h, mergeProps } from 'vue'
-import { exposeToDevtool } from '../utils'
-import {
-  BASE_INPUT_TOGGLE_OPTIONS,
-  BASE_RENDERABLE_OPTIONS,
-  BASE_STATE_OPTIONS,
-  BaseInputToggleOptions,
-  BaseRenderableOptions,
-  BaseStateOptions,
-  ToggleType,
-  useBaseInputToggle,
-  useBaseState,
-} from '../composables'
+import { BASE_STATE_OPTIONS, BaseStateOptions, useBaseState } from './useBaseState'
+import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions } from './useBaseRenderable'
+import { BASE_INPUT_TOGGLE_OPTIONS, BaseInputToggleOptions, ToggleType, useBaseInputToggle } from './useBaseInputToggle'
+import { exposeToDevtool } from './exposeToDevtool'
 
 /** The base props for the `BaseInputToggle` component. */
 export const BASE_INPUT_TOGGLE_PROPS = {

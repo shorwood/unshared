@@ -1,7 +1,7 @@
 import { Component, ExtractPropTypes, Prop, computed, getCurrentInstance } from 'vue'
 import { toReactive, useVModel } from '@vueuse/core'
 import { BASE_STATE_OPTIONS, useBaseState } from './useBaseState'
-import { cleanAttributes } from '../utils'
+import { cleanAttributes } from './cleanAttributes'
 
 /** The symbol to inject the base input text composable. */
 export const BASE_INPUT_TEXT_SYMBOL = Symbol()

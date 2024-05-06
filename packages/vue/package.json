@@ -16,25 +16,115 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    "./components": {
-      "require": "./dist/components.cjs",
-      "types": "./dist/components.d.ts",
-      "import": "./dist/components.js"
+    "./BaseAlerts": {
+      "require": "./dist/BaseAlerts.cjs",
+      "types": "./dist/BaseAlerts.d.ts",
+      "import": "./dist/BaseAlerts.js"
     },
-    "./composables": {
-      "require": "./dist/composables.cjs",
-      "types": "./dist/composables.d.ts",
-      "import": "./dist/composables.js"
+    "./BaseButton": {
+      "require": "./dist/BaseButton.cjs",
+      "types": "./dist/BaseButton.d.ts",
+      "import": "./dist/BaseButton.js"
+    },
+    "./BaseIcon": {
+      "require": "./dist/BaseIcon.cjs",
+      "types": "./dist/BaseIcon.d.ts",
+      "import": "./dist/BaseIcon.js"
+    },
+    "./BaseInputText": {
+      "require": "./dist/BaseInputText.cjs",
+      "types": "./dist/BaseInputText.d.ts",
+      "import": "./dist/BaseInputText.js"
+    },
+    "./BaseInputToggle": {
+      "require": "./dist/BaseInputToggle.cjs",
+      "types": "./dist/BaseInputToggle.d.ts",
+      "import": "./dist/BaseInputToggle.js"
+    },
+    "./cleanAttributes": {
+      "require": "./dist/cleanAttributes.cjs",
+      "types": "./dist/cleanAttributes.d.ts",
+      "import": "./dist/cleanAttributes.js"
+    },
+    "./cleanClasses": {
+      "require": "./dist/cleanClasses.cjs",
+      "types": "./dist/cleanClasses.d.ts",
+      "import": "./dist/cleanClasses.js"
+    },
+    "./exposeToDevtool": {
+      "require": "./dist/exposeToDevtool.cjs",
+      "types": "./dist/exposeToDevtool.d.ts",
+      "import": "./dist/exposeToDevtool.js"
+    },
+    "./getFileInputUrl": {
+      "require": "./dist/getFileInputUrl.cjs",
+      "types": "./dist/getFileInputUrl.d.ts",
+      "import": "./dist/getFileInputUrl.js"
     },
     "./nuxt": {
       "require": "./dist/nuxt.cjs",
       "types": "./dist/nuxt.d.ts",
       "import": "./dist/nuxt.js"
     },
-    "./utils": {
-      "require": "./dist/utils.cjs",
-      "types": "./dist/utils.d.ts",
-      "import": "./dist/utils.js"
+    "./ready": {
+      "require": "./dist/ready.cjs",
+      "types": "./dist/ready.d.ts",
+      "import": "./dist/ready.js"
+    },
+    "./resolveComponentType": {
+      "require": "./dist/resolveComponentType.cjs",
+      "types": "./dist/resolveComponentType.d.ts",
+      "import": "./dist/resolveComponentType.js"
+    },
+    "./types": {
+      "require": "./dist/types.cjs",
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js"
+    },
+    "./useAlerts": {
+      "require": "./dist/useAlerts.cjs",
+      "types": "./dist/useAlerts.d.ts",
+      "import": "./dist/useAlerts.js"
+    },
+    "./useBaseClickable": {
+      "require": "./dist/useBaseClickable.cjs",
+      "types": "./dist/useBaseClickable.d.ts",
+      "import": "./dist/useBaseClickable.js"
+    },
+    "./useBaseInputText": {
+      "require": "./dist/useBaseInputText.cjs",
+      "types": "./dist/useBaseInputText.d.ts",
+      "import": "./dist/useBaseInputText.js"
+    },
+    "./useBaseInputToggle": {
+      "require": "./dist/useBaseInputToggle.cjs",
+      "types": "./dist/useBaseInputToggle.d.ts",
+      "import": "./dist/useBaseInputToggle.js"
+    },
+    "./useBaseLinkable": {
+      "require": "./dist/useBaseLinkable.cjs",
+      "types": "./dist/useBaseLinkable.d.ts",
+      "import": "./dist/useBaseLinkable.js"
+    },
+    "./useBaseRenderable": {
+      "require": "./dist/useBaseRenderable.cjs",
+      "types": "./dist/useBaseRenderable.d.ts",
+      "import": "./dist/useBaseRenderable.js"
+    },
+    "./useBaseState": {
+      "require": "./dist/useBaseState.cjs",
+      "types": "./dist/useBaseState.d.ts",
+      "import": "./dist/useBaseState.js"
+    },
+    "./useEventBus": {
+      "require": "./dist/useEventBus.cjs",
+      "types": "./dist/useEventBus.d.ts",
+      "import": "./dist/useEventBus.js"
+    },
+    "./wrapTransition": {
+      "require": "./dist/wrapTransition.cjs",
+      "types": "./dist/wrapTransition.d.ts",
+      "import": "./dist/wrapTransition.js"
     },
     ".": {
       "require": "./dist/index.cjs",

@@ -2,7 +2,8 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { ComponentObjectPropsOptions, ExtractPropTypes, Prop, Ref, computed, getCurrentInstance } from 'vue'
 import { toReactive, useVModel } from '@vueuse/core'
-import { cleanAttributes, cleanClasses } from '../utils'
+import { cleanClasses } from './cleanClasses'
+import { cleanAttributes } from './cleanAttributes'
 
 /** The symbol to provide the composable into the component. */
 const BASE_STATE_SYMBOL = Symbol('baseState')

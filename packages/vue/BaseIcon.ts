@@ -1,5 +1,5 @@
 import { ExtractPropTypes, Prop, computed, defineComponent, h, mergeProps } from 'vue'
-import { BASE_RENDERABLE_OPTIONS, useBaseRenderable } from '../composables/useBaseRenderable'
+import { BASE_RENDERABLE_OPTIONS, useBaseRenderable } from './useBaseRenderable'
 
 /** The base props for the `Icon` component. */
 export const BASE_ICON_PROPS = {

@@ -4,7 +4,7 @@
 import type { LocationQuery, RouterLink } from 'vue-router'
 import { ComponentObjectPropsOptions, ExtractPropTypes, Prop, computed, getCurrentInstance } from 'vue'
 import { toReactive } from '@vueuse/core'
-import { cleanAttributes } from '../utils'
+import { cleanAttributes } from './cleanAttributes'
 
 /** The symbol to provide the composable into the component. */
 export const BASE_LINKABLE_SYMBOL = Symbol('baseLinkable')
