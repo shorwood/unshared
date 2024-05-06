@@ -6,13 +6,43 @@ export interface Resolvable<T = unknown> extends Promise<T> {
    *
    * @example
    * const resolvable = createResolvable()
-   * resolvable.pending // => true
+   * resolvable.isPending // => true
    *
    * // Resolving the promise
    * resolvable.resolve()
-   * resolvable.pending // => false
+   * resolvable.isPending // => false
    */
-  pending: boolean
+  isPending: boolean
+
+  /**
+   * Whether the promise has been rejected. This is `true` after the promise has
+   * been rejected and becomes `false` when the promise is reset.
+   *
+   * @example
+   * const resolvable = createResolvable()
+   * resolvable.reject('reason')
+   * resolvable.isRejected // => true
+   *
+   * // Reset the promise
+   * resolvable.reset()
+   * resolvable.isRejected // => false
+   */
+  isRejected: boolean
+
+  /**
+   * Whether the promise has been resolved. This is `true` after the promise has
+   * been resolved and becomes `false` when the promise is reset.
+   *
+   * @example
+   * const resolvable = createResolvable()
+   * resolvable.resolve()
+   * resolvable.isResolved // => true
+   *
+   * // Reset the promise
+   * resolvable.reset()
+   * resolvable.isResolved // => false
+   */
+  isResolved: boolean
 
   /**
    * The resolvable promise. This is the promise instance that is currently
@@ -36,12 +66,26 @@ export interface Resolvable<T = unknown> extends Promise<T> {
    * @example
    * const resolvable = createResolvable()
    * resolvable.reject('reason')
-   * resolvable.rejected // => true
+   * resolvable.isRejected // => true
    */
   reject: (cause?: any) => void
 
-  /** Whether the promise has been rejected. */
-  rejected: boolean
+  /**
+   * Resolve the promise with a value. This will mark the promise as resolved and
+   * set the value that the promise is resolved with.
+   *
+   * @param value The value to resolve the promise with.
+   * @example
+   * const resolvable = createResolvable()
+   * resolvable.resolve('resolved')
+   *
+   * // The promise is now resolved
+   * resolvable.isResolved // => true
+   * resolvable.promise // => Promise { 'resolved' }
+   */
+  resolve: unknown extends T
+    ? (value?: PromiseLike<T> | T) => void
+    : (value: PromiseLike<T> | T) => void
 
   /**
    * Reset the promise to its initial state. This will internally instantiate a
@@ -54,19 +98,9 @@ export interface Resolvable<T = unknown> extends Promise<T> {
    * resolvable.reset()
    *
    * // The promise is now pending again
-   * resolvable.pending // => true
+   * resolvable.isPending // => true
    */
   reset: () => void
-
-  /**
-   * Resolve the promise with a value.
-   *
-   * @param value The value to resolve the promise with.
-   */
-  resolve: T extends unknown ? (value?: PromiseLike<T> | T) => void : (value: PromiseLike<T> | T) => void
-
-  /** Whether the promise has been resolved. */
-  resolved: boolean
 }
 
 /**
@@ -86,23 +120,23 @@ export function createResolvable<T>(): Resolvable<T> {
 
   // --- Define lifecycle.
   state.reset = () => {
-    state.resolved = false
-    state.rejected = false
-    state.pending = true
+    state.isResolved = false
+    state.isRejected = false
+    state.isPending = true
 
     // --- Create a new promise that can be resolved or rejected from outside.
     // --- Before resolving or rejecting, update the internal state.
     state.promise = new Promise((resolve, reject) => {
       state.resolve = (value: unknown) => {
-        state.resolved = true
-        state.rejected = false
-        state.pending = false
+        state.isResolved = true
+        state.isRejected = false
+        state.isPending = false
         resolve(value)
       }
       state.reject = (value) => {
-        state.resolved = false
-        state.rejected = true
-        state.pending = false
+        state.isResolved = false
+        state.isRejected = true
+        state.isPending = false
         reject(value)
       }
     })
@@ -125,9 +159,9 @@ export function createResolvable<T>(): Resolvable<T> {
 if (import.meta.vitest) {
   test('should initialize a resolvable promise', () => {
     const result = createResolvable()
-    expect(result.pending).toBe(true)
-    expect(result.resolved).toBe(false)
-    expect(result.rejected).toBe(false)
+    expect(result.isPending).toBe(true)
+    expect(result.isResolved).toBe(false)
+    expect(result.isRejected).toBe(false)
     expect(result.promise).toBeInstanceOf(Promise)
     expectTypeOf(result).toEqualTypeOf<Resolvable<unknown>>()
   })
@@ -141,9 +175,9 @@ if (import.meta.vitest) {
     const result = createResolvable<string>()
     result.resolve('test')
     await expect(result.promise).resolves.toBe('test')
-    expect(result.pending).toBe(false)
-    expect(result.resolved).toBe(true)
-    expect(result.rejected).toBe(false)
+    expect(result.isPending).toBe(false)
+    expect(result.isResolved).toBe(true)
+    expect(result.isRejected).toBe(false)
     expect(result.promise).toBeInstanceOf(Promise)
     expectTypeOf(result.promise).toEqualTypeOf<Promise<string>>()
   })
@@ -152,9 +186,9 @@ if (import.meta.vitest) {
     const result = createResolvable<string>()
     result.reject('test')
     await expect(result.promise).rejects.toThrow('test')
-    expect(result.pending).toBe(false)
-    expect(result.resolved).toBe(false)
-    expect(result.rejected).toBe(true)
+    expect(result.isPending).toBe(false)
+    expect(result.isResolved).toBe(false)
+    expect(result.isRejected).toBe(true)
     expect(result.promise).toBeInstanceOf(Promise)
     expectTypeOf(result.promise).toEqualTypeOf<Promise<string>>()
   })
@@ -163,9 +197,9 @@ if (import.meta.vitest) {
     const result = createResolvable()
     result.resolve()
     result.reset()
-    expect(result.pending).toBe(true)
-    expect(result.resolved).toBe(false)
-    expect(result.rejected).toBe(false)
+    expect(result.isPending).toBe(true)
+    expect(result.isResolved).toBe(false)
+    expect(result.isRejected).toBe(false)
     expect(result.promise).toBeInstanceOf(Promise)
     expectTypeOf(result.promise).toEqualTypeOf<Promise<unknown>>()
   })
@@ -175,9 +209,9 @@ if (import.meta.vitest) {
     result.reject('test')
     await expect(result.promise).rejects.toThrow('test')
     result.reset()
-    expect(result.pending).toBe(true)
-    expect(result.resolved).toBe(false)
-    expect(result.rejected).toBe(false)
+    expect(result.isPending).toBe(true)
+    expect(result.isResolved).toBe(false)
+    expect(result.isRejected).toBe(false)
     expect(result.promise).toBeInstanceOf(Promise)
     expectTypeOf(result.promise).toEqualTypeOf<Promise<void>>()
   })
