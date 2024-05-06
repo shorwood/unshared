@@ -1,9 +1,7 @@
-import { IteratorFunction, MaybeArray, Predicator } from '@unshared/types'
+import { IteratorFunction, MaybeArray, Predicator, Pretty } from '@unshared/types'
 
 type OmitByKey<T, K extends PropertyKey> =
-  { [P in Exclude<keyof T, K>]: T[P] } extends infer U
-    ? { -readonly [K in keyof U]: U[K] }
-    : never
+  Pretty<{ -readonly [P in Exclude<keyof T, K>]: T[P] }>
 
 type OmitByIterator<T, I extends IteratorFunction<T, boolean>> =
   I extends Predicator<infer P>
@@ -27,6 +25,7 @@ type OmitByIterator<T, I extends IteratorFunction<T, boolean>> =
  * omit(object, ['foo', 'bar']) // => { baz: 3 }
  */
 export function omit<T, K extends keyof T>(collection: T, keys: MaybeArray<K>): OmitByKey<T, K>
+export function omit<T, K extends PropertyKey>(collection: T, keys: MaybeArray<K>): OmitByKey<T, K>
 
 /**
  * Returns a new object with the properties omitted by the iterator function.
@@ -67,7 +66,7 @@ if (import.meta.vitest) {
 
   test('should omit the specified properties', () => {
     const object = { bar: 2, baz: 3, foo: 1 } as const
-    const result = omit(object, ['foo', 'bar'])
+    const result = omit(object, ['foo', 'bar', 'non-existent'])
     expect(result).toStrictEqual({ baz: 3 })
     expectTypeOf(result).toEqualTypeOf<{ baz: 3 }>()
   })

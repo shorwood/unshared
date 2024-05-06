@@ -1,9 +1,7 @@
-import { IteratorFunction, MaybeArray, Predicator } from '@unshared/types'
+import { IteratorFunction, MaybeArray, Predicator, Pretty } from '@unshared/types'
 
 type PickByKey<T, K extends PropertyKey> =
-  { [P in Extract<keyof T, K>]: T[P] } extends infer U
-    ? { -readonly [K in keyof U]: U[K] }
-    : never
+  Pretty<{ -readonly [P in Extract<keyof T, K>]: T[P] }>
 
 type PickByIterator<T, I extends IteratorFunction<T, boolean>> =
   I extends Predicator<infer P>
@@ -27,6 +25,7 @@ type PickByIterator<T, I extends IteratorFunction<T, boolean>> =
  * pick(object, ['foo', 'bar']) // => { foo: 1, bar: 2 }
  */
 export function pick<T, K extends keyof T>(collection: T, keys: MaybeArray<K>): PickByKey<T, K>
+export function pick<T, K extends PropertyKey>(collection: T, keys: MaybeArray<K>): PickByKey<T, K>
 
 /**
  * Returns a new object with the properties pickted by the iterator function.
@@ -67,7 +66,7 @@ if (import.meta.vitest) {
 
   test('should pick the specified properties', () => {
     const object = { bar: 2, baz: 3, foo: 1 } as const
-    const result = pick(object, ['foo', 'bar'])
+    const result = pick(object, ['foo', 'bar', 'non-existent'])
     expect(result).toStrictEqual({ bar: 2, foo: 1 })
     expectTypeOf(result).toEqualTypeOf<{ bar: 2; foo: 1 }>()
   })
