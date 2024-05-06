@@ -26,6 +26,7 @@ export async function buildBundle(packageName: PackageName) {
   const rollupConfig = defineConfig({
     external,
     input: inputPaths,
+    treeshake: false,
     output: [
       {
         assetFileNames: 'assets/[name].js',
