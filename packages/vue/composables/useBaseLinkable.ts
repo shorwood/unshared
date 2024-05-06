@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable sonarjs/no-duplicate-string */
-import { LocationQuery, RouterLink } from 'vue-router'
+import type { LocationQuery, RouterLink } from 'vue-router'
 import { ComponentObjectPropsOptions, ExtractPropTypes, Prop, computed, getCurrentInstance } from 'vue'
 import { toReactive } from '@vueuse/core'
-import { cleanAttributes } from '../utils/cleanAttributes'
+import { cleanAttributes } from '../utils'
 
 /** The symbol to provide the composable into the component. */
 export const BASE_LINKABLE_SYMBOL = Symbol('baseLinkable')
@@ -111,7 +112,7 @@ export function useBaseLinkable(props: BaseLinkableOptions = {}, instance = getC
 
   // --- Compute component type.
   const is = computed(() => {
-    if (isInternalLink.value) return RouterLink
+    if (isInternalLink.value) return 'RouterLink'
     if (isExternalLink.value) return 'a'
   })
 
@@ -191,7 +192,7 @@ if (import.meta.vitest) {
 
     it('should set the `is` property to `RouterLink`', () => {
       const result = useBaseLinkable({ to: '/path' })
-      expect(result.is).toBe(RouterLink)
+      expect(result.is).toBe('RouterLink')
     })
 
     it('should set the `attributes` property with the internal link properties', () => {
