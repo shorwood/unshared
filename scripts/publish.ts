@@ -29,6 +29,7 @@ export async function pnpmPublish(packageName: string, registry: string) {
 
   if (!gitTag) {
     const hash = await $('git', ['rev-parse', 'HEAD'], 'utf8')
+    semver.patch++
     semver.prerelease = `build-${hash.slice(0, 7)}`
     packageJson.version = semver.toString()
   }
@@ -76,7 +77,8 @@ export async function pnpmPublish(packageName: string, registry: string) {
     '--registry',
     registry,
     '--no-git-checks',
-  ], {
+    process.env.CI ? '' : '--dry-run',
+  ].filter(Boolean), {
     cwd: packagePath,
     stdio: 'inherit',
   })
@@ -84,19 +86,20 @@ export async function pnpmPublish(packageName: string, registry: string) {
 
 export async function publish() {
   const { options } = parseCliArguments<{ registry?: string }>(argv)
-  const { registry } = options
+  const { registry = 'https://registry.npmjs.org' } = options
 
   // --- If not in CI, abort the process.
-  if (!process.env.CI) {
-    console.log('This script is intended to be run in a CI environment.')
-    return
+  if (process.env.CI) {
+    const token = process.env.NODE_AUTH_TOKEN
+    if (!registry) throw new Error('The NPM_REGISTRY environment variable is not set.')
+    if (!token) throw new Error('The NODE_AUTH_TOKEN environment variable is not set.')
+    await $('pnpm', ['set', `//${registry.replace('https://', '')}/:_authToken=${token}`])
   }
 
   // --- Registry must be explicitly set to avoid accidental publishing.
-  const token = process.env.NODE_AUTH_TOKEN
-  if (!registry) throw new Error('The NPM_REGISTRY environment variable is not set.')
-  if (!token) throw new Error('The NODE_AUTH_TOKEN environment variable is not set.')
-  await $('pnpm', ['set', `//${registry.replace('https://', '')}/:_authToken=${token}`])
+  else {
+    console.warn('This script is intended to be run in a CI environment. Forcing a dry run.')
+  }
 
   // --- Prepare the package for publishing.
   for (const packageName of PACKAGES_NAMES) {
