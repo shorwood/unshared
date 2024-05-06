@@ -21,14 +21,6 @@ const PROPS = {
    * the `icon` prop is used as the label.
    */
   label: String as Prop<string>,
-
-  /**
-   * The size of the icon in pixels. This can be a number or a string
-   * representing the size in pixels. The default size is `24`.
-   *
-   * @default 24
-   */
-  size: { type: [String, Number], default: 24 } as Prop<number | string>,
 }
 
 /** The properties of the `Icon` component. */
@@ -38,20 +30,12 @@ export const BaseIcon = /* #__PURE__ */ defineComponent(
   (props: Props, { attrs }) => {
     const renderable = useBaseRenderable(props)
 
-    // --- Compute the style of the icon.
-    const style = computed(() => ({
-      'width': Number(props.size) > 0 ? `${props.size}px` : undefined,
-      'height': Number(props.size) > 0 ? `${props.size}px` : undefined,
-      'font-size': Number(props.size) > 0 ? `${props.size}px` : undefined,
-    }))
-
     // --- Build the attributes.
     const attributes = computed(() => mergeProps(attrs, {
       'role': 'img',
       'aria-hidden': 'true',
       'aria-label': props.label ?? props.icon,
       'class': props.icon,
-      'style': style.value,
     }))
 
     // --- Return virtual DOM node.
