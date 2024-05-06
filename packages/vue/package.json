@@ -78,6 +78,7 @@
     "@vue/test-utils": "2.4.5",
     "leaflet": "1.9.4",
     "markdown-it": "14.1.0",
-    "vue": "3.4.26"
+    "vue": "3.4.26",
+    "vue-router": "4.3.2"
   }
 }
