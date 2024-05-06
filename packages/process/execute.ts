@@ -1,10 +1,12 @@
 import { Readable, Writable } from 'node:stream'
 import { getuid } from 'node:process'
 import { join } from 'node:path'
-import { createServer } from 'node:net'
+import { platform } from 'node:os'
+import { Server, createServer } from 'node:net'
 import { randomBytes } from 'node:crypto'
 import { ChildProcess, SpawnOptions, spawn } from 'node:child_process'
 import { Function } from '@unshared/types'
+import { createResolvable } from '@unshared/functions/createResolvable'
 import { Awaitable, awaitable } from '@unshared/functions/awaitable'
 import { BinaryLike, toUint8Array } from '@unshared/binary/toUint8Array'
 
@@ -54,6 +56,26 @@ function writeToStream(stream: Writable, data: BinaryArgument) {
 }
 
 /**
+ * Helper function to get the path of the socket. On Unix systems, this will
+ * return the path of the socket. On Windows systems, this will return the
+ * path of the named pipe.
+ *
+ * @returns The path of the socket or named pipe.
+ */
+function getSocketPath() {
+  const os = platform()
+  const id = randomBytes(4).toString('hex')
+
+  // --- On Windows, use named pipes.
+  if (os === 'win32') return `\\\\.\\pipe\\node-${id}.sock`
+
+  // --- On Unix, use sockets.
+  const uid = getuid ? getuid().toString() : '0'
+  const uuid = randomBytes(4).toString('hex')
+  return join('/run/user', uid, `node-${uuid}.sock`)
+}
+
+/**
  * Spawn a process and return the output. This function is similar to `child_process.spawn` but it
  * returns a promise that resolves with the `stdout` output of the process and throws an error if
  * the process exits with a non-zero exit code. It also supports piping from `stdin`.
@@ -72,6 +94,7 @@ function writeToStream(stream: Writable, data: BinaryArgument) {
  * const b = Buffer.from("Hello, world?")
  * await execute("diff", [a, b]) // The diff output.
  */
+// @TODO: Implement Windows support for process substitution.
 export function execute(command: string, parameters: BinaryArgument[] | undefined, options: ExecuteOptions<undefined>): Awaitable<ChildProcess, Buffer>
 export function execute(command: string, parameters: BinaryArgument[] | undefined, options: ExecuteOptions<BufferEncoding>): Awaitable<ChildProcess, string>
 export function execute(command: string, parameters: BinaryArgument[] | undefined, encoding: BufferEncoding): Awaitable<ChildProcess, string>
@@ -79,74 +102,76 @@ export function execute(command: string, parameters?: BinaryArgument[]): Awaitab
 export function execute(command: string, parameters: BinaryArgument[] = [], options: BufferEncoding | ExecuteOptions = {}): Awaitable<ChildProcess, Buffer | string> {
   if (typeof options === 'string') options = { encoding: options }
   const { encoding, stdin, ...spawnOptions } = options
+  const resolvable = createResolvable<Buffer | string>()
 
-  // --- If the argument is a buffer, write it to a temporary socket for IPC.
-  const uid = getuid ? getuid().toString() : '0'
-  const args = parameters.map((argument) => {
-    if (typeof argument === 'string') return { arg: argument }
-
-    // --- If the argument is some kind of binary data, we need to create
-    // --- a temporary socket to pass the data to the process. This is done
-    // --- by writing the data to the socket and then reading from it using
-    // --- process substitution through the `nc` command.
-    const uuid = randomBytes(16).toString('hex')
-    const path = join('/run/user', uid, `${uuid}.sock`)
-    const socket = createServer()
-    socket.maxConnections = 1000
-    socket.listen(path)
-    socket.once('connection', socket => writeToStream(socket, argument))
-    return {
-      arg: `<(echo | nc -U ${path})`,
-      data: argument,
-      socket,
-    }
+  // --- If the argument is some kind of binary data, we need to create
+  // --- a temporary socket to pass the data to the process. This is done
+  // --- by writing the data to the socket and then reading from it using
+  // --- process substitution through the `nc` command.
+  const sockets: Server[] = []
+  const spawnParameters = parameters.map((parameter) => {
+    if (typeof parameter === 'string') return parameter
+    const path = getSocketPath()
+    const server = createServer()
+    server.maxConnections = 1
+    server.listen(path)
+    server.once('error', (error) => {
+      server.close()
+      error.message = `Could not create socket at ${path}: ${error.message}`
+      resolvable.reject(error)
+    })
+    server.once('connection', socket => writeToStream(socket, parameter))
+    sockets.push(server)
+    return `<(echo | nc -U ${path})`
   })
 
-  // --- Spawn the process.
-  const argsArray = args.map(({ arg }) => arg)
-  const process = spawn(command, argsArray, {
-    shell: '/bin/bash',
-    stdio: 'pipe',
+  // --- Spawn the process with the parameters and options. We use the
+  // --- `/bash` option to ensure that process substitution works correctly.
+  const childProcess = spawn(command, spawnParameters, {
+    shell: sockets.length > 0 ? '/bin/bash' : undefined,
+    stdio: ['pipe', 'pipe', 'inherit'],
     ...spawnOptions,
   })
 
-  // --- Pass the input to the process.
-  if (stdin && process.stdin) writeToStream(process.stdin, stdin)
+  // --- Pass the input to the process and collect the output from stdout and stderr.
+  if (stdin && childProcess.stdin) writeToStream(childProcess.stdin, stdin)
+  const stdoutChunks: Buffer[] = []
+  const stderrChunks: Buffer[] = []
+  childProcess.stdout?.on('data', (data: Buffer) => stdoutChunks.push(data))
+  childProcess.stderr?.on('data', (data: Buffer) => stderrChunks.push(data))
 
-  const createPromise = () => new Promise<Buffer | string>((resolve, reject) => {
-    const stdoutChunks: Buffer[] = []
-    const stderrChunks: Buffer[] = []
+  // --- Handle errors and exit codes.
+  childProcess.on('error', (error) => {
+    for (const socket of sockets) socket.close()
+    resolvable.reject(error)
+  })
 
-    process.stdout?.on('data', (data: Buffer) => stdoutChunks.push(data))
-    process.stderr?.on('data', (data: Buffer) => stderrChunks.push(data))
-    process.on('error', reject)
-    process.on('exit', (code) => {
+  childProcess.on('exit', (code) => {
 
-      // --- If process substitution was used, close the sockets.
-      for (const { socket } of args) if (socket) socket.close()
+    // --- If process substitution was used, close the sockets.
+    for (const socket of sockets) socket.close()
 
-      // --- The process exited successfully.
-      if (code === 0) {
-        const output = Buffer.concat(stdoutChunks)
-        const result = encoding ? output.toString(encoding) : output
-        return resolve(result)
-      }
+    // --- The process exited successfully.
+    if (code === 0) {
+      const output = Buffer.concat(stdoutChunks)
+      const result = encoding ? output.toString(encoding) : output
+      return resolvable.resolve(result)
+    }
 
-      // --- The process was killed due to a timeout.
-      if (code === null) {
-        process.kill()
-        return reject(new Error('Process timed out.'))
-      }
+    // --- The process was killed due to a timeout.
+    if (code === null) {
+      childProcess.kill()
+      return resolvable.reject(new Error('Process timed out.'))
+    }
 
-      // --- The process exited with an error.
-      const errorMessage = Buffer.concat(stderrChunks).toString('utf8') || `Process exited with code ${code}`
-      const error = new Error(errorMessage)
-      reject(error)
-    })
+    // --- The process exited with an error.
+    const errorMessage = Buffer.concat(stderrChunks).toString('utf8') || `Process exited with code ${code}`
+    const error = new Error(errorMessage)
+    resolvable.reject(error)
   })
 
   // --- Return the awaitable promise.
-  return awaitable(process, createPromise)
+  return awaitable(childProcess, resolvable)
 }
 
 /* v8 ignore start */
@@ -159,7 +184,11 @@ if (import.meta.vitest) {
     })
   })
 
-  describe.sequential('await', { retry: 3 }, () => {
+  describe('await', () => {
+    beforeEach(async() => {
+      await new Promise(resolve => setTimeout(resolve, 10))
+    })
+
     it('should spawn a process and return the output as a buffer', async() => {
       const result = await execute('echo', ['Hello, world!'])
       const string = result.toString('utf8')
@@ -180,7 +209,7 @@ if (import.meta.vitest) {
     })
   })
 
-  describe.sequential('pipe', { retry: 3 }, () => {
+  describe('pipe', () => {
     it('should spawn a process and pipe a string to it', async() => {
       const result = await execute('cat', undefined, { stdin: 'Hello, world!' })
       const string = result.toString('utf8')
@@ -213,7 +242,7 @@ if (import.meta.vitest) {
     })
   })
 
-  describe.sequential('process substitution', { retry: 3 }, () => {
+  describe('process substitution', () => {
     it('should handle Buffer arguments with process substitution', async() => {
       const buffer = Buffer.from('Hello, world!')
       const result = await execute('cat', [buffer], { encoding: 'utf8' })
