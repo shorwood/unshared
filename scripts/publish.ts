@@ -15,36 +15,25 @@ import { execute as $ } from '../packages/process/execute'
  *
  * @param packageName The name of the package to set the version for.
  * @param registry The registry to publish the package to.
+ * @param tag The tag to use for the package. This is either `latest` or `next`.
  * @returns A promise that resolves when the version is set.
  */
-export async function pnpmPublish(packageName: string, registry: string) {
+export async function pnpmPublish(packageName: string, registry: string, tag: string) {
   const { packageJson, packageJsonFS, packagePath } = await getPackageMetadata(packageName)
   const semver = createSemver(packageJson.version)
 
   // --- If the current hash has a tag, get the tag.
-  const hash = await $('git', ['rev-parse', 'HEAD'], 'utf8')
-  const gitTag = await $('git', ['describe', '--tags'], 'utf8')
-    .then(tag => tag.trim())
-    .catch(() => {})
-
-  if (!gitTag) {
-    semver.patch++
-    semver.prerelease = `build-${hash.slice(0, 7)}`
-    packageJson.version = semver.toString()
-  }
-
-  else if (gitTag.startsWith('v')) {
-    const tagVersion = createSemver(gitTag.slice(1))
-    semver.major = tagVersion.major
-    semver.minor = tagVersion.minor
-    semver.patch = tagVersion.patch
-    semver.prerelease = tagVersion.prerelease
+  if (tag === 'public') {
     semver.build = undefined
+    semver.prerelease = undefined
     packageJson.version = semver.toString()
   }
 
   else {
-    throw new Error(`Invalid tag ${gitTag}`)
+    const hash = await $('git', ['rev-parse', 'HEAD'], 'utf8')
+    semver.patch += 1
+    semver.prerelease = `build-${hash.slice(0, 7)}`
+    packageJson.version = semver.toString()
   }
 
   // --- Get the latest version from the registry.
@@ -72,7 +61,7 @@ export async function pnpmPublish(packageName: string, registry: string) {
     '--access',
     isNext ? 'restricted' : 'public',
     '--tag',
-    isNext ? 'next' : 'latest',
+    tag,
     '--registry',
     registry,
     '--no-git-checks',
@@ -84,8 +73,8 @@ export async function pnpmPublish(packageName: string, registry: string) {
 }
 
 export async function publish() {
-  const { options } = parseCliArguments<{ registry?: string }>(argv)
-  const { registry = 'https://registry.npmjs.org' } = options
+  const { options } = parseCliArguments<{ registry?: string; tag: string }>(argv)
+  const { registry = 'https://registry.npmjs.org', tag = 'next' } = options
 
   // --- If not in CI, abort the process.
   const token = process.env.NODE_AUTH_TOKEN
@@ -97,7 +86,7 @@ export async function publish() {
   // --- Prepare the package for publishing.
   for (const packageName of PACKAGES_NAMES) {
     await cp('LICENSE.md', `packages/${packageName}/LICENSE.md`)
-    await pnpmPublish(packageName, registry)
+    await pnpmPublish(packageName, registry, tag)
   }
 }
 
