@@ -20,6 +20,7 @@ export default defineConfig({
     reporters: ['basic'],
     setupFiles: './packages/setupTest.ts',
     testTimeout: process.env.DEBUGGER ? 100 : 0,
+    maxConcurrency: 50,
 
     // --- Benchmark configuration.
     benchmark: {
