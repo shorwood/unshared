@@ -13,7 +13,7 @@ interface SlotAlertProps {
   dismiss: () => void
 }
 
-const PROPS = {
+const BASE_ALERTS_PROPS = {
   ...BASE_RENDERABLE_OPTIONS,
 
   /**
@@ -28,10 +28,10 @@ const PROPS = {
 }
 
 /** The properties of the `BaseAlerts` component. */
-type Props = ExtractPropTypes<typeof PROPS>
+type BaseAlertsProps = ExtractPropTypes<typeof BASE_ALERTS_PROPS>
 
 export const BaseAlerts = /* #__PURE__ */ defineComponent(
-  (props: Props, { attrs, slots }) => {
+  (props: BaseAlertsProps, { attrs, slots }) => {
     const alerts = useAlerts()
     const renderable = useBaseRenderable(props)
 
@@ -71,7 +71,7 @@ export const BaseAlerts = /* #__PURE__ */ defineComponent(
   },
   {
     name: 'BaseAlerts',
-    props: PROPS as unknown as undefined,
+    props: BASE_ALERTS_PROPS as unknown as undefined,
     emits: [
       'update:alerts',
       'dismiss',
