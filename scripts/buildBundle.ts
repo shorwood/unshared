@@ -81,6 +81,5 @@ export async function buildBundle(packageName: PackageName) {
   })
 
   // --- Return the configuration.
-  if (packageName === 'types') return [rollupConfigDts]
   return [rollupConfig, rollupConfigDts]
 }

@@ -12,352 +12,584 @@
     "type": "git",
     "url": "git@github.com:shorwood/unshared.git"
   },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     "./Any": {
-      "types": "./dist/Any.d.ts"
+      "require": "./dist/Any.cjs",
+      "types": "./dist/Any.d.ts",
+      "import": "./dist/Any.js"
     },
     "./Asserted": {
-      "types": "./dist/Asserted.d.ts"
+      "require": "./dist/Asserted.cjs",
+      "types": "./dist/Asserted.d.ts",
+      "import": "./dist/Asserted.js"
     },
     "./Assertor": {
-      "types": "./dist/Assertor.d.ts"
+      "require": "./dist/Assertor.cjs",
+      "types": "./dist/Assertor.d.ts",
+      "import": "./dist/Assertor.js"
     },
     "./Bind": {
-      "types": "./dist/Bind.d.ts"
+      "require": "./dist/Bind.cjs",
+      "types": "./dist/Bind.d.ts",
+      "import": "./dist/Bind.js"
     },
     "./BooleanAnd": {
-      "types": "./dist/BooleanAnd.d.ts"
+      "require": "./dist/BooleanAnd.cjs",
+      "types": "./dist/BooleanAnd.d.ts",
+      "import": "./dist/BooleanAnd.js"
     },
     "./BooleanNand": {
-      "types": "./dist/BooleanNand.d.ts"
+      "require": "./dist/BooleanNand.cjs",
+      "types": "./dist/BooleanNand.d.ts",
+      "import": "./dist/BooleanNand.js"
     },
     "./BooleanNor": {
-      "types": "./dist/BooleanNor.d.ts"
+      "require": "./dist/BooleanNor.cjs",
+      "types": "./dist/BooleanNor.d.ts",
+      "import": "./dist/BooleanNor.js"
     },
     "./BooleanNot": {
-      "types": "./dist/BooleanNot.d.ts"
+      "require": "./dist/BooleanNot.cjs",
+      "types": "./dist/BooleanNot.d.ts",
+      "import": "./dist/BooleanNot.js"
     },
     "./BooleanOr": {
-      "types": "./dist/BooleanOr.d.ts"
+      "require": "./dist/BooleanOr.cjs",
+      "types": "./dist/BooleanOr.d.ts",
+      "import": "./dist/BooleanOr.js"
     },
     "./BooleanXnor": {
-      "types": "./dist/BooleanXnor.d.ts"
+      "require": "./dist/BooleanXnor.cjs",
+      "types": "./dist/BooleanXnor.d.ts",
+      "import": "./dist/BooleanXnor.js"
     },
     "./BooleanXor": {
-      "types": "./dist/BooleanXor.d.ts"
+      "require": "./dist/BooleanXor.cjs",
+      "types": "./dist/BooleanXor.d.ts",
+      "import": "./dist/BooleanXor.js"
     },
     "./CaseInsensitive": {
-      "types": "./dist/CaseInsensitive.d.ts"
+      "require": "./dist/CaseInsensitive.cjs",
+      "types": "./dist/CaseInsensitive.d.ts",
+      "import": "./dist/CaseInsensitive.js"
     },
     "./CharacterAlpha": {
-      "types": "./dist/CharacterAlpha.d.ts"
+      "require": "./dist/CharacterAlpha.cjs",
+      "types": "./dist/CharacterAlpha.d.ts",
+      "import": "./dist/CharacterAlpha.js"
     },
     "./CharacterAscii": {
-      "types": "./dist/CharacterAscii.d.ts"
+      "require": "./dist/CharacterAscii.cjs",
+      "types": "./dist/CharacterAscii.d.ts",
+      "import": "./dist/CharacterAscii.js"
     },
     "./CharacterDigit": {
-      "types": "./dist/CharacterDigit.d.ts"
+      "require": "./dist/CharacterDigit.cjs",
+      "types": "./dist/CharacterDigit.d.ts",
+      "import": "./dist/CharacterDigit.js"
     },
     "./CharacterHex": {
-      "types": "./dist/CharacterHex.d.ts"
+      "require": "./dist/CharacterHex.cjs",
+      "types": "./dist/CharacterHex.d.ts",
+      "import": "./dist/CharacterHex.js"
     },
     "./CharacterLetter": {
-      "types": "./dist/CharacterLetter.d.ts"
+      "require": "./dist/CharacterLetter.cjs",
+      "types": "./dist/CharacterLetter.d.ts",
+      "import": "./dist/CharacterLetter.js"
     },
     "./CharacterLower": {
-      "types": "./dist/CharacterLower.d.ts"
+      "require": "./dist/CharacterLower.cjs",
+      "types": "./dist/CharacterLower.d.ts",
+      "import": "./dist/CharacterLower.js"
     },
     "./CharacterSymbol": {
-      "types": "./dist/CharacterSymbol.d.ts"
+      "require": "./dist/CharacterSymbol.cjs",
+      "types": "./dist/CharacterSymbol.d.ts",
+      "import": "./dist/CharacterSymbol.js"
     },
     "./CharacterUpper": {
-      "types": "./dist/CharacterUpper.d.ts"
+      "require": "./dist/CharacterUpper.cjs",
+      "types": "./dist/CharacterUpper.d.ts",
+      "import": "./dist/CharacterUpper.js"
     },
     "./CharacterWhitespace": {
-      "types": "./dist/CharacterWhitespace.d.ts"
+      "require": "./dist/CharacterWhitespace.cjs",
+      "types": "./dist/CharacterWhitespace.d.ts",
+      "import": "./dist/CharacterWhitespace.js"
     },
     "./Collection": {
-      "types": "./dist/Collection.d.ts"
+      "require": "./dist/Collection.cjs",
+      "types": "./dist/Collection.d.ts",
+      "import": "./dist/Collection.js"
     },
     "./Constructor": {
-      "types": "./dist/Constructor.d.ts"
+      "require": "./dist/Constructor.cjs",
+      "types": "./dist/Constructor.d.ts",
+      "import": "./dist/Constructor.js"
     },
     "./ConstructorParameters": {
-      "types": "./dist/ConstructorParameters.d.ts"
+      "require": "./dist/ConstructorParameters.cjs",
+      "types": "./dist/ConstructorParameters.d.ts",
+      "import": "./dist/ConstructorParameters.js"
     },
     "./ConstructorStatics": {
-      "types": "./dist/ConstructorStatics.d.ts"
+      "require": "./dist/ConstructorStatics.cjs",
+      "types": "./dist/ConstructorStatics.d.ts",
+      "import": "./dist/ConstructorStatics.js"
     },
     "./Default": {
-      "types": "./dist/Default.d.ts"
+      "require": "./dist/Default.cjs",
+      "types": "./dist/Default.d.ts",
+      "import": "./dist/Default.js"
     },
     "./DefaultObject": {
-      "types": "./dist/DefaultObject.d.ts"
+      "require": "./dist/DefaultObject.cjs",
+      "types": "./dist/DefaultObject.d.ts",
+      "import": "./dist/DefaultObject.js"
     },
     "./DefaultValue": {
-      "types": "./dist/DefaultValue.d.ts"
+      "require": "./dist/DefaultValue.cjs",
+      "types": "./dist/DefaultValue.d.ts",
+      "import": "./dist/DefaultValue.js"
     },
     "./Extends": {
-      "types": "./dist/Extends.d.ts"
+      "require": "./dist/Extends.cjs",
+      "types": "./dist/Extends.d.ts",
+      "import": "./dist/Extends.js"
     },
     "./Fallback": {
-      "types": "./dist/Fallback.d.ts"
+      "require": "./dist/Fallback.cjs",
+      "types": "./dist/Fallback.d.ts",
+      "import": "./dist/Fallback.js"
     },
     "./FromEntries": {
-      "types": "./dist/FromEntries.d.ts"
+      "require": "./dist/FromEntries.cjs",
+      "types": "./dist/FromEntries.d.ts",
+      "import": "./dist/FromEntries.js"
     },
     "./Function": {
-      "types": "./dist/Function.d.ts"
+      "require": "./dist/Function.cjs",
+      "types": "./dist/Function.d.ts",
+      "import": "./dist/Function.js"
     },
     "./FunctionAsync": {
-      "types": "./dist/FunctionAsync.d.ts"
+      "require": "./dist/FunctionAsync.cjs",
+      "types": "./dist/FunctionAsync.d.ts",
+      "import": "./dist/FunctionAsync.js"
     },
     "./Get": {
-      "types": "./dist/Get.d.ts"
+      "require": "./dist/Get.cjs",
+      "types": "./dist/Get.d.ts",
+      "import": "./dist/Get.js"
     },
     "./Immutable": {
-      "types": "./dist/Immutable.d.ts"
+      "require": "./dist/Immutable.cjs",
+      "types": "./dist/Immutable.d.ts",
+      "import": "./dist/Immutable.js"
     },
     "./IteratorFunction": {
-      "types": "./dist/IteratorFunction.d.ts"
+      "require": "./dist/IteratorFunction.cjs",
+      "types": "./dist/IteratorFunction.d.ts",
+      "import": "./dist/IteratorFunction.js"
     },
     "./IteratorPath": {
-      "types": "./dist/IteratorPath.d.ts"
+      "require": "./dist/IteratorPath.cjs",
+      "types": "./dist/IteratorPath.d.ts",
+      "import": "./dist/IteratorPath.js"
     },
     "./Key": {
-      "types": "./dist/Key.d.ts"
+      "require": "./dist/Key.cjs",
+      "types": "./dist/Key.d.ts",
+      "import": "./dist/Key.js"
     },
     "./MapValues": {
-      "types": "./dist/MapValues.d.ts"
+      "require": "./dist/MapValues.cjs",
+      "types": "./dist/MapValues.d.ts",
+      "import": "./dist/MapValues.js"
     },
     "./MathAbsolute": {
-      "types": "./dist/MathAbsolute.d.ts"
+      "require": "./dist/MathAbsolute.cjs",
+      "types": "./dist/MathAbsolute.d.ts",
+      "import": "./dist/MathAbsolute.js"
     },
     "./MathAdd": {
-      "types": "./dist/MathAdd.d.ts"
+      "require": "./dist/MathAdd.cjs",
+      "types": "./dist/MathAdd.d.ts",
+      "import": "./dist/MathAdd.js"
     },
     "./MathCeil": {
-      "types": "./dist/MathCeil.d.ts"
+      "require": "./dist/MathCeil.cjs",
+      "types": "./dist/MathCeil.d.ts",
+      "import": "./dist/MathCeil.js"
     },
     "./MathDecrease": {
-      "types": "./dist/MathDecrease.d.ts"
+      "require": "./dist/MathDecrease.cjs",
+      "types": "./dist/MathDecrease.d.ts",
+      "import": "./dist/MathDecrease.js"
     },
     "./MathDivide": {
-      "types": "./dist/MathDivide.d.ts"
+      "require": "./dist/MathDivide.cjs",
+      "types": "./dist/MathDivide.d.ts",
+      "import": "./dist/MathDivide.js"
     },
     "./MathFloor": {
-      "types": "./dist/MathFloor.d.ts"
+      "require": "./dist/MathFloor.cjs",
+      "types": "./dist/MathFloor.d.ts",
+      "import": "./dist/MathFloor.js"
     },
     "./MathIncrease": {
-      "types": "./dist/MathIncrease.d.ts"
+      "require": "./dist/MathIncrease.cjs",
+      "types": "./dist/MathIncrease.d.ts",
+      "import": "./dist/MathIncrease.js"
     },
     "./MathModulo": {
-      "types": "./dist/MathModulo.d.ts"
+      "require": "./dist/MathModulo.cjs",
+      "types": "./dist/MathModulo.d.ts",
+      "import": "./dist/MathModulo.js"
     },
     "./MathMultiply": {
-      "types": "./dist/MathMultiply.d.ts"
+      "require": "./dist/MathMultiply.cjs",
+      "types": "./dist/MathMultiply.d.ts",
+      "import": "./dist/MathMultiply.js"
     },
     "./MathNegative": {
-      "types": "./dist/MathNegative.d.ts"
+      "require": "./dist/MathNegative.cjs",
+      "types": "./dist/MathNegative.d.ts",
+      "import": "./dist/MathNegative.js"
     },
     "./MathSquare": {
-      "types": "./dist/MathSquare.d.ts"
+      "require": "./dist/MathSquare.cjs",
+      "types": "./dist/MathSquare.d.ts",
+      "import": "./dist/MathSquare.js"
     },
     "./MathSubstract": {
-      "types": "./dist/MathSubstract.d.ts"
+      "require": "./dist/MathSubstract.cjs",
+      "types": "./dist/MathSubstract.d.ts",
+      "import": "./dist/MathSubstract.js"
     },
     "./MathSum": {
-      "types": "./dist/MathSum.d.ts"
+      "require": "./dist/MathSum.cjs",
+      "types": "./dist/MathSum.d.ts",
+      "import": "./dist/MathSum.js"
     },
     "./Matrix": {
-      "types": "./dist/Matrix.d.ts"
+      "require": "./dist/Matrix.cjs",
+      "types": "./dist/Matrix.d.ts",
+      "import": "./dist/Matrix.js"
     },
     "./MaybeArray": {
-      "types": "./dist/MaybeArray.d.ts"
+      "require": "./dist/MaybeArray.cjs",
+      "types": "./dist/MaybeArray.d.ts",
+      "import": "./dist/MaybeArray.js"
     },
     "./MaybeFunction": {
-      "types": "./dist/MaybeFunction.d.ts"
+      "require": "./dist/MaybeFunction.cjs",
+      "types": "./dist/MaybeFunction.d.ts",
+      "import": "./dist/MaybeFunction.js"
     },
     "./MaybeLiteral": {
-      "types": "./dist/MaybeLiteral.d.ts"
+      "require": "./dist/MaybeLiteral.cjs",
+      "types": "./dist/MaybeLiteral.d.ts",
+      "import": "./dist/MaybeLiteral.js"
     },
     "./MaybePromise": {
-      "types": "./dist/MaybePromise.d.ts"
+      "require": "./dist/MaybePromise.cjs",
+      "types": "./dist/MaybePromise.d.ts",
+      "import": "./dist/MaybePromise.js"
     },
     "./MaybeReadonly": {
-      "types": "./dist/MaybeReadonly.d.ts"
+      "require": "./dist/MaybeReadonly.cjs",
+      "types": "./dist/MaybeReadonly.d.ts",
+      "import": "./dist/MaybeReadonly.js"
     },
     "./MethodDecorator": {
-      "types": "./dist/MethodDecorator.d.ts"
+      "require": "./dist/MethodDecorator.cjs",
+      "types": "./dist/MethodDecorator.d.ts",
+      "import": "./dist/MethodDecorator.js"
     },
     "./Mixins": {
-      "types": "./dist/Mixins.d.ts"
+      "require": "./dist/Mixins.cjs",
+      "types": "./dist/Mixins.d.ts",
+      "import": "./dist/Mixins.js"
     },
     "./Nil": {
-      "types": "./dist/Nil.d.ts"
+      "require": "./dist/Nil.cjs",
+      "types": "./dist/Nil.d.ts",
+      "import": "./dist/Nil.js"
     },
     "./NotAny": {
-      "types": "./dist/NotAny.d.ts"
+      "require": "./dist/NotAny.cjs",
+      "types": "./dist/NotAny.d.ts",
+      "import": "./dist/NotAny.js"
     },
     "./NotArray": {
-      "types": "./dist/NotArray.d.ts"
+      "require": "./dist/NotArray.cjs",
+      "types": "./dist/NotArray.d.ts",
+      "import": "./dist/NotArray.js"
     },
     "./NotFunction": {
-      "types": "./dist/NotFunction.d.ts"
+      "require": "./dist/NotFunction.cjs",
+      "types": "./dist/NotFunction.d.ts",
+      "import": "./dist/NotFunction.js"
     },
     "./NotNil": {
-      "types": "./dist/NotNil.d.ts"
+      "require": "./dist/NotNil.cjs",
+      "types": "./dist/NotNil.d.ts",
+      "import": "./dist/NotNil.js"
     },
     "./NotNull": {
-      "types": "./dist/NotNull.d.ts"
+      "require": "./dist/NotNull.cjs",
+      "types": "./dist/NotNull.d.ts",
+      "import": "./dist/NotNull.js"
     },
     "./NotPrimitive": {
-      "types": "./dist/NotPrimitive.d.ts"
+      "require": "./dist/NotPrimitive.cjs",
+      "types": "./dist/NotPrimitive.d.ts",
+      "import": "./dist/NotPrimitive.js"
     },
     "./NotPromise": {
-      "types": "./dist/NotPromise.d.ts"
+      "require": "./dist/NotPromise.cjs",
+      "types": "./dist/NotPromise.d.ts",
+      "import": "./dist/NotPromise.js"
     },
     "./NotStringEmpty": {
-      "types": "./dist/NotStringEmpty.d.ts"
+      "require": "./dist/NotStringEmpty.cjs",
+      "types": "./dist/NotStringEmpty.d.ts",
+      "import": "./dist/NotStringEmpty.js"
     },
     "./NotUndefined": {
-      "types": "./dist/NotUndefined.d.ts"
+      "require": "./dist/NotUndefined.cjs",
+      "types": "./dist/NotUndefined.d.ts",
+      "import": "./dist/NotUndefined.js"
     },
     "./NumberDecimal": {
-      "types": "./dist/NumberDecimal.d.ts"
+      "require": "./dist/NumberDecimal.cjs",
+      "types": "./dist/NumberDecimal.d.ts",
+      "import": "./dist/NumberDecimal.js"
     },
     "./NumberDecimalNegative": {
-      "types": "./dist/NumberDecimalNegative.d.ts"
+      "require": "./dist/NumberDecimalNegative.cjs",
+      "types": "./dist/NumberDecimalNegative.d.ts",
+      "import": "./dist/NumberDecimalNegative.js"
     },
     "./NumberDecimalPositive": {
-      "types": "./dist/NumberDecimalPositive.d.ts"
+      "require": "./dist/NumberDecimalPositive.cjs",
+      "types": "./dist/NumberDecimalPositive.d.ts",
+      "import": "./dist/NumberDecimalPositive.js"
     },
     "./NumberInteger": {
-      "types": "./dist/NumberInteger.d.ts"
+      "require": "./dist/NumberInteger.cjs",
+      "types": "./dist/NumberInteger.d.ts",
+      "import": "./dist/NumberInteger.js"
     },
     "./NumberIntegerNegative": {
-      "types": "./dist/NumberIntegerNegative.d.ts"
+      "require": "./dist/NumberIntegerNegative.cjs",
+      "types": "./dist/NumberIntegerNegative.d.ts",
+      "import": "./dist/NumberIntegerNegative.js"
     },
     "./NumberIntegerPositive": {
-      "types": "./dist/NumberIntegerPositive.d.ts"
+      "require": "./dist/NumberIntegerPositive.cjs",
+      "types": "./dist/NumberIntegerPositive.d.ts",
+      "import": "./dist/NumberIntegerPositive.js"
     },
     "./NumberNegative": {
-      "types": "./dist/NumberNegative.d.ts"
+      "require": "./dist/NumberNegative.cjs",
+      "types": "./dist/NumberNegative.d.ts",
+      "import": "./dist/NumberNegative.js"
     },
     "./NumberPositive": {
-      "types": "./dist/NumberPositive.d.ts"
+      "require": "./dist/NumberPositive.cjs",
+      "types": "./dist/NumberPositive.d.ts",
+      "import": "./dist/NumberPositive.js"
     },
     "./OmitNever": {
-      "types": "./dist/OmitNever.d.ts"
+      "require": "./dist/OmitNever.cjs",
+      "types": "./dist/OmitNever.d.ts",
+      "import": "./dist/OmitNever.js"
     },
     "./Optional": {
-      "types": "./dist/Optional.d.ts"
+      "require": "./dist/Optional.cjs",
+      "types": "./dist/Optional.d.ts",
+      "import": "./dist/Optional.js"
     },
     "./Overloads": {
-      "types": "./dist/Overloads.d.ts"
+      "require": "./dist/Overloads.cjs",
+      "types": "./dist/Overloads.d.ts",
+      "import": "./dist/Overloads.js"
     },
     "./OverloadsParameters": {
-      "types": "./dist/OverloadsParameters.d.ts"
+      "require": "./dist/OverloadsParameters.cjs",
+      "types": "./dist/OverloadsParameters.d.ts",
+      "import": "./dist/OverloadsParameters.js"
     },
     "./OverloadsReturnTypes": {
-      "types": "./dist/OverloadsReturnTypes.d.ts"
+      "require": "./dist/OverloadsReturnTypes.cjs",
+      "types": "./dist/OverloadsReturnTypes.d.ts",
+      "import": "./dist/OverloadsReturnTypes.js"
     },
     "./Path": {
-      "types": "./dist/Path.d.ts"
+      "require": "./dist/Path.cjs",
+      "types": "./dist/Path.d.ts",
+      "import": "./dist/Path.js"
     },
     "./Predicated": {
-      "types": "./dist/Predicated.d.ts"
+      "require": "./dist/Predicated.cjs",
+      "types": "./dist/Predicated.d.ts",
+      "import": "./dist/Predicated.js"
     },
     "./Predicator": {
-      "types": "./dist/Predicator.d.ts"
+      "require": "./dist/Predicator.cjs",
+      "types": "./dist/Predicator.d.ts",
+      "import": "./dist/Predicator.js"
     },
     "./Pretty": {
-      "types": "./dist/Pretty.d.ts"
+      "require": "./dist/Pretty.cjs",
+      "types": "./dist/Pretty.d.ts",
+      "import": "./dist/Pretty.js"
     },
     "./Primitive": {
-      "types": "./dist/Primitive.d.ts"
+      "require": "./dist/Primitive.cjs",
+      "types": "./dist/Primitive.d.ts",
+      "import": "./dist/Primitive.js"
     },
     "./PromiseFactory": {
-      "types": "./dist/PromiseFactory.d.ts"
+      "require": "./dist/PromiseFactory.cjs",
+      "types": "./dist/PromiseFactory.d.ts",
+      "import": "./dist/PromiseFactory.js"
     },
     "./PromiseUnwrap": {
-      "types": "./dist/PromiseUnwrap.d.ts"
+      "require": "./dist/PromiseUnwrap.cjs",
+      "types": "./dist/PromiseUnwrap.d.ts",
+      "import": "./dist/PromiseUnwrap.js"
     },
     "./PromiseWrap": {
-      "types": "./dist/PromiseWrap.d.ts"
+      "require": "./dist/PromiseWrap.cjs",
+      "types": "./dist/PromiseWrap.d.ts",
+      "import": "./dist/PromiseWrap.js"
     },
     "./Replace": {
-      "types": "./dist/Replace.d.ts"
+      "require": "./dist/Replace.cjs",
+      "types": "./dist/Replace.d.ts",
+      "import": "./dist/Replace.js"
     },
     "./StringCombinaison": {
-      "types": "./dist/StringCombinaison.d.ts"
+      "require": "./dist/StringCombinaison.cjs",
+      "types": "./dist/StringCombinaison.d.ts",
+      "import": "./dist/StringCombinaison.js"
     },
     "./StringConstraint": {
-      "types": "./dist/StringConstraint.d.ts"
+      "require": "./dist/StringConstraint.cjs",
+      "types": "./dist/StringConstraint.d.ts",
+      "import": "./dist/StringConstraint.js"
     },
     "./StringLiteral": {
-      "types": "./dist/StringLiteral.d.ts"
+      "require": "./dist/StringLiteral.cjs",
+      "types": "./dist/StringLiteral.d.ts",
+      "import": "./dist/StringLiteral.js"
     },
     "./StringNumber": {
-      "types": "./dist/StringNumber.d.ts"
+      "require": "./dist/StringNumber.cjs",
+      "types": "./dist/StringNumber.d.ts",
+      "import": "./dist/StringNumber.js"
     },
     "./StringSplit": {
-      "types": "./dist/StringSplit.d.ts"
+      "require": "./dist/StringSplit.cjs",
+      "types": "./dist/StringSplit.d.ts",
+      "import": "./dist/StringSplit.js"
     },
     "./Trim": {
-      "types": "./dist/Trim.d.ts"
+      "require": "./dist/Trim.cjs",
+      "types": "./dist/Trim.d.ts",
+      "import": "./dist/Trim.js"
     },
     "./Tuple": {
-      "types": "./dist/Tuple.d.ts"
+      "require": "./dist/Tuple.cjs",
+      "types": "./dist/Tuple.d.ts",
+      "import": "./dist/Tuple.js"
     },
     "./TupleConcat": {
-      "types": "./dist/TupleConcat.d.ts"
+      "require": "./dist/TupleConcat.cjs",
+      "types": "./dist/TupleConcat.d.ts",
+      "import": "./dist/TupleConcat.js"
     },
     "./TupleDiscard": {
-      "types": "./dist/TupleDiscard.d.ts"
+      "require": "./dist/TupleDiscard.cjs",
+      "types": "./dist/TupleDiscard.d.ts",
+      "import": "./dist/TupleDiscard.js"
     },
     "./TupleFilter": {
-      "types": "./dist/TupleFilter.d.ts"
+      "require": "./dist/TupleFilter.cjs",
+      "types": "./dist/TupleFilter.d.ts",
+      "import": "./dist/TupleFilter.js"
     },
     "./TupleJoin": {
-      "types": "./dist/TupleJoin.d.ts"
+      "require": "./dist/TupleJoin.cjs",
+      "types": "./dist/TupleJoin.d.ts",
+      "import": "./dist/TupleJoin.js"
     },
     "./TupleLength": {
-      "types": "./dist/TupleLength.d.ts"
+      "require": "./dist/TupleLength.cjs",
+      "types": "./dist/TupleLength.d.ts",
+      "import": "./dist/TupleLength.js"
     },
     "./TuplePop": {
-      "types": "./dist/TuplePop.d.ts"
+      "require": "./dist/TuplePop.cjs",
+      "types": "./dist/TuplePop.d.ts",
+      "import": "./dist/TuplePop.js"
     },
     "./TuplePush": {
-      "types": "./dist/TuplePush.d.ts"
+      "require": "./dist/TuplePush.cjs",
+      "types": "./dist/TuplePush.d.ts",
+      "import": "./dist/TuplePush.js"
     },
     "./TupleShift": {
-      "types": "./dist/TupleShift.d.ts"
+      "require": "./dist/TupleShift.cjs",
+      "types": "./dist/TupleShift.d.ts",
+      "import": "./dist/TupleShift.js"
     },
     "./TupleSlice": {
-      "types": "./dist/TupleSlice.d.ts"
+      "require": "./dist/TupleSlice.cjs",
+      "types": "./dist/TupleSlice.d.ts",
+      "import": "./dist/TupleSlice.js"
     },
     "./TupleUnshift": {
-      "types": "./dist/TupleUnshift.d.ts"
+      "require": "./dist/TupleUnshift.cjs",
+      "types": "./dist/TupleUnshift.d.ts",
+      "import": "./dist/TupleUnshift.js"
     },
     "./TypeOf": {
-      "types": "./dist/TypeOf.d.ts"
+      "require": "./dist/TypeOf.cjs",
+      "types": "./dist/TypeOf.d.ts",
+      "import": "./dist/TypeOf.js"
     },
     "./UnionMerge": {
-      "types": "./dist/UnionMerge.d.ts"
+      "require": "./dist/UnionMerge.cjs",
+      "types": "./dist/UnionMerge.d.ts",
+      "import": "./dist/UnionMerge.js"
     },
     "./UnionSplit": {
-      "types": "./dist/UnionSplit.d.ts"
+      "require": "./dist/UnionSplit.cjs",
+      "types": "./dist/UnionSplit.d.ts",
+      "import": "./dist/UnionSplit.js"
     },
     "./Unique": {
-      "types": "./dist/Unique.d.ts"
+      "require": "./dist/Unique.cjs",
+      "types": "./dist/Unique.d.ts",
+      "import": "./dist/Unique.js"
     },
     "./Values": {
-      "types": "./dist/Values.d.ts"
+      "require": "./dist/Values.cjs",
+      "types": "./dist/Values.d.ts",
+      "import": "./dist/Values.js"
     },
     ".": {
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     }
   },
   "files": [
