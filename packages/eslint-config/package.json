@@ -27,14 +27,6 @@
     "README.md",
     "LICENSE.md"
   ],
-  "pnpm": {
-    "peerDependencyRules": {
-      "allowAny": [
-        "eslint",
-        "typescript"
-      ]
-    }
-  },
   "peerDependencies": {
     "eslint": ">=9",
     "typescript": ">=5"
