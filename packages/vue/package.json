@@ -160,6 +160,7 @@
   "dependencies": {
     "@unshared/collection": "workspace:*",
     "@unshared/functions": "workspace:*",
+    "@unshared/types": "workspace:*",
     "@vueuse/core": "10.9.0"
   },
   "devDependencies": {
