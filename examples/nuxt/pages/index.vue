@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { BaseIcon, BaseInputText, BaseInputToggle } from '@unshared/vue/components'
 import { createParser, isStringEmail, isStringEmpty, isStringNumber } from '@unshared/validation'
 
 const values = [
@@ -17,7 +16,7 @@ const valueCheckbox = ref<Value[]>(['foo'])
 const valueText = ref('')
 const valueParser = createParser(
   [x => x.trim(), isStringEmpty],
-  [x => x.trim(), isStringEmail, x => x.toUpperCase()],
+  [x => x.trim(), isStringEmail, (x: string) => x.toUpperCase()],
   [x => x.trim(), isStringNumber],
 )
 </script>
@@ -77,12 +76,15 @@ const valueParser = createParser(
 
       <BaseInputText
         v-model="valueText"
-        class="bg-blue text-black p-4 placeholder-black"
-        class-disabled="bg-gray text-gray"
-        class-error="!bg-red text-white"
-        placeholder="Type here..."
+        v-bind:parse="(x: string) => valueParser(x)"
+        class="bg-blue/20 text-white p-4"
+        placeholder="Type something..."
+        type="text"
         :parse="valueParser"
       />
+
+      <!-- Value -->
+      <p>{{ valueText }}</p>
     </div>
 
     <!--

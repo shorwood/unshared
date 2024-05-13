@@ -7,6 +7,7 @@ export default defineNuxtConfig({
 
   modules: [
     '@unocss/nuxt',
+    '@unshared/vue',
   ],
 
   unocss: {

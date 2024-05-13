@@ -118,13 +118,13 @@ importers:
         specifier: 8.0.9
         version: 8.0.9(encoding@0.1.13)(typescript@5.4.5)(vite@5.2.11(@types/node@20.12.8)(terser@5.31.0))
       '@storybook/testing-library':
-        specifier: ^0.2.2
+        specifier: 0.2.2
         version: 0.2.2
       '@storybook/vue3':
         specifier: 8.0.9
         version: 8.0.9(encoding@0.1.13)(vue@3.4.26(typescript@5.4.5))
       '@types/node':
-        specifier: ^20.12.8
+        specifier: 20.12.8
         version: 20.12.8
       '@unocss/nuxt':
         specifier: 0.59.4
@@ -190,10 +190,10 @@ importers:
         specifier: 3.11.2
         version: 3.11.2(@opentelemetry/api@1.8.0)(@parcel/watcher@2.4.1)(@types/node@20.12.8)(@unocss/reset@0.59.4)(encoding@0.1.13)(eslint@9.2.0)(floating-vue@5.2.2(@nuxt/kit@3.11.2(rollup@4.17.2))(vue@3.4.26(typescript@5.4.5)))(ioredis@5.4.1)(meow@13.2.0)(optionator@0.9.4)(rollup@4.17.2)(terser@5.31.0)(typescript@5.4.5)(unocss@0.59.4(@unocss/webpack@0.59.4(rollup@4.17.2)(webpack@5.91.0(esbuild@0.20.2)))(postcss@8.4.38)(rollup@4.17.2)(vite@5.2.11(@types/node@20.12.8)(terser@5.31.0)))(vite@5.2.11(@types/node@20.12.8)(terser@5.31.0))
       react:
-        specifier: ^18.3.1
+        specifier: 18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18.3.1
+        specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       storybook:
         specifier: 8.0.9
@@ -436,6 +436,12 @@ importers:
       '@unshared/functions':
         specifier: workspace:*
         version: link:../functions
+      '@unshared/string':
+        specifier: 0.0.7
+        version: 0.0.7(@types/node@20.12.8)
+      '@unshared/types':
+        specifier: workspace:*
+        version: link:../types
       '@vueuse/core':
         specifier: 10.9.0
         version: 10.9.0(vue@3.4.26(typescript@5.4.5))
@@ -2862,6 +2868,17 @@ packages:
     resolution: {integrity: sha512-MjCs4D0FXgyEm2PUTyPyggL8J4GbFk0EKAFORWzzLdCm1XW52QCDHE681+T+iDSyLTcYKZXAJ+QOzJ6z/WKq+w==}
     peerDependencies:
       webpack: ^4 || ^5
+
+  '@unshared/collection@0.0.7':
+    resolution: {integrity: sha512-zuGknOj3Y3idgzuj9UeZlIUOi6I1LnNm/WiyK+lES4V+09ifvBRNbN1yVex/QmlwhRsAKigmapkCYCTBn55TbQ==}
+
+  '@unshared/string@0.0.7':
+    resolution: {integrity: sha512-XzwJl5LOXPFSZH8l/xW0z2W7McBzwawIikkr/DjMNqtTJFAyBqzl97dkWfV2sTfJAxq4TZW3shLEioRkmeOSew==}
+
+  '@unshared/types@0.0.7':
+    resolution: {integrity: sha512-JWlIpSruNMkSKAlK8B0gV055/FORcVeIEdvDoS8U4kSF/pFMcZgGV1mIMgomGx9cL5jqQlzq/pR1LXDiZqkQ9A==}
+    peerDependencies:
+      '@types/node': '>=14.0.0'
 
   '@vercel/nft@0.26.4':
     resolution: {integrity: sha512-j4jCOOXke2t8cHZCIxu1dzKLHLcFmYzC3yqAK6MfZznOL1QIJKd0xcFsXK3zcqzU7ScsE2zWkiMMNHGMHgp+FA==}
@@ -11344,6 +11361,23 @@ snapshots:
       webpack-sources: 3.2.3
     transitivePeerDependencies:
       - rollup
+
+  '@unshared/collection@0.0.7(@types/node@20.12.8)':
+    dependencies:
+      '@unshared/types': 0.0.7(@types/node@20.12.8)
+    transitivePeerDependencies:
+      - '@types/node'
+
+  '@unshared/string@0.0.7(@types/node@20.12.8)':
+    dependencies:
+      '@unshared/collection': 0.0.7(@types/node@20.12.8)
+      '@unshared/types': 0.0.7(@types/node@20.12.8)
+    transitivePeerDependencies:
+      - '@types/node'
+
+  '@unshared/types@0.0.7(@types/node@20.12.8)':
+    dependencies:
+      '@types/node': 20.12.8
 
   '@vercel/nft@0.26.4(encoding@0.1.13)':
     dependencies:
