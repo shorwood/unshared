@@ -1,8 +1,8 @@
-import { ExtractPropTypes, Prop, computed, getCurrentInstance } from 'vue'
+import { computed, getCurrentInstance } from 'vue'
 import { toReactive } from '@vueuse/core'
 import { throttle } from '@unshared/functions/throttle'
 import { debounce } from '@unshared/functions/debounce'
-import { BASE_STATE_OPTIONS, useBaseState } from './useBaseState'
+import { BASE_STATE_OPTIONS, BaseStateOptions, useBaseState } from './useBaseState'
 
 /** The symbol to inject the base clickable composable. */
 export const BASE_CLICKABLE_SYMBOL = Symbol('baseClickable')
@@ -10,6 +10,13 @@ export const BASE_CLICKABLE_SYMBOL = Symbol('baseClickable')
 /** The base clickable properties. */
 export const BASE_CLICKABLE_OPTIONS = {
   ...BASE_STATE_OPTIONS,
+  onClick: Function,
+  debounce: { type: Number, default: 0 },
+  throttle: { type: Number, default: 0 },
+}
+
+/** The properties of the base clickable component. */
+export interface BaseClickableOptions extends BaseStateOptions {
 
   /**
    * The callback to call when the component is clicked. This is used to
@@ -18,7 +25,7 @@ export const BASE_CLICKABLE_OPTIONS = {
    *
    * @default false
    */
-  onClick: Function as Prop<() => Promise<void> | void>,
+  onClick?: () => Promise<void> | void
 
   /**
    * The debounce time to wait before calling the `onClick` method. This is
@@ -27,7 +34,7 @@ export const BASE_CLICKABLE_OPTIONS = {
    *
    * @default 0
    */
-  debounce: { type: Number, default: 0 } as Prop<number>,
+  debounce?: number
 
   /**
    * The throttle time to wait before calling the `onClick` method. This is
@@ -36,16 +43,19 @@ export const BASE_CLICKABLE_OPTIONS = {
    *
    * @default 0
    */
-  throttle: { type: Number, default: 0 } as Prop<number>,
+  throttle?: number
 }
-
-/** The properties of the base clickable component. */
-export type BaseClickableOptions = ExtractPropTypes<typeof BASE_CLICKABLE_OPTIONS>
 
 /** The composable properties returned by the `useBaseClickable` composable. */
 export interface BaseClickableComposable {
+
+  /** The HTML attributes to apply to the component. */
   attributes: Record<string, unknown>
+
+  /** The method to call when the component is clicked. */
   onClick: () => Promise<void> | void
+
+  /** The method to call when the component is clicked without debouncing or throttling. */
   onClickRaw: () => Promise<void> | void
 }
 

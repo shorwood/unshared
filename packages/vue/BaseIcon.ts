@@ -1,9 +1,15 @@
-import { ExtractPropTypes, Prop, computed, defineComponent, h, mergeProps } from 'vue'
-import { BASE_RENDERABLE_OPTIONS, useBaseRenderable } from './useBaseRenderable'
+import { Prop, SetupContext, computed, defineComponent, h, mergeProps } from 'vue'
+import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions, useBaseRenderable } from './useBaseRenderable'
 
 /** The base props for the `Icon` component. */
 export const BASE_ICON_PROPS = {
   ...BASE_RENDERABLE_OPTIONS,
+  icon: String,
+  label: String,
+} satisfies Record<keyof Props, Prop<unknown>>
+
+/** The properties & context of the `BaseIcon` component. */
+interface Props extends BaseRenderableOptions {
 
   /**
    * The class name of the icon to display. This is expected to be a valid
@@ -13,21 +19,20 @@ export const BASE_ICON_PROPS = {
    *
    * @example 'i-mdi:home'
    */
-  icon: String as Prop<string>,
+  icon: string
 
   /**
    * The label of the icon. This is used to set the `aria-label` attribute of the
    * icon element for accessibility and SEO purposes. If no `label` is provided,
    * the `icon` prop is used as the label.
    */
-  label: String as Prop<string>,
+  label?: string
 }
 
-/** The properties of the `Icon` component. */
-export type BaseIconProps = ExtractPropTypes<typeof BASE_ICON_PROPS>
+type Context = SetupContext<[], Record<symbol, {}>>
 
 export const BaseIcon = /* #__PURE__ */ defineComponent(
-  (props: BaseIconProps, { attrs }) => {
+  (props: Props, { attrs }: Context) => {
     const renderable = useBaseRenderable(props)
 
     // --- Build the attributes.

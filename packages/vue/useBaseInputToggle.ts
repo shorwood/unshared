@@ -5,6 +5,21 @@ import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions, useBaseRenderable } fro
 import { cleanClasses } from './cleanClasses'
 import { cleanAttributes } from './cleanAttributes'
 
+/** The symbol to provide the base toggle composable. */
+export const BASE_INPUT_TOGGLE_SYMBOL = Symbol('baseToggle')
+
+/** The props when using the `useBaseInputToggle` composable. */
+export const BASE_INPUT_TOGGLE_OPTIONS = {
+  ...BASE_RENDERABLE_OPTIONS,
+  'type': { type: String, default: 'switch' },
+  'modelValue': [Boolean, Array, String, Number, Object],
+  'onUpdate:modelValue': [Function, Array],
+  'value': [Boolean, Array, String, Number],
+  'classActive': { type: String, default: '' },
+  'classInactive': { type: String, default: '' },
+  'classMixed': { type: String, default: '' },
+}
+
 /** The type of the toggle. */
 export type ToggleType = 'checkbox' | 'radio' | 'switch'
 
@@ -15,10 +30,7 @@ export type ToggleValue<T, U extends ToggleType> =
       U extends 'radio' ? T :
         never
 
-export interface BaseInputToggleOptions<
-  T = unknown,
-  U extends ToggleType = ToggleType,
-> extends BaseRenderableOptions {
+export interface BaseInputToggleOptions<T = unknown, U extends ToggleType = ToggleType> extends BaseRenderableOptions {
 
   /**
    * The type of the toggle. This can be either `checkbox`, `radio`, or `switch`.
@@ -99,20 +111,6 @@ export interface BaseInputToggleOptions<
   classMixed?: string
 }
 
-export const BASE_INPUT_TOGGLE_OPTIONS = {
-  ...BASE_RENDERABLE_OPTIONS,
-  type: { type: String, default: 'switch' },
-  modelValue: [Boolean, Array, String, Number, Object],
-  value: [Boolean, Array, String, Number],
-  // isMixed: Function,
-  // isActive: Function,
-  classActive: { type: String, default: '' },
-  classInactive: { type: String, default: '' },
-}
-
-/** The symbol to provide the base toggle composable. */
-export const BASE_INPUT_TOGGLE_SYMBOL = Symbol('baseToggle')
-
 /** The composable properties returned by the `useBaseInputToggle` composable. */
 export interface BaseInputToggleComposable<T = unknown, U extends ToggleType = ToggleType> {
   attributes: Record<string, unknown>
@@ -134,7 +132,7 @@ declare module '@vue/runtime-core' {
  * return a corresponding `isActive` computed property and a `toggle` method
  * to handle the click event based on the provided type of toggle.
  *
- * @param props The properties of the component passed by the `setup` function.
+ * @param options The properties of the component passed by the `setup` function.
  * @param instance The instance of the component to provide the composable.
  * @returns The computed properties and methods to use in the toggle component.
  * @example
@@ -145,26 +143,24 @@ declare module '@vue/runtime-core' {
  *   }
  * })
  */
-export function useBaseInputToggle<T, U extends ToggleType>(
-  props: BaseInputToggleOptions<T, U> = {} as BaseInputToggleOptions<T, U>,
-  instance = getCurrentInstance(),
-): BaseInputToggleComposable<T, U> {
+export function useBaseInputToggle<T, U extends ToggleType>(options: BaseInputToggleOptions<T, U> = {}, instance = getCurrentInstance()): BaseInputToggleComposable<T, U> {
   if (instance?.[BASE_INPUT_TOGGLE_SYMBOL])
     return instance[BASE_INPUT_TOGGLE_SYMBOL] as BaseInputToggleComposable<T, U>
 
   // --- Create a v-model for the provided options.
   // --- Default the `value` property to undefined if it is not provided.
   const emit = instance?.emit
-  const value = computed(() => props.value ?? instance?.props.key)
-  const model = useVModel(props, 'modelValue', emit, { passive: true }) as Ref<unknown>
-  const renderable = useBaseRenderable(props, instance)
+  const value = computed(() => options.value ?? instance?.props.key)
+  const model = useVModel(options, 'modelValue', emit, { passive: true }) as Ref<unknown>
+  const renderable = useBaseRenderable(options, instance)
 
-  // --- Check if, based on the type, the model is active.
+  // --- Check if, based on the type, the model is active. When the type is
+  // --- `checkbox` and the value is an array, it will check if the model
+  // --- intersects with the value. If so, `isActive` will be `mixed` instead.
   const isActive = computed(() => {
-    if (props.type === 'radio') return model.value === value.value
-    if (props.type === 'switch') return model.value === true
-    if (props.type !== 'checkbox') return false
-
+    if (options.type === 'radio') return model.value === value.value
+    if (options.type === 'switch') return model.value === true
+    if (options.type !== 'checkbox') return false
     const modelValue = Array.isArray(model.value) ? model.value : []
     const valueValue = Array.isArray(value.value) ? value.value : [value.value]
     const isMixed = valueValue.some(x => modelValue.includes(x))
@@ -204,16 +200,16 @@ export function useBaseInputToggle<T, U extends ToggleType>(
   }
 
   function toggle() {
-    if (props.type === 'radio') toggleRadio()
-    if (props.type === 'switch') toggleSwitch()
-    if (props.type === 'checkbox') toggleCheckbox()
+    if (options.type === 'radio') toggleRadio()
+    if (options.type === 'switch') toggleSwitch()
+    if (options.type === 'checkbox') toggleCheckbox()
   }
 
   // --- Compute the classes based on the active state.
   const classes = computed(() => cleanClasses({
-    [props.classActive!]: props.classActive && isActive.value === true,
-    [props.classInactive!]: props.classInactive && isActive.value === false,
-    [props.classMixed!]: props.classMixed && isActive.value === 'mixed',
+    [options.classActive!]: options.classActive && isActive.value === true,
+    [options.classInactive!]: options.classInactive && isActive.value === false,
+    [options.classMixed!]: options.classMixed && isActive.value === 'mixed',
   }))
 
   // --- Default the component to `input` if no component is provided.
@@ -222,10 +218,10 @@ export function useBaseInputToggle<T, U extends ToggleType>(
   // --- Properties to assign to the element.
   const attributes = computed(() => cleanAttributes({
     'onClick': toggle,
-    'aria-pressed': (is.value !== 'input' && props.type !== 'checkbox') ? isActive.value : undefined,
-    'aria-checked': (is.value !== 'input' && props.type === 'checkbox') ? isActive.value : undefined,
-    'role': is.value !== 'input' && (props.type === 'radio' ? 'radio' : 'checkbox') || undefined,
-    'type': is.value === 'input' && (props.type === 'radio' ? 'radio' : 'checkbox') || undefined,
+    'aria-pressed': (is.value !== 'input' && options.type !== 'checkbox') ? isActive.value : undefined,
+    'aria-checked': (is.value !== 'input' && options.type === 'checkbox') ? isActive.value : undefined,
+    'role': is.value !== 'input' && (options.type === 'radio' ? 'radio' : 'checkbox') || undefined,
+    'type': is.value === 'input' && (options.type === 'radio' ? 'radio' : 'checkbox') || undefined,
     'class': classes.value,
     'tabindex': is.value === 'input' ? undefined : 0,
     'checked': (is.value === 'input' && isActive.value) ? true : undefined,

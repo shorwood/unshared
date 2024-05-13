@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable sonarjs/no-duplicate-string */
-import { ComponentObjectPropsOptions, ExtractPropTypes, Prop, Ref, computed, getCurrentInstance } from 'vue'
+import { Prop, Ref, computed, getCurrentInstance } from 'vue'
 import { toReactive, useVModel } from '@vueuse/core'
 import { cleanClasses } from './cleanClasses'
 import { cleanAttributes } from './cleanAttributes'
 
-/** The symbol to provide the composable into the component. */
-const BASE_STATE_SYMBOL = Symbol('baseState')
-
-export const BASE_STATE_OPTIONS = {
+/** The properties of the base state component. */
+export interface BaseStateOptions {
 
   /**
    * If `true`, all interactions with the component should be disabled.
@@ -17,8 +15,8 @@ export const BASE_STATE_OPTIONS = {
    *
    * @default false
    */
-  'disabled': Boolean as Prop<boolean | undefined>,
-  'onUpdate:disabled': Function as Prop<(disabled: boolean) => void | undefined>,
+  'disabled'?: boolean
+  'onUpdate:disabled'?: (disabled: boolean) => void
 
   /**
    * If `true`, the component should be in an error state. Meaning that
@@ -27,8 +25,8 @@ export const BASE_STATE_OPTIONS = {
    *
    * @default undefined
    */
-  'error': [Error, String] as Prop<Error | string | undefined>,
-  'onUpdate:error': Function as Prop<(error?: Error | string) => void | undefined>,
+  'error'?: Error | string
+  'onUpdate:error'?: (error?: Error | string) => void
 
   /**
    * If `true`, the component should be in a loading state. Meaning that
@@ -38,8 +36,8 @@ export const BASE_STATE_OPTIONS = {
    *
    * @default false
    */
-  'loading': [Boolean],
-  'onUpdate:loading': Function as Prop<(loading: boolean) => void | undefined>,
+  'loading'?: boolean
+  'onUpdate:loading'?: (loading: boolean) => void
 
   /**
    * If `true`, the component should be in a read-only state. Meaning that
@@ -49,8 +47,8 @@ export const BASE_STATE_OPTIONS = {
    *
    * @default false
    */
-  'readonly': [Boolean],
-  'onUpdate:readonly': Function as Prop<(readonly: boolean) => void | undefined>,
+  'readonly'?: boolean
+  'onUpdate:readonly'?: (readonly: boolean) => void
 
   /**
    * The CSS class to apply when the component is disabled. This allows you
@@ -59,7 +57,7 @@ export const BASE_STATE_OPTIONS = {
    *
    * @default ''
    */
-  'classDisabled': { type: [String], default: '' } as Prop<string | undefined>,
+  'classDisabled'?: string
 
   /**
    * The CSS class to apply when the component is in an error state. This
@@ -68,7 +66,7 @@ export const BASE_STATE_OPTIONS = {
    *
    * @default ''
    */
-  'classError': { type: [String], default: '' } as Prop<string | undefined>,
+  'classError'?: string
 
   /**
    * The CSS class to apply when the component is loading. This allows you
@@ -77,7 +75,7 @@ export const BASE_STATE_OPTIONS = {
    *
    * @default ''
    */
-  'classLoading': { type: [String], default: '' } as Prop<string | undefined>,
+  'classLoading'?: string
 
   /**
    * The CSS class to apply when the component is read-only. This allows you
@@ -86,22 +84,52 @@ export const BASE_STATE_OPTIONS = {
    *
    * @default ''
    */
-  'classReadonly': { type: [String], default: '' } as Prop<string | undefined>,
-} satisfies ComponentObjectPropsOptions
-
-/** The properties of the base state component. */
-export type BaseStateOptions = ExtractPropTypes<typeof BASE_STATE_OPTIONS>
+  'classReadonly'?: string
+}
 
 /** The properties of the composable returned by `useBaseState`. */
 export interface BaseStateComposable {
+
+  /** The HTML attributes to apply to the HTML element. */
   attributes: Record<string, unknown>
+
+  /** The computed classes to apply to the HTML element. */
   classes: Record<string, boolean>
+
+  /** The current value of the disabled state. */
   disabled: boolean
+
+  /** The current value of the error state. */
   error: Error | string | undefined
+
+  /** The current value of the error message. */
   errorMessage: string | undefined
+
+  /** The current value of the loading state. */
   loading: boolean
+
+  /** The current value of the read-only state. */
   readonly: boolean
 }
+
+/** The symbol to provide the composable into the component. */
+const BASE_STATE_SYMBOL = Symbol('baseState')
+
+/** The properties of the base state component. */
+export const BASE_STATE_OPTIONS = {
+  'disabled': Boolean,
+  'error': [Error, String],
+  'loading': [Boolean],
+  'readonly': [Boolean],
+  'onUpdate:disabled': [Function, Array],
+  'onUpdate:error': [Function, Array],
+  'onUpdate:loading': [Function, Array],
+  'onUpdate:readonly': [Function, Array],
+  'classDisabled': String,
+  'classError': String,
+  'classLoading': String,
+  'classReadonly': String,
+} satisfies Record<keyof BaseStateOptions, Prop<unknown>>
 
 declare module '@vue/runtime-core' {
   interface ComponentInternalInstance {

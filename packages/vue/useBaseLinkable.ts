@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable sonarjs/no-duplicate-string */
-import type { LocationQuery, RouterLink } from 'vue-router'
-import { ComponentObjectPropsOptions, ExtractPropTypes, Prop, computed, getCurrentInstance } from 'vue'
+import { LocationQuery, RouterLink } from 'vue-router'
+import { computed, getCurrentInstance } from 'vue'
 import { toReactive } from '@vueuse/core'
 import { cleanAttributes } from './cleanAttributes'
 
@@ -11,6 +10,15 @@ export const BASE_LINKABLE_SYMBOL = Symbol('baseLinkable')
 
 /** The properties of the base linkable component. */
 export const BASE_LINKABLE_OPTIONS = {
+  classActive: { type: String, default: '' },
+  classActiveExact: { type: String, default: '' },
+  newtab: Boolean,
+  replace: Boolean,
+  to: [Object, String],
+}
+
+/** The properties of the base linkable component. */
+export interface BaseLinkableOptions {
 
   /**
    * The class to apply when the link is active. This allows you to customize
@@ -19,7 +27,7 @@ export const BASE_LINKABLE_OPTIONS = {
    *
    * @default undefined
    */
-  classActive: { type: String, default: '' } as Prop<string>,
+  classActive?: string
 
   /**
    * The class to apply when the link is active and the URL matches exactly.
@@ -29,7 +37,7 @@ export const BASE_LINKABLE_OPTIONS = {
    *
    * @default undefined
    */
-  classActiveExact: { type: String, default: '' } as Prop<string>,
+  classActiveExact?: string
 
   /**
    * If `true`, the link should open in a new tab. By default, the link will
@@ -37,7 +45,7 @@ export const BASE_LINKABLE_OPTIONS = {
    *
    * @default false
    */
-  newtab: Boolean as Prop<boolean>,
+  newtab?: boolean
 
   /**
    * If `true`, the link should replace the current URL in the history stack.
@@ -46,7 +54,7 @@ export const BASE_LINKABLE_OPTIONS = {
    *
    * @default false
    */
-  replace: Boolean as Prop<boolean>,
+  replace?: boolean
 
   /**
    * The URL to link to when the component is clicked. This is used to create a
@@ -54,11 +62,8 @@ export const BASE_LINKABLE_OPTIONS = {
    *
    * @default undefined
    */
-  to: [Object, String] as Prop<LocationQuery | string>,
-} satisfies ComponentObjectPropsOptions
-
-/** The properties of the base linkable component. */
-export type BaseLinkableOptions = ExtractPropTypes<typeof BASE_LINKABLE_OPTIONS>
+  to?: LocationQuery | string
+}
 
 /** The properties of the base linkable composable. */
 export interface BaseLinkableComposable {
@@ -90,7 +95,7 @@ declare module '@vue/runtime-core' {
  * external hyperlink. This composable will dynamically determine the type of
  * link to use based on the provided properties.
  *
- * @param props The properties of the component passed by the `setup` function.
+ * @param options The properties of the component passed by the `setup` function.
  * @param instance The instance of the component to provide the composable.
  * @returns An object with the computed classes and attributes.
  * @example
@@ -102,17 +107,17 @@ declare module '@vue/runtime-core' {
  *   }
  * })
  */
-export function useBaseLinkable(props: BaseLinkableOptions = {}, instance = getCurrentInstance()): BaseLinkableComposable {
+export function useBaseLinkable(options: BaseLinkableOptions = {}, instance = getCurrentInstance()): BaseLinkableComposable {
   if (instance?.[BASE_LINKABLE_SYMBOL]) return instance[BASE_LINKABLE_SYMBOL]
 
   // --- Determine the type of link based on the provided properties.
-  const isLink = computed(() => props.to !== undefined)
-  const isExternalLink = computed(() => isLink.value && typeof props.to === 'string' && !props.to?.startsWith('/'))
+  const isLink = computed(() => options.to !== undefined)
+  const isExternalLink = computed(() => isLink.value && typeof options.to === 'string' && !options.to?.startsWith('/'))
   const isInternalLink = computed(() => isLink.value && !isExternalLink.value)
 
   // --- Compute component type.
   const is = computed(() => {
-    if (isInternalLink.value) return 'RouterLink'
+    if (isInternalLink.value) return RouterLink
     if (isExternalLink.value) return 'a'
   })
 
@@ -120,15 +125,15 @@ export function useBaseLinkable(props: BaseLinkableOptions = {}, instance = getC
   const attributes = computed(() => cleanAttributes({
 
     // --- Internal link properties.
-    activeClass: isInternalLink.value && props.classActive || undefined,
-    exactActiveClass: isInternalLink.value && props.classActiveExact || undefined,
-    replace: isInternalLink.value && props.replace || undefined,
-    to: isInternalLink.value && props.to || undefined,
+    activeClass: isInternalLink.value && options.classActive || undefined,
+    exactActiveClass: isInternalLink.value && options.classActiveExact || undefined,
+    replace: isInternalLink.value && options.replace || undefined,
+    to: isInternalLink.value && options.to || undefined,
 
     // --- External link properties.
-    href: isExternalLink.value && props.to || undefined,
-    rel: isExternalLink.value && props.newtab && 'noreferrer' || undefined,
-    target: isExternalLink.value && props.newtab && '_blank' || undefined,
+    href: isExternalLink.value && options.to || undefined,
+    rel: isExternalLink.value && options.newtab && 'noreferrer' || undefined,
+    target: isExternalLink.value && options.newtab && '_blank' || undefined,
   }))
 
   // --- Provide the composable into the component and return it.

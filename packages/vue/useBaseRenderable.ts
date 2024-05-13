@@ -1,4 +1,4 @@
-import { Component, ExtractPropTypes, Prop, computed, getCurrentInstance, resolveComponent } from 'vue'
+import { Component, computed, getCurrentInstance, resolveComponent } from 'vue'
 import { toReactive } from '@vueuse/core'
 
 /** The symbol to provide the composable into the component. */
@@ -6,6 +6,11 @@ export const BASE_RENDERABLE_SYMBOL = Symbol('baseRenderable')
 
 /** The properties of the base renderable component. */
 export const BASE_RENDERABLE_OPTIONS = {
+  as: [String, Object],
+}
+
+/** The properties of the base renderable component. */
+export interface BaseRenderableOptions {
 
   /**
    * The HTML tag or component (constructor or name) to render. This represents what will
@@ -13,14 +18,18 @@ export const BASE_RENDERABLE_OPTIONS = {
    *
    * @example 'div'
    */
-  as: [String, Object] as Prop<{} & string | Component | keyof HTMLElementTagNameMap | undefined>,
+  as?: {} & string | Component | keyof HTMLElementTagNameMap
 }
-
-/** The properties of the base renderable component. */
-export type BaseRenderableOptions = ExtractPropTypes<typeof BASE_RENDERABLE_OPTIONS>
 
 /** The base properties of the renderable composable. */
 export interface BaseRenderableComposable {
+
+  /**
+   * The HTML tag or component (constructor or name) to render. This represents what will
+   * encapsulate the content of the component and how it will be rendered.
+   *
+   * @example 'div'
+   */
   is: Component | string | undefined
 }
 

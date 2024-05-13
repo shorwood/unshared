@@ -12,7 +12,7 @@ export const BASE_INPUT_TOGGLE_PROPS = {
 }
 
 /** The properties of the `BaseInputToggle` component. */
-export interface BaseInputToggleProps<T, U extends ToggleType> extends
+interface Props<T, U extends ToggleType> extends
   BaseStateOptions,
   BaseInputToggleOptions<T, U>,
   BaseRenderableOptions {}
@@ -21,21 +21,18 @@ export interface BaseInputToggleProps<T, U extends ToggleType> extends
 interface SlotProps {
   error?: Error | string
   errorMessage?: string | undefined
-  isActive: 'mixed' |boolean
+  isActive: 'mixed' | boolean
   isDisabled: boolean
   isLoading: boolean
   isReadonly: boolean
 }
 
-const SLOTS = {
-  default: {} as (props: SlotProps) => VNode,
-}
-
-type Context = SetupContext<[], Record<symbol, Partial<typeof SLOTS>>>
+type Context = SetupContext<[], Record<symbol, {
+  default?: (props: SlotProps) => VNode
+}>>
 
 export const BaseInputToggle = /* #__PURE__ */ defineComponent(
-  <T, U extends ToggleType>(props: BaseInputToggleProps<T, U>, context: Context) => {
-    const { attrs, slots } = context
+  <T, U extends ToggleType>(props: Props<T, U>, { attrs, slots }: Context) => {
     const state = useBaseState(props)
     const toggle = useBaseInputToggle<T, U>(props)
 
@@ -73,7 +70,6 @@ export const BaseInputToggle = /* #__PURE__ */ defineComponent(
   {
     name: 'BaseInputToggle',
     props: BASE_INPUT_TOGGLE_PROPS as unknown as undefined,
-    slots: { [Symbol()]: SLOTS },
   },
 )
 
