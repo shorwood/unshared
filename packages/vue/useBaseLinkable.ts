@@ -197,7 +197,7 @@ if (import.meta.vitest) {
 
     it('should set the `is` property to `RouterLink`', () => {
       const result = useBaseLinkable({ to: '/path' })
-      expect(result.is).toBe('RouterLink')
+      expect(result.is).toBe(RouterLink)
     })
 
     it('should set the `attributes` property with the internal link properties', () => {
