@@ -121,6 +121,11 @@
       "types": "./dist/useEventBus.d.ts",
       "import": "./dist/useEventBus.js"
     },
+    "./useOutsideEvent": {
+      "require": "./dist/useOutsideEvent.cjs",
+      "types": "./dist/useOutsideEvent.d.ts",
+      "import": "./dist/useOutsideEvent.js"
+    },
     "./wrapTransition": {
       "require": "./dist/wrapTransition.cjs",
       "types": "./dist/wrapTransition.d.ts",
