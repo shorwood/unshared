@@ -84,7 +84,7 @@ export function createSchema<T extends SchemaLike>(schema: Immutable<T>): Schema
       }
       catch (error) {
         if (error instanceof ValidationError)
-          error.message = error.message.replace('Expected value', `Expected the value of the property "${key}"`)
+          error.message = error.message.replace('Expected value', `Expected property "${key}"`)
         throw error
       }
     }
@@ -95,7 +95,7 @@ export function createSchema<T extends SchemaLike>(schema: Immutable<T>): Schema
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  const { isString, isUndefined } = await import('./assert')
+  const { isString, isUndefined, isStringNumber } = await import('./assert')
 
   test('should create a schema from an object of rules', () => {
     const parse = createSchema({
@@ -130,12 +130,11 @@ if (import.meta.vitest) {
   test('should throw a validation error if a rule fails', () => {
     const parse = createSchema({
       name: isString,
-      email: [isString, /\w+@example\.com/],
-      age: [[Number], [isUndefined]],
+      age: [[isStringNumber], [isUndefined]],
     })
 
-    const shouldThrow = () => parse({ name: 'John', age: '25', email: false })
+    const shouldThrow = () => parse({ name: 'John', age: 'not-a-number' })
     expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected the value of the property "email" to be a string but received: boolean')
+    expect(shouldThrow).toThrow('Expected property "age" to match at least one rule chain in the set.')
   })
 }

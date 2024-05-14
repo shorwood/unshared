@@ -47,7 +47,7 @@ export function createRuleSet<T extends RuleSetLike>(...chains: Immutable<T>): R
     // --- If we reach this point, no rule chain passed.
     throw new ValidationError({
       name: 'E_NO_MATCHING_RULE_CHAIN',
-      message: 'The value did not match any rule chain in the set.',
+      message: 'Expected value to match at least one rule chain in the set.',
       causes,
     })
   } as RuleSet<T>
@@ -103,7 +103,7 @@ if (import.meta.vitest) {
       const rule = createRuleSet([throws], [throws])
       const shouldThrow = () => rule(5)
       expect(shouldThrow).toThrow(ValidationError)
-      expect(shouldThrow).toThrow('The value did not match any rule chain in the set.')
+      expect(shouldThrow).toThrow('Expected value to match at least one rule chain in the set.')
     })
   })
 

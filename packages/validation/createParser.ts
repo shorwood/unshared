@@ -102,6 +102,6 @@ if (import.meta.vitest) {
     const rule = createParser([isStringNumber, Number], [isNumber])
     const shouldThrow = () => rule('a')
     expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('The value did not match any rule chain in the set.')
+    expect(shouldThrow).toThrow('Expected value to match at least one rule chain in the set.')
   })
 }
