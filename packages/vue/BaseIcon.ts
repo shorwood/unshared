@@ -1,14 +1,15 @@
-import { Prop, SetupContext, computed, defineComponent, h, mergeProps } from 'vue'
+import { Prop, computed, defineComponent, h, mergeProps } from 'vue'
 import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions, useBaseRenderable } from './useBaseRenderable'
+import { DefineComponentContext } from './defineSetupComponent'
 
-/** The base props for the `Icon` component. */
+/** The base props for the `BaseIcon` component. */
 export const BASE_ICON_PROPS = {
   ...BASE_RENDERABLE_OPTIONS,
   icon: String,
   label: String,
 } satisfies Record<keyof Props, Prop<unknown>>
 
-/** The properties & context of the `BaseIcon` component. */
+/** The properties of the `BaseIcon` component. */
 interface Props extends BaseRenderableOptions {
 
   /**
@@ -29,10 +30,8 @@ interface Props extends BaseRenderableOptions {
   label?: string
 }
 
-type Context = SetupContext<[], Record<symbol, {}>>
-
 export const BaseIcon = /* #__PURE__ */ defineComponent(
-  (props: Props, { attrs }: Context) => {
+  (props: Props, { attrs }: DefineComponentContext<{}>) => {
     const renderable = useBaseRenderable(props)
 
     // --- Build the attributes.
