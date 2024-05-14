@@ -43,6 +43,7 @@ export function sonarjs(options: ESLintConfigOptions): Array<Linter.FlatConfig<L
       'sonarjs/no-redundant-jump': 'off',
       'sonarjs/no-unused-collection': 'off',
       'sonarjs/no-use-of-empty-return-value': 'off',
+      'sonarjs/prefer-immediate-return': 'off',
 
       /** User-defined rules */
       ...options.rules,
