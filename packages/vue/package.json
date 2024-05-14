@@ -51,6 +51,11 @@
       "types": "./dist/cleanClasses.d.ts",
       "import": "./dist/cleanClasses.js"
     },
+    "./defineSetupComponent": {
+      "require": "./dist/defineSetupComponent.cjs",
+      "types": "./dist/defineSetupComponent.d.ts",
+      "import": "./dist/defineSetupComponent.js"
+    },
     "./exposeToDevtool": {
       "require": "./dist/exposeToDevtool.cjs",
       "types": "./dist/exposeToDevtool.d.ts",
