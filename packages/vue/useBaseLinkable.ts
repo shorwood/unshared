@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable sonarjs/no-duplicate-string */
-import { LocationQuery, RouterLink } from 'vue-router'
+import { LocationQuery, RouterLink, useRouter } from 'vue-router'
 import { computed, getCurrentInstance } from 'vue'
 import { toReactive } from '@vueuse/core'
 import { cleanAttributes } from './cleanAttributes'
@@ -82,6 +82,9 @@ export interface BaseLinkableComposable {
 
   /** Whether the link is an internal link. */
   isInternalLink: boolean
+
+  /** Whether the link is active. */
+  isActive: boolean
 }
 
 declare module '@vue/runtime-core' {
@@ -109,11 +112,20 @@ declare module '@vue/runtime-core' {
  */
 export function useBaseLinkable(options: BaseLinkableOptions = {}, instance = getCurrentInstance()): BaseLinkableComposable {
   if (instance?.[BASE_LINKABLE_SYMBOL]) return instance[BASE_LINKABLE_SYMBOL]
+  const router = useRouter()
 
   // --- Determine the type of link based on the provided properties.
   const isLink = computed(() => options.to !== undefined)
   const isExternalLink = computed(() => isLink.value && typeof options.to === 'string' && !options.to?.startsWith('/'))
   const isInternalLink = computed(() => isLink.value && !isExternalLink.value)
+
+  // --- Determine if the link is active.
+  const isActive = computed(() => {
+    if (!isInternalLink.value) return false
+    if (typeof options.to === 'string') return router.currentRoute.value.path === options.to
+    if (typeof options.to === 'object') return router.currentRoute.value.matched.some(route => route.name === (options.to as LocationQuery).name)
+    return false
+  })
 
   // --- Compute component type.
   const is = computed(() => {
@@ -137,7 +149,7 @@ export function useBaseLinkable(options: BaseLinkableOptions = {}, instance = ge
   }))
 
   // --- Provide the composable into the component and return it.
-  const composable = toReactive({ attributes, is, isExternalLink, isInternalLink, isLink })
+  const composable = toReactive({ attributes, is, isExternalLink, isInternalLink, isLink, isActive })
   if (instance) instance[BASE_LINKABLE_SYMBOL] = composable
   return composable
 }

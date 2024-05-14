@@ -1,9 +1,10 @@
 // eslint-disable vue/no-unused-emit-declarations
-import { Prop, SetupContext, VNode, computed, defineComponent, h, mergeProps } from 'vue'
+import { Prop, VNode, computed, h, mergeProps } from 'vue'
 import { BASE_STATE_OPTIONS, BaseStateOptions, useBaseState } from './useBaseState'
 import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions, useBaseRenderable } from './useBaseRenderable'
 import { BASE_LINKABLE_OPTIONS, BaseLinkableOptions, useBaseLinkable } from './useBaseLinkable'
 import { BASE_CLICKABLE_OPTIONS, BaseClickableOptions, useBaseClickable } from './useBaseClickable'
+import { DefineComponentContext, defineSetupComponent } from './defineSetupComponent'
 
 /** The props for the `BaseButton` component. */
 export const BASE_BUTTON_PROPS = {
@@ -11,8 +12,8 @@ export const BASE_BUTTON_PROPS = {
   ...BASE_LINKABLE_OPTIONS,
   ...BASE_CLICKABLE_OPTIONS,
   ...BASE_RENDERABLE_OPTIONS,
-  label: String as Prop<string>,
-}
+  label: [String, Number],
+} satisfies Record<keyof Props, Prop<unknown>>
 
 /** The props for the `BaseButton` component. */
 interface Props extends
@@ -28,7 +29,7 @@ interface Props extends
    *
    * @example 'Submit'
    */
-  label?: string
+  label?: number | string
 }
 
 interface SlotProps {
@@ -50,14 +51,18 @@ interface SlotProps {
 
   /** Whether the action triggered by the button is loading. */
   isLoading: boolean
+
+  /** Whether, if the button is a link, the link is active. */
+  isActive: boolean
 }
 
-export type Context = SetupContext<[], Record<symbol, {
-  default?: (props: SlotProps) => VNode
-}>>
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type Slots = {
+  default: (props: SlotProps) => VNode
+}
 
-export const BaseButton = /* #__PURE__ */ defineComponent(
-  (props: Props, { attrs, slots }: Context) => {
+export const BaseButton = /* #__PURE__ */ defineSetupComponent(
+  (props: Props, { attrs, slots }: DefineComponentContext<Slots>) => {
     const state = useBaseState(props)
     const linkable = useBaseLinkable(props)
     const clickable = useBaseClickable(props)
@@ -80,6 +85,7 @@ export const BaseButton = /* #__PURE__ */ defineComponent(
       isInternalLink: linkable.isInternalLink,
       isLink: linkable.isLink,
       isLoading: state.loading,
+      isActive: linkable.isActive,
     }))
 
     // --- The HTML tag to use for the button.
