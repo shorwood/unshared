@@ -1,8 +1,9 @@
-import { SetupContext, VNode, computed, defineComponent, h, mergeProps } from 'vue'
+import { VNode, computed, h, mergeProps } from 'vue'
 import { BASE_STATE_OPTIONS, BaseStateOptions, useBaseState } from './useBaseState'
 import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions } from './useBaseRenderable'
 import { BASE_INPUT_TOGGLE_OPTIONS, BaseInputToggleOptions, ToggleType, useBaseInputToggle } from './useBaseInputToggle'
 import { exposeToDevtool } from './exposeToDevtool'
+import { DefineComponentContext, defineSetupComponent } from './defineSetupComponent'
 
 /** The base props for the `BaseInputToggle` component. */
 export const BASE_INPUT_TOGGLE_PROPS = {
@@ -27,12 +28,13 @@ interface SlotProps {
   isReadonly: boolean
 }
 
-type Context = SetupContext<[], Record<symbol, {
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+type Slots = {
   default?: (props: SlotProps) => VNode
-}>>
+}
 
-export const BaseInputToggle = /* #__PURE__ */ defineComponent(
-  <T, U extends ToggleType>(props: Props<T, U>, { attrs, slots }: Context) => {
+export const BaseInputToggle = /* #__PURE__ */ defineSetupComponent(
+  <T, U extends ToggleType>(props: Props<T, U>, { attrs, slots }: DefineComponentContext<Slots>) => {
     const state = useBaseState(props)
     const toggle = useBaseInputToggle<T, U>(props)
 
@@ -74,8 +76,9 @@ export const BaseInputToggle = /* #__PURE__ */ defineComponent(
 )
 
 /* v8 ignore start */
-// @vitest-environment happy-dom
 if (import.meta.vitest) {
+
+  // @vitest-environment happy-dom
   const { mount } = await import('@vue/test-utils')
   const { nextTick } = await import('vue')
 

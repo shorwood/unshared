@@ -1,6 +1,6 @@
-import { Prop, computed, defineComponent, h, mergeProps } from 'vue'
+import { Prop, computed, h, mergeProps } from 'vue'
 import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions, useBaseRenderable } from './useBaseRenderable'
-import { DefineComponentContext } from './defineSetupComponent'
+import { defineSetupComponent } from './defineSetupComponent'
 
 /** The base props for the `BaseIcon` component. */
 export const BASE_ICON_PROPS = {
@@ -30,8 +30,8 @@ interface Props extends BaseRenderableOptions {
   label?: string
 }
 
-export const BaseIcon = /* #__PURE__ */ defineComponent(
-  (props: Props, { attrs }: DefineComponentContext<{}>) => {
+export const BaseIcon = /* #__PURE__ */ defineSetupComponent(
+  (props: Props, { attrs }) => {
     const renderable = useBaseRenderable(props)
 
     // --- Build the attributes.

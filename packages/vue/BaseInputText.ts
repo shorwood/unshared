@@ -1,14 +1,15 @@
-import { SetupContext, computed, defineComponent, getCurrentInstance, h, mergeProps } from 'vue'
+import { Prop, computed, getCurrentInstance, h, mergeProps } from 'vue'
 import { BASE_STATE_OPTIONS, BaseStateOptions, useBaseState } from './useBaseState'
 import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions } from './useBaseRenderable'
 import { BASE_INPUT_TEXT_OPTIONS, BaseInputTextOptions, useBaseInputText } from './useBaseInputText'
+import { DefineComponentContext, defineSetupComponent } from './defineSetupComponent'
 
 /** The base props for the `BaseInputText` component. */
 export const BASE_INPUT_TEXT_PROPS = {
   ...BASE_INPUT_TEXT_OPTIONS,
   ...BASE_RENDERABLE_OPTIONS,
   ...BASE_STATE_OPTIONS,
-}
+} satisfies Record<keyof Props, Prop<unknown>>
 
 /** The properties of the `BaseInputText` component. */
 interface Props<T = unknown> extends
@@ -16,12 +17,9 @@ interface Props<T = unknown> extends
   BaseRenderableOptions,
   BaseInputTextOptions<T> {}
 
-/** The context of the `BaseInputText` component. */
-type Context = SetupContext<[], Record<symbol, {}>>
-
 /** The properties of the `BaseInputText` component. */
-export const BaseInputText = /* #__PURE__ */ defineComponent(
-  <T>(props: Props<T>, { attrs }: Context) => {
+export const BaseInputText = /* #__PURE__ */ defineSetupComponent(
+  <T>(props: Props<T>, { attrs }: DefineComponentContext) => {
     const instance = getCurrentInstance()
     const inputText = useBaseInputText(props, instance)
     const state = useBaseState(props, instance)
