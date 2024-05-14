@@ -186,10 +186,10 @@
   "devDependencies": {
     "@nuxt/kit": "3.11.2",
     "@nuxt/schema": "3.11.2",
-    "@vue/test-utils": "2.4.5",
+    "@vue/test-utils": "2.4.6",
     "leaflet": "1.9.4",
     "markdown-it": "14.1.0",
-    "vue": "3.4.26",
+    "vue": "3.4.27",
     "vue-router": "4.3.2"
   }
 }
