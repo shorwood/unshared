@@ -21,6 +21,11 @@
       "types": "./dist/BaseAlerts.d.ts",
       "import": "./dist/BaseAlerts.js"
     },
+    "./BaseBadge": {
+      "require": "./dist/BaseBadge.cjs",
+      "types": "./dist/BaseBadge.d.ts",
+      "import": "./dist/BaseBadge.js"
+    },
     "./BaseButton": {
       "require": "./dist/BaseButton.cjs",
       "types": "./dist/BaseButton.d.ts",
@@ -40,6 +45,11 @@
       "require": "./dist/BaseInputToggle.cjs",
       "types": "./dist/BaseInputToggle.d.ts",
       "import": "./dist/BaseInputToggle.js"
+    },
+    "./BaseTable": {
+      "require": "./dist/BaseTable.cjs",
+      "types": "./dist/BaseTable.d.ts",
+      "import": "./dist/BaseTable.js"
     },
     "./cleanAttributes": {
       "require": "./dist/cleanAttributes.cjs",

@@ -1,4 +1,5 @@
 export * from './BaseAlerts'
+export * from './BaseBadge'
 export * from './BaseButton'
 export * from './BaseIcon'
 export * from './BaseInputText'
