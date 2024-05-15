@@ -23,7 +23,7 @@ export async function pnpmPublish(packageName: string, registry: string, tag: st
   const semver = createSemver(packageJson.version)
 
   // --- If the current hash has a tag, get the tag.
-  if (tag === 'public') {
+  if (tag === 'latest') {
     semver.build = undefined
     semver.prerelease = undefined
     packageJson.version = semver.toString()
