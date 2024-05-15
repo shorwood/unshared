@@ -139,7 +139,7 @@ export function jsonTsconfig(): Linter.FlatConfig[] {
           },
           {
             order: { type: 'asc' },
-            pathPattern: '^compilerOptions\\.paths$',
+            pathPattern: String.raw`^compilerOptions\.paths$`,
           },
         ],
       },

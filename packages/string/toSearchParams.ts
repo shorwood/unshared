@@ -43,11 +43,11 @@ export function toSearchParams(object: SearchParamsObject, options: SearchParams
 
     // --- Convert arrays based on the format.
     if (Array.isArray(value)) {
-      if (formatArray === 'brackets') value.map(v => search.append(`${key}[]`, v.toString()))
-      else if (formatArray === 'indices') value.map((v, i) => search.append(`${key}[${i}]`, v.toString()))
+      if (formatArray === 'brackets') value.forEach(v => search.append(`${key}[]`, v.toString()))
+      else if (formatArray === 'indices') value.forEach((v, i) => search.append(`${key}[${i}]`, v.toString()))
       else if (formatArray === 'comma') search.append(key, value.join(','))
-      else if (formatArray === 'path') value.map((v, i) => search.append(`${key}.${i}`, v.toString()))
-      else if (formatArray === 'flat') value.map(v => search.append(key, v.toString()))
+      else if (formatArray === 'path') value.forEach((v, i) => search.append(`${key}.${i}`, v.toString()))
+      else if (formatArray === 'flat') value.forEach(v => search.append(key, v.toString()))
     }
 
     // --- Convert all values to strings.

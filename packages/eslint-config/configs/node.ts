@@ -1,12 +1,12 @@
 import nodePlugin from 'eslint-plugin-n'
-import { Linter } from 'eslint'
+import { ESLint, Linter } from 'eslint'
 import { ESLintConfigOptions } from './all'
 
-export function node(options: ESLintConfigOptions): Linter.Config[] {
+export function node(options: ESLintConfigOptions): Linter.FlatConfig[] {
   return [
     {
       plugins: {
-        n: nodePlugin,
+        n: nodePlugin as ESLint.Plugin,
       },
       rules: {
         ...nodePlugin.configs.recommended.rules,
@@ -64,7 +64,7 @@ export function node(options: ESLintConfigOptions): Linter.Config[] {
       },
       settings: {
         node: {
-          version: '>=20.0.0',
+          version: '>=22.1.0',
         },
       },
     },

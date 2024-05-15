@@ -202,7 +202,7 @@ export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
         '@stylistic/lines-around-comment': ['error', {
           beforeBlockComment: true,
           beforeLineComment: true,
-          ignorePattern: '^(?! ?---|\\*)',
+          ignorePattern: String.raw`^(?! ?---|\*)`,
           applyDefaultIgnorePatterns: true,
           afterHashbangComment: true,
         }],

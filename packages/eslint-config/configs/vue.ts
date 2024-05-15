@@ -115,7 +115,7 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
          * @see https://eslint.vuejs.org/rules/component-name-in-template-casing.html
          */
         'vue/component-name-in-template-casing': ['error', 'PascalCase', {
-          ignores: ['/\\./'],
+          ignores: [String.raw`/\./`],
           registeredComponentsOnly: false,
         }],
 

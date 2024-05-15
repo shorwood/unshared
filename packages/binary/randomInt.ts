@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable n/no-unsupported-features/node-builtins */
 /* eslint-disable @typescript-eslint/no-var-requires */
 export interface RandomOptions {
 
@@ -50,6 +50,7 @@ export function randomInt(options: RandomOptions = {}): number {
 }
 
 /* v8 ignore start */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 if (import.meta.vitest) {
   afterEach(() => {
     vi.unstubAllGlobals()

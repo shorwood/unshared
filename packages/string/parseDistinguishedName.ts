@@ -62,7 +62,7 @@ if (import.meta.vitest) {
   })
 
   test('should parse a DN with escaped commas', () => {
-    const result = parseDistinguishedName('CN=example\\,com,O=Example')
+    const result = parseDistinguishedName(String.raw`CN=example\,com,O=Example`)
     expect(result).toStrictEqual({
       CN: 'example,com',
       O: 'Example',
@@ -70,7 +70,7 @@ if (import.meta.vitest) {
   })
 
   test('should parse a DN with escaped equal sign', () => {
-    const result = parseDistinguishedName('CN=example\\=com,O=Example')
+    const result = parseDistinguishedName(String.raw`CN=example\=com,O=Example`)
     expect(result).toStrictEqual({
       CN: 'example=com',
       O: 'Example',
