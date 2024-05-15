@@ -4,6 +4,7 @@ import { BASE_STATE_OPTIONS, BaseStateOptions, useBaseState } from './useBaseSta
 import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions, useBaseRenderable } from './useBaseRenderable'
 import { BASE_LINKABLE_OPTIONS, BaseLinkableOptions, useBaseLinkable } from './useBaseLinkable'
 import { BASE_CLICKABLE_OPTIONS, BaseClickableOptions, useBaseClickable } from './useBaseClickable'
+import { exposeToDevtool } from './exposeToDevtool'
 import { DefineComponentContext, defineSetupComponent } from './defineSetupComponent'
 
 /** The props for the `BaseButton` component. */
@@ -91,11 +92,23 @@ export const BaseButton = /* #__PURE__ */ defineSetupComponent(
     // --- The HTML tag to use for the button.
     const is = computed(() => linkable.is ?? renderable.is ?? 'button')
 
+    // --- Expose properties.
+    exposeToDevtool({
+      is: is.value,
+      isExternalLink: linkable.isExternalLink,
+      isInternalLink: linkable.isInternalLink,
+      isLink: linkable.isLink,
+      isActive: linkable.isActive,
+      isLoading: state.loading,
+      error: state.error,
+      errorMessage: state.errorMessage,
+    })
+
     // --- Return virtual DOM node.
     return () => h(
       is.value,
       attributes.value,
-      is.value === 'button'
+      typeof is.value === 'string'
         ? slots.default?.(slotProps.value) ?? props.label
         : () => slots.default?.(slotProps.value) ?? props.label,
     )
