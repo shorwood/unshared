@@ -7,6 +7,15 @@ import { cleanAttributes } from './cleanAttributes'
 export interface BaseInputTextOptions<T = unknown> extends BaseStateOptions {
 
   /**
+   * The unique identifier of the input. This is used to identify the input when
+   * submitting a form or when using the input in a list of inputs. By default,
+   * it is the `uid` property of the component instance.
+   *
+   * @default getCurrentInstance().uid
+   */
+  id?: string
+
+  /**
    * The type of the input. This is used to determine the type of input to render.
    *
    * @default 'text'
@@ -67,6 +76,9 @@ export interface BaseInputTextComposable {
   /** The type of the input. */
   is: Component | string
 
+  /** The unique identifier of the input. */
+  id: number | string | undefined
+
   /** The current value of the input. */
   modelValue: unknown
 
@@ -83,6 +95,7 @@ export const BASE_INPUT_TEXT_SYMBOL = Symbol()
 /** The options for the `useBaseInputText` composable. */
 export const BASE_INPUT_TEXT_OPTIONS = {
   ...BASE_STATE_OPTIONS,
+  'id': String,
   'modelValue': {},
   'onUpdate:modelValue': [Function, Array],
   'type': { type: String, default: 'text' },
@@ -105,6 +118,7 @@ export function useBaseInputText<T>(options: BaseInputTextOptions<T> = {}, insta
   const state = useBaseState(options)
   const modelValue = useVModel(options, 'modelValue', undefined, { passive: true })
   const is = computed(() => (options.type === 'textarea' ? 'textarea' : 'input'))
+  const id = computed(() => options.id ?? instance?.uid)
 
   // --- Handle native input event to update the model value. If a parser is
   // --- provided, it will parse the value and emit an error event if it fails.
@@ -129,7 +143,8 @@ export function useBaseInputText<T>(options: BaseInputTextOptions<T> = {}, insta
 
   // --- Define the HTML attributes.
   const attributes = computed(() => cleanAttributes({
-    'type': options.type !== 'textarea' && options.type,
+    'id': id.value,
+    'type': is.value === 'input' && options.type,
     'name': options.name,
     'value': modelValue.value ? String(modelValue.value) : '',
     'placeholder': isNative.value ? options.placeholder : undefined,
@@ -143,7 +158,7 @@ export function useBaseInputText<T>(options: BaseInputTextOptions<T> = {}, insta
   }))
 
   // --- Provide the composable into the component and return it.
-  const composable = toReactive({ modelValue, is, onInput, attributes })
+  const composable = toReactive({ modelValue, is, id, onInput, attributes })
   if (instance) instance[BASE_INPUT_TEXT_SYMBOL] = composable
   return composable
 }
