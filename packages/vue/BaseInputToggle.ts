@@ -71,7 +71,7 @@ export const BaseInputToggle = /* #__PURE__ */ defineSetupComponent(
   },
   {
     name: 'BaseInputToggle',
-    props: BASE_INPUT_TOGGLE_PROPS as unknown as undefined,
+    props: BASE_INPUT_TOGGLE_PROPS,
   },
 )
 

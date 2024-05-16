@@ -113,7 +113,7 @@ export interface BaseStateComposable {
 }
 
 /** The symbol to provide the composable into the component. */
-const BASE_STATE_SYMBOL = Symbol('baseState')
+const BASE_STATE_SYMBOL = Symbol()
 
 /** The properties of the base state component. */
 export const BASE_STATE_OPTIONS = {

@@ -1,21 +1,9 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable sonarjs/no-duplicate-string */
 import { LocationQuery, RouterLink, useRouter } from 'vue-router'
-import { computed, getCurrentInstance } from 'vue'
+import { Prop, computed, getCurrentInstance } from 'vue'
 import { toReactive } from '@vueuse/core'
 import { cleanAttributes } from './cleanAttributes'
-
-/** The symbol to provide the composable into the component. */
-export const BASE_LINKABLE_SYMBOL = Symbol('baseLinkable')
-
-/** The properties of the base linkable component. */
-export const BASE_LINKABLE_OPTIONS = {
-  classActive: { type: String, default: '' },
-  classActiveExact: { type: String, default: '' },
-  newtab: Boolean,
-  replace: Boolean,
-  to: [Object, String],
-}
 
 /** The properties of the base linkable component. */
 export interface BaseLinkableOptions {
@@ -86,6 +74,18 @@ export interface BaseLinkableComposable {
   /** Whether the link is active. */
   isActive: boolean
 }
+
+/** The symbol to provide the composable into the component. */
+export const BASE_LINKABLE_SYMBOL = Symbol()
+
+/** The properties of the base linkable component. */
+export const BASE_LINKABLE_OPTIONS = {
+  classActive: { type: String, default: '' },
+  classActiveExact: { type: String, default: '' },
+  newtab: Boolean,
+  replace: Boolean,
+  to: [Object, String],
+} satisfies Record<keyof BaseLinkableOptions, Prop<unknown>>
 
 declare module '@vue/runtime-core' {
   interface ComponentInternalInstance {

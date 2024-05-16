@@ -36,6 +36,6 @@ export const BaseInputText = /* #__PURE__ */ defineSetupComponent(
   },
   {
     name: 'BaseInputText',
-    props: BASE_INPUT_TEXT_PROPS as unknown as undefined,
+    props: BASE_INPUT_TEXT_PROPS,
   },
 )

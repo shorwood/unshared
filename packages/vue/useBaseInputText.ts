@@ -1,23 +1,7 @@
-import { Component, ComponentObjectPropsOptions, UnwrapRef, computed, getCurrentInstance, nextTick } from 'vue'
+import { Component, Prop, UnwrapRef, computed, getCurrentInstance, nextTick } from 'vue'
 import { toReactive, useVModel } from '@vueuse/core'
 import { BASE_STATE_OPTIONS, BaseStateOptions, useBaseState } from './useBaseState'
 import { cleanAttributes } from './cleanAttributes'
-
-/** The symbol to inject in components when using the `useBaseInputText` composable. */
-export const BASE_INPUT_TEXT_SYMBOL = Symbol()
-
-/** The options for the `useBaseInputText` composable. */
-export const BASE_INPUT_TEXT_OPTIONS = {
-  ...BASE_STATE_OPTIONS,
-  'modelValue': {},
-  'onUpdate:modelValue': [Function, Array],
-  'type': { type: String, default: 'text' },
-  'name': String,
-  'label': String,
-  'autocomplete': String,
-  'placeholder': String,
-  'parse': Function,
-} satisfies ComponentObjectPropsOptions
 
 /** The options for the `useBaseInputText` composable. */
 export interface BaseInputTextOptions<T = unknown> extends BaseStateOptions {
@@ -92,6 +76,22 @@ export interface BaseInputTextComposable {
   /** The handler for the input event. */
   onInput: (event: Event) => void
 }
+
+/** The symbol to inject in components when using the `useBaseInputText` composable. */
+export const BASE_INPUT_TEXT_SYMBOL = Symbol()
+
+/** The options for the `useBaseInputText` composable. */
+export const BASE_INPUT_TEXT_OPTIONS = {
+  ...BASE_STATE_OPTIONS,
+  'modelValue': {},
+  'onUpdate:modelValue': [Function, Array],
+  'type': { type: String, default: 'text' },
+  'name': String,
+  'label': String,
+  'autocomplete': String,
+  'placeholder': String,
+  'parse': Function,
+} satisfies Record<keyof BaseInputTextOptions, Prop<unknown>>
 
 declare module '@vue/runtime-core' {
   interface ComponentInternalInstance {

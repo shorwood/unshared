@@ -1,13 +1,5 @@
-import { Component, computed, getCurrentInstance, resolveComponent } from 'vue'
+import { Component, Prop, computed, getCurrentInstance, resolveComponent } from 'vue'
 import { toReactive } from '@vueuse/core'
-
-/** The symbol to provide the composable into the component. */
-export const BASE_RENDERABLE_SYMBOL = Symbol('baseRenderable')
-
-/** The properties of the base renderable component. */
-export const BASE_RENDERABLE_OPTIONS = {
-  as: [String, Object],
-}
 
 /** The properties of the base renderable component. */
 export interface BaseRenderableOptions {
@@ -32,6 +24,14 @@ export interface BaseRenderableComposable {
    */
   is: Component | string | undefined
 }
+
+/** The symbol to provide the composable into the component. */
+export const BASE_RENDERABLE_SYMBOL = Symbol()
+
+/** The properties of the base renderable component. */
+export const BASE_RENDERABLE_OPTIONS = {
+  as: [String, Object],
+} as Record<keyof BaseRenderableOptions, Prop<unknown>>
 
 declare module '@vue/runtime-core' {
   interface ComponentInternalInstance {

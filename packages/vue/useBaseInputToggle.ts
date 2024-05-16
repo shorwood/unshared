@@ -1,24 +1,9 @@
-import { Component, Ref, computed, getCurrentInstance } from 'vue'
+import { Component, Prop, Ref, computed, getCurrentInstance } from 'vue'
 import { toReactive, useVModel } from '@vueuse/core'
 import { MaybeArray } from '@unshared/types'
 import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions, useBaseRenderable } from './useBaseRenderable'
 import { cleanClasses } from './cleanClasses'
 import { cleanAttributes } from './cleanAttributes'
-
-/** The symbol to provide the base toggle composable. */
-export const BASE_INPUT_TOGGLE_SYMBOL = Symbol('baseToggle')
-
-/** The props when using the `useBaseInputToggle` composable. */
-export const BASE_INPUT_TOGGLE_OPTIONS = {
-  ...BASE_RENDERABLE_OPTIONS,
-  'type': { type: String, default: 'switch' },
-  'modelValue': [Boolean, Array, String, Number, Object],
-  'onUpdate:modelValue': [Function, Array],
-  'value': [Boolean, Array, String, Number],
-  'classActive': { type: String, default: '' },
-  'classInactive': { type: String, default: '' },
-  'classMixed': { type: String, default: '' },
-}
 
 /** The type of the toggle. */
 export type ToggleType = 'checkbox' | 'radio' | 'switch'
@@ -61,28 +46,6 @@ export interface BaseInputToggleOptions<T = unknown, U extends ToggleType = Togg
   onOff?: () => void
   onOn?: () => void
 
-  // /**
-  //  * Override the default function to check if the model is active. This allows
-  //  * you to customize the behavior of the toggle when it is active.
-  //  *
-  //  * For example, if the component is used in a tree view and is the parent of some
-  //  * children, it can check if all children are checked to set the parent as
-  //  * checked.
-  //  *
-  //  * @example (modelValue, value) => modelValue.includes(value)
-  //  */
-  // isActive?: (modelValue: ToggleValue<T, U>, value: V) => boolean
-
-  // /**
-  //  * A function to check if the model is mixed when the type is a checkbox or
-  //  * switch. For example, if the component is used in a tree view, it can check
-  //  * if this element is partially checked by checking if some children are
-  //  * checked and some are not.
-  //  *
-  //  * @example (model, value) => model.includes(value)
-  //  */
-  // isMixed?: (modelValue: ToggleValue<T, U>, value: V) => boolean
-
   /**
    * The class to apply when the toggle is active. This allows you to customize
    * the appearance of the toggle when it is active without handling the CSS in
@@ -120,6 +83,24 @@ export interface BaseInputToggleComposable<T = unknown, U extends ToggleType = T
   toggle: () => void
   is: Component | string
 }
+
+/** The symbol to provide the base toggle composable. */
+export const BASE_INPUT_TOGGLE_SYMBOL = Symbol()
+
+/** The props when using the `useBaseInputToggle` composable. */
+export const BASE_INPUT_TOGGLE_OPTIONS = {
+  ...BASE_RENDERABLE_OPTIONS,
+  'type': { type: String, default: 'switch' },
+  'modelValue': [Boolean, Array, String, Number, Object],
+  'onUpdate:modelValue': [Function, Array],
+  'onOff': [Function, Array],
+  'onOn': [Function, Array],
+  'onToggle': [Function, Array],
+  'value': [Boolean, Array, String, Number],
+  'classActive': { type: String, default: '' },
+  'classInactive': { type: String, default: '' },
+  'classMixed': { type: String, default: '' },
+} satisfies Record<keyof BaseInputToggleOptions, Prop<unknown>>
 
 declare module '@vue/runtime-core' {
   interface ComponentInternalInstance {
