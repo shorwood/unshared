@@ -36,6 +36,11 @@
       "types": "./dist/BaseIcon.d.ts",
       "import": "./dist/BaseIcon.js"
     },
+    "./BaseInputEditor": {
+      "require": "./dist/BaseInputEditor.cjs",
+      "types": "./dist/BaseInputEditor.d.ts",
+      "import": "./dist/BaseInputEditor.js"
+    },
     "./BaseInputFile": {
       "require": "./dist/BaseInputFile.cjs",
       "types": "./dist/BaseInputFile.d.ts",
