@@ -215,11 +215,12 @@ export function useBaseInputToggle<T, U extends ToggleType>(options: BaseInputTo
 }
 
 /* v8 ignore next */
-// @vitest-environment happy-dom
+/* eslint-disable @typescript-eslint/unbound-method */
 if (import.meta.vitest) {
+
+  // @vitest-environment happy-dom
   const { isReactive, reactive } = await import('vue')
   const { mount } = await import('@vue/test-utils')
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   const { nextTick } = await import('node:process')
 
   describe('composable', () => {

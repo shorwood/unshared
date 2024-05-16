@@ -1,6 +1,6 @@
 import { Prop, computed, h, mergeProps } from 'vue'
 import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions, useBaseRenderable } from './useBaseRenderable'
-import { defineSetupComponent } from './defineSetupComponent'
+import { DefineComponentContext, defineSetupComponent } from './defineSetupComponent'
 
 /** The base props for the `BaseIcon` component. */
 export const BASE_ICON_PROPS = {
@@ -14,9 +14,7 @@ interface Props extends BaseRenderableOptions {
 
   /**
    * The class name of the icon to display. This is expected to be a valid
-   * UnoCSS icon class name comming from the `@unocss/icons` package. The
-   * `icon` prop is also used to set the `aria-labelledby` attribute of the icon
-   * element.
+   * UnoCSS icon class name comming from the `@unocss/icons` package.
    *
    * @example 'i-mdi:home'
    */
@@ -31,7 +29,7 @@ interface Props extends BaseRenderableOptions {
 }
 
 export const BaseIcon = /* #__PURE__ */ defineSetupComponent(
-  (props: Props, { attrs }) => {
+  (props: Props, { attrs }: DefineComponentContext) => {
     const renderable = useBaseRenderable(props)
 
     // --- Build the attributes.

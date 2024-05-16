@@ -1,5 +1,6 @@
 import { Prop, Ref, computed, getCurrentInstance } from 'vue'
 import { toReactive, useVModel } from '@vueuse/core'
+import { cleanAttributes } from './cleanAttributes'
 
 /** The symbol to provide the base toggle composable. */
 export const BASE_INPUT_FILE_SYMBOL = Symbol()
@@ -159,7 +160,7 @@ export function useBaseInputFile(options: BaseInputFileOptions = {}, instance = 
   })
 
   // --- Compute the attributes for the HTML element containing the input.
-  const attributes = computed(() => ({
+  const attributes = computed(() => cleanAttributes({
     onDrop: handleDrop,
     onInput: handleDrop,
     onClick: openDialog,

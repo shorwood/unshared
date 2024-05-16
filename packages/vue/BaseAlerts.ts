@@ -1,29 +1,11 @@
 // eslint-disable vue/no-unused-emit-declarations
 import { Prop, VNode, computed, h, mergeProps } from 'vue'
-import { pick } from '@unshared/collection/pick'
 import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions, useBaseRenderable } from './useBaseRenderable'
 import { Alert, useAlerts } from './useAlerts'
 import { DefineComponentContext, defineSetupComponent } from './defineSetupComponent'
 
-interface SlotDefaultProps {
-  alerts: Alert[]
-  dismiss: (alert: Alert) => void
-}
-
-interface SlotAlertProps {
-  alert: Alert
-  dismiss: () => void
-}
-
-const BASE_ALERTS_PROPS = {
+export const BASE_ALERTS_PROPS = {
   ...BASE_RENDERABLE_OPTIONS,
-
-  /**
-   * The alert message to be displayed. It is an array of `Alert` objects
-   * or strings that represent the alert message. It can be two-way bound.
-   *
-   * @default []
-   */
   'alerts': Array,
   'onUpdate:alerts': [Function, Array],
   'onDismiss': [Function, Array],
@@ -50,6 +32,16 @@ interface Props extends BaseRenderableOptions {
   onDismiss?: (alert: Alert) => void
 }
 
+interface SlotDefaultProps {
+  alerts: Alert[]
+  dismiss: (alert: Alert) => void
+}
+
+interface SlotAlertProps {
+  alert: Alert
+  dismiss: () => void
+}
+
 /** The slot properties of the `BaseAlerts` component. */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 type Slots = {
@@ -70,14 +62,14 @@ export const BaseAlerts = /* #__PURE__ */ defineSetupComponent(
     }))
 
     // --- Build the props object.
-    const attributes = computed(() => pick(mergeProps(
+    const attributes = computed(() => mergeProps(
       attrs,
       {
         'aria-live': 'assertive',
         'aria-atomic': 'true',
         'role': 'alert',
       },
-    ), Boolean))
+    ))
 
     // --- Get the slot content.
     const getSlots = () => {
