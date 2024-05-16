@@ -46,6 +46,11 @@
       "types": "./dist/BaseInputFile.d.ts",
       "import": "./dist/BaseInputFile.js"
     },
+    "./BaseInputList": {
+      "require": "./dist/BaseInputList.cjs",
+      "types": "./dist/BaseInputList.d.ts",
+      "import": "./dist/BaseInputList.js"
+    },
     "./BaseInputText": {
       "require": "./dist/BaseInputText.cjs",
       "types": "./dist/BaseInputText.d.ts",
@@ -120,6 +125,11 @@
       "require": "./dist/useBaseInputFile.cjs",
       "types": "./dist/useBaseInputFile.d.ts",
       "import": "./dist/useBaseInputFile.js"
+    },
+    "./useBaseInputList": {
+      "require": "./dist/useBaseInputList.cjs",
+      "types": "./dist/useBaseInputList.d.ts",
+      "import": "./dist/useBaseInputList.js"
     },
     "./useBaseInputText": {
       "require": "./dist/useBaseInputText.cjs",
