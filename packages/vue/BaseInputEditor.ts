@@ -50,7 +50,7 @@ export interface Props {
   lineWrapping?: boolean
 }
 
-export const BaseInputEditor = defineSetupComponent(
+export const BaseInputEditor = /* #__PURE__ */ defineSetupComponent(
   (props: Props, { attrs, emit }: DefineComponentContext) => {
 
     // --- Declare reactive properties.
