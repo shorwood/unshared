@@ -10,6 +10,7 @@ const values = [
 const valueSwitch = ref(false)
 const valueRadio = ref('cooking')
 const valueCheckbox = ref(['cooking'])
+const valueList = ref([])
 
 const valueEditor = ref(dedent(`
   program odd_even
@@ -78,6 +79,11 @@ const valueEditor = ref(dedent(`
       <!-- File -->
       <Card title="File" class="col-span-2">
         <InputFile/>
+      </Card>
+
+      <!-- List -->
+      <Card title="List" class="col-span-2">
+        <InputList v-model="valueList"/>
       </Card>
     </main>
   </div>
