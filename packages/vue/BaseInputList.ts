@@ -90,8 +90,8 @@ interface Props<T, V, M extends boolean> extends
 /** The slots of the `BaseInputList` component. */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 type Slots<T, V> = {
-  default: (options: Array<ListOption<T, V>>) => VNode
   search: (options: Array<ListOption<T, V>>) => VNode
+  options: (options: Array<ListOption<T, V>>) => VNode
   option: (option: ListOption<T, V>) => VNode
   values: (options: Array<ListOption<T, V>>) => VNode
   value: (options: ListOption<T, V>) => VNode
@@ -129,10 +129,10 @@ export const BaseInputList = defineSetupComponent(
       return h('option', cleanAttributes({
         'key': option.value,
         'value': option.value,
-        'disabled': option.isDisabled || undefined,
-        'selected': option.isSelected,
-        'aria-disabled': option.isDisabled || undefined,
-        'aria-selected': option.isSelected || undefined,
+        'disabled': option.isDisabled() || undefined,
+        'selected': option.isSelected(),
+        'aria-disabled': option.isDisabled() || undefined,
+        'aria-selected': option.isSelected() || undefined,
         'class': props.classOption,
       }), option.text)
     }
@@ -211,17 +211,17 @@ export const BaseInputList = defineSetupComponent(
      * @returns The VNode for the list of items.
      */
     function createList() {
-      if (slots.default) return slots.default(input.options)
+      if (slots.options) return slots.options(input.options)
 
       // --- Create the VNodes for the list of items.
       const options = input.options
         .filter(option => option.isVisible)
         .map(option => h('li', cleanAttributes({
           'role': 'option',
-          'disabled': option.isDisabled || undefined,
-          'selected': option.isSelected || undefined,
-          'aria-disabled': option.isDisabled || undefined,
-          'aria-selected': option.isSelected || undefined,
+          'disabled': option.isDisabled() || undefined,
+          'selected': option.isSelected() || undefined,
+          'aria-disabled': option.isDisabled() || undefined,
+          'aria-selected': option.isSelected() || undefined,
           'class': props.classOption,
           'onClick': () => option.toggle(),
         }), slots.option?.(option) ?? option.text))
@@ -235,26 +235,19 @@ export const BaseInputList = defineSetupComponent(
     }
 
     /**
-     * Create a single VNode for the value of the input list.
-     *
-     * @param option The option to create the value for.
-     * @returns The VNode for the value of the input list.
-     */
-    function createListValue(option: ListOption<T, V>): VNode {
-      return h(
-        'span',
-        cleanAttributes({ class: props.classValue }),
-        slots.value?.(option) ?? option.text,
-      )
-    }
-
-    /**
      * Create a VNode to display the current value of the input list.
      *
      * @returns The VNode for the value of the input list.
      */
     function createListValues(): VNode {
-      const vnodeValues = slots.values?.(input.selected) ?? input.selected.map(createListValue)
+
+      // --- Create the VNodes for the list of values.
+      const vnodeValues = slots.values?.(input.selected) ?? input.selected.map(option => h(
+        'span',
+        cleanAttributes({ class: props.classValue }),
+        slots.value?.(option) ?? option.text,
+      ))
+
       return h('div', cleanAttributes({ class: props.classValues }), vnodeValues)
     }
 

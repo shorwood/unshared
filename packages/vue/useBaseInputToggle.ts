@@ -199,13 +199,15 @@ export function useBaseInputToggle<T, U extends ToggleType>(options: BaseInputTo
   // --- Properties to assign to the element.
   const attributes = computed(() => cleanAttributes({
     'onClick': toggle,
+    'checked': (is.value === 'input' && isActive.value) ? true : undefined,
+    'selected': (is.value !== 'input' && isActive.value) ? true : undefined,
+    'aria-selected': (is.value !== 'input' && isActive.value) ? true : undefined,
     'aria-pressed': (is.value !== 'input' && options.type !== 'checkbox') ? isActive.value : undefined,
     'aria-checked': (is.value !== 'input' && options.type === 'checkbox') ? isActive.value : undefined,
     'role': is.value !== 'input' && (options.type === 'radio' ? 'radio' : 'checkbox') || undefined,
     'type': is.value === 'input' && (options.type === 'radio' ? 'radio' : 'checkbox') || undefined,
     'class': classes.value,
     'tabindex': is.value === 'input' ? undefined : 0,
-    'checked': (is.value === 'input' && isActive.value) ? true : undefined,
   }))
 
   // --- Provide the composable into the component and return it.

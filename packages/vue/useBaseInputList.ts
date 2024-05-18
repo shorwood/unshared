@@ -140,7 +140,7 @@ export interface ListOption<T, V = T> {
    *
    * @example false
    */
-  isDisabled: boolean
+  isDisabled: () => boolean
 
   /**
    * If the option is selected by comparing the option's value with the current
@@ -149,7 +149,7 @@ export interface ListOption<T, V = T> {
    *
    * @example false
    */
-  isSelected: boolean
+  isSelected: () => boolean
 
   /**
    * If the option is visible. If the `optionFilter` function is provided, this
@@ -158,7 +158,7 @@ export interface ListOption<T, V = T> {
    *
    * @example true
    */
-  isVisible: boolean
+  isVisible: () => boolean
 
   /**
    * Toggle the option by adding or removing the option's value from the model
@@ -253,7 +253,7 @@ export function useBaseInputList<T, V, M extends boolean>(options: UseBaseInputL
   const emit = instance?.emit
   const model = useVModel(options, 'modelValue', emit, { passive: true }) as Ref<V | V[] | undefined>
   const search = useVModel(options, 'search', undefined, { passive: true })
-  const selected = ref([]) as Ref<Array<ListOption<T, V>>>
+  const allOptions = ref([]) as Ref<Array<ListOption<T, V>>>
 
   /**
    * Check if the option is selected by comparing the option's value with the
@@ -302,17 +302,22 @@ export function useBaseInputList<T, V, M extends boolean>(options: UseBaseInputL
    * @returns The `ListOption` object.
    */
   function wrapOption(option: T): ListOption<T, V> {
-    return {
+    const wrapped = {
       option,
-      value: options.optionValue?.(option) ?? option as unknown as V,
-      text: options.optionLabel?.(option) ?? option as unknown as number | string,
-      isDisabled: !!options.optionDisabled?.(option),
-      isSelected: isSelected(option),
-      isVisible: isVisible(search.value, option),
+      value: options.optionValue?.(option) ?? String(option) as unknown as V,
+      text: options.optionLabel?.(option) ?? String(option) as unknown as number | string,
+      isDisabled: () => !!options.optionDisabled?.(option),
+      isSelected: () => isSelected(option),
+      isVisible: () => isVisible(search.value, option),
       toggle: () => toggle(option),
       off: () => toggle(option, false),
       on: () => toggle(option, true),
     }
+
+    // --- Push the option to the list of all options if it is not already there.
+    const isInAllOptions = allOptions.value.some(x => x.value === wrapped.value)
+    if (!isInAllOptions) allOptions.value.push(wrapped)
+    return wrapped
   }
 
   /**
@@ -325,33 +330,42 @@ export function useBaseInputList<T, V, M extends boolean>(options: UseBaseInputL
    * @example toggle(option, true) // => undefined
    */
   function toggle(option: T, state?: boolean): void {
-    const value = options.optionValue ? options.optionValue(option) : option as unknown as V
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    const listOption = listOptions.value.find(option => option.value === value) ?? wrapOption(option)
+    const value = options.optionValue?.(option) ?? String(option) as unknown as V
 
     // --- If not multiple, set value.
     if (!options.multiple) {
       model.value = state === false ? undefined : value
-      selected.value = state === false ? [] : [listOption]
     }
 
     // --- If multiple and value is already an array, push or remove value.
     // --- Additionally, keep track of selected options in a separate array.
     else if (Array.isArray(model.value)) {
-      model.value = state ?? !listOption.isSelected
-        ? [...model.value, value]
+      model.value = state ?? !isSelected(option)
+        ? [...new Set([...model.value, value])]
         : [...model.value].filter(x => x !== value)
-      selected.value = state ?? !listOption.isSelected
-        ? [...selected.value, listOption]
-        : [...selected.value].filter(x => x.value !== value)
     }
 
     // --- Otherwise, initialize array with value.
     else {
       model.value = [value]
-      selected.value = [listOption]
     }
   }
+
+  // --- Computed list options
+  const listOptions = computed(() => {
+    if (!options.options) return []
+    return Object.values(options.options).map(wrapOption)
+  })
+
+  // --- Computed selected options
+  const selected = computed(() => {
+    if (!model.value) return []
+    return Array.isArray(model.value)
+      // ? allOptions.value.filter(x => (model.value as V[]).includes(x.value))
+      // : allOptions.value.filter(x => x.value === model.value)
+      ? model.value.map(value => allOptions.value.find(x => x.value === value))
+      : [allOptions.value.find(x => x.value === model.value)]
+  })
 
   /**
    * Add a custom value to the model value by pressing `Enter` when the search
@@ -361,29 +375,12 @@ export function useBaseInputList<T, V, M extends boolean>(options: UseBaseInputL
   function pushSearch(): void {
     if (!search.value) return
     if (!options.allowCustomValue) return
-    for (const { value } of selected.value) if (value === search.value) return
-    // @ts-expect-error: Voluntary type mismatch.
-    toggle(search.value, search.value, true)
+    wrapOption(search.value as T).on()
     search.value = ''
   }
 
-  // --- Computed list options
-  const listOptions = computed(() => {
-    if (!options.options) return []
-    void model.value
-    return Object.values(options.options).map(wrapOption)
-  })
-
-  const composables = toReactive({
-    options: listOptions,
-    model,
-    selected,
-    search,
-    clear,
-    toggle,
-    pushSearch,
-  }) as unknown as UseBaseInputListComposable<T, V, M>
-
+  // ---- Return the reactive properties.
+  const composables = toReactive({ options: listOptions, model, selected, search, clear, toggle, pushSearch }) as unknown as UseBaseInputListComposable<T, V, M>
   if (instance) instance[BASE_INPUT_LIST_SYMBOL] = composables
   return composables
 }
