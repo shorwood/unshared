@@ -116,8 +116,8 @@ watchDebounced(search, fetchUsers, { debounce: 500 })
 
       <template #option="{ option, isSelected }">
         <div
-          class="flex flex-col items-start last:mb-0 mb-2 hover:bg-primary-800 p-2 rounded-md cursor-pointer"
-          :class="{ 'bg-primary-800': isSelected }">
+          class="flex flex-col items-start last:mb-0 mb-2 hover:bg-primary-800/50 p-2 rounded-md cursor-pointer"
+          :class="{ '!bg-primary-800 font-bold': isSelected() }">
           <p class="text-sm">
             {{ option.name }}
           </p>
