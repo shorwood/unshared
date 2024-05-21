@@ -10,7 +10,10 @@ import { Trim } from '@unshared/types'
  * @returns The boolean value.
  * @example ParseBoolean<'true'> // true
  */
-export type ParseBoolean<S extends string> = Trim<Lowercase<S>> extends '1' | 'true' ? true : false
+export type ParseBoolean<S extends string> =
+  string extends S
+    ? boolean
+    : Trim<Lowercase<S>> extends '1' | 'true' ? true : false
 
 /**
  * Parse a string into a boolean. "true" and "1" are considered true and the
@@ -62,5 +65,11 @@ if (import.meta.vitest) {
     const result = parseBoolean('false')
     expect(result).toBe(false)
     expectTypeOf(result).toEqualTypeOf<false>()
+  })
+
+  test('should return boolean if the value is a non-literal', () => {
+    const result = parseBoolean('false' as string)
+    expect(result).toBe(true)
+    expectTypeOf(result).toEqualTypeOf<boolean>()
   })
 }
