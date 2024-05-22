@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const props = defineProps<{ modelValue?: string | string[] }>()
+const props = defineProps<{
+  modelValue?: string | string[]
+}>()
 
 interface User {
   id: number
@@ -27,7 +29,7 @@ interface User {
 
 const model = useVModel(props, 'modelValue')
 
-const multiple = ref(false)
+const multiple = ref(true)
 const native = ref(false)
 const search = ref('')
 const loading = ref(false)
@@ -88,7 +90,7 @@ watchDebounced(search, fetchUsers, { debounce: 500 })
         transition-all duration-300
       ">
 
-      <template #values="values">
+      <template #values="{ values }">
         <div class="flex flex-wrap flex-nowrap items-center space-x-2">
           <div
             v-for="value in values.slice(0, 2)"

@@ -10,7 +10,7 @@ const values = [
 const valueSwitch = ref(false)
 const valueRadio = ref('cooking')
 const valueCheckbox = ref(['cooking'])
-const valueList = ref([])
+const valueList = ref(['TEST', 'Sincere@april.biz'])
 
 const valueEditor = ref(dedent(`
   program odd_even
