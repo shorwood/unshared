@@ -26,7 +26,7 @@ export interface BaseInputFileOptions {
    *
    * @default undefined
    */
-  modelValue?: InputFiles
+  modelValue?: InputFiles | string
   'onUpdate:modelValue'?: (value: InputFiles) => void
 
   /**
