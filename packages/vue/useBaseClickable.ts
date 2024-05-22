@@ -10,6 +10,7 @@ export const BASE_CLICKABLE_SYMBOL = Symbol('baseClickable')
 /** The base clickable properties. */
 export const BASE_CLICKABLE_OPTIONS = {
   ...BASE_STATE_OPTIONS,
+  label: [Number, String],
   onClick: Function,
   debounce: { type: Number, default: 0 },
   throttle: { type: Number, default: 0 },
@@ -17,6 +18,15 @@ export const BASE_CLICKABLE_OPTIONS = {
 
 /** The properties of the base clickable component. */
 export interface BaseClickableOptions extends BaseStateOptions {
+
+  /**
+   * The label of the button. This is used to set the text content of the button
+   * element as well as the `aria-labelledby` attribute for accessibility and SEO
+   * purposes.
+   *
+   * @example 'Submit'
+   */
+  label?: number | string
 
   /**
    * The callback to call when the component is clicked. This is used to
@@ -113,7 +123,9 @@ export function useBaseClickable(props: BaseClickableOptions = {}, instance = ge
 
   // --- Create the reactive attributes for the component.
   const attributes = computed(() => ({
-    onClick: () => onClick.value(),
+    'onClick': () => onClick.value(),
+    'aria-labelledby': props.label,
+    'aria-live': 'assertive',
   }))
 
   // --- Provide the composable into the component and return it.
@@ -123,11 +135,12 @@ export function useBaseClickable(props: BaseClickableOptions = {}, instance = ge
 }
 
 /* v8 ignore next */
-// @vitest-environment happy-dom
+/* eslint-disable @typescript-eslint/unbound-method */
 if (import.meta.vitest) {
+
+  // @vitest-environment happy-dom
   const { isReactive } = await import('vue')
   const { mount } = await import('@vue/test-utils')
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   const { nextTick } = await import('node:process')
 
   describe('composable', () => {

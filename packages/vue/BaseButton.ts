@@ -22,15 +22,6 @@ interface Props extends
   BaseLinkableOptions,
   BaseClickableOptions,
   BaseRenderableOptions {
-
-  /**
-   * The label of the button. This is used to set the text content of the button
-   * element as well as the `aria-labelledby` attribute for accessibility and SEO
-   * purposes.
-   *
-   * @example 'Submit'
-   */
-  label?: number | string
 }
 
 interface SlotProps {
@@ -68,14 +59,15 @@ export const BaseButton = /* #__PURE__ */ defineSetupComponent(
     const linkable = useBaseLinkable(props)
     const clickable = useBaseClickable(props)
     const renderable = useBaseRenderable(props)
+    const is = computed(() => linkable.is ?? renderable.is ?? 'button')
 
     // --- Build the attributes.
     const attributes = computed(() => mergeProps(
-      attrs,
-      { 'aria-labelledby': props.label },
+      { type: is.value === 'button' ? 'button' : undefined },
       state.attributes,
       linkable.attributes,
       clickable.attributes,
+      attrs,
     ))
 
     // --- Build the slot properties.
@@ -88,9 +80,6 @@ export const BaseButton = /* #__PURE__ */ defineSetupComponent(
       isLoading: state.loading,
       isActive: linkable.isActive,
     }))
-
-    // --- The HTML tag to use for the button.
-    const is = computed(() => linkable.is ?? renderable.is ?? 'button')
 
     // --- Expose properties.
     exposeToDevtool({
