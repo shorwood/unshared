@@ -87,15 +87,22 @@ interface Props<T, V, M extends boolean> extends
   classValue?: string
 }
 
+/** Slot input for the `BaseInputList` component. */
+interface SlotProps<T, V> {
+  options: Array<ListOption<T, V>>
+  values: Array<ListOption<T, V>>
+  isOpen: boolean
+}
+
 /** The slots of the `BaseInputList` component. */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 type Slots<T, V> = {
-  search: (options: Array<ListOption<T, V>>) => VNode
-  options: (options: Array<ListOption<T, V>>) => VNode
+  search: (options: SlotProps<T, V>) => VNode
+  options: (options: SlotProps<T, V>) => VNode
   option: (option: ListOption<T, V>) => VNode
-  values: (options: Array<ListOption<T, V>>) => VNode
+  values: (options: SlotProps<T, V>) => VNode
   value: (options: ListOption<T, V>) => VNode
-  empty: () => VNode
+  empty: (options: SlotProps<T, V>) => VNode
 }
 
 export const BaseInputList = defineSetupComponent(
@@ -117,6 +124,13 @@ export const BaseInputList = defineSetupComponent(
       attrs,
       state.attributes,
     ))
+
+    // --- The slot properties.
+    const slotProps = computed<SlotProps<T, V>>(() => ({
+      options: input.options,
+      values: input.selected,
+      isOpen: isOpenDebounced.value,
+    }))
 
     /**
      * Create an <option> node for the input list. If a slot is provided, it will
@@ -181,7 +195,7 @@ export const BaseInputList = defineSetupComponent(
      * @returns The VNode for the search input.
      */
     function createSearchInput(): VNode {
-      if (slots.search) return slots.search(input.options)
+      if (slots.search) return slots.search(slotProps.value)
       return h('input', cleanAttributes({
         type: 'text',
         class: props.classSearch,
@@ -211,7 +225,8 @@ export const BaseInputList = defineSetupComponent(
      * @returns The VNode for the list of items.
      */
     function createList() {
-      if (slots.options) return slots.options(input.options)
+      if (slots.options) return slots.options(slotProps.value)
+      if (!isOpenDebounced.value) return
 
       // --- Create the VNodes for the list of items.
       const options = input.options
@@ -230,7 +245,7 @@ export const BaseInputList = defineSetupComponent(
       return h(
         'ul',
         { role: 'list', class: props.classOptions },
-        options.length === 0 ? slots.empty?.() : options,
+        options.length === 0 ? slots.empty?.(slotProps.value) : options,
       )
     }
 
@@ -242,7 +257,7 @@ export const BaseInputList = defineSetupComponent(
     function createListValues(): VNode {
 
       // --- Create the VNodes for the list of values.
-      const vnodeValues = slots.values?.(input.selected) ?? input.selected.map(option => h(
+      const vnodeValues = slots.values?.(slotProps.value) ?? input.selected.map(option => h(
         'span',
         cleanAttributes({ class: props.classValue }),
         slots.value?.(option) ?? option.text,
@@ -275,9 +290,7 @@ export const BaseInputList = defineSetupComponent(
             'onFocus': (event: { target: HTMLElement } & Event) => event.target.querySelector('input')?.focus(),
           },
         ),
-        isOpenDebounced.value
-          ? [vnodeValue, vnodeSearch, vnodeList]
-          : [vnodeValue, vnodeSearch],
+        [vnodeValue, vnodeSearch, vnodeList],
       )
     }
 

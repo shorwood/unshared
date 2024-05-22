@@ -360,11 +360,15 @@ export function useBaseInputList<T, V, M extends boolean>(options: UseBaseInputL
   // --- Computed selected options
   const selected = computed(() => {
     if (!model.value) return []
+
+    // --- Trigger reactivity on the `listOptions` computed property
+    // --- to force the options to be wrapped in `ListOption` objects
+    // --- and therefore collected in the `allOptions` ref array.
+    void listOptions.value
+
     return Array.isArray(model.value)
-      // ? allOptions.value.filter(x => (model.value as V[]).includes(x.value))
-      // : allOptions.value.filter(x => x.value === model.value)
-      ? model.value.map(value => allOptions.value.find(x => x.value === value))
-      : [allOptions.value.find(x => x.value === model.value)]
+      ? model.value.map(value => allOptions.value.find(x => x.value === value) ?? wrapOption(value as unknown as T))
+      : [allOptions.value.find(x => x.value === model.value) ?? wrapOption(model.value as T)]
   })
 
   /**
