@@ -20,8 +20,8 @@ interface Props extends BaseRenderableOptions {
    *
    * @default []
    */
-  alerts: Alert[]
-  'onUpdate:alerts': (alerts: Alert[]) => void
+  alerts?: Alert[]
+  'onUpdate:alerts'?: (alerts: Alert[]) => void
 
   /**
    * The callback function to call when an alert is dismissed. This is used to
