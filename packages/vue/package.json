@@ -156,6 +156,11 @@
       "types": "./dist/useBaseState.d.ts",
       "import": "./dist/useBaseState.js"
     },
+    "./useCursor": {
+      "require": "./dist/useCursor.cjs",
+      "types": "./dist/useCursor.d.ts",
+      "import": "./dist/useCursor.js"
+    },
     "./useEventBus": {
       "require": "./dist/useEventBus.cjs",
       "types": "./dist/useEventBus.d.ts",
