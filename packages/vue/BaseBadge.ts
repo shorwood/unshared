@@ -5,31 +5,11 @@ import { DefineComponentContext, defineSetupComponent } from './defineSetupCompo
 /** The base props for the `BaseBadge` component. */
 export const BASE_BADGE_PROPS = {
   ...BASE_RENDERABLE_OPTIONS,
-  icon: String,
-  iconClass: String,
   label: String,
 } satisfies Record<keyof Props, Prop<unknown>>
 
 /** The properties & context of the `BaseBadge` component. */
 interface Props extends BaseRenderableOptions {
-
-  /**
-   * The class name of the icon to display. This is expected to be a valid
-   * UnoCSS icon class name comming from the `@unocss/icons` package. The
-   * `icon` prop is also used to set the `aria-labelledby` attribute of the icon
-   * element.
-   *
-   * @example 'i-mdi:home'
-   */
-  icon: string
-
-  /**
-   * The class to apply to the icon element. This is used to style the icon
-   * element with custom CSS classes.
-   *
-   * @example 'icon'
-   */
-  iconClass?: string
 
   /**
    * The label of the icon. This is used to set the `aria-label` attribute of the
@@ -52,13 +32,12 @@ export const BaseBadge = /* #__PURE__ */ defineSetupComponent(
     // --- Build the attributes.
     const attributes = computed(() => mergeProps(attrs, {
       'role': 'status',
-      'aria-label': props.label ?? props.icon,
-      'class': props.icon,
+      'aria-label': props.label,
     }))
 
     // --- Return virtual DOM node.
     return () => h(
-      renderable.is ?? 'div',
+      renderable.is ?? 'span',
       attributes.value,
       slots.default?.() ?? props.label,
     )
