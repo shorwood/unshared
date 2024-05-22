@@ -120,13 +120,13 @@ if (import.meta.vitest) {
     it('should apply the corresponding html attributes when tag is button', () => {
       const wrapper = mount(BaseInputToggle, { props: { as: 'button', type: 'switch', modelValue: true } })
       const html = wrapper.html()
-      expect(html).toBe('<button aria-pressed="true" role="checkbox" tabindex="0"></button>')
+      expect(html).toBe('<button selected="true" aria-selected="true" aria-pressed="true" role="checkbox" tabindex="0"></button>')
     })
 
     it('should apply the corresponding html attributes when tag is div', () => {
       const wrapper = mount(BaseInputToggle, { props: { as: 'div', type: 'switch', modelValue: true } })
       const html = wrapper.html()
-      expect(html).toBe('<div aria-pressed="true" role="checkbox" tabindex="0"></div>')
+      expect(html).toBe('<div selected="true" aria-selected="true" aria-pressed="true" role="checkbox" tabindex="0"></div>')
     })
 
     it('should switch the modelValue to `true` when clicked', async() => {

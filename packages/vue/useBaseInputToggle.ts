@@ -355,8 +355,10 @@ if (import.meta.vitest) {
         const result = useBaseInputToggle({ modelValue: true, type: 'switch', as: 'button' })
         expect(result.attributes).toStrictEqual({
           'aria-pressed': true,
+          'aria-selected': true,
           'onClick': result.toggle,
           'role': 'checkbox',
+          'selected': true,
           'tabindex': 0,
         })
       })
@@ -489,8 +491,10 @@ if (import.meta.vitest) {
         const result = useBaseInputToggle({ modelValue: 'one', value: 'one', type: 'radio', as: 'button' })
         expect(result.attributes).toStrictEqual({
           'aria-pressed': true,
+          'aria-selected': true,
           'onClick': result.toggle,
           'role': 'radio',
+          'selected': true,
           'tabindex': 0,
         })
       })
@@ -679,8 +683,10 @@ if (import.meta.vitest) {
         const result = useBaseInputToggle({ modelValue: ['one', 'two'], value: 'one', type: 'checkbox', as: 'button' })
         expect(result.attributes).toStrictEqual({
           'aria-checked': true,
+          'aria-selected': true,
           'onClick': result.toggle,
           'role': 'checkbox',
+          'selected': true,
           'tabindex': 0,
         })
       })
@@ -689,8 +695,10 @@ if (import.meta.vitest) {
         const result = useBaseInputToggle({ modelValue: ['one'], value: ['one', 'two'], type: 'checkbox', as: 'button' })
         expect(result.attributes).toStrictEqual({
           'aria-checked': 'mixed',
+          'aria-selected': true,
           'onClick': result.toggle,
           'role': 'checkbox',
+          'selected': true,
           'tabindex': 0,
         })
       })
