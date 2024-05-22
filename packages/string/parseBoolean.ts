@@ -69,7 +69,7 @@ if (import.meta.vitest) {
 
   test('should return boolean if the value is a non-literal', () => {
     const result = parseBoolean('false' as string)
-    expect(result).toBe(true)
+    expect(result).toBe(false)
     expectTypeOf(result).toEqualTypeOf<boolean>()
   })
 }

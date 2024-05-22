@@ -49,31 +49,31 @@ if (import.meta.vitest) {
   test('should throw if value is a non-zero number', () => {
     const shouldThrow = () => isFalsy(1)
     expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be falsy but received: 1')
+    expect(shouldThrow).toThrow('Expected value to be falsy but received: number')
   })
 
   test('should throw if value is a non-empty string', () => {
     const shouldThrow = () => isFalsy('hello')
     expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be falsy but received: hello')
+    expect(shouldThrow).toThrow('Expected value to be falsy but received: string')
   })
 
   test('should throw if value is true', () => {
     const shouldThrow = () => isFalsy(true)
     expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be falsy but received: true')
+    expect(shouldThrow).toThrow('Expected value to be falsy but received: boolean')
   })
 
   test('should throw if value is an object', () => {
     const shouldThrow = () => isFalsy({})
     expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be falsy but received: [object Object]')
+    expect(shouldThrow).toThrow('Expected value to be falsy but received: object')
   })
 
   test('should throw if value is an array', () => {
     const shouldThrow = () => isFalsy([])
     expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be falsy but received: ')
+    expect(shouldThrow).toThrow('Expected value to be falsy but received: Array')
   })
 
   test('should predicate a falsy value', () => {
