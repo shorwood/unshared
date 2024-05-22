@@ -2,6 +2,7 @@ import { Prop, computed, getCurrentInstance, h, mergeProps } from 'vue'
 import { BASE_STATE_OPTIONS, BaseStateOptions, useBaseState } from './useBaseState'
 import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions } from './useBaseRenderable'
 import { BASE_INPUT_TEXT_OPTIONS, BaseInputTextOptions, useBaseInputText } from './useBaseInputText'
+import { exposeToDevtool } from './exposeToDevtool'
 import { DefineComponentContext, defineSetupComponent } from './defineSetupComponent'
 
 /** The base props for the `BaseInputText` component. */
@@ -21,7 +22,7 @@ interface Props<T = unknown> extends
 export const BaseInputText = /* #__PURE__ */ defineSetupComponent(
   <T>(props: Props<T>, { attrs }: DefineComponentContext) => {
     const instance = getCurrentInstance()
-    const inputText = useBaseInputText(props, instance)
+    const inputText = useBaseInputText<T>(props, instance)
     const state = useBaseState(props, instance)
 
     // --- Build the attributes.
@@ -30,6 +31,13 @@ export const BaseInputText = /* #__PURE__ */ defineSetupComponent(
       state.attributes,
       inputText.attributes,
     ))
+
+    // --- Expose properties to DevTools.
+    exposeToDevtool({
+      state,
+      attributes,
+      inputText,
+    })
 
     // --- Return virtual DOM node.
     return () => h(inputText.is, attributes.value)
