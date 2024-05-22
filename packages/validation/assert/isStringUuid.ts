@@ -29,9 +29,9 @@ if (import.meta.vitest) {
   })
 
   test('should throw if value is not a UUID', () => {
-    const shouldThrow = () => isStringUuid('00000000-0000-0000-0000-00000000000')
+    const shouldThrow = () => isStringUuid('not-a-uuid')
     expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a UUID but received: 00000000-0000-0000-0000-00000000000')
+    expect(shouldThrow).toThrow('Expected value to be a UUID but received: not-a-uuid')
   })
 
   test('should throw if value is not a string', () => {
