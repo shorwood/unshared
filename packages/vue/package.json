@@ -161,6 +161,11 @@
       "types": "./dist/useCursor.d.ts",
       "import": "./dist/useCursor.js"
     },
+    "./useEditableProps": {
+      "require": "./dist/useEditableProps.cjs",
+      "types": "./dist/useEditableProps.d.ts",
+      "import": "./dist/useEditableProps.js"
+    },
     "./useEventBus": {
       "require": "./dist/useEventBus.cjs",
       "types": "./dist/useEventBus.d.ts",
