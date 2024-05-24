@@ -219,6 +219,7 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
          * @see https://eslint.vuejs.org/rules/v-on-handler-style.html
          */
         'vue/v-on-style': ['error', 'shorthand'],
+        'vue/v-on-handler-style': ['error', 'inline-function'],
 
         'vue/return-in-computed-property': 'off',
         'vue/no-sparse-arrays': 'error',
@@ -294,7 +295,6 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
         'vue/space-infix-ops': 'error',
         'vue/space-unary-ops': ['error', { nonwords: false, words: true }],
         'vue/template-curly-spacing': 'error',
-        'vue/v-on-handler-style': ['error', 'inline'],
 
         /** User-defined rules */
         ...options.rules,
