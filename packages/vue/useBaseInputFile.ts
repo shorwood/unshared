@@ -35,7 +35,7 @@ export interface BaseInputFileOptions {
    *
    * @example async(files) => await fetch('/upload', { method: 'POST', body: files })
    */
-  onInsert? (files: InputFiles): Promise<void> | void
+  onInsert? (files: File[]): Promise<void> | void
 
   /**
    * If true, the input will accept multiple files at once. Defaults to false.
