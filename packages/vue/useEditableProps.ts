@@ -88,7 +88,13 @@ export function useEditableProps<
     const value = props[key] ?? defaults?.[key]
     const reference = ref(value)
 
-    // --- On change, emit the event and/or update the reference.
+    // --- Sync inbound changes to the reference.
+    watch(() => props[key], (value) => {
+      // @ts-expect-error: The key is a valid property.
+      reference.value = value
+    })
+
+    // --- Sync outbound changes to the props.
     watch(reference, (value) => {
       if (emit) emit(eventName, key, value)
     })
