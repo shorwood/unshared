@@ -14,10 +14,10 @@ export const BASE_BUTTON_PROPS = {
   ...BASE_CLICKABLE_OPTIONS,
   ...BASE_RENDERABLE_OPTIONS,
   label: [String, Number],
-} satisfies Record<keyof Props, Prop<unknown>>
+} satisfies Record<keyof BaseButtonProps, Prop<unknown>>
 
 /** The props for the `BaseButton` component. */
-interface Props extends
+export interface BaseButtonProps extends
   BaseStateOptions,
   BaseLinkableOptions,
   BaseClickableOptions,
@@ -49,12 +49,12 @@ interface SlotProps {
 }
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type Slots = {
+export type BaseButtonSlots = {
   default: (props: SlotProps) => VNode
 }
 
 export const BaseButton = /* #__PURE__ */ defineSetupComponent(
-  (props: Props, { attrs, slots }: DefineComponentContext<Slots>) => {
+  (props: BaseButtonProps, { attrs, slots }: DefineComponentContext<BaseButtonSlots>) => {
     const state = useBaseState(props)
     const linkable = useBaseLinkable(props)
     const clickable = useBaseClickable(props)
@@ -83,23 +83,18 @@ export const BaseButton = /* #__PURE__ */ defineSetupComponent(
 
     // --- Expose properties.
     exposeToDevtool({
-      is: is.value,
-      isExternalLink: linkable.isExternalLink,
-      isInternalLink: linkable.isInternalLink,
-      isLink: linkable.isLink,
-      isActive: linkable.isActive,
-      isLoading: state.loading,
-      error: state.error,
-      errorMessage: state.errorMessage,
+      is,
+      state,
+      linkable,
+      clickable,
+      renderable,
     })
 
     // --- Return virtual DOM node.
     return () => h(
       is.value,
       attributes.value,
-      typeof is.value === 'string'
-        ? slots.default?.(slotProps.value) ?? props.label
-        : () => slots.default?.(slotProps.value) ?? props.label,
+      { default: () => (slots.default? slots.default(slotProps.value) : props.label) },
     )
   },
   {
