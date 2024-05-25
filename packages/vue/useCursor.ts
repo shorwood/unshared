@@ -108,6 +108,7 @@ function createCursor(parent: HTMLElement, start: number, end: number): Cursor {
 export function getCursor(parent?: HTMLElement): Cursor | undefined {
   const selection = window.getSelection()
   if (!selection) return
+  if (selection.rangeCount === 0) return
   const range = selection.getRangeAt(0)
 
   // --- If not parent is provided, use the common ancestor container.
