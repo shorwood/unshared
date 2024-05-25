@@ -9,10 +9,10 @@ export const BASE_ALERTS_PROPS = {
   'alerts': Array,
   'onUpdate:alerts': [Function, Array],
   'onDismiss': [Function, Array],
-} satisfies Record<keyof Props, Prop<unknown>>
+} satisfies Record<keyof BaseAlertsProps, Prop<unknown>>
 
 /** The properties of the `BaseAlerts` component. */
-interface Props extends BaseRenderableOptions {
+export interface BaseAlertsProps extends BaseRenderableOptions {
 
   /**
    * The alert message to be displayed. It is an array of `Alert` objects
@@ -32,31 +32,31 @@ interface Props extends BaseRenderableOptions {
   onDismiss?: (alert: Alert) => void
 }
 
-interface SlotDefaultProps {
+export interface BaseAlertsSlotProps {
   alerts: Alert[]
   dismiss: (alert: Alert) => void
 }
 
-interface SlotAlertProps {
+export interface BaseAlertsSlotAlertProps {
   alert: Alert
   dismiss: () => void
 }
 
 /** The slot properties of the `BaseAlerts` component. */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-type Slots = {
-  default: (props: SlotDefaultProps) => VNode
-  alert: (props: SlotAlertProps) => VNode
+export type BaseAlertsSlots = {
+  default: (props: BaseAlertsSlotProps) => VNode
+  alert: (props: BaseAlertsSlotAlertProps) => VNode
 
 }
 
 export const BaseAlerts = /* #__PURE__ */ defineSetupComponent(
-  (props: Props, { attrs, slots }: DefineComponentContext<Slots>) => {
+  (props: BaseAlertsProps, { attrs, slots }: DefineComponentContext<BaseAlertsSlots>) => {
     const alerts = useAlerts()
     const renderable = useBaseRenderable(props)
 
     // --- Build the slot properties.
-    const slotProps = computed<SlotDefaultProps>(() => ({
+    const slotProps = computed<BaseAlertsSlotProps>(() => ({
       alerts: alerts.alerts,
       dismiss: alerts.dismiss,
     }))
