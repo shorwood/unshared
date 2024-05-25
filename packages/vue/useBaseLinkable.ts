@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable sonarjs/no-duplicate-string */
-import { LocationQuery, RouterLink, useRouter } from 'vue-router'
-import { Prop, computed, getCurrentInstance } from 'vue'
+import { RouteLocationNamedRaw, RouteLocationRaw, RouterLink, useRouter } from 'vue-router'
+import { Component, Prop, computed, getCurrentInstance } from 'vue'
 import { toReactive } from '@vueuse/core'
 import { cleanAttributes } from './cleanAttributes'
 
@@ -50,14 +50,14 @@ export interface BaseLinkableOptions {
    *
    * @default undefined
    */
-  to?: LocationQuery | string
+  to?: RouteLocationRaw
 }
 
 /** The properties of the base linkable composable. */
 export interface BaseLinkableComposable {
 
   /** The component to render the link as. */
-  is: string | typeof RouterLink | undefined
+  is: Component | string | undefined
 
   /** The attributes to apply to the link. */
   attributes: Record<string, unknown>
@@ -123,7 +123,7 @@ export function useBaseLinkable(options: BaseLinkableOptions = {}, instance = ge
   const isActive = computed(() => {
     if (!isInternalLink.value) return false
     if (typeof options.to === 'string') return router.currentRoute.value.path === options.to
-    if (typeof options.to === 'object') return router.currentRoute.value.matched.some(route => route.name === (options.to as LocationQuery).name)
+    if (typeof options.to === 'object') return router.currentRoute.value.matched.some(route => route.name === (options.to as RouteLocationNamedRaw).name)
     return false
   })
 
