@@ -581,6 +581,11 @@
       "types": "./dist/Unique.d.ts",
       "import": "./dist/Unique.js"
     },
+    "./Unoptional": {
+      "require": "./dist/Unoptional.cjs",
+      "types": "./dist/Unoptional.d.ts",
+      "import": "./dist/Unoptional.js"
+    },
     "./Values": {
       "require": "./dist/Values.cjs",
       "types": "./dist/Values.d.ts",
