@@ -1,6 +1,7 @@
 export * from './BaseAlerts'
 export * from './BaseBadge'
 export * from './BaseButton'
+export * from './BaseDialog'
 export * from './BaseIcon'
 export * from './BaseInputEditor'
 export * from './BaseInputFile'
