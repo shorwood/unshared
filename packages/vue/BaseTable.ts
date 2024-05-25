@@ -1,63 +1,40 @@
-import { Prop, VNode, computed, getCurrentInstance, h, mergeProps } from 'vue'
-import { BASE_STATE_OPTIONS, BaseStateOptions, useBaseState } from './useBaseState'
+import { Prop, VNode, computed, h } from 'vue'
+import { BASE_STATE_OPTIONS, BaseStateOptions } from './useBaseState'
 import { exposeToDevtool } from './exposeToDevtool'
 import { DefineComponentContext, defineSetupComponent } from './defineSetupComponent'
+
+type MaybeKeyOf<T> = ({} & string) | keyof T & string
 
 /** The properties of the `BaseTable` component. */
 export const BASE_TABLE_PROPS = {
   ...BASE_STATE_OPTIONS,
-  'modelValue': {},
-  'rows': { type: [Object, Array], default: () => [] },
-  'columns': { type: [Object, Array], required: true },
-  'onUpdate:modelValue': [Function, Array],
-  'classHeader': {},
-  'classHeaderCell': {},
-  'classHeaderRow': {},
-  'classBody': {},
-  'classRow': {},
-  'classCell': {},
-} satisfies Record<keyof Props<unknown, {}>, Prop<unknown>>
+  rows: { type: [Object, Array], default: () => [] },
+  columns: { type: [Object, Array], required: true },
+  classHeader: {},
+  classHeaderCell: {},
+  classHeaderRow: {},
+  classBody: {},
+  classRow: {},
+  classCell: {},
+} satisfies Record<keyof BaseTableProps<unknown, string>, Prop<unknown>>
 
-type TableColumnValueGetter<T, U> = (row: T) => U
-type TableColumnValueKey<T> = keyof T
-type TableColumnValueKeyOrGetter<T, U = unknown> = TableColumnValueGetter<T, U> | TableColumnValueKey<T>
-
-type TableColumnValue<T, C extends TableColumn<T>> =
-  C['value'] extends TableColumnValueGetter<T, infer U> ? U
-    : C['value'] extends TableColumnValueKey<T> ? T[C['value']]
-      : unknown
-
-export interface TableCell<T = unknown, C extends TableColumns<T> = TableColumns<T>> {
-  key: keyof C & string
+export interface TableCell<T, K extends string> {
+  key: K
   row: T
-  value: TableColumnValue<T, C[keyof C]>
-  column: C[keyof C]
-  isActive: boolean
-  isHeader: boolean
 }
-
-export interface TableColumn<T = unknown> {
-  value?: TableColumnValueKeyOrGetter<T>
-  label?: string
-  isHeader?: boolean
-  key?: string
-}
-
-export type TableColumns<T = unknown> = Record<string, TableColumn<T>>
 
 /** The properties of the `BaseTable` component. */
-interface Props<T, C extends TableColumns<T>> extends
+export interface BaseTableProps<T, K extends string> extends
   BaseStateOptions {
-
-  modelValue?: T[]
-  'onUpdate:modelValue'?: (value: T[]) => void
 
   /**
    * The rows of the table. This is used to determine the rows of the table
    * and the data to display in each cell. This can be an array of objects
    * or a single object with keys and values.
+   *
+   * @example [{ name: 'Alice', age: 30 }, { name: 'Bob', age: 25 }]
    */
-  rows: Record<PropertyKey, T> | T[]
+  rows?: T[]
 
   /**
    * The columns to display in the table. Each column should have a key and
@@ -67,9 +44,9 @@ interface Props<T, C extends TableColumns<T>> extends
    * The key can also be a function that takes the row as an argument and
    * returns the value to display in the cell.
    *
-   * @example { key: 'name', name: 'Name' }
+   * @example ['name', 'age']
    */
-  columns: C
+  columns?: K[]
 
   /**
    * The classes to apply to the `<thead>` element of the table. This is used
@@ -109,42 +86,24 @@ interface Props<T, C extends TableColumns<T>> extends
 }
 
 /** The context of the `BaseTable` component. */
-type Slots<T, C extends TableColumns<T>> =
+export type BaseTableSlots<T, K extends string> =
   {
     row: (row: T) => VNode
-    cell: (cell: TableCell<T, C>) => VNode
-    header: (column: C[keyof C]) => VNode
+    cell: (cell: TableCell<T, K>) => VNode
+    header: (key: K) => VNode
   }
-  & { [K in keyof C as `cell.${K & string}`]: (cell: TableCell<T, Pick<C, K>>) => VNode }
-  & { [K in keyof C as `header.${K & string}`]: (column: C[K]) => VNode }
+  & { [P in K as `cell.${P}`]: (row: T) => VNode }
+  & { [P in K as `header.${P}`]: (key: K) => VNode }
 
 export const BaseTable = defineSetupComponent(
-  <T, C extends TableColumns<T>>(props: Props<T, C>, { slots, attrs }: DefineComponentContext<Slots<T, C>>) => {
-    const instance = getCurrentInstance()
-    const state = useBaseState(props, instance)
-
-    // --- Extract the values of the columns and keep the keys.
-    const columns = computed(() => Object.entries(props.columns)
-      .map(([key, column]) => ({ key, ...column })) as Array<C[keyof C]>,
-    )
+  <T extends object, K extends MaybeKeyOf<T>>(props: BaseTableProps<T, K>, { slots, attrs }: DefineComponentContext<BaseTableSlots<T, K>>) => {
 
     // --- Compute the cells of the table and resolve the values.
-    const cells = computed(() =>
-      Object.values(props.rows)
-        .map(row => columns.value
-          .map(column => ({
-            key: column.key,
-            row,
-            column,
-            value: typeof column.value === 'function'
-              ? column.value(row)
-              // @ts-expect-error: ignore.
-              : row[column.value] as unknown,
-            isActive: false,
-            isHeader: !!column.isHeader,
-          })),
-        ) as unknown as Array<Array<TableCell<T, C>>>,
-    )
+    const cells = computed(() => {
+      if (!props.rows) return []
+      if (!props.columns && !Array.isArray(props.rows)) return []
+      return props.rows.map(row => props.columns!.map(key => ({ key, row })))
+    })
 
     /**
      * Create a `<td>` or `<th>` element for the table cell.
@@ -153,14 +112,21 @@ export const BaseTable = defineSetupComponent(
      * @param index The index of the cell in the row.
      * @returns The `<td>` or `<th>` VNode.
      */
-    function createCell(cell: TableCell<T, C>, index: number): VNode {
+    function createCell(cell: TableCell<T, K>, index: number): VNode {
       const isHeader = index === 0
       const slotKey = `cell.${cell.key}` as const
-      const slotCell = (slots[slotKey] ?? slots.cell) as (cell: TableCell<T, C>) => VNode
+
+      let slotCell: VNode | string | undefined
+      // @ts-expect-error: `slotKey` is a valid key.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      if (slotKey in slots) slotCell = slots[slotKey](cell.row) as VNode
+      else if (slots.cell) slotCell = slots.cell(cell) as VNode
+      else if (cell.key in cell.row) slotCell = String(cell.row[cell.key as keyof T])
+
       return h(
         isHeader ? 'th' : 'td',
         { class: props.classCell, scope: isHeader ? 'row' : undefined },
-        slotCell?.(cell) ?? String(cell.value),
+        slotCell,
       )
     }
 
@@ -170,7 +136,7 @@ export const BaseTable = defineSetupComponent(
      * @param cells The cells to create the row for.
      * @returns The `<tr>` VNode.
      */
-    function createRow(cells: Array<TableCell<T, C>>): VNode {
+    function createRow(cells: Array<TableCell<T, K>>): VNode {
       return h(
         'tr',
         { class: props.classRow },
@@ -184,13 +150,13 @@ export const BaseTable = defineSetupComponent(
      * @param column The column to create the header for.
      * @returns The `<th>` VNodes.
      */
-    function createHeaderCell(column: C[keyof C]): VNode {
-      const slotKey = `header.${column.key}` as const
-      const slotHeader = (slots[slotKey] ?? slots.header) as (column: C[keyof C]) => VNode
+    function createHeaderCell(column: K): VNode {
+      const slotKey = `header.${column}` as keyof typeof slots
+      const slotHeader = (slots[slotKey] ?? slots.header) as (key: K) => VNode
       return h(
         'th',
         { class: props.classHeaderCell, scope: 'col' },
-        slotHeader?.(column) ?? column.label,
+        slotHeader?.(column) ?? column,
       )
     }
 
@@ -200,7 +166,7 @@ export const BaseTable = defineSetupComponent(
      * @param columns The columns to create the header for.
      * @returns The `<tr>` VNode.
      */
-    function createHeader(columns: Array<C[keyof C]>): VNode {
+    function createHeader(columns: K[]): VNode {
       return h(
         'tr',
         { class: props.classHeaderRow },
@@ -213,11 +179,11 @@ export const BaseTable = defineSetupComponent(
 
     // --- Render the table.
     return () => {
-      const vNodeHeaderCells = createHeader(columns.value)
+      const vNodeHeaderCells = createHeader(props.columns ?? [])
       const vNodeRows = cells.value.map(createRow)
       const vNodeHeader = h('thead', { class: props.classHeader }, vNodeHeaderCells)
       const vNodeBody = h('tbody', { class: props.classBody }, vNodeRows)
-      return h('table', mergeProps(attrs, state.attributes), [vNodeHeader, vNodeBody] )
+      return h('table', attrs, [vNodeHeader, vNodeBody] )
     }
   },
   {
@@ -235,12 +201,10 @@ if (import.meta.vitest) {
   describe('baseTable', () => {
     it('should render a simple table', () => {
       const wrapper = mount(BaseTable, { props: {
-        columns: {
-          // @ts-expect-error: inference is broken here.
-          name: { value: 'name', label: 'Name' },
-          // @ts-expect-error: inference is broken here.
-          age: { value: 'age', label: 'Age' },
-        },
+        columns: [
+          'name',
+          'age',
+        ],
         rows: [
           { name: 'Alice', age: 30 },
           { name: 'Bob', age: 25 },
@@ -252,8 +216,8 @@ if (import.meta.vitest) {
         '<table>',
         '  <thead>',
         '    <tr>',
-        '      <th scope="col">Name</th>',
-        '      <th scope="col">Age</th>',
+        '      <th scope="col">name</th>',
+        '      <th scope="col">age</th>',
         '    </tr>',
         '  </thead>',
         '  <tbody>',
@@ -274,7 +238,7 @@ if (import.meta.vitest) {
   describe('classes', () => {
     it('should apply the classHeader class to the <thead> element', () => {
       const wrapper = mount(BaseTable, { props: {
-        columns: {},
+        columns: [],
         rows: [],
         classHeader: 'class-header',
       } })
@@ -285,7 +249,7 @@ if (import.meta.vitest) {
 
     it('should apply the classHeaderRow class to the <tr> elements in the header', () => {
       const wrapper = mount(BaseTable, { props: {
-        columns: {},
+        columns: [],
         rows: [],
         classHeaderRow: 'class-header-row',
       } })
