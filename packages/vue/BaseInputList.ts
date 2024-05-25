@@ -14,14 +14,15 @@ const BASE_INPUT_LIST_PROPS = {
   ...BASE_INPUT_LIST_OPTIONS,
   label: String,
   native: Boolean,
+  placeholder: String,
   classSearch: {},
   classOption: {},
   classOptions: {},
   classValues: {},
   classValue: {},
-} satisfies Record<keyof Props<any, any, any>, Prop<unknown>>
+} satisfies Record<keyof BaseInputProps<any, any, any>, Prop<unknown>>
 
-interface Props<T, V, M extends boolean> extends
+export interface BaseInputProps<T, V, M extends boolean> extends
   BaseStateOptions,
   BaseRenderableOptions,
   UseBaseInputListOptions<T, V, M> {
@@ -43,6 +44,12 @@ interface Props<T, V, M extends boolean> extends
    * @default false
    */
   native?: boolean
+
+  /**
+   * Placeholder text to display in the search input when the list is searchable.
+   * This is used to provide a hint to the user about what they can search for.
+   */
+  placeholder?: string
 
   /**
    * The classes to apply to the search input. This can be used to style the
@@ -88,7 +95,7 @@ interface Props<T, V, M extends boolean> extends
 }
 
 /** Slot input for the `BaseInputList` component. */
-interface SlotProps<T, V> {
+export interface BaseInputListSlotProps<T, V> {
   options: Array<ListOption<T, V>>
   values: Array<ListOption<T, V>>
   isOpen: boolean
@@ -96,17 +103,17 @@ interface SlotProps<T, V> {
 
 /** The slots of the `BaseInputList` component. */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-type Slots<T, V> = {
-  search: (options: SlotProps<T, V>) => VNode
-  options: (options: SlotProps<T, V>) => VNode
+export type BaseInputListSlots<T, V> = {
+  search: (options: BaseInputListSlotProps<T, V>) => VNode
+  options: (options: BaseInputListSlotProps<T, V>) => VNode
   option: (option: ListOption<T, V>) => VNode
-  values: (options: SlotProps<T, V>) => VNode
+  values: (options: BaseInputListSlotProps<T, V>) => VNode
   value: (options: ListOption<T, V>) => VNode
-  empty: (options: SlotProps<T, V>) => VNode
+  empty: (options: BaseInputListSlotProps<T, V>) => VNode
 }
 
 export const BaseInputList = defineSetupComponent(
-  <T, V, M extends boolean>(props: Props<T, V, M>, { attrs, slots }: DefineComponentContext<Slots<T, V>>) => {
+  <T, V, M extends boolean>(props: BaseInputProps<T, V, M>, { attrs, slots }: DefineComponentContext<BaseInputListSlots<T, V>>) => {
 
     // --- Initialize reactive properties.
     const instance = getCurrentInstance()
@@ -126,7 +133,7 @@ export const BaseInputList = defineSetupComponent(
     ))
 
     // --- The slot properties.
-    const slotProps = computed<SlotProps<T, V>>(() => ({
+    const slotProps = computed<BaseInputListSlotProps<T, V>>(() => ({
       options: input.options,
       values: input.selected,
       isOpen: isOpenDebounced.value,
@@ -201,6 +208,7 @@ export const BaseInputList = defineSetupComponent(
         class: props.classSearch,
         disabled: props.disabled,
         readonly: props.readonly ?? !props.optionFilter,
+        placeholder: props.placeholder,
         value: input.search,
         onFocusin: () => isOpen.value = true,
         onFocusout: () => isOpen.value = false,
@@ -238,7 +246,7 @@ export const BaseInputList = defineSetupComponent(
           'aria-disabled': option.isDisabled() || undefined,
           'aria-selected': option.isSelected() || undefined,
           'class': props.classOption,
-          'onClick': () => option.toggle(),
+          'onClick': option.toggle,
         }), slots.option?.(option) ?? option.text))
 
       // --- If the list is empty, use the `empty` slot.
