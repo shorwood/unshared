@@ -13,10 +13,7 @@ export interface BaseInputTextOptions<T = unknown> extends
 
   /**
    * The unique identifier of the input. This is used to identify the input when
-   * submitting a form or when using the input in a list of inputs. By default,
-   * it is the `uid` property of the component instance.
-   *
-   * @default getCurrentInstance().uid
+   * submitting a form or when using the input in a list of inputs.
    */
   id?: string
 
@@ -90,9 +87,6 @@ export interface BaseInputTextComposable {
   /** Is the input a native input element. */
   isNative: boolean
 
-  /** The unique identifier of the input. */
-  id: number | string | undefined
-
   /** The current value of the input. */
   model: unknown
 
@@ -144,7 +138,6 @@ export function useBaseInputText<T>(options: BaseInputTextOptions<T> = {}, insta
   const state = useBaseState(options)
   const model = useVModel(options, 'modelValue', undefined, { passive: true })
   const is = computed(() => (options.as ?? (options.type === 'textarea' ? 'textarea' : 'input')))
-  const id = computed(() => options.id ?? instance?.uid)
   const isNative = computed(() => is.value === 'input' || is.value === 'textarea')
   const element = ref<HTMLInputElement>()
 
@@ -205,12 +198,15 @@ export function useBaseInputText<T>(options: BaseInputTextOptions<T> = {}, insta
   // --- If the input is not a native element, add MutationObserver to
   // --- sync the value and the inner text of the element.
   let lastUpdate = Date.now()
-  const observer = new MutationObserver(() => {
-    const now = Date.now()
-    if (now - lastUpdate < 5) return
-    onInput()
-    lastUpdate = now
-  })
+  let observer: MutationObserver | undefined
+  if (globalThis.MutationObserver) {
+    observer = new MutationObserver(() => {
+      const now = Date.now()
+      if (now - lastUpdate < 5) return
+      onInput()
+      lastUpdate = now
+    })
+  }
 
   // --- Watch for changes in the element's text content. This allows us
   // --- to observe changes in the inner text of the element when the input
@@ -218,6 +214,7 @@ export function useBaseInputText<T>(options: BaseInputTextOptions<T> = {}, insta
   watch(element, (element) => {
     if (!element) return
     if (isNative.value) return
+    if (!observer) return
     observer.observe(element, {
       subtree: true,
       childList: true,
@@ -228,7 +225,7 @@ export function useBaseInputText<T>(options: BaseInputTextOptions<T> = {}, insta
   // --- Define the HTML attributes.
   const attributes = computed(() => cleanAttributes({
     'ref': element,
-    'id': isNative.value ? id.value : undefined,
+    'id': isNative.value ? options.id : undefined,
     'type': is.value === 'input' ? options.type : undefined,
     'name': isNative.value ? options.name : undefined,
     'value': isNative.value ? model.value : undefined,
@@ -245,7 +242,7 @@ export function useBaseInputText<T>(options: BaseInputTextOptions<T> = {}, insta
   }))
 
   // --- Provide the composable into the component and return it.
-  const composable = toReactive({ model, is, isNative, id, attributes })
+  const composable = toReactive({ model, is, isNative, attributes })
   if (instance) instance[BASE_INPUT_TEXT_SYMBOL] = composable
   return composable
 }
