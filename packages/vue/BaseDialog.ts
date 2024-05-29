@@ -78,6 +78,7 @@ export const BaseDialog = /* #__PURE__ */ defineSetupComponent(
       'aria-hidden': isOpen.value,
       'role': 'dialog',
       'ref': element,
+      'style': isOpen ? undefined : { display: 'none' },
     }))
 
     /**
