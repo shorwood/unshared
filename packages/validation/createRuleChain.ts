@@ -41,7 +41,7 @@ export function createRuleChain<T extends RuleChainLike>(...rules: Readonly<T>):
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  const { isString } = await import('./assert')
+  const { assertString: isString } = await import('./assert')
 
   describe('rule chain', () => {
     it('should create a rule chain that parses and validates a string', () => {

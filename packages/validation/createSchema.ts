@@ -4,7 +4,7 @@ import { ValidationError } from './ValidationError'
 import { RuleSetLike, RuleSetResult, createRuleSet } from './createRuleSet'
 import { RuleChainLike, RuleChainResult, createRuleChain } from './createRuleChain'
 import { RuleLike, RuleResult } from './createRule'
-import { isBoolean } from './assert'
+import { assertBoolean } from './assert'
 
 /**
  * A map of properties and their corresponding rules or sets of rules.
@@ -57,7 +57,7 @@ export type Schema<T extends SchemaLike> = (value: object) => SchemaResult<T>
 export function createSchema<T extends SchemaLike>(schema: Immutable<T>): Schema<T> {
 
   // --- Compile the schema into a set of parsers.
-  const compiled: Record<string, Function> = {}
+  const schemaObject: Record<string, Function> = {}
   for (const key in schema) {
     const rules: unknown = schema[key]
     const parse = tries(
@@ -69,16 +69,16 @@ export function createSchema<T extends SchemaLike>(schema: Immutable<T>): Schema
 
     // --- If none of the functions return a valid parser, throw an error.
     if (!parse) throw new TypeError('The value passed to createSchema is not a valid rule, rule chain, rule set, or schema.')
-    compiled[key] = parse
+    schemaObject[key] = parse
   }
 
   // --- Return a function that validates the value against the schema.
   // --- For each key in the schema, validate and transform the value.
   return function(object: Record<PropertyKey, unknown>) {
     const result: Record<string, unknown> = {}
-    for (const key in compiled) {
+    for (const key in schemaObject) {
       try {
-        const rule = compiled[key]
+        const rule = schemaObject[key]
         const value = object[key]
         result[key] = rule.call(object, value)
       }
@@ -95,14 +95,14 @@ export function createSchema<T extends SchemaLike>(schema: Immutable<T>): Schema
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  const { isString, isUndefined, isStringNumber } = await import('./assert')
+  const { assertString, assertUndefined, assertStringNumber } = await import('./assert')
 
   test('should create a schema from an object of rules', () => {
     const parse = createSchema({
-      name: isString,
-      email: [isString, /\w+@example\.com/],
-      age: [[isString, Number], [isUndefined]],
-      flags: { isAdmin: isBoolean, isVerified: isBoolean },
+      name: assertString,
+      email: [assertString, /\w+@example\.com/],
+      age: [[assertString, Number], [assertUndefined]],
+      flags: { isAdmin: assertBoolean, isVerified: assertBoolean },
     })
 
     const result = parse({
@@ -129,8 +129,8 @@ if (import.meta.vitest) {
 
   test('should throw a validation error if a rule fails', () => {
     const parse = createSchema({
-      name: isString,
-      age: [[isStringNumber], [isUndefined]],
+      name: assertString,
+      age: [[assertStringNumber], [assertUndefined]],
     })
 
     const shouldThrow = () => parse({ name: 'John', age: 'not-a-number' })

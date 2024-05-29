@@ -1,6 +1,6 @@
 import { Function, IsUnknown, NotFunction } from '@unshared/types'
 import { ValidationError } from './ValidationError'
-import { isString, isStringMatching } from './assert'
+import { assertString, assertStringMatching } from './assert'
 
 /**
  * A rule-like value can be a regular expression or a function that validates and/or transforms a value.
@@ -93,7 +93,7 @@ export function createRule(rule: RuleLike): Function {
   // --- Short-circuit to the `isStringMatching` function if the rule is a regular expression.
   if (rule instanceof RegExp) {
     return (value: unknown) => {
-      isStringMatching(value, rule)
+      assertStringMatching(value, rule)
       return value
     }
   }
@@ -119,7 +119,7 @@ export function createRule(rule: RuleLike): Function {
     if (typeof replacement !== 'string')
       throw new TypeError('Remplacement rule must have a string as second element')
     return (value) => {
-      isString(value)
+      assertString(value)
       return value.replace(exp, replacement)
     }
   }
@@ -141,18 +141,18 @@ export function createRule(rule: RuleLike): Function {
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  const { isString, isNumberBetween } = await import('./assert')
+  const { assertString: assertString, assertNumberBetween } = await import('./assert')
 
   describe('rule from function', () => {
     it('should return the value if it is a string', () => {
-      const rule = createRule(isString)
+      const rule = createRule(assertString)
       const result = rule('test')
       expect(result).toBe('test')
       expectTypeOf(rule).toEqualTypeOf<(value: unknown) => string>()
     })
 
     it('should throw an error if the value is not a string', () => {
-      const rule = createRule(isString)
+      const rule = createRule(assertString)
       const shouldThrow = () => rule(1)
       expect(shouldThrow).toThrow(ValidationError)
       expect(shouldThrow).toThrow('Expected value to be a string but received: number')
@@ -199,20 +199,20 @@ if (import.meta.vitest) {
 
   describe('rule from parameterized function', () => {
     it('should create a rule with parameters pre-bound to the function', () => {
-      const rule = createRule([isNumberBetween, 2, 3])
+      const rule = createRule([assertNumberBetween, 2, 3])
       const result = rule(2)
       expect(result).toBe(2)
       expectTypeOf(rule).toEqualTypeOf<(value: unknown) => number>()
     })
 
     it('should return undefined if the value is in range', () => {
-      const rule = createRule([isNumberBetween, 1, 3])
+      const rule = createRule([assertNumberBetween, 1, 3])
       const result = rule(2)
       expect(result).toBe(2)
     })
 
     it('should throw a ValidationError if the value is out of range', () => {
-      const rule = createRule([isNumberBetween, 1, 3])
+      const rule = createRule([assertNumberBetween, 1, 3])
       const shouldThrow = () => rule(0)
       expect(shouldThrow).toThrow(ValidationError)
       expect(shouldThrow).toThrow('Expected value to be a number between 1 and 3 but received: 0')

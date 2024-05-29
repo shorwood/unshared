@@ -55,11 +55,11 @@ export function createRuleSet<T extends RuleSetLike>(...chains: Immutable<T>): R
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  const { isStringNumber, isUndefined } = await import('./assert')
+  const { assertStringNumber, assertUndefined } = await import('./assert')
 
   describe('rule set from set of functions', () => {
     it('should create a rule set and transform a value', () => {
-      const rule = createRuleSet([isStringNumber, Number])
+      const rule = createRuleSet([assertStringNumber, Number])
       const result = rule('5')
       expect(result).toBe(5)
       expectTypeOf(result).toEqualTypeOf<number>()
@@ -78,7 +78,7 @@ if (import.meta.vitest) {
     })
 
     it('should match undefined if the value is not a number', () => {
-      const rule = createRuleSet([isStringNumber, Number], [isUndefined])
+      const rule = createRuleSet([assertStringNumber, Number], [assertUndefined])
       // eslint-disable-next-line unicorn/no-useless-undefined
       const result = rule(undefined)
       expect(result).toBeUndefined()
@@ -87,7 +87,7 @@ if (import.meta.vitest) {
     })
 
     it('should match the second rule chain if the first rule chain fails', () => {
-      const throws = vi.fn(isUndefined) as typeof isUndefined
+      const throws = vi.fn(assertUndefined) as typeof assertUndefined
       const toString = vi.fn(String) as (value: unknown) => string
       const rule = createRuleSet([throws], [toString])
       const result = rule(5)
@@ -99,7 +99,7 @@ if (import.meta.vitest) {
     })
 
     it('should throw an error if no rule chain passes', () => {
-      const throws = vi.fn(isUndefined)
+      const throws = vi.fn(assertUndefined)
       const rule = createRuleSet([throws], [throws])
       const shouldThrow = () => rule(5)
       expect(shouldThrow).toThrow(ValidationError)

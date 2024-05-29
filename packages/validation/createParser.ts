@@ -1,56 +1,39 @@
-import { Immutable } from '@unshared/types'
 import { tries } from '@unshared/functions/tries'
 import { ValidationError } from './ValidationError'
-import { Schema, SchemaLike, createSchema } from './createSchema'
-import { RuleSet, RuleSetLike, createRuleSet } from './createRuleSet'
-import { RuleChain, RuleChainLike, createRuleChain } from './createRuleChain'
+import { SchemaLike, SchemaResult, createSchema } from './createSchema'
+import { RuleSetLike, RuleSetResult, createRuleSet } from './createRuleSet'
+import { RuleChainLike, RuleChainResult, createRuleChain } from './createRuleChain'
+
+/** A set of rules or a schema that can be used to validate a value. */
+export type ParserLike = [SchemaLike] | RuleChainLike | RuleSetLike
+
+/** The result of a parser function. */
+export type ParserResult<T extends ParserLike> =
+  T extends [SchemaLike] ? SchemaResult<T[0]> :
+    T extends RuleChainLike ? RuleChainResult<T> :
+      T extends RuleSetLike ? RuleSetResult<T> :
+        never
+
+/** A parser function that can be used to validate a value. */
+export type Parser<T extends ParserLike = ParserLike> =
+  (value: unknown) => ParserResult<T>
 
 /**
  * Create a parser function given a map of rules.
  *
- * @param schema The schema to use to validate the value.
+ * @param rules The rules or schema to use to validate the value.
  * @returns A parser function that can be used to validate a value.
  * @example
  * // Create a parser function from a schema.
  * const parse = createParser({
  *   name: isString,
- *   age: [isStringNumber, Number]
+ *   age: [assertStringNumber, Number]
  * })
  *
  * // Parse the value.
  * const result = parse({ name: 'John', age: '25' }) // { name: 'John', age: 25 }
  */
-export function createParser<T extends SchemaLike>(schema: Immutable<T>): Schema<T>
-
-/**
- * Create a parser function given a rule set.
- *
- * @param chains The rules to use to validate the value.
- * @returns A parser function that can be used to validate a value.
- * @example
- * // Create a parser function from a rule set.
- * const parse = createParser([isStringNumber, Number], [isNumber])
- *
- * // Parse the value.
- * const result = parse('5') // 5
- */
-// @ts-expect-error: Overload signature is not compatible with the implementation signature.
-export function createParser<T extends RuleSetLike>(...chains: Immutable<T>): RuleSet<T>
-
-/**
- * Create a parser function given a rule chain.
- *
- * @param rules The rules to use to validate the value.
- * @returns A parser function that can be used to validate a value.
- * @example
- * // Create a parser function from a rule chain.
- * const parse = createParser(isStringNumber, Number)
- *
- * // Parse the value.
- * const result = parse('5') // 5
- */
-export function createParser<T extends RuleChainLike>(...rules: Immutable<T>): RuleChain<T>
-export function createParser(...rules: [SchemaLike] | RuleChainLike | RuleSetLike): unknown {
+export function createParser<T extends ParserLike>(...rules: T): Parser<T> {
   const parse = tries(
     () => createRuleChain(...rules as RuleChainLike),
     () => createRuleSet(...rules as RuleSetLike),
@@ -59,15 +42,15 @@ export function createParser(...rules: [SchemaLike] | RuleChainLike | RuleSetLik
 
   // --- If none of the functions return a valid parser, throw an error.
   if (!parse) throw new TypeError('The value passed to createParser is not a valid rule, rule chain, rule set, or schema.')
-  return parse
+  return parse as Parser<T>
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  const { isString, isNumber, isStringNumber, isUndefined } = await import('./assert')
+  const { assertString, assertNumber, assertStringNumber, assertUndefined } = await import('./assert')
 
   test('should create a parser function from a single rule', () => {
-    const rule = createParser(isStringNumber)
+    const rule = createParser(assertStringNumber)
     const result = rule('5')
     expect(result).toBe('5')
     expectTypeOf(result).toEqualTypeOf<`${number}`>()
@@ -75,7 +58,7 @@ if (import.meta.vitest) {
   })
 
   test('should create a parser function from a rule chain', () => {
-    const rule = createParser(isStringNumber, Number)
+    const rule = createParser(assertStringNumber, Number)
     const result = rule('5')
     expect(result).toBe(5)
     expectTypeOf(result).toEqualTypeOf<number>()
@@ -83,7 +66,7 @@ if (import.meta.vitest) {
   })
 
   test('should create a parser function from a rule set', () => {
-    const rule = createParser([isStringNumber, Number], [isNumber], [isUndefined])
+    const rule = createParser([assertStringNumber, Number], [assertNumber], [assertUndefined])
     const result = rule(5)
     expect(result).toBe(5)
     expectTypeOf(result).toEqualTypeOf<number | undefined>()
@@ -91,15 +74,15 @@ if (import.meta.vitest) {
   })
 
   test('should create a parser function from a schema', () => {
-    const rule = createParser({ name: isString, age: [isStringNumber, Number] })
+    const rule = createParser({ name: assertString, age: [assertStringNumber, Number] })
     const result = rule({ name: 'John', age: '25' })
     expect(result).toStrictEqual({ name: 'John', age: 25 })
     expectTypeOf(result).toEqualTypeOf<{ name: string; age: number }>()
-    expectTypeOf(rule).toEqualTypeOf<(value: object) => { name: string; age: number }>()
+    expectTypeOf(rule).toEqualTypeOf<(value: unknown) => { name: string; age: number }>()
   })
 
   test('should throw a validation error if no rule passes', () => {
-    const rule = createParser([isStringNumber, Number], [isNumber])
+    const rule = createParser([assertStringNumber, Number], [assertNumber])
     const shouldThrow = () => rule('a')
     expect(shouldThrow).toThrow(ValidationError)
     expect(shouldThrow).toThrow('Expected value to match at least one rule chain in the set.')
