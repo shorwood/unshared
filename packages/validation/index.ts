@@ -1,4 +1,5 @@
 export * from './assert'
+export * from './createArrayParser'
 export * from './createParser'
 export * from './createRule'
 export * from './createRuleChain'

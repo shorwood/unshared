@@ -26,6 +26,11 @@
       "types": "./dist/assert.d.ts",
       "import": "./dist/assert.js"
     },
+    "./createArrayParser": {
+      "require": "./dist/createArrayParser.cjs",
+      "types": "./dist/createArrayParser.d.ts",
+      "import": "./dist/createArrayParser.js"
+    },
     "./createParser": {
       "require": "./dist/createParser.cjs",
       "types": "./dist/createParser.d.ts",
