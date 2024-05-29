@@ -26,6 +26,19 @@ export interface BaseInputToggleOptions<T = unknown, U extends ToggleType = Togg
   type?: U
 
   /**
+   * If `true`, the trigger for toggling the state of the toggle will be the
+   * `mousedown` event instead of the `click` event. This allows a more responsive
+   * feel when toggling the state of the toggle but may hinder some accessibility
+   * features.
+   *
+   * Note that this is disabled when touch capabilities are detected. In that case,
+   * the trigger will be the `click` event.
+   *
+   * @default false
+   */
+  eager?: boolean
+
+  /**
    * The model value of the toggle. This holds the current state of the toggle
    * and should be updated when the toggle is clicked.
    *
@@ -97,6 +110,7 @@ export const BASE_INPUT_TOGGLE_OPTIONS = {
   'onOn': [Function, Array],
   'onToggle': [Function, Array],
   'value': [Boolean, Array, String, Number],
+  'eager': Boolean,
   'classActive': { type: String, default: '' },
   'classInactive': { type: String, default: '' },
   'classMixed': { type: String, default: '' },
@@ -193,12 +207,22 @@ export function useBaseInputToggle<T, U extends ToggleType>(options: BaseInputTo
     [options.classMixed!]: options.classMixed && isActive.value === 'mixed',
   }))
 
+  // --- Compute the name of the click event based on the eager click option.
+  // --- If eager click is enabled, the click event will be triggered on mouse down.
+  // --- Unless the application is running in a touch environment, then it will
+  const clickEvent = computed(() => {
+    if (typeof window === 'undefined') return 'onClick'
+    if ('ontouchstart' in window) return 'onClick'
+    if (options.eager) return 'onMousedown'
+    return 'onClick'
+  })
+
   // --- Default the component to `input` if no component is provided.
   const is = computed(() => renderable.is ?? 'input')
 
   // --- Properties to assign to the element.
   const attributes = computed(() => cleanAttributes({
-    'onClick': toggle,
+    [clickEvent.value]: toggle,
     'checked': (is.value === 'input' && isActive.value) ? true : undefined,
     'selected': (is.value !== 'input' && isActive.value) ? true : undefined,
     'aria-selected': (is.value !== 'input' && isActive.value) ? true : undefined,

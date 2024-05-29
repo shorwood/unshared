@@ -5,6 +5,19 @@ import { Component, Prop, computed, getCurrentInstance } from 'vue'
 import { toReactive } from '@vueuse/core'
 import { cleanAttributes } from './cleanAttributes'
 
+/** The symbol to provide the composable into the component. */
+export const BASE_LINKABLE_SYMBOL = Symbol()
+
+/** The properties of the base linkable component. */
+export const BASE_LINKABLE_OPTIONS = {
+  classActive: { type: String, default: '' },
+  classActiveExact: { type: String, default: '' },
+  newtab: Boolean,
+  replace: Boolean,
+  to: [Object, String],
+  eager: Boolean,
+} satisfies Record<keyof BaseLinkableOptions, Prop<unknown>>
+
 /** The properties of the base linkable component. */
 export interface BaseLinkableOptions {
 
@@ -51,6 +64,18 @@ export interface BaseLinkableOptions {
    * @default undefined
    */
   to?: RouteLocationRaw
+
+  /**
+   * If `true`, the click event will be triggered on mouse down instead of
+   * the click event. This is useful for components that need to respond
+   * to the click event immediately.
+   *
+   * If the application is running in a touch environment, the click event
+   * will be used instead of the mouse down event.
+   *
+   * @default false
+   */
+  eager?: boolean
 }
 
 /** The properties of the base linkable composable. */
@@ -74,18 +99,6 @@ export interface BaseLinkableComposable {
   /** Whether the link is active. */
   isActive: boolean
 }
-
-/** The symbol to provide the composable into the component. */
-export const BASE_LINKABLE_SYMBOL = Symbol()
-
-/** The properties of the base linkable component. */
-export const BASE_LINKABLE_OPTIONS = {
-  classActive: { type: String, default: '' },
-  classActiveExact: { type: String, default: '' },
-  newtab: Boolean,
-  replace: Boolean,
-  to: [Object, String],
-} satisfies Record<keyof BaseLinkableOptions, Prop<unknown>>
 
 declare module '@vue/runtime-core' {
   interface ComponentInternalInstance {
@@ -133,10 +146,31 @@ export function useBaseLinkable(options: BaseLinkableOptions = {}, instance = ge
     if (isExternalLink.value) return 'a'
   })
 
+  // --- Trigger the navigation event when the link is clicked.
+  const onClick = computed(() => {
+    if (!isInternalLink.value || !options.to) return
+    return () => (options.replace
+      ? router.replace(options.to!)
+      : router.push(options.to!)
+    )
+  })
+
+  // --- Compute the name of the click event based on the eager click option.
+  // --- If eager click is enabled, the click event will be triggered on mouse down.
+  // --- Unless the application is running in a touch environment, then it will
+  // --- default to the click event.
+  const clickEvent = computed(() => {
+    if (typeof window === 'undefined') return 'onClick'
+    if ('ontouchstart' in window) return 'onClick'
+    if (options.eager) return 'onMousedown'
+    return 'onClick'
+  })
+
   // --- Compute internal link props.
   const attributes = computed(() => cleanAttributes({
 
     // --- Internal link properties.
+    [clickEvent.value]: onClick.value,
     activeClass: isInternalLink.value && options.classActive || undefined,
     exactActiveClass: isInternalLink.value && options.classActiveExact || undefined,
     replace: isInternalLink.value && options.replace || undefined,
@@ -156,6 +190,7 @@ export function useBaseLinkable(options: BaseLinkableOptions = {}, instance = ge
 
 /* v8 ignore next */
 // @vitest-environment happy-dom
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 if (import.meta.vitest) {
   const { isReactive } = await import('vue')
   const { mount } = await import('@vue/test-utils')
@@ -215,6 +250,7 @@ if (import.meta.vitest) {
     it('should set the `attributes` property with the internal link properties', () => {
       const result = useBaseLinkable({ to: '/path', classActive: 'active', classActiveExact: 'exact-active' })
       expect(result.attributes).toStrictEqual({
+        onClick: expect.any(Function),
         activeClass: 'active',
         exactActiveClass: 'exact-active',
         to: '/path',
@@ -224,6 +260,7 @@ if (import.meta.vitest) {
     it('should pass the `replace` property to the internal link', () => {
       const result = useBaseLinkable({ to: '/path', replace: true })
       expect(result.attributes).toStrictEqual({
+        onClick: expect.any(Function),
         replace: true,
         to: '/path',
       })
@@ -232,6 +269,7 @@ if (import.meta.vitest) {
     it('should ignore the `newtab` property for internal links', () => {
       const result = useBaseLinkable({ to: '/path', newtab: true })
       expect(result.attributes).toStrictEqual({
+        onClick: expect.any(Function),
         to: '/path',
       })
     })
