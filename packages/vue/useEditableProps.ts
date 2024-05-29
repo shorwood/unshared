@@ -1,4 +1,4 @@
-import { Ref, getCurrentInstance, ref, watch } from 'vue'
+import { Ref, WatchOptions, getCurrentInstance, ref, watch } from 'vue'
 import { MaybeFunction, Pretty } from '@unshared/types'
 
 /** The options for the `useEditableProps` composable. */
@@ -6,7 +6,7 @@ export interface UseEditablePropsOptions<
   T,
   K extends keyof T = keyof T,
   D extends Partial<Pick<T, K>> = {},
-> {
+> extends WatchOptions {
 
   /**
    * The default values for the editable properties. This can be a function
@@ -75,6 +75,7 @@ export function useEditableProps<
     eventName = 'update:props',
     emit = getCurrentInstance()?.emit,
     pick,
+    ...watchOptions
   } = options
 
   // --- Create the result object and get the default values.
@@ -92,12 +93,12 @@ export function useEditableProps<
     watch(() => props[key], (value) => {
       // @ts-expect-error: The key is a valid property.
       reference.value = value
-    })
+    }, watchOptions)
 
     // --- Sync outbound changes to the props.
     watch(reference, (value) => {
       if (emit) emit(eventName, key, value)
-    })
+    }, watchOptions)
 
     // @ts-expect-error: The key is a valid property.
     references[key] = reference
