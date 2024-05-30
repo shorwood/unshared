@@ -1,7 +1,7 @@
 {
   "name": "@unshared/fs",
   "type": "module",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "license": "MIT",
   "sideEffects": false,
   "author": "Stanley Horwood <stanley@hsjm.io>",
