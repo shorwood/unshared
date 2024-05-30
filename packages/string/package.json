@@ -111,6 +111,11 @@
       "types": "./dist/removeTrailingQuotes.d.ts",
       "import": "./dist/removeTrailingQuotes.js"
     },
+    "./repeat": {
+      "require": "./dist/repeat.cjs",
+      "types": "./dist/repeat.d.ts",
+      "import": "./dist/repeat.js"
+    },
     "./split": {
       "require": "./dist/split.cjs",
       "types": "./dist/split.d.ts",
