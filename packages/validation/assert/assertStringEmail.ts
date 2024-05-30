@@ -13,7 +13,7 @@ export type Email = `${string}@${string}`
  *
  * @param value The value to assert as an email.
  * @throws `ValidationError` if the value is not an email.
- * @example isEmail('john.doe@acme.com') // void
+ * @example assertStringEmail('john.doe@acme.com') // void
  */
 export function assertStringEmail(value: unknown): asserts value is Email {
   assertString(value)
