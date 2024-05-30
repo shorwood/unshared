@@ -10,8 +10,8 @@ import { NumberInteger } from '@unshared/types'
  * - The empty string are filtered out by default. This means that `split('ab', 'a')`
  * will return `['b']` instead of `['', 'b']`.
  *
- * - The `delimiter` parameter is defaulted to an empty string. This means that
- * `split('a b')` will return `['a', 'b']` instead of `['a b']`.
+ * - The `delimiter` parameter is defaulted to a comma. This means that `split('a,b')`
+ * will return `['a', 'b']` instead of `['a b']`.
  *
  * @param value The string to split.
  * @param delimiter The character to use as a separator.
@@ -19,17 +19,16 @@ import { NumberInteger } from '@unshared/types'
  * @returns An array of substrings.
  * @example split('a b c') // => ['a', 'b', 'c']
  */
-export function split<N extends number>(value: string, delimiter: RegExp | string = '', limit?: NumberInteger<N>): string[] {
+export function split<N extends number>(value: string, delimiter: RegExp | string = ',', limit?: NumberInteger<N>): string[] {
   return limit !== undefined && limit < 0
-    ? value.split(delimiter).slice(limit)
-      .filter(Boolean)
+    ? value.split(delimiter).slice(limit).filter(Boolean)
     : value.split(delimiter, limit).filter(Boolean)
 }
 
 /* v8 ignore next */
 if (import.meta.vitest) {
   test('should split a string with empty delimiter', () => {
-    const result = split('abc')
+    const result = split('a,b,c')
     expect(result).toMatchObject(['a', 'b', 'c'])
   })
 
