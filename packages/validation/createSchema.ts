@@ -74,13 +74,25 @@ export function createSchema<T extends SchemaLike>(schema: Immutable<T>): Schema
 
   // --- Return a function that validates the value against the schema.
   // --- For each key in the schema, validate and transform the value.
-  return function(object: Record<PropertyKey, unknown>) {
+  return function(object: FormData | Record<PropertyKey, unknown>) {
     const result: Record<string, unknown> = {}
     for (const key in schemaObject) {
       try {
         const rule = schemaObject[key]
-        const value = object[key]
-        result[key] = rule.call(object, value)
+
+        // --- If the object is a FormData instance, get the value from the form data.
+        // --- If the key ends with '[]', get all values for the key.
+        if (object instanceof FormData) {
+          const formValue = object.getAll(key)
+          const value = formValue.length > 1 ? formValue : formValue[0]
+          result[key] = rule.call(object, value ?? undefined)
+        }
+
+        // --- Otherwise, get the value for the key.
+        else {
+          const value = object[key]
+          result[key] = rule.call(object, value)
+        }
       }
       catch (error) {
         if (error instanceof ValidationError)
@@ -97,7 +109,7 @@ export function createSchema<T extends SchemaLike>(schema: Immutable<T>): Schema
 if (import.meta.vitest) {
   const { assertString, assertUndefined, assertStringNumber } = await import('./assert')
 
-  test('should create a schema from an object of rules', () => {
+  test('should create a schema and parse an object', () => {
     const parse = createSchema({
       name: assertString,
       email: [assertString, /\w+@example\.com/],
@@ -112,7 +124,7 @@ if (import.meta.vitest) {
       flags: { isAdmin: true, isVerified: false },
     })
 
-    expect(result).toMatchObject({
+    expect(result).toStrictEqual({
       name: 'John',
       age: 25,
       email: 'example@example.com',
@@ -127,14 +139,35 @@ if (import.meta.vitest) {
     }>()
   })
 
-  test('should throw a validation error if a rule fails', () => {
+  test('should create a schema and parse a FormData instance', () => {
     const parse = createSchema({
       name: assertString,
-      age: [[assertStringNumber], [assertUndefined]],
+      email: [assertString, /\w+@example\.com/],
+      age: [[assertString, Number], [assertUndefined]],
+      flags: [assertString, x => x === 'true'],
+      optional: [[assertString, Number], [assertUndefined]],
     })
 
-    const shouldThrow = () => parse({ name: 'John', age: 'not-a-number' })
+    const formData = new FormData()
+    formData.append('name', 'John')
+    formData.append('age', '25')
+    formData.append('email', 'john.doe@acme.com')
+    formData.append('flags', 'true')
+
+    const result = parse(formData)
+    expect(result).toStrictEqual({
+      name: 'John',
+      age: 25,
+      email: 'john.doe@acme.com',
+      flags: true,
+      optional: undefined,
+    })
+  })
+
+  test('should throw a validation error if a rule fails', () => {
+    const parse = createSchema({ value: [[assertStringNumber], [assertUndefined]] })
+    const shouldThrow = () => parse({ value: 'not-a-number' })
     expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected property "age" to match at least one rule chain in the set.')
+    expect(shouldThrow).toThrow('Expected property "value" to match at least one rule chain in the set.')
   })
 }
