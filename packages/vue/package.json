@@ -219,11 +219,11 @@
   },
   "dependencies": {
     "@codemirror/state": "6.4.1",
-    "@codemirror/view": "6.26.3",
+    "@codemirror/view": "6.27.0",
     "@unshared/collection": "workspace:*",
     "@unshared/functions": "workspace:*",
     "@unshared/types": "workspace:*",
-    "@vueuse/core": "10.9.0",
+    "@vueuse/core": "10.10.0",
     "codemirror": "6.0.1"
   },
   "devDependencies": {
