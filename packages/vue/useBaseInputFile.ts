@@ -1,6 +1,5 @@
 import { Prop, Ref, computed, getCurrentInstance } from 'vue'
 import { toReactive, useVModel } from '@vueuse/core'
-import { cleanAttributes } from './cleanAttributes'
 
 /** The symbol to provide the base toggle composable. */
 export const BASE_INPUT_FILE_SYMBOL = Symbol()
@@ -77,11 +76,10 @@ export interface BaseInputFileComposable {
   openDialog: () => void
 
   /**
-   * Attributes to assign to the HTML element containing the input. It provides various
-   * accessibility and usability attributes to the input. This should be spread onto the
-   * HTML element containing the input.
+   * Handle the drop event when files are dropped onto the input. This should be
+   * assigned to the `onDrop` event of the HTML element containing the input.
    */
-  attributes: Record<string, unknown>
+  handleDrop: (event: DragEvent) => void
 }
 
 declare module '@vue/runtime-core' {
@@ -153,22 +151,12 @@ export function useBaseInputFile(options: BaseInputFileOptions = {}, instance = 
   const thumbnails = computed(() => {
     const value = model.value
     if (!value) return []
-    // eslint-disable-next-line unicorn/prefer-spread
-    if (value instanceof FileList) return Array.from(value).map(getFileUrl)
     if (Array.isArray(value)) return value.map(getFileUrl)
     return [getFileUrl(value)]
   })
 
-  // --- Compute the attributes for the HTML element containing the input.
-  const attributes = computed(() => cleanAttributes({
-    onDrop: handleDrop,
-    onInput: handleDrop,
-    onClick: openDialog,
-    draggable: true,
-  }))
-
   // --- Return useables reactive variables and methods.
-  const composable = toReactive({ model, thumbnails, openDialog, attributes }) as BaseInputFileComposable
+  const composable = toReactive({ model, thumbnails, openDialog, handleDrop }) as BaseInputFileComposable
   if (instance) instance[BASE_INPUT_FILE_SYMBOL] = composable
   return composable
 }

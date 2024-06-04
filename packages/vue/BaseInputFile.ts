@@ -1,7 +1,7 @@
 import { Prop, VNode, computed, getCurrentInstance, h, mergeProps } from 'vue'
 import { BASE_STATE_OPTIONS, BaseStateOptions, useBaseState } from './useBaseState'
 import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions, useBaseRenderable } from './useBaseRenderable'
-import { BASE_INPUT_FILE_OPTIONS, BaseInputFileOptions, InputFiles, useBaseInputFile } from './useBaseInputFile'
+import { BASE_INPUT_FILE_OPTIONS, BaseInputFileComposable, BaseInputFileOptions, useBaseInputFile } from './useBaseInputFile'
 import { exposeToDevtool } from './exposeToDevtool'
 import { DefineComponentContext, defineSetupComponent } from './defineSetupComponent'
 
@@ -19,11 +19,9 @@ export interface BaseInputFileProps extends
   BaseInputFileOptions {}
 
 /** The slot properties of the `BaseInputFile` component. */
-export interface BaseInputFileSlotProps {
+export interface BaseInputFileSlotProps extends BaseInputFileComposable {
   loading: boolean
   error: Error | string | undefined
-  files: InputFiles
-  thumbnails: string[]
 }
 
 /** The slots of the `BaseInputFile` component. */
@@ -44,15 +42,16 @@ export const BaseInputFile = /* #__PURE__ */ defineSetupComponent(
     const attributes = computed(() => mergeProps(
       attrs,
       state.attributes,
-      inputFile.attributes,
     ))
 
     // --- Slot properties.
     const slotProps = computed(() => ({
-      loading: state.loading,
       error: state.error,
-      files: inputFile.model,
+      loading: state.loading,
+      model: inputFile.model,
       thumbnails: inputFile.thumbnails,
+      handleDrop: inputFile.handleDrop,
+      openDialog: inputFile.openDialog,
     }))
 
     // --- Expose properties to DevTools.
