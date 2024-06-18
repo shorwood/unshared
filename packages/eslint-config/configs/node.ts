@@ -28,6 +28,7 @@ export function node(options: ESLintConfigOptions): Linter.FlatConfig[] {
          */
         'n/no-missing-import': 'off',
         'n/no-missing-require': 'off',
+        'n/no-unpublished-import': 'off',
 
         /**
          * Enfore the use of the asyncrounous version of the `fs` and `dns` APIs.
