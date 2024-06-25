@@ -1,15 +1,30 @@
-/* eslint-disable unicorn/prefer-dom-node-text-content */
-import { Component, Prop, UnwrapRef, computed, getCurrentInstance, nextTick, ref, watch } from 'vue'
-import { toReactive, useVModel } from '@vueuse/core'
-import { getCursor, setCursor } from './useCursor'
+import { Component, Prop, UnwrapRef, computed, getCurrentInstance, ref } from 'vue'
+import { debounceFilter, toReactive, useRefHistory, useVModel } from '@vueuse/core'
+import { useElementSelection } from './useElementSelection'
 import { BASE_STATE_OPTIONS, BaseStateOptions, useBaseState } from './useBaseState'
-import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions } from './useBaseRenderable'
 import { cleanAttributes } from './cleanAttributes'
+
+/** The symbol to inject in components when using the `useBaseInputText` composable. */
+export const BASE_INPUT_TEXT_SYMBOL = Symbol()
+
+/** The options for the `useBaseInputText` composable. */
+export const BASE_INPUT_TEXT_OPTIONS = {
+  ...BASE_STATE_OPTIONS,
+  'id': String,
+  'modelValue': {},
+  'onUpdate:modelValue': [Function, Array],
+  'type': { type: String, default: 'text' },
+  'name': String,
+  'label': String,
+  'autocomplete': String,
+  'placeholder': String,
+  'parse': Function,
+  'serialize': Function,
+} satisfies Record<keyof BaseInputTextOptions, Prop<unknown>>
 
 /** The options for the `useBaseInputText` composable. */
 export interface BaseInputTextOptions<T = unknown> extends
-  BaseStateOptions,
-  BaseRenderableOptions {
+  BaseStateOptions {
 
   /**
    * The unique identifier of the input. This is used to identify the input when
@@ -63,12 +78,6 @@ export interface BaseInputTextOptions<T = unknown> extends
   'placeholder'?: string
 
   /**
-   * If the input is not a native input element, this attribute indicates whether the
-   * content of the element is editable or not.
-   */
-  'contenteditable'?: boolean
-
-  /**
    * The parser function to use when parsing the value of the input. This is used
    * to transform the value of the input. If an error is thrown, the value will
    * be set back to the previous value and the `error` event will be emitted.
@@ -76,6 +85,15 @@ export interface BaseInputTextOptions<T = unknown> extends
    * @example (value) => value.trim()
    */
   'parse'?: (value: string) => T
+
+  /**
+   * The sanitizer function to use when sanitizing the value of the input before
+   * setting it as the inner HTML of the element. This is used to prevent injection
+   * of malicious code into the element.
+   *
+   * @default (value: unknown) => String(value)
+   */
+  'serialize'?: (value: T) => string
 }
 
 /** The composable properties returned by the `useBaseInputText` composable. */
@@ -84,9 +102,6 @@ export interface BaseInputTextComposable {
   /** The type of the input. */
   is: Component | string
 
-  /** Is the input a native input element. */
-  isNative: boolean
-
   /** The current value of the input. */
   model: unknown
 
@@ -94,155 +109,89 @@ export interface BaseInputTextComposable {
   attributes: Record<string, unknown>
 }
 
-/** The symbol to inject in components when using the `useBaseInputText` composable. */
-export const BASE_INPUT_TEXT_SYMBOL = Symbol()
-
-/** The options for the `useBaseInputText` composable. */
-export const BASE_INPUT_TEXT_OPTIONS = {
-  ...BASE_STATE_OPTIONS,
-  ...BASE_RENDERABLE_OPTIONS,
-  'id': String,
-  'modelValue': {},
-  'onUpdate:modelValue': [Function, Array],
-  'type': { type: String, default: 'text' },
-  'name': String,
-  'label': String,
-  'autocomplete': String,
-  'placeholder': String,
-  'contenteditable': Boolean,
-  'parse': Function,
-} satisfies Record<keyof BaseInputTextOptions, Prop<unknown>>
-
 declare module '@vue/runtime-core' {
   interface ComponentInternalInstance {
     [BASE_INPUT_TEXT_SYMBOL]?: BaseInputTextComposable
   }
 }
 
-/**
- * Replace all spaces with a special character to prevent the browser from
- * trimming the spaces. This is necessary for the `contenteditable` attribute.
- *
- * @param value The value to replace spaces with.
- * @returns The sanitized text.
- */
-function sanitizeTextContent(value?: unknown): string {
-  if (!value) return '\u200B'
-  return String(value).replace(/ +$/, '\u00A0')
-}
-
 export function useBaseInputText<T>(options: BaseInputTextOptions<T> = {}, instance = getCurrentInstance()): BaseInputTextComposable {
   if (instance?.[BASE_INPUT_TEXT_SYMBOL]) return instance[BASE_INPUT_TEXT_SYMBOL]
 
   // --- Define the reactive properties.
-  const state = useBaseState(options)
-  const model = useVModel(options, 'modelValue', undefined, { passive: true })
-  const is = computed(() => (options.as ?? (options.type === 'textarea' ? 'textarea' : 'input')))
-  const isNative = computed(() => is.value === 'input' || is.value === 'textarea')
   const element = ref<HTMLInputElement>()
+  const state = useBaseState(options)
+  const is = computed(() => (options.type === 'textarea' ? 'textarea' : 'input'))
+  const model = useVModel(options, 'modelValue', instance?.emit, { passive: true })
+  const selection = useElementSelection(element)
+  const historyModel = useRefHistory(model, { eventFilter: debounceFilter(50) })
+
+  // --- Computed value for the serialized model value.
+  const value = computed(() => {
+    const serialize = options.serialize ?? String
+    // @ts-expect-error: type matching is not an issue here.
+    return serialize(model.value ?? '')
+  })
 
   /**
    * Handle native input event to update the model value. If a parser is
    * provided, it will parse the value and emit an error event if it fails.
    */
-  function onInput(): void {
+  function updateModelValue(): void {
     if (!element.value) return
-    const value = isNative.value
-      ? element.value.value
-      : element.value.innerText?.replaceAll('\u200B', '') ?? ''
+    const value = element.value.value
+    const parse = options.parse ?? String
 
-    // --- Set the model value and handle any parsing errors.
     try {
-      model.value = (options.parse ? options.parse(value) : value) as UnwrapRef<T>
       state.error = undefined
+      model.value = parse(value) as UnwrapRef<T>
     }
     catch (error) {
-      model.value = value as UnwrapRef<T>
       state.error = error as Error
+      model.value = value as UnwrapRef<T>
     }
 
-    const cursor = getCursor(element.value)
-    if (!cursor) return
-    void nextTick(() => setCursor(element.value!, cursor.start))
+    selection.restore()
   }
 
   /**
-   * Handle paste event to prevent pasting of formatted text. This will
-   * remove all formatting from the pasted text and insert plain text.
+   * Handle specific keydown events to provide additional functionality to the
+   * input. For example, undoing the last change with `Ctrl+Z`.
    *
-   * @param event The paste event.
+   * @param event The keydown event to handle.
    */
-  function onPaste(event: ClipboardEvent): void {
-    if (isNative.value) return
-    event.preventDefault()
-    if (!event.clipboardData) return
-    const target = event.target as HTMLElement
+  function onKeydown(event: KeyboardEvent): void {
+    const isControl = event.ctrlKey || event.metaKey
+    if (!isControl) return
 
-    // --- Remove the currently selected text.
-    const selection = window.getSelection()
-    if (selection?.rangeCount) selection.getRangeAt(0).deleteContents()
+    if (event.key === 'z') {
+      historyModel.undo()
+      event.preventDefault()
+    }
 
-    // --- Get the text to insert and the current text.
-    const cursor = getCursor()
-    if (!cursor) return
-    const textInsert = event.clipboardData.getData('text/plain')
-    const textCurrent = target.innerText ?? ''
-    const textBefore = textCurrent.slice(0, cursor.start)
-    const textAfter = textCurrent.slice(cursor.start)
-
-    // --- Insert the text and set the cursor offset.
-    target.textContent = textBefore + textInsert + textAfter
-    setCursor(element.value!, cursor.start + textInsert.length)
+    if (event.key === 'y') {
+      historyModel.redo()
+      event.preventDefault()
+    }
   }
-
-  // --- If the input is not a native element, add MutationObserver to
-  // --- sync the value and the inner text of the element.
-  let lastUpdate = Date.now()
-  let observer: MutationObserver | undefined
-  if (globalThis.MutationObserver) {
-    observer = new MutationObserver(() => {
-      const now = Date.now()
-      if (now - lastUpdate < 5) return
-      onInput()
-      lastUpdate = now
-    })
-  }
-
-  // --- Watch for changes in the element's text content. This allows us
-  // --- to observe changes in the inner text of the element when the input
-  // --- is not a native input element.
-  watch(element, (element) => {
-    if (!element) return
-    if (isNative.value) return
-    if (!observer) return
-    observer.observe(element, {
-      subtree: true,
-      childList: true,
-      characterData: true,
-    })
-  })
 
   // --- Define the HTML attributes.
   const attributes = computed(() => cleanAttributes({
     'ref': element,
-    'id': isNative.value ? options.id : undefined,
+    'id': options.id,
+    'value': value.value,
     'type': is.value === 'input' ? options.type : undefined,
-    'name': isNative.value ? options.name : undefined,
-    'value': isNative.value ? model.value : undefined,
-    'textContent': isNative.value ? undefined : sanitizeTextContent(model.value),
+    'name': options.name,
     'aria-label': options.label,
     'aria-invalid': state.error ? true : undefined,
-    'placeholder': isNative.value ? options.placeholder : undefined,
-    'autocomplete': isNative.value ? options.autocomplete : undefined,
-    'contenteditable': !isNative.value && !state.readonly ? true : undefined,
-    'aria-autocomplete': !isNative.value && !state.readonly ? options.autocomplete : undefined,
-    'aria-placeholder': !isNative.value && !state.readonly ? options.placeholder : undefined,
-    'onInput': isNative.value ? onInput : undefined,
-    'onPaste': isNative.value ? undefined : onPaste,
+    'placeholder': options.placeholder,
+    'autocomplete': options.autocomplete,
+    'onInput': updateModelValue,
+    'onKeydown': onKeydown,
   }))
 
   // --- Provide the composable into the component and return it.
-  const composable = toReactive({ model, is, isNative, attributes })
+  const composable = toReactive({ model, is, attributes })
   if (instance) instance[BASE_INPUT_TEXT_SYMBOL] = composable
   return composable
 }

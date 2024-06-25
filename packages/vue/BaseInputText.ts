@@ -10,17 +10,17 @@ export const BASE_INPUT_TEXT_PROPS = {
   ...BASE_INPUT_TEXT_OPTIONS,
   ...BASE_RENDERABLE_OPTIONS,
   ...BASE_STATE_OPTIONS,
-} satisfies Record<keyof Props, Prop<unknown>>
+} satisfies Record<keyof BaseInputTextProps, Prop<unknown>>
 
 /** The properties of the `BaseInputText` component. */
-interface Props<T = unknown> extends
+export interface BaseInputTextProps<T = unknown> extends
   BaseStateOptions,
   BaseRenderableOptions,
   BaseInputTextOptions<T> {}
 
 /** The properties of the `BaseInputText` component. */
 export const BaseInputText = /* #__PURE__ */ defineSetupComponent(
-  <T>(props: Props<T>, { attrs }: DefineComponentContext) => {
+  <T>(props: BaseInputTextProps<T>, { attrs }: DefineComponentContext) => {
     const instance = getCurrentInstance()
     const inputText = useBaseInputText<T>(props, instance)
     const state = useBaseState(props, instance)
