@@ -31,6 +31,11 @@
       "types": "./dist/BaseButton.d.ts",
       "import": "./dist/BaseButton.js"
     },
+    "./BaseContentEditable": {
+      "require": "./dist/BaseContentEditable.cjs",
+      "types": "./dist/BaseContentEditable.d.ts",
+      "import": "./dist/BaseContentEditable.js"
+    },
     "./BaseDialog": {
       "require": "./dist/BaseDialog.cjs",
       "types": "./dist/BaseDialog.d.ts",
@@ -111,11 +116,6 @@
       "types": "./dist/resolveComponentType.d.ts",
       "import": "./dist/resolveComponentType.js"
     },
-    "./types": {
-      "require": "./dist/types.cjs",
-      "types": "./dist/types.d.ts",
-      "import": "./dist/types.js"
-    },
     "./useAlerts": {
       "require": "./dist/useAlerts.cjs",
       "types": "./dist/useAlerts.d.ts",
@@ -125,6 +125,11 @@
       "require": "./dist/useBaseClickable.cjs",
       "types": "./dist/useBaseClickable.d.ts",
       "import": "./dist/useBaseClickable.js"
+    },
+    "./useBaseContentEditable": {
+      "require": "./dist/useBaseContentEditable.cjs",
+      "types": "./dist/useBaseContentEditable.d.ts",
+      "import": "./dist/useBaseContentEditable.js"
     },
     "./useBaseInputFile": {
       "require": "./dist/useBaseInputFile.cjs",
@@ -161,15 +166,15 @@
       "types": "./dist/useBaseState.d.ts",
       "import": "./dist/useBaseState.js"
     },
-    "./useCursor": {
-      "require": "./dist/useCursor.cjs",
-      "types": "./dist/useCursor.d.ts",
-      "import": "./dist/useCursor.js"
-    },
     "./useEditableProps": {
       "require": "./dist/useEditableProps.cjs",
       "types": "./dist/useEditableProps.d.ts",
       "import": "./dist/useEditableProps.js"
+    },
+    "./useElementSelection": {
+      "require": "./dist/useElementSelection.cjs",
+      "types": "./dist/useElementSelection.d.ts",
+      "import": "./dist/useElementSelection.js"
     },
     "./useEventBus": {
       "require": "./dist/useEventBus.cjs",
