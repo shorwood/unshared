@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { dedent } from '@unshared/string/dedent'
+import InputText from '../components/InputText.vue'
 
 const values = [
   { label: 'Cooking', value: 'cooking' },
@@ -11,7 +12,7 @@ const valueSwitch = ref(false)
 const valueRadio = ref('cooking')
 const valueCheckbox = ref(['cooking'])
 const valueList = ref(['TEST', 'Sincere@april.biz'])
-
+const valueText = ref<string>('Hello, <b>World</b>!')
 const valueEditor = ref(dedent(`
   program odd_even
   implicit none
@@ -84,6 +85,20 @@ const valueEditor = ref(dedent(`
       <!-- List -->
       <Card title="List" class="col-span-2">
         <InputList v-model="valueList"/>
+      </Card>
+
+      <!-- Input Text -->
+      <Card title="Input Text" class="col-span-2">
+        <InputText
+          v-model="valueText"
+          :parse="(value) => value.toUpperCase()"
+          :serialize="(value) => value.toLowerCase()"
+        />
+      </Card>
+
+      <!-- Content Editable -->
+      <Card title="Content Editable" class="col-span-2">
+        <ContentEditable v-model="valueText"/>
       </Card>
     </main>
   </div>
