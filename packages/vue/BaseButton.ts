@@ -94,11 +94,9 @@ export const BaseButton = /* #__PURE__ */ defineSetupComponent(
     return () => h(
       is.value,
       attributes.value,
-      {
-        default: is.value === 'button'
-          ? () => slots.default?.(slotProps.value) ?? props.label
-          : slots.default?.(slotProps.value) ?? props.label,
-      },
+      is.value === 'button'
+        ? slots.default?.(slotProps.value) ?? props.label
+        : () => slots.default?.(slotProps.value) ?? props.label,
     )
   },
   {
