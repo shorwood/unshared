@@ -1,4 +1,5 @@
 import { Prop, computed, h, mergeProps, onMounted, ref, watch } from 'vue'
+import { useLocalStorage } from '@vueuse/core'
 import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions, useBaseRenderable } from './useBaseRenderable'
 import { exposeToDevtool } from './exposeToDevtool'
 import { DefineComponentContext, defineSetupComponent } from './defineSetupComponent'
@@ -64,6 +65,7 @@ export const BaseIcon = /* #__PURE__ */ defineSetupComponent(
   (props: Props, { attrs }: DefineComponentContext) => {
     const renderable = useBaseRenderable(props)
     const iconSvg = ref<string>()
+    const cache = useLocalStorage('__Icon_Cache', {} as Record<string, string>)
 
     // --- Detect what kind of icon we have.
     const type = computed(() => {
@@ -117,13 +119,23 @@ export const BaseIcon = /* #__PURE__ */ defineSetupComponent(
      * @returns A promise that resolves when the icon content is loaded.
      */
     async function loadIcon(): Promise<void> {
+      if (type.value !== 'url') return iconSvg.value = undefined
       if (!props.load) return iconSvg.value = undefined
       if (!props.icon) return iconSvg.value = undefined
-      if (type.value !== 'url') return iconSvg.value = undefined
+
+      // --- Check if the icon is already in the cache.
+      if (cache.value[props.icon]) {
+        iconSvg.value = cache.value[props.icon]
+        return
+      }
+
+      // --- Load the icon content.
       const response = await fetch(props.icon)
       if (!response.ok) return
       const svg = await response.text()
-      iconSvg.value = cleanSvgSize(svg)
+      const svgClean = cleanSvgSize(svg)
+      iconSvg.value = svgClean
+      cache.value[props.icon] = svgClean
     }
 
     /**
