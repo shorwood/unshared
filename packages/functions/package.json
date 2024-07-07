@@ -141,6 +141,11 @@
       "types": "./dist/once.d.ts",
       "import": "./dist/once.js"
     },
+    "./resolve": {
+      "require": "./dist/resolve.cjs",
+      "types": "./dist/resolve.d.ts",
+      "import": "./dist/resolve.js"
+    },
     "./setPrototypeChain": {
       "require": "./dist/setPrototypeChain.cjs",
       "types": "./dist/setPrototypeChain.d.ts",
