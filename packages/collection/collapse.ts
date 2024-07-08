@@ -1,4 +1,4 @@
-import { Optional } from '@unshared/types'
+import { PartialStrict } from '@unshared/types'
 
 export interface CollapseOptions {
 
@@ -61,7 +61,7 @@ export type Collapsed<T, O extends CollapseOptions = {}> =
               ? O['keepEmptyObjects'] extends true ? U : undefined
 
               // --- If one of the properties is undefined, union with `undefined`.
-              : Optional<R> extends R ? U | undefined
+              : PartialStrict<R> extends R ? U | undefined
                 : string extends keyof U ? U | undefined
                   : U
 
