@@ -206,6 +206,11 @@
       "types": "./dist/Key.d.ts",
       "import": "./dist/Key.js"
     },
+    "./Loose": {
+      "require": "./dist/Loose.cjs",
+      "types": "./dist/Loose.d.ts",
+      "import": "./dist/Loose.js"
+    },
     "./MapValues": {
       "require": "./dist/MapValues.cjs",
       "types": "./dist/MapValues.d.ts",
@@ -411,11 +416,6 @@
       "types": "./dist/OmitNever.d.ts",
       "import": "./dist/OmitNever.js"
     },
-    "./Optional": {
-      "require": "./dist/Optional.cjs",
-      "types": "./dist/Optional.d.ts",
-      "import": "./dist/Optional.js"
-    },
     "./Overloads": {
       "require": "./dist/Overloads.cjs",
       "types": "./dist/Overloads.d.ts",
@@ -430,6 +430,11 @@
       "require": "./dist/OverloadsReturnTypes.cjs",
       "types": "./dist/OverloadsReturnTypes.d.ts",
       "import": "./dist/OverloadsReturnTypes.js"
+    },
+    "./PartialStrict": {
+      "require": "./dist/PartialStrict.cjs",
+      "types": "./dist/PartialStrict.d.ts",
+      "import": "./dist/PartialStrict.js"
     },
     "./Path": {
       "require": "./dist/Path.cjs",
@@ -475,6 +480,11 @@
       "require": "./dist/Replace.cjs",
       "types": "./dist/Replace.d.ts",
       "import": "./dist/Replace.js"
+    },
+    "./Required": {
+      "require": "./dist/Required.cjs",
+      "types": "./dist/Required.d.ts",
+      "import": "./dist/Required.js"
     },
     "./StringCombinaison": {
       "require": "./dist/StringCombinaison.cjs",
@@ -580,11 +590,6 @@
       "require": "./dist/Unique.cjs",
       "types": "./dist/Unique.d.ts",
       "import": "./dist/Unique.js"
-    },
-    "./Unoptional": {
-      "require": "./dist/Unoptional.cjs",
-      "types": "./dist/Unoptional.d.ts",
-      "import": "./dist/Unoptional.js"
     },
     "./Values": {
       "require": "./dist/Values.cjs",
