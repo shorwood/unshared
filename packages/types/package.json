@@ -296,6 +296,11 @@
       "types": "./dist/MaybeFunction.d.ts",
       "import": "./dist/MaybeFunction.js"
     },
+    "./MaybeInstance": {
+      "require": "./dist/MaybeInstance.cjs",
+      "types": "./dist/MaybeInstance.d.ts",
+      "import": "./dist/MaybeInstance.js"
+    },
     "./MaybeLiteral": {
       "require": "./dist/MaybeLiteral.cjs",
       "types": "./dist/MaybeLiteral.d.ts",
