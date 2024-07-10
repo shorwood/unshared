@@ -1,0 +1,12 @@
+{
+	"name": "Node.js",
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    },
+    "ghcr.io/devcontainers-contrib/features/pnpm:2": {
+      "version": "9.5.0"
+    }
+  }
+}
