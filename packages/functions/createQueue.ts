@@ -178,14 +178,20 @@ export class Queue extends EventTarget {
       fn,
       isRunning: false,
       promise: new Promise<T>((resolve, reject) => {
-        this.addEventListener('complete', (event) => {
+        const onComplete = (event: Event) => {
           const { detail } = event as CustomEvent<{ task: QueueTask; value: T }>
-          if (detail.task === task) resolve(detail.value)
-        })
-        this.addEventListener('error', (event) => {
+          if (detail.task !== task) return
+          resolve(detail.value)
+          this.removeEventListener('complete', onComplete)
+        }
+        const onError = (event: Event) => {
           const { detail } = event as CustomEvent<{ error: Error; task: QueueTask }>
-          if (detail.task === task) reject(detail.error)
-        })
+          if (detail.task !== task) return
+          reject(detail.error)
+          this.removeEventListener('error', onError)
+        }
+        this.addEventListener('complete', onComplete)
+        this.addEventListener('error', onError)
       }),
     }
 
@@ -256,9 +262,12 @@ export class Queue extends EventTarget {
   get done() {
     return new Promise<void>((resolve) => {
       if (this.tasks.length === 0) return resolve()
-      this.addEventListener('complete', () => {
-        if (this.tasks.length === 0) resolve()
-      })
+      const onComplete = () => {
+        if (this.tasks.length > 0) return
+        resolve()
+        this.removeEventListener('complete', onComplete)
+      }
+      this.addEventListener('complete', onComplete)
     })
   }
 }
