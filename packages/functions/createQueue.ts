@@ -247,6 +247,20 @@ export class Queue extends EventTarget {
   get length() {
     return this.tasks.length
   }
+
+  /**
+   * @returns
+   * A promise that resolves when all tasks in the queue have completed.
+   * Be aware that if this queue is busy, the promise may never resolve.
+   */
+  get done() {
+    return new Promise<void>((resolve) => {
+      if (this.tasks.length === 0) return resolve()
+      this.addEventListener('complete', () => {
+        if (this.tasks.length === 0) resolve()
+      })
+    })
+  }
 }
 
 /**
@@ -426,6 +440,29 @@ if (import.meta.vitest) {
       expect(task2).not.toHaveBeenCalled()
       vi.advanceTimersByTime(10)
       expect(task2).toHaveBeenCalledWith()
+    })
+  })
+
+  describe('done', () => {
+    it('should resolve when all tasks are complete', async() => {
+      vi.useFakeTimers()
+      const queue = createQueue({ concurency: 2 })
+      const task1 = vi.fn(() => sleep(10))
+      const task2 = vi.fn(() => sleep(10))
+      void queue.call(task1)
+      void queue.call(task2)
+      const result = queue.done
+      vi.advanceTimersByTime(15)
+      await new Promise(nextTick)
+      expect(task1).toHaveBeenCalledWith()
+      expect(task2).toHaveBeenCalledWith()
+      await expect(result).resolves.toBeUndefined()
+    })
+
+    it('should resolve immediately if the queue is empty', async() => {
+      const queue = createQueue()
+      const result = queue.done
+      await expect(result).resolves.toBeUndefined()
     })
   })
 }
