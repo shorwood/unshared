@@ -39,7 +39,7 @@ export interface QueueOptions {
    * // Scale concurrency with the RAM usage.
    * const queue = new Queue({ concurrency: () => os.freemem() / os.totalmem() * 10 })
    */
-  concurency?: MaybeFunction<number>
+  concurrency?: MaybeFunction<number>
 
   /**
    * The time in milliseconds to wait before starting the next function. You can also provide
@@ -93,7 +93,7 @@ export class Queue extends EventTarget {
    */
   constructor(options: QueueOptions = {}) {
     super()
-    if (options.concurency) this.internalConcurency = options.concurency
+    if (options.concurrency) this.internalConcurency = options.concurrency
     if (options.cooldown) this.internalCooldown = options.cooldown
     this.addEventListener('complete', () => {
       if (this.cooldown <= 0) return this.startNextTask()
@@ -145,7 +145,7 @@ export class Queue extends EventTarget {
    * @returns The result of the next task.
    */
   private startNextTask() {
-    if (this.running >= this.concurency) return
+    if (this.running >= this.concurrency) return
     const task = this.tasks.find(task => !task.isRunning)
     if (!task) return
 
@@ -227,7 +227,7 @@ export class Queue extends EventTarget {
    *
    * @returns The current concurrency value.
    */
-  get concurency() {
+  get concurrency() {
     return typeof this.internalConcurency === 'function'
       ? this.internalConcurency()
       : this.internalConcurency
@@ -333,7 +333,7 @@ if (import.meta.vitest) {
     })
 
     it('should abort a task that is not running and reject with an error', async() => {
-      const queue = createQueue({ concurency: -1 })
+      const queue = createQueue({ concurrency: -1 })
       const task = queue.call(Math.random)
       task.cancel()
       await expect(task).rejects.toThrow('Task canceled')
@@ -381,13 +381,13 @@ if (import.meta.vitest) {
 
   describe('options', () => {
     it('should set the concurrency option with a number', () => {
-      const queue = createQueue({ concurency: 4 })
-      expect(queue.concurency).toBe(4)
+      const queue = createQueue({ concurrency: 4 })
+      expect(queue.concurrency).toBe(4)
     })
 
     it('should set the concurrency option with a function', () => {
-      const queue = createQueue({ concurency: () => 4 })
-      expect(queue.concurency).toBe(4)
+      const queue = createQueue({ concurrency: () => 4 })
+      expect(queue.concurrency).toBe(4)
     })
 
     it('should set the cooldown option with a number', () => {
@@ -418,7 +418,7 @@ if (import.meta.vitest) {
 
     it('should run multiple functions concurrently', async() => {
       vi.useFakeTimers()
-      const queue = createQueue({ concurency: 2 })
+      const queue = createQueue({ concurrency: 2 })
       const task1 = vi.fn(() => sleep(10))
       const task2 = vi.fn(() => sleep(10))
       const task3 = vi.fn(() => sleep(10))
@@ -455,7 +455,7 @@ if (import.meta.vitest) {
   describe('done', () => {
     it('should resolve when all tasks are complete', async() => {
       vi.useFakeTimers()
-      const queue = createQueue({ concurency: 2 })
+      const queue = createQueue({ concurrency: 2 })
       const task1 = vi.fn(() => sleep(10))
       const task2 = vi.fn(() => sleep(10))
       void queue.call(task1)
