@@ -176,6 +176,11 @@
       "types": "./dist/toSearchParams.d.ts",
       "import": "./dist/toSearchParams.js"
     },
+    "./toSlug": {
+      "require": "./dist/toSlug.cjs",
+      "types": "./dist/toSlug.d.ts",
+      "import": "./dist/toSlug.js"
+    },
     "./toSnakeCase": {
       "require": "./dist/toSnakeCase.cjs",
       "types": "./dist/toSnakeCase.d.ts",
