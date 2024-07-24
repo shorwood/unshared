@@ -43,7 +43,7 @@ export async function commit() {
       { content: `[DIFF}]\n${diff}`, role: 'user' },
       { content: `[INPUT]\n${input}`, role: 'user' },
     ],
-    model: 'gpt-4-turbo-2024-04-09',
+    model: 'gpt-4-turbo',
     stream: true,
     temperature: 0.7,
   })
