@@ -8,7 +8,7 @@ import { Function } from '@unshared/types'
  * @template T The type of the function.
  * @example Once<() => number> // => () => number & { reset: () => void }
  */
-export type Once<T extends Function = Function> = { reset: () => void } & T
+export type Onced<T extends Function = Function> = { reset: () => void } & T
 
 /**
  * Returns a function that will be executed at most one time, no matter how
@@ -34,7 +34,7 @@ export type Once<T extends Function = Function> = { reset: () => void } & T
  * fn.reset()
  * fn() // => 0.987654321
  */
-export function once<T extends Function>(fn: T): Once<T> {
+export function once<T extends Function>(fn: T): Onced<T> {
   const cache = new Map<unknown, { result: unknown }>()
 
   // --- Wrap the function in a call guard.
@@ -54,7 +54,7 @@ export function once<T extends Function>(fn: T): Once<T> {
   }
 
   // --- Return the wrapped function.
-  return wrapped as Once<T>
+  return wrapped as Onced<T>
 }
 
 /** v8 ignore start */
