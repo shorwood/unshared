@@ -87,7 +87,6 @@ async function publishOne(options: PublishOneOptions) {
   })
 }
 
-
 /**
  * Publish multiple packages to the registry with the specified tag. If the
  * `CI` environment variable is not set, the process will be aborted.

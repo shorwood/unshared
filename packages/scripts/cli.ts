@@ -1,14 +1,14 @@
 import { argv } from 'node:process'
 import { parseCliArguments } from '@unshared/process'
 import { publish } from './publish'
-import { build } from './build'
 import { commit } from './commit'
+import { build } from './build'
 
 function cli() {
   const { parameters: [command, ...parameters], options } = parseCliArguments(argv)
 
   if (command === 'build') return build({ ...options, packageNames: parameters })
-    
+
   if (command === 'publish') return publish({ ...options, packageNames: parameters })
 
   // --- Commit the input to the OpenAI API.

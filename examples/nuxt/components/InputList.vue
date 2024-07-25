@@ -100,7 +100,7 @@ watchDebounced(search, fetchUsers, { debounce: 500 })
               {{ value.text }}
             </p>
             <button
-              @click.prevent="value.off()"
+              @click.prevent="() => value.off()"
               class="text-primary-500 hover:text-primary-400 transition-colors duration-300">
               X
             </button>

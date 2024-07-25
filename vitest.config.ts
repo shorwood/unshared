@@ -1,5 +1,5 @@
-import { resolvePackageNames } from './packages/scripts/resolvePackageNames'
 import { defineConfig } from 'vitest/config'
+import { resolvePackageNames } from './packages/scripts/resolvePackageNames'
 
 const packageNames = await resolvePackageNames()
 const includeSource = packageNames.map(name => `./packages/${name}/**/*.ts`)
