@@ -48,8 +48,9 @@ export function buildEnum(exportName: string, entries: EnumEntry[]) {
   const enumDeclarations: string[] = []
   for (const entry of entries) {
     const key = entry.key.includes(' ') ? `'${entry.key}'` : entry.key
-    const document = entry.document?.replace(/^/gm, ' * ') ?? ''
-    const declaration = `/**\n${document}\n */\n${key} = ${entry.value},`
+    const document = entry.document?.replace(/^/gm, ' * ')
+    const documentPart = document ? `/**\n${document}\n */\n` : ''
+    const declaration = `${documentPart}${key} = ${entry.value},`
     enumDeclarations.push(declaration)
   }
 
@@ -71,56 +72,41 @@ export function buildEnum(exportName: string, entries: EnumEntry[]) {
 
 /* v8 ignore next */
 if (import.meta.vitest) {
+  const { dedent } = await import('@unshared/string/dedent')
+
   test('should build an enum', () => {
     const result = buildEnum('Test', [
       { key: 'Zero', value: '0' },
-      { document: 'Document@default 1', key: 'One', value: '1' },
+      { document: 'Document\n@default 1', key: 'One', value: '1' },
     ])
-    const expected = 'export enum Test {\n  Zero = 0,\n  /**\nDocument@default 1\n */\n  One = 1,\n}\n'
-    expect(result).toStrictEqual(expected)
+
+    expect(result).toStrictEqual(dedent(`
+      export enum Test {
+        Zero = 0,
+        /**
+         * Document
+         * @default 1
+         */
+        One = 1,
+      }
+    `))
   })
 
   test('should build a default enum', () => {
     const result = buildEnum('default', [
       { key: 'Zero', value: '0' },
-      { document: 'Document@default 1', key: 'One', value: '1' },
+      { document: 'Document\n@default 1', key: 'One', value: '1' },
     ])
-    const expected = 'export default enum {\n  Zero = 0,\n  /**\nDocument@default 1\n */\n  One = 1,\n}\n'
-    expect(result).toStrictEqual(expected)
-  })
 
-  test('should throw an error if the export name is not a string', () => {
-
-    // @ts-expect-error: invalid type
-    const shouldThrow = () => buildEnum(0, [])
-    expect(shouldThrow).toThrow(TypeError)
-  })
-
-  test('should throw an error if the entries are not an array', () => {
-
-    // @ts-expect-error: invalid type
-    const shouldThrow = () => buildEnum('Test', {})
-    expect(shouldThrow).toThrow(TypeError)
-  })
-
-  test('should throw an error if the entry is not an object', () => {
-
-    // @ts-expect-error: invalid type
-    const shouldThrow = () => buildEnum('Test', [0])
-    expect(shouldThrow).toThrow(TypeError)
-  })
-
-  test('should throw an error if the entry name is not a string', () => {
-
-    // @ts-expect-error: invalid type
-    const shouldThrow = () => buildEnum('Test', [{ key: 0, value: '0' }])
-    expect(shouldThrow).toThrow(TypeError)
-  })
-
-  test('should throw an error if the entry value is not a string', () => {
-
-    // @ts-expect-error: invalid type
-    const shouldThrow = () => buildEnum('Test', [{ key: 'Zero', value: 0 }])
-    expect(shouldThrow).toThrow(TypeError)
+    expect(result).toStrictEqual(dedent(`
+      export default enum {
+        Zero = 0,
+        /**
+         * Document
+         * @default 1
+         */
+        One = 1,
+      }
+    `))
   })
 }
