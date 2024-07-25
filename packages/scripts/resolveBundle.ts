@@ -26,8 +26,6 @@ export async function resolveBundle(packageName: string, options: ResolveBundleO
     tsConfigPath = await findAncestor('tsconfig.json', cwd),
   } = options
 
-  console.log('tsConfigPath', tsConfigPath)
-
   // --- Check if the tsconfig.json file exists.
   if (!tsConfigPath) throw new Error('Cannot build the package: No tsconfig.json file found.')
 
