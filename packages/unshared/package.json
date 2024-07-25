@@ -1,4 +1,110 @@
 {
   "name": "unshared",
-  "version": "0.0.1"
+  "type": "module",
+  "version": "0.0.13",
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
+  "repository": {
+    "directory": "packages/unshared",
+    "type": "git",
+    "url": "git@github.com:shorwood/unshared.git"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./binary": {
+      "require": "./dist/binary.cjs",
+      "types": "./dist/binary.d.ts",
+      "import": "./dist/binary.js"
+    },
+    "./boolean": {
+      "require": "./dist/boolean.cjs",
+      "types": "./dist/boolean.d.ts",
+      "import": "./dist/boolean.js"
+    },
+    "./collection": {
+      "require": "./dist/collection.cjs",
+      "types": "./dist/collection.d.ts",
+      "import": "./dist/collection.js"
+    },
+    "./color": {
+      "require": "./dist/color.cjs",
+      "types": "./dist/color.d.ts",
+      "import": "./dist/color.js"
+    },
+    "./decorators": {
+      "require": "./dist/decorators.cjs",
+      "types": "./dist/decorators.d.ts",
+      "import": "./dist/decorators.js"
+    },
+    "./fs": {
+      "require": "./dist/fs.cjs",
+      "types": "./dist/fs.d.ts",
+      "import": "./dist/fs.js"
+    },
+    "./functions": {
+      "require": "./dist/functions.cjs",
+      "types": "./dist/functions.d.ts",
+      "import": "./dist/functions.js"
+    },
+    "./math": {
+      "require": "./dist/math.cjs",
+      "types": "./dist/math.d.ts",
+      "import": "./dist/math.js"
+    },
+    "./process": {
+      "require": "./dist/process.cjs",
+      "types": "./dist/process.d.ts",
+      "import": "./dist/process.js"
+    },
+    "./reactivity": {
+      "require": "./dist/reactivity.cjs",
+      "types": "./dist/reactivity.d.ts",
+      "import": "./dist/reactivity.js"
+    },
+    "./string": {
+      "require": "./dist/string.cjs",
+      "types": "./dist/string.d.ts",
+      "import": "./dist/string.js"
+    },
+    "./types": {
+      "require": "./dist/types.cjs",
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js"
+    },
+    "./validation": {
+      "require": "./dist/validation.cjs",
+      "types": "./dist/validation.d.ts",
+      "import": "./dist/validation.js"
+    },
+    ".": {
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "dependencies": {
+    "@unshared/binary": "workspace:*",
+    "@unshared/boolean": "workspace:*",
+    "@unshared/collection": "workspace:*",
+    "@unshared/color": "workspace:*",
+    "@unshared/decorators": "workspace:*",
+    "@unshared/fs": "workspace:*",
+    "@unshared/functions": "workspace:*",
+    "@unshared/math": "workspace:*",
+    "@unshared/process": "workspace:*",
+    "@unshared/reactivity": "workspace:*",
+    "@unshared/string": "workspace:*",
+    "@unshared/types": "workspace:*",
+    "@unshared/validation": "workspace:*"
+  }
 }

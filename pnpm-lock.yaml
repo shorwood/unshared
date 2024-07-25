@@ -441,7 +441,47 @@ importers:
         specifier: 0.60.4
         version: 0.60.4
 
-  packages/unshared: {}
+  packages/unshared:
+    dependencies:
+      '@unshared/binary':
+        specifier: workspace:*
+        version: link:../binary
+      '@unshared/boolean':
+        specifier: workspace:*
+        version: link:../boolean
+      '@unshared/collection':
+        specifier: workspace:*
+        version: link:../collection
+      '@unshared/color':
+        specifier: workspace:*
+        version: link:../color
+      '@unshared/decorators':
+        specifier: workspace:*
+        version: link:../decorators
+      '@unshared/fs':
+        specifier: workspace:*
+        version: link:../fs
+      '@unshared/functions':
+        specifier: workspace:*
+        version: link:../functions
+      '@unshared/math':
+        specifier: workspace:*
+        version: link:../math
+      '@unshared/process':
+        specifier: workspace:*
+        version: link:../process
+      '@unshared/reactivity':
+        specifier: workspace:*
+        version: link:../reactivity
+      '@unshared/string':
+        specifier: workspace:*
+        version: link:../string
+      '@unshared/types':
+        specifier: workspace:*
+        version: link:../types
+      '@unshared/validation':
+        specifier: workspace:*
+        version: link:../validation
 
   packages/validation:
     dependencies:
