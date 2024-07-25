@@ -2,12 +2,14 @@ import RollupEsbuild from 'rollup-plugin-esbuild'
 import RollupDts from 'rollup-plugin-dts'
 import { RollupOptions, defineConfig } from 'rollup'
 import { cwd as getCwd } from 'node:process'
+import { MaybeArray } from '@unshared/types'
 import { findAncestor, glob } from '@unshared/fs'
 import { resolvePackage } from './resolvePackage'
 
 export interface ResolveBundleOptions {
   cwd?: string
   tsConfigPath?: string
+  entrypoints?: MaybeArray<string>
 }
 
 /**
@@ -24,6 +26,7 @@ export async function resolveBundle(packageName: string, options: ResolveBundleO
   const {
     cwd = getCwd(),
     tsConfigPath = await findAncestor('tsconfig.json', cwd),
+    entrypoints = '*.ts',
   } = options
 
   // --- Check if the tsconfig.json file exists.
@@ -31,7 +34,7 @@ export async function resolveBundle(packageName: string, options: ResolveBundleO
 
   // --- Get the input files and external dependencies.
   const { outputDirectory, packageDependencies, packagePath } = await resolvePackage(packageName, { cwd })
-  const inputPaths = await glob('*.ts', { cwd: packagePath, exclude: ['*.d.ts'] })
+  const inputPaths = await glob(entrypoints, { cwd: packagePath, exclude: ['*.d.ts'] })
   const externalExps = Object.keys(packageDependencies).map(dep => new RegExp(`^${dep}`))
   const external = [...externalExps, /^node:/]
 
