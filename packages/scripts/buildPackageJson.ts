@@ -49,7 +49,7 @@ async function createPackageExports(outPath: string, packagePath: string): Promi
 
 async function createPackageBin(options: CreatePackageBinOptions): Promise<Record<string, string> | undefined> {
   const { outPath, packagePath, packageName, rootPackageName } = options
-  const packageBinFiles = glob('cli.{js,mjs,cjs}', { cwd: outPath, getRelative: true, onlyFiles: true })
+  const packageBinFiles = glob(['cli.*.{js,mjs,cjs}', 'cli.{js,mjs,cjs}'], { cwd: outPath, getRelative: true, onlyFiles: true })
   const packageBin: Record<string, string> = {}
   const defaultBinName = toKebabCase(rootPackageName, packageName)
 

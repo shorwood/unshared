@@ -24,8 +24,8 @@
     }
   },
   "scripts": {
-    "dev": "tsx ./packages/scripts/cli.ts build --watch true",
-    "build": "tsx ./packages/scripts/cli.ts build",
+    "dev": "tsx ./packages/scripts/cli.uncli.ts build --watch true",
+    "build": "tsx ./packages/scripts/cli.uncli.ts build",
     "lint": "DEBUG=eslint:eslint eslint --cache",
     "lint:ci": "eslint --cache --ignore-pattern examples",
     "lint:fix": "DEBUG=eslint:eslint eslint --fix --cache",
@@ -34,10 +34,10 @@
     "test:ui": "vitest --ui",
     "test:types": "vitest --typecheck",
     "test:coverage": "vitest --coverage",
-    "commit": "tsx ./packages/scripts/cli.ts commit",
+    "commit": "tsx ./packages/scripts/cli.uncli.ts commit",
     "commit:lint": "commitlint --edit",
-    "publish:ci": "tsx ./packages/scripts/cli.ts publish",
-    "release": "tsx ./packages/scripts/cli.ts release",
+    "publish:ci": "tsx ./packages/scripts/cli.uncli.ts publish",
+    "release": "tsx ./packages/scripts/cli.uncli.ts release",
     "preinstall": "node ./forcePnpm.js",
     "prepare": "husky"
   },
