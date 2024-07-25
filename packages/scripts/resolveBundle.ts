@@ -36,7 +36,11 @@ export async function resolveBundle(packageName: string, options: ResolveBundleO
   const { outputDirectory, packageDependencies, packagePath } = await resolvePackage(packageName, { cwd })
   const inputPaths = await glob(entrypoints, { cwd: packagePath, exclude: ['*.d.ts'] })
   const externalExps = Object.keys(packageDependencies).map(dep => new RegExp(`^${dep}`))
-  const external = [...externalExps, /^node:/]
+  const external = [
+    ...externalExps,
+    /^node:/,
+    'http',
+  ]
 
   // --- Base Rollup configuration.
   const rollupConfig = defineConfig({
@@ -128,7 +132,7 @@ if (import.meta.vitest) {
 
   test('should include the internal and external dependencies', async() => {
     const configs = await resolveBundle('subproject', { cwd: '/project' })
-    expect(configs[0].external).toStrictEqual([/^lodash/, /^node:/])
+    expect(configs[0].external).toStrictEqual([/^lodash/, /^node:/, 'http'])
   })
 
   test('should include all ts files as input', async() => {
@@ -168,7 +172,11 @@ if (import.meta.vitest) {
     const configs = await resolveBundle('subproject', { cwd: '/project' })
     expect(configs).toMatchObject([
       {
-        external: [/^lodash/, /^node:/],
+        external: [
+          /^lodash/,
+          /^node:/,
+          'http',
+        ],
         input: [
           '/project/packages/subproject/bar.ts',
           '/project/packages/subproject/foo.ts',
@@ -196,7 +204,11 @@ if (import.meta.vitest) {
         plugins: expect.any(Array),
       },
       {
-        external: [/^lodash/, /^node:/],
+        external: [
+          /^lodash/,
+          /^node:/,
+          'http',
+        ],
         input: [
           '/project/packages/subproject/bar.ts',
           '/project/packages/subproject/foo.ts',
