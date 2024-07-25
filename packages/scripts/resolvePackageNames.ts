@@ -8,7 +8,10 @@ import { readdir } from 'node:fs/promises'
  * @param path The root path of the repository.
  * @returns The list of package names.
  */
-export async function resolvePackageNames(path = getCwd()) {
+export async function resolvePackageNames(path = getCwd()): Promise<string[]> {
   const packagesPath = resolve(path, 'packages')
-  return await readdir(packagesPath)
+  const entities = await readdir(packagesPath, { withFileTypes: true })
+  return entities
+    .filter(entity => entity.isDirectory())
+    .map(entity => entity.name)
 }

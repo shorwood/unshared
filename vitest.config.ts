@@ -1,7 +1,9 @@
+import { resolvePackageNames } from './packages/scripts/resolvePackageNames'
 import { defineConfig } from 'vitest/config'
-import { PACKAGES_NAMES } from './scripts/constants'
 
-const includeSource = PACKAGES_NAMES.map(name => `./packages/${name}/**/*.ts`)
+const packageNames = await resolvePackageNames()
+const includeSource = packageNames.map(name => `./packages/${name}/**/*.ts`)
+
 const exclude = [
   '**/node_modules/**',
   '**/index.ts',
