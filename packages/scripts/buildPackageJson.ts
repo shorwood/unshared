@@ -1,6 +1,7 @@
 import { join, relative } from 'node:path'
-import { getGitRemoteUrl, getPackageMetadata } from './utils'
-import { glob } from '../packages/fs/glob'
+import { glob } from '@unshared/fs'
+import { resolvePackage } from './resolvePackage'
+import { getGitRemoteUrl } from './getGitRemoteUrl'
 
 async function createPackageExports(outPath: string, packagePath: string) {
   const packageOutFiles = glob('*.{js,mjs,cjs,d.ts}', { cwd: outPath, getRelative: true, onlyFiles: true })
@@ -10,6 +11,7 @@ async function createPackageExports(outPath: string, packagePath: string) {
   for await (const path of packageOutFiles) {
     if (path.includes('.min.')) continue
     if (path.includes('.map')) continue
+    if (path.includes('cli')) continue
 
     const outPathRelative = relative(packagePath, outPath)
     const importPath = `./${join(outPathRelative, path)}`
@@ -33,22 +35,23 @@ async function createPackageExports(outPath: string, packagePath: string) {
   return packageExports
 }
 
+export interface BuildPackageJsonOptions {
+  cwd?: string
+}
+
 /**
  * Define the version of the package at the given path based on the release type.
  *
  * @param packageName The name of the package to build.
+ * @param options The options for building the package.json file.
+ * @example buildPackageJson('my-package')
+ * @returns A promise that resolves when the package.json file is built.
  */
-export async function buildPackageJson(packageName: string) {
-  const {
-    packageJson,
-    packageJsonFS,
-    packagePath,
-    packageRelativePath,
-    rootPackageJson,
-  } = await getPackageMetadata(packageName)
-  const outPath = join(packagePath, 'dist')
+export async function buildPackageJson(packageName: string, options: BuildPackageJsonOptions = {}): Promise<void> {
+  const { packageJson, packageJsonFS, packagePath, packageRelativePath, rootPackageJson } = await resolvePackage(packageName, options)
 
   // --- Load the root and current package.json files.
+  const outPath = join(packagePath, 'dist')
   const packageRemoteUrl = await getGitRemoteUrl(packagePath)
   const packageRemoteUrlHttps = packageRemoteUrl?.replace(/^git@(.+):(.+).git$/, 'https://$1/$2')
   const packageExports = await createPackageExports(outPath, packagePath)

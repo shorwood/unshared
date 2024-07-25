@@ -1,14 +1,10 @@
 import { join } from 'node:path'
 import { readdir, writeFile } from 'node:fs/promises'
-import { getPackageMetadata } from './utils'
-import { createPattern } from '../packages/string/createPattern'
+import { createPattern } from '@unshared/string/createPattern'
+import { resolvePackage } from './resolvePackage'
 
 interface IndexFile {
-
-  /** The content of the index file. */
   content: string
-
-  /** The path to the index file. */
   path: string
 }
 
@@ -38,6 +34,7 @@ async function buildIndex(path: string): Promise<IndexFile> {
       if (entity.name.startsWith('__')) continue
       if (entity.name.startsWith('scripts')) continue
       if (entity.name.endsWith('.d.ts')) continue
+      if (entity.name.endsWith('cli.ts')) continue
       if (entity.name.endsWith('.worker.ts')) continue
 
       // --- If subdirectory contains an index file, add it to the imports.
@@ -72,13 +69,20 @@ async function buildIndex(path: string): Promise<IndexFile> {
   }
 }
 
+export interface BuildIndexesOptions {
+  cwd?: string
+}
+
 /**
  * Generate the `index.ts` files for the given package.
  *
  * @param packageName The name of the package to build the indexes for.
+ * @param options The options for building the indexes.
+ * @example buildIndexes('my-package')
+ * @returns A promise that resolves when the indexes are built.
  */
-export async function buildIndexes(packageName: string): Promise<void> {
-  const { packagePath } = await getPackageMetadata(packageName)
+export async function buildIndexes(packageName: string, options: BuildIndexesOptions = {}): Promise<void> {
+  const { packagePath } = await resolvePackage(packageName, options)
 
   // --- Do not build the index for these packages.
   if (packageName === 'eslint-config') return

@@ -35,9 +35,9 @@ export interface EnumEntry {
  * const responseJson = await response.json()
  * const categories = responseJson.map(({ name, id }) => ({ name, value: id }))
  * const declaration = buildEnum('Category', categories)
- * await writeFile('category.d.ts', declaration)
+ * await writeFile('categories.ts', declaration)
  *
- * // category.d.ts
+ * // categories.ts
  * export enum MyEnum {
  *   Category1 = <uuid>,
  *   Category2 = <uuid>,

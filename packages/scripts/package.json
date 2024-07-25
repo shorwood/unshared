@@ -1,0 +1,107 @@
+{
+  "name": "@unshared/scripts",
+  "type": "module",
+  "version": "0.0.13",
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
+  "repository": {
+    "directory": "packages/scripts",
+    "type": "git",
+    "url": "git@github.com:shorwood/unshared.git"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "dependencies": {
+    "@unshared/collection": "workspace:*",
+    "@unshared/fs": "workspace:*",
+    "@unshared/process": "workspace:*",
+    "@unshared/string": "workspace:*",
+    "openai": "4.48.1",
+    "rollup": "4.18.0",
+    "rollup-plugin-dts": "6.1.1",
+    "rollup-plugin-esbuild": "6.1.1",
+    "types-pkg-json": "1.2.1",
+    "types-tsconfig": "2.1.1"
+  },
+  "exports": {
+    "./build": {
+      "require": "./dist/build.cjs",
+      "types": "./dist/build.d.ts",
+      "import": "./dist/build.js"
+    },
+    "./buildEnum": {
+      "require": "./dist/buildEnum.cjs",
+      "types": "./dist/buildEnum.d.ts",
+      "import": "./dist/buildEnum.js"
+    },
+    "./buildIndexes": {
+      "require": "./dist/buildIndexes.cjs",
+      "types": "./dist/buildIndexes.d.ts",
+      "import": "./dist/buildIndexes.js"
+    },
+    "./buildPackageJson": {
+      "require": "./dist/buildPackageJson.cjs",
+      "types": "./dist/buildPackageJson.d.ts",
+      "import": "./dist/buildPackageJson.js"
+    },
+    "./commit": {
+      "require": "./dist/commit.cjs",
+      "types": "./dist/commit.d.ts",
+      "import": "./dist/commit.js"
+    },
+    "./commitPrompt": {
+      "require": "./dist/commitPrompt.cjs",
+      "types": "./dist/commitPrompt.d.ts",
+      "import": "./dist/commitPrompt.js"
+    },
+    "./getGitHash": {
+      "require": "./dist/getGitHash.cjs",
+      "types": "./dist/getGitHash.d.ts",
+      "import": "./dist/getGitHash.js"
+    },
+    "./getGitRemoteUrl": {
+      "require": "./dist/getGitRemoteUrl.cjs",
+      "types": "./dist/getGitRemoteUrl.d.ts",
+      "import": "./dist/getGitRemoteUrl.js"
+    },
+    "./publish": {
+      "require": "./dist/publish.cjs",
+      "types": "./dist/publish.d.ts",
+      "import": "./dist/publish.js"
+    },
+    "./release": {
+      "require": "./dist/release.cjs",
+      "types": "./dist/release.d.ts",
+      "import": "./dist/release.js"
+    },
+    "./resolveBundle": {
+      "require": "./dist/resolveBundle.cjs",
+      "types": "./dist/resolveBundle.d.ts",
+      "import": "./dist/resolveBundle.js"
+    },
+    "./resolvePackage": {
+      "require": "./dist/resolvePackage.cjs",
+      "types": "./dist/resolvePackage.d.ts",
+      "import": "./dist/resolvePackage.js"
+    },
+    "./resolvePackageNames": {
+      "require": "./dist/resolvePackageNames.cjs",
+      "types": "./dist/resolvePackageNames.d.ts",
+      "import": "./dist/resolvePackageNames.js"
+    },
+    ".": {
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts"
+}

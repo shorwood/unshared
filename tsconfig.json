@@ -7,7 +7,6 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "paths": {
-      "@/*": ["./scripts/*"],
       "@unshared/*": ["./packages/*"]
     },
     "types": [
@@ -23,11 +22,11 @@
   },
   "include": [
     "packages",
-    "scripts",
     "examples",
     "tsup.config.ts",
     "vitest.config.ts",
-    "eslint.config.mjs"
+    "eslint.config.mjs",
+    "forcePnpm.js"
   ],
   "exclude": [
     "**/node_modules",

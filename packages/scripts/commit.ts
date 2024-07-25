@@ -1,29 +1,19 @@
 import { OpenAI } from 'openai'
 // eslint-disable-next-line n/no-unsupported-features/node-builtins
 import { createInterface } from 'node:readline/promises'
-import { readFile } from 'node:fs/promises'
 import { existsSync, readFileSync } from 'node:fs'
 import { execFileSync, spawn } from 'node:child_process'
-import { load as parseYaml } from 'js-yaml'
-import 'dotenv/config'
-
-interface Prompt {
-  content: string
-  role: 'assistant' | 'system' | 'user'
-}
+import { COMMIT_PROMPT } from './commitPrompt'
 
 /**
  * Generate a commit message for the currently staged changes.
  *
+ * @param input The input to use for the commit message.
+ * @param apiKey The OpenAI API key to use for the completion.
  * @returns The commit message for the currently staged changes.
  * @example commit()
  */
-export async function commit() {
-  const promptPath = new URL('commitPrompt.yaml', import.meta.url)
-  const promptYaml = await readFile(promptPath, 'utf8')
-  const promptSystem = parseYaml(promptYaml) as Record<string, unknown>
-  const input = process.argv.slice(2).join(' ')
-
+export async function commit(input: string, apiKey: string) {
   const diff = execFileSync('git', ['diff', '--cached', '--staged'], { encoding: 'utf8' })
   const diffPaths = execFileSync('git', ['diff', '--name-only', '--cached', '--staged'], { encoding: 'utf8' })
   const diffStat = execFileSync('git', ['diff', '--stat', '--cached', '--staged'], { encoding: 'utf8' })
@@ -31,11 +21,11 @@ export async function commit() {
   const branchName = execFileSync('git', ['branch', '--show-current'], { encoding: 'utf8' })
   const fileContents = diffPaths.split('\n').filter(Boolean).filter(existsSync).map(path => readFileSync(path, 'utf8'))
 
-  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+  const openai = new OpenAI({ apiKey })
   const response = await openai.chat.completions.create({
     max_tokens: 1024,
     messages: [
-      ...promptSystem.messages as Prompt[],
+      ...COMMIT_PROMPT,
       { content: `[LAST_COMMITS]\n${lastCommits}\n\n`, role: 'user' },
       { content: `[BRANCH_NAME]\n${branchName}\n\n`, role: 'user' },
       { content: `[DIFF_STAGED_STATS]\n${diffStat}\n\n`, role: 'user' },
@@ -85,5 +75,3 @@ export async function commit() {
 
   console.log('Done.')
 }
-
-await commit()
