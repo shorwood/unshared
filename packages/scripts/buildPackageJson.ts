@@ -1,9 +1,21 @@
 import { join, relative } from 'node:path'
+import { toKebabCase } from '@unshared/string'
 import { glob } from '@unshared/fs'
 import { resolvePackage } from './resolvePackage'
 import { getGitRemoteUrl } from './getGitRemoteUrl'
 
-async function createPackageExports(outPath: string, packagePath: string) {
+export interface BuildPackageJsonOptions {
+  cwd?: string
+}
+
+export interface CreatePackageBinOptions {
+  outPath: string
+  packagePath: string
+  packageName: string
+  rootPackageName: string
+}
+
+async function createPackageExports(outPath: string, packagePath: string): Promise<Record<string, Record<string, string>>> {
   const packageOutFiles = glob('*.{js,mjs,cjs,d.ts}', { cwd: outPath, getRelative: true, onlyFiles: true })
   const packageExports: Record<string, Record<string, string>> = {}
 
@@ -35,8 +47,23 @@ async function createPackageExports(outPath: string, packagePath: string) {
   return packageExports
 }
 
-export interface BuildPackageJsonOptions {
-  cwd?: string
+async function createPackageBin(options: CreatePackageBinOptions): Promise<Record<string, string> | undefined> {
+  const { outPath, packagePath, packageName, rootPackageName } = options
+  const packageBinFiles = glob('cli.{js,mjs,cjs}', { cwd: outPath, getRelative: true, onlyFiles: true })
+  const packageBin: Record<string, string> = {}
+  const defaultBinName = toKebabCase(rootPackageName, packageName)
+
+  // --- Set the bin for each file depending on the file extension.
+  for await (const path of packageBinFiles) {
+    const outPathRelative = relative(packagePath, outPath)
+    const importPath = `./${join(outPathRelative, path)}`
+    const binName = /cli\.(?<name>.+?)\.(ts|mjs|cjs|js)$/.exec(path)?.groups?.name
+    packageBin[binName ?? defaultBinName] = importPath
+  }
+
+  // --- If there are no bin files, return undefined.
+  if (Object.keys(packageBin).length === 0) return
+  return packageBin
 }
 
 /**
@@ -48,18 +75,27 @@ export interface BuildPackageJsonOptions {
  * @returns A promise that resolves when the package.json file is built.
  */
 export async function buildPackageJson(packageName: string, options: BuildPackageJsonOptions = {}): Promise<void> {
-  const { packageJson, packageJsonFS, packagePath, packageRelativePath, rootPackageJson } = await resolvePackage(packageName, options)
+  const {
+    packageJson,
+    packageJsonFS,
+    packagePath,
+    packageRelativePath,
+    rootPackageJson,
+    rootPackageName,
+  } = await resolvePackage(packageName, options)
 
   // --- Load the root and current package.json files.
   const outPath = join(packagePath, 'dist')
   const packageRemoteUrl = await getGitRemoteUrl(packagePath)
   const packageRemoteUrlHttps = packageRemoteUrl?.replace(/^git@(.+):(.+).git$/, 'https://$1/$2')
   const packageExports = await createPackageExports(outPath, packagePath)
+  const packageBin = await createPackageBin({ outPath, packagePath, packageName, rootPackageName })
 
   // --- Update the package.json file.
   packageJson.version = rootPackageJson.version
   packageJson.type = 'module'
   packageJson.sideEffects = false
+  packageJson.bin = packageBin
   packageJson.exports = packageExports
   packageJson.files = ['dist', 'README.md', 'LICENSE.md']
   packageJson.main = packageExports['.']?.require

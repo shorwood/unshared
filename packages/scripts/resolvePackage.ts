@@ -65,6 +65,7 @@ export async function resolvePackage(packageName: string, options: GetPackageMet
     packagePath,
     packageRelativePath,
     rootPackageJson,
+    rootPackageName,
     rootPackageJsonpath,
   }
 }
