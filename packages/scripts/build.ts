@@ -1,6 +1,7 @@
 import { rollup, watch as rollupWatch } from 'rollup'
 import { cwd as getCwd, stdout } from 'node:process'
 import { rm } from 'node:fs/promises'
+import { findAncestor } from '@unshared/fs'
 import { toArray } from '@unshared/collection/toArray'
 import { resolvePackageNames } from './resolvePackageNames'
 import { resolvePackage } from './resolvePackage'
@@ -12,6 +13,7 @@ export interface BuildOptions extends ResolveBundleOptions {
   cwd?: string
   watch?: boolean
   packageNames?: string[]
+  generateIndexes?: boolean
 }
 
 /**
@@ -28,7 +30,8 @@ export async function build(options: BuildOptions = {}) {
     cwd = getCwd(),
     watch = false,
     packageNames = await resolvePackageNames(cwd),
-    tsConfigPath,
+    tsConfigPath = await findAncestor('tsconfig.json', cwd),
+    generateIndexes = false,
   } = options
 
   // --- Cleanup the output directories.
@@ -37,8 +40,13 @@ export async function build(options: BuildOptions = {}) {
     await rm(outputDirectory, { force: true, recursive: true })
   }
 
+  // --- Generate the indexes for each package.
+  if (generateIndexes) {
+    for (const packageName of packageNames)
+      await buildIndexes(packageName, { cwd })
+  }
+
   // --- Create the configuration for each package.
-  for (const packageName of packageNames) await buildIndexes(packageName, { cwd })
   const bundlesPromises = packageNames.map(packageName => resolveBundle(packageName, { cwd, tsConfigPath }))
   const bundlesResolved = await Promise.all(bundlesPromises)
   const bundles = bundlesResolved.flat()
