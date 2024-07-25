@@ -38,7 +38,7 @@ jobs:
       - run: pnpm test:ci
 
       # --- Publish to private registry on main branch.
-      - if: github.event_name == 'push'
-        run: pnpm publish:ci --registry https://npm.hsjm.dev --tag next
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN_PRIVATE}}
+      # - if: github.event_name == 'push'
+      #   run: pnpm publish:ci --registry https://npm.hsjm.dev --tag next
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN_PRIVATE}}
