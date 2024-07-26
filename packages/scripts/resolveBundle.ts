@@ -40,6 +40,7 @@ export async function resolveBundle(packageName: string, options: ResolveBundleO
     ...externalExps,
     /^node:/,
     'http',
+    'stream',
   ]
 
   // --- Base Rollup configuration.
@@ -132,7 +133,7 @@ if (import.meta.vitest) {
 
   test('should include the internal and external dependencies', async() => {
     const configs = await resolveBundle('subproject', { cwd: '/project' })
-    expect(configs[0].external).toStrictEqual([/^lodash/, /^node:/, 'http'])
+    expect(configs[0].external).toStrictEqual([/^lodash/, /^node:/, 'http', 'stream'])
   })
 
   test('should include all ts files as input', async() => {
@@ -176,6 +177,7 @@ if (import.meta.vitest) {
           /^lodash/,
           /^node:/,
           'http',
+          'stream',
         ],
         input: [
           '/project/packages/subproject/bar.ts',
@@ -208,6 +210,7 @@ if (import.meta.vitest) {
           /^lodash/,
           /^node:/,
           'http',
+          'stream',
         ],
         input: [
           '/project/packages/subproject/bar.ts',
