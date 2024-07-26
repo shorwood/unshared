@@ -368,6 +368,9 @@ importers:
       '@unshared/functions':
         specifier: workspace:*
         version: link:../functions
+      '@unshared/string':
+        specifier: workspace:*
+        version: link:../string
       '@unshared/types':
         specifier: workspace:*
         version: link:../types
@@ -8265,8 +8268,8 @@ packages:
   vue-component-type-helpers@2.0.19:
     resolution: {integrity: sha512-cN3f1aTxxKo4lzNeQAkVopswuImUrb5Iurll9Gaw5cqpnbTAxtEMM1mgi6ou4X79OCyqYv1U1mzBHJkzmiK82w==}
 
-  vue-component-type-helpers@2.0.28:
-    resolution: {integrity: sha512-hoK0UsKXrXDY9zdpdk+drqOqYHpPhbmfQUJ2mFYK57+l73mQxcYyCteQsolllwGaxhWihT077+OA/FR5ZPTceg==}
+  vue-component-type-helpers@2.0.29:
+    resolution: {integrity: sha512-58i+ZhUAUpwQ+9h5Hck0D+jr1qbYl4voRt5KffBx8qzELViQ4XdT/Tuo+mzq8u63teAG8K0lLaOiL5ofqW38rg==}
 
   vue-demi@0.14.8:
     resolution: {integrity: sha512-Uuqnk9YE9SsWeReYqK2alDI5YzciATE0r2SkA6iMAtuXvNTMNACJLJEXNXaEy94ECuBe4Sk6RzRU80kjdbIo1Q==}
@@ -11747,7 +11750,7 @@ snapshots:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.4.27(typescript@5.4.5)
-      vue-component-type-helpers: 2.0.28
+      vue-component-type-helpers: 2.0.29
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -11763,7 +11766,7 @@ snapshots:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.4.27(typescript@5.4.5)
-      vue-component-type-helpers: 2.0.28
+      vue-component-type-helpers: 2.0.29
     transitivePeerDependencies:
       - encoding
       - prettier
@@ -18207,7 +18210,7 @@ snapshots:
 
   vue-component-type-helpers@2.0.19: {}
 
-  vue-component-type-helpers@2.0.28: {}
+  vue-component-type-helpers@2.0.29: {}
 
   vue-demi@0.14.8(vue@3.4.27(typescript@5.4.5)):
     dependencies:

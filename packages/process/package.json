@@ -46,6 +46,11 @@
       "types": "./dist/parseCliOption.d.ts",
       "import": "./dist/parseCliOption.js"
     },
+    "./parseEnvironmentVariables": {
+      "require": "./dist/parseEnvironmentVariables.cjs",
+      "types": "./dist/parseEnvironmentVariables.d.ts",
+      "import": "./dist/parseEnvironmentVariables.js"
+    },
     "./workerRegister": {
       "require": "./dist/workerRegister.cjs",
       "types": "./dist/workerRegister.d.ts",
@@ -72,6 +77,7 @@
     "@unshared/collection": "workspace:*",
     "@unshared/decorators": "workspace:*",
     "@unshared/functions": "workspace:*",
+    "@unshared/string": "workspace:*",
     "@unshared/types": "workspace:*"
   }
 }
