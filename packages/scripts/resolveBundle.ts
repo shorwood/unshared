@@ -48,6 +48,9 @@ export async function resolveBundle(packageName: string, options: ResolveBundleO
     external,
     input: inputPaths,
     treeshake: false,
+    onwarn: (warning) => {
+      if (warning.code !== 'CIRCULAR_DEPENDENCY') console.error(`(!) ${warning.message}`)
+    },
     output: [
       {
         assetFileNames: 'assets/[name].js',
