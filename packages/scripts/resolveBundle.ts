@@ -35,6 +35,9 @@ export async function resolveBundle(packageName: string, options: ResolveBundleO
   // --- Get the input files and external dependencies.
   const { outputDirectory, packageDependencies, packagePath } = await resolvePackage(packageName, { cwd })
   const inputPaths = await glob(entrypoints, { cwd: packagePath, exclude: ['*.d.ts'] })
+  if (inputPaths.length === 0) return []
+
+  // --- Resolve and merge the external dependencies.
   const externalExps = Object.keys(packageDependencies).map(dep => new RegExp(`^${dep}`))
   const external = [
     ...externalExps,
