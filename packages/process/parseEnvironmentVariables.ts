@@ -36,7 +36,7 @@ export function parseEnvironmentVariables<T extends Record<string, unknown> = Re
 
   // --- Iterate over all environment variables.
   for (const key in env) {
-    if (key.startsWith(prefix)) {
+    if (key.startsWith(`${prefix}_`)) {
       const name = key.slice(prefix.length).replace(/^_+/, '')
       const objectKey = toCamelCase(name)
       const objectValue = process.env[key] ?? ''
