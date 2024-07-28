@@ -54,5 +54,5 @@ export async function release(options: ReleaseOptions = {}) {
   // --- Add the changes to the git repository.
   await execute('git', ['add', '.'])
   await execute('git', ['commit', '-m', `chore: release v${rootPackage.version}`])
-  await execute('git', ['tag', '-a', `v${rootPackage.version}`, '-m', `v${rootPackage.version}`])
+  await execute('git', ['tag', '-a', `v${rootPackage.version}`, '-s', '-m', `v${rootPackage.version}`])
 }
