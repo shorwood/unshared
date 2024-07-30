@@ -6,10 +6,10 @@ import { DefineComponentContext, defineSetupComponent } from './defineSetupCompo
 export const BASE_BADGE_PROPS = {
   ...BASE_RENDERABLE_OPTIONS,
   label: String,
-} satisfies Record<keyof Props, Prop<unknown>>
+} satisfies Record<keyof BaseBadgeProps, Prop<unknown>>
 
 /** The properties & context of the `BaseBadge` component. */
-interface Props extends BaseRenderableOptions {
+export interface BaseBadgeProps extends BaseRenderableOptions {
 
   /**
    * The label of the icon. This is used to set the `aria-label` attribute of the
@@ -21,12 +21,12 @@ interface Props extends BaseRenderableOptions {
 
 /** The context of the `BaseBadge` component. */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-type Slots = {
+export type BaseBadgeSlots = {
   default: () => VNode
 }
 
 export const BaseBadge = /* #__PURE__ */ defineSetupComponent(
-  (props: Props, { attrs, slots }: DefineComponentContext<Slots>) => {
+  (props: BaseBadgeProps, { attrs, slots }: DefineComponentContext<BaseBadgeSlots>) => {
     const renderable = useBaseRenderable(props)
 
     // --- Build the attributes.
