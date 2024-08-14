@@ -79,7 +79,7 @@ if (import.meta.vitest) {
     })
 
     it('should filter-in the values of an object using a non-predicator', () => {
-      const iterator = (value: unknown) => typeof value === 'number'
+      const iterator = (value: unknown): boolean => typeof value === 'number'
       const result = filter({ bar: '2', baz: [3], foo: 1 }, iterator)
       expect(result).toStrictEqual({ foo: 1 })
       expectTypeOf(result).toEqualTypeOf<{
@@ -106,7 +106,7 @@ if (import.meta.vitest) {
     })
 
     it('should filter-in the values of an array using a non-predicator', () => {
-      const iterator = (value: unknown) => typeof value === 'number'
+      const iterator = (value: unknown): boolean => typeof value === 'number'
       const result = filter([1, '2', [3]], iterator)
       expect(result).toStrictEqual([1])
       expectTypeOf(result).toEqualTypeOf<Array<number | number[] | string>>()
@@ -130,7 +130,7 @@ if (import.meta.vitest) {
 
     it('should filter-in the values of a Set using a non-predicator', () => {
       const set = new Set([1, '2', 3])
-      const result = filter(set, (value: unknown) => typeof value === 'number')
+      const result = filter(set, (value: unknown): boolean => typeof value === 'number')
       expect(result).toStrictEqual([1, 3])
       expectTypeOf(result).toEqualTypeOf<Array<number | string>>()
     })
