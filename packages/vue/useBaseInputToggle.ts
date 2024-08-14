@@ -116,7 +116,7 @@ export const BASE_INPUT_TOGGLE_OPTIONS = {
   'classMixed': { type: String, default: '' },
 } satisfies Record<keyof BaseInputToggleOptions, Prop<unknown>>
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
   interface ComponentInternalInstance {
     [BASE_INPUT_TOGGLE_SYMBOL]?: BaseInputToggleComposable<unknown, ToggleType>
   }

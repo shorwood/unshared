@@ -247,7 +247,7 @@ export interface UseBaseInputListComposable<T, V = T, M extends boolean = boolea
   clear: () => void
 }
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
   interface ComponentInternalInstance {
     [BASE_INPUT_LIST_SYMBOL]?: UseBaseInputListComposable<any, any, any>
   }

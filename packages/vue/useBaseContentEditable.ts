@@ -57,7 +57,7 @@ export const BASE_CONTENT_EDITABLE_OPTIONS = {
   'serialize': Function,
 } satisfies Record<keyof BaseContentEditableOptions, Prop<unknown>>
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
   interface ComponentInternalInstance {
     [BASE_CONTENT_EDITABLE_SYMBOL]?: BaseContentEditableComposable
   }

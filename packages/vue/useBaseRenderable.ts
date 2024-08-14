@@ -33,7 +33,7 @@ export const BASE_RENDERABLE_OPTIONS = {
   as: [String, Object],
 } as Record<keyof BaseRenderableOptions, Prop<unknown>>
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
   interface ComponentInternalInstance {
     [BASE_RENDERABLE_SYMBOL]?: BaseRenderableComposable
   }

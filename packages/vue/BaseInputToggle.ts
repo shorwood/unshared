@@ -13,13 +13,13 @@ export const BASE_INPUT_TOGGLE_PROPS = {
 }
 
 /** The properties of the `BaseInputToggle` component. */
-interface Props<T, U extends ToggleType> extends
+export interface BaseInputToggleProps<T, U extends ToggleType> extends
   BaseStateOptions,
   BaseInputToggleOptions<T, U>,
   BaseRenderableOptions {}
 
 /** The properties of the `BaseInputToggle` default slot. */
-interface SlotProps {
+export interface BaseInputToggleSlotProps {
   error?: Error | string
   errorMessage?: string | undefined
   isActive: 'mixed' | boolean
@@ -29,12 +29,12 @@ interface SlotProps {
 }
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-type Slots = {
-  default?: (props: SlotProps) => VNode
+export type BaseInputToggleSlots = {
+  default?: (props: BaseInputToggleSlotProps) => VNode
 }
 
 export const BaseInputToggle = /* #__PURE__ */ defineSetupComponent(
-  <T, U extends ToggleType>(props: Props<T, U>, { attrs, slots }: DefineComponentContext<Slots>) => {
+  <T, U extends ToggleType>(props: BaseInputToggleProps<T, U>, { attrs, slots }: DefineComponentContext<BaseInputToggleSlots>) => {
     const state = useBaseState(props)
     const toggle = useBaseInputToggle<T, U>(props)
 
@@ -46,7 +46,7 @@ export const BaseInputToggle = /* #__PURE__ */ defineSetupComponent(
     ))
 
     // --- Build the slot properties.
-    const slotProps = computed<SlotProps>(() => ({
+    const slotProps = computed<BaseInputToggleSlotProps>(() => ({
       error: state.error,
       errorMessage: state.errorMessage,
       isActive: toggle.isActive,
@@ -113,7 +113,7 @@ if (import.meta.vitest) {
       const wrapper = mount(BaseInputToggle, { props: { as: 'input', type: 'switch', modelValue: true } })
       const html = wrapper.html()
       const element = wrapper.find('input').element
-      expect(html).toBe('<input type="checkbox">')
+      expect(html).toBe('<input checked="" type="checkbox">')
       expect(element.checked).toBe(true)
     })
 

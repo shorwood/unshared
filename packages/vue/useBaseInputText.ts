@@ -109,7 +109,7 @@ export interface BaseInputTextComposable {
   attributes: Record<string, unknown>
 }
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
   interface ComponentInternalInstance {
     [BASE_INPUT_TEXT_SYMBOL]?: BaseInputTextComposable
   }

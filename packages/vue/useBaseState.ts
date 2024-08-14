@@ -131,7 +131,7 @@ export const BASE_STATE_OPTIONS = {
   'classReadonly': String,
 } satisfies Record<keyof BaseStateOptions, Prop<unknown>>
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
   interface ComponentInternalInstance {
     [BASE_STATE_SYMBOL]?: BaseStateComposable
   }

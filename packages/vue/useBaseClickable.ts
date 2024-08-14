@@ -80,7 +80,7 @@ export interface BaseClickableComposable {
   onClick?: () => MaybePromise<void>
 }
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
   interface ComponentInternalInstance {
     [BASE_CLICKABLE_SYMBOL]?: BaseClickableComposable
   }

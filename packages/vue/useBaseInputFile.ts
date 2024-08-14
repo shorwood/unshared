@@ -82,7 +82,7 @@ export interface BaseInputFileComposable {
   handleDrop: (event: DragEvent) => void
 }
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
   interface ComponentInternalInstance {
     [BASE_INPUT_FILE_SYMBOL]?: BaseInputFileComposable
   }

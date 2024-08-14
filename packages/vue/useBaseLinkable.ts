@@ -100,7 +100,7 @@ export interface BaseLinkableComposable {
   isActive: boolean
 }
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
   interface ComponentInternalInstance {
     [BASE_LINKABLE_SYMBOL]?: BaseLinkableComposable
   }
