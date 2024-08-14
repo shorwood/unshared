@@ -616,6 +616,6 @@
     "@types/node": ">=14.0.0"
   },
   "devDependencies": {
-    "@types/node": "20.14.1"
+    "@types/node": "22.3.0"
   }
 }
