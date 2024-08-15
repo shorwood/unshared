@@ -1,5 +1,5 @@
-import { OmitNever } from './OmitNever'
-import { Constructor } from './Constructor'
+import type { Constructor } from './Constructor'
+import type { OmitNever } from './OmitNever'
 
 /**
  * Extract static properties from a class constructor.
@@ -14,6 +14,8 @@ export type ConstructorStatics<T extends Constructor> =
   OmitNever<{ [K in Exclude<keyof T, 'prototype'>]: T[K] }>
 
 /* v8 ignore next */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 if (import.meta.vitest) {
   test('should extract static properties from a class', () => {
     class Foo { static a = 1 as const }

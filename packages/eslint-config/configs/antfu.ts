@@ -1,6 +1,6 @@
+import type { Linter } from 'eslint'
+import type { ESLintConfigOptions } from './all'
 import pluginAntfu from 'eslint-plugin-antfu'
-import { Linter } from 'eslint'
-import { ESLintConfigOptions } from './all'
 
 export function antfu(options: ESLintConfigOptions): Linter.FlatConfig[] {
   return [

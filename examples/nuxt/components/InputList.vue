@@ -63,9 +63,9 @@ watchDebounced(search, fetchUsers, { debounce: 500 })
     />
 
     <BaseInputList
-      :native="native"
       v-model="model"
       v-model:search="search"
+      :native="native"
       :options="users"
       :option-value="x => x.email"
       :option-label="x => x.name"
@@ -100,8 +100,8 @@ watchDebounced(search, fetchUsers, { debounce: 500 })
               {{ value.text }}
             </p>
             <button
-              @click.prevent="() => value.off()"
-              class="text-primary-500 hover:text-primary-400 transition-colors duration-300">
+              class="text-primary-500 hover:text-primary-400 transition-colors duration-300"
+              @click.prevent="() => value.off()">
               X
             </button>
           </div>

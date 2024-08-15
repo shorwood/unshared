@@ -1,4 +1,4 @@
-import { Function, NumberIntegerPositive } from '@unshared/types'
+import type { Function, NumberIntegerPositive } from '@unshared/types'
 
 /**
  * A debounced function that executes once within a specified delay.

@@ -1,4 +1,4 @@
-import { Collection, NumberIntegerPositive, Tuple } from '@unshared/types'
+import type { Collection, NumberIntegerPositive, Tuple } from '@unshared/types'
 
 /**
  * Returns a single item randomly sampled from a collection.

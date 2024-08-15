@@ -1,5 +1,5 @@
-import { MaybeArray } from '@unshared/types'
-import { VariantObject } from '@unocss/core'
+import type { VariantObject } from '@unocss/core'
+import type { MaybeArray } from '@unshared/types'
 
 /**
  * Create an UnoCSS variant based on a keyword.

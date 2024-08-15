@@ -18,7 +18,7 @@ export function dedent(string: string): string {
   if (!firstContent) return string
 
   // --- Get the indent of the first line.
-  const firstIndent = firstContent.match(/^[\t\r ]+/)
+  const firstIndent = /^[\t\r ]+/.exec(firstContent)
   if (!firstIndent) return string
 
   // --- Remove the leading indents from all lines.

@@ -12,10 +12,11 @@ const model = useVModel(props, 'modelValue')
 <template>
   <!-- Input -->
   <BaseInputToggle
-    as="div"
     :id="id"
     v-slot="{ isActive }"
     v-model="model"
+    as="div"
+    class-active="bg-primary-600/20"
     type="switch"
     class="
       flex items-center space-x-2 px-2
@@ -23,8 +24,7 @@ const model = useVModel(props, 'modelValue')
       ring-1 ring-primary-900/10 hover:ring-primary-600/100
       transition-all duration-200 ease-in-out
       px-4 py-2 rounded-lg
-    "
-    class-active="bg-primary-600/20">
+    ">
 
     <!-- Circle when active -->
     <div
@@ -33,20 +33,20 @@ const model = useVModel(props, 'modelValue')
         bg-primary-600 p-1 flex items-center
       ">
       <div
-        class="
-         bg-white rounded-md w-3 h-3 transform
-          transition-all duration-200 ease-in-out
-        "
         :class="{
           'translate-x-3': isActive,
           'translate-x-0': !isActive,
         }"
+        class="
+         bg-white rounded-md w-3 h-3 transform
+          transition-all duration-200 ease-in-out
+        "
       />
 
     </div>
 
     <!-- Label -->
-    <label :for="id" v-if="label" class="text-sm select-none">
+    <label v-if="label" :for="id" class="text-sm select-none">
       {{ label }}
     </label>
   </BaseInputToggle>

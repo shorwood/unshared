@@ -1,8 +1,9 @@
-import { watch } from './watch'
-import { Unwrapped, unwrap } from './unwrap'
-import { reference } from './reference'
-import { Reactive } from './reactive'
+import type { Reactive } from './reactive'
+import type { Unwrapped } from './unwrap'
 import { computed } from './computed'
+import { reference } from './reference'
+import { unwrap } from './unwrap'
+import { watch } from './watch'
 
 export interface TimelineOptions<T, U> {
 

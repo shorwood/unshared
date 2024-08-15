@@ -1,8 +1,10 @@
-import { Prop, UnwrapRef, computed, getCurrentInstance, nextTick, onMounted, onScopeDispose, ref, watch } from 'vue'
+import type { Prop, UnwrapRef } from 'vue'
+import type { BaseStateOptions } from './useBaseState'
 import { toReactive, useVModel } from '@vueuse/core'
-import { useElementSelection } from './useElementSelection'
-import { BASE_STATE_OPTIONS, BaseStateOptions, useBaseState } from './useBaseState'
+import { computed, getCurrentInstance, nextTick, onMounted, onScopeDispose, ref, watch } from 'vue'
 import { cleanAttributes } from './cleanAttributes'
+import { BASE_STATE_OPTIONS, useBaseState } from './useBaseState'
+import { useElementSelection } from './useElementSelection'
 
 /** The options for the `useBaseContentEditable` composable. */
 export interface BaseContentEditableOptions<T = unknown> extends

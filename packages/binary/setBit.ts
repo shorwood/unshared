@@ -1,4 +1,4 @@
-import { NumberInteger } from '@unshared/types'
+import type { NumberInteger } from '@unshared/types'
 
 /** The index of a bit in a 32-bit integer. */
 export type BitIndex =

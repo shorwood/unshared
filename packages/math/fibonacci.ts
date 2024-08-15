@@ -1,4 +1,4 @@
-import { NumberIntegerPositive } from '@unshared/types'
+import type { NumberIntegerPositive } from '@unshared/types'
 
 /**
  * Compute [Fibonacci number](https://en.wikipedia.org/wiki/Fibonacci_number) at index `n`.

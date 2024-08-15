@@ -1,6 +1,6 @@
-import { assertNumberInteger } from './assertNumberInteger'
-import { assertNumber } from './assertNumber'
 import { ValidationError } from '../ValidationError'
+import { assertNumber } from './assertNumber'
+import { assertNumberInteger } from './assertNumberInteger'
 
 /**
  * Obligatory meme function to assert if a value is an odd number.

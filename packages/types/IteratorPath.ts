@@ -1,5 +1,5 @@
-import { Values } from './Values'
-import { Path } from './Path'
+import type { Path } from './Path'
+import type { Values } from './Values'
 
 /**
  * A type that may match the path of the elements in a collection. This type is

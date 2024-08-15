@@ -1,6 +1,8 @@
-import { Hash, HashOptions, createHash } from 'node:crypto'
-import { Awaitable } from '@unshared/functions/awaitable'
-import { Derive, deriveStream } from './deriveStream'
+import type { Awaitable } from '@unshared/functions/awaitable'
+import type { Hash, HashOptions } from 'node:crypto'
+import type { Derive } from './deriveStream'
+import { createHash } from 'node:crypto'
+import { deriveStream } from './deriveStream'
 
 /**
  * Computes the hash of a stream of bytes without consuming the stream. This

@@ -1,6 +1,6 @@
+import type { Linter } from 'eslint'
+import type { ESLintConfigOptions } from './all'
 import jsonc from 'eslint-plugin-jsonc'
-import { Linter } from 'eslint'
-import { ESLintConfigOptions } from './all'
 
 /**
  * @param options The configuration options.

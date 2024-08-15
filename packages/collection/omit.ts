@@ -1,4 +1,4 @@
-import { IteratorFunction, MaybeArray, Predicator, Pretty } from '@unshared/types'
+import type { IteratorFunction, MaybeArray, Predicator, Pretty } from '@unshared/types'
 
 type OmitByKey<T, K extends PropertyKey> =
   Pretty<{ -readonly [P in Exclude<keyof T, K>]: T[P] }>

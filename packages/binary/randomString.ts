@@ -1,4 +1,5 @@
-import { RandomOptions, randomInt } from './randomInt'
+import type { RandomOptions } from './randomInt'
+import { randomInt } from './randomInt'
 
 export interface RandomStringOptions extends RandomOptions {
 

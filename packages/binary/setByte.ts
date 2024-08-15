@@ -1,4 +1,4 @@
-import { NumberInteger } from '@unshared/types'
+import type { NumberInteger } from '@unshared/types'
 
 /** The index of a byte in a 32-bit number. */
 export type ByteIndex = 0 | 1 | 2 | 3

@@ -1,4 +1,4 @@
-import { FunctionAsync } from '@unshared/types'
+import type { FunctionAsync } from '@unshared/types'
 
 /**
  * An object that is optionally asyncronous and can be awaited. By default, the

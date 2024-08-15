@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { PromiseWrap } from '@unshared/types/PromiseWrap'
-import { Function } from '@unshared/types/Function'
-import { MaybeFunction } from '@unshared/types'
-import { Awaitable, awaitable } from './awaitable'
+import type { MaybeFunction } from '@unshared/types'
+import type { Function } from '@unshared/types/Function'
+import type { PromiseWrap } from '@unshared/types/PromiseWrap'
+import type { Awaitable } from './awaitable'
+import { awaitable } from './awaitable'
 
 export interface QueueTask<T = unknown> {
 
@@ -285,6 +286,7 @@ export function createQueue(options: QueueOptions = {}): Queue {
 }
 
 /* v8 ignore start */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 if (import.meta.vitest) {
   const { sleep } = await import('./sleep')
   const { nextTick } = await import('node:process')

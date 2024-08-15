@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { EditorView, basicSetup } from 'codemirror'
+import { basicSetup, EditorView } from 'codemirror'
 
 const props = defineProps<{
   id?: string
@@ -48,8 +48,8 @@ const model = useVModel(props, 'modelValue', undefined, { passive: true })
 <template>
   <BaseInputEditor
     v-model="model"
-    :extensions="[basicSetup, theme]"
     line-wrapping
+    :extensions="[basicSetup, theme]"
     class="
      bg-secondary-900
       w-full border-primary-600/20 border rounded-md

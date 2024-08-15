@@ -1,6 +1,6 @@
-import { TupleSlice } from './TupleSlice'
-import { TupleLength } from './TupleLength'
-import { Function } from './Function'
+import type { Function } from './Function'
+import type { TupleLength } from './TupleLength'
+import type { TupleSlice } from './TupleSlice'
 
 /**
  * A function where the first parameter is already bound to `this`.

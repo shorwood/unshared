@@ -1,5 +1,5 @@
-import { Function, MethodDecorator } from '@unshared/types'
 import { throttle } from '@unshared/functions/throttle'
+import { Function, MethodDecorator } from '@unshared/types'
 
 /**
  * Throttle a method so that it will only execute once every specified delay.

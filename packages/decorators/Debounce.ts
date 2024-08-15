@@ -1,5 +1,5 @@
-import { Function, MethodDecorator } from '@unshared/types'
 import { debounce } from '@unshared/functions/debounce'
+import { Function, MethodDecorator } from '@unshared/types'
 
 /**
  * Debounce a method so that it will only execute after the specified delay. If the method

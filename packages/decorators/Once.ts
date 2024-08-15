@@ -1,5 +1,5 @@
-import { Function, MethodDecorator } from '@unshared/types'
 import { once } from '@unshared/functions/once'
+import { Function, MethodDecorator } from '@unshared/types'
 
 /**
  * Decorate a method to memoize it's result. Meaning that if the method is called,

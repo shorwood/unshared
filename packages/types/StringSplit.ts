@@ -1,4 +1,4 @@
-import { IsEmptyString, IsString } from './utils'
+import type { IsEmptyString, IsString } from './utils'
 
 /**
  * Extract litteral types of strings separated by a delimiter.

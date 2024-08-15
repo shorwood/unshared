@@ -1,13 +1,13 @@
-import { cpus } from 'node:os'
-import { Function, MaybeArray } from '@unshared/types'
-import { Once } from '@unshared/decorators/Once'
 import { toArray } from '@unshared/collection/toArray'
+import { Once } from '@unshared/decorators/Once'
+import { Function, MaybeArray } from '@unshared/types'
+import { cpus } from 'node:os'
 import {
+  Workerized,
   WorkerService,
   WorkerServiceOptions,
   WorkerServicePayload,
   WorkerServiceResult,
-  Workerized,
 } from './createWorkerService'
 
 export interface WorkerPoolOptions extends WorkerServiceOptions {

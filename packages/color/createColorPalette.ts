@@ -1,8 +1,8 @@
 import { clamp } from '@unshared/math/clamp'
-import { colorRgbToHsl } from './colorRgbToHsl'
-import { colorRgbToHex } from './colorRgbToHex'
-import { colorHslToRgb } from './colorHslToRgb'
 import { colorHexToRgb } from './colorHexToRgb'
+import { colorHslToRgb } from './colorHslToRgb'
+import { colorRgbToHex } from './colorRgbToHex'
+import { colorRgbToHsl } from './colorRgbToHsl'
 
 /** The default stops for a color palette. */
 const COLOR_PALETTE_DEFAULT_STOPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900] as const

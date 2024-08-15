@@ -1,7 +1,7 @@
-import { CharacterUpper } from './CharacterUpper'
-import { CharacterSymbol } from './CharacterSymbol'
-import { CharacterLower } from './CharacterLower'
-import { CharacterDigit } from './CharacterDigit'
+import type { CharacterDigit } from './CharacterDigit'
+import type { CharacterLower } from './CharacterLower'
+import type { CharacterSymbol } from './CharacterSymbol'
+import type { CharacterUpper } from './CharacterUpper'
 
 /**
  * A whitespace character. This includes the space character, the tab character,

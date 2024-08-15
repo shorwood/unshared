@@ -1,4 +1,5 @@
-import { Transition, TransitionGroup, TransitionProps, VNode, h } from 'vue'
+import type { TransitionProps, VNode } from 'vue'
+import { h, Transition, TransitionGroup } from 'vue'
 
 type RawChildrenOrSlots = Parameters<typeof h>[2]
 
@@ -11,7 +12,7 @@ export interface WrapTransitionOptions<T extends boolean = boolean> extends Tran
 }
 
 export function wrapTransition<T extends RawChildrenOrSlots>(vnode: T): T
-export function wrapTransition<T extends RawChildrenOrSlots>(vnode: T & any[], options: WrapTransitionOptions): VNode
+export function wrapTransition<T extends RawChildrenOrSlots>(vnode: any[] & T, options: WrapTransitionOptions): VNode
 export function wrapTransition<T extends RawChildrenOrSlots>(vnode: T, options: WrapTransitionOptions): VNode
 export function wrapTransition<T extends RawChildrenOrSlots>(vnode: T, options?: WrapTransitionOptions): T | VNode
 

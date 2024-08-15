@@ -1,7 +1,7 @@
 /* eslint-disable jsdoc/check-param-names */
+import type { MaybePromise } from '@unshared/types'
+import type { PathLike } from 'node:fs'
 import { open, readFile, writeFile } from 'node:fs/promises'
-import { PathLike } from 'node:fs'
-import { MaybePromise } from '@unshared/types'
 
 /**
  * A callback that updates a file's contents.

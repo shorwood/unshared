@@ -1,4 +1,4 @@
-import { NotUndefined } from '@unshared/types'
+import type { NotUndefined } from '@unshared/types'
 import { ValidationError } from '../ValidationError'
 
 /**

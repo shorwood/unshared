@@ -1,8 +1,8 @@
-import { CharacterUpper } from './CharacterUpper'
-import { CharacterSymbol } from './CharacterSymbol'
-import { CharacterLower } from './CharacterLower'
-import { CharacterDigit } from './CharacterDigit'
-import { CharacterAlpha } from './CharacterAlpha'
+import type { CharacterAlpha } from './CharacterAlpha'
+import type { CharacterDigit } from './CharacterDigit'
+import type { CharacterLower } from './CharacterLower'
+import type { CharacterSymbol } from './CharacterSymbol'
+import type { CharacterUpper } from './CharacterUpper'
 
 /**
  * A character that is either a letter, a digit, or a symbol from the ASCII character set.

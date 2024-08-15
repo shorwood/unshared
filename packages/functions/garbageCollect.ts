@@ -1,5 +1,5 @@
-import { runInNewContext } from 'node:vm'
 import { GCProfiler, setFlagsFromString } from 'node:v8'
+import { runInNewContext } from 'node:vm'
 
 /**
  * Force the garbage collector to run. It allows you to free up memory that is

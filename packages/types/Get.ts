@@ -1,4 +1,4 @@
-import { IsZero, Substract } from './utils'
+import type { IsZero, Substract } from './utils'
 
 /**
  * Extract nested value of an object recursively. This is useful for creating a

@@ -1,5 +1,5 @@
-import { assertArray } from './assertArray'
 import { ValidationError } from '../ValidationError'
+import { assertArray } from './assertArray'
 
 /**
  * Assert that a value is an empty array.

@@ -1,6 +1,9 @@
-import { Prop, VNode, computed, h, mergeProps } from 'vue'
-import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions, useBaseRenderable } from './useBaseRenderable'
-import { DefineComponentContext, defineSetupComponent } from './defineSetupComponent'
+import type { Prop, VNode } from 'vue'
+import type { DefineComponentContext } from './defineSetupComponent'
+import type { BaseRenderableOptions } from './useBaseRenderable'
+import { computed, h, mergeProps } from 'vue'
+import { defineSetupComponent } from './defineSetupComponent'
+import { BASE_RENDERABLE_OPTIONS, useBaseRenderable } from './useBaseRenderable'
 
 /** The base props for the `BaseBadge` component. */
 export const BASE_BADGE_PROPS = {

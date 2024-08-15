@@ -1,9 +1,9 @@
-import { argv } from 'node:process'
 import { parseCliArguments } from '@unshared/process'
-import { release } from './release'
-import { publish } from './publish'
-import { commit } from './commit'
+import { argv } from 'node:process'
 import { build } from './build'
+import { commit } from './commit'
+import { publish } from './publish'
+import { release } from './release'
 
 function cli() {
   const { parameters: [command, ...parameters], options } = parseCliArguments(argv)

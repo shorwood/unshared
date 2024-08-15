@@ -1,4 +1,4 @@
-import { Fallback, Function } from '@unshared/types'
+import type { Fallback, Function } from '@unshared/types'
 
 /**
  * The result of trying multiple functions.

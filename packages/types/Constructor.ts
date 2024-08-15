@@ -1,4 +1,5 @@
-import { ConstructorStatics } from './ConstructorStatics'
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+import type { ConstructorStatics } from './ConstructorStatics'
 
 /**
  * A constructor with parameters, instance properties and static properties. This is a type that
@@ -18,10 +19,10 @@ import { ConstructorStatics } from './ConstructorStatics'
 export type Constructor<R extends object = {}, P extends any[] = any[], S extends object = {}> =
   keyof S extends never
     ? new (...parameters: P) => R
-    : S & (new (...parameters: P) => R)
+    : (new (...parameters: P) => R) & S
 
 /** v8 ignore start */
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
 if (import.meta.vitest) {
   test('should build the instance properties of a class', () => {
     type Result = Constructor<{ a: number }>

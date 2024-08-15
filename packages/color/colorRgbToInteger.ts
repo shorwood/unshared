@@ -1,5 +1,6 @@
-import { StringCombinaison } from '@unshared/types'
-import { RGB, createColorRgb } from './createColorRgb'
+import type { StringCombinaison } from '@unshared/types'
+import type { RGB } from './createColorRgb'
+import { createColorRgb } from './createColorRgb'
 
 /** Format of an RGB color in hexadecimal format. */
 export type RGBBinaryFormat = StringCombinaison<['r', 'g', 'b', '' | 'a']>

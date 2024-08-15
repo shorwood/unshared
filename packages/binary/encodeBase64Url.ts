@@ -1,4 +1,4 @@
-import { BinaryLike } from './toUint8Array'
+import type { BinaryLike } from './toUint8Array'
 import { encodeBase64 } from './encodeBase64'
 
 /**

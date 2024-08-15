@@ -1,4 +1,4 @@
-import { Collection, IteratorFunction } from '@unshared/types'
+import type { Collection, IteratorFunction } from '@unshared/types'
 import { isIterable } from './isIterable'
 
 /**

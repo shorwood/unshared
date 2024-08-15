@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+import type { Component, Prop } from 'vue'
 /* eslint-disable sonarjs/no-duplicate-string */
-import { RouteLocationNamedRaw, RouteLocationRaw, RouterLink, useRouter } from 'vue-router'
-import { Component, Prop, computed, getCurrentInstance } from 'vue'
+import type { RouteLocationNamedRaw, RouteLocationRaw } from 'vue-router'
 import { toReactive } from '@vueuse/core'
+import { computed, getCurrentInstance } from 'vue'
+import { RouterLink, useRouter } from 'vue-router'
 import { cleanAttributes } from './cleanAttributes'
 
 /** The symbol to provide the composable into the component. */

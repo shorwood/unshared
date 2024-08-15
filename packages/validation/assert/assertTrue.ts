@@ -1,5 +1,5 @@
-import { assertBoolean } from './assertBoolean'
 import { ValidationError } from '../ValidationError'
+import { assertBoolean } from './assertBoolean'
 
 /**
  * Assert that a value is a boolean equal to `true`.

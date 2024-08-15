@@ -1,4 +1,4 @@
-import { Constructor } from '@unshared/types'
+import type { Constructor } from '@unshared/types'
 import { assertInstance } from './assertInstance'
 
 /**

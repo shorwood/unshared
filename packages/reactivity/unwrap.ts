@@ -1,10 +1,10 @@
-import { Reference } from './reference'
-import { Reactive } from './reactive'
-import { isReference } from './isReference'
-import { isReactive } from './isReactive'
-import { isComputed } from './isComputed'
+import type { Computed } from './computed'
+import type { Reactive } from './reactive'
+import type { Reference } from './reference'
 import { ReactiveData } from './constants'
-import { Computed } from './computed'
+import { isComputed } from './isComputed'
+import { isReactive } from './isReactive'
+import { isReference } from './isReference'
 
 /**
  * Dereference a `Reactive` object or unwrap a `Reference`.

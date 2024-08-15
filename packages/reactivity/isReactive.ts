@@ -1,4 +1,4 @@
-import { Reactive } from './reactive'
+import type { Reactive } from './reactive'
 import { ReactiveFlag } from './constants'
 
 /**

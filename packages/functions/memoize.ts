@@ -1,4 +1,4 @@
-import { Function } from '@unshared/types'
+import type { Function } from '@unshared/types'
 
 export type Memoized<T extends Function> = {
 

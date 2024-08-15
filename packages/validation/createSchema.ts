@@ -1,10 +1,12 @@
-import { Function, Immutable, Pretty } from '@unshared/types'
+import type { Function, Immutable, Pretty } from '@unshared/types'
+import type { RuleLike, RuleResult } from './createRule'
+import type { RuleChainLike, RuleChainResult } from './createRuleChain'
+import type { RuleSetLike, RuleSetResult } from './createRuleSet'
 import { tries } from '@unshared/functions/tries'
-import { ValidationError } from './ValidationError'
-import { RuleSetLike, RuleSetResult, createRuleSet } from './createRuleSet'
-import { RuleChainLike, RuleChainResult, createRuleChain } from './createRuleChain'
-import { RuleLike, RuleResult } from './createRule'
 import { assertBoolean } from './assert'
+import { createRuleChain } from './createRuleChain'
+import { createRuleSet } from './createRuleSet'
+import { ValidationError } from './ValidationError'
 
 /**
  * A map of properties and their corresponding rules or sets of rules.

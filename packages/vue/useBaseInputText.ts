@@ -1,8 +1,10 @@
-import { Component, Prop, UnwrapRef, computed, getCurrentInstance, ref } from 'vue'
+import type { Component, Prop, UnwrapRef } from 'vue'
+import type { BaseStateOptions } from './useBaseState'
 import { debounceFilter, toReactive, useRefHistory, useVModel } from '@vueuse/core'
-import { useElementSelection } from './useElementSelection'
-import { BASE_STATE_OPTIONS, BaseStateOptions, useBaseState } from './useBaseState'
+import { computed, getCurrentInstance, ref } from 'vue'
 import { cleanAttributes } from './cleanAttributes'
+import { BASE_STATE_OPTIONS, useBaseState } from './useBaseState'
+import { useElementSelection } from './useElementSelection'
 
 /** The symbol to inject in components when using the `useBaseInputText` composable. */
 export const BASE_INPUT_TEXT_SYMBOL = Symbol()

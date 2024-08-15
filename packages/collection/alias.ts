@@ -1,7 +1,7 @@
-import { Fallback, Get, Path } from '@unshared/types'
-import { set } from './set'
-import { get } from './get'
+import type { Fallback, Get, Path } from '@unshared/types'
 import { deleteProperty } from './deleteProperty'
+import { get } from './get'
+import { set } from './set'
 
 /**
  * A map of aliases to use for the collection.

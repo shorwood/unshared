@@ -1,6 +1,7 @@
-import { Reactive, ReactiveOptions, reactive } from './reactive'
-import { isReference } from './isReference'
+import type { Reactive, ReactiveOptions } from './reactive'
 import { ReactiveFlag, ReferenceFlag } from './constants'
+import { isReference } from './isReference'
+import { reactive } from './reactive'
 
 /**
  * A reactive reference to a value. This is a wrapper around a primitive value

@@ -1,7 +1,9 @@
-import { watch } from './watch'
-import { Unwrapped, unwrap } from './unwrap'
-import { Reactive, ReactiveOptions, reactive } from './reactive'
+import type { Reactive, ReactiveOptions } from './reactive'
+import type { Unwrapped } from './unwrap'
 import { ComputedData, ComputedFlag, ReactiveFlag } from './constants'
+import { reactive } from './reactive'
+import { unwrap } from './unwrap'
+import { watch } from './watch'
 
 /**
  * A computed value. This is a reactive value that is computed from other

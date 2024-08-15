@@ -1,5 +1,5 @@
-import { Readable } from 'node:stream'
 import { nextTick } from 'node:process'
+import { Readable } from 'node:stream'
 
 export interface StreamReadableOptions {
 

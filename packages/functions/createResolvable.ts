@@ -133,7 +133,7 @@ export function createResolvable<T>(): Resolvable<T> {
         state.isPending = false
         resolve(value)
       }
-      state.reject = (value) => {
+      state.reject = (value: Error) => {
         state.isResolved = false
         state.isRejected = true
         state.isPending = false
@@ -184,7 +184,7 @@ if (import.meta.vitest) {
 
   test('should reject a value after reject is called', async() => {
     const result = createResolvable<string>()
-    result.reject('test')
+    result.reject(new Error('test'))
     await expect(result.promise).rejects.toThrow('test')
     expect(result.isPending).toBe(false)
     expect(result.isResolved).toBe(false)
@@ -206,7 +206,7 @@ if (import.meta.vitest) {
 
   test('should be pending after reset is called if already rejected', async() => {
     const result = createResolvable<void>()
-    result.reject('test')
+    result.reject(new Error('test'))
     await expect(result.promise).rejects.toThrow('test')
     result.reset()
     expect(result.isPending).toBe(true)
@@ -225,7 +225,7 @@ if (import.meta.vitest) {
 
   test('should return an awaitable object that rejects with the reason', async() => {
     const result = createResolvable<string>()
-    result.reject('test')
+    result.reject(new Error('test'))
     await expect(result).rejects.toThrow('test')
   })
 

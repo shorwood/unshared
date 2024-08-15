@@ -1,5 +1,7 @@
-import { RGB, createColorRgb } from './createColorRgb'
-import { HSL, createColorHsl } from './createColorHsl'
+import type { HSL } from './createColorHsl'
+import type { RGB } from './createColorRgb'
+import { createColorHsl } from './createColorHsl'
+import { createColorRgb } from './createColorRgb'
 
 /**
  * Converts an RGB color to HSL. This function uses the algorithm described on

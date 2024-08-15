@@ -1,5 +1,6 @@
-import { Theme, parseColor } from '@unocss/preset-mini'
-import { Rule } from '@unocss/core'
+import type { Rule } from '@unocss/core'
+import type { Theme } from '@unocss/preset-mini'
+import { parseColor } from '@unocss/preset-mini'
 import { patterns } from '../constants/patterns'
 
 export const rulePattern: Rule = [

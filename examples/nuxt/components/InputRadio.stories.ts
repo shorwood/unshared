@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
+
 import type { Meta, StoryObj } from '@storybook/vue3'
 import InputRadio from './InputRadio.vue'
 

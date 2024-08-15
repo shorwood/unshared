@@ -1,8 +1,8 @@
-import { PackageJSON } from 'types-pkg-json'
-import { cwd as getCwd } from 'node:process'
-import { relative, resolve } from 'node:path'
-import { toPascalCase } from '@unshared/string/toPascalCase'
+import type { PackageJSON } from 'types-pkg-json'
 import { loadObject } from '@unshared/fs/loadObject'
+import { toPascalCase } from '@unshared/string/toPascalCase'
+import { relative, resolve } from 'node:path'
+import { cwd as getCwd } from 'node:process'
 
 export interface GetPackageMetadataOptions {
   cwd?: string

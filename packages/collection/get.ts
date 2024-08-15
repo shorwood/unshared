@@ -1,4 +1,4 @@
-import { Get, Path } from '@unshared/types'
+import type { Get, Path } from '@unshared/types'
 
 /**
  * Get the value of a nested property in an object safely. If the path does not exist,

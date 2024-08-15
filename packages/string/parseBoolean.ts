@@ -1,4 +1,4 @@
-import { Trim } from '@unshared/types'
+import type { Trim } from '@unshared/types'
 
 /**
  * Parse a string into a boolean. "true" and "1" are considered true and the

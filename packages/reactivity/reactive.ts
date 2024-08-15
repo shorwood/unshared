@@ -1,4 +1,4 @@
-import { Function, NotUndefined } from '@unshared/types'
+import type { Function, NotUndefined } from '@unshared/types'
 import { ReactiveData, ReactiveFlag } from './constants'
 
 /**
@@ -204,7 +204,7 @@ if (import.meta.vitest) {
   })
 
   test('should trigger when a property is set', () => {
-    const callback = vi.fn() as () => {}
+    const callback = vi.fn() as () => object
     const object = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
     result.foo = 'baz'
@@ -214,7 +214,7 @@ if (import.meta.vitest) {
   })
 
   test('should trigger when a property is ad2ded', () => {
-    const callback = vi.fn() as () => {}
+    const callback = vi.fn() as () => object
     const object = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
 
@@ -226,7 +226,7 @@ if (import.meta.vitest) {
   })
 
   test('should trigger when a property is deleted', () => {
-    const callback = vi.fn() as () => {}
+    const callback = vi.fn() as () => object
     const object: { foo?: string } = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
     delete result.foo
@@ -235,7 +235,7 @@ if (import.meta.vitest) {
   })
 
   test('should trigger when Object.assign is used', () => {
-    const callback = vi.fn() as () => {}
+    const callback = vi.fn() as () => object
     const object = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
     Object.assign(result, { baz: 'qux' })
@@ -244,7 +244,7 @@ if (import.meta.vitest) {
   })
 
   test('should trigger when a property is set with Object.defineProperty', () => {
-    const callback = vi.fn() as () => {}
+    const callback = vi.fn() as () => object
     const object = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
     Object.defineProperty(result, 'foo', { value: 'baz' })
@@ -253,7 +253,7 @@ if (import.meta.vitest) {
   })
 
   test('should trigger when a property is set with Object.defineProperties', () => {
-    const callback = vi.fn() as () => {}
+    const callback = vi.fn() as () => object
     const object = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
     Object.defineProperties(result, { foo: { value: 'baz' } })
@@ -262,7 +262,7 @@ if (import.meta.vitest) {
   })
 
   test('should trigger when the prototype is set', () => {
-    const callback = vi.fn() as () => {}
+    const callback = vi.fn() as () => object
     const object = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
     Object.setPrototypeOf(result, { baz: 'qux' })
@@ -271,7 +271,7 @@ if (import.meta.vitest) {
   })
 
   test('should trigger when a nested property is set', () => {
-    const callback = vi.fn() as () => {}
+    const callback = vi.fn() as () => object
     const object = { foo: { bar: { baz: 'qux' } } }
     const result = reactive(object, { callbacks: [callback], deep: true })
     result.foo.bar.baz = 'quux'
@@ -280,7 +280,7 @@ if (import.meta.vitest) {
   })
 
   test('should trigger when an item is pushed to an array', () => {
-    const callback = vi.fn() as () => {}
+    const callback = vi.fn() as () => object
     const object = ['bar']
     const result = reactive(object, { callbacks: [callback], hooks: ['push'] })
     const resultPush = result.push('baz')
@@ -290,7 +290,7 @@ if (import.meta.vitest) {
   })
 
   test('should trigger when an items is pushed to a nested array', () => {
-    const callback = vi.fn() as () => {}
+    const callback = vi.fn() as () => object
     const object = { foo: ['bar'] }
     const result = reactive(object, { callbacks: [callback], deep: true, hooks: ['push'] })
     const resultPush = result.foo.push('baz')
@@ -300,7 +300,7 @@ if (import.meta.vitest) {
   })
 
   test('should not trigger when a property is set to the same value', () => {
-    const callback = vi.fn() as () => {}
+    const callback = vi.fn() as () => object
     const object = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
     result.foo = 'bar'

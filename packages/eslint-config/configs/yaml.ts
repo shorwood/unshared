@@ -1,7 +1,7 @@
-import yamlParser from 'yaml-eslint-parser'
+import type { ESLint, Linter } from 'eslint'
+import type { ESLintConfigOptions } from './all'
 import yamlPlugin from 'eslint-plugin-yml'
-import { ESLint, Linter } from 'eslint'
-import { ESLintConfigOptions } from './all'
+import yamlParser from 'yaml-eslint-parser'
 
 export function yaml(options: ESLintConfigOptions): Linter.FlatConfig[] {
   return [

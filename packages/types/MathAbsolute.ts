@@ -1,5 +1,5 @@
-import { IsNumber, IsZero } from './utils/predicate'
-import { Absolute } from './utils/arithmetics'
+import type { Absolute } from './utils/arithmetics'
+import type { IsNumber, IsZero } from './utils/predicate'
 
 /**
  * Returns the absolute value of a number.

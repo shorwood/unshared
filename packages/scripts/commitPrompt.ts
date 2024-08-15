@@ -1,4 +1,4 @@
-import { ChatCompletionMessageParam } from 'openai/resources'
+import type { ChatCompletionMessageParam } from 'openai/resources'
 import { dedent } from '@unshared/string'
 
 /** The prompt for the commit message generator. */

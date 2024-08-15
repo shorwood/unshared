@@ -1,4 +1,4 @@
-import { Collection, Fallback, IteratorFunction, Predicator } from '@unshared/types'
+import type { Collection, Fallback, IteratorFunction, Predicator } from '@unshared/types'
 
 /**
  * A collection of values that can be filtered using a predicator function.

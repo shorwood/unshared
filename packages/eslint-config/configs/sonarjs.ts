@@ -1,6 +1,6 @@
+import type { Linter } from 'eslint'
+import type { ESLintConfigOptions } from './all'
 import pluginSonarjs from 'eslint-plugin-sonarjs'
-import { Linter } from 'eslint'
-import { ESLintConfigOptions } from './all'
 
 export function sonarjs(options: ESLintConfigOptions): Linter.FlatConfig[] {
   return [

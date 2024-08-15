@@ -1,5 +1,5 @@
-import { Unique } from './Unique'
-import { Function } from './Function'
+import type { Function } from './Function'
+import type { Unique } from './Unique'
 
 /**
  * Tuple of all possible overloads of a function. This is useful when you want to

@@ -1,4 +1,4 @@
-import { NumberIntegerPositive } from '@unshared/types'
+import type { NumberIntegerPositive } from '@unshared/types'
 
 /**
  * Computes the [factorial](https://en.wikipedia.org/wiki/Factorial) of the given number.

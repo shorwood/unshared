@@ -1,6 +1,6 @@
-import { dirname } from 'node:path'
-import { mkdir, writeFile } from 'node:fs/promises'
 import { mapValues } from '@unshared/collection/mapValues'
+import { mkdir, writeFile } from 'node:fs/promises'
+import { dirname } from 'node:path'
 
 const OUT_PATH = new URL('../constants/colorsBrand.ts', import.meta.url).pathname
 const OUT_DIR = dirname(OUT_PATH)

@@ -1,4 +1,4 @@
-import { NumberIntegerPositive } from '@unshared/types'
+import type { NumberIntegerPositive } from '@unshared/types'
 
 /**
  * Create a promise that resolves after a given delay.

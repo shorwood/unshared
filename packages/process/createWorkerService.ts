@@ -1,9 +1,9 @@
-import { Worker, WorkerOptions } from 'node:worker_threads'
-import { createRequire } from 'node:module'
-import { Function } from '@unshared/types/Function'
-import { MaybeArray, UnionMerge } from '@unshared/types'
-import { Once } from '@unshared/decorators/Once'
 import { toArray } from '@unshared/collection/toArray'
+import { Once } from '@unshared/decorators/Once'
+import { MaybeArray, UnionMerge } from '@unshared/types'
+import { Function } from '@unshared/types/Function'
+import { createRequire } from 'node:module'
+import { Worker, WorkerOptions } from 'node:worker_threads'
 import { workerRequest } from './workerRequest'
 
 /** The result of a function when called from a `WorkerService`. */

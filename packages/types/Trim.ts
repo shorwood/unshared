@@ -1,4 +1,4 @@
-import { CharacterWhitespace } from '@unshared/types'
+import type { CharacterWhitespace } from '@unshared/types'
 
 /**
  * Removes the leading and trailing white space and line terminator

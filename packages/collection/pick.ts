@@ -1,4 +1,4 @@
-import { IteratorFunction, MaybeArray, Predicator, Pretty } from '@unshared/types'
+import type { IteratorFunction, MaybeArray, Predicator, Pretty } from '@unshared/types'
 
 type PickByKey<T, K extends PropertyKey> =
   Pretty<{ -readonly [P in Extract<keyof T, K>]: T[P] }>

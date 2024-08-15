@@ -1,5 +1,5 @@
-import { toKebabCase } from './toKebabCase'
 import { deburr } from './deburr'
+import { toKebabCase } from './toKebabCase'
 
 /**
  * Convert a string to a slug-like string. This function is similar to kebab-case

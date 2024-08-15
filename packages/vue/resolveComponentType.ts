@@ -1,4 +1,5 @@
-import { Component, defineComponent, h, resolveComponent } from 'vue'
+import type { Component } from 'vue'
+import { defineComponent, h, resolveComponent } from 'vue'
 
 export type ResolvedComponent<K extends string> = K extends keyof HTMLElementTagNameMap ? K : Component | string
 

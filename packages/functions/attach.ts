@@ -1,4 +1,4 @@
-import { Function } from '@unshared/types'
+import type { Function } from '@unshared/types'
 
 /**
  * A function where the first parameter is already bound to `this`.

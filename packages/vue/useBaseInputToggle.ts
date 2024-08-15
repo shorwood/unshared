@@ -1,9 +1,11 @@
-import { Component, Prop, Ref, computed, getCurrentInstance } from 'vue'
+import type { MaybeArray } from '@unshared/types'
+import type { Component, Prop, Ref } from 'vue'
+import type { BaseRenderableOptions } from './useBaseRenderable'
 import { toReactive, useVModel } from '@vueuse/core'
-import { MaybeArray } from '@unshared/types'
-import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions, useBaseRenderable } from './useBaseRenderable'
-import { cleanClasses } from './cleanClasses'
+import { computed, getCurrentInstance } from 'vue'
 import { cleanAttributes } from './cleanAttributes'
+import { cleanClasses } from './cleanClasses'
+import { BASE_RENDERABLE_OPTIONS, useBaseRenderable } from './useBaseRenderable'
 
 /** The type of the toggle. */
 export type ToggleType = 'checkbox' | 'radio' | 'switch'

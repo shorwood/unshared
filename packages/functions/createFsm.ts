@@ -1,4 +1,4 @@
-import { MaybePromise } from '@unshared/types'
+import type { MaybePromise } from '@unshared/types'
 
 /**
  * A map of states and their transitions. The keys of the map are the names of
@@ -12,7 +12,7 @@ import { MaybePromise } from '@unshared/types'
  * @template K The allowed states of the machine.
  */
 export type FSMTransitions<T, K extends string> = {
-  [P in K]: (data: T) => MaybePromise<string | void | undefined>
+  [P in K]: (data: T) => MaybePromise<string | undefined | void>
 }
 
 /**
@@ -63,7 +63,7 @@ export class FSM<T extends object, K extends string> extends EventTarget {
    *
    * @example 'init'
    */
-  public state: K | void | undefined
+  public state: K | undefined | void
 
   constructor(initialData: T, private transitions: FSMTransitions<T, K>) {
     super()

@@ -1,8 +1,12 @@
 // eslint-disable vue/no-unused-emit-declarations
-import { Prop, VNode, computed, h, mergeProps } from 'vue'
-import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions, useBaseRenderable } from './useBaseRenderable'
-import { Alert, useAlerts } from './useAlerts'
-import { DefineComponentContext, defineSetupComponent } from './defineSetupComponent'
+import type { Prop, VNode } from 'vue'
+import type { DefineComponentContext } from './defineSetupComponent'
+import type { Alert } from './useAlerts'
+import type { BaseRenderableOptions } from './useBaseRenderable'
+import { computed, h, mergeProps } from 'vue'
+import { defineSetupComponent } from './defineSetupComponent'
+import { useAlerts } from './useAlerts'
+import { BASE_RENDERABLE_OPTIONS, useBaseRenderable } from './useBaseRenderable'
 
 export const BASE_ALERTS_PROPS = {
   ...BASE_RENDERABLE_OPTIONS,

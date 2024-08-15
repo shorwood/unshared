@@ -1,5 +1,5 @@
-import { getElementTextNodes } from './getElementTextNodes'
 import { getElementLength } from './getElementLength'
+import { getElementTextNodes } from './getElementTextNodes'
 
 /**
  * Set the selection at the specified offsets in the provided element. If no end

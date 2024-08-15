@@ -1,4 +1,5 @@
-import { RuleLike, createRule } from './createRule'
+import type { RuleLike } from './createRule'
+import { createRule } from './createRule'
 
 /**
  * Checks if the value is a `ValidationRule`.

@@ -1,4 +1,4 @@
-import { Substract } from '@unshared/types'
+import type { Substract } from '@unshared/types'
 
 export type Repeated<T extends string, N extends number, S extends string = ''> =
   N extends 0 ? '' :

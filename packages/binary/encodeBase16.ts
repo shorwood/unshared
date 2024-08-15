@@ -1,5 +1,6 @@
-import { BinaryLike, toUint8Array } from './toUint8Array'
+import type { BinaryLike } from './toUint8Array'
 import { B16 } from './constants'
+import { toUint8Array } from './toUint8Array'
 
 /**
  * Encode a `BinaryLike` into a Base16-encoded string. This implementation is

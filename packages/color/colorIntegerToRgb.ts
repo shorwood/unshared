@@ -1,6 +1,7 @@
+import type { RGBBinaryFormat } from './colorRgbToInteger'
+import type { RGB } from './createColorRgb'
 import { clamp } from '@unshared/math/clamp'
-import { RGB, createColorRgb } from './createColorRgb'
-import { RGBBinaryFormat } from './colorRgbToInteger'
+import { createColorRgb } from './createColorRgb'
 
 /**
  * Parse a 32-bit integer color into it's RGB object representation.

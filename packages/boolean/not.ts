@@ -1,4 +1,4 @@
-import { BooleanNot } from '@unshared/types'
+import type { BooleanNot } from '@unshared/types'
 
 /**
  * Computes the [NOT](https://en.wikipedia.org/wiki/NOT_gate) of a boolean.

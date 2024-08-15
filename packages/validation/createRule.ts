@@ -1,6 +1,6 @@
-import { Function, IsUnknown, NotFunction } from '@unshared/types'
-import { ValidationError } from './ValidationError'
+import type { Function, IsUnknown, NotFunction } from '@unshared/types'
 import { assertString, assertStringMatching } from './assert'
+import { ValidationError } from './ValidationError'
 
 /**
  * A rule-like value can be a regular expression or a function that validates and/or transforms a value.
@@ -28,7 +28,7 @@ type RuleFunctionResult<T extends Function> =
 
       // --- If the function returns void or undefined, return the value.
       : T extends (value: infer V, ...rest: any[]) => infer U
-        ? (void | undefined) extends U ? V : U
+        ? (undefined | void) extends U ? V : U
         : never
     : never
 
@@ -277,7 +277,7 @@ if (import.meta.vitest) {
     })
 
     it('should infer the return type of a rule from a function that returns void | undefined', () => {
-      type Result = RuleResult<(value: string) => void | undefined>
+      type Result = RuleResult<(value: string) => undefined | void>
       expectTypeOf<Result>().toEqualTypeOf<string>()
     })
 

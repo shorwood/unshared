@@ -1,4 +1,4 @@
-import { Function } from './Function'
+import type { Function } from './Function'
 
 /**
  * Infer the type from the result of a `typeof` declaration.

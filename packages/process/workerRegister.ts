@@ -1,6 +1,7 @@
-import { MessagePort, TransferListItem, isMainThread, parentPort } from 'node:worker_threads'
-import { Function } from '@unshared/types'
-import { WorkerRequest } from './workerRequest'
+import type { Function } from '@unshared/types'
+import type { TransferListItem } from 'node:worker_threads'
+import type { WorkerRequest } from './workerRequest'
+import { isMainThread, MessagePort, parentPort } from 'node:worker_threads'
 
 /** Unregister a function from being called using worker threads messaging. */
 export type Unregister = () => void

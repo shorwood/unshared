@@ -1,4 +1,4 @@
-import { Function } from '@unshared/types'
+import type { Function } from '@unshared/types'
 
 /**
  * Converts a typed assertion function to a predicate function.

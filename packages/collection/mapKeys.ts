@@ -1,6 +1,6 @@
-import { Collection, FromEntries, Get, IteratorFunction, IteratorPath, MaybeLiteral } from '@unshared/types'
-import { isIterable } from './isIterable'
+import type { Collection, FromEntries, Get, IteratorFunction, IteratorPath, MaybeLiteral } from '@unshared/types'
 import { get } from './get'
+import { isIterable } from './isIterable'
 
 type MappedKeysByPath<T, P extends string> =
   T extends readonly unknown[] ? FromEntries<{ [K in keyof T]: [Get<T[K], P>, T[K]] } & Array<[PropertyKey, unknown]>> extends infer U ? { -readonly [K in keyof U]: U[K] } : never

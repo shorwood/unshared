@@ -1,5 +1,5 @@
-import { assertNumber } from './assertNumber'
 import { ValidationError } from '../ValidationError'
+import { assertNumber } from './assertNumber'
 
 /**
  * Assert that a value is a number greater than or equal to `0`.

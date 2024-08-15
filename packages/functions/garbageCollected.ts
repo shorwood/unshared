@@ -1,5 +1,5 @@
-import { garbageCollect } from './garbageCollect'
 import { createResolvable } from './createResolvable'
+import { garbageCollect } from './garbageCollect'
 
 /** Global finalization registry used to track garbage collection. */
 let REGISTRY: FinalizationRegistry<unknown> | undefined

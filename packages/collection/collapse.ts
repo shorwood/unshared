@@ -1,4 +1,4 @@
-import { PartialStrict } from '@unshared/types'
+import type { PartialStrict } from '@unshared/types'
 
 export interface CollapseOptions {
 
@@ -39,7 +39,7 @@ export interface CollapseOptions {
  * // Collapse the collection.
  * type CollapsedCollection = Collapsed<Collection> // { a: string } | undefined
  */
-export type Collapsed<T, O extends CollapseOptions = {}> =
+export type Collapsed<T, O extends CollapseOptions = object> =
 
   // --- If value is `null` or `undefined`, discard it.
   T extends null ? O['keepNull'] extends true ? T : undefined
@@ -121,6 +121,7 @@ export function collapse(object?: unknown, options: CollapseOptions = {}) {
 }
 
 /* v8 ignore start */
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 if (import.meta.vitest) {
   describe('collapse', () => {
     it('should mutate the object', () => {
@@ -170,7 +171,7 @@ if (import.meta.vitest) {
 
     it('should maybe collapse null values', () => {
       // eslint-disable-next-line unicorn/no-null
-      const result = collapse({ a: null as string | null })
+      const result = collapse({ a: null as null | string })
       expect(result).toBeUndefined()
       expectTypeOf(result).toEqualTypeOf<{ a: string } | undefined>()
     })

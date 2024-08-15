@@ -1,4 +1,4 @@
-import { MaybeFunction, MaybePromise } from '@unshared/types'
+import type { MaybeFunction, MaybePromise } from '@unshared/types'
 
 /**
  * A value that contains a value as the result of a function or a promise.

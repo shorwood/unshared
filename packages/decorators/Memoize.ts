@@ -1,5 +1,5 @@
+import { memoize, MemoizeOptions } from '@unshared/functions/memoize'
 import { Function, MethodDecorator } from '@unshared/types'
-import { MemoizeOptions, memoize } from '@unshared/functions/memoize'
 
 /**
  * Decorate a method to memoize it's result based on the arguments. Meaning

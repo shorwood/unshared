@@ -1,4 +1,4 @@
-import { NotNull } from '@unshared/types'
+import type { NotNull } from '@unshared/types'
 import { ValidationError } from '../ValidationError'
 
 /**

@@ -1,5 +1,5 @@
-import { env } from 'node:process'
 import { toCamelCase } from '@unshared/string'
+import { env } from 'node:process'
 
 export type EnvironmentVariablesParser<T extends Record<string, unknown>> = (environment: Record<string, string>) => T
 

@@ -1,7 +1,8 @@
-import { cwd } from 'node:process'
-import { dirname, resolve } from 'node:path'
+import type { Awaitable } from '@unshared/functions/awaitable'
+import { awaitable } from '@unshared/functions/awaitable'
 import { access, constants } from 'node:fs/promises'
-import { Awaitable, awaitable } from '@unshared/functions/awaitable'
+import { dirname, resolve } from 'node:path'
+import { cwd } from 'node:process'
 
 /**
  * Find all ancestors of a file from a given path. The search will start

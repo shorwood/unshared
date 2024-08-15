@@ -1,5 +1,5 @@
-import { IsArray } from './utils'
-import { MaybeReadonly } from './MaybeReadonly'
+import type { MaybeReadonly } from './MaybeReadonly'
+import type { IsArray } from './utils'
 
 /**
  * Filter the elements of an array or tuple that match the given type.

@@ -1,8 +1,11 @@
+import type { RuleChainLike, RuleChainResult } from './createRuleChain'
+import type { RuleSetLike, RuleSetResult } from './createRuleSet'
+import type { SchemaLike, SchemaResult } from './createSchema'
 import { tries } from '@unshared/functions/tries'
+import { createRuleChain } from './createRuleChain'
+import { createRuleSet } from './createRuleSet'
+import { createSchema } from './createSchema'
 import { ValidationError } from './ValidationError'
-import { SchemaLike, SchemaResult, createSchema } from './createSchema'
-import { RuleSetLike, RuleSetResult, createRuleSet } from './createRuleSet'
-import { RuleChainLike, RuleChainResult, createRuleChain } from './createRuleChain'
 
 /** A set of rules or a schema that can be used to validate a value. */
 export type ParserLike = [SchemaLike] | RuleChainLike | RuleSetLike

@@ -1,5 +1,5 @@
-import { defineConfig, presetAttributify, presetIcons, presetUno } from 'unocss'
 import { presetUnshared } from '@unshared/unocss-preset'
+import { defineConfig, presetAttributify, presetIcons, presetUno } from 'unocss'
 import * as colors from './utils/colors'
 
 export default defineConfig({

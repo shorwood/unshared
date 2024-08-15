@@ -1,11 +1,14 @@
-import { dirname } from 'node:path'
-import { access, mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises'
-import { FSWatcher, PathLike, Stats, WatchOptions, constants, existsSync, readFileSync, watch, writeFileSync } from 'node:fs'
-import { EventEmitter } from 'node:events'
-import { Reactive, ReactiveOptions, reactive } from '@unshared/reactivity/reactive'
-import { garbageCollected } from '@unshared/functions/garbageCollected'
-import { Awaitable, awaitable } from '@unshared/functions/awaitable'
+import type { Awaitable } from '@unshared/functions/awaitable'
+import type { Reactive, ReactiveOptions } from '@unshared/reactivity/reactive'
+import type { FSWatcher, PathLike, Stats, WatchOptions } from 'node:fs'
 import { overwrite } from '@unshared/collection/overwrite'
+import { awaitable } from '@unshared/functions/awaitable'
+import { garbageCollected } from '@unshared/functions/garbageCollected'
+import { reactive } from '@unshared/reactivity/reactive'
+import { EventEmitter } from 'node:events'
+import { constants, existsSync, readFileSync, watch, writeFileSync } from 'node:fs'
+import { access, mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises'
+import { dirname } from 'node:path'
 
 export interface FSObjectOptions<T extends object> extends ReactiveOptions<T>, WatchOptions {
 

@@ -1,4 +1,4 @@
-import { Pretty } from './Pretty'
+import type { Pretty } from './Pretty'
 
 /**
  * Make all properties of T optionally `undefined`. This type is

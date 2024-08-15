@@ -1,6 +1,6 @@
+import type { Linter } from 'eslint'
+import type { ESLintConfigOptions } from './all'
 import eslintCommentsPlugin from 'eslint-plugin-eslint-comments'
-import { Linter } from 'eslint'
-import { ESLintConfigOptions } from './all'
 
 /**
  * Provide configuration for eslint-comments plugin rules. This

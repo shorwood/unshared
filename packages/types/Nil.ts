@@ -1,12 +1,12 @@
 /**
  * Matches any type that is `null`, `undefined`, or `void`.
  */
-export type Nil = void | null | undefined
+export type Nil = null | undefined | void
 
 /* v8 ignore next */
 if (import.meta.vitest) {
   test('should match nil', () => {
-    expectTypeOf<void | null | undefined>().toMatchTypeOf<Nil>()
+    expectTypeOf<null | undefined | void>().toMatchTypeOf<Nil>()
   })
 
   test('should not match non-nil', () => {

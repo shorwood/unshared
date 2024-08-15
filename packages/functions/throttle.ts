@@ -1,4 +1,4 @@
-import { Function, NumberIntegerPositive } from '@unshared/types'
+import type { Function, NumberIntegerPositive } from '@unshared/types'
 
 export type Throttled<T extends Function> = (...parameters: Parameters<T>) => void
 

@@ -1,4 +1,5 @@
-import { RGB, createColorRgb } from './createColorRgb'
+import type { RGB } from './createColorRgb'
+import { createColorRgb } from './createColorRgb'
 
 /** Regular expression to match a hexadecimal color. */
 const EXP_COLOR_HEX = /^#?([\da-f]{3,4}|[\da-f]{6}|[\da-f]{8})$/i
@@ -13,7 +14,7 @@ const EXP_COLOR_HEX = /^#?([\da-f]{3,4}|[\da-f]{6}|[\da-f]{8})$/i
  * @example colorHexToRgb('#fff') // => { r: 1, g: 1, b: 1, a: 1 }
  */
 export function colorHexToRgb(color: string): RGB {
-  const hex = color.match(EXP_COLOR_HEX)?.[1]
+  const hex = (EXP_COLOR_HEX.exec(color))?.[1]
   if (!hex) throw new Error(`Could not parse hexadecimal color from string: "${color}"`)
 
   // --- Compute slice factor based on whether it's a 3/4 or 6/8 digit hex.

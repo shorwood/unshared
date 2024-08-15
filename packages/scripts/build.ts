@@ -1,12 +1,13 @@
-import { rollup, watch as rollupWatch } from 'rollup'
-import { cwd as getCwd, stdout } from 'node:process'
-import { rm } from 'node:fs/promises'
+import type { ResolveBundleOptions } from './resolveBundle'
 import { toArray } from '@unshared/collection/toArray'
-import { resolvePackageNames } from './resolvePackageNames'
-import { resolvePackage } from './resolvePackage'
-import { ResolveBundleOptions, resolveBundle } from './resolveBundle'
-import { buildPackageJson } from './buildPackageJson'
+import { rm } from 'node:fs/promises'
+import { cwd as getCwd, stdout } from 'node:process'
+import { rollup, watch as rollupWatch } from 'rollup'
 import { buildIndexes } from './buildIndexes'
+import { buildPackageJson } from './buildPackageJson'
+import { resolveBundle } from './resolveBundle'
+import { resolvePackage } from './resolvePackage'
+import { resolvePackageNames } from './resolvePackageNames'
 
 export interface BuildOptions extends ResolveBundleOptions {
   cwd?: string

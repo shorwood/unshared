@@ -1,4 +1,4 @@
-import { NumberIntegerPositive } from '@unshared/types'
+import type { NumberIntegerPositive } from '@unshared/types'
 
 export interface TruncateOptions<N extends number = number> {
 

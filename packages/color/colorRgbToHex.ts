@@ -1,5 +1,6 @@
-import { RGB } from './createColorRgb'
-import { RGBBinaryFormat, colorRgbToInteger } from './colorRgbToInteger'
+import type { RGBBinaryFormat } from './colorRgbToInteger'
+import type { RGB } from './createColorRgb'
+import { colorRgbToInteger } from './colorRgbToInteger'
 
 /**
  * Convert an RGB color into it's hexadecimal string representation. The

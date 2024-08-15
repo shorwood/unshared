@@ -1,5 +1,6 @@
+import type { Awaitable } from '@unshared/functions/awaitable'
+import { awaitable } from '@unshared/functions/awaitable'
 import { Readable, Transform } from 'node:stream'
-import { Awaitable, awaitable } from '@unshared/functions/awaitable'
 
 /** Callback that is executed with the stream chunks. */
 export type DeriveStreamFunction<T> = (value: { chunk: Buffer; encoding: BufferEncoding; value: T }) => T

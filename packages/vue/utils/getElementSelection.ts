@@ -1,5 +1,5 @@
-import { getElementTextNodes } from './getElementTextNodes'
 import { getElementLength } from './getElementLength'
+import { getElementTextNodes } from './getElementTextNodes'
 
 /**
  * A cursor object that represents the current selection in the document.

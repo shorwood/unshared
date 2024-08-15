@@ -1,4 +1,5 @@
-import { MaybeRef, onMounted, onScopeDispose, unref } from 'vue'
+import type { MaybeRef } from 'vue'
+import { onMounted, onScopeDispose, unref } from 'vue'
 
 /**
  * Create a hook that listens to the events emitted outside the component.

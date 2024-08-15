@@ -1,6 +1,6 @@
+import type { ESLint, Linter } from 'eslint'
+import type { ESLintConfigOptions } from './all'
 import nodePlugin from 'eslint-plugin-n'
-import { ESLint, Linter } from 'eslint'
-import { ESLintConfigOptions } from './all'
 
 export function node(options: ESLintConfigOptions): Linter.FlatConfig[] {
   return [

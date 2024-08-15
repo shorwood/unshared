@@ -1,8 +1,11 @@
-import { Prop, VNode, computed, h, mergeProps, ref, watch } from 'vue'
+import type { Prop, VNode } from 'vue'
+import type { DefineComponentContext } from './defineSetupComponent'
+import type { BaseRenderableOptions } from './useBaseRenderable'
 import { useVModel } from '@vueuse/core'
-import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions, useBaseRenderable } from './useBaseRenderable'
+import { computed, h, mergeProps, ref, watch } from 'vue'
+import { defineSetupComponent } from './defineSetupComponent'
 import { exposeToDevtool } from './exposeToDevtool'
-import { DefineComponentContext, defineSetupComponent } from './defineSetupComponent'
+import { BASE_RENDERABLE_OPTIONS, useBaseRenderable } from './useBaseRenderable'
 
 /** The base props for the `BaseDialog` component. */
 export const BASE_DIALOG_PROPS = {

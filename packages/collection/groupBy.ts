@@ -1,6 +1,6 @@
-import { FromEntries, Get, IteratorFunction, IteratorPath, MaybeLiteral } from '@unshared/types'
-import { isIterable } from './isIterable'
+import type { FromEntries, Get, IteratorFunction, IteratorPath, MaybeLiteral } from '@unshared/types'
 import { get } from './get'
+import { isIterable } from './isIterable'
 
 type GroupedByPath<T, P extends IteratorPath<T>> =
   T extends readonly unknown[] ? FromEntries<{ [K in keyof T]: [Get<T[K], P>, T[K]] } & Array<[PropertyKey, unknown]>> extends infer U ? { -readonly [K in keyof U]: Array<U[K]> } : never

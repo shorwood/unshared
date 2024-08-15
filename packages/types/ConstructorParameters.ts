@@ -11,6 +11,7 @@ export type ConstructorParameters<T extends abstract new (...args: any[]) => unk
   T extends abstract new (...args: infer P) => unknown ? P : never
 
 /* v8 ignore next */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 if (import.meta.vitest) {
   test('should return the parameters of a constructor', () => {
     class Foo { constructor(_a: number, _b: string) {} }

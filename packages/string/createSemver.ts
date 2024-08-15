@@ -1,4 +1,4 @@
-import { NumberIntegerPositive } from '@unshared/types'
+import type { NumberIntegerPositive } from '@unshared/types'
 
 export const SEMVER_REGEXP = /^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[A-Za-z-][\dA-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][\dA-Za-z-]*))*))?(?:\+(?<buildmetadata>[\dA-Za-z-]+(?:\.[\dA-Za-z-]+)*))?$/
 
@@ -80,7 +80,7 @@ export class Semver {
    * @example Semver.parse('1.2.3-alpha+build') // Semver { ... }
    */
   static parse(version: string): Semver {
-    const match = version.match(SEMVER_REGEXP)
+    const match = SEMVER_REGEXP.exec(version)
     if (!match) throw new Error(`Invalid semver version: ${version}`)
     return new Semver({
       build: match.groups!.buildmetadata,
@@ -136,7 +136,7 @@ export class Semver {
   satisfies(range: string): boolean {
 
     // --- Get the comparison operator and the version to compare.
-    const rangeMatch = range.match(/^(>=|<=|>|<|=|\^|~)?\s*(.*)$/)
+    const rangeMatch = /^(>=|<=|>|<|=|\^|~)?\s*(.*)$/.exec(range)
     if (!rangeMatch) throw new Error(`Invalid semver range: ${range}`)
 
     // --- Get the comparison operator and the version to compare.

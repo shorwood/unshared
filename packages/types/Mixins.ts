@@ -1,6 +1,6 @@
-import { Extends } from './Extends'
-import { ConstructorStatics } from './ConstructorStatics'
-import { Constructor } from './Constructor'
+import type { Constructor } from './Constructor'
+import type { ConstructorStatics } from './ConstructorStatics'
+import type { Extends } from './Extends'
 
 /**
  * Mixes multiple classes into a single class from left to right.
@@ -20,6 +20,7 @@ export type Mixins<T extends Constructor[]> =
         : never
 
 /* v8 ignore next */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 if (import.meta.vitest) {
   test('should extend two classes', () => {
     class A { a = 1 }

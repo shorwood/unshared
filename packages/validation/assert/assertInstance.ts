@@ -1,4 +1,4 @@
-import { Constructor } from '@unshared/types'
+import type { Constructor } from '@unshared/types'
 import { kindOf } from '@unshared/functions/kindOf'
 import { ValidationError } from '../ValidationError'
 

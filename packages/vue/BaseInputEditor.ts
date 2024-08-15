@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Prop, computed, h, mergeProps, onMounted, onScopeDispose, ref, watch } from 'vue'
-import { EditorView, minimalSetup } from 'codemirror'
-import { useVModel } from '@vueuse/core'
 import { type Extension } from '@codemirror/state'
-import { exposeToDevtool } from './exposeToDevtool'
+import { useVModel } from '@vueuse/core'
+import { EditorView, minimalSetup } from 'codemirror'
+import { computed, h, mergeProps, onMounted, onScopeDispose, Prop, ref, watch } from 'vue'
 import { DefineComponentContext, defineSetupComponent } from './defineSetupComponent'
+import { exposeToDevtool } from './exposeToDevtool'
 
 export const BASE_INPUT_EDITOR_OPTIONS = {
   modelValue: String,

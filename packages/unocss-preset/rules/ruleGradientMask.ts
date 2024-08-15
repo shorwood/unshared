@@ -1,4 +1,4 @@
-import { Rule, RuleContext } from '@unocss/core'
+import type { Rule, RuleContext } from '@unocss/core'
 
 const DIRECTIONS_KEYS = {
   b: 'to bottom',

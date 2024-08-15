@@ -1,4 +1,4 @@
-import { MaybeArray } from '@unshared/types'
+import type { MaybeArray } from '@unshared/types'
 
 /** A distinguished name attributes. */
 export type DistinguishedName = Record<string, MaybeArray<string>>
@@ -35,8 +35,8 @@ export function parseDistinguishedName(name: string): DistinguishedName {
     const value = parts[1].replaceAll(/\\(,)|\\(=)/g, '$1$2').trim()
 
     if (attributes[key] === undefined) attributes[key] = value
-    else if (typeof attributes[key] === 'string') attributes[key] = [attributes[key] as string, value]
-    else (attributes[key] as string[]).push(value)
+    else if (typeof attributes[key] === 'string') attributes[key] = [attributes[key], value]
+    else (attributes[key]).push(value)
   }
 
   // --- Return the attributes

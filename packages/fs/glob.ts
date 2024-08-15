@@ -1,10 +1,11 @@
-import { cwd as getCwd } from 'node:process'
-import { join, relative } from 'node:path'
-import { readdir, stat } from 'node:fs/promises'
-import { Stats } from 'node:fs'
-import { MaybeArray } from '@unshared/types'
+import type { Awaitable } from '@unshared/functions/awaitable'
+import type { MaybeArray } from '@unshared/types'
+import type { Stats } from 'node:fs'
+import { awaitable } from '@unshared/functions/awaitable'
 import { createPattern } from '@unshared/string/createPattern'
-import { Awaitable, awaitable } from '@unshared/functions/awaitable'
+import { readdir, stat } from 'node:fs/promises'
+import { join, relative } from 'node:path'
+import { cwd as getCwd } from 'node:process'
 
 /**
  * An entry in the glob result iterator or array.

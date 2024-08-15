@@ -1,7 +1,7 @@
-import { UnionMerge } from './UnionMerge'
-import { DefaultObject } from './DefaultObject'
-import { ConstructorStatics } from './ConstructorStatics'
-import { Constructor } from './Constructor'
+import type { Constructor } from './Constructor'
+import type { ConstructorStatics } from './ConstructorStatics'
+import type { DefaultObject } from './DefaultObject'
+import type { UnionMerge } from './UnionMerge'
 
 /**
  * Extends one class with another. The first class will be extended with the
@@ -23,6 +23,7 @@ export type Extends<T1 extends Constructor, T2 extends Constructor> =
   >
 
 /** v8 ignore start */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 if (import.meta.vitest) {
   test('should extends prototype properties from left to right', () => {
     class A { a = 1; c = 3 }

@@ -1,4 +1,4 @@
-import { Constructor, Mixins } from '@unshared/types'
+import type { Constructor, Mixins } from '@unshared/types'
 
 /**
  * Mixes multiple classes into a single class. The resulting class will have all properties and methods
@@ -54,7 +54,7 @@ export function mixins<T extends [Constructor, ...Constructor[]]>(...mixins: T):
 }
 
 /* v8 ignore next */
-
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 if (import.meta.vitest) {
   test('should mix classes into a single class', () => {
     class ClassA { foo = 'foo' }

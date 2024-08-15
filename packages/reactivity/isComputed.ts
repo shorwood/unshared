@@ -1,5 +1,5 @@
+import type { Computed } from './computed'
 import { ComputedFlag } from './constants'
-import { Computed } from './computed'
 
 /**
  * Predicate function that checks if a value is a `Computed` object.

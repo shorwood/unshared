@@ -1,8 +1,8 @@
-import { join, relative } from 'node:path'
-import { toKebabCase } from '@unshared/string'
 import { glob } from '@unshared/fs'
-import { resolvePackage } from './resolvePackage'
+import { toKebabCase } from '@unshared/string'
+import { join, relative } from 'node:path'
 import { getGitRemoteUrl } from './getGitRemoteUrl'
+import { resolvePackage } from './resolvePackage'
 
 export interface BuildPackageJsonOptions {
   cwd?: string

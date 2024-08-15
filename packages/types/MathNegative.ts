@@ -1,4 +1,4 @@
-import { IsNumber, IsZero, Negative } from './utils'
+import type { IsNumber, IsZero, Negative } from './utils'
 
 /**
  * The negative of a number.

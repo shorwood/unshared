@@ -1,5 +1,6 @@
-import { Prop, Ref, computed, getCurrentInstance } from 'vue'
+import type { Prop, Ref } from 'vue'
 import { toReactive, useVModel } from '@vueuse/core'
+import { computed, getCurrentInstance } from 'vue'
 
 /** The symbol to provide the base toggle composable. */
 export const BASE_INPUT_FILE_SYMBOL = Symbol()

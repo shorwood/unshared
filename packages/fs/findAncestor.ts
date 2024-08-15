@@ -1,6 +1,6 @@
-import { cwd } from 'node:process'
-import { dirname, resolve } from 'node:path'
 import { access, constants } from 'node:fs/promises'
+import { dirname, resolve } from 'node:path'
+import { cwd } from 'node:process'
 
 /**
  * Find the first ancestor of a file from a given path. The search will start

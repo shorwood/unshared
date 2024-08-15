@@ -1,4 +1,4 @@
-import { Immutable } from '@unshared/types'
+import type { Immutable } from '@unshared/types'
 
 /**
  * Returns a deeply immutable proxy of the given object. This means that all

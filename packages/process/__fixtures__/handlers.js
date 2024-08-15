@@ -1,5 +1,5 @@
-import { threadId } from 'node:worker_threads'
 import { Buffer } from 'node:buffer'
+import { threadId } from 'node:worker_threads'
 import { workerRegister } from '../dist/workerRegister.js'
 
 workerRegister('factorial', (/** @type {number} */ n) => {

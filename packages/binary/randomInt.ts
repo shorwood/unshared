@@ -1,5 +1,4 @@
 /* eslint-disable n/no-unsupported-features/node-builtins */
-/* eslint-disable @typescript-eslint/no-var-requires */
 export interface RandomOptions {
 
   /**
@@ -28,6 +27,7 @@ export function randomInt(options: RandomOptions = {}): number {
   const { allowUnsafe = false } = options
 
   try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { randomInt } = require('node:crypto') as typeof import('node:crypto')
     return randomInt(0xFFFFFFFF)
   }
@@ -50,6 +50,7 @@ export function randomInt(options: RandomOptions = {}): number {
 }
 
 /* v8 ignore start */
+/* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 if (import.meta.vitest) {
   afterEach(() => {

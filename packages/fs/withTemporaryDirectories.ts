@@ -1,5 +1,6 @@
-import { Function, MaybeArray, Tuple, TupleLength } from '@unshared/types'
-import { CreateTemporaryDirectoryOptions, createTemporaryDirectory } from './createTemporaryDirectory'
+import type { Function, MaybeArray, Tuple, TupleLength } from '@unshared/types'
+import type { CreateTemporaryDirectoryOptions } from './createTemporaryDirectory'
+import { createTemporaryDirectory } from './createTemporaryDirectory'
 
 type Callback<U, N extends number> = (...paths: Tuple<N, string>) => Promise<U> | U
 

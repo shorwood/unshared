@@ -1,4 +1,4 @@
-import { Rule } from '@unocss/core'
+import type { Rule } from '@unocss/core'
 
 export const ruleInnerContent: Rule = [
   /^inner-content(?:-(.*))?$/,

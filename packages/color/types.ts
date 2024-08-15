@@ -1,4 +1,4 @@
-import { CharacterHex, StringConstraint } from '@unshared/types'
+import type { CharacterHex, StringConstraint } from '@unshared/types'
 
 /**
  * Represents a color in the HSV color space. Each channel is a number between 0 and 1.

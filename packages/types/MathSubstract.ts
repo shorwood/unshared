@@ -1,5 +1,5 @@
-import { MathNegative } from './MathNegative'
-import { MathAdd } from './MathAdd'
+import type { MathAdd } from './MathAdd'
+import type { MathNegative } from './MathNegative'
 
 /**
  * Difference of two positive integers.

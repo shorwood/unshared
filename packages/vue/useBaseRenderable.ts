@@ -1,5 +1,6 @@
-import { Component, Prop, computed, getCurrentInstance, resolveComponent } from 'vue'
+import type { Component, Prop } from 'vue'
 import { toReactive } from '@vueuse/core'
+import { computed, getCurrentInstance, resolveComponent } from 'vue'
 
 /** The properties of the base renderable component. */
 export interface BaseRenderableOptions {

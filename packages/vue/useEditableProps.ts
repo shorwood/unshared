@@ -1,11 +1,12 @@
-import { Ref, WatchOptions, getCurrentInstance, ref, watch } from 'vue'
-import { MaybeFunction, Pretty } from '@unshared/types'
+import type { MaybeFunction, Pretty } from '@unshared/types'
+import type { Ref, WatchOptions } from 'vue'
+import { getCurrentInstance, ref, watch } from 'vue'
 
 /** The options for the `useEditableProps` composable. */
 export interface UseEditablePropsOptions<
   T,
   K extends keyof T = keyof T,
-  D extends Partial<Pick<T, K>> = {},
+  D extends Partial<Pick<T, K>> = object,
 > extends WatchOptions {
 
   /**
@@ -42,9 +43,9 @@ export interface UseEditablePropsOptions<
 type EditableProps<
   T,
   K extends keyof T = keyof T,
-  D extends Partial<Pick<T, K>> = {},
+  D extends Partial<Pick<T, K>> = object,
 > = Pretty<{
-  [P in K]-?: Ref<P extends keyof D ? D[P] | Exclude<T[P], void | undefined> : T[P]>
+  [P in K]-?: Ref<P extends keyof D ? D[P] | Exclude<T[P], undefined | void> : T[P]>
 }>
 
 /**
@@ -66,7 +67,7 @@ type EditableProps<
 export function useEditableProps<
   T extends object,
   K extends keyof T = keyof T,
-  D extends Partial<Pick<T, K>> = {},
+  D extends Partial<Pick<T, K>> = object,
 >(props: T, options: UseEditablePropsOptions<T, K, D> = {}): EditableProps<T, K, D> {
 
   // --- Destructure the options.

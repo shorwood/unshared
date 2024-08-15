@@ -1,10 +1,10 @@
 /* eslint-disable n/no-unsupported-features/node-builtins */
-import { cwd as getCwd } from 'node:process'
-import { cp } from 'node:fs/promises'
-import { createSemver } from '@unshared/string/createSemver'
 import { execute } from '@unshared/process/execute'
-import { resolvePackageNames } from './resolvePackageNames'
+import { createSemver } from '@unshared/string/createSemver'
+import { cp } from 'node:fs/promises'
+import { cwd as getCwd } from 'node:process'
 import { resolvePackage } from './resolvePackage'
+import { resolvePackageNames } from './resolvePackageNames'
 
 const DEFAULT_TAG = 'next'
 const DEFAULT_REGISTRY = 'https://registry.npmjs.org'

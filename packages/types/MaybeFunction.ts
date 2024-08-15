@@ -1,4 +1,4 @@
-import { Function } from './Function'
+import type { Function } from './Function'
 
 /**
  * A type that may be a function that returns a value of type `T`

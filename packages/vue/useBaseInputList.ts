@@ -1,5 +1,6 @@
-import { Prop, Ref, computed, getCurrentInstance, ref, watch } from 'vue'
+import type { Prop, Ref } from 'vue'
 import { toReactive, useVModel } from '@vueuse/core'
+import { computed, getCurrentInstance, ref, watch } from 'vue'
 
 /** The symbol to provide the `useBaseInputList` composable. */
 export const BASE_INPUT_LIST_SYMBOL = Symbol()

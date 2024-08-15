@@ -1,9 +1,10 @@
-import { PackageJSON } from 'types-pkg-json'
-import { cwd as getCwd } from 'node:process'
-import { join } from 'node:path'
-import { SemverComponents, createSemver } from '@unshared/string/createSemver'
-import { execute } from '@unshared/process/execute'
+import type { SemverComponents } from '@unshared/string/createSemver'
+import type { PackageJSON } from 'types-pkg-json'
 import { loadObject } from '@unshared/fs/loadObject'
+import { execute } from '@unshared/process/execute'
+import { createSemver } from '@unshared/string/createSemver'
+import { join } from 'node:path'
+import { cwd as getCwd } from 'node:process'
 import { resolvePackageNames } from './resolvePackageNames'
 
 export interface ReleaseOptions {

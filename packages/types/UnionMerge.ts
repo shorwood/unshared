@@ -1,4 +1,4 @@
-import { OmitNever } from './OmitNever'
+import type { OmitNever } from './OmitNever'
 
 /**
  * Merged type of all the objects in the union.
@@ -12,6 +12,7 @@ export type UnionMerge<T> =
     : never
 
 /* v8 ignore next */
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 if (import.meta.vitest) {
   test('should merge a union of objects', () => {
     type Result = UnionMerge<{ a: number } | { b: string }>

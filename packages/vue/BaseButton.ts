@@ -1,11 +1,17 @@
 // eslint-disable vue/no-unused-emit-declarations
-import { Prop, VNode, computed, h, mergeProps } from 'vue'
-import { BASE_STATE_OPTIONS, BaseStateOptions, useBaseState } from './useBaseState'
-import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions, useBaseRenderable } from './useBaseRenderable'
-import { BASE_LINKABLE_OPTIONS, BaseLinkableOptions, useBaseLinkable } from './useBaseLinkable'
-import { BASE_CLICKABLE_OPTIONS, BaseClickableOptions, useBaseClickable } from './useBaseClickable'
+import type { Prop, VNode } from 'vue'
+import type { DefineComponentContext } from './defineSetupComponent'
+import type { BaseClickableOptions } from './useBaseClickable'
+import type { BaseLinkableOptions } from './useBaseLinkable'
+import type { BaseRenderableOptions } from './useBaseRenderable'
+import type { BaseStateOptions } from './useBaseState'
+import { computed, h, mergeProps } from 'vue'
+import { defineSetupComponent } from './defineSetupComponent'
 import { exposeToDevtool } from './exposeToDevtool'
-import { DefineComponentContext, defineSetupComponent } from './defineSetupComponent'
+import { BASE_CLICKABLE_OPTIONS, useBaseClickable } from './useBaseClickable'
+import { BASE_LINKABLE_OPTIONS, useBaseLinkable } from './useBaseLinkable'
+import { BASE_RENDERABLE_OPTIONS, useBaseRenderable } from './useBaseRenderable'
+import { BASE_STATE_OPTIONS, useBaseState } from './useBaseState'
 
 /** The props for the `BaseButton` component. */
 export const BASE_BUTTON_PROPS = {

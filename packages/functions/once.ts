@@ -1,4 +1,4 @@
-import { Function } from '@unshared/types'
+import type { Function } from '@unshared/types'
 
 /**
  * A function that will be executed at most one time, no matter how often you

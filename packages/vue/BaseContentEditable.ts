@@ -1,9 +1,14 @@
-import { Prop, computed, getCurrentInstance, h, mergeProps } from 'vue'
-import { BASE_STATE_OPTIONS, BaseStateOptions, useBaseState } from './useBaseState'
-import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions } from './useBaseRenderable'
-import { BASE_CONTENT_EDITABLE_OPTIONS, BaseContentEditableOptions, useBaseContentEditable } from './useBaseContentEditable'
+import type { Prop } from 'vue'
+import type { DefineComponentContext } from './defineSetupComponent'
+import type { BaseContentEditableOptions } from './useBaseContentEditable'
+import type { BaseRenderableOptions } from './useBaseRenderable'
+import type { BaseStateOptions } from './useBaseState'
+import { computed, getCurrentInstance, h, mergeProps } from 'vue'
+import { defineSetupComponent } from './defineSetupComponent'
 import { exposeToDevtool } from './exposeToDevtool'
-import { DefineComponentContext, defineSetupComponent } from './defineSetupComponent'
+import { BASE_CONTENT_EDITABLE_OPTIONS, useBaseContentEditable } from './useBaseContentEditable'
+import { BASE_RENDERABLE_OPTIONS } from './useBaseRenderable'
+import { BASE_STATE_OPTIONS, useBaseState } from './useBaseState'
 
 /** The base props for the `BaseContentEditable` component. */
 export const BASE_CONTENT_EDITABLE_PROPS = {

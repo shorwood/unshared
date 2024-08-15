@@ -1,4 +1,4 @@
-import { Function } from '@unshared/types'
+import type { Function } from '@unshared/types'
 
 /**
  * The result of the `flow` function. If one of the `transformer` functions

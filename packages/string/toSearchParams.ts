@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable unicorn/prevent-abbreviations */
-import { MaybeArray } from '@unshared/types'
+import type { MaybeArray } from '@unshared/types'
 
 /** An object that can be converted to a query string. */
 export type SearchParamsObject = Record<string, MaybeArray<boolean | number | string> | undefined>

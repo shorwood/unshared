@@ -1,6 +1,7 @@
+import type { ParserLike, ParserResult } from './createParser'
+import { assertArray } from './assert'
+import { createParser } from './createParser'
 import { ValidationError } from './ValidationError'
-import { ParserLike, ParserResult, createParser } from './createParser'
-import { assertArray } from './assert/assertArray'
 
 /** A parser function that can be used to validate an array of values. */
 export type ArrayParser<T extends ParserLike> =

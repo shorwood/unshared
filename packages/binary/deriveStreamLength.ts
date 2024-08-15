@@ -1,5 +1,6 @@
-import { Awaitable } from '@unshared/functions/awaitable'
-import { Derive, deriveStream } from './deriveStream'
+import type { Awaitable } from '@unshared/functions/awaitable'
+import type { Derive } from './deriveStream'
+import { deriveStream } from './deriveStream'
 
 /**
  * Computes the length of a stream of bytes without consuming the stream. This

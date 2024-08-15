@@ -1,4 +1,5 @@
-import { ComponentInternalInstance, getCurrentInstance, h, nextTick } from 'vue'
+import type { ComponentInternalInstance } from 'vue'
+import { getCurrentInstance, h, nextTick } from 'vue'
 
 /**
  * Exposes an object to the Vue Devtools. This is useful when defining a component

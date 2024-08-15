@@ -1,4 +1,4 @@
-import { Rule } from '@unocss/core'
+import type { Rule } from '@unocss/core'
 
 /**
  * Generate classes for dynamic background images from Unsplash.

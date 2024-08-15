@@ -1,6 +1,6 @@
-import { join } from 'node:path'
-import { readdir, writeFile } from 'node:fs/promises'
 import { createPattern } from '@unshared/string/createPattern'
+import { readdir, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { resolvePackage } from './resolvePackage'
 
 interface IndexFile {

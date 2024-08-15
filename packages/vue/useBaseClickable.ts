@@ -1,9 +1,11 @@
-import { Prop, computed, getCurrentInstance } from 'vue'
-import { toReactive } from '@vueuse/core'
-import { MaybePromise } from '@unshared/types'
-import { throttle } from '@unshared/functions/throttle'
+import type { MaybePromise } from '@unshared/types'
+import type { Prop } from 'vue'
+import type { BaseStateOptions } from './useBaseState'
 import { debounce } from '@unshared/functions/debounce'
-import { BASE_STATE_OPTIONS, BaseStateOptions, useBaseState } from './useBaseState'
+import { throttle } from '@unshared/functions/throttle'
+import { toReactive } from '@vueuse/core'
+import { computed, getCurrentInstance } from 'vue'
+import { BASE_STATE_OPTIONS, useBaseState } from './useBaseState'
 
 /** The symbol to inject the base clickable composable. */
 export const BASE_CLICKABLE_SYMBOL = Symbol('baseClickable')

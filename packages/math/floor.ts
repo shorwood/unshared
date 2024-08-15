@@ -1,4 +1,4 @@
-import { NumberIntegerPositive } from '@unshared/types'
+import type { NumberIntegerPositive } from '@unshared/types'
 
 /**
  * [Floor](https://en.wikipedia.org/wiki/Floor_and_ceiling_functions) a number to a given precision.

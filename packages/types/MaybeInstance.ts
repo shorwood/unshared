@@ -1,4 +1,4 @@
-import { Constructor } from './Constructor'
+import type { Constructor } from './Constructor'
 
 /**
  * Extract the instance type from a constructor or instance of a class.

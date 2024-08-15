@@ -1,6 +1,6 @@
-import { UUID } from 'node:crypto'
-import { assertString } from './assertString'
+import type { UUID } from 'node:crypto'
 import { ValidationError } from '../ValidationError'
+import { assertString } from './assertString'
 
 /** Regular expression for a UUID. */
 export const EXP_UUID = /^(?:[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}|0{8}-(?:0{4}-){3}0{12})$/i

@@ -1,4 +1,4 @@
-import { Trim } from '@unshared/types'
+import type { Trim } from '@unshared/types'
 
 /**
  * Removes the leading and trailing white space and line terminator

@@ -1,4 +1,4 @@
-import { Add, IsInteger, IsNumber, Negative } from './utils'
+import type { Add, IsInteger, IsNumber, Negative } from './utils'
 
 /**
  * Floors a number to the nearest integer.

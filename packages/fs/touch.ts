@@ -1,6 +1,6 @@
-import { dirname } from 'node:path'
+import type { TimeLike } from 'node:fs'
 import { mkdir, stat, utimes, writeFile } from 'node:fs/promises'
-import { TimeLike } from 'node:fs'
+import { dirname } from 'node:path'
 
 export interface TouchOptions {
 

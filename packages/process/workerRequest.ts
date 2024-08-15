@@ -1,7 +1,8 @@
-import { MessageChannel, MessagePort, TransferListItem, Worker } from 'node:worker_threads'
+import type { Function } from '@unshared/types'
+import type { MessagePort, TransferListItem } from 'node:worker_threads'
+import type { WorkerResponse } from './workerRegister'
 import { isArrayBuffer, isArrayBufferView } from 'node:util/types'
-import { Function } from '@unshared/types'
-import { WorkerResponse } from './workerRegister'
+import { MessageChannel, Worker } from 'node:worker_threads'
 
 /**
  * The time in milliseconds to wait for a heartbeat message from the worker before

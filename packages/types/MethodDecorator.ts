@@ -1,4 +1,4 @@
-import { Function } from './Function'
+import type { Function } from './Function'
 
 /**
  * A function to decorate a method withing a class. This type is similar to the

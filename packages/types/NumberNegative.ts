@@ -1,4 +1,4 @@
-import { IsNegative, IsNumber } from './utils'
+import type { IsNegative, IsNumber } from './utils'
 
 /**
  * A strictly negative number lower than zero.

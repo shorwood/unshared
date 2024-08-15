@@ -1,9 +1,9 @@
-import { IsEqual, IsStrictEqual, IsZero } from './predicate'
-import { TupleLength } from '../TupleLength'
-import { Tuple } from '../Tuple'
-import { BooleanOr } from '../BooleanOr'
-import { BooleanNot } from '../BooleanNot'
-import { BooleanNor } from '../BooleanNor'
+import type { BooleanNor } from '../BooleanNor'
+import type { BooleanNot } from '../BooleanNot'
+import type { BooleanOr } from '../BooleanOr'
+import type { Tuple } from '../Tuple'
+import type { TupleLength } from '../TupleLength'
+import type { IsEqual, IsStrictEqual, IsZero } from './predicate'
 
 // --- Arithmetics operations (No range safety).
 export type Add<A extends number, B extends number> = TupleLength<[...Tuple<A>, ...Tuple<B>]> extends infer U extends number ? U : never

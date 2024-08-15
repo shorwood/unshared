@@ -1,4 +1,4 @@
-import { MaybePromise, NotPromise } from '@unshared/types'
+import type { MaybePromise, NotPromise } from '@unshared/types'
 
 /**
  * A result type that can be used to represent the result of an operation that

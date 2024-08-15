@@ -1,4 +1,5 @@
-import { BinaryLike, toUint8Array } from './toUint8Array'
+import type { BinaryLike } from './toUint8Array'
+import { toUint8Array } from './toUint8Array'
 
 /**
  * Encode a `BinaryLike` into a UTF8-encoded string. This implementation is

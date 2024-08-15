@@ -1,8 +1,11 @@
-import { Prop, computed, h, mergeProps, onMounted, ref, watch } from 'vue'
+import type { Prop } from 'vue'
+import type { DefineComponentContext } from './defineSetupComponent'
+import type { BaseRenderableOptions } from './useBaseRenderable'
 import { useLocalStorage } from '@vueuse/core'
-import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions, useBaseRenderable } from './useBaseRenderable'
+import { computed, h, mergeProps, onMounted, ref, watch } from 'vue'
+import { defineSetupComponent } from './defineSetupComponent'
 import { exposeToDevtool } from './exposeToDevtool'
-import { DefineComponentContext, defineSetupComponent } from './defineSetupComponent'
+import { BASE_RENDERABLE_OPTIONS, useBaseRenderable } from './useBaseRenderable'
 
 /** The base props for the `BaseIcon` component. */
 export const BASE_ICON_PROPS = {
@@ -83,7 +86,7 @@ export const BaseIcon = /* #__PURE__ */ defineSetupComponent(
       if (props.label) return props.label
       if (type.value === 'svg') return 'svg'
       if (type.value === 'data-uri') return 'data-uri'
-      if (type.value === 'url') return props.icon!.match(/[^/]+([^#?]+)/)?.[1]
+      if (type.value === 'url') return (/[^/]+([^#?]+)/.exec((props.icon!)))?.[1]
       return props.icon
     })
 

@@ -1,4 +1,4 @@
-import { MaybeLiteral, Path } from '@unshared/types'
+import type { MaybeLiteral, Path } from '@unshared/types'
 
 /**
  * Delete a property at a nested path in an object safely. If the path does not exist,

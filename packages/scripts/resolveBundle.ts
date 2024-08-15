@@ -1,9 +1,10 @@
-import RollupEsbuild from 'rollup-plugin-esbuild'
-import RollupDts from 'rollup-plugin-dts'
-import { RollupOptions, defineConfig } from 'rollup'
-import { cwd as getCwd } from 'node:process'
-import { MaybeArray } from '@unshared/types'
+import type { MaybeArray } from '@unshared/types'
+import type { RollupOptions } from 'rollup'
 import { findAncestor, glob } from '@unshared/fs'
+import { cwd as getCwd } from 'node:process'
+import { defineConfig } from 'rollup'
+import RollupDts from 'rollup-plugin-dts'
+import RollupEsbuild from 'rollup-plugin-esbuild'
 import { resolvePackage } from './resolvePackage'
 
 export interface ResolveBundleOptions {

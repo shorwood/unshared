@@ -1,6 +1,6 @@
-import { MaybeReadonly } from '../MaybeReadonly'
-import { BooleanOr } from '../BooleanOr'
-import { BooleanAnd } from '../BooleanAnd'
+import type { BooleanAnd } from '../BooleanAnd'
+import type { BooleanOr } from '../BooleanOr'
+import type { MaybeReadonly } from '../MaybeReadonly'
 
 // --- Boolean operations
 export type BooleanEvery<T extends boolean[]> = T extends [infer A extends boolean, ...infer B extends boolean[]] ? BooleanAnd<A, BooleanEvery<B>> : true

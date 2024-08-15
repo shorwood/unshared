@@ -1,7 +1,10 @@
-import { Prop, VNode, computed, h } from 'vue'
-import { BASE_STATE_OPTIONS, BaseStateOptions } from './useBaseState'
+import type { Prop, VNode } from 'vue'
+import type { DefineComponentContext } from './defineSetupComponent'
+import type { BaseStateOptions } from './useBaseState'
+import { computed, h } from 'vue'
+import { defineSetupComponent } from './defineSetupComponent'
 import { exposeToDevtool } from './exposeToDevtool'
-import { DefineComponentContext, defineSetupComponent } from './defineSetupComponent'
+import { BASE_STATE_OPTIONS } from './useBaseState'
 
 type MaybeKeyOf<T> = ({} & string) | keyof T & string
 

@@ -1,4 +1,4 @@
-import { Nil } from '@unshared/types'
+import type { Nil } from '@unshared/types'
 
 /**
  * Default a value by another value. Meaning that if the first value is
@@ -19,7 +19,7 @@ if (import.meta.vitest) {
   })
 
   test('should default null to string', () => {
-    type Result = DefaultValue<number | null, string>
+    type Result = DefaultValue<null | number, string>
     expectTypeOf<Result>().toEqualTypeOf<number | string>()
   })
 

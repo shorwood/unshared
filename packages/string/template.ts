@@ -1,4 +1,4 @@
-import { Collection } from '@unshared/types'
+import type { Collection } from '@unshared/types'
 import { get } from '@unshared/collection/get'
 import { escapeRegexp } from './escapeRegexp'
 

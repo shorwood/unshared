@@ -1,8 +1,8 @@
-import { OpenAI } from 'openai'
+import { execFileSync, spawn } from 'node:child_process'
+import { existsSync, readFileSync } from 'node:fs'
 // eslint-disable-next-line n/no-unsupported-features/node-builtins
 import { createInterface } from 'node:readline/promises'
-import { existsSync, readFileSync } from 'node:fs'
-import { execFileSync, spawn } from 'node:child_process'
+import { OpenAI } from 'openai'
 import { COMMIT_PROMPT } from './commitPrompt'
 
 /**

@@ -1,4 +1,4 @@
-import { Any } from './Any'
+import type { Any } from './Any'
 
 /**
  * Matches anything that is not `undefined`. If a generic is provided, it will

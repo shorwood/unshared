@@ -1,7 +1,8 @@
-import { Immutable } from '@unshared/types'
+import type { Immutable } from '@unshared/types'
+import type { RuleLike } from './createRule'
+import type { RuleChainLike, RuleChainResult } from './createRuleChain'
+import { createRuleChain } from './createRuleChain'
 import { ValidationError } from './ValidationError'
-import { RuleChainLike, RuleChainResult, createRuleChain } from './createRuleChain'
-import { RuleLike } from './createRule'
 
 /** A matrix of `RuleLike` values that can be used to create a rule set. */
 export type RuleSetLike = RuleLike[][]

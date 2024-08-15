@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable sonarjs/no-duplicate-string */
-import { Prop, Ref, computed, getCurrentInstance } from 'vue'
+import type { Prop, Ref } from 'vue'
 import { toReactive, useVModel } from '@vueuse/core'
-import { cleanClasses } from './cleanClasses'
+import { computed, getCurrentInstance } from 'vue'
 import { cleanAttributes } from './cleanAttributes'
+import { cleanClasses } from './cleanClasses'
 
 /** The properties of the base state component. */
 export interface BaseStateOptions {
@@ -161,7 +162,7 @@ export function useBaseState(props: BaseStateOptions = {}, instance = getCurrent
   const loading = useVModel(props, 'loading', emit, { passive: true }) as Ref<boolean>
   const disabled = useVModel(props, 'disabled', emit, { passive: true }) as Ref<boolean>
   const readonly = useVModel(props, 'readonly', emit, { passive: true }) as Ref<boolean>
-  const error = useVModel(props, 'error', emit, { passive: true }) as Ref<Error | string | undefined>
+  const error = useVModel(props, 'error', emit, { passive: true })
 
   // --- Dynamically compute classes.
   const classes = computed(() => cleanClasses({

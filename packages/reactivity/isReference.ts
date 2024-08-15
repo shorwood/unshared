@@ -1,4 +1,4 @@
-import { Reference } from './reference'
+import type { Reference } from './reference'
 import { ReferenceFlag } from './constants'
 
 /**

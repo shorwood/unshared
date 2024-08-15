@@ -1,5 +1,5 @@
-import { CharacterSymbol } from './CharacterSymbol'
-import { CharacterDigit } from './CharacterDigit'
+import type { CharacterDigit } from './CharacterDigit'
+import type { CharacterSymbol } from './CharacterSymbol'
 
 /**
  * A character that is either a digit or a hexadecimal lowercase letter.

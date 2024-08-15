@@ -1,5 +1,6 @@
+import type { RuleLike, RuleResult } from './createRule'
+import { createRule } from './createRule'
 import { ValidationError } from './ValidationError'
-import { RuleLike, RuleResult, createRule } from './createRule'
 
 /** A tuple of `RuleLike` values that can be used to create a rule chain. */
 export type RuleChainLike = RuleLike[]

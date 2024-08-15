@@ -1,5 +1,7 @@
-import { RGB, createColorRgb } from './createColorRgb'
-import { HSL, createColorHsl } from './createColorHsl'
+import type { HSL } from './createColorHsl'
+import type { RGB } from './createColorRgb'
+import { createColorHsl } from './createColorHsl'
+import { createColorRgb } from './createColorRgb'
 
 /**
  * Converts HSL values to RGBA.

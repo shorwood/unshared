@@ -1,5 +1,5 @@
-import { assertString } from './assertString'
 import { ValidationError } from '../ValidationError'
+import { assertString } from './assertString'
 
 /**
  * Assert that a value is a string is one of the values in an array.

@@ -1,4 +1,4 @@
-import { IteratorFunction, MaybeLiteral, Path } from '@unshared/types'
+import type { IteratorFunction, MaybeLiteral, Path } from '@unshared/types'
 import { get } from './get'
 
 /**

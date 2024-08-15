@@ -1,6 +1,6 @@
-import { Get, IteratorFunction, IteratorPath, Values } from '@unshared/types'
-import { isIterable } from './isIterable'
+import type { Get, IteratorFunction, IteratorPath, Values } from '@unshared/types'
 import { get } from './get'
+import { isIterable } from './isIterable'
 
 type MappedValuesByPath<T, P extends string> =
   T extends readonly unknown[] ? { -readonly [K in keyof T]: Get<T[K], P> }

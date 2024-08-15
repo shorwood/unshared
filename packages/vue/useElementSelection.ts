@@ -1,6 +1,8 @@
+import type { MaybeComputedElementRef } from '@vueuse/core'
+import type { ElementSelection } from './utils'
+import { unrefElement } from '@vueuse/core'
 import { computed, nextTick, onScopeDispose, ref } from 'vue'
-import { MaybeComputedElementRef, unrefElement } from '@vueuse/core'
-import { ElementSelection, getElementSelection, setElementSelection } from './utils'
+import { getElementSelection, setElementSelection } from './utils'
 
 /**
  * Composable function that tracks the selection position in a content editable,

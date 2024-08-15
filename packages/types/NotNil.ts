@@ -1,4 +1,4 @@
-import { Nil } from './Nil'
+import type { Nil } from './Nil'
 
 /**
  * Matches anything that is not `null`, `undefined` or `void`. If a generic is

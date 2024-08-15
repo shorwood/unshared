@@ -1,9 +1,14 @@
-import { Prop, VNode, computed, getCurrentInstance, h, mergeProps } from 'vue'
-import { BASE_STATE_OPTIONS, BaseStateOptions, useBaseState } from './useBaseState'
-import { BASE_RENDERABLE_OPTIONS, BaseRenderableOptions, useBaseRenderable } from './useBaseRenderable'
-import { BASE_INPUT_FILE_OPTIONS, BaseInputFileComposable, BaseInputFileOptions, useBaseInputFile } from './useBaseInputFile'
+import type { Prop, VNode } from 'vue'
+import type { DefineComponentContext } from './defineSetupComponent'
+import type { BaseInputFileComposable, BaseInputFileOptions } from './useBaseInputFile'
+import type { BaseRenderableOptions } from './useBaseRenderable'
+import type { BaseStateOptions } from './useBaseState'
+import { computed, getCurrentInstance, h, mergeProps } from 'vue'
+import { defineSetupComponent } from './defineSetupComponent'
 import { exposeToDevtool } from './exposeToDevtool'
-import { DefineComponentContext, defineSetupComponent } from './defineSetupComponent'
+import { BASE_INPUT_FILE_OPTIONS, useBaseInputFile } from './useBaseInputFile'
+import { BASE_RENDERABLE_OPTIONS, useBaseRenderable } from './useBaseRenderable'
+import { BASE_STATE_OPTIONS, useBaseState } from './useBaseState'
 
 /** The base props for the `BaseInputFile` component. */
 export const BASE_INPUT_FILE_PROPS = {

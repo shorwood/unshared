@@ -1,4 +1,3 @@
-<!-- eslint-disable @typescript-eslint/consistent-type-imports -->
 <script setup lang="ts">
 import type { InputFiles } from '@unshared/vue'
 
@@ -29,8 +28,8 @@ const model = useVModel(props, 'modelValue')
       <div
         v-for="thumbnail in thumbnails"
         :key="thumbnail"
-        class="min-w-1/3 h-64 grow rounded-lg bg-cover bg-center"
         :style="{ backgroundImage: `url(${thumbnail})` }"
+        class="min-w-1/3 h-64 grow rounded-lg bg-cover bg-center"
       />
     </div>
 

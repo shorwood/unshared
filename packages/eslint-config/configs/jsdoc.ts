@@ -1,6 +1,6 @@
+import type { Linter } from 'eslint'
+import type { ESLintConfigOptions } from './all'
 import pluginJsdoc from 'eslint-plugin-jsdoc'
-import { Linter } from 'eslint'
-import { ESLintConfigOptions } from './all'
 
 export function jsdoc(options: ESLintConfigOptions): Linter.FlatConfig[] {
   return [

@@ -1,5 +1,6 @@
-import { ComponentOptions, DefineSetupFnComponent, RenderFunction, SetupContext, SlotsType, VNode, defineComponent } from 'vue'
-import { Function, MaybePromise } from '@unshared/types'
+import type { Function, MaybePromise } from '@unshared/types'
+import type { ComponentOptions, DefineSetupFnComponent, RenderFunction, SetupContext, SlotsType, VNode } from 'vue'
+import { defineComponent } from 'vue'
 
 type Slots = Record<string, Function<VNode>>
 type Props = Record<string, any>

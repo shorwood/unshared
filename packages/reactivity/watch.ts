@@ -1,6 +1,7 @@
-import { Unwrapped, unwrap } from './unwrap'
-import { Reactive } from './reactive'
+import type { Reactive } from './reactive'
+import type { Unwrapped } from './unwrap'
 import { ReactiveData } from './constants'
+import { unwrap } from './unwrap'
 
 /** Stop watching a reactive object. */
 export type Unwatch = () => void

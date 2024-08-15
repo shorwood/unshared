@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
 import type { Meta, StoryObj } from '@storybook/vue3'
 import InputCheckbox from './InputCheckbox.vue'
 
@@ -17,19 +16,19 @@ export default {
   argTypes: {
     id: {
       description: 'The ID of the input that should be unique to the page.',
-      control: { type: 'disabled' },
+      control: { type: 'text' },
     },
     label: {
       description: 'The label of the input that should be displayed next to the input.',
-      control: { type: 'disabled' },
+      control: { type: 'text' },
     },
     value: {
       description: 'The value to set the `v-model` to when the input is selected.',
-      control: { type: 'disabled' },
+      control: { type: 'text' },
     },
     modelValue: {
       description: 'The value of the input.',
-      control: { type: 'disabled' },
+      control: { type: 'text' },
     },
   },
 } satisfies Meta<typeof InputCheckbox>

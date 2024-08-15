@@ -1,6 +1,6 @@
+import type { WorkerServicePayload } from './createWorkerService'
 import { createRequire } from 'node:module'
 import { workerRegister } from './workerRegister'
-import { WorkerServicePayload } from './createWorkerService'
 
 async function callback(request: WorkerServicePayload) {
   const { moduleId, name = 'default', parameters = [], paths } = request

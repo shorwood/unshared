@@ -1,5 +1,5 @@
-import { Linter } from 'eslint'
-import { MaybeArray } from '@unshared/types'
+import type { MaybeArray } from '@unshared/types'
+import type { Linter } from 'eslint'
 import { toArray } from '@unshared/collection/toArray'
 
 export interface ESLintConfigLike {

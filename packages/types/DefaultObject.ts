@@ -1,6 +1,6 @@
-import { IsZero, Substract } from '@unshared/types'
-import { DefaultValue } from './DefaultValue'
-import { Default } from './Default'
+import type { IsZero, Substract } from '@unshared/types'
+import type { Default } from './Default'
+import type { DefaultValue } from './DefaultValue'
 
 /**
  * Default the properties of an object by the properties of another object.
@@ -36,18 +36,18 @@ if (import.meta.vitest) {
   })
 
   test('should default null properties', () => {
-    type Result = DefaultObject<{ a: number | null }, { a: 1; b: 2 }>
+    type Result = DefaultObject<{ a: null | number }, { a: 1; b: 2 }>
     expectTypeOf<Result>().toEqualTypeOf<{ a: number; b: 2 }>()
   })
 
   test('should default null to undefined', () => {
-    type Result = DefaultObject<{ a: number | null }, { a: undefined; b: 2 }>
+    type Result = DefaultObject<{ a: null | number }, { a: undefined; b: 2 }>
     expectTypeOf<Result>().toEqualTypeOf<{ a: number | undefined; b: 2 }>()
   })
 
   test('should default undefined to null', () => {
     type Result = DefaultObject<{ a: number | undefined }, { a: null; b: 2 }>
-    expectTypeOf<Result>().toEqualTypeOf<{ a: number | null; b: 2 }>()
+    expectTypeOf<Result>().toEqualTypeOf<{ a: null | number; b: 2 }>()
   })
 
   test('should default nested objects', () => {

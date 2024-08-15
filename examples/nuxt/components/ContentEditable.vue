@@ -9,8 +9,8 @@ const cursor = useElementSelection(element)
   <div class="w-full space-y-4">
 
     <BaseContentEditable
-      v-model="model"
       ref="element"
+      v-model="model"
       class="
         px-2 outline-none
         bg-transparent w-full h-24

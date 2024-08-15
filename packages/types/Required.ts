@@ -1,4 +1,4 @@
-import { Loose } from './Loose'
+import type { Loose } from './Loose'
 
 /**
  * Make all or some properties in T required and non-nullable.

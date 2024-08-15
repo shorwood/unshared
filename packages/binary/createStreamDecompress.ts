@@ -1,6 +1,7 @@
-import { Gunzip, Inflate, ZlibOptions, createDeflate, createGunzip, createGzip, createInflate } from 'node:zlib'
-import { PassThrough, Readable, Transform } from 'node:stream'
+import type { Gunzip, Inflate, ZlibOptions } from 'node:zlib'
 import { randomBytes } from 'node:crypto'
+import { PassThrough, Readable, Transform } from 'node:stream'
+import { createDeflate, createGunzip, createGzip, createInflate } from 'node:zlib'
 
 const Z_GZIP_HEADER = Buffer.from([0x1F, 0x8B, 0x08])
 const Z_DEFLATE_HEADER_1 = Buffer.from([0x78, 0x9C])

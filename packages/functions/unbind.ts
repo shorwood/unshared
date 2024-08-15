@@ -1,4 +1,4 @@
-import { Function } from '@unshared/types'
+import type { Function } from '@unshared/types'
 
 /**
  * Make a function expect the first argument to be the `this` context.
@@ -48,6 +48,6 @@ if (import.meta.vitest) {
 
   test('should infer the type of the unbound function', () => {
     const toFixed = unbind(Number.prototype, 'toFixed')
-    expectTypeOf(toFixed).toEqualTypeOf<(value: Number, fractionDigits?: number | undefined) => string>()
+    expectTypeOf(toFixed).toEqualTypeOf<(value: InstanceType<NumberConstructor>, fractionDigits?: number | undefined) => string>()
   })
 }

@@ -1,5 +1,5 @@
-import { assertString } from './assertString'
 import { ValidationError } from '../ValidationError'
+import { assertString } from './assertString'
 
 // assertStringNumber.ts
 /** Regular expression that matches a string representation of a number. */

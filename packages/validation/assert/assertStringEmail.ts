@@ -1,5 +1,5 @@
-import { assertString } from './assertString'
 import { ValidationError } from '../ValidationError'
+import { assertString } from './assertString'
 
 /** Regular expression that matches an email address. */
 export const EXP_EMAIL = /^[\w!#$%&'*+./=?^`{|}~-]+@[\da-z](?:[\da-z-]{0,61}[\da-z])?(?:\.[\da-z](?:[\da-z-]{0,61}[\da-z])?)*$/i

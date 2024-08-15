@@ -1,5 +1,5 @@
-import { defineComponent, getCurrentInstance, onUnmounted } from 'vue'
 import { createSharedComposable } from '@vueuse/core'
+import { defineComponent, getCurrentInstance, onUnmounted } from 'vue'
 
 // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
 interface EventMap {
