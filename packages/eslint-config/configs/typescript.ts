@@ -266,10 +266,15 @@ export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
          * aims to maintain consistency around the order of imports in JavaScript
          * files. Helps reduce the visual noise in the codebase.
          *
+         * @see https://typescript-eslint.io/rules/consistent-type-imports
          * @see https://eslint-plugin-perfectionist.azat.io/rules/sort-imports
          */
         'sort-imports': 'off',
-        '@typescript-eslint/consistent-type-imports': 'error',
+        '@typescript-eslint/consistent-type-imports': ['error', {
+          disallowTypeAnnotations: false,
+          prefer: 'type-imports',
+          fixStyle: 'separate-type-imports',
+        }],
         'perfectionist/sort-exports': ['error', {
           type: 'alphabetical',
           ignoreCase: true,
