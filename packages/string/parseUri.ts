@@ -232,20 +232,23 @@ const URI_REGEXP = /^(?:(?<protocol>.+?):\/\/)?(?<authority>[^#\/?]+)?(?<path>[^
 /** Regular expression to extract the userinfo and host from the authority. */
 const URI_AUTHORITY_REGEXP = /^(?:(?<userinfo>.*?)@)?(?<host>.*)$/
 
+/** Regular expression to extract hostname and port from a host. */
+const URI_HOST_REGEXP = /^(?<hostName>[\w.-]+?|(?:\[(?<maybeIpv6>.+)]))(?::(?<hostPort>\d{1,5}))?$/
+
 /** Regular expression to extract the path components from the path. */
 const URI_PATH_REGEXP = /^(?:(?<pathDirectory>.+)\/)?(?<pathName>[^.]+(?:\.(?<pathExtension>.*))?)$/
 
 /** Regular expression that matches any IPv6 address. */
-const IPV6_REGEXP = /([\d:a-f]+:+)+[\da-f]+/
+const IPV6_REGEXP = /^\[?([\d:a-f]*:+)+[\da-f]+]?$/
 
 /**
  * Check if a string is a valid IPv4 address.
  *
- * @param maybeIpv4 The string to check.
+ * @param value The string to check.
  * @returns `true` if the string is a valid IPv4 address, otherwise `false`.
  */
-function isStringIPv4(maybeIpv4: string): boolean {
-  const parts = maybeIpv4.split('.')
+function isStringIPv4(value: string): boolean {
+  const parts = value.split('.')
   if (parts.length !== 4) return false
   return parts.every(x => Number.parseInt(x) >= 0 && Number.parseInt(x) <= 255)
 }
@@ -253,12 +256,11 @@ function isStringIPv4(maybeIpv4: string): boolean {
 /**
  * Check if a string is a valid IPv6 address.
  *
- * @param maybeIpv6 The string to check.
+ * @param value The string to check.
  * @returns `true` if the string is a valid IPv6 address, otherwise `false`.
  */
-function isStringIPv6(maybeIpv6: string): boolean {
-
-  return IPV6_REGEXP.test(maybeIpv6)
+function isStringIPv6(value: string): boolean {
+  return IPV6_REGEXP.test(value)
 }
 
 /**
@@ -303,14 +305,12 @@ function isStringIPv6(maybeIpv6: string): boolean {
 // TODO: Improve unsafe regular expressions.
 export function parseUri(uri: string): UriComponents {
 
-  // --- Extract components
-  const [, protocol, authority, path, query, hash] = (URI_REGEXP.exec(uri)) ?? []
-  const [, userinfo, host] = URI_AUTHORITY_REGEXP.exec(authority) ?? []
+  // --- Extract components.
+  const { protocol, authority = '', path = '', query, hash } = URI_REGEXP.exec(uri)?.groups ?? {}
+  const { userinfo, host } = URI_AUTHORITY_REGEXP.exec(authority)?.groups ?? {}
+  const { pathDirectory, pathName, pathExtension } = URI_PATH_REGEXP.exec(path)?.groups ?? {}
+  const { hostName, maybeIpv6, hostPort } = URI_HOST_REGEXP.exec(host)?.groups ?? {}
   const [username, password] = userinfo?.split(':') || []
-  const [, pathDirectory, pathName, pathExtension] = URI_PATH_REGEXP.exec(path) ?? []
-
-  // --- Extract hostname and port or Ipv6
-  const [, hostName, maybeIpv6, hostPort] = /^(?<hostName>[\w.-]+?|(?:\[(?<ipv6>.+)]))(?::(?<port>\d{1,5}))?$/.exec(host) ?? []
   const hostPortNumber = hostPort ? Number.parseInt(hostPort) || undefined : undefined
 
   // --- Extract domain parts or IP.
