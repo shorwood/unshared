@@ -1,3 +1,4 @@
+import { NotNil } from '@unshared/types'
 import { ValidationError } from '../ValidationError'
 
 /**
@@ -7,7 +8,7 @@ import { ValidationError } from '../ValidationError'
  * @throws `ValidationError` if the value is `null` or `undefined`.
  * @example assertNotNil(1) // void
  */
-export function assertNotNil<T = {}>(value: unknown): asserts value is T {
+export function assertNotNil<T>(value: T): asserts value is NotNil<T> {
   if (value !== null && value !== undefined) return
   throw new ValidationError({
     name: 'E_IS_NIL',
@@ -36,15 +37,9 @@ if (import.meta.vitest) {
     expect(shouldThrow).toThrow('Expected value not to be null or undefined')
   })
 
-  test('should predicate the type of an unknown value', () => {
-    const value = 1 as unknown
+  test('should predicate the type of a null or undefined value', () => {
+    const value = 1 as null | number | undefined
     assertNotNil(value)
-    expectTypeOf(value).toEqualTypeOf<{}>()
-  })
-
-  test('should predicate to a specific type', () => {
-    const value = 1 as unknown
-    assertNotNil<number>(value)
     expectTypeOf(value).toEqualTypeOf<number>()
   })
 }

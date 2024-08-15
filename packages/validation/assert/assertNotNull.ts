@@ -1,3 +1,4 @@
+import { NotNull } from '@unshared/types'
 import { ValidationError } from '../ValidationError'
 
 /**
@@ -7,7 +8,7 @@ import { ValidationError } from '../ValidationError'
  * @throws `ValidationError` if the value is `null`.
  * @example assertNotNull(1) // void
  */
-export function assertNotNull<T = {}>(value: unknown): asserts value is T {
+export function assertNotNull<T>(value: T): asserts value is NotNull<T> {
   if (value !== null) return
   throw new ValidationError({
     name: 'E_IS_NULL',
@@ -35,22 +36,9 @@ if (import.meta.vitest) {
     expect(shouldThrow).toThrow('Expected value not to be null')
   })
 
-  test('should predicate the type of an unknown value', () => {
-    const value = 1 as unknown
+  test('should predicate the type of a null or undefined value', () => {
+    const value = 1 as null | number | undefined
     assertNotNull(value)
-    expectTypeOf(value).toEqualTypeOf<{}>()
-  })
-
-  test('should predicate the type of an undefined value', () => {
-
-    const value = undefined as number | undefined
-    assertNotNull(value)
-    expectTypeOf(value).toEqualTypeOf<number>()
-  })
-
-  test('should predicate to a specific type', () => {
-    const value = 1 as unknown
-    assertNotNull<number>(value)
-    expectTypeOf(value).toEqualTypeOf<number>()
+    expectTypeOf(value).toEqualTypeOf<number | undefined>()
   })
 }

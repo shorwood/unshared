@@ -1,3 +1,4 @@
+import { NotUndefined } from '@unshared/types'
 import { ValidationError } from '../ValidationError'
 
 /**
@@ -7,7 +8,7 @@ import { ValidationError } from '../ValidationError'
  * @throws `ValidationError` if the value is `undefined`.
  * @example assertNotUndefined(1) // void
  */
-export function assertNotUndefined<T = {}>(value: unknown): asserts value is T {
+export function assertNotUndefined<T>(value: T): asserts value is NotUndefined<T> {
   if (value !== undefined) return
   throw new ValidationError({
     name: 'E_IS_UNDEFINED',
@@ -35,21 +36,9 @@ if (import.meta.vitest) {
     expect(shouldThrow).toThrow('Expected value not to be undefined')
   })
 
-  test('should predicate the type of an unknown value', () => {
-    const value = 1 as unknown
+  test('should predicate the type of a null or undefined value', () => {
+    const value = 1 as null | number | undefined
     assertNotUndefined(value)
-    expectTypeOf(value).toEqualTypeOf<{}>()
-  })
-
-  test('should predicate the type of a nullable value', () => {
-    const value = 1 as number | undefined
-    assertNotUndefined(value)
-    expectTypeOf(value).toEqualTypeOf<number>()
-  })
-
-  test('should predicate to a specific type', () => {
-    const value = 1 as unknown
-    assertNotUndefined<number>(value)
-    expectTypeOf(value).toEqualTypeOf<number>()
+    expectTypeOf(value).toEqualTypeOf<null | number>()
   })
 }
