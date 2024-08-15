@@ -1,6 +1,6 @@
+import type { Linter } from 'eslint'
+import type { ESLintConfigOptions } from './all'
 import unicornPlugin from 'eslint-plugin-unicorn'
-import { Linter } from 'eslint'
-import { ESLintConfigOptions } from './all'
 
 const UNICORN_RECOMMENDED_RULES = unicornPlugin.configs.recommended.rules
 
@@ -105,9 +105,10 @@ export function unicorn(options: ESLintConfigOptions): Linter.FlatConfig[] {
             i: true,
             j: true,
             k: true,
+            ref: true,
+            Ref: true,
             props: true,
             Props: true,
-            ref: true,
             v: true,
             x: true,
             y: true,

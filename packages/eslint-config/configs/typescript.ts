@@ -1,11 +1,11 @@
-import tslint from 'typescript-eslint'
-import { cwd } from 'node:process'
-import perfectionist from 'eslint-plugin-perfectionist'
-import { ESLint, Linter } from 'eslint'
-import { toArray } from '@unshared/collection/toArray'
-import stylistic from '@stylistic/eslint-plugin'
+import type { ESLint, Linter } from 'eslint'
+import type { ESLintConfigOptions } from './all'
 import javascript from '@eslint/js'
-import { ESLintConfigOptions } from './all'
+import stylistic from '@stylistic/eslint-plugin'
+import { toArray } from '@unshared/collection/toArray'
+import perfectionist from 'eslint-plugin-perfectionist'
+import { cwd } from 'node:process'
+import tslint from 'typescript-eslint'
 import { getConfigRules } from '../utils'
 
 export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
@@ -269,19 +269,45 @@ export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
          * @see https://eslint-plugin-perfectionist.azat.io/rules/sort-imports
          */
         'sort-imports': 'off',
-        '@typescript-eslint/sort-type-constituents': 'off',
-        '@typescript-eslint/consistent-type-imports': ['error', {
-          disallowTypeAnnotations: false,
-          prefer: 'no-type-imports',
-        }],
+        '@typescript-eslint/consistent-type-imports': 'error',
         'perfectionist/sort-exports': ['error', {
           type: 'alphabetical',
-          ignoreCase: false,
+          ignoreCase: true,
         }],
-        'perfectionist/sort-named-imports': ['error', { type: 'natural' }],
+        'perfectionist/sort-named-imports': ['error', {
+          type: 'alphabetical',
+          ignoreCase: true,
+        }],
         'perfectionist/sort-imports': ['error', {
           newlinesBetween: 'never',
-          order: 'desc',
+          order: 'asc',
+          ignoreCase: true,
+          groups: [
+            'type',
+            'internal-type',
+            ['parent-type', 'sibling-type', 'index-type'],
+            ['builtin', 'external'],
+            'internal',
+            ['parent', 'sibling', 'index'],
+            'object',
+            'unknown',
+          ],
+        }],
+
+        /**
+         * Sort types and union types alphabetically. This rule aims to maintain
+         * consistency around the order of types in TypeScript files. Helps reduce
+         * the visual noise in the codebase.
+         *
+         * @see https://perfectionist.dev/rules/sort-union-types
+         */
+        '@typescript-eslint/sort-type-constituents': 'off',
+        'perfectionist/sort-intersection-types': ['error', {
+          type: 'natural',
+        }],
+        'perfectionist/sort-union-types': ['error', {
+          type: 'natural',
+          ignoreCase: false,
         }],
 
         /**
@@ -297,8 +323,6 @@ export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
 
         //////////////////////////////////////////////////////////////////////////////////////////
 
-        'perfectionist/sort-intersection-types': ['error', { type: 'natural' }],
-        'perfectionist/sort-union-types': ['error', { type: 'natural' }],
         'no-useless-constructor': 'off',
         '@typescript-eslint/ban-types': 'off',
         '@typescript-eslint/camelcase': 'off',

@@ -1,11 +1,11 @@
-import vueParser from 'vue-eslint-parser'
-import tslint from 'typescript-eslint'
-import vueProcessorBlocks from 'eslint-processor-vue-blocks'
-import vuePlugin from 'eslint-plugin-vue'
+import type { Linter } from 'eslint'
+import type { ESLintConfigOptions } from './all'
 import { mergeProcessors } from 'eslint-merge-processors'
-import { Linter } from 'eslint'
+import vuePlugin from 'eslint-plugin-vue'
+import vueProcessorBlocks from 'eslint-processor-vue-blocks'
+import tslint from 'typescript-eslint'
+import vueParser from 'vue-eslint-parser'
 import { typescript } from './typescript'
-import { ESLintConfigOptions } from './all'
 
 export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
   const TYPESCRIPT_CONFIG = typescript(options).at(1)!
@@ -135,9 +135,11 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
          * Enforce consistent spacing between HTML / Component tags. This makes it
          * easier to read and understand the structure of the component.
          *
+         * @see https://eslint.vuejs.org/rules/block-spacing.html
          * @see https://eslint.vuejs.org/rules/padding-line-between-blocks.html
          * @see https://eslint.vuejs.org/rules/padding-line-between-tags.html
          */
+        'vue/block-spacing': ['error', 'always'],
         'vue/padding-line-between-blocks': ['error', 'always'],
         'vue/padding-line-between-tags': ['error', [
           { blankLine: 'consistent', next: '*', prev: '*' },
@@ -221,6 +223,47 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
         'vue/v-on-style': ['error', 'shorthand'],
         'vue/v-on-handler-style': ['error', 'inline-function'],
 
+        /**
+         * Sort the vue attributes in a consistent order. This rule helps to maintain
+         * consistency and readability by enforcing a predictable order of the
+         * attributes in the component.
+         *
+         * @see https://eslint.vuejs.org/rules/attributes-order.html
+         */
+        'vue/attributes-order': ['error', {
+          order: [
+            'DEFINITION',
+            'LIST_RENDERING',
+            'CONDITIONALS',
+            'RENDER_MODIFIERS',
+            'GLOBAL',
+            ['UNIQUE', 'SLOT'],
+            'TWO_WAY_BINDING',
+            'OTHER_DIRECTIVES',
+            'OTHER_ATTR',
+            'EVENTS',
+            'CONTENT',
+          ],
+          alphabetical: false,
+        }],
+
+        /**
+         * Enforce consistent spacing around attribute assignments. This ensures that
+         * the code is easier to read and maintain.
+         *
+         * @see https://eslint.vuejs.org/rules/no-spaces-around-equal-signs-in-attribute.html
+         */
+        'vue/no-spaces-around-equal-signs-in-attribute': 'error',
+        'vue/no-multi-spaces': 'error',
+
+        /**
+         * Enforce the use of the `ts` lang attribute in the script block. This rule
+         * explicitly dissallows the use of the `js` lang attribute in the script.
+         */
+        'vue/block-lang': ['error', {
+          script: { lang: 'ts' },
+        }],
+
         'vue/return-in-computed-property': 'off',
         'vue/no-sparse-arrays': 'error',
         'vue/no-unused-emit-declarations': 'error',
@@ -252,8 +295,6 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
         // extensions
         'vue/array-bracket-spacing': ['error', 'never'],
         'vue/arrow-spacing': ['error', { after: true, before: true }],
-        'vue/block-lang': ['error', { script: { lang: 'ts' } }],
-        'vue/block-spacing': ['error', 'always'],
         'vue/brace-style': ['error', 'stroustrup', { allowSingleLine: true }],
         'vue/comma-dangle': ['error', 'always-multiline'],
         'vue/comma-spacing': ['error', { after: true, before: false }],
