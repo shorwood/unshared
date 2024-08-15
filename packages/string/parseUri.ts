@@ -304,13 +304,13 @@ function isStringIPv6(maybeIpv6: string): boolean {
 export function parseUri(uri: string): UriComponents {
 
   // --- Extract components
-  const [, protocol, authority, path, query, hash] = uri.match(URI_REGEXP) ?? []
-  const [, userinfo, host] = authority?.match(URI_AUTHORITY_REGEXP) ?? []
+  const [, protocol, authority, path, query, hash] = (URI_REGEXP.exec(uri)) ?? []
+  const [, userinfo, host] = URI_AUTHORITY_REGEXP.exec(authority) ?? []
   const [username, password] = userinfo?.split(':') || []
-  const [, pathDirectory, pathName, pathExtension] = path?.match(URI_PATH_REGEXP) ?? []
+  const [, pathDirectory, pathName, pathExtension] = URI_PATH_REGEXP.exec(path) ?? []
 
   // --- Extract hostname and port or Ipv6
-  const [, hostName, maybeIpv6, hostPort] = host?.match(/^(?<hostName>[\w.-]+?|(?:\[(?<ipv6>.+)]))(?::(?<port>\d{1,5}))?$/) ?? []
+  const [, hostName, maybeIpv6, hostPort] = /^(?<hostName>[\w.-]+?|(?:\[(?<ipv6>.+)]))(?::(?<port>\d{1,5}))?$/.exec(host) ?? []
   const hostPortNumber = hostPort ? Number.parseInt(hostPort) || undefined : undefined
 
   // --- Extract domain parts or IP.
@@ -399,9 +399,10 @@ export function parseUri(uri: string): UriComponents {
 
 /* v8 ignore next */
 if (import.meta.vitest) {
-  test.each([
 
-    ['https://user:pass@eu3.www.example.co.uk:443/path/to/file.html?query=string#hash', {
+  test('should extract the components of a full URI', () => {
+    const result = parseUri('https://user:pass@eu3.www.example.co.uk:443/path/to/file.html?query=string#hash')
+    expect(result).toMatchObject({
       authority: 'user:pass@eu3.www.example.co.uk:443',
       domain: 'example',
       domainFull: 'eu3.www.example.co.uk',
@@ -423,9 +424,12 @@ if (import.meta.vitest) {
       query: '?query=string',
       userinfo: 'user:pass',
       username: 'user',
-    }],
+    })
+  })
 
-    ['www.example.com', {
+  test('should extract the components of a domain with subdomain', () => {
+    const result = parseUri('www.example.com')
+    expect(result).toMatchObject({
       authority: 'www.example.com',
       domain: 'example',
       domainFull: 'www.example.com',
@@ -435,9 +439,12 @@ if (import.meta.vitest) {
       host: 'www.example.com',
       hostName: 'www.example.com',
       origin: 'www.example.com',
-    }],
+    })
+  })
 
-    ['user@localhost:22', {
+  test('should extract the components of a user and port', () => {
+    const result = parseUri('user@localhost:22')
+    expect(result).toMatchObject({
       authority: 'user@localhost:22',
       host: 'localhost:22',
       hostName: 'localhost',
@@ -446,9 +453,12 @@ if (import.meta.vitest) {
       origin: 'localhost',
       userinfo: 'user',
       username: 'user',
-    }],
+    })
+  })
 
-    ['ssh://user:password@127.0.0.1:8080', {
+  test('should extract the components of a user, password, IP and port', () => {
+    const result = parseUri('ssh://user:password@127.0.0.1:8080')
+    expect(result).toMatchObject({
       authority: 'user:password@127.0.0.1:8080',
       host: '127.0.0.1:8080',
       hostIp: '127.0.0.1',
@@ -461,14 +471,20 @@ if (import.meta.vitest) {
       protocol: 'ssh',
       userinfo: 'user:password',
       username: 'user',
-    }],
+    })
+  })
 
-    ['::1', {
+  test('should extract the components of an IPv6 address', () => {
+    const result = parseUri('::1')
+    expect(result).toMatchObject({
       authority: '::1',
       host: '::1',
-    }],
+    })
+  })
 
-    ['https://[::1]:8080?q=1#hash', {
+  test('should extract the components of an IPv6 address with port', () => {
+    const result = parseUri('https://[::1]:8080?q=1#hash')
+    expect(result).toMatchObject({
       authority: '[::1]:8080',
       hash: '#hash',
       host: '[::1]:8080',
@@ -479,40 +495,48 @@ if (import.meta.vitest) {
       origin: 'https://[::1]',
       protocol: 'https',
       query: '?q=1',
-    }],
+    })
+  })
 
-    ['//', {
+  test('should extract the components of a path', () => {
+    const result = parseUri('//')
+    expect(result).toMatchObject({
       path: '//',
       pathName: '//',
-    }],
+    })
+  })
 
-    ['//:', {
-      path: '//:',
+  test('should extract the components of a path with colon', () => {
+    const result = parseUri('//:')
+    expect(result).toMatchObject({
       pathDirectory: '/',
       pathName: ':',
-    }],
+    })
+  })
 
-    ['//@', {
-      path: '//@',
+  test('should extract the components of a path with at sign', () => {
+    const result = parseUri('//@')
+    expect(result).toMatchObject({
       pathDirectory: '/',
       pathName: '@',
-    }],
+    })
+  })
 
-    ['http://', {
+  test('should extract the components of a protocol', () => {
+    const result = parseUri('http://')
+    expect(result).toMatchObject({
       origin: 'http',
       protocol: 'http',
-    }],
+    })
+  })
 
-    ['-', {
+  test('should extract the components of a single dash', () => {
+    const result = parseUri('-')
+    expect(result).toMatchObject({
       authority: '-',
       host: '-',
       hostName: '-',
       origin: '-',
-    }],
-
-  ])('should extract the components of "%s"', (url: string, expected: object) => {
-    const result = parseUri(url)
-    for (const [key, value] of Object.entries(expected))
-      expect(result).toHaveProperty(key, value)
+    })
   })
 }
