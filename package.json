@@ -30,7 +30,7 @@
     "lint:ci": "eslint --cache --ignore-pattern examples",
     "lint:fix": "DEBUG=eslint:eslint eslint --fix --cache",
     "test": "vitest --watch",
-    "test:ci": "vitest --run --coverage",
+    "test:ci": "vitest --run",
     "test:ui": "vitest --ui",
     "test:types": "vitest --typecheck",
     "test:coverage": "vitest --coverage",
