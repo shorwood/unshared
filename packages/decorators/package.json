@@ -1,7 +1,7 @@
 {
   "name": "@unshared/decorators",
   "type": "module",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "license": "MIT",
   "sideEffects": false,
   "author": "Stanley Horwood <stanley@hsjm.io>",
