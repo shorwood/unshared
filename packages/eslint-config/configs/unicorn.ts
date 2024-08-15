@@ -2,7 +2,7 @@ import unicornPlugin from 'eslint-plugin-unicorn'
 import { Linter } from 'eslint'
 import { ESLintConfigOptions } from './all'
 
-const UNICORN_RECOMMENDED_RULES = unicornPlugin.configs!.recommended.rules as Linter.RulesRecord
+const UNICORN_RECOMMENDED_RULES = unicornPlugin.configs.recommended.rules
 
 export function unicorn(options: ESLintConfigOptions): Linter.FlatConfig[] {
   return [

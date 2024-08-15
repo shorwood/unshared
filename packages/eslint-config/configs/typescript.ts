@@ -126,7 +126,6 @@ export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
          */
         '@typescript-eslint/consistent-indexed-object-style': ['error', 'record'],
         '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
-        '@typescript-eslint/member-delimiter-style': ['error', { multiline: { delimiter: 'none' } }],
         '@typescript-eslint/array-type': ['error', { default: 'array-simple', readonly: 'array-simple' }],
 
         /**
@@ -195,6 +194,7 @@ export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
         '@stylistic/array-bracket-newline': ['error', 'consistent'],
         '@stylistic/function-call-spacing': ['error', 'never'],
         '@stylistic/template-curly-spacing': ['error', 'never'],
+        '@stylistic/member-delimiter-style': ['error', { multiline: { delimiter: 'none' } }],
         '@stylistic/object-property-newline': ['error', { allowAllPropertiesOnSameLine: true }],
         '@stylistic/generator-star-spacing': ['error', { before: true, after: true }],
         '@stylistic/computed-property-spacing': ['error', 'never'],
@@ -275,13 +275,13 @@ export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
           prefer: 'no-type-imports',
         }],
         'perfectionist/sort-exports': ['error', {
-          'type': 'alphabetical',
-          'ignore-case': false,
+          type: 'alphabetical',
+          ignoreCase: false,
         }],
         'perfectionist/sort-named-imports': ['error', { type: 'natural' }],
         'perfectionist/sort-imports': ['error', {
-          'newlines-between': 'never',
-          'order': 'desc',
+          newlinesBetween: 'never',
+          order: 'desc',
         }],
 
         /**
@@ -298,10 +298,7 @@ export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
         //////////////////////////////////////////////////////////////////////////////////////////
 
         'perfectionist/sort-intersection-types': ['error', { type: 'natural' }],
-        'perfectionist/sort-union-types': ['error', {
-          'type': 'natural',
-          'nullable-last': true,
-        }],
+        'perfectionist/sort-union-types': ['error', { type: 'natural' }],
         'no-useless-constructor': 'off',
         '@typescript-eslint/ban-types': 'off',
         '@typescript-eslint/camelcase': 'off',
