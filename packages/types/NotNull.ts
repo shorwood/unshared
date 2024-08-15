@@ -1,6 +1,3 @@
-import { IsUnknown } from './utils'
-import { Any } from './Any'
-
 /**
  * Matches anything that is not `null`. If a generic is provided, it will
  * exclude `null` from that type.
@@ -9,15 +6,12 @@ import { Any } from './Any'
  * @returns A type that excludes `null`.
  * @example NotNull<number | null> // number
  */
-export type NotNull<U = unknown> =
-  IsUnknown<U> extends true
-    ? NotNull<Any>
-    : U extends null ? never : U
+export type NotNull<U = unknown> = U extends null ? never : U
 
 /* v8 ignore next */
 if (import.meta.vitest) {
   test('should exclude null', () => {
-    type Result = NotNull<number | null>
+    type Result = NotNull<null | number>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 
@@ -25,7 +19,7 @@ if (import.meta.vitest) {
     expectTypeOf<number>().toMatchTypeOf<NotNull>()
   })
 
-  test('should not match null', () => {
-    expectTypeOf<null>().not.toMatchTypeOf<NotNull>()
+  test('should equal to unknown when no generic is provided', () => {
+    expectTypeOf<NotNull>().toEqualTypeOf<unknown>()
   })
 }

@@ -48,7 +48,7 @@ export type IsAnyNegative<A extends number, B extends number> = BooleanOr<IsNega
 export type IsAnyDecimal<A extends number, B extends number> = BooleanOr<IsDecimal<A>, IsDecimal<B>>
 
 // --- Excluded types
-export type ExcludeEmptyObject<T> = T extends Record<PropertyKey, never> ? never : T
+export type ExcludeEmptyObject<T> = T extends object ? T extends [] ? T : never : T
 export type ExcludeEmptyArray<T> = T extends [] ? never : T
 
 /* v8 ignore end */
@@ -221,10 +221,10 @@ if (import.meta.vitest) {
   })
 
   test('should exclude empty objects', () => {
-    expectTypeOf<ExcludeEmptyObject<[] | {}>>().toEqualTypeOf<[]>()
+    expectTypeOf<ExcludeEmptyObject<[] | object>>().toEqualTypeOf<[]>()
   })
 
   test('should exclude empty arrays', () => {
-    expectTypeOf<ExcludeEmptyArray<[] | {}>>().toEqualTypeOf<{}>()
+    expectTypeOf<ExcludeEmptyArray<[] | object>>().toEqualTypeOf<object>()
   })
 }
