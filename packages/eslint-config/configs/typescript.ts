@@ -216,7 +216,7 @@ export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
           exceptAfterSingleLine: true,
         }],
         '@stylistic/type-annotation-spacing': ['error', {
-          before: false,
+          before: true,
           after: true,
           overrides: {
             arrow: { before: true, after: true },
