@@ -1,3 +1,5 @@
+import type { Pretty } from './Pretty'
+
 /**
  * Omit properties with value of `never` from the object.
  *
@@ -5,9 +7,7 @@
  * @example type Result = OmitNever<{ a: string; b: never; c: number }> // { a: string; c: number }
  */
 export type OmitNever<T> =
-  { [K in keyof T as T[K] extends never ? never : K]: T[K] } extends infer U
-    ? { [K in keyof U]: U[K] }
-    : never
+  Pretty<{ [K in keyof T as T[K] extends never ? never : K]: T[K] }>
 
 /* v8 ignore next */
 if (import.meta.vitest) {
