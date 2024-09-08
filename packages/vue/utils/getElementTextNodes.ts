@@ -45,7 +45,7 @@ if (import.meta.vitest) {
     div.innerHTML = 'Hello, World!'
     const textNodes = getElementTextNodes(div)
     expect(textNodes).toHaveLength(1)
-    expect(textNodes[0]).toBeInstanceOf(Text)
+    expect(textNodes[0].nodeType).toBe(Node.TEXT_NODE)
     expect(textNodes[0].textContent).toBe('Hello, World!')
   })
 
@@ -54,9 +54,9 @@ if (import.meta.vitest) {
     div.innerHTML = 'Hello,<br>World!'
     const textNodes = getElementTextNodes(div)
     expect(textNodes).toHaveLength(3)
-    expect(textNodes[0]).toBeInstanceOf(Text)
+    expect(textNodes[0].nodeType).toBe(Node.TEXT_NODE)
     expect(textNodes[1]).toBeInstanceOf(HTMLBRElement)
-    expect(textNodes[2]).toBeInstanceOf(Text)
+    expect(textNodes[2].nodeType).toBe(Node.TEXT_NODE)
   })
 
   test('should return an array of text nodes from a nested element', () => {
@@ -64,8 +64,8 @@ if (import.meta.vitest) {
     div.innerHTML = 'Hello,<span>World!</span>'
     const textNodes = getElementTextNodes(div)
     expect(textNodes).toHaveLength(2)
-    expect(textNodes[0]).toBeInstanceOf(Text)
-    expect(textNodes[1]).toBeInstanceOf(Text)
+    expect(textNodes[0].nodeType).toBe(Node.TEXT_NODE)
+    expect(textNodes[1].nodeType).toBe(Node.TEXT_NODE)
     expect(textNodes[0].textContent).toBe('Hello,')
     expect(textNodes[1].textContent).toBe('World!')
   })
