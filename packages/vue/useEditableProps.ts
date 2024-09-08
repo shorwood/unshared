@@ -88,11 +88,10 @@ export function useEditableProps<
   for (const key of keys) {
     if (!keys.includes(key)) continue
     const value = props[key] ?? defaults?.[key]
-    const reference = ref(value)
+    const reference = ref(value) as Ref<T[K]>
 
     // --- Sync inbound changes to the reference.
     watch(() => props[key], (value) => {
-      // @ts-expect-error: The key is a valid property.
       reference.value = value
     }, watchOptions)
 
