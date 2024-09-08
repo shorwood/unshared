@@ -25,7 +25,7 @@
   },
   "scripts": {
     "dev": "tsx ./packages/scripts/cli.uncli.ts build --watch true",
-    "build": "tsx ./packages/scripts/cli.uncli.ts build --generateIndexes",
+    "build": "tsx ./packages/scripts/cli.uncli.ts build --generateIndexes true",
     "lint": "DEBUG=eslint:eslint eslint --cache",
     "lint:ci": "eslint --cache --ignore-pattern examples",
     "lint:fix": "DEBUG=eslint:eslint eslint --fix --cache",
