@@ -73,6 +73,7 @@
     "LICENSE.md"
   ],
   "dependencies": {
-    "@unshared/functions": "workspace:*"
+    "@unshared/functions": "workspace:*",
+    "@unshared/string": "workspace:*"
   }
 }
