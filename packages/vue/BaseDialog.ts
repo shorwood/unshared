@@ -18,7 +18,7 @@ export const BASE_DIALOG_PROPS = {
 } satisfies Record<keyof BaseDialogProps, Prop<unknown>>
 
 /** The properties & context of the `BaseDialog` component. */
-export interface BaseDialogProps extends BaseRenderableOptions {
+export interface BaseDialogProps<T = unknown> extends BaseRenderableOptions {
 
   /**
    * The state of the dialog. If `true`, the dialog is visible. If `false`, the
@@ -43,13 +43,13 @@ export interface BaseDialogProps extends BaseRenderableOptions {
    * Event emitted when the dialog returns a value. This is used to notify the parent
    * component that the dialog has returned a value.
    */
-  onReturn?: (value: string) => void
+  onReturn?: (value: T) => void
 }
 
-export interface BaseDialogSlotProps {
+export interface BaseDialogSlotProps<T = unknown> {
 
   /** Close and return a value from the dialog. */
-  returnValue: (value: string) => void
+  returnValue: (value: T) => void
 
   /** Close the dialog. */
   close(): void
@@ -63,13 +63,13 @@ export interface BaseDialogSlotProps {
 
 /** The context of the `BaseDialog` component. */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type BaseDialogSlots = {
-  default: (props: BaseDialogSlotProps) => VNode
-  dialog: (props: BaseDialogSlotProps) => VNode
+export type BaseDialogSlots<T = unknown> = {
+  default: (props: BaseDialogSlotProps<T>) => VNode
+  dialog: (props: BaseDialogSlotProps<T>) => VNode
 }
 
 export const BaseDialog = /* #__PURE__ */ defineSetupComponent(
-  (props: BaseDialogProps, { attrs, slots, emit }: DefineComponentContext<BaseDialogSlots>) => {
+  <T>(props: BaseDialogProps<T>, { attrs, slots, emit }: DefineComponentContext<BaseDialogSlots<T>>) => {
     const renderable = useBaseRenderable(props)
     const element = ref<HTMLDialogElement>()
     const is = computed(() => renderable.is ?? 'dialog')
@@ -123,12 +123,12 @@ export const BaseDialog = /* #__PURE__ */ defineSetupComponent(
     })
 
     // --- Build the slot properties.
-    const slotProps = computed<BaseDialogSlotProps>(() => ({
+    const slotProps = computed(() => ({
       isOpen: isOpen.value!,
       returnValue,
       close,
       open,
-    }))
+    }) as BaseDialogSlotProps<T>)
 
     // --- Expose properties.
     exposeToDevtool({
