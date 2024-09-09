@@ -18,6 +18,7 @@ export const BASE_MENU_PROPS = {
   'persistent': Boolean,
   'x': String,
   'y': String,
+  'classMenu': {},
 } satisfies Record<keyof BaseMenuProps, Prop<unknown>>
 
 /** The properties & context of the `BaseMenu` component. */
@@ -73,6 +74,11 @@ export interface BaseMenuProps extends BaseRenderableOptions {
    * @default 'bottom'
    */
   y?: 'above' | 'below' | 'bottom' | 'center' | 'top'
+
+  /**
+   * The classes to assign to the menu element.
+   */
+  classMenu?: string
 }
 
 /** The slot properties of the `BaseMenu` component. */
@@ -148,6 +154,7 @@ export const BaseMenu = /* #__PURE__ */ defineSetupComponent(
       'aria-hidden': isOpen.value,
       'role': 'menu',
       'style': menuStyle.value,
+      'class': props.classMenu,
     }))
 
     const close = () => {
@@ -206,20 +213,17 @@ export const BaseMenu = /* #__PURE__ */ defineSetupComponent(
     })
 
     // --- Return virtual DOM node.
-    return () => {
-      const vnodeMenu = h('menu', menuAttributes.value, slots.menu?.(slotProps.value))
-      const vnodeDefault = slots.default?.(slotProps.value)
-      return h(
-        is.value,
-        attributes.value,
-        [vnodeDefault, vnodeMenu],
-      )
-
-    }
+    return () => h(
+      is.value,
+      attributes.value,
+      [
+        slots.default?.(slotProps.value),
+        h('menu', menuAttributes.value, slots.menu?.(slotProps.value)),
+      ],
+    )
   },
   {
     name: 'BaseMemu',
     props: BASE_MENU_PROPS,
-    inheritAttrs: false,
   },
 )
