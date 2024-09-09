@@ -1,4 +1,4 @@
-import type { VNode } from 'vue'
+import type { Prop, VNode } from 'vue'
 import type { DefineComponentContext } from './defineSetupComponent'
 import type { BaseInputToggleOptions, ToggleType } from './useBaseInputToggle'
 import type { BaseRenderableOptions } from './useBaseRenderable'
@@ -15,7 +15,7 @@ export const BASE_INPUT_TOGGLE_PROPS = {
   ...BASE_INPUT_TOGGLE_OPTIONS,
   ...BASE_STATE_OPTIONS,
   ...BASE_RENDERABLE_OPTIONS,
-}
+} satisfies Record<keyof BaseInputToggleProps<unknown, ToggleType>, Prop<unknown>>
 
 /** The properties of the `BaseInputToggle` component. */
 export interface BaseInputToggleProps<T, U extends ToggleType> extends
