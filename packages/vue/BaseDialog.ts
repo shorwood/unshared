@@ -133,7 +133,7 @@ export const BaseDialog = /* #__PURE__ */ defineSetupComponent(
     // --- Expose properties.
     exposeToDevtool({
       is,
-      model: isOpen,
+      isOpen,
       renderable,
     })
 
