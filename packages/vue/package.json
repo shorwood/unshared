@@ -71,6 +71,11 @@
       "types": "./dist/BaseInputToggle.d.ts",
       "import": "./dist/BaseInputToggle.js"
     },
+    "./BaseMenu": {
+      "require": "./dist/BaseMenu.cjs",
+      "types": "./dist/BaseMenu.d.ts",
+      "import": "./dist/BaseMenu.js"
+    },
     "./BaseTable": {
       "require": "./dist/BaseTable.cjs",
       "types": "./dist/BaseTable.d.ts",
