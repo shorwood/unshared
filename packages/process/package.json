@@ -46,10 +46,10 @@
       "types": "./dist/parseCliOption.d.ts",
       "import": "./dist/parseCliOption.js"
     },
-    "./parseEnvironmentVariables": {
-      "require": "./dist/parseEnvironmentVariables.cjs",
-      "types": "./dist/parseEnvironmentVariables.d.ts",
-      "import": "./dist/parseEnvironmentVariables.js"
+    "./parseEnvironments": {
+      "require": "./dist/parseEnvironments.cjs",
+      "types": "./dist/parseEnvironments.d.ts",
+      "import": "./dist/parseEnvironments.js"
     },
     "./workerRegister": {
       "require": "./dist/workerRegister.cjs",
