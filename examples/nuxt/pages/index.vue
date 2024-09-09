@@ -100,6 +100,16 @@ const valueEditor = ref(dedent(`
       <Card class="col-span-2" title="Content Editable">
         <ContentEditable v-model="valueText"/>
       </Card>
+
+      <!-- Context Menu -->
+      <Card class="col-span-2" title="Context Menu">
+        <ContextMenu>
+          <BaseButton class="p-4">
+            Right
+            <b>click</b> me!
+          </BaseButton>
+        </ContextMenu>
+      </Card>
     </main>
   </div>
 </template>
