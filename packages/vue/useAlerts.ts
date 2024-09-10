@@ -126,10 +126,7 @@ export const useAlerts = createSharedComposable(() => {
 })
 
 /* v8 ignore start */
-
 if (import.meta.vitest) {
-  const { sleep } = await import('@unshared/functions/sleep')
-
   beforeEach(() => {
     const { clear } = useAlerts()
     clear()
@@ -280,7 +277,7 @@ if (import.meta.vitest) {
     it('should register a new alert and dismiss it after 10ms', async() => {
       const { alert, alerts } = useAlerts()
       alert({ duration: 10, text: 'This is an alert', type: 'info' })
-      await sleep(15)
+      await new Promise(resolve => setTimeout(resolve, 15))
       expect(alerts).toMatchObject([])
     })
 
