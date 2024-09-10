@@ -48,6 +48,6 @@ if (import.meta.vitest) {
 
   test('should infer the type of the unbound function', () => {
     const toFixed = unbind(Number.prototype, 'toFixed')
-    expectTypeOf(toFixed).toEqualTypeOf<(value: InstanceType<NumberConstructor>, fractionDigits?: number | undefined) => string>()
+    expectTypeOf(toFixed).toEqualTypeOf<(value: InstanceType<NumberConstructor>, fractionDigits?: number) => string>()
   })
 }
