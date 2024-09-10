@@ -1,8 +1,5 @@
-import type { MaybePromise } from '@unshared/types'
 import type { Prop } from 'vue'
 import type { BaseStateOptions } from './useBaseState'
-import { debounce } from '@unshared/functions/debounce'
-import { throttle } from '@unshared/functions/throttle'
 import { toReactive } from '@vueuse/core'
 import { computed, getCurrentInstance } from 'vue'
 import { BASE_STATE_OPTIONS, useBaseState } from './useBaseState'
@@ -15,8 +12,6 @@ export const BASE_CLICKABLE_OPTIONS = {
   ...BASE_STATE_OPTIONS,
   label: [Number, String],
   onClick: [Function, Array],
-  debounce: { type: Number, default: 0 },
-  throttle: { type: Number, default: 0 },
   eager: Boolean,
 } as Record<keyof BaseClickableOptions, Prop<unknown>>
 
@@ -39,25 +34,7 @@ export interface BaseClickableOptions extends BaseStateOptions {
    *
    * @default false
    */
-  onClick?: () => Promise<void> | void
-
-  /**
-   * The debounce time to wait before calling the `onClick` method. This is
-   * used to debounce the click event and prevent multiple clicks from being
-   * called in a short amount of time.
-   *
-   * @default 0
-   */
-  debounce?: number
-
-  /**
-   * The throttle time to wait before calling the `onClick` method. This is
-   * used to throttle the click event and prevent multiple clicks from being
-   * called in a short amount of time.
-   *
-   * @default 0
-   */
-  throttle?: number
+  onClick?: (event: MouseEvent) => unknown
 
   /**
    * If `true`, the click event will be triggered on mouse down instead of
@@ -79,7 +56,7 @@ export interface BaseClickableComposable {
   attributes: Record<string, unknown>
 
   /** The method to call when the component is clicked. */
-  onClick?: () => MaybePromise<void>
+  onClick: (event: MouseEvent) => unknown
 }
 
 declare module 'vue' {
@@ -110,11 +87,11 @@ export function useBaseClickable(options: BaseClickableOptions = {}, instance = 
 
   // --- Handle click event to make it update the loading state
   // --- and catch any error that might occur during the click event.
-  function onClickRaw() {
+  function onClick(event: MouseEvent) {
     if (!options.onClick || state.disabled || state.readonly || state.loading) return
     try {
       state.error = undefined
-      const result = options.onClick()
+      const result = options.onClick(event)
       if (result instanceof Promise) {
         state.loading = true
         result
@@ -126,14 +103,6 @@ export function useBaseClickable(options: BaseClickableOptions = {}, instance = 
       state.error = error as Error
     }
   }
-
-  // --- Wrap function to handle loading state & catch error.
-  const onClick = computed(() => {
-    if (!options.onClick) return
-    if (options.throttle && options.throttle > 0) return throttle(onClickRaw, options.throttle) as () => Promise<void> | void
-    if (options.debounce && options.debounce > 0) return debounce(onClickRaw, options.debounce) as () => Promise<void> | void
-    return onClickRaw
-  })
 
   // --- Compute the name of the click event based on the eager click option.
   // --- If eager click is enabled, the click event will be triggered on mouse down.
@@ -148,7 +117,7 @@ export function useBaseClickable(options: BaseClickableOptions = {}, instance = 
 
   // --- Create the reactive attributes for the component.
   const attributes = computed(() => ({
-    [clickEvent.value]: onClick.value,
+    [clickEvent.value]: onClick,
     'aria-labelledby': options.label,
     'aria-live': 'assertive',
   }))
@@ -200,75 +169,48 @@ if (import.meta.vitest) {
   })
 
   describe('click', () => {
-    it('should call the `onClick` method', () => {
+    it('should not be the same function reference', () => {
       const onClick = vi.fn()
-      const emit = vi.fn()
-      // @ts-expect-error: ignore
-      const result = useBaseClickable({ onClick }, { emit })
-      void result.onClick!()
-      expect(onClick).toHaveBeenCalledWith()
+      const result = useBaseClickable({ onClick })
+      expect(result.onClick).not.toBe(onClick)
     })
 
-    it('should not provide the `onClick` method when not defined', () => {
-      const result = useBaseClickable()
-      expect(result.onClick).toBeUndefined()
+    it('should call the `onClick` method', () => {
+      const onClick = vi.fn()
+      const result = useBaseClickable({ onClick })
+      const event = new MouseEvent('click')
+      void result.onClick(event)
+      expect(onClick).toHaveBeenCalledWith(event)
     })
 
     it('should not call the `onClick` method when disabled', () => {
       const onClick = vi.fn()
-      const emit = vi.fn()
-      // @ts-expect-error: ignore
-      const result = useBaseClickable({ onClick, disabled: true }, { emit })
-      void result.onClick!()
+      const result = useBaseClickable({ onClick, disabled: true })
+      void result.onClick(new MouseEvent('click'))
       expect(onClick).not.toHaveBeenCalled()
     })
 
     it('should not call the `onClick` method when readonly', () => {
       const onClick = vi.fn()
-      const emit = vi.fn()
-      // @ts-expect-error: ignore
-      const result = useBaseClickable({ onClick, readonly: true }, { emit })
-      void result.onClick!()
+      const result = useBaseClickable({ onClick, readonly: true })
+      void result.onClick(new MouseEvent('click'))
       expect(onClick).not.toHaveBeenCalled()
     })
 
     it('should not call the `onClick` method when loading', () => {
       const onClick = vi.fn()
-      const emit = vi.fn()
-      // @ts-expect-error: ignore
-      const result = useBaseClickable({ onClick, loading: true }, { emit })
-      void result.onClick!()
+      const result = useBaseClickable({ onClick, loading: true })
+      void result.onClick(new MouseEvent('click'))
       expect(onClick).not.toHaveBeenCalled()
     })
 
-    it('should debounce the `onClick` method', async() => {
-      vi.useFakeTimers()
+    it('should not emit the "click" event', () => {
       const onClick = vi.fn()
       const emit = vi.fn()
       // @ts-expect-error: ignore
-      const result = useBaseClickable({ onClick, debounce: 50 }, { emit })
-      void result.onClick!()
-      void result.onClick!()
-      void result.onClick!()
-      expect(onClick).toHaveBeenCalledTimes(0)
-      vi.advanceTimersByTime(100)
-      await new Promise(nextTick)
-      expect(onClick).toHaveBeenCalledTimes(1)
-    })
-
-    it('should throttle the `onClick` method', async() => {
-      vi.useFakeTimers()
-      const onClick = vi.fn()
-      const emit = vi.fn()
-      // @ts-expect-error: ignore
-      const result = useBaseClickable({ onClick, throttle: 50 }, { emit })
-      void result.onClick!()
-      void result.onClick!()
-      void result.onClick!()
-      expect(onClick).toHaveBeenCalledTimes(1)
-      vi.advanceTimersByTime(100)
-      await new Promise(nextTick)
-      expect(onClick).toHaveBeenCalledTimes(1)
+      const result = useBaseClickable({ onClick }, { emit })
+      void result.onClick(new MouseEvent('click'))
+      expect(emit).not.toHaveBeenCalledWith()
     })
   })
 
@@ -279,7 +221,7 @@ if (import.meta.vitest) {
       const emit = vi.fn()
       // @ts-expect-error: ignore
       const result = useBaseClickable({ onClick }, { emit })
-      void result.onClick!()
+      void result.onClick(new MouseEvent('click'))
       await new Promise(nextTick)
       expect(emit).toHaveBeenCalledWith('update:error', error)
     })
@@ -290,7 +232,7 @@ if (import.meta.vitest) {
       const emit = vi.fn()
       // @ts-expect-error: ignore
       const result = useBaseClickable({ onClick }, { emit })
-      void result.onClick!()
+      void result.onClick(new MouseEvent('click'))
       await new Promise(nextTick)
       expect(emit).toHaveBeenCalledWith('update:error', error)
     })
@@ -301,7 +243,7 @@ if (import.meta.vitest) {
       const emit = vi.fn()
       // @ts-expect-error: ignore
       const result = useBaseClickable({ onClick, error }, { emit })
-      void result.onClick!()
+      void result.onClick(new MouseEvent('click'))
       await new Promise(nextTick)
       expect(emit).toHaveBeenCalledWith('update:error', undefined)
     })
@@ -313,7 +255,7 @@ if (import.meta.vitest) {
       const emit = vi.fn()
       // @ts-expect-error: ignore
       const result = useBaseClickable({ onClick }, { emit })
-      void result.onClick!()
+      void result.onClick(new MouseEvent('click'))
       await new Promise(nextTick)
       expect(emit).toHaveBeenCalledTimes(0)
     })
@@ -323,7 +265,7 @@ if (import.meta.vitest) {
       const emit = vi.fn()
       // @ts-expect-error: ignore
       const result = useBaseClickable({ onClick }, { emit })
-      void result.onClick!()
+      void result.onClick(new MouseEvent('click'))
       await new Promise(nextTick)
       expect(emit).toHaveBeenCalledTimes(2)
       expect(emit).toHaveBeenNthCalledWith(1, 'update:loading', true)
@@ -336,7 +278,7 @@ if (import.meta.vitest) {
       const emit = vi.fn()
       // @ts-expect-error: ignore
       const result = useBaseClickable({ onClick }, { emit })
-      void result.onClick!()
+      void result.onClick(new MouseEvent('click'))
       await new Promise(nextTick)
       expect(emit).toHaveBeenCalledTimes(3)
       expect(emit).toHaveBeenNthCalledWith(1, 'update:loading', true)
