@@ -31,6 +31,11 @@
       "types": "./dist/BaseButton.d.ts",
       "import": "./dist/BaseButton.js"
     },
+    "./BaseCollapse": {
+      "require": "./dist/BaseCollapse.cjs",
+      "types": "./dist/BaseCollapse.d.ts",
+      "import": "./dist/BaseCollapse.js"
+    },
     "./BaseContentEditable": {
       "require": "./dist/BaseContentEditable.cjs",
       "types": "./dist/BaseContentEditable.d.ts",
@@ -231,7 +236,6 @@
     "@codemirror/state": "6.4.1",
     "@codemirror/view": "6.33.0",
     "@unshared/collection": "workspace:*",
-    "@unshared/functions": "workspace:*",
     "@unshared/types": "workspace:*",
     "@vueuse/core": "11.0.3",
     "codemirror": "6.0.1"
