@@ -72,7 +72,7 @@ export function parseEnvironments(prefix: string, parse = DEFAULT_PARSER): Recor
       const name = key.slice(prefix.length).replace(/^_+/, '')
       const objectKey = toCamelCase(name)
       const objectValue = process.env[key] ?? ''
-      result[objectKey] = parse(name, objectValue)
+      result[objectKey] = parse(objectKey, objectValue)
     }
   }
 
@@ -92,6 +92,10 @@ if (import.meta.vitest) {
     vi.stubEnv('OTHER_NAME', 'Other App')
   })
 
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
   test('should return all environment variables that start with the prefix', () => {
     const result = parseEnvironments('APP')
     expect(result).toStrictEqual({
@@ -99,8 +103,8 @@ if (import.meta.vitest) {
       version: '1.0.0',
       databaseType: 'sqlite',
       databaseUrl: 'sqlite://localhost',
-      port: '3000',
-      isActive: 'true',
+      port: 3000,
+      isActive: true,
     })
     expectTypeOf(result).toEqualTypeOf<Record<string, boolean | number | string>>()
   })
