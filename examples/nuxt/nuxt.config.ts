@@ -1,6 +1,8 @@
 import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
+
+  compatibilityDate: '2024-09-10',
   devtools: {
     enabled: true,
   },
