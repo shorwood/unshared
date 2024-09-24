@@ -8,7 +8,7 @@
  * MaybePromise<number> // number | Promise<number>
  * MaybePromise<Promise<number>> // Promise<number>
  */
-export type MaybePromise<U = unknown> = U extends Promise<infer V> ? Promise<V> : Promise<U> | U
+export type MaybePromise<U = unknown> = Promise<U> | U
 
 /* v8 ignore next */
 if (import.meta.vitest) {
@@ -17,8 +17,33 @@ if (import.meta.vitest) {
     expectTypeOf<Result>().toEqualTypeOf<Promise<number> | number>()
   })
 
-  test('should return a promise of U when U is a promise', () => {
-    type Result = MaybePromise<Promise<number>>
-    expectTypeOf<Result>().toEqualTypeOf<Promise<number>>()
+  test('should be able to infer the type of a value if it is not a promise', () => {
+    type InferFunction<T> = T extends () => MaybePromise<infer U> ? U : never
+    type Result = InferFunction<() => number>
+    expectTypeOf<Result>().toEqualTypeOf<number>()
+  })
+
+  test('should be able to infer the type of a value if it is a promise', () => {
+    type InferFunction<T> = T extends () => MaybePromise<infer U> ? U : never
+    type Result = InferFunction<() => Promise<number>>
+    expectTypeOf<Result>().toEqualTypeOf<number>()
+  })
+
+  test('should be able to infer the type of a value if it is a union of promises', () => {
+    type InferFunction<T> = T extends () => MaybePromise<infer U> ? U : never
+    type Result = InferFunction<() => Promise<number> | Promise<string>>
+    expectTypeOf<Result>().toEqualTypeOf<number | string>()
+  })
+
+  test('should be able to infer the type of a value if it is a union of promises and non-promises', () => {
+    type InferFunction<T> = T extends () => MaybePromise<infer U> ? U : never
+    type Result = InferFunction<() => Promise<number> | string>
+    expectTypeOf<Result>().toEqualTypeOf<number | string>()
+  })
+
+  test('should be able to infer the type of a value if it is a promise of unions', () => {
+    type InferFunction<T> = T extends () => MaybePromise<infer U> ? U : never
+    type Result = InferFunction<() => Promise<number | string>>
+    expectTypeOf<Result>().toEqualTypeOf<number | string>()
   })
 }
