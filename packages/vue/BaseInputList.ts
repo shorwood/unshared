@@ -25,9 +25,9 @@ const BASE_INPUT_LIST_PROPS = {
   classOptions: {},
   classValues: {},
   classValue: {},
-} satisfies Record<keyof BaseInputProps<any, any, any>, Prop<unknown>>
+} satisfies Record<keyof BaseInputListProps<any, any, any>, Prop<unknown>>
 
-export interface BaseInputProps<T, V, M extends boolean> extends
+export interface BaseInputListProps<T, V, M extends boolean> extends
   BaseStateOptions,
   BaseRenderableOptions,
   UseBaseInputListOptions<T, V, M> {
@@ -121,7 +121,7 @@ export type BaseInputListSlots<T, V> = {
 }
 
 export const BaseInputList = defineSetupComponent(
-  <T, V, M extends boolean>(props: BaseInputProps<T, V, M>, { attrs, slots }: DefineComponentContext<BaseInputListSlots<T, V>>) => {
+  <T, V, M extends boolean>(props: BaseInputListProps<T, V, M>, { attrs, slots }: DefineComponentContext<BaseInputListSlots<T, V>>) => {
 
     // --- Initialize reactive properties.
     const instance = getCurrentInstance()
@@ -140,9 +140,12 @@ export const BaseInputList = defineSetupComponent(
       state.attributes,
     ))
 
+    // --- The filtered options.
+    const optionsVisible = computed(() => input.options.filter(option => option.isVisible()))
+
     // --- The slot properties.
     const slotProps = computed<BaseInputListSlotProps<T, V>>(() => ({
-      options: input.options,
+      options: optionsVisible.value,
       values: input.selected,
       isOpen: isOpenDebounced.value,
       open: () => isOpen.value = true,
@@ -166,7 +169,7 @@ export const BaseInputList = defineSetupComponent(
         'aria-disabled': option.isDisabled() || undefined,
         'aria-selected': option.isSelected() || undefined,
         'class': props.classOption,
-      }), option.text)
+      }), option.label)
     }
 
     /**
@@ -258,7 +261,7 @@ export const BaseInputList = defineSetupComponent(
           'aria-selected': option.isSelected() || undefined,
           'class': props.classOption,
           'onClick': option.toggle,
-        }), slots.option?.(option) ?? option.text))
+        }), slots.option?.(option) ?? option.label))
 
       // --- If the list is empty, use the `empty` slot.
       return h(
@@ -279,7 +282,7 @@ export const BaseInputList = defineSetupComponent(
       const vnodeValues = slots.values?.(slotProps.value) ?? input.selected.map(option => h(
         'span',
         cleanAttributes({ class: props.classValue }),
-        slots.value?.(option) ?? option.text,
+        slots.value?.(option) ?? option.label,
       ))
 
       return h('div', cleanAttributes({ class: props.classValues }), vnodeValues)
@@ -301,13 +304,13 @@ export const BaseInputList = defineSetupComponent(
         mergeProps(
           attrs,
           state.attributes,
-          {
+          cleanAttributes({
             'tabindex': '0',
             'role': 'listbox',
             'aria-multiselectable': props.multiple,
             'aria-expanded': isOpen.value,
             'onFocus': (event: { target: HTMLElement } & Event) => event.target.querySelector('input')?.focus(),
-          },
+          }),
         ),
         [vnodeValue, vnodeSearch, vnodeList],
       )
