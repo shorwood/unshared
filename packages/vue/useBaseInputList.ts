@@ -132,7 +132,7 @@ export interface ListOption<T, V = T> {
    *
    * @example 'Alice'
    */
-  text: number | string
+  label: number | string
 
   /**
    * If the option is disabled. If the `optionDisabled` function is provided, this
@@ -312,7 +312,7 @@ export function useBaseInputList<T, V, M extends boolean>(options: UseBaseInputL
     return {
       option,
       value: options.optionValue?.(option) ?? String(option) as unknown as V,
-      text: options.optionLabel?.(option) ?? String(option) as unknown as number | string,
+      label: options.optionLabel?.(option) ?? String(option) as unknown as number | string,
       isDisabled: () => !!options.optionDisabled?.(option),
       isSelected: () => isSelected(option),
       isVisible: () => isVisible(search.value, option),
