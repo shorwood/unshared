@@ -104,6 +104,9 @@ export interface BaseInputListSlotProps<T, V> {
   options: Array<ListOption<T, V>>
   values: Array<ListOption<T, V>>
   isOpen: boolean
+  open: () => void
+  close: () => void
+  toggle: () => void
 }
 
 /** The slots of the `BaseInputList` component. */
@@ -142,6 +145,9 @@ export const BaseInputList = defineSetupComponent(
       options: input.options,
       values: input.selected,
       isOpen: isOpenDebounced.value,
+      open: () => isOpen.value = true,
+      close: () => isOpen.value = false,
+      toggle: () => isOpen.value = !isOpen.value,
     }))
 
     /**
