@@ -39,7 +39,6 @@ export async function resolve<T, P extends any[]>(value: MaybeResolvable<T, P>, 
   if (typeof value === 'function') result = value(...args) as MaybePromise<T>
 
   // --- Await the promise if it is a promise
-  // @ts-expect-error: The value is a promise
   if (result instanceof Promise) result = await result as T
 
   // --- Return the result
