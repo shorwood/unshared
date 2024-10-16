@@ -76,7 +76,7 @@ export function createSchema<T extends SchemaLike>(schema: Immutable<T>): Schema
 
   // --- Return a function that validates the value against the schema.
   // --- For each key in the schema, validate and transform the value.
-  return function(object: FormData | Record<PropertyKey, unknown>) {
+  return function(object: FormData | Record<PropertyKey, unknown> = {}) {
     const result: Record<string, unknown> = {}
     for (const key in schemaObject) {
       try {
