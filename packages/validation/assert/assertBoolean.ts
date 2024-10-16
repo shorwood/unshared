@@ -1,7 +1,6 @@
 import { kindOf } from '@unshared/functions/kindOf'
 import { ValidationError } from '../ValidationError'
 
-// is boolean
 /**
  * Assert that a value is a boolean.
  *
