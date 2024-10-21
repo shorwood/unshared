@@ -1,7 +1,7 @@
 import type { Prop, VNode } from 'vue'
 import type { DefineComponentContext } from './defineSetupComponent'
 import type { BaseRenderableOptions } from './useBaseRenderable'
-import { h, mergeProps, onMounted, onScopeDispose, ref, watch } from 'vue'
+import { h, mergeProps, onScopeDispose, ref, watch } from 'vue'
 import { defineSetupComponent } from './defineSetupComponent'
 import { BASE_RENDERABLE_OPTIONS, useBaseRenderable } from './useBaseRenderable'
 
@@ -61,8 +61,19 @@ export const BaseCollapse = /* #__PURE__ */ defineSetupComponent(
   (props: BaseCollapseProps, { attrs, slots }: DefineComponentContext<BaseCollapseSlots>) => {
     const element = ref<HTMLElement>()
     const renderable = useBaseRenderable(props)
-    const style = ref({})
+    const style = ref({
+      maxHeight: props.vertical && !props.isOpen ? '0' : undefined,
+      maxWidth: props.horizontal && !props.isOpen ? '0' : undefined,
+    })
 
+    /**
+     * Set the style content of the collapse element in several steps. The first
+     * step is to set the initial size of the element so transitions can work. Then,
+     * wait for the next frame to set the final size. Finally, after the transition
+     * ends, let the original styles take over so automatic resizing can work.
+     *
+     * @returns A promise that resolves when the style content is set.
+     */
     async function setStyleContent() {
       if (!element.value) return {}
       const { isOpen, vertical, horizontal, duration = 100 } = props
@@ -106,7 +117,6 @@ export const BaseCollapse = /* #__PURE__ */ defineSetupComponent(
 
     // --- Watch the model value and update the style content.
     watch(() => props.isOpen, setStyleContent)
-    onMounted(setStyleContent)
 
     // --- Return virtual DOM node.
     return () => h(
