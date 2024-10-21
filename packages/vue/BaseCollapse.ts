@@ -11,6 +11,7 @@ export const BASE_COLLAPSE_PROPS = {
   isOpen: Boolean,
   vertical: Boolean,
   horizontal: Boolean,
+  duration: Number,
 } satisfies Record<keyof BaseCollapseProps, Prop<unknown>>
 
 /** The properties & context of the `BaseCollapse` component. */
@@ -27,7 +28,7 @@ export interface BaseCollapseProps extends BaseRenderableOptions {
    * collapse will expand vertically and set the maximum height to `0` when
    * closed.
    *
-   * @default true
+   * @default false
    */
   vertical?: boolean
 
@@ -39,6 +40,15 @@ export interface BaseCollapseProps extends BaseRenderableOptions {
    * @default false
    */
   horizontal?: boolean
+
+  /**
+   * Defines after how many milliseconds the styles should be removed after the
+   * transition ends. This is used to remove the `max-height` and `max-width`
+   * styles after the state has changed and allow the transition to end.
+   *
+   * @default 100
+   */
+  duration?: number
 }
 
 /** The context of the `BaseCollapse` component. */
@@ -53,19 +63,33 @@ export const BaseCollapse = /* #__PURE__ */ defineSetupComponent(
     const renderable = useBaseRenderable(props)
     const style = ref({})
 
-    function setStyleContent() {
+    async function setStyleContent() {
       if (!element.value) return {}
-      const { isOpen, vertical, horizontal } = props
+      const { isOpen, vertical, horizontal, duration = 100 } = props
+
+      // --- Set the initial size so transitions can work.
       style.value = {
-        overflowY: vertical ? (isOpen ? undefined : 'hidden') : undefined,
-        overflowX: horizontal ? (isOpen ? undefined : 'hidden') : undefined,
+        maxHeight: vertical ? `${element.value.scrollHeight}px` : undefined,
+        maxWidth: horizontal ? `${element.value.scrollWidth}px` : undefined,
+      }
+
+      // --- Wait for the next frame to set the final size.
+      await new Promise(resolve => setTimeout(resolve, 0))
+      style.value = {
         maxHeight: vertical ? (isOpen ? `${element.value.scrollHeight}px` : '0') : undefined,
         maxWidth: horizontal ? (isOpen ? `${element.value.scrollWidth}px` : '0') : undefined,
+      }
+
+      // --- After the transition ends, let original styles take over.
+      await new Promise(resolve => setTimeout(resolve, duration))
+      style.value = {
+        maxHeight: vertical && !isOpen ? '0' : undefined,
+        maxWidth: horizontal && !isOpen ? '0' : undefined,
       }
     }
 
     let observer: MutationObserver | undefined
-    if (globalThis.MutationObserver) observer = new MutationObserver(setStyleContent)
+    if (globalThis.MutationObserver) observer = new MutationObserver(() => void setStyleContent())
     onScopeDispose(() => observer?.disconnect())
 
     // --- If the element VNode changes, re-observe the new element.
