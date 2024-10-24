@@ -416,6 +416,11 @@
       "types": "./dist/NumberPositive.d.ts",
       "import": "./dist/NumberPositive.js"
     },
+    "./ObjectLike": {
+      "require": "./dist/ObjectLike.cjs",
+      "types": "./dist/ObjectLike.d.ts",
+      "import": "./dist/ObjectLike.js"
+    },
     "./OmitNever": {
       "require": "./dist/OmitNever.cjs",
       "types": "./dist/OmitNever.d.ts",
