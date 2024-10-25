@@ -16,11 +16,6 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    "./ValidationError": {
-      "require": "./dist/ValidationError.cjs",
-      "types": "./dist/ValidationError.d.ts",
-      "import": "./dist/ValidationError.js"
-    },
     "./assert": {
       "require": "./dist/assert.cjs",
       "types": "./dist/assert.d.ts",
@@ -55,6 +50,11 @@
       "require": "./dist/createSchema.cjs",
       "types": "./dist/createSchema.d.ts",
       "import": "./dist/createSchema.js"
+    },
+    "./createValidationError": {
+      "require": "./dist/createValidationError.cjs",
+      "types": "./dist/createValidationError.d.ts",
+      "import": "./dist/createValidationError.js"
     },
     "./isRuleLike": {
       "require": "./dist/isRuleLike.cjs",
