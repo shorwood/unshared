@@ -1,5 +1,5 @@
 import { kindOf } from '@unshared/functions/kindOf'
-import { ValidationError } from '../ValidationError'
+import { ValidationError } from '../createValidationError'
 
 /**
  * Assert that a value is `undefined`.

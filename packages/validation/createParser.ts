@@ -5,7 +5,7 @@ import { tries } from '@unshared/functions/tries'
 import { createRuleChain } from './createRuleChain'
 import { createRuleSet } from './createRuleSet'
 import { createSchema } from './createSchema'
-import { ValidationError } from './ValidationError'
+import { ValidationError } from './createValidationError'
 
 /** A set of rules or a schema that can be used to validate a value. */
 export type ParserLike = [SchemaLike] | RuleChainLike | RuleSetLike

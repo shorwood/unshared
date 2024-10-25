@@ -1,6 +1,6 @@
 import type { Constructor } from '@unshared/types'
 import { kindOf } from '@unshared/functions/kindOf'
-import { ValidationError } from '../ValidationError'
+import { ValidationError } from '../createValidationError'
 
 /**
  * Assert that a value is an instance of the given class.

@@ -2,7 +2,7 @@ import type { Immutable } from '@unshared/types'
 import type { RuleLike } from './createRule'
 import type { RuleChainLike, RuleChainResult } from './createRuleChain'
 import { createRuleChain } from './createRuleChain'
-import { ValidationError } from './ValidationError'
+import { ValidationError } from './createValidationError'
 
 /** A matrix of `RuleLike` values that can be used to create a rule set. */
 export type RuleSetLike = RuleLike[][]
@@ -49,7 +49,7 @@ export function createRuleSet<T extends RuleSetLike>(...chains: Immutable<T>): R
     throw new ValidationError({
       name: 'E_NO_MATCHING_RULE_CHAIN',
       message: 'Expected value to match at least one rule chain in the set.',
-      causes,
+      context: { causes },
     })
   } as RuleSet<T>
 }

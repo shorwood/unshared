@@ -1,6 +1,6 @@
 import type { Function, IsUnknown, NotFunction } from '@unshared/types'
 import { assertString, assertStringMatching } from './assert'
-import { ValidationError } from './ValidationError'
+import { ValidationError } from './createValidationError'
 
 /**
  * A rule-like value can be a regular expression or a function that validates and/or transforms a value.

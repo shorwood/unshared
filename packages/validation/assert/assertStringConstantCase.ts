@@ -1,5 +1,5 @@
 import { toConstantCase } from '@unshared/string/toConstantCase'
-import { ValidationError } from '../ValidationError'
+import { ValidationError } from '../createValidationError'
 import { assertString } from './assertString'
 import { assertStringNotEmpty } from './assertStringNotEmpty'
 

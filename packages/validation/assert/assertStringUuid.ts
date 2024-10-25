@@ -1,5 +1,5 @@
 import type { UUID } from 'node:crypto'
-import { ValidationError } from '../ValidationError'
+import { ValidationError } from '../createValidationError'
 import { assertString } from './assertString'
 
 /** Regular expression for a UUID. */

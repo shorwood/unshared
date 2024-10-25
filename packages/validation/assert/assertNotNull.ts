@@ -1,5 +1,5 @@
 import type { NotNull } from '@unshared/types'
-import { ValidationError } from '../ValidationError'
+import { ValidationError } from '../createValidationError'
 
 /**
  * Assert that a value is not `null`.

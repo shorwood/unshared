@@ -1,6 +1,6 @@
 import type { Function } from '@unshared/types'
 import { kindOf } from '@unshared/functions'
-import { ValidationError } from '../ValidationError'
+import { ValidationError } from '../createValidationError'
 
 /**
  * Assert that a value is a function.
