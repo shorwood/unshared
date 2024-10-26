@@ -234,19 +234,19 @@
   },
   "dependencies": {
     "@codemirror/state": "6.4.1",
-    "@codemirror/view": "6.33.0",
+    "@codemirror/view": "6.34.1",
     "@unshared/collection": "workspace:*",
     "@unshared/types": "workspace:*",
     "@vueuse/core": "11.0.3",
     "codemirror": "6.0.1"
   },
   "devDependencies": {
-    "@nuxt/kit": "3.13.1",
-    "@nuxt/schema": "3.13.1",
+    "@nuxt/kit": "3.13.2",
+    "@nuxt/schema": "3.13.2",
     "@vue/test-utils": "2.4.6",
     "leaflet": "1.9.4",
     "markdown-it": "14.1.0",
     "vue": "3.5.3",
-    "vue-router": "4.4.3"
+    "vue-router": "4.4.5"
   }
 }

@@ -79,6 +79,7 @@
   ],
   "dependencies": {
     "@unshared/functions": "workspace:*",
-    "@unshared/string": "workspace:*"
+    "@unshared/string": "workspace:*",
+    "@unshared/types": "workspace:*"
   }
 }

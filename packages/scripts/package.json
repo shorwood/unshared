@@ -100,7 +100,7 @@
     "@unshared/fs": "workspace:*",
     "@unshared/process": "workspace:*",
     "@unshared/string": "workspace:*",
-    "openai": "4.58.2",
+    "openai": "4.68.4",
     "rollup": "4.24.0",
     "rollup-plugin-dts": "6.1.1",
     "rollup-plugin-esbuild": "6.1.1",
