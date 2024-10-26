@@ -59,7 +59,11 @@ export interface ValidationErrorOptions extends Pick<Error, 'message'> {
  * throw new ValidationError(new Error('E_EMAIL_REQUIRED'))
  *
  * // Create a new validation error from options.
- * throw new ValidationError({ code: 'E_EMAIL_REQUIRED', stack: 'stack' })
+ * throw new ValidationError({
+ *   name: 'E_EMAIL_REQUIRED',
+ *   message: 'An email is required.',
+ *   context: { value: 'example@acme.com' },
+ * })
  */
 export class ValidationError extends Error implements ValidationErrorOptions {
   constructor(options?: Error | ValidationErrorCode | ValidationErrorOptions) {
