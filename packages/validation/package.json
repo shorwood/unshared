@@ -61,6 +61,11 @@
       "types": "./dist/isRuleLike.d.ts",
       "import": "./dist/isRuleLike.js"
     },
+    "./wrapAssert": {
+      "require": "./dist/wrapAssert.cjs",
+      "types": "./dist/wrapAssert.d.ts",
+      "import": "./dist/wrapAssert.js"
+    },
     ".": {
       "require": "./dist/index.cjs",
       "types": "./dist/index.d.ts",
