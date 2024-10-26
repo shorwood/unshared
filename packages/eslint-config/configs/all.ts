@@ -12,6 +12,7 @@ import { typescript } from './typescript'
 import { unicorn } from './unicorn'
 import { vitest } from './vitest'
 import { vue } from './vue'
+import { yml } from './yml'
 
 export interface ESLintConfigOptions {
   tsConfigPath?: MaybeArray<string>
@@ -32,6 +33,7 @@ export function all(options: ESLintConfigOptions = {}) {
     ...unicorn(options),
     ...vitest(options),
     ...vue(options),
+    ...yml(),
     {
       ignores: [
         '**/dist',
