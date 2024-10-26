@@ -5,17 +5,16 @@ import { assertString } from './assertString'
  * Assert that a value is a string that matches a regular expression.
  *
  * @param value The value to assert as a string matching a regular expression.
- * @param exp The regular expression to match the value against.
- * @throws `ValidationError` if the value is not a string or does not match the regular expression.
+ * @param pattern The regular expression to match the value against.
  * @example assertStringMatching('Hello, World!', /Hello, \w+!/) // void
  */
-export function assertStringMatching(value: unknown, exp: RegExp): asserts value is string {
+export function assertStringMatching(value: unknown, pattern: RegExp): asserts value is string {
   assertString(value)
-  if (exp.test(value)) return
+  if (pattern.test(value)) return
   throw new ValidationError({
-    name: 'E_STRING_NOT_MATCHING_REGULAR_EXPRESSION',
-    message: `String does not match the regular expression: ${exp}.`,
-    context: { value, exp },
+    name: 'E_STRING_NOT_MATCHING',
+    message: `String does not match the regular expression: ${pattern}.`,
+    context: { value, pattern },
   })
 }
 
@@ -36,9 +35,9 @@ if (import.meta.vitest) {
         const shouldThrow = () => assertStringMatching('Hello, World!', /Hello, \d+!/)
         const { error } = attempt(shouldThrow)
         expect(error).toMatchObject({
-          name: 'E_STRING_NOT_MATCHING_REGULAR_EXPRESSION',
+          name: 'E_STRING_NOT_MATCHING',
           message: String.raw`String does not match the regular expression: /Hello, \d+!/.`,
-          context: { value: 'Hello, World!', exp: /Hello, \d+!/ },
+          context: { value: 'Hello, World!', pattern: /Hello, \d+!/ },
         })
       })
 
