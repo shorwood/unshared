@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/no-null */
+/* eslint-disable unicorn/no-useless-undefined */
 import { kindOf } from '@unshared/functions/kindOf'
 import { ValidationError } from '../createValidationError'
 
@@ -12,34 +14,51 @@ export function assertUndefined(value: unknown): asserts value is undefined {
   if (value === undefined) return
   throw new ValidationError({
     name: 'E_NOT_UNDEFINED',
-    message: `Expected value to be undefined but received: ${kindOf(value)}`,
+    message: 'Value is not undefined.',
+    context: { value, received: kindOf(value) },
   })
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  test('should pass if value is undefined', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    const result = assertUndefined(undefined)
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should throw if value is not undefined', () => {
-    const shouldThrow = () => assertUndefined(1)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be undefined but received: number')
-  })
+  describe('assertUndefined', () => {
+    describe('pass', () => {
+      it('should pass if value is undefined', () => {
+        const result = assertUndefined(undefined)
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should throw if value is not undefined', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const shouldThrow = () => assertUndefined(null)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be undefined but received: null')
-  })
+    describe('fail', () => {
+      it('should throw if value is not undefined', () => {
+        const shouldThrow = () => assertUndefined({})
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_UNDEFINED',
+          message: 'Value is not undefined.',
+          context: { value: {}, received: 'object' },
+        })
+      })
 
-  test('should predicate an undefined', () => {
-    const value = undefined as unknown
-    assertUndefined(value)
-    expectTypeOf(value).toEqualTypeOf<undefined>()
+      it('should throw if value is null', () => {
+        const shouldThrow = () => assertUndefined(null)
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_UNDEFINED',
+          message: 'Value is not undefined.',
+          context: { value: null, received: 'null' },
+        })
+      })
+    })
+
+    describe('inference', () => {
+      it('should predicate value as undefined', () => {
+        const value: unknown = undefined
+        assertUndefined(value)
+        expectTypeOf(value).toEqualTypeOf<undefined>()
+      })
+    })
   })
 }

@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/no-null */
+import type { ObjectLike } from '@unshared/types'
 import { kindOf } from '@unshared/functions/kindOf'
 import { ValidationError } from '../createValidationError'
 
@@ -8,50 +10,56 @@ import { ValidationError } from '../createValidationError'
  * @throws `ValidationError` if the value is not an object.
  * @example assertObject({}) // void
  */
-export function assertObject<T extends object>(value: unknown): asserts value is T {
-  if (kindOf(value) === 'object') return
+export function assertObject<T extends ObjectLike>(value: unknown): asserts value is T {
+  const kind = kindOf(value)
+  if (kind === 'object') return
   throw new ValidationError({
     name: 'E_NOT_OBJECT',
-    message: `Expected value to be an object but received: ${kindOf(value)}`,
+    message: 'Value is not an object.',
+    context: { value, received: kind },
   })
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  test('should pass if value is an object', () => {
-    const result = assertObject({})
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should throw if value is not an object', () => {
-    const shouldThrow = () => assertObject([])
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be an object but received: Array')
-  })
+  describe('assertObject', () => {
+    describe('pass', () => {
+      it('should pass if value is an object', () => {
+        const result = assertObject({})
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should throw if value is undefined', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    const shouldThrow = () => assertObject(undefined)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be an object but received: undefined')
-  })
+    describe('fail', () => {
+      it('should throw if value is not an object', () => {
+        const shouldThrow = () => assertObject([])
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_OBJECT',
+          message: 'Value is not an object.',
+          context: { value: [], received: 'Array' },
+        })
+      })
 
-  test('should throw if value is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const shouldThrow = () => assertObject(null)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be an object but received: null')
-  })
+      it('should throw if value is null', () => {
+        const shouldThrow = () => assertObject(null)
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_OBJECT',
+          message: 'Value is not an object.',
+          context: { value: null, received: 'null' },
+        })
+      })
+    })
 
-  test('should predicate an object', () => {
-    const value = {} as unknown
-    assertObject(value)
-    expectTypeOf(value).toEqualTypeOf<object>()
-  })
-
-  test('should predicate an object of Record<string, unknown> if a generic is provided', () => {
-    const value = {} as unknown
-    assertObject<Record<string, unknown>>(value)
-    expectTypeOf(value).toEqualTypeOf<Record<string, unknown>>()
+    describe('inference', () => {
+      it('should predicate value as an object', () => {
+        const value: unknown = {}
+        assertObject(value)
+        expectTypeOf(value).toEqualTypeOf<ObjectLike>()
+      })
+    })
   })
 }

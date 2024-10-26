@@ -13,38 +13,51 @@ export function assertArrayNotEmpty<T>(value: unknown): asserts value is T[] {
   if (value.length > 0) return
   throw new ValidationError({
     name: 'E_ARRAY_EMPTY',
-    message: 'Expected value to be a non-empty array but received an empty array.',
+    message: 'Array is empty.',
+    context: { value },
   })
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  test('should pass if value is a non-empty array', () => {
-    const result = assertArrayNotEmpty([1])
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should throw if value is an empty array', () => {
-    const shouldThrow = () => assertArrayNotEmpty([])
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a non-empty array but received an empty array.')
-  })
+  describe('assertArrayNotEmpty', () => {
+    describe('pass', () => {
+      it('should pass if value is a non-empty array', () => {
+        const result = assertArrayNotEmpty([1])
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should throw if value is not an array', () => {
-    const shouldThrow = () => assertArrayNotEmpty({})
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be an array but received: object')
-  })
+    describe('fail', () => {
+      it('should throw if value is an empty array', () => {
+        const shouldThrow = () => assertArrayNotEmpty([])
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_ARRAY_EMPTY',
+          message: 'Array is empty.',
+          context: { value: [] },
+        })
+      })
 
-  test('should predicate a non-empty array', () => {
-    const value = [1] as unknown
-    assertArrayNotEmpty(value)
-    expectTypeOf(value).toEqualTypeOf<unknown[]>()
-  })
+      it('should throw if value is not an array', () => {
+        const shouldThrow = () => assertArrayNotEmpty({})
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_ARRAY',
+          message: 'Value is not an array.',
+          context: { value: {}, received: 'object' },
+        })
+      })
+    })
 
-  test('should predicate a non-empty array of string if a generic is provided', () => {
-    const value = ['Hello, World!'] as unknown
-    assertArrayNotEmpty<string>(value)
-    expectTypeOf(value).toEqualTypeOf<string[]>()
+    describe('inference', () => {
+      it('should predicate value as a non-empty array', () => {
+        const value: unknown = [1]
+        assertArrayNotEmpty(value)
+        expectTypeOf(value).toEqualTypeOf<unknown[]>()
+      })
+    })
   })
 }

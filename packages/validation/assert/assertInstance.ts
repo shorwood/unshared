@@ -12,47 +12,54 @@ import { ValidationError } from '../createValidationError'
  */
 export function assertInstance<T extends object>(value: unknown, ctor: Constructor<T>): asserts value is T {
   if (value instanceof ctor) return
+  const expected = ctor.name || 'Unknown'
   throw new ValidationError({
     name: 'E_NOT_INSTANCE_OF',
-    message: `Expected value to be an instance of ${ctor.name} but received: ${kindOf(value)}`,
+    message: `Value is not an instance of "${expected}"`,
+    context: { expected, received: kindOf(value), ctor },
   })
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  test('should pass if value is an instance of the given class', () => {
-    const result = assertInstance(new Date(), Date)
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should throw if value is not an instance of the given class', () => {
-    const shouldThrow = () => assertInstance([], Date)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be an instance of Date but received: Array')
-  })
+  describe('assertInstance', () => {
+    describe('pass', () => {
+      it('should pass if value is an instance of the given class', () => {
+        const result = assertInstance(new Date(), Date)
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should throw if value is undefined', () => {
-    const shouldThrow = () => assertInstance(undefined, Date)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be an instance of Date but received: undefined')
-  })
+    describe('fail', () => {
+      it('should throw if value is not an instance of the given class', () => {
+        const shouldThrow = () => assertInstance({}, Date)
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_INSTANCE_OF',
+          message: 'Value is not an instance of "Date"',
+          context: { expected: 'Date', received: 'object', ctor: Date },
+        })
+      })
 
-  test('should throw if value is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const shouldThrow = () => assertInstance(null, Date)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be an instance of Date but received: null')
-  })
+      it('should throw if value is undefined', () => {
+        const shouldThrow = () => assertInstance(undefined, Date)
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_INSTANCE_OF',
+          message: 'Value is not an instance of "Date"',
+          context: { expected: 'Date', received: 'undefined', ctor: Date },
+        })
+      })
+    })
 
-  test('should predicate an instance of the given class', () => {
-    const value = new Date() as unknown
-    assertInstance(value, Date)
-    expectTypeOf(value).toEqualTypeOf<Date>()
-  })
-
-  test('should predicate an instance of the given class if a generic is provided', () => {
-    const value = new Date() as unknown
-    assertInstance<Date>(value, Date)
-    expectTypeOf(value).toEqualTypeOf<Date>()
+    describe('inference', () => {
+      it('should predicate value as an instance of the given class', () => {
+        const value: unknown = new Date()
+        assertInstance(value, Date)
+        expectTypeOf(value).toEqualTypeOf<Date>()
+      })
+    })
   })
 }

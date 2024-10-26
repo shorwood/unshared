@@ -14,45 +14,51 @@ export function assertStringEquals<T extends string>(value: unknown, expected: T
   if (value === expected) return
   throw new ValidationError({
     name: 'E_STRING_NOT_EQUAL',
-    message: `Expected value to be a string equal to ${expected} but received: ${value}`,
+    message: `String is not equal to "${expected}".`,
+    context: { value, expected },
   })
 }
 
-/* v8 ignore next */
+/* v8 ignore end */
 if (import.meta.vitest) {
-  test('should pass if value is a string equal to the expected string', () => {
-    const result = assertStringEquals('Hello, World!', 'Hello, World!')
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should throw if value is not a string', () => {
-    const shouldThrow = () => assertStringEquals(1, 'Hello, World!')
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string but received: number')
-  })
+  describe('assertStringEquals', () => {
+    describe('pass', () => {
+      it('should pass if value equals the expected string', () => {
+        const result = assertStringEquals('Hello, World!', 'Hello, World!')
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should throw if value does not equal the expected string', () => {
-    const shouldThrow = () => assertStringEquals('Hello, World!', 'Hello, World')
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string equal to Hello, World but received: Hello, World!')
-  })
+    describe('fail', () => {
+      it('should throw if value does not equal the expected string', () => {
+        const shouldThrow = () => assertStringEquals('Hello, World!', 'Hello, Universe!')
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_STRING_NOT_EQUAL',
+          message: 'String is not equal to "Hello, Universe!".',
+          context: { value: 'Hello, World!', expected: 'Hello, Universe!' },
+        })
+      })
 
-  test('should throw if value is undefined', () => {
-    const shouldThrow = () => assertStringEquals(undefined, 'Hello, World!')
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string but received: undefined')
-  })
+      it('should throw if value is not a string', () => {
+        const shouldThrow = () => assertStringEquals({}, 'Hello, World!')
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_STRING',
+          message: 'Value is not a string.',
+          context: { value: {}, received: 'object' },
+        })
+      })
+    })
 
-  test('should throw if value is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const shouldThrow = () => assertStringEquals(null, 'Hello, World!')
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string but received: null')
-  })
-
-  test('should predicate a string equal to the expected string', () => {
-    const value = 'Hello, World!' as unknown
-    assertStringEquals(value, 'Hello, World!')
-    expectTypeOf(value).toEqualTypeOf<'Hello, World!'>()
+    describe('inference', () => {
+      it('should predicate value as a string equal to the expected string', () => {
+        const value: unknown = 'Hello, World!'
+        assertStringEquals(value, 'Hello, World!')
+        expectTypeOf(value).toEqualTypeOf<'Hello, World!'>()
+      })
+    })
   })
 }

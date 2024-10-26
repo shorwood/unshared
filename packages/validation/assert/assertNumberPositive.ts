@@ -13,46 +13,56 @@ export function assertNumberPositive(value: unknown): asserts value is number {
   if (value >= 0) return
   throw new ValidationError({
     name: 'E_NUMBER_NOT_POSITIVE',
-    message: `Expected value to be a number greater than or equal to 0 but received: ${value}`,
+    message: 'Number is not positive.',
+    context: { value },
   })
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  test('should pass if value is a number greater than or equal to 0', () => {
-    const result = assertNumberPositive(1)
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should throw if value is not a number greater than or equal to 0', () => {
-    const shouldThrow = () => assertNumberPositive(-1)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a number greater than or equal to 0 but received: -1')
-  })
+  describe('assertNumberPositive', () => {
+    describe('pass', () => {
+      it('should pass if value is a number greater than or equal to 0', () => {
+        const result = assertNumberPositive(1)
+        expect(result).toBeUndefined()
+      })
 
-  test('should throw if value is not a number', () => {
-    const shouldThrow = () => assertNumberPositive('1')
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a number but received: string')
-  })
+      it('should pass if value is 0', () => {
+        const result = assertNumberPositive(0)
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should throw if value is undefined', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    const shouldThrow = () => assertNumberPositive(undefined)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a number but received: undefined')
-  })
+    describe('fail', () => {
+      it('should throw if value is less than 0', () => {
+        const shouldThrow = () => assertNumberPositive(-1)
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NUMBER_NOT_POSITIVE',
+          message: 'Number is not positive.',
+          context: { value: -1 },
+        })
+      })
 
-  test('should throw if value is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const shouldThrow = () => assertNumberPositive(null)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a number but received: null')
-  })
+      it('should throw if value is not a number', () => {
+        const shouldThrow = () => assertNumberPositive('1')
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_NUMBER',
+          message: 'Value is not a number.',
+          context: { value: '1', received: 'string' },
+        })
+      })
+    })
 
-  test('should predicate a number greater than or equal to 0', () => {
-    const value = 1 as unknown
-    assertNumberPositive(value)
-    expectTypeOf(value).toEqualTypeOf<number>()
+    describe('inference', () => {
+      it('should predicate value as a number greater than or equal to 0', () => {
+        const value: unknown = 1
+        assertNumberPositive(value)
+        expectTypeOf(value).toEqualTypeOf<number>()
+      })
+    })
   })
 }

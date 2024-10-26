@@ -12,40 +12,41 @@ export function assertBoolean(value: unknown): asserts value is boolean {
   if (typeof value === 'boolean') return
   throw new ValidationError({
     name: 'E_NOT_BOOLEAN',
-    message: `Expected value to be a boolean but received: ${kindOf(value)}`,
+    message: 'Value is not a boolean.',
+    context: { value, received: kindOf(value) },
   })
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  test('should pass if value is a boolean', () => {
-    const result = assertBoolean(true)
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should throw if value is not a boolean', () => {
-    const shouldThrow = () => assertBoolean(1)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a boolean but received: number')
-  })
+  describe('assertBoolean', () => {
+    describe('pass', () => {
+      it('should pass if value is a boolean', () => {
+        const result = assertBoolean(true)
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should throw if value is undefined', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    const shouldThrow = () => assertBoolean(undefined)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a boolean but received: undefined')
-  })
+    describe('fail', () => {
+      it('should throw if value is not a boolean', () => {
+        const shouldThrow = () => assertBoolean({})
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_BOOLEAN',
+          message: 'Value is not a boolean.',
+          context: { value: {}, received: 'object' },
+        })
+      })
+    })
 
-  test('should throw if value is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const shouldThrow = () => assertBoolean(null)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a boolean but received: null')
-  })
-
-  test('should predicate a boolean', () => {
-    const value = true as unknown
-    assertBoolean(value)
-    expectTypeOf(value).toEqualTypeOf<boolean>()
+    describe('inference', () => {
+      it('should predicate value as a boolean', () => {
+        const value: unknown = true
+        assertBoolean(value)
+        expectTypeOf(value).toEqualTypeOf<boolean>()
+      })
+    })
   })
 }

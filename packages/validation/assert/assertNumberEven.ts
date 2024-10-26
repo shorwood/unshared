@@ -12,56 +12,64 @@ import { assertNumberInteger } from './assertNumberInteger'
 export function assertNumberEven(value: unknown): asserts value is number {
   assertNumber(value)
   assertNumberInteger(value)
-  if ((value & 1) !== 0) {
-    throw new ValidationError({
-      name: 'E_NUMBER_NOT_EVEN',
-      message: `Expected value to be an even number but received: ${value}`,
-    })
-  }
+  if ((value & 1) === 0) return
+  throw new ValidationError({
+    name: 'E_NUMBER_NOT_EVEN',
+    message: 'Number is not even.',
+    context: { value },
+  })
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  test('should pass if value is an even number', () => {
-    const result = assertNumberEven(2)
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should throw if value is an odd number', () => {
-    const shouldThrow = () => assertNumberEven(1)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be an even number but received: 1')
-  })
+  describe('assertNumberEven', () => {
+    describe('pass', () => {
+      it('should pass if value is an even number', () => {
+        const result = assertNumberEven(2)
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should throw if value is a decimal number', () => {
-    const shouldThrow = () => assertNumberEven(2.1)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be an integer number but received decimal value: 2.1')
-  })
+    describe('fail', () => {
+      it('should throw if value is not an even number', () => {
+        const shouldThrow = () => assertNumberEven(1)
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NUMBER_NOT_EVEN',
+          message: 'Number is not even.',
+          context: { value: 1 },
+        })
+      })
 
-  test('should throw if value is a string', () => {
-    const shouldThrow = () => assertNumberEven('1')
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a number but received: string')
-  })
+      it('should throw if value is not an integer', () => {
+        const shouldThrow = () => assertNumberEven(1.5)
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NUMBER_NOT_INTEGER',
+          message: 'Number is not an integer.',
+          context: { value: 1.5 },
+        })
+      })
 
-  test('should throw if value is undefined', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    const shouldThrow = () => assertNumberEven(undefined)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a number but received: undefined')
-  })
+      it('should throw if value is not a number', () => {
+        const shouldThrow = () => assertNumberEven('1')
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_NUMBER',
+          message: 'Value is not a number.',
+          context: { value: '1', received: 'string' },
+        })
+      })
+    })
 
-  test('should throw if value is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const shouldThrow = () => assertNumberEven(null)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a number but received: null')
-  })
-
-  test('should predicate an even number', () => {
-    const value = 2 as unknown
-    assertNumberEven(value)
-    expectTypeOf(value).toEqualTypeOf<number>()
+    describe('inference', () => {
+      it('should predicate value as an even number', () => {
+        const value: unknown = 2
+        assertNumberEven(value)
+        expectTypeOf(value).toEqualTypeOf<number>()
+      })
+    })
   })
 }

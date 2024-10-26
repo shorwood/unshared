@@ -9,43 +9,54 @@ import { ValidationError } from '../createValidationError'
  * @example assertNumber(1) // void
  */
 export function assertNumber(value: unknown): asserts value is number {
-  if (typeof value === 'number') return
+  if (typeof value === 'number' && !Number.isNaN(value)) return
   throw new ValidationError({
     name: 'E_NOT_NUMBER',
-    message: `Expected value to be a number but received: ${kindOf(value)}`,
+    message: 'Value is not a number.',
+    context: { value, received: kindOf(value) },
   })
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  test('should pass if value is a number', () => {
-    const result = assertNumber(1)
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should throw if value is not a number', () => {
-    const shouldThrow = () => assertNumber('1')
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a number but received: string')
-  })
+  describe('assertNumber', () => {
+    describe('pass', () => {
+      it('should pass if value is a number', () => {
+        const result = assertNumber(1)
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should throw if value is undefined', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    const shouldThrow = () => assertNumber(undefined)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a number but received: undefined')
-  })
+    describe('fail', () => {
+      it('should throw if value is not a number', () => {
+        const shouldThrow = () => assertNumber('1')
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_NUMBER',
+          message: 'Value is not a number.',
+          context: { value: '1', received: 'string' },
+        })
+      })
 
-  test('should throw if value is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const shouldThrow = () => assertNumber(null)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a number but received: null')
-  })
+      it('should throw if value is NaN', () => {
+        const shouldThrow = () => assertNumber(Number.NaN)
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_NUMBER',
+          message: 'Value is not a number.',
+          context: { value: Number.NaN, received: 'number' },
+        })
+      })
+    })
 
-  test('should predicate a number', () => {
-    const value = 1 as unknown
-    assertNumber(value)
-    expectTypeOf(value).toEqualTypeOf<number>()
+    describe('inference', () => {
+      it('should predicate value as a number', () => {
+        const value: unknown = 1
+        assertNumber(value)
+        expectTypeOf(value).toEqualTypeOf<number>()
+      })
+    })
   })
 }

@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/no-useless-undefined */
+/* eslint-disable unicorn/no-null */
 import type { NotNull } from '@unshared/types'
 import { ValidationError } from '../createValidationError'
 
@@ -12,33 +14,46 @@ export function assertNotNull<T>(value: T): asserts value is NotNull<T> {
   if (value !== null) return
   throw new ValidationError({
     name: 'E_IS_NULL',
-    message: 'Expected value not to be null',
+    message: 'Value is null.',
+    context: { value },
   })
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  test('should pass if value is not null', () => {
-    const result = assertNotNull(1)
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should pass if the value is undefined', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    const result = assertNotNull(undefined)
-    expect(result).toBeUndefined()
-  })
+  describe('assertNotNull', () => {
+    describe('pass', () => {
+      it('should pass if value is not null', () => {
+        const result = assertNotNull(1)
+        expect(result).toBeUndefined()
+      })
 
-  test('should throw if value is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const shouldThrow = () => assertNotNull(null)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value not to be null')
-  })
+      it('should pass if value is undefined', () => {
+        const result = assertNotNull(undefined)
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should predicate the type of a null or undefined value', () => {
-    const value = 1 as null | number | undefined
-    assertNotNull(value)
-    expectTypeOf(value).toEqualTypeOf<number | undefined>()
+    describe('fail', () => {
+      it('should throw if value is null', () => {
+        const shouldThrow = () => assertNotNull(null)
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_IS_NULL',
+          message: 'Value is null.',
+          context: { value: null },
+        })
+      })
+    })
+
+    describe('inference', () => {
+      it('should predicate value as not null', () => {
+        const value: null | number = 1
+        assertNotNull(value)
+        expectTypeOf(value).toEqualTypeOf<number>()
+      })
+    })
   })
 }

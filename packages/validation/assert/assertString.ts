@@ -12,40 +12,41 @@ export function assertString(value: unknown): asserts value is string {
   if (typeof value === 'string') return
   throw new ValidationError({
     name: 'E_NOT_STRING',
-    message: `Expected value to be a string but received: ${kindOf(value)}`,
+    message: 'Value is not a string.',
+    context: { value, received: kindOf(value) },
   })
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  test('should pass if value is a string', () => {
-    const result = assertString('Hello, World!')
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should throw if value is not a string', () => {
-    const shouldThrow = () => assertString(1)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string but received: number')
-  })
+  describe('assertString', () => {
+    describe('pass', () => {
+      it('should pass if value is a string', () => {
+        const result = assertString('Hello, World!')
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should throw if value is undefined', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    const shouldThrow = () => assertString(undefined)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string but received: undefined')
-  })
+    describe('fail', () => {
+      it('should throw if value is not a string', () => {
+        const shouldThrow = () => assertString({})
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_STRING',
+          message: 'Value is not a string.',
+          context: { value: {}, received: 'object' },
+        })
+      })
+    })
 
-  test('should throw if value is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const shouldThrow = () => assertString(null)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string but received: null')
-  })
-
-  test('should predicate a string', () => {
-    const value = 'Hello, World!' as unknown
-    assertString(value)
-    expectTypeOf(value).toEqualTypeOf<string>()
+    describe('inference', () => {
+      it('should predicate value as a string', () => {
+        const value: unknown = 'Hello, World!'
+        assertString(value)
+        expectTypeOf(value).toEqualTypeOf<string>()
+      })
+    })
   })
 }

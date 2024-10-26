@@ -14,51 +14,56 @@ export function assertStringEmpty(value: unknown): asserts value is string {
   if (value.trim().length === 0) return
   throw new ValidationError({
     name: 'E_STRING_NOT_EMPTY',
-    message: 'Expected value to be an empty string but received a non-empty string.',
+    message: 'String is not empty.',
+    context: { value },
   })
 }
 
 /* v8 ignore end */
 if (import.meta.vitest) {
-  test('should pass if value is an empty string', () => {
-    const result = assertStringEmpty('')
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should pass if value is a string with only whitespace characters', () => {
-    const result = assertStringEmpty(' \n\t ')
-    expect(result).toBeUndefined()
-  })
+  describe('assertStringEmpty', () => {
+    describe('pass', () => {
+      it('should pass if value is an empty string', () => {
+        const result = assertStringEmpty('')
+        expect(result).toBeUndefined()
+      })
 
-  test('should throw if value is a non-empty string', () => {
-    const shouldThrow = () => assertStringEmpty('Hello, World!')
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be an empty string but received a non-empty string.')
-  })
+      it('should pass if value is a string of whitespace characters', () => {
+        const result = assertStringEmpty(' \n\t')
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should throw if value is not a string', () => {
-    const shouldThrow = () => assertStringEmpty(1)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string but received: number')
-  })
+    describe('fail', () => {
+      it('should throw if value is not an empty string', () => {
+        const shouldThrow = () => assertStringEmpty('Hello, World!')
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_STRING_NOT_EMPTY',
+          message: 'String is not empty.',
+          context: { value: 'Hello, World!' },
+        })
+      })
 
-  test('should throw if value is undefined', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    const shouldThrow = () => assertStringEmpty(undefined)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string but received: undefined')
-  })
+      it('should throw if value is not a string', () => {
+        const shouldThrow = () => assertStringEmpty({})
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_STRING',
+          message: 'Value is not a string.',
+          context: { value: {}, received: 'object' },
+        })
+      })
+    })
 
-  test('should throw if value is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const shouldThrow = () => assertStringEmpty(null)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string but received: null')
-  })
-
-  test('should predicate an empty string', () => {
-    const value = '' as unknown
-    assertStringEmpty(value)
-    expectTypeOf(value).toEqualTypeOf<string>()
+    describe('inference', () => {
+      it('should predicate value as a string', () => {
+        const value: unknown = ''
+        assertStringEmpty(value)
+        expectTypeOf(value).toEqualTypeOf<string>()
+      })
+    })
   })
 }

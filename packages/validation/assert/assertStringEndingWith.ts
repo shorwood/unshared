@@ -15,45 +15,51 @@ export function assertStringEndingWith<T extends string>(value: unknown, end: T)
   if (value.endsWith(end)) return
   throw new ValidationError({
     name: 'E_STRING_NOT_ENDING_WITH',
-    message: `Expected value to be a string ending with "${end}" but received: ${value}`,
+    message: `String is not ending with "${end}".`,
+    context: { value, end },
   })
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  test('should pass if value is a string ending with the given string', () => {
-    const result = assertStringEndingWith('Hello, World!', 'World!')
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should throw if value is not a string', () => {
-    const shouldThrow = () => assertStringEndingWith(1, 'World!')
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string but received: number')
-  })
+  describe('assertStringEndingWith', () => {
+    describe('pass', () => {
+      it('should pass if value ends with the given string', () => {
+        const result = assertStringEndingWith('Hello, World!', 'World!')
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should throw if value does not end with the given string', () => {
-    const shouldThrow = () => assertStringEndingWith('Hello, World!', 'Hello')
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string ending with "Hello" but received: Hello, World!')
-  })
+    describe('fail', () => {
+      it('should throw if value does not end with the given string', () => {
+        const shouldThrow = () => assertStringEndingWith('Hello, World!', 'Hello!')
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_STRING_NOT_ENDING_WITH',
+          message: 'String is not ending with "Hello!".',
+          context: { value: 'Hello, World!', end: 'Hello!' },
+        })
+      })
 
-  test('should throw if value is undefined', () => {
-    const shouldThrow = () => assertStringEndingWith(undefined, 'World!')
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string but received: undefined')
-  })
+      it('should throw if value is not a string', () => {
+        const shouldThrow = () => assertStringEndingWith({}, 'Hello!')
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_STRING',
+          message: 'Value is not a string.',
+          context: { value: {}, received: 'object' },
+        })
+      })
+    })
 
-  test('should throw if value is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const shouldThrow = () => assertStringEndingWith(null, 'World!')
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string but received: null')
-  })
-
-  test('should predicate a string ending with the given string', () => {
-    const value = 'Hello, World!' as unknown
-    assertStringEndingWith(value, 'World!')
-    expectTypeOf(value).toEqualTypeOf<`${string}World!`>()
+    describe('inference', () => {
+      it('should predicate value as a string ending with the given string', () => {
+        const value: unknown = 'Hello, World!'
+        assertStringEndingWith(value, 'World!')
+        expectTypeOf(value).toEqualTypeOf<`${string}World!`>()
+      })
+    })
   })
 }

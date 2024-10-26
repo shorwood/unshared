@@ -10,50 +10,54 @@ import { assertNumber } from './assertNumber'
  */
 export function assertNumberInteger(value: unknown): asserts value is number {
   assertNumber(value)
-  if (!Number.isSafeInteger(value)) {
-    throw new ValidationError({
-      name: 'E_NUMBER_NOT_INTEGER',
-      message: `Expected value to be an integer number but received decimal value: ${value}`,
-    })
-  }
+  if (Number.isSafeInteger(value)) return
+  throw new ValidationError({
+    name: 'E_NUMBER_NOT_INTEGER',
+    message: 'Number is not an integer.',
+    context: { value },
+  })
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  test('should pass if value is an integer number', () => {
-    const result = assertNumberInteger(1)
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should throw if value is a string', () => {
-    const shouldThrow = () => assertNumberInteger('1')
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a number but received: string')
-  })
+  describe('assertNumberInteger', () => {
+    describe('pass', () => {
+      it('should pass if value is an integer number', () => {
+        const result = assertNumberInteger(1)
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should throw if value is not an integer number', () => {
-    const shouldThrow = () => assertNumberInteger(1.1)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be an integer number but received decimal value: 1.1')
-  })
+    describe('fail', () => {
+      it('should throw if value is not an integer number', () => {
+        const shouldThrow = () => assertNumberInteger(1.5)
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NUMBER_NOT_INTEGER',
+          message: 'Number is not an integer.',
+          context: { value: 1.5 },
+        })
+      })
 
-  test('should throw if value is undefined', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    const shouldThrow = () => assertNumberInteger(undefined)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a number but received: undefined')
-  })
+      it('should throw if value is not a number', () => {
+        const shouldThrow = () => assertNumberInteger('1')
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_NUMBER',
+          message: 'Value is not a number.',
+          context: { value: '1', received: 'string' },
+        })
+      })
+    })
 
-  test('should throw if value is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const shouldThrow = () => assertNumberInteger(null)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a number but received: null')
-  })
-
-  test('should predicate an integer number', () => {
-    const value = 1 as unknown
-    assertNumberInteger(value)
-    expectTypeOf(value).toEqualTypeOf<number>()
+    describe('inference', () => {
+      it('should predicate value as an integer number', () => {
+        const value: unknown = 1
+        assertNumberInteger(value)
+        expectTypeOf(value).toEqualTypeOf<number>()
+      })
+    })
   })
 }

@@ -17,40 +17,61 @@ export function assertStringNumber(value: unknown): asserts value is `${number}`
   if (EXP_NUMBER.test(value)) return
   throw new ValidationError({
     name: 'E_NOT_STRING_NUMBER',
-    message: `Expected value to be a string representation of a number but received: ${value}`,
+    message: 'String is not parseable as a number.',
+    context: { value },
   })
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  test('should pass if value is a string number', () => {
-    const result = assertStringNumber('5')
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should throw if value is not a string number', () => {
-    const shouldThrow = () => assertStringNumber('Hello, World!')
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string representation of a number but received: Hello, World!')
-  })
+  describe('assertStringNumber', () => {
+    describe('pass', () => {
+      it('should pass if value is a string number', () => {
+        const result = assertStringNumber('5')
+        expect(result).toBeUndefined()
+      })
 
-  test('should throw if value is undefined', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    const shouldThrow = () => assertStringNumber(undefined)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string but received: undefined')
-  })
+      it('should pass if value is a string number with a decimal', () => {
+        const result = assertStringNumber('5.5')
+        expect(result).toBeUndefined()
+      })
 
-  test('should throw if value is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const shouldThrow = () => assertStringNumber(null)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string but received: null')
-  })
+      it('should pass if value is a string number with a sign', () => {
+        const result = assertStringNumber('-5')
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should predicate a string number', () => {
-    const value = '5' as unknown
-    assertStringNumber(value)
-    expectTypeOf(value).toEqualTypeOf<`${number}`>()
+    describe('fail', () => {
+      it('should throw if value is not a string number', () => {
+        const shouldThrow = () => assertStringNumber('not-a-number')
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_STRING_NUMBER',
+          message: 'String is not parseable as a number.',
+          context: { value: 'not-a-number' },
+        })
+      })
+
+      it('should throw if value is not a string', () => {
+        const shouldThrow = () => assertStringNumber(1)
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_STRING',
+          message: 'Value is not a string.',
+          context: { value: 1, received: 'number' },
+        })
+      })
+    })
+
+    describe('inference', () => {
+      it('should predicate value as a string number', () => {
+        const value: unknown = '5'
+        assertStringNumber(value)
+        expectTypeOf(value).toEqualTypeOf<`${number}`>()
+      })
+    })
   })
 }

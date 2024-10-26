@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/no-null */
+/* eslint-disable unicorn/no-useless-undefined */
 import { kindOf } from '@unshared/functions/kindOf'
 import { ValidationError } from '../createValidationError'
 
@@ -12,34 +14,46 @@ export function assertNil(value: unknown): asserts value is null | undefined {
   if (value === null || value === undefined) return
   throw new ValidationError({
     name: 'E_NOT_NIL',
-    message: `Expected value to be null or undefined but received: ${kindOf(value)}`,
+    message: 'Value is neither null nor undefined.',
+    context: { value, received: kindOf(value) },
   })
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  test('should pass if value is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const result = assertNil(null)
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should pass if value is undefined', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    const result = assertNil(undefined)
-    expect(result).toBeUndefined()
-  })
+  describe('assertNil', () => {
+    describe('pass', () => {
+      it('should pass if value is null', () => {
+        const result = assertNil(null)
+        expect(result).toBeUndefined()
+      })
 
-  test('should throw if value is an object', () => {
-    const shouldThrow = () => assertNil({})
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be null or undefined but received: object')
-  })
+      it('should pass if value is undefined', () => {
+        const result = assertNil(undefined)
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should predicate a null or undefined union', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const value = null as unknown
-    assertNil(value)
-    expectTypeOf(value).toEqualTypeOf<null | undefined>()
+    describe('fail', () => {
+      it('should throw if value is not null or undefined', () => {
+        const shouldThrow = () => assertNil({})
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_NIL',
+          message: 'Value is neither null nor undefined.',
+          context: { value: {}, received: 'object' },
+        })
+      })
+    })
+
+    describe('inference', () => {
+      it('should predicate value as null or undefined', () => {
+        const value: unknown = null
+        assertNil(value)
+        expectTypeOf(value).toEqualTypeOf<null | undefined>()
+      })
+    })
   })
 }

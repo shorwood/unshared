@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/no-null */
+/* eslint-disable unicorn/no-useless-undefined */
 import { kindOf } from '@unshared/functions/kindOf'
 import { ValidationError } from '../createValidationError'
 
@@ -12,35 +14,51 @@ export function assertNull(value: unknown): asserts value is null {
   if (value === null) return
   throw new ValidationError({
     name: 'E_NOT_NULL',
-    message: `Expected value to be null but received: ${kindOf(value)}`,
+    message: 'Value is not null.',
+    context: { value, received: kindOf(value) },
   })
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  test('should pass if value is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const result = assertNull(null)
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should throw if value is an object', () => {
-    const shouldThrow = () => assertNull({})
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be null but received: object')
-  })
+  describe('assertNull', () => {
+    describe('pass', () => {
+      it('should pass if value is null', () => {
+        const result = assertNull(null)
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should throw if value is undefined', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    const shouldThrow = () => assertNull(undefined)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be null but received: undefined')
-  })
+    describe('fail', () => {
+      it('should throw if value is not null', () => {
+        const shouldThrow = () => assertNull({})
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_NULL',
+          message: 'Value is not null.',
+          context: { value: {}, received: 'object' },
+        })
+      })
 
-  test('should predicate a null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const value = null as unknown
-    assertNull(value)
-    expectTypeOf(value).toEqualTypeOf<null>()
+      it('should throw if value is undefined', () => {
+        const shouldThrow = () => assertNull(undefined)
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_NULL',
+          message: 'Value is not null.',
+          context: { value: undefined, received: 'undefined' },
+        })
+      })
+    })
+
+    describe('inference', () => {
+      it('should predicate value as null', () => {
+        const value: unknown = null
+        assertNull(value)
+        expectTypeOf(value).toEqualTypeOf<null>()
+      })
+    })
   })
 }

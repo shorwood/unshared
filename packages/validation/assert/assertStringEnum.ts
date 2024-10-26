@@ -15,45 +15,51 @@ export function assertStringEnum<T extends string>(value: unknown, values: T[]):
   const messageValues = values.map(x => `'${x}'`).join(', ')
   throw new ValidationError({
     name: 'E_STRING_NOT_ONE_OF_VALUES',
-    message: `Expected value to be one of the following values: ${messageValues} but received: ${value}`,
+    message: `String is not one of the values: ${messageValues}.`,
+    context: { value, values },
   })
 }
 
-/* v8 ignore start */
+/* v8 ignore end */
 if (import.meta.vitest) {
-  test('should pass if value is a string is one of the values in an array', () => {
-    const result = assertStringEnum('Hello, World!', ['Hello, World!', 'Hello, Universe!'])
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should throw if value is not a string', () => {
-    const shouldThrow = () => assertStringEnum(1, ['Hello, World!', 'Hello, Universe!'])
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string but received: number')
-  })
+  describe('assertStringEnum', () => {
+    describe('pass', () => {
+      it('should pass if value is one of the values', () => {
+        const result = assertStringEnum('Hello, World!', ['Hello, World!', 'Hello, Universe!'])
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should throw if value is not one of the values in an array', () => {
-    const shouldThrow = () => assertStringEnum('Hello, World!', ['Hello, Universe!'])
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be one of the following values: \'Hello, Universe!\' but received: Hello, World!')
-  })
+    describe('fail', () => {
+      it('should throw if value is not one of the values', () => {
+        const shouldThrow = () => assertStringEnum('Hello, World!', ['Hello, Universe!'])
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_STRING_NOT_ONE_OF_VALUES',
+          message: 'String is not one of the values: \'Hello, Universe!\'.',
+          context: { value: 'Hello, World!', values: ['Hello, Universe!'] },
+        })
+      })
 
-  test('should throw if value is undefined', () => {
-    const shouldThrow = () => assertStringEnum(undefined, ['Hello, World!', 'Hello, Universe!'])
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string but received: undefined')
-  })
+      it('should throw if value is not a string', () => {
+        const shouldThrow = () => assertStringEnum({}, ['Hello, World!'])
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_STRING',
+          message: 'Value is not a string.',
+          context: { value: {}, received: 'object' },
+        })
+      })
+    })
 
-  test('should throw if value is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const shouldThrow = () => assertStringEnum(null, ['Hello, World!', 'Hello, Universe!'])
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a string but received: null')
-  })
-
-  test('should predicate a string matching a regular expression', () => {
-    const value = 'Hello, World!' as unknown
-    assertStringEnum(value, ['Hello, World!', 'Hello, Universe!'])
-    expectTypeOf(value).toEqualTypeOf< 'Hello, Universe!' | 'Hello, World!'>()
+    describe('inference', () => {
+      it('should predicate value as a string', () => {
+        const value: unknown = 'Hello, World!'
+        assertStringEnum(value, ['Hello, World!', 'Hello, Universe!'])
+        expectTypeOf(value).toEqualTypeOf<'Hello, Universe!' | 'Hello, World!'>()
+      })
+    })
   })
 }

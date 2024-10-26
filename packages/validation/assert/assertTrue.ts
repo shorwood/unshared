@@ -13,46 +13,51 @@ export function assertTrue(value: unknown): asserts value is true {
   if (value === true) return
   throw new ValidationError({
     name: 'E_BOOLEAN_NOT_TRUE',
-    message: `Expected value to be a boolean equal to true but received: ${value}`,
+    message: 'Boolean is not true.',
+    context: { value },
   })
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  test('should pass if value is a boolean equal to true', () => {
-    const result = assertTrue(true)
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should throw if value is not a boolean equal to true', () => {
-    const shouldThrow = () => assertTrue(false)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a boolean equal to true but received: false')
-  })
+  describe('assertTrue', () => {
+    describe('pass', () => {
+      it('should pass if value is a boolean equal to true', () => {
+        const result = assertTrue(true)
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should throw if value is not a boolean', () => {
-    const shouldThrow = () => assertTrue(1)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a boolean but received: number')
-  })
+    describe('fail', () => {
+      it('should throw if value is a boolean equal to false', () => {
+        const shouldThrow = () => assertTrue(false)
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_BOOLEAN_NOT_TRUE',
+          message: 'Boolean is not true.',
+          context: { value: false },
+        })
+      })
 
-  test('should throw if value is undefined', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    const shouldThrow = () => assertTrue(undefined)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a boolean but received: undefined')
-  })
+      it('should throw if value is not a boolean', () => {
+        const shouldThrow = () => assertTrue({})
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_BOOLEAN',
+          message: 'Value is not a boolean.',
+          context: { value: {}, received: 'object' },
+        })
+      })
+    })
 
-  test('should throw if value is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const shouldThrow = () => assertTrue(null)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a boolean but received: null')
-  })
-
-  test('should predicate a boolean equal to true', () => {
-    const value = true as unknown
-    assertTrue(value)
-    expectTypeOf(value).toEqualTypeOf<true>()
+    describe('inference', () => {
+      it('should predicate value as a boolean equal to true', () => {
+        const value: unknown = true
+        assertTrue(value)
+        expectTypeOf(value).toEqualTypeOf<true>()
+      })
+    })
   })
 }

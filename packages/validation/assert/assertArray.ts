@@ -1,5 +1,7 @@
+/* eslint-disable unicorn/no-null */
+/* eslint-disable unicorn/no-useless-undefined */
 import { kindOf } from '@unshared/functions/kindOf'
-import { ValidationError } from '../createValidationError'
+import { createValidationError } from '../createValidationError'
 
 /**
  * Assert that a value is an array.
@@ -10,48 +12,69 @@ import { ValidationError } from '../createValidationError'
  */
 export function assertArray<T>(value: unknown): asserts value is T[] {
   if (Array.isArray(value)) return
-  throw new ValidationError({
+  throw createValidationError({
     name: 'E_NOT_ARRAY',
-    message: `Expected value to be an array but received: ${kindOf(value)}`,
+    message: 'Value is not an array.',
+    context: { value, received: kindOf(value) },
   })
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  test('should pass if value is an array', () => {
-    const result = assertArray([])
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should throw if value is not an array', () => {
-    const shouldThrow = () => assertArray({})
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be an array but received: object')
-  })
+  describe('assertArray', () => {
+    describe('pass', () => {
+      it('should pass if value is an array', () => {
+        const result = assertArray([])
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should throw if value is undefined', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    const shouldThrow = () => assertArray(undefined)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be an array but received: undefined')
-  })
+    describe('fail', () => {
+      it('should throw if value is an object', () => {
+        const shouldThrow = () => assertArray({})
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_ARRAY',
+          message: 'Value is not an array.',
+          context: { value: {}, received: 'object' },
+        })
+      })
 
-  test('should throw if value is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const shouldThrow = () => assertArray(null)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be an array but received: null')
-  })
+      it('should throw if value is undefined', () => {
+        const shouldThrow = () => assertArray(undefined)
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_ARRAY',
+          message: 'Value is not an array.',
+          context: { value: undefined, received: 'undefined' },
+        })
+      })
 
-  test('should predicate an array', () => {
-    const value = [] as unknown
-    assertArray(value)
-    expectTypeOf(value).toEqualTypeOf<unknown[]>()
-  })
+      it('should throw if value is null', () => {
+        const shouldThrow = () => assertArray(null)
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_ARRAY',
+          message: 'Value is not an array.',
+          context: { value: null, received: 'null' },
+        })
+      })
+    })
 
-  test('should predicate an array of string if a generic is provided', () => {
-    const value = [] as unknown
-    assertArray<string>(value)
-    expectTypeOf(value).toEqualTypeOf<string[]>()
+    describe('inference', () => {
+      it('should predicate an array', () => {
+        const value = [] as unknown
+        assertArray(value)
+        expectTypeOf(value).toEqualTypeOf<unknown[]>()
+      })
+
+      it('should predicate an array of string if a generic is provided', () => {
+        const value = [] as unknown
+        assertArray<string>(value)
+        expectTypeOf(value).toEqualTypeOf<string[]>()
+      })
+    })
   })
 }

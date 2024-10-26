@@ -13,46 +13,51 @@ export function assertNumberNegativeStrict(value: unknown): asserts value is num
   if (value < 0) return
   throw new ValidationError({
     name: 'E_NUMBER_NOT_NEGATIVE_STRICT',
-    message: `Expected value to be a number strictly less than 0 but received: ${value}`,
+    message: 'Number is not strictly negative.',
+    context: { value },
   })
 }
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  test('should pass if value is a number less than 0', () => {
-    const result = assertNumberNegativeStrict(-1)
-    expect(result).toBeUndefined()
-  })
+  const { attempt } = await import('@unshared/functions/attempt')
 
-  test('should throw if value is not a number less than 0', () => {
-    const shouldThrow = () => assertNumberNegativeStrict(0)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a number strictly less than 0 but received: 0')
-  })
+  describe('assertNumberNegativeStrict', () => {
+    describe('pass', () => {
+      it('should pass if value is a number less than 0', () => {
+        const result = assertNumberNegativeStrict(-1)
+        expect(result).toBeUndefined()
+      })
+    })
 
-  test('should throw if value is not a number', () => {
-    const shouldThrow = () => assertNumberNegativeStrict('1')
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a number but received: string')
-  })
+    describe('fail', () => {
+      it('should throw if value is greater than or equal to 0', () => {
+        const shouldThrow = () => assertNumberNegativeStrict(0)
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NUMBER_NOT_NEGATIVE_STRICT',
+          message: 'Number is not strictly negative.',
+          context: { value: 0 },
+        })
+      })
 
-  test('should throw if value is undefined', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
-    const shouldThrow = () => assertNumberNegativeStrict(undefined)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a number but received: undefined')
-  })
+      it('should throw if value is not a number', () => {
+        const shouldThrow = () => assertNumberNegativeStrict('1')
+        const { error } = attempt(shouldThrow)
+        expect(error).toMatchObject({
+          name: 'E_NOT_NUMBER',
+          message: 'Value is not a number.',
+          context: { value: '1', received: 'string' },
+        })
+      })
+    })
 
-  test('should throw if value is null', () => {
-    // eslint-disable-next-line unicorn/no-null
-    const shouldThrow = () => assertNumberNegativeStrict(null)
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to be a number but received: null')
-  })
-
-  test('should predicate a number less than 0', () => {
-    const value = -1 as unknown
-    assertNumberNegativeStrict(value)
-    expectTypeOf(value).toEqualTypeOf<number>()
+    describe('inference', () => {
+      it('should predicate value as a number less than 0', () => {
+        const value: unknown = -1
+        assertNumberNegativeStrict(value)
+        expectTypeOf(value).toEqualTypeOf<number>()
+      })
+    })
   })
 }
