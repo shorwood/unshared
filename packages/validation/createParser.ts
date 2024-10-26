@@ -5,7 +5,6 @@ import { tries } from '@unshared/functions/tries'
 import { createRuleChain } from './createRuleChain'
 import { createRuleSet } from './createRuleSet'
 import { createSchema } from './createSchema'
-import { ValidationError } from './createValidationError'
 
 /** A set of rules or a schema that can be used to validate a value. */
 export type ParserLike = [SchemaLike] | RuleChainLike | RuleSetLike
@@ -50,7 +49,8 @@ export function createParser<T extends ParserLike>(...rules: T): Parser<T> {
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  const { assertString, assertNumber, assertStringNumber, assertUndefined } = await import('./assert')
+  const { attempt } = await import('@unshared/functions/attempt')
+  const { assertString, assertNumber, assertStringNumber, assertUndefined } = await import('./assert/index')
 
   test('should create a parser function from a single rule', () => {
     const rule = createParser(assertStringNumber)
@@ -87,7 +87,24 @@ if (import.meta.vitest) {
   test('should throw a validation error if no rule passes', () => {
     const rule = createParser([assertStringNumber, Number], [assertNumber])
     const shouldThrow = () => rule('a')
-    expect(shouldThrow).toThrow(ValidationError)
-    expect(shouldThrow).toThrow('Expected value to match at least one rule chain in the set.')
+    const { error } = attempt(shouldThrow)
+    expect(error).toMatchObject({
+      name: 'E_RULE_SET_MISMATCH',
+      message: 'No rule set passed.',
+      context: {
+        causes: [
+          {
+            name: 'E_NOT_STRING_NUMBER',
+            message: 'String is not parseable as a number.',
+            context: { value: 'a' },
+          },
+          {
+            name: 'E_NOT_NUMBER',
+            message: 'Value is not a number.',
+            context: { value: 'a', received: 'string' },
+          },
+        ],
+      },
+    })
   })
 }

@@ -1,6 +1,5 @@
 import type { RuleLike, RuleResult } from './createRule'
 import { createRule } from './createRule'
-import { ValidationError } from './createValidationError'
 
 /** A tuple of `RuleLike` values that can be used to create a rule chain. */
 export type RuleChainLike = RuleLike[]
@@ -30,7 +29,7 @@ export type RuleChain<T extends RuleChainLike = RuleChainLike> = (value: unknown
  *
  * @param rules The `RuleLike` values to create the chain from.
  * @returns A rule chain that can be used to validate a value.
- * @example createRuleChain(isString, /\w+@example\.com/) // (value: unknown) => string
+ * @example createRuleChain(assertString, /\w+@example\.com/) // (value: unknown) => string
  */
 export function createRuleChain<T extends RuleChainLike>(...rules: Readonly<T>): RuleChain<T> {
   const compiled = rules.map(createRule)
@@ -42,22 +41,27 @@ export function createRuleChain<T extends RuleChainLike>(...rules: Readonly<T>):
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  const { assertString: isString } = await import('./assert')
+  const { assertString } = await import('./assert/assertString')
+  const { attempt } = await import('@unshared/functions/attempt')
 
   describe('rule chain', () => {
     it('should create a rule chain that parses and validates a string', () => {
-      const ruleChain = createRuleChain(isString, /\d+/, Number)
+      const ruleChain = createRuleChain(assertString, /\d+/, Number)
       const result = ruleChain('5')
       expect(result).toBe(5)
       expectTypeOf(result).toEqualTypeOf<number>()
       expectTypeOf(ruleChain).toEqualTypeOf<(value: unknown) => number>()
     })
 
-    it('should throw an error if the value is not matching one of the rules', () => {
-      const ruleChain = createRuleChain(isString, /\d+/, Number)
+    it('should throw the first error that occurs', () => {
+      const ruleChain = createRuleChain(assertString, /\d+/, Number)
       const shouldThrow = () => ruleChain('hello')
-      expect(shouldThrow).toThrow(ValidationError)
-      expect(shouldThrow).toThrow('Expected value to be a string matching the regular expression but received: hello')
+      const { error } = attempt(shouldThrow)
+      expect(error).toMatchObject({
+        name: 'E_STRING_NOT_MATCHING',
+        message: String.raw`String does not match the regular expression: /\d+/.`,
+        context: { value: 'hello', pattern: /\d+/ },
+      })
     })
   })
 

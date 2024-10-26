@@ -1,5 +1,7 @@
+/* eslint-disable unicorn/no-useless-undefined */
+/* eslint-disable unicorn/no-null */
 import type { ParserLike, ParserResult } from './createParser'
-import { assertArray } from './assert'
+import { assertArray } from './assert/assertArray'
 import { createParser } from './createParser'
 import { ValidationError } from './createValidationError'
 
@@ -22,24 +24,28 @@ export type ArrayParser<T extends ParserLike> =
 export function createArrayParser<T extends ParserLike>(...rules: T): ArrayParser<T> {
   const parse = createParser(...rules)
 
-  return (value: unknown) => {
-    assertArray(value)
+  return (array: unknown) => {
+    assertArray(array)
     let index = 0
     const result = []
-    for (const item of value) {
-      try {
-        const value = parse(item)
-        result.push(value)
-      }
+    const errors: Record<number, Error> = {}
 
-      catch (error) {
-        throw new ValidationError({
-          name: 'E_ARRAY_VALIDATION_ERROR',
-          message: `Expected value at index ${index} to pass validation but received an error.`,
-          cause: error,
-        })
-      }
+    // --- For each value in the array, parse the value. If the value passes
+    // --- validation, push the value to the result array. If the value fails
+    // --- validation, store the error in the errors object.
+    for (const value of array) {
+      try { result.push(parse(value)) }
+      catch (error) { errors[index] = error as Error }
       index++
+    }
+
+    // --- If there are errors, throw a validation error.
+    if (Object.keys(errors).length > 0) {
+      throw new ValidationError({
+        name: 'E_ARRAY_MISMATCH',
+        message: 'One or more values did not pass validation.',
+        context: errors,
+      })
     }
 
     return result
@@ -48,9 +54,10 @@ export function createArrayParser<T extends ParserLike>(...rules: T): ArrayParse
 
 /* v8 ignore start */
 if (import.meta.vitest) {
-  const { assertString, assertStringNumber } = await import('./assert')
+  const { attempt } = await import('@unshared/functions/attempt')
+  const { assertString, assertStringNumber } = await import('./assert/index')
 
-  describe('validate and parse an array of values', () => {
+  describe('pass', () => {
     it('should assert it is an array', () => {
       const parse = createArrayParser(assertString)
       const result = parse([])
@@ -90,35 +97,56 @@ if (import.meta.vitest) {
     })
   })
 
-  describe('error handling', () => {
+  describe('fail', () => {
+
+    it('should throw if one of the values does not pass validation', () => {
+      const parse = createArrayParser(assertString)
+      const shouldThrow = () => parse(['Hello', 5])
+      const { error } = attempt(shouldThrow)
+      expect(error).toMatchObject({
+        name: 'E_ARRAY_MISMATCH',
+        message: 'One or more values did not pass validation.',
+        context: {
+          1: {
+            name: 'E_NOT_STRING',
+            message: 'Value is not a string.',
+            context: { value: 5, received: 'number' },
+          },
+        },
+      })
+    })
+
     it('should throw if value is not an array', () => {
       const parse = createArrayParser(assertString)
       const shouldThrow = () => parse({})
-      expect(shouldThrow).toThrow(ValidationError)
-      expect(shouldThrow).toThrow('Expected value to be an array but received: object')
+      const { error } = attempt(shouldThrow)
+      expect(error).toMatchObject({
+        name: 'E_NOT_ARRAY',
+        message: 'Value is not an array.',
+        context: { value: {}, received: 'object' },
+      })
     })
 
     it('should throw if value is undefined', () => {
       const parse = createArrayParser(assertString)
-      // eslint-disable-next-line unicorn/no-useless-undefined
       const shouldThrow = () => parse(undefined)
-      expect(shouldThrow).toThrow(ValidationError)
-      expect(shouldThrow).toThrow('Expected value to be an array but received: undefined')
+      const { error } = attempt(shouldThrow)
+      expect(error).toMatchObject({
+        name: 'E_NOT_ARRAY',
+        message: 'Value is not an array.',
+        context: { value: undefined, received: 'undefined' },
+      })
     })
 
     it('should throw if value is null', () => {
       const parse = createArrayParser(assertString)
-      // eslint-disable-next-line unicorn/no-null
       const shouldThrow = () => parse(null)
-      expect(shouldThrow).toThrow(ValidationError)
-      expect(shouldThrow).toThrow('Expected value to be an array but received: null')
-    })
-
-    it('should throw if value at index fails validation', () => {
-      const parse = createArrayParser(assertString)
-      const shouldThrow = () => parse(['Hello, World!', 5])
-      expect(shouldThrow).toThrow(ValidationError)
-      expect(shouldThrow).toThrow('Expected value at index 1 to pass validation but received an error.')
+      const { error } = attempt(shouldThrow)
+      expect(error).toMatchObject({
+        name: 'E_NOT_ARRAY',
+        message: 'Value is not an array.',
+        context: { value: null, received: 'null' },
+      })
     })
   })
 
