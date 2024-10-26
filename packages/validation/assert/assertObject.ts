@@ -4,19 +4,17 @@ import { kindOf } from '@unshared/functions/kindOf'
 import { ValidationError } from '../createValidationError'
 
 /**
- * Assert that a value is an object.
+ * Assert that a value is loosely an object. This means that the value is not `null`
+ * and that it is an instance of some class that inherits from `Object`.
  *
  * @param value The value to assert as an object.
- * @throws `ValidationError` if the value is not an object.
- * @example assertObject({}) // void
  */
 export function assertObject<T extends ObjectLike>(value: unknown): asserts value is T {
-  const kind = kindOf(value)
-  if (kind === 'object') return
+  if (typeof value === 'object' && value !== null) return
   throw new ValidationError({
     name: 'E_NOT_OBJECT',
     message: 'Value is not an object.',
-    context: { value, received: kind },
+    context: { value, received: kindOf(value) },
   })
 }
 
@@ -24,25 +22,25 @@ export function assertObject<T extends ObjectLike>(value: unknown): asserts valu
 if (import.meta.vitest) {
   const { attempt } = await import('@unshared/functions/attempt')
 
-  describe('assertObject', () => {
+  describe('assertObjectLike', () => {
     describe('pass', () => {
-      it('should pass if value is an object', () => {
+      it('should pass if value is an object-like', () => {
         const result = assertObject({})
+        expect(result).toBeUndefined()
+      })
+
+      it('should pass if value is an array', () => {
+        const result = assertObject([])
+        expect(result).toBeUndefined()
+      })
+
+      it('should pass if value is an instance of a class', () => {
+        const result = assertObject(new Date())
         expect(result).toBeUndefined()
       })
     })
 
     describe('fail', () => {
-      it('should throw if value is not an object', () => {
-        const shouldThrow = () => assertObject([])
-        const { error } = attempt(shouldThrow)
-        expect(error).toMatchObject({
-          name: 'E_NOT_OBJECT',
-          message: 'Value is not an object.',
-          context: { value: [], received: 'Array' },
-        })
-      })
-
       it('should throw if value is null', () => {
         const shouldThrow = () => assertObject(null)
         const { error } = attempt(shouldThrow)
@@ -55,7 +53,7 @@ if (import.meta.vitest) {
     })
 
     describe('inference', () => {
-      it('should predicate value as an object', () => {
+      it('should predicate value as an object-like', () => {
         const value: unknown = {}
         assertObject(value)
         expectTypeOf(value).toEqualTypeOf<ObjectLike>()
