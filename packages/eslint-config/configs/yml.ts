@@ -8,6 +8,7 @@ import pluginYml from 'eslint-plugin-yml'
 export function yml(): Linter.Config[] {
   return [
     ...pluginYml.configs['flat/standard'],
+    ...pluginYml.configs['flat/recommended'],
     {
       rules: {
 
@@ -17,9 +18,13 @@ export function yml(): Linter.Config[] {
           prefer: 'single',
         }],
 
-        // --- Strict syntax and style.
+        // --- Remove trailing zeros in numbers.
         'yml/no-trailing-zeros': 'error',
+
+        // --- Prevent empty keys.
         'yml/require-string-key': 'error',
+
+        // --- Prevent empty values or weird newlines in mappings.
         'yml/block-mapping-colon-indicator-newline': 'error',
 
         // --- No more than one empty line.
