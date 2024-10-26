@@ -1,6 +1,10 @@
 import type { Linter } from 'eslint'
 
-export function jsonPackage(): Linter.FlatConfig[] {
+/**
+ * @see https://ota-meshi.github.io/eslint-plugin-jsonc/rules/sort-keys.html
+ * @returns The ESLint configuration for strandardizing the `package.json` file.
+ */
+export function jsonPackage(): Linter.Config[] {
   return [
     {
       files: [
