@@ -7,14 +7,14 @@
  * @returns The upper case string.
  * @example toUpperCase('foo_bar_1') // 'FOO_BAR_1'
  */
-export function toUpperCase<S extends string>(value: S): Uppercase<S> {
+export function toUppercase<S extends string>(value: S): Uppercase<S> {
   return value.toUpperCase() as Uppercase<S>
 }
 
 /* v8 ignore next */
 if (import.meta.vitest) {
   test('should convert a string to upper case', () => {
-    const result = toUpperCase('foo_bar_1')
+    const result = toUppercase('foo_bar_1')
     expect(result).toBe('FOO_BAR_1')
     expectTypeOf(result).toEqualTypeOf<'FOO_BAR_1'>()
   })

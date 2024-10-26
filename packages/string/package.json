@@ -156,10 +156,10 @@
       "types": "./dist/toKebabCase.d.ts",
       "import": "./dist/toKebabCase.js"
     },
-    "./toLowerCase": {
-      "require": "./dist/toLowerCase.cjs",
-      "types": "./dist/toLowerCase.d.ts",
-      "import": "./dist/toLowerCase.js"
+    "./toLowercase": {
+      "require": "./dist/toLowercase.cjs",
+      "types": "./dist/toLowercase.d.ts",
+      "import": "./dist/toLowercase.js"
     },
     "./toPascalCase": {
       "require": "./dist/toPascalCase.cjs",
@@ -196,10 +196,10 @@
       "types": "./dist/toUncapitalized.d.ts",
       "import": "./dist/toUncapitalized.js"
     },
-    "./toUpperCase": {
-      "require": "./dist/toUpperCase.cjs",
-      "types": "./dist/toUpperCase.d.ts",
-      "import": "./dist/toUpperCase.js"
+    "./toUppercase": {
+      "require": "./dist/toUppercase.cjs",
+      "types": "./dist/toUppercase.d.ts",
+      "import": "./dist/toUppercase.js"
     },
     "./tokenize": {
       "require": "./dist/tokenize.cjs",
