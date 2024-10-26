@@ -12,7 +12,7 @@ import { cwd } from 'node:process'
 export async function getGitHash(path = cwd(), name = 'HEAD'): Promise<string> {
   return await new Promise<string>((resolve, reject) => {
     execFile(
-      'git',
+      '/usr/bin/git',
       ['-C', path, 'rev-parse', name],
       { encoding: 'utf8' },
       (error, stdout) => (error ? reject(error as Error) : resolve(stdout.trim())),

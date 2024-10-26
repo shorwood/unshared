@@ -14,11 +14,11 @@ import { COMMIT_PROMPT } from './commitPrompt'
  * @example commit()
  */
 export async function commit(input: string, apiKey: string) {
-  const diff = execFileSync('git', ['diff', '--cached', '--staged'], { encoding: 'utf8' })
-  const diffPaths = execFileSync('git', ['diff', '--name-only', '--cached', '--staged'], { encoding: 'utf8' })
-  const diffStat = execFileSync('git', ['diff', '--stat', '--cached', '--staged'], { encoding: 'utf8' })
-  const lastCommits = execFileSync('git', ['log', '-2', '--pretty=%B'], { encoding: 'utf8' })
-  const branchName = execFileSync('git', ['branch', '--show-current'], { encoding: 'utf8' })
+  const diff = execFileSync('/usr/bin/git', ['diff', '--cached', '--staged'], { encoding: 'utf8' })
+  const diffPaths = execFileSync('/usr/bin/git', ['diff', '--name-only', '--cached', '--staged'], { encoding: 'utf8' })
+  const diffStat = execFileSync('/usr/bin/git', ['diff', '--stat', '--cached', '--staged'], { encoding: 'utf8' })
+  const lastCommits = execFileSync('/usr/bin/git', ['log', '-2', '--pretty=%B'], { encoding: 'utf8' })
+  const branchName = execFileSync('/usr/bin/git', ['branch', '--show-current'], { encoding: 'utf8' })
   const fileContents = diffPaths.split('\n').filter(Boolean).filter(existsSync).map(path => readFileSync(path, 'utf8'))
 
   const openai = new OpenAI({ apiKey })
@@ -69,7 +69,7 @@ export async function commit(input: string, apiKey: string) {
   // --- If `yes`, commit the staged changes with the generated commit message.
   if (result) {
     const completion = `${completionTokens.join('').trim()}\n`
-    const git = spawn('git', ['commit', '-m', completion], { stdio: 'inherit' })
+    const git = spawn('/usr/bin/git', ['commit', '-m', completion], { stdio: 'inherit' })
     await new Promise(resolve => git.on('exit', resolve))
   }
 

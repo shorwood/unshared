@@ -12,7 +12,7 @@ import { cwd } from 'node:process'
 export async function getGitRemoteUrl(path = cwd(), name = 'origin'): Promise<string> {
   return await new Promise<string>((resolve, reject) => {
     execFile(
-      'git',
+      '/usr/bin/git',
       ['-C', path, 'config', '--get', `remote.${name}.url`],
       { encoding: 'utf8' },
       (error, stdout) => (error ? reject(error as Error) : resolve(stdout.trim())),
