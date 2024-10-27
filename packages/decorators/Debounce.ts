@@ -35,6 +35,7 @@ export function Debounce<T extends Function<void>>(delay: number): MethodDecorat
 }
 
 /* v8 ignore start */
+/* eslint-disable sonarjs/new-cap */
 if (import.meta.vitest) {
   beforeAll(() => {
     vi.useFakeTimers()

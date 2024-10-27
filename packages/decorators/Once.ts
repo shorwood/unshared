@@ -28,8 +28,10 @@ export function Once<T extends Function>(): MethodDecorator<T> {
 }
 
 /* v8 ignore start */
-
+/* eslint-disable sonarjs/new-cap */
 if (import.meta.vitest) {
+  const { randomInt } = await import('node:crypto')
+
   test('should return the same value if no arguments are passed', () => {
     const fn = vi.fn(Math.random)
     class MyClass { @Once() getId() { return fn() } }
@@ -42,7 +44,7 @@ if (import.meta.vitest) {
   })
 
   test('should return the same values if different arguments are passed', () => {
-    const fn = vi.fn((n = 0) => (n as number) + Math.random())
+    const fn = vi.fn((n = 0) => (n as number) + randomInt(0, 1e6))
     class MyClass { @Once() getId(n: number) { return fn(n) } }
     const instance = new MyClass()
     const id1 = instance.getId(1)
@@ -64,7 +66,7 @@ if (import.meta.vitest) {
   })
 
   test('should have different results for different instances', () => {
-    class MyClass { @Once() getValue() { return Math.random() } }
+    class MyClass { @Once() getValue() { return randomInt(0, 1e6) } }
     const instance1 = new MyClass()
     const instance2 = new MyClass()
     const result1 = instance1.getValue()
