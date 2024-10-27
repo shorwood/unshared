@@ -101,21 +101,6 @@
       "types": "./dist/encodeUtf8.d.ts",
       "import": "./dist/encodeUtf8.js"
     },
-    "./randomFloat": {
-      "require": "./dist/randomFloat.cjs",
-      "types": "./dist/randomFloat.d.ts",
-      "import": "./dist/randomFloat.js"
-    },
-    "./randomInt": {
-      "require": "./dist/randomInt.cjs",
-      "types": "./dist/randomInt.d.ts",
-      "import": "./dist/randomInt.js"
-    },
-    "./randomString": {
-      "require": "./dist/randomString.cjs",
-      "types": "./dist/randomString.d.ts",
-      "import": "./dist/randomString.js"
-    },
     "./setBit": {
       "require": "./dist/setBit.cjs",
       "types": "./dist/setBit.d.ts",
