@@ -1,72 +1,45 @@
-import type { ESLint, Linter } from 'eslint'
-import type { ESLintConfigOptions } from './all'
+import type { Linter } from 'eslint'
 import nodePlugin from 'eslint-plugin-n'
 
-export function node(options: ESLintConfigOptions): Linter.FlatConfig[] {
+export function node(): Linter.Config[] {
   return [
+    nodePlugin.configs['flat/recommended'],
     {
-      plugins: {
-        n: nodePlugin as ESLint.Plugin,
+      settings: {
+        node: {
+          version: '>=20.0.0',
+        },
       },
       rules: {
-        ...nodePlugin.configs.recommended.rules,
 
-        /**
-         * Disallow the use of extraneous imports. This rule helps prevent the
-         * use of third-party modules that are not listed in the project's
-         * dependencies.
-         *
-         * @see https://github.com/eslint-community/eslint-plugin-n/blob/HEAD/docs/rules/no-extraneous-import.md
-         */
-        'n/no-extraneous-import': 'error',
-
-        /**
-         * Disable the no-missing-import as module resolution is already checked
-         * by other tools and IDEs extensively. This rule is redundant.
-         *
-         * @see https://github.com/eslint-community/eslint-plugin-n/blob/HEAD/docs/rules/no-missing-import.md
-         */
+        // --- Redundant with TypeScript module resolution.
         'n/no-missing-import': 'off',
         'n/no-missing-require': 'off',
         'n/no-unpublished-import': 'off',
 
-        /**
-         * Enfore the use of the asyncrounous version of the `fs` and `dns` APIs.
-         *
-         * @see https://github.com/eslint-community/eslint-plugin-n/blob/HEAD/docs/rules/no-sync.md
-         * @see https://github.com/eslint-community/eslint-plugin-n/blob/HEAD/docs/rules/prefer-promises/fs.md
-         * @see https://github.com/eslint-community/eslint-plugin-n/blob/HEAD/docs/rules/prefer-promises/dns.md
-         */
-        'n/no-sync': 'off',
-        'n/prefer-promises/fs': 'error',
-        'n/prefer-promises/dns': 'error',
+        // --- Enforce async functions over synchronous functions.
+        'n/no-sync': ['error', { allowAtRootLevel: true }],
 
-        /**
-         * Allow the use of features up to Node.js version 20. This will allow
-         * the use of newer ECMAScript features and Node.js APIs.
-         *
-         * @see https://github.com/eslint-community/eslint-plugin-n/tree/master/docs/rules
-         */
+        // --- Enforce the use of ECMAScript features.
         'n/no-unsupported-features/es-syntax': 'error',
         'n/no-unsupported-features/es-builtins': 'error',
         'n/no-unsupported-features/node-builtins': 'error',
 
-        /**
-         * Prepend the `node:` prefix to all Node.js core modules. This helps
-         * identify the module as a Node.js core module and not a third-party
-         * module.
-         *
-         * @see https://github.com/eslint-community/eslint-plugin-n/blob/HEAD/docs/rules/prefer-node-protocol.md
-         */
+        // --- Prefer the use of global objects over built-in modules.
+        'n/prefer-global/buffer': 'error',
+        'n/prefer-global/console': 'error',
+        'n/prefer-global/process': 'error',
+        'n/prefer-global/text-decoder': 'error',
+        'n/prefer-global/text-encoder': 'error',
+        'n/prefer-global/url': 'error',
+        'n/prefer-global/url-search-params': 'error',
+
+        // --- Prefer the use of the `node:` protocol for built-in modules.
         'n/prefer-node-protocol': 'error',
 
-        /** User-defined rules */
-        ...options.rules,
-      },
-      settings: {
-        node: {
-          version: '>=22.1.0',
-        },
+        // --- Prefer the use of promises over callbacks.
+        'n/prefer-promises/fs': 'error',
+        'n/prefer-promises/dns': 'error',
       },
     },
   ]
