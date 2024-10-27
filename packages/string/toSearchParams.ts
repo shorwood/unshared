@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable unicorn/prevent-abbreviations */
 import type { MaybeArray } from '@unshared/types'
 
@@ -22,7 +21,7 @@ export interface SearchParamsOptions {
    *
    * @default 'brackets'
    */
-  formatArray?: 'brackets' | 'comma' | 'flat' | 'indices' | 'path'
+  arrayFormat?: 'brackets' | 'comma' | 'flat' | 'indices' | 'path'
 }
 
 /**
@@ -34,20 +33,19 @@ export interface SearchParamsOptions {
  * @returns The `URLSearchParams` object.
  */
 export function toSearchParams(object: SearchParamsObject, options: SearchParamsOptions = {}): URLSearchParams {
-  const { formatArray = 'brackets' } = options
+  const { arrayFormat = 'brackets' } = options
   const search = new URLSearchParams()
-
-  // --- Convert all entries to query string parameters.
-  for (const [key, value] of Object.entries(object)) {
+  for (const key in object) {
+    const value = object[key]
     if (value === undefined) continue
 
     // --- Convert arrays based on the format.
     if (Array.isArray(value)) {
-      if (formatArray === 'brackets') value.forEach(v => search.append(`${key}[]`, v.toString()))
-      else if (formatArray === 'indices') value.forEach((v, i) => search.append(`${key}[${i}]`, v.toString()))
-      else if (formatArray === 'comma') search.append(key, value.join(','))
-      else if (formatArray === 'path') value.forEach((v, i) => search.append(`${key}.${i}`, v.toString()))
-      else if (formatArray === 'flat') value.forEach(v => search.append(key, v.toString()))
+      if (arrayFormat === 'brackets') for (const v of value) search.append(`${key}[]`, String(v))
+      else if (arrayFormat === 'indices') for (const [i, v] of value.entries()) search.append(`${key}[${i}]`, String(v))
+      else if (arrayFormat === 'comma') search.append(key, value.join(','))
+      else if (arrayFormat === 'path') for (const [i, v] of value.entries()) search.append(`${key}.${i}`, String(v))
+      else if (arrayFormat === 'flat') for (const v of value) search.append(key, String(v))
     }
 
     // --- Convert all values to strings.
@@ -103,7 +101,7 @@ if (import.meta.vitest) {
       expect(result).toBe('key1%5B%5D=value1&key2%5B%5D=value2')
     })
 
-    it('should convert object with multiple array properties to query string', () => {
+    it('should convert object with multiple array properties to query string with brackets', () => {
       const result = toSearchParams({ key: ['value1', 'value2'] }).toString()
       expect(result).toBe('key%5B%5D=value1&key%5B%5D=value2')
     })
@@ -111,68 +109,68 @@ if (import.meta.vitest) {
 
   describe('indices', () => {
     it('should convert object with a single array property to query string', () => {
-      const result = toSearchParams({ key: ['value'] }, { formatArray: 'indices' }).toString()
+      const result = toSearchParams({ key: ['value'] }, { arrayFormat: 'indices' }).toString()
       expect(result).toBe('key%5B0%5D=value')
     })
 
     it('should convert object with multiple array properties to query string', () => {
-      const result = toSearchParams({ key1: ['value1'], key2: ['value2'] }, { formatArray: 'indices' }).toString()
+      const result = toSearchParams({ key1: ['value1'], key2: ['value2'] }, { arrayFormat: 'indices' }).toString()
       expect(result).toBe('key1%5B0%5D=value1&key2%5B0%5D=value2')
     })
 
-    it('should convert object with multiple array properties to query string', () => {
-      const result = toSearchParams({ key: ['value1', 'value2'] }, { formatArray: 'indices' }).toString()
+    it('should convert object with multiple array properties to query string with indices', () => {
+      const result = toSearchParams({ key: ['value1', 'value2'] }, { arrayFormat: 'indices' }).toString()
       expect(result).toBe('key%5B0%5D=value1&key%5B1%5D=value2')
     })
   })
 
   describe('comma', () => {
     it('should convert object with a single array property to query string', () => {
-      const result = toSearchParams({ key: ['value'] }, { formatArray: 'comma' }).toString()
+      const result = toSearchParams({ key: ['value'] }, { arrayFormat: 'comma' }).toString()
       expect(result).toBe('key=value')
     })
 
     it('should convert object with multiple array properties to query string', () => {
-      const result = toSearchParams({ key1: ['value1'], key2: ['value2'] }, { formatArray: 'comma' }).toString()
+      const result = toSearchParams({ key1: ['value1'], key2: ['value2'] }, { arrayFormat: 'comma' }).toString()
       expect(result).toBe('key1=value1&key2=value2')
     })
 
-    it('should convert object with multiple array properties to query string', () => {
-      const result = toSearchParams({ key: ['value1', 'value2'] }, { formatArray: 'comma' }).toString()
+    it('should convert object with multiple array properties to query string with comma', () => {
+      const result = toSearchParams({ key: ['value1', 'value2'] }, { arrayFormat: 'comma' }).toString()
       expect(result).toBe('key=value1%2Cvalue2')
     })
   })
 
   describe('path', () => {
     it('should convert object with a single array property to query string', () => {
-      const result = toSearchParams({ key: ['value'] }, { formatArray: 'path' }).toString()
+      const result = toSearchParams({ key: ['value'] }, { arrayFormat: 'path' }).toString()
       expect(result).toBe('key.0=value')
     })
 
     it('should convert object with multiple array properties to query string', () => {
-      const result = toSearchParams({ key1: ['value1'], key2: ['value2'] }, { formatArray: 'path' }).toString()
+      const result = toSearchParams({ key1: ['value1'], key2: ['value2'] }, { arrayFormat: 'path' }).toString()
       expect(result).toBe('key1.0=value1&key2.0=value2')
     })
 
-    it('should convert object with multiple array properties to query string', () => {
-      const result = toSearchParams({ key: ['value1', 'value2'] }, { formatArray: 'path' }).toString()
+    it('should convert object with multiple array properties to query string with path', () => {
+      const result = toSearchParams({ key: ['value1', 'value2'] }, { arrayFormat: 'path' }).toString()
       expect(result).toBe('key.0=value1&key.1=value2')
     })
   })
 
   describe('flat', () => {
     it('should convert object with a single array property to query string', () => {
-      const result = toSearchParams({ key: ['value'] }, { formatArray: 'flat' }).toString()
+      const result = toSearchParams({ key: ['value'] }, { arrayFormat: 'flat' }).toString()
       expect(result).toBe('key=value')
     })
 
     it('should convert object with multiple array properties to query string', () => {
-      const result = toSearchParams({ key1: ['value1'], key2: ['value2'] }, { formatArray: 'flat' }).toString()
+      const result = toSearchParams({ key1: ['value1'], key2: ['value2'] }, { arrayFormat: 'flat' }).toString()
       expect(result).toBe('key1=value1&key2=value2')
     })
 
-    it('should convert object with multiple array properties to query string', () => {
-      const result = toSearchParams({ key: ['value1', 'value2'] }, { formatArray: 'flat' }).toString()
+    it('should convert object with multiple array properties to query string with flat', () => {
+      const result = toSearchParams({ key: ['value1', 'value2'] }, { arrayFormat: 'flat' }).toString()
       expect(result).toBe('key=value1&key=value2')
     })
   })
