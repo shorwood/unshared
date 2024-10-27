@@ -26,8 +26,7 @@ export function dedent(string: string): string {
   return lines
     .map(line => line.slice(indent))
     .join('\n')
-    .trimStart()
-    .replace(/\n+$/, '\n')
+    .trim()
 }
 
 /* v8 ignore start */
@@ -59,7 +58,7 @@ if (import.meta.vitest) {
 
   test('should remove extra newlines at the end of the string', () => {
     const string = dedent('\tHello\n\tWorld\n\n\n')
-    expect(string).toBe('Hello\nWorld\n')
+    expect(string).toBe('Hello\nWorld')
   })
 
   test('should remove extra newlines at the beginning of the string', () => {
