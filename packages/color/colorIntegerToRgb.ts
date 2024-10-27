@@ -27,7 +27,7 @@ export function colorIntegerToRgb(color: number, format: RGBBinaryFormat = 'rgba
   }
 
   // --- Return the RGB object.
-  return createColorRgb({ a, b, g, r })
+  return createColorRgb({ r, g, b, a })
 }
 
 /** v8 ignore start */

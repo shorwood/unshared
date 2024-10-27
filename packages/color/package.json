@@ -78,6 +78,7 @@
     "LICENSE.md"
   ],
   "dependencies": {
-    "@unshared/math": "workspace:*"
+    "@unshared/math": "workspace:*",
+    "@unshared/types": "workspace:*"
   }
 }

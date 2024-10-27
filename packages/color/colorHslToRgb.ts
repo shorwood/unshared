@@ -22,7 +22,7 @@ export function colorHslToRgb(hsl: Partial<HSL>): RGB {
   const m = l - c / 2
 
   // --- Handle different color ranges
-  let rgb: RGB = { a, b: 0, g: 0, r: 0 }
+  let rgb: RGB
   if (h < 60) rgb = { a, b: 0, g: x, r: c }
   else if (h < 120) rgb = { a, b: 0, g: c, r: x }
   else if (h < 180) rgb = { a, b: x, g: c, r: 0 }

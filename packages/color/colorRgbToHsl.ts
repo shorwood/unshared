@@ -29,20 +29,20 @@ export function colorRgbToHsl(rgb: Partial<RGB>): HSL {
   const l = (max + min) / 2
 
   // --- Compute Hue.
-  let h = 0
+  let h: number
   if (max === min) h = 0
   else if (r === max) h = (60 * ((g - b) / delta)) % 360
   else if (g === max) h = (60 * ((b - r) / delta) + 120)
-  else if (b === max) h = (60 * ((r - g) / delta) + 240)
+  else h = (60 * ((r - g) / delta) + 240)
 
   // --- Compute saturation.
-  let s = 0
+  let s: number
   if (max === min) s = 0
   else if (l <= 0.5) s = delta / (max + min)
   else s = delta / (2 - max - min)
 
   // --- Return HSLA object.
-  return createColorHsl({ a, h, l, s })
+  return createColorHsl({ h, s, l, a })
 }
 
 /** v8 ignore start */
