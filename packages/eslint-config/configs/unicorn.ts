@@ -1,102 +1,41 @@
 import type { Linter } from 'eslint'
-import type { ESLintConfigOptions } from './all'
 import unicornPlugin from 'eslint-plugin-unicorn'
 
-const UNICORN_RECOMMENDED_RULES = unicornPlugin.configs.recommended.rules
-
-export function unicorn(options: ESLintConfigOptions): Linter.FlatConfig[] {
+/**
+ * @returns ESLint Config for Unicorn.
+ * @see https://github.com/sindresorhus/eslint-plugin-unicorn
+ */
+export function unicorn(): Linter.Config[] {
   return [
+    unicornPlugin.configs['flat/recommended'],
     {
-      plugins: {
-        unicorn: unicornPlugin,
-      },
       rules: {
-        ...UNICORN_RECOMMENDED_RULES,
 
-        /**
-         * Improve regexes by making them shorter, consistent, and safer. This rule
-         * aims to improve readability and consistency of regexes while also
-         * mitigating regex denial of service attacks by disallowing potentially
-         * catastrophic backtracking.
-         *
-         * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/better-regex.md
-         */
-        'unicorn/better-regex': 'error',
-
-        /**
-         * Enforce the catch clause parameter name to be named `error`. This rule
-         * aims to enforce a consistent parameter name in catch clauses. The name
-         * `error` is the most commonly used name for the parameter that is passed
-         * to the catch clause.
-         *
-         * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/catch-error-name.md
-         */
-        'unicorn/catch-error-name': ['error', {
-          name: 'error',
-        }],
-
-        /**
-         * Enforce the use of camelCase or PascalCase when naming folders, files and
-         * variables. This rule aims to enforce a consistent naming convention for
-         * filenames, directory names, and variable names.
-         *
-         * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/filename-case.md
-         */
-        'unicorn/filename-case': ['error', {
-          cases: {
-            camelCase: true,
-            pascalCase: true,
-          },
-          ignore: [
-            '^[A-Z]+(.md)?$',
-          ],
-        }],
-
-        /**
-         * Disable the recommended import style rules. We want to be able to use both
-         * named and default imports in our codebase.
-         *
-         * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/import-style.md
-         */
+        // --- Allow any kind of import style.
         'unicorn/import-style': 'off',
 
-        /**
-         * Disallow unsafe regular expressions. Regular expressions can be unsafe
-         * when they are too complex and can cause catastrophic backtracking. This
-         * rule disallows regular expressions that can lead to catastrophic
-         *
-         * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/no-unsafe-regex.md
-         */
-        'unicorn/no-unsafe-regex': 'error',
+        // --- Improve regexes by making them shorter, consistent, and safer.
+        'unicorn/better-regex': 'error',
 
-        /**
-         * Enforces a convention of grouping digits using numeric separators.
-         * Long numbers can become really hard to read, so cutting it into groups
-         * of digits, separated with a _, is important to keep your code clear.
-         *
-         * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/numeric-separators-style.md
-         */
+        // --- Use destructured variables over properties.
+        'unicorn/consistent-destructuring': 'error',
+
+        // --- Enforce consistent function scoping except for arrow functions.
+        'unicorn/consistent-function-scoping': ['error', { checkArrowFunctions: false }],
+
+        // --- Enforce camelCase & PascalCase in filenames. Exepct non TS/JS files.
+        'unicorn/filename-case': ['error', {
+          multipleFileExtensions: false,
+          cases: { camelCase: true, pascalCase: true },
+          ignore: ['pnpm-workspace.yaml'],
+        }],
+
+        // --- Improve readability by using numeric separators.
         'unicorn/numeric-separators-style': ['error', {
           onlyIfContainsSeparator: true,
         }],
 
-        'unicorn/number-literal-case': 'error',
-        'unicorn/consistent-function-scoping': 'off',
-        'unicorn/error-message': 'error',
-        'unicorn/escape-case': 'error',
-        'unicorn/no-array-callback-reference': 'off',
-        'unicorn/no-array-for-each': 'off',
-        'unicorn/no-array-instanceof': 'error',
-        'unicorn/no-new-buffer': 'error',
-        'unicorn/no-static-only-class': 'off',
-        'unicorn/prefer-code-point': 'off',
-        'unicorn/prefer-exponentiation-operator': 'error',
-        'unicorn/prefer-includes': 'error',
-        'unicorn/prefer-module': 'off',
-        'unicorn/prefer-starts-ends-with': 'error',
-        'unicorn/prefer-switch': 'off',
-        'unicorn/prefer-text-content': 'error',
-        'unicorn/prefer-type-error': 'error',
+        // --- Enforce long variable names when they are meaningful.
         'unicorn/prevent-abbreviations': ['error', {
           allowList: {
             args: true,
@@ -115,11 +54,7 @@ export function unicorn(options: ESLintConfigOptions): Linter.FlatConfig[] {
             z: true,
           },
         }],
-        'unicorn/throw-new-error': 'error',
       },
-
-      /** User-defined rules */
-      ...options.rules,
     },
   ]
 }
