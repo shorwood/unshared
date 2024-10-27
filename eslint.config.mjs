@@ -1,6 +1,6 @@
-import unsharedConfig from './packages/eslint-config/dist/index.js'
+import unshared from '@unshared/eslint-config'
 
-export default unsharedConfig({
+export default unshared({
   tsConfigPath: [
     './tsconfig.json',
     './examples/nuxt/tsconfig.json',
