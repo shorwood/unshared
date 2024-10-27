@@ -91,21 +91,6 @@
       "types": "./dist/parseBoolean.d.ts",
       "import": "./dist/parseBoolean.js"
     },
-    "./parseDistinguishedName": {
-      "require": "./dist/parseDistinguishedName.cjs",
-      "types": "./dist/parseDistinguishedName.d.ts",
-      "import": "./dist/parseDistinguishedName.js"
-    },
-    "./parseJson": {
-      "require": "./dist/parseJson.cjs",
-      "types": "./dist/parseJson.d.ts",
-      "import": "./dist/parseJson.js"
-    },
-    "./parseUri": {
-      "require": "./dist/parseUri.cjs",
-      "types": "./dist/parseUri.d.ts",
-      "import": "./dist/parseUri.js"
-    },
     "./removeTrailingQuotes": {
       "require": "./dist/removeTrailingQuotes.cjs",
       "types": "./dist/removeTrailingQuotes.d.ts",
