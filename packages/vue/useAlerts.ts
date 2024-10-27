@@ -28,6 +28,7 @@ type Dismiss = () => void
  */
 export const useAlerts = createSharedComposable(() => {
   const alerts = reactive([]) as Alert[]
+  let id = 0
 
   // --- Dismiss an alert.
   const dismiss = (alert: Alert) => {
@@ -37,7 +38,7 @@ export const useAlerts = createSharedComposable(() => {
 
   // --- Create an alert.
   const alert = (alert: Alert): Dismiss => {
-    alert.id = alert.id ?? Math.random().toString(36).slice(2, 11)
+    alert.id = alert.id ?? String(id++)
     alerts.push(alert)
     const dismissThisAlert = () => dismiss(alert)
     setTimeout(dismissThisAlert, alert.duration ?? 5000)
@@ -140,7 +141,7 @@ if (import.meta.vitest) {
         type: 'info',
       })
       expect(alerts).toMatchObject([{
-        id: expect.stringMatching(/[\da-z]{9}/) as string,
+        id: expect.stringMatching(/\d+/) as string,
         text: 'This is an alert',
         type: 'info',
       }])
@@ -166,7 +167,7 @@ if (import.meta.vitest) {
       const { alerts, success } = useAlerts()
       success('This is a success')
       expect(alerts).toMatchObject([{
-        id: expect.stringMatching(/[\da-z]{9}/) as string,
+        id: expect.stringMatching(/\d+/) as string,
         text: 'This is a success',
         type: 'success',
       }])
@@ -176,7 +177,7 @@ if (import.meta.vitest) {
       const { alerts, success } = useAlerts()
       success({ text: 'This is a success', title: 'Great news !' })
       expect(alerts).toMatchObject([{
-        id: expect.stringMatching(/[\da-z]{9}/) as string,
+        id: expect.stringMatching(/\d+/) as string,
         text: 'This is a success',
         title: 'Great news !',
         type: 'success',
@@ -189,7 +190,7 @@ if (import.meta.vitest) {
       const { alert, alerts } = useAlerts()
       alert({ text: 'This is an info', type: 'info' })
       expect(alerts).toMatchObject([{
-        id: expect.stringMatching(/[\da-z]{9}/) as string,
+        id: expect.stringMatching(/\d+/) as string,
         text: 'This is an info',
         type: 'info',
       }])
@@ -199,7 +200,7 @@ if (import.meta.vitest) {
       const { alerts, info } = useAlerts()
       info({ text: 'This is an info', title: 'Information' })
       expect(alerts).toMatchObject([{
-        id: expect.stringMatching(/[\da-z]{9}/) as string,
+        id: expect.stringMatching(/\d+/) as string,
         text: 'This is an info',
         title: 'Information',
         type: 'info',
@@ -212,7 +213,7 @@ if (import.meta.vitest) {
       const { alerts, warn } = useAlerts()
       warn('This is a warning')
       expect(alerts).toMatchObject([{
-        id: expect.stringMatching(/[\da-z]{9}/) as string,
+        id: expect.stringMatching(/\d+/) as string,
         text: 'This is a warning',
         type: 'warning',
       }])
@@ -222,7 +223,7 @@ if (import.meta.vitest) {
       const { alerts, warn } = useAlerts()
       warn(new Error('This is an error'))
       expect(alerts).toMatchObject([{
-        id: expect.stringMatching(/[\da-z]{9}/) as string,
+        id: expect.stringMatching(/\d+/) as string,
         text: 'This is an error',
         type: 'warning',
       }])
@@ -232,7 +233,7 @@ if (import.meta.vitest) {
       const { alerts, warn } = useAlerts()
       warn({ text: 'This is a warning', title: 'Warning!' })
       expect(alerts).toMatchObject([{
-        id: expect.stringMatching(/[\da-z]{9}/) as string,
+        id: expect.stringMatching(/\d+/) as string,
         text: 'This is a warning',
         title: 'Warning!',
         type: 'warning',
@@ -245,7 +246,7 @@ if (import.meta.vitest) {
       const { alerts, error } = useAlerts()
       error('This is an error')
       expect(alerts).toMatchObject([{
-        id: expect.stringMatching(/[\da-z]{9}/) as string,
+        id: expect.stringMatching(/\d+/) as string,
         text: 'This is an error',
         type: 'error',
       }])
@@ -255,7 +256,7 @@ if (import.meta.vitest) {
       const { alerts, warn } = useAlerts()
       warn(new Error('This is an error'))
       expect(alerts).toMatchObject([{
-        id: expect.stringMatching(/[\da-z]{9}/) as string,
+        id: expect.stringMatching(/\d+/) as string,
         text: 'This is an error',
         type: 'warning',
       }])
@@ -265,7 +266,7 @@ if (import.meta.vitest) {
       const { alerts, error } = useAlerts()
       error({ text: 'This is an error', title: 'Error!' })
       expect(alerts).toMatchObject([{
-        id: expect.stringMatching(/[\da-z]{9}/) as string,
+        id: expect.stringMatching(/\d+/) as string,
         text: 'This is an error',
         title: 'Error!',
         type: 'error',
