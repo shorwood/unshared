@@ -1,6 +1,5 @@
 import { access, constants } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
-import { cwd } from 'node:process'
 
 /**
  * Find the first ancestor of a file from a given path. The search will start
@@ -17,7 +16,7 @@ import { cwd } from 'node:process'
  * // Find the file from a subdirectory.
  * await findAncestor('file.txt', '/home/user/project') // '/home/user/file.txt'
  */
-export async function findAncestor(name: string, from: string = cwd()): Promise<string | undefined> {
+export async function findAncestor(name: string, from = process.cwd()): Promise<string | undefined> {
   while (from !== '') {
     const absolutePath = resolve(from, name)
     try {

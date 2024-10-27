@@ -37,6 +37,7 @@ export async function withTemporaryFiles(options: MaybeArray<CreateTemporaryFile
 }
 
 /* v8 ignore start */
+/* eslint-disable n/no-sync */
 if (import.meta.vitest) {
   const { existsSync } = await import('node:fs')
 

@@ -5,7 +5,6 @@ import { awaitable } from '@unshared/functions/awaitable'
 import { createPattern } from '@unshared/string/createPattern'
 import { readdir, stat } from 'node:fs/promises'
 import { join, relative } from 'node:path'
-import { cwd as getCwd } from 'node:process'
 
 /**
  * An entry in the glob result iterator or array.
@@ -85,7 +84,7 @@ export function glob(pattern: MaybeArray<string>, options?: GlobOptions<true>): 
 export function glob<T extends boolean>(pattern: MaybeArray<string>, options?: GlobOptions<T>): GlobResult<T>
 export function glob(pattern: MaybeArray<string>, options: GlobOptions = {}): GlobResult {
   const {
-    cwd = getCwd(),
+    cwd = process.cwd(),
     exclude = [],
     getRelative = false,
     getStats = false,
@@ -95,9 +94,9 @@ export function glob(pattern: MaybeArray<string>, options: GlobOptions = {}): Gl
 
   // --- Convert the pattern to an array of RegExp.
   const patternArray = Array.isArray(pattern) ? pattern : [pattern]
-  const patterns = patternArray.map(createPattern)
+  const patterns = patternArray.map(pattern => createPattern(pattern))
   const exludeArray = Array.isArray(exclude) ? exclude : [exclude]
-  const excludePatterns = exludeArray.map(createPattern)
+  const excludePatterns = exludeArray.map(pattern => createPattern(pattern))
 
   // --- Create an iterator that will yield the matching paths.
   const searchPool: string[] = [cwd]
@@ -144,6 +143,7 @@ export function glob(pattern: MaybeArray<string>, options: GlobOptions = {}): Gl
 }
 
 /* v8 ignore next */
+/* eslint-disable n/no-sync */
 if (import.meta.vitest) {
   const { vol } = await import('memfs')
 

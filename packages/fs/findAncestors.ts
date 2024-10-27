@@ -2,7 +2,6 @@ import type { Awaitable } from '@unshared/functions/awaitable'
 import { awaitable } from '@unshared/functions/awaitable'
 import { access, constants } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
-import { cwd } from 'node:process'
 
 /**
  * Find all ancestors of a file from a given path. The search will start
@@ -20,7 +19,7 @@ import { cwd } from 'node:process'
  * const ancestors = findAncestors('file', '/home/user/project')
  * for await (const ancestor of ancestors) console.log(ancestor)
  */
-export function findAncestors(name: string, from: string = cwd()): Awaitable<AsyncIterable<string>, string[]> {
+export function findAncestors(name: string, from = process.cwd()): Awaitable<AsyncIterable<string>, string[]> {
   async function * createIterator() {
     while (from !== '') {
       const absolutePath = resolve(from, name)

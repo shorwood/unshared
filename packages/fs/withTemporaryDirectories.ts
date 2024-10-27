@@ -23,7 +23,7 @@ export async function withTemporaryDirectories(options: MaybeArray<CreateTempora
   if (!Array.isArray(options)) options = [options]
 
   // --- Create temporary files.
-  const pathsPromises = options.map(createTemporaryDirectory)
+  const pathsPromises = options.map(option => createTemporaryDirectory(option))
   const pathsInstances = await Promise.all(pathsPromises)
   const paths = pathsInstances.map(x => x[0])
 
@@ -37,6 +37,7 @@ export async function withTemporaryDirectories(options: MaybeArray<CreateTempora
 }
 
 /* v8 ignore start */
+/* eslint-disable n/no-sync */
 if (import.meta.vitest) {
   const { existsSync } = await import('node:fs')
 

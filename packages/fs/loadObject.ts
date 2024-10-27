@@ -130,6 +130,7 @@ export class FSObject<T extends object> extends EventEmitter<FSObjectEventMap<T>
 
     // --- Destroy the object once this instance is garbage collected.
     // --- This will also delete the file if it was created as a temporary file.
+    // eslint-disable-next-line sonarjs/no-async-constructor
     void garbageCollected(this).then(() => this.destroy())
   }
 
@@ -370,6 +371,7 @@ export function loadObject<T extends object>(path: PathLike, options: FSObjectOp
 }
 
 /* v8 ignore start */
+/* eslint-disable n/no-sync */
 /* eslint-disable sonarjs/no-duplicate-string */
 if (import.meta.vitest) {
   const { vol } = await import('memfs')

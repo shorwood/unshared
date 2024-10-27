@@ -1,3 +1,4 @@
+import { randomInt } from 'node:crypto'
 import { mkdir, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -49,8 +50,7 @@ export async function createTemporaryFile(content?: Parameters<typeof writeFile>
   const {
     directory = tmpdir(),
     extension,
-    random = () => Math.random().toString(36)
-      .slice(2),
+    random = () => randomInt(0, 1e6).toString(36),
   } = options
 
   // --- Generate a random name.
@@ -68,6 +68,8 @@ export async function createTemporaryFile(content?: Parameters<typeof writeFile>
 }
 
 /* v8 ignore start */
+/* eslint-disable n/no-sync */
+/* eslint-disable sonarjs/publicly-writable-directories */
 if (import.meta.vitest) {
   const { existsSync, readFileSync, statSync } = await import('node:fs')
 
