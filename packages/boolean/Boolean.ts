@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-primitive-wrappers */
 /**
  * Very superfluous class representing a mutable boolean value. This allows
  * for chaining of boolean operations and stateful mutation of a boolean value.

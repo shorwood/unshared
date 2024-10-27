@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-primitive-wrappers */
 import { Boolean } from './Boolean'
 
 /**
