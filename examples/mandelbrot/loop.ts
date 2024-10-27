@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-infinite-loop */
 import { createWorkerPool } from '@unshared/process/createWorkerPool'
 import { performance } from 'node:perf_hooks'
 import { emitKeypressEvents } from 'node:readline'
@@ -25,7 +26,7 @@ export async function loop() {
   process.stdin.resume()
   process.stdin.setRawMode(true)
   process.stdin.setNoDelay(true)
-  process.stdin.on('keypress', (string_, key: { name: string }) => {
+  process.stdin.on('keypress', (string_, key: { name: string; ctrl: boolean }) => {
     const acceleration = smooth / zoom
 
     // --- Move the camera with velocity.
