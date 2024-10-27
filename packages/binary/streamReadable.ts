@@ -1,4 +1,3 @@
-import { nextTick } from 'node:process'
 import { Readable } from 'node:stream'
 
 export interface StreamReadableOptions {
@@ -31,8 +30,7 @@ export interface StreamReadableOptions {
  * await streamReadable(stream) // Error
  */
 export async function streamReadable(stream: Readable, options: StreamReadableOptions = {}): Promise<void> {
-  await new Promise(nextTick)
-
+  await new Promise(resolve => process.nextTick(resolve))
   return new Promise((resolve, reject) => {
 
     // --- If the stream is destroyed, has ended or the timeout, (if any) has exceeded, reject the promise.

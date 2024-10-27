@@ -1,6 +1,5 @@
 import type { Readable, TransformCallback, TransformOptions } from 'node:stream'
 import { createResolvable } from '@unshared/functions/createResolvable'
-import { nextTick } from 'node:process'
 import { PassThrough } from 'node:stream'
 
 /**
@@ -64,11 +63,8 @@ export class Seekable extends PassThrough {
 
   // @ts-expect-error: The `end` method is overloaded in the `PassThrough` class.
   end(callback?: () => void): this
-
   end(chunk: any, callback?: () => void): this
-
   end(chunk: any, encoding?: BufferEncoding, callback?: () => void): this
-
   end(...args: Parameters<PassThrough['end']>) {
     super.end(...args)
     this.emit('end')
@@ -101,7 +97,7 @@ export class Seekable extends PassThrough {
 
       // --- If the size was reached, remove the listener and end the stream.
       forked.removeListener(EventWrite, onChunk)
-      chunk = chunk.slice(0, size)
+      chunk = typeof chunk === 'string' ? chunk.slice(0, size) : chunk.subarray(0, size)
       forked.write(chunk, encoding)
       forked.end()
       size = 0
@@ -444,7 +440,7 @@ if (import.meta.vitest) {
       const stream = createStreamSeekable()
       const source = Readable.from(['ABCD', 'EFGH'])
       source.pipe(stream)
-      await new Promise(nextTick)
+      await new Promise(resolve => process.nextTick(resolve))
       const expected = new Map([
         [0, Buffer.from('ABCD')],
         [4, Buffer.from('EFGH')],

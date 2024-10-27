@@ -114,8 +114,7 @@ if (import.meta.vitest) {
   test('should decompress gzip data', async() => {
     const compress = createGzip()
     const decompress = createStreamDecompress()
-    const result = Readable.from(buffer).pipe(compress)
-      .pipe(decompress)
+    const result = Readable.from(buffer).pipe(compress).pipe(decompress)
     const chunks = await result.toArray()
     const data = Buffer.concat(chunks).toString('hex')
     expect(data).toStrictEqual(expected)
@@ -124,8 +123,7 @@ if (import.meta.vitest) {
   test('should decompress deflate data', async() => {
     const compress = createDeflate()
     const decompress = createStreamDecompress()
-    const result = Readable.from(buffer).pipe(compress)
-      .pipe(decompress)
+    const result = Readable.from(buffer).pipe(compress).pipe(decompress)
     const chunks = await result.toArray()
     const data = Buffer.concat(chunks).toString('hex')
     expect(data).toStrictEqual(expected)

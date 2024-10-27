@@ -1,3 +1,4 @@
+/* eslint-disable no-control-regex */
 export interface DumpOptions {
 
   /**
@@ -56,7 +57,6 @@ export function dump(buffer: Buffer, options: DumpOptions = {}): string {
 
     // --- Replace non-printable characters with a dot.
     const text = encoding === 'utf8'
-    // eslint-disable-next-line no-control-regex
       ? lineBuffer.toString(encoding).replaceAll(/[\u0000-\u001F\u007F-\u00FF]/g, '.')
       : lineBuffer.toString(encoding).replaceAll(/[^ -~]/g, '.')
 
