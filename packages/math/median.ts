@@ -9,7 +9,7 @@
  * @example median(1, 2, 3) // 2
  */
 export function median(...numbers: number[]): number {
-  const sorted = numbers.sort()
+  const sorted = numbers.toSorted((a, b) => a - b)
   const middle = Math.floor(sorted.length / 2)
   return sorted.length % 2 === 0 ? (sorted[middle - 1] + sorted[middle]) / 2 : sorted[middle]
 }
