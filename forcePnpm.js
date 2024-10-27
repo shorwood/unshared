@@ -1,9 +1,2 @@
-import { env, exit, stderr } from 'node:process'
-
-// --- Check if pnpm is being used.
-const agent = env.npm_config_user_agent ?? 'npm'
-if (agent.startsWith('pnpm')) exit(0)
-
-// --- If not, throw an error.
-stderr.write('\nPlease use pnpm to manage dependencies in this repository.\n  $ npm i pnpm -g\n')
-exit(1)
+if (!process.env.npm_config_user_agent?.startsWith('pnpm'))
+  throw new Error('Please use pnpm to manage dependencies in this repository.\n  $ npm i pnpm -g\n')
