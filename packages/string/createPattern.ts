@@ -17,9 +17,9 @@ export function createPattern(pattern: string): RegExp {
     .replace(/\/$/, '')
 
     // --- Globstar(s)
-    .replaceAll(/(\/)?(\*+)(\/)?/g, (_, ...matches) => {
-      const [$1 = '', $2 = '', $3 = ''] = matches as [string, string, string]
-      return $2.length === 1 ? `${$1}[^/]+${$3}` : `${$1}.+${$3}`
+    .replaceAll(/(\/)?(\*+)(\/)?/g, (_, ...matches: string[]) => {
+      const [before = '', globstars, after = ''] = matches
+      return globstars.length === 1 ? `${before}[^/]+${after}` : `(${before}.*${after})?`
     })
 
     // --- Wildcard

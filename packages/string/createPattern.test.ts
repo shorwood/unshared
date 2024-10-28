@@ -12,11 +12,11 @@ describe('createPattern', () => {
     it('should create RegExp from double globstar pattern', () => {
       const result = createPattern('foo/**')
       const test = result.test('foo/bar/baz')
-      expect(result).toStrictEqual(/^foo\/.+$/)
+      expect(result).toStrictEqual(/^foo(\/.*)?$/)
       expect(test).toBe(true)
     })
 
-    it('should create RegExp for nested paths with file extension', () => {
+    it('should create RegExwp for nested paths with file extension', () => {
       const result = createPattern('*/*.ts')
       const test = result.test('foo/bar.ts')
       expect(result).toStrictEqual(/^[^/]+\/[^/]+\.ts$/)
@@ -26,7 +26,7 @@ describe('createPattern', () => {
     it('should create RegExp for deeply nested paths with file extension', () => {
       const result = createPattern('**/src/*.ts')
       const test = result.test('foo/bar/src/baz.ts')
-      expect(result).toStrictEqual(/^.+\/src\/[^/]+\.ts$/)
+      expect(result).toStrictEqual(/^(.*\/)?src\/[^/]+\.ts$/)
       expect(test).toBe(true)
     })
   })
