@@ -34,6 +34,7 @@ async function buildIndex(path: string): Promise<IndexFile> {
       if (entity.name.startsWith('__')) continue
       if (entity.name.startsWith('scripts')) continue
       if (entity.name.endsWith('.d.ts')) continue
+      if (entity.name.endsWith('.test.ts')) continue
       if (entity.name.endsWith('cli.ts')) continue
       if (entity.name.endsWith('.worker.ts')) continue
 
