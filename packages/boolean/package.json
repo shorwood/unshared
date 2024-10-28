@@ -17,11 +17,6 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    "./Boolean": {
-      "require": "./dist/Boolean.cjs",
-      "types": "./dist/Boolean.d.ts",
-      "import": "./dist/Boolean.js"
-    },
     "./and": {
       "require": "./dist/and.cjs",
       "types": "./dist/and.d.ts",
