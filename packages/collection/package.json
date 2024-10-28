@@ -71,11 +71,6 @@
       "types": "./dist/isIterable.d.ts",
       "import": "./dist/isIterable.js"
     },
-    "./mapEntries": {
-      "require": "./dist/mapEntries.cjs",
-      "types": "./dist/mapEntries.d.ts",
-      "import": "./dist/mapEntries.js"
-    },
     "./mapKeys": {
       "require": "./dist/mapKeys.cjs",
       "types": "./dist/mapKeys.d.ts",
