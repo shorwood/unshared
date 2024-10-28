@@ -32,12 +32,12 @@ describe('assertObjectStrict', () => {
     })
 
     it('should throw if value is an instance of a class', () => {
-      const shouldThrow = () => assertObjectStrict(new Date())
+      const shouldThrow = () => assertObjectStrict(new RegExp(/Hello/))
       const { error } = attempt(shouldThrow)
       expect(error).toMatchObject({
         name: 'E_NOT_OBJECT_STRICT',
         message: 'Value is not strictly an object.',
-        context: { value: new Date(), received: 'Date' },
+        context: { value: new RegExp(/Hello/), received: 'RegExp' },
       })
     })
 
