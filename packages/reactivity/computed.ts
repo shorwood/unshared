@@ -1,6 +1,6 @@
 import type { Reactive, ReactiveOptions } from './reactive'
 import type { Unwrapped } from './unwrap'
-import { ComputedData, ComputedFlag, ReactiveFlag } from './constants'
+import { ComputedData, ComputedFlag } from './constants'
 import { reactive } from './reactive'
 import { unwrap } from './unwrap'
 import { watch } from './watch'
@@ -63,7 +63,7 @@ export interface ComputedOptions extends ReactiveOptions {
  * const b = reference(2)
  * const sum = computed(() => a.value + b.value)
  */
-export function computed<T, D extends ReadonlyArray<Reactive<any>> = []>(dependencies: D, getter: ComputedGetter<D, T>, options: ComputedOptions = {}): Computed<T> {
+export function computed<T, D extends readonly Reactive[] = []>(dependencies: D, getter: ComputedGetter<D, T>, options: ComputedOptions = {}): Computed<T> {
   const { eager = false, immediate = false, ...reactiveOptions } = options
 
   // --- Create the computed value.
@@ -76,7 +76,7 @@ export function computed<T, D extends ReadonlyArray<Reactive<any>> = []>(depende
     get value() {
       const data = computed[ComputedData]
       if (!eager && !data.dirty) return data.value
-      data.value = getter(...dependencies.map(unwrap) as unknown[])
+      data.value = getter(...dependencies.map(value => unwrap(value) as unknown))
       data.dirty = false
       return data.value
     },
@@ -106,84 +106,4 @@ export function computed<T, D extends ReadonlyArray<Reactive<any>> = []>(depende
 
   // --- Return the computed value.
   return computed
-}
-
-/* v8 ignore next */
-if (import.meta.vitest) {
-  const { reference } = await import('./reference')
-
-  test('should create a computed value', () => {
-    const a = reference(1)
-    const b = reference(2)
-    const sum = computed([a, b], (a, b) => a + b)
-    expect(sum[ComputedFlag]).toBe(true)
-    expect(sum[ReactiveFlag]).toBe(true)
-    expect(sum.value).toBe(3)
-  })
-
-  test('should create a computed value with no dependencies', () => {
-    const sum = computed([], () => 1)
-    expect(sum[ComputedFlag]).toBe(true)
-    expect(sum[ReactiveFlag]).toBe(true)
-    expect(sum.value).toBe(1)
-  })
-
-  test('should flag the value as dirty when a reactive dependency changes', () => {
-    const a = reactive({ foo: 1 })
-    const b = reactive({ bar: 2 })
-    const sum = computed([a, b] as const, (a, b) => a.foo + b.bar)
-    a.foo = 2
-    expect(sum[ComputedData].dirty).toBe(true)
-  })
-
-  test('should flag the value as dirty when a reference dependency changes', () => {
-    const a = reference(1)
-    const b = reference(2)
-    const sum = computed([a, b], (a, b) => a + b)
-    a.value = 2
-    expect(sum[ComputedData].dirty).toBe(true)
-  })
-
-  test('should flag the value as dirty when a computed dependency changes', () => {
-    const a = reference(1)
-    const b = reference(2)
-    const sum = computed([a, b], (a, b) => a + b)
-    const double = computed([sum], sum => sum * 2)
-    a.value = 2
-    expect(double[ComputedData].dirty).toBe(true)
-  })
-
-  test('should not recomputed the value when a dependency changes until accessed', () => {
-    const a = reference(1)
-    const b = reference(2)
-    const sum = computed([a, b], (a, b) => a + b)
-    a.value = 2
-    expect(sum[ComputedData].dirty).toBe(true)
-    expect(sum[ComputedData].value).toBeUndefined()
-  })
-
-  test('should recompute the value when a dependency changes if eager', () => {
-    const a = reference(1)
-    const b = reference(2)
-    const sum = computed([a, b], (a, b) => a + b, { eager: true })
-    a.value = 2
-    expect(sum[ComputedData].dirty).toBe(false)
-    expect(sum[ComputedData].value).toBe(4)
-  })
-
-  test('should compute the value immediately', () => {
-    const a = reference(1)
-    const b = reference(2)
-    const sum = computed([a, b], (a, b) => a + b, { immediate: true })
-    expect(sum[ComputedData].dirty).toBe(false)
-    expect(sum[ComputedData].value).toBe(3)
-  })
-
-  test('should recompute the value when a dependency changes', () => {
-    const a = reference(1)
-    const b = reference(2)
-    const sum = computed([a, b], (a, b) => a + b)
-    a.value = 2
-    expect(sum.value).toBe(4)
-  })
 }

@@ -81,5 +81,8 @@
     "dist",
     "README.md",
     "LICENSE.md"
-  ]
+  ],
+  "dependencies": {
+    "@unshared/types": "workspace:*"
+  }
 }
