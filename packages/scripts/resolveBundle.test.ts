@@ -1,26 +1,28 @@
-import { vol } from 'memfs'
+import { mkdirSync, renameSync, rmSync, writeFileSync } from 'node:fs'
 import { resolveBundle } from './resolveBundle'
 
 describe('resolveBundle', () => {
   beforeEach(() => {
-    vol.fromJSON({
-      '/project/package.json': JSON.stringify({
-        name: 'project',
-        dependencies: { '@node/types': '1.0.0' },
-        devDependencies: { 'ts-node': '1.0.0' },
-      }),
-      '/project/tsconfig.json': JSON.stringify({
-        compilerOptions: { target: 'esnext' },
-      }),
-      '/project/packages/subproject/package.json': JSON.stringify({
-        name: '@project/subproject',
-        dependencies: { lodash: '1.0.0' },
-        devDependencies: { tsx: '1.0.0' },
-      }),
-      '/project/packages/subproject/index.ts': 'export * from "./foo"\nexport * from "./bar"',
-      '/project/packages/subproject/foo.ts': 'export const foo = "foo"',
-      '/project/packages/subproject/bar.ts': 'export const bar = "bar"',
-    })
+    mkdirSync('/project/packages/subproject', { recursive: true })
+    writeFileSync('/project/package.json', JSON.stringify({
+      name: 'project',
+      dependencies: { '@node/types': '1.0.0' },
+      devDependencies: { 'ts-node': '1.0.0' },
+    }))
+
+    writeFileSync('/project/tsconfig.json', JSON.stringify({
+      compilerOptions: { target: 'esnext' },
+    }))
+
+    writeFileSync('/project/packages/subproject/package.json', JSON.stringify({
+      name: '@project/subproject',
+      dependencies: { lodash: '1.0.0' },
+      devDependencies: { tsx: '1.0.0' },
+    }))
+
+    writeFileSync('/project/packages/subproject/index.ts', 'export * from "./foo"\nexport * from "./bar"')
+    writeFileSync('/project/packages/subproject/foo.ts', 'export const foo = "foo"')
+    writeFileSync('/project/packages/subproject/bar.ts', 'export const bar = "bar"')
   })
 
   test('should include the internal and external dependencies', async() => {
@@ -38,25 +40,25 @@ describe('resolveBundle', () => {
   })
 
   test('should allow custom tsconfig.json path', async() => {
-    vol.renameSync('/project/tsconfig.json', '/project/tsconfig.base.json')
+    renameSync('/project/tsconfig.json', '/project/tsconfig.base.json')
     const configs = resolveBundle('subproject', { cwd: '/project', tsConfigPath: '/project/tsconfig.base.json' })
     await expect(configs).resolves.toBeDefined()
   })
 
   test('should throw an error if the tsconfig.json file is not found', async() => {
-    vol.rmSync('/project/tsconfig.json')
+    rmSync('/project/tsconfig.json')
     const shouldReject = resolveBundle('subproject', { cwd: '/project/packages/subproject' })
     await expect(shouldReject).rejects.toThrow('Cannot build the package: No tsconfig.json file found.')
   })
 
   test('should throw an error if the root package.json does not have a name', async() => {
-    vol.writeFileSync('/project/package.json', JSON.stringify({}))
+    writeFileSync('/project/package.json', JSON.stringify({}))
     const shouldReject = resolveBundle('subproject', { cwd: '/project' })
     await expect(shouldReject).rejects.toThrow('The root package.json does not have a name.')
   })
 
   test('should throw an error if the package name is not provided', async() => {
-    vol.writeFileSync('/project/packages/subproject/package.json', JSON.stringify({}))
+    writeFileSync('/project/packages/subproject/package.json', JSON.stringify({}))
     const shouldReject = resolveBundle('', { cwd: '/project' })
     await expect(shouldReject).rejects.toThrow('Could not resolve the package metadata: No package name were provided.')
   })
