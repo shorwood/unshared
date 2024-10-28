@@ -14,16 +14,3 @@ export type Loose<T> = Pretty<
   { [P in keyof T as undefined extends T[P] ? never : P]: T[P]; } &
   { [P in keyof T as undefined extends T[P] ? P : never]?: T[P]; }
 >
-
-/* v8 ignore next */
-if (import.meta.vitest) {
-  test('should make all `undefined` properties of T optional', () => {
-    type Result = Loose<{ a: string | undefined; b: number }>
-    expectTypeOf<Result>().toEqualTypeOf<{ a?: string; b: number }>()
-  })
-
-  test('should make all `void` properties of T optional', () => {
-    type Result = Loose<{ a: string | void; b: number }>
-    expectTypeOf<Result>().toEqualTypeOf<{ a?: string | undefined | void; b: number }>()
-  })
-}

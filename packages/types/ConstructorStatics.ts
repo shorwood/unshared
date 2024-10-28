@@ -12,26 +12,3 @@ import type { OmitNever } from './OmitNever'
  */
 export type ConstructorStatics<T extends Constructor> =
   OmitNever<{ [K in Exclude<keyof T, 'prototype'>]: T[K] }>
-
-/* v8 ignore next */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-if (import.meta.vitest) {
-  test('should extract static properties from a class', () => {
-    class Foo { static a = 1 as const }
-    type Result = ConstructorStatics<typeof Foo>
-    expectTypeOf<Result>().toEqualTypeOf<{ a: 1 }>()
-  })
-
-  test('should not extract instance properties', () => {
-    class Foo { static a = 1 as const; b = 1 as const }
-    type Result = ConstructorStatics<typeof Foo>
-    expectTypeOf<Result>().toEqualTypeOf<{ a: 1 }>()
-  })
-
-  test('should return an empty object for a class with no static properties', () => {
-    class Foo { b = 1 as const }
-    type Result = ConstructorStatics<typeof Foo>
-    expectTypeOf<Result>().toEqualTypeOf<{}>()
-  })
-}

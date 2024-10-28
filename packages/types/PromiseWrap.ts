@@ -23,26 +23,3 @@ export type PromiseWrap<T = unknown> =
       ? (...parameters: P) => U extends Promise<unknown> ? U
         : Promise<U>
       : Promise<T>
-
-/* v8 ignore next */
-if (import.meta.vitest) {
-  test('should wrap a type in a promise', () => {
-    type Result = PromiseWrap<number>
-    expectTypeOf<Result>().toEqualTypeOf<Promise<number>>()
-  })
-
-  test('should keep a promise as-is', () => {
-    type Result = PromiseWrap<Promise<number>>
-    expectTypeOf<Result>().toEqualTypeOf<Promise<number>>()
-  })
-
-  test('should wrap the return type of a function in a promise', () => {
-    type Result = PromiseWrap<() => number>
-    expectTypeOf<Result>().toEqualTypeOf<() => Promise<number>>()
-  })
-
-  test('should extract the return type of an async function as-is', () => {
-    type Result = PromiseWrap<() => Promise<number>>
-    expectTypeOf<Result>().toEqualTypeOf<() => Promise<number>>()
-  })
-}

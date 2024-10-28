@@ -8,21 +8,3 @@
  */
 export type MapValues<T extends object, U> =
   T extends object ? { [P in keyof T]: U } : never
-
-/* v8 ignore next */
-if (import.meta.vitest) {
-  test('should map the values of an object', () => {
-    type Result = MapValues<{ foo: string }, number>
-    expectTypeOf<Result>().toEqualTypeOf<{ foo: number }>()
-  })
-
-  test('should map the values of an array', () => {
-    type Result = MapValues<string[], number>
-    expectTypeOf<Result>().toEqualTypeOf<number[]>()
-  })
-
-  test('should map the values of a tuple', () => {
-    type Result = MapValues<[string, string], number>
-    expectTypeOf<Result>().toEqualTypeOf<[number, number]>()
-  })
-}

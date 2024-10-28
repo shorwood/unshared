@@ -9,17 +9,3 @@ import type { Function } from './Function'
  * @example MethodDecorator<(a: number, b: number) => number>
  */
 export type MethodDecorator<T extends Function = Function> = (target: unknown, propertyName: string, descriptor: TypedPropertyDescriptor<T>) => TypedPropertyDescriptor<T>
-
-/* v8 ignore start */
-if (import.meta.vitest) {
-  test('should return a method decorator type', () => {
-    type Result = MethodDecorator
-    expectTypeOf<Result>().toEqualTypeOf<(target: unknown, propertyName: string, descriptor: TypedPropertyDescriptor<Function>) => TypedPropertyDescriptor<Function>>()
-  })
-
-  test('should return a method decorator type with a specific method type', () => {
-    type Method = (a: number, b: number) => number
-    type Result = MethodDecorator<Method>
-    expectTypeOf<Result>().toEqualTypeOf<(target: unknown, propertyName: string, descriptor: TypedPropertyDescriptor<Method>) => TypedPropertyDescriptor<Method>>()
-  })
-}

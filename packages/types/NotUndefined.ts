@@ -9,19 +9,3 @@ import type { Any } from './Any'
  * @example NotUndefined<number | undefined> // number
  */
 export type NotUndefined<U = Any> = U extends undefined ? never : U
-
-/* v8 ignore next */
-if (import.meta.vitest) {
-  test('should exclude undefined', () => {
-    type Result = NotUndefined<number | undefined>
-    expectTypeOf<Result>().toEqualTypeOf<number>()
-  })
-
-  test('should match non-undefined', () => {
-    expectTypeOf<number>().toMatchTypeOf<NotUndefined>()
-  })
-
-  test('should not match undefined', () => {
-    expectTypeOf<undefined>().not.toMatchTypeOf<NotUndefined>()
-  })
-}

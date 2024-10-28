@@ -12,18 +12,3 @@ import type { Constructor } from './Constructor'
  * type Result = MaybeInstance<Set<number>> // Set<number>
  */
 export type MaybeInstance<T> = T extends Constructor<infer C> ? C : T
-
-/* v8 ignore start */
-if (import.meta.vitest) {
-  test('should extract the instance type from a constructor', () => {
-    type Result = MaybeInstance<typeof Set>
-    type Expected = Set<unknown>
-    expectTypeOf<Result>().toEqualTypeOf<Expected>()
-  })
-
-  test('should extract the instance type from an instance', () => {
-    type Result = MaybeInstance<Set<number>>
-    type Expected = Set<number>
-    expectTypeOf<Result>().toEqualTypeOf<Expected>()
-  })
-}

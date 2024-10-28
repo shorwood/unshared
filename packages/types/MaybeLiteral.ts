@@ -1,3 +1,5 @@
+/* eslint-disable sonarjs/no-useless-intersection */
+
 /**
  * Wrap a literal type in a union with `string` to make it matchable with a
  * any string type. This is useful for creating a type that can be used to
@@ -9,16 +11,3 @@
  * @example MaybeLiteral<'foo'> // 'foo' | (string & {})
  */
 export type MaybeLiteral<T extends string> = ({} & string) | T
-
-/* v8 ignore next */
-if (import.meta.vitest) {
-  test('should match a string type', () => {
-    type Result = MaybeLiteral<string>
-    expectTypeOf<Result>().toEqualTypeOf<string>()
-  })
-
-  test('should match a literal string', () => {
-    type Result = MaybeLiteral<'bar' | 'foo'>
-    expectTypeOf<Result>().toEqualTypeOf<'bar' | 'foo' | {} & string>()
-  })
-}

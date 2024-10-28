@@ -12,18 +12,3 @@ import type { Loose } from './Loose'
  */
 export type Required<T, K extends keyof T = keyof T> =
   Loose<{ [P in Exclude<keyof T, K>]: T[P] } & { [P in K]-?: T[P] }>
-
-/* v8 ignore start */
-if (import.meta.vitest) {
-  test('should make all properties required', () => {
-    type Actual = Required<{ a?: string; b?: string }>
-    interface Expected { a: string; b: string }
-    expectTypeOf<Actual>().toEqualTypeOf<Expected>()
-  })
-
-  test('should make some properties required', () => {
-    type Actual = Required<{ a?: string; b?: string }, 'a'>
-    interface Expected { a: string; b?: string }
-    expectTypeOf<Actual>().toEqualTypeOf<Expected>()
-  })
-}

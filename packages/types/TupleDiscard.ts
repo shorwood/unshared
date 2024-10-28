@@ -22,31 +22,3 @@ export type TupleDiscard<T extends MaybeReadonly<any[]>, U = unknown> =
 
       // --- If U does not match type, skip it.
       : []
-
-/* v8 ignore next */
-if (import.meta.vitest) {
-  test('should discard out elements that match the given type in a tuple', () => {
-    type Result = TupleDiscard<[1, 'a', 2, 'b', 3], number>
-    expectTypeOf<Result>().toEqualTypeOf<['a', 'b']>()
-  })
-
-  test('should discard all elements that match the given type in a tuple', () => {
-    type Result = TupleDiscard<[1, 'a', 2, 'b', 3], any>
-    expectTypeOf<Result>().toEqualTypeOf<[]>()
-  })
-
-  test('should discard out elements that match the given type in an array', () => {
-    type Result = TupleDiscard<Array<number | string>, number>
-    expectTypeOf<Result>().toEqualTypeOf<string[]>()
-  })
-
-  test('should discard out elements that match the given type in an array', () => {
-    type Result = TupleDiscard<Array<number | string>, boolean>
-    expectTypeOf<Result>().toEqualTypeOf<Array<number | string>>()
-  })
-
-  test('should discard readonly tuples', () => {
-    type Result = TupleDiscard<readonly [1, 'a', 2, 'b', 3], number>
-    expectTypeOf<Result>().toEqualTypeOf<['a', 'b']>()
-  })
-}

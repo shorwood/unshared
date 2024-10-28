@@ -9,22 +9,3 @@ export type TupleJoin<T extends string[]> =
   T extends [infer A extends string, ...infer B extends string[]]
     ? `${A}${TupleJoin<B>}`
     : ''
-
-/** v8 ignore start */
-if (import.meta.vitest) {
-
-  test('should join a tuple of single characters into a literal string', () => {
-    type Result = TupleJoin<['a', 'b', 'c']>
-    expectTypeOf<Result>().toEqualTypeOf<'abc'>()
-  })
-
-  test('should join a tuple of characters union into a literal string union', () => {
-    type Result = TupleJoin<['a' | 'b', 'c' | 'd']>
-    expectTypeOf<Result>().toEqualTypeOf<'ac' | 'ad' | 'bc' | 'bd'>()
-  })
-
-  test('should join a tuple of characters into a literal string', () => {
-    type Result = TupleJoin<['abc', 'def']>
-    expectTypeOf<Result>().toEqualTypeOf<'abcdef'>()
-  })
-}
