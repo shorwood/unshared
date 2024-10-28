@@ -100,5 +100,5 @@ export function createColorPalette<K extends number = ColorPaletteDefaultStops>(
   })
 
   // --- Return palette.
-  return Object.fromEntries(shades) as ColorPalette<K>
+  return Object.fromEntries(shades) as Record<K, string>
 }
