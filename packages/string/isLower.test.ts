@@ -8,14 +8,14 @@ describe('isLower', () => {
 
   test('should return true for lower case character codes', () => {
     for (const char of lowerCase) {
-      const result = isLower(char.charCodeAt(0))
+      const result = isLower(char.codePointAt(0)!)
       expect(result).toBe(true)
     }
   })
 
   test('should return false for non lower case character codes', () => {
     for (const char of upperCase + numbers + symbols) {
-      const result = isLower(char.charCodeAt(0))
+      const result = isLower(char.codePointAt(0)!)
       expect(result).toBe(false)
     }
   })

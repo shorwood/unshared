@@ -1,5 +1,3 @@
-/* eslint-disable n/no-sync */
-/* eslint-disable sonarjs/no-duplicate-string */
 import { reactive } from '@unshared/reactivity'
 import { vol } from 'memfs'
 import EventEmitter from 'node:events'

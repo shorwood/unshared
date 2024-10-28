@@ -1,4 +1,3 @@
-/* eslint-disable n/no-sync */
 import type { Awaitable } from '@unshared/functions'
 import type { Stats } from 'node:fs'
 import { vol } from 'memfs'

@@ -1,4 +1,3 @@
-/* eslint-disable n/no-sync */
 import { vol } from 'memfs'
 import { statSync } from 'node:fs'
 import { touch } from './touch'

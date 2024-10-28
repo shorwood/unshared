@@ -1,4 +1,3 @@
-/* eslint-disable n/no-sync */
 import { existsSync } from 'node:fs'
 import { withTemporaryFiles } from './withTemporaryFiles'
 

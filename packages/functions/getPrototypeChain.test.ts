@@ -16,13 +16,11 @@ describe('getPrototypeChain', () => {
   })
 
   test('should return the prototype chain of null', () => {
-    // eslint-disable-next-line unicorn/no-null
     const result = getPrototypeChain(null)
     expect(result).toStrictEqual([])
   })
 
   test('should return the prototype chain of undefined', () => {
-    // eslint-disable-next-line unicorn/no-useless-undefined
     const result = getPrototypeChain(undefined)
     expect(result).toStrictEqual([])
   })

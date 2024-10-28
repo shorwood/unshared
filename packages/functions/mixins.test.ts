@@ -1,5 +1,3 @@
-/* eslint-disable sonarjs/public-static-readonly */
-/* eslint-disable unicorn/no-static-only-class */
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 import { mixins } from './mixins'
 

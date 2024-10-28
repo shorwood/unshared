@@ -1,5 +1,4 @@
 /* eslint-disable sonarjs/publicly-writable-directories */
-/* eslint-disable n/no-sync */
 import { existsSync, readFileSync, statSync } from 'node:fs'
 import { createTemporaryFile } from './createTemporaryFile'
 
