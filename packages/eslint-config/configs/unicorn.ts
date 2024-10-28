@@ -23,11 +23,14 @@ export function unicorn(): Linter.Config[] {
         // --- Enforce consistent function scoping except for arrow functions.
         'unicorn/consistent-function-scoping': ['error', { checkArrowFunctions: false }],
 
+        // --- Disable switch-case fallthrough.
+        'unicorn/prefer-switch': 'off',
+
         // --- Enforce camelCase & PascalCase in filenames. Exepct non TS/JS files.
         'unicorn/filename-case': ['error', {
           multipleFileExtensions: false,
           cases: { camelCase: true, pascalCase: true },
-          ignore: ['pnpm-workspace.yaml'],
+          ignore: [/\.json$/, /\.md$/, /\.yml$/, /\.yaml$/],
         }],
 
         // --- Improve readability by using numeric separators.
@@ -54,6 +57,19 @@ export function unicorn(): Linter.Config[] {
             z: true,
           },
         }],
+      },
+    },
+    {
+      files: [
+        '**/*.test.ts',
+        '**/*.spec.ts',
+      ],
+      rules: {
+
+        // --- Disable unnecessary rules for test files.
+        'unicorn/no-null': 'off',
+        'unicorn/no-useless-undefined': 'off',
+        'unicorn/no-static-only-class': 'off',
       },
     },
   ]
