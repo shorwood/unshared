@@ -1,4 +1,4 @@
-import { Buffer } from 'node:buffer'
+/* eslint-disable jsdoc/no-types */
 import { threadId } from 'node:worker_threads'
 
 /**
@@ -35,10 +35,11 @@ export function rejects() {
 }
 
 /**
- * @returns {Buffer} A buffer with the string 'Hello, World!'
+ * @returns {Uint8Array} A buffer with the string 'Hello, World!'
  */
 export function buffer() {
-  return Buffer.from('Hello, World!')
+  const string = 'Hello, World!'
+  return Uint8Array.from(Buffer.from(string))
 }
 
 /**

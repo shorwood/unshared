@@ -1,4 +1,4 @@
-import { Buffer } from 'node:buffer'
+/* eslint-disable antfu/no-import-dist */
 import { threadId } from 'node:worker_threads'
 import { workerRegister } from '../dist/workerRegister.js'
 
@@ -25,7 +25,7 @@ workerRegister('rejects', () => {
 
 workerRegister('buffer', () => {
   const string = 'Hello, World!'
-  return Buffer.from(string)
+  return Uint8Array.from(Buffer.from(string))
 })
 
 workerRegister('threadId', () => threadId)

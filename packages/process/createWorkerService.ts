@@ -126,7 +126,7 @@ function getWorkerServicePath(): URL {
  * business logic without having to worry about the implementation details of the
  * worker thread.
  */
-export class WorkerService implements Disposable {
+export class WorkerService implements AsyncDisposable {
 
   /**
    * The number of currently running tasks. This is useful to know if the worker thread
@@ -152,15 +152,8 @@ export class WorkerService implements Disposable {
    * const result = await service.spawn('node:crypto', 'randomBytes', 128) // Uint8Array { ... }
    */
   constructor(private options: WorkerServiceOptions = {}) {
+    // eslint-disable-next-line sonarjs/no-async-constructor
     if (options.eager) void this.initialize()
-  }
-
-  /**
-   * Dispose of the worker thread and clean up any resources. This method is called
-   * automatically when the garbage collector runs on the `WorkerService` instance.
-   */
-  [Symbol.dispose]() {
-    void this.terminate()
   }
 
   /**
@@ -232,11 +225,19 @@ export class WorkerService implements Disposable {
    * @example await workerService.terminate()
    */
   @Once()
-  public async terminate(): Promise<number> {
+  public async destroy(): Promise<number> {
     if (!this.worker) return -1
     const exitCode = await this.worker.terminate()
     this.worker = undefined
     return exitCode
+  }
+
+  /**
+   * Dispose of the worker thread and clean up any resources. This method is called
+   * automatically when the garbage collector runs on the `WorkerService` instance.
+   */
+  async [Symbol.asyncDispose]() {
+    await this.destroy()
   }
 
   /**
@@ -260,6 +261,7 @@ export class WorkerService implements Disposable {
     return new Proxy({}, {
       get: (_, name: keyof T & string) =>
         (...parameters: unknown[]) =>
+          // eslint-disable-next-line sonarjs/no-useless-call
           this.spawn.call(this, { moduleId, name, parameters, paths: toArray(paths) }),
     }) as Workerized<T>
   }
@@ -277,212 +279,4 @@ export class WorkerService implements Disposable {
  */
 export function createWorkerService(options: WorkerServiceOptions = {}) {
   return new WorkerService(options)
-}
-
-/* v8 ignore start */
-if (import.meta.vitest) {
-  type Module = typeof import('./__fixtures__/module')
-  const moduleId = new URL('__fixtures__/module', import.meta.url)
-
-  describe('createWorkerService', () => {
-    it('should create a worker service', () => {
-      const service = createWorkerService()
-      expect(service).toBeInstanceOf(WorkerService)
-    })
-  })
-
-  describe.sequential('spawn', { retry: 3 }, () => {
-    it('should spawn the default export function and return the result', async() => {
-      const service = createWorkerService()
-      const result = await service.spawn<Module['factorial']>({ moduleId, parameters: [5] })
-      expect(result).toBe(120)
-      expectTypeOf(result).toEqualTypeOf<number>()
-      await service.terminate()
-    })
-
-    it('should spawn a sync function return the result', async() => {
-      const service = createWorkerService()
-      const result = await service.spawn<Module['factorial']>({ moduleId, name: 'factorial', parameters: [5] })
-      expect(result).toBe(120)
-      expectTypeOf(result).toEqualTypeOf<number>()
-      await service.terminate()
-    })
-
-    it('should spawn an async function and return the result', async() => {
-      const service = createWorkerService()
-      const result = await service.spawn<Module['factorialAsync']>({ moduleId, name: 'factorialAsync', parameters: [5] })
-      expect(result).toBe(120)
-      expectTypeOf(result).toEqualTypeOf<number>()
-      await service.terminate()
-    })
-
-    it('should spawn a function and return an Uint8Array', async() => {
-      const service = createWorkerService()
-      const result = await service.spawn<Module['buffer']>({ moduleId, name: 'buffer' })
-      const expected = new Uint8Array([72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33])
-      expect(result).toStrictEqual(expected)
-      expectTypeOf(result).toEqualTypeOf<Uint8Array>()
-      await service.terminate()
-    })
-
-    it('should reject an error if the function throws', async() => {
-      const service = createWorkerService()
-      const shouldReject = service.spawn({ moduleId, name: 'throws' })
-      await expect(shouldReject).rejects.toThrow('Thrown')
-      await service.terminate()
-    })
-
-    it('should reject an error if the function rejects', async() => {
-      const service = createWorkerService()
-      const shouldReject = service.spawn({ moduleId, name: 'rejects' })
-      await expect(shouldReject).rejects.toThrow('Rejected')
-      await service.terminate()
-    })
-
-    it('should spawn a function and return the thread ID', async() => {
-      const service = createWorkerService()
-      const result = await service.spawn<Module['getThreadId']>({ moduleId, name: 'getThreadId' })
-      expect(result).toStrictEqual(service.worker?.threadId)
-      expectTypeOf(result).toEqualTypeOf<number>()
-      await service.terminate()
-    })
-
-    it('should spawn a built-in module function and return the result', async() => {
-      const service = createWorkerService()
-      const result = await service.spawn({ moduleId: 'node:crypto', name: 'randomBytes', parameters: [16] })
-      expect(result).toBeInstanceOf(Uint8Array)
-      expect(result).toHaveLength(16)
-      await service.terminate()
-    })
-
-    it('should reject an error if the module does not exist', async() => {
-      const service = createWorkerService()
-      const shouldReject = service.spawn({ moduleId: 'doesNotExist' })
-      await expect(shouldReject).rejects.toThrow('Cannot find module')
-      await service.terminate()
-    })
-
-    it('should reject an error if the named export does not exist', async() => {
-      const service = createWorkerService()
-      const shouldReject = service.spawn({ moduleId, name: 'doesNotExist' })
-      await expect(shouldReject).rejects.toThrow('does not have the named export "doesNotExist"')
-      await service.terminate()
-    })
-  })
-
-  describe.sequential('wrap', { retry: 3 }, () => {
-    it('should wrap a module in a worker thread and call a named function', async() => {
-      const service = createWorkerService()
-      const { factorial } = service.wrap<Module>(moduleId)
-      const result = await factorial(5)
-      expect(result).toBe(120)
-      await service.terminate()
-    })
-
-    it('should get the own property names of the wrapped module', async() => {
-      const service = createWorkerService()
-      const { getOwnPropertyNames } = service.wrap<Module>(moduleId)
-      const result = await getOwnPropertyNames()
-      expect(result).toStrictEqual([
-        'buffer',
-        'constant',
-        'default',
-        'factorial',
-        'factorialAsync',
-        'getThreadId',
-        'rejects',
-        'throws',
-      ])
-      await service.terminate()
-    })
-
-    it('should infer the return type of the wrapped module', async() => {
-      const service = createWorkerService()
-      const module = service.wrap<Module>(moduleId)
-      await service.terminate()
-      expectTypeOf(module).toEqualTypeOf<{
-        buffer: () => Promise<Uint8Array>
-        constant: () => Promise<number>
-        default: (n: number) => Promise<number>
-        factorial: (n: number) => Promise<number>
-        factorialAsync: (n: number) => Promise<number>
-        getOwnPropertyNames: () => Promise<string[]>
-        getThreadId: () => Promise<number>
-        rejects: () => Promise<void>
-        throws: () => Promise<void>
-      }>()
-    })
-  })
-
-  describe.sequential('lifecycle', { retry: 3 }, () => {
-    it('should not initialize the worker thread', async() => {
-      const service = createWorkerService()
-      expect(service.worker).toBeUndefined()
-      await service.terminate()
-    })
-
-    it('should terminate and return -1 when no worker is running', async() => {
-      const service = createWorkerService()
-      const result = await service.terminate()
-      expect(service.worker).toBeUndefined()
-      expect(result).toBe(-1)
-      await service.terminate()
-    })
-
-    it('should terminate and return the exit code when a worker is running', async() => {
-      const service = createWorkerService()
-      await service.spawn({ moduleId, name: 'factorial', parameters: [5] })
-      const result = await service.terminate()
-      expect(service.worker).toBeUndefined()
-      expect(result).toBe(1)
-      await service.terminate()
-    })
-
-    it('should create the worker manually', async() => {
-      const service = createWorkerService()
-      await service.initialize()
-      expect(service.worker).toBeDefined()
-      await service.terminate()
-    })
-
-    it('should create the worker automatically', async() => {
-      const service = createWorkerService({ eager: true })
-      expect(service.worker).toBeDefined()
-      await service.terminate()
-    })
-
-    it('should be disposable', async() => {
-      const service = createWorkerService()
-      await service.initialize()
-      void service[Symbol.dispose]()
-      await new Promise(resolve => setTimeout(resolve, 10))
-      expect(service.worker).toBeUndefined()
-    })
-  })
-
-  describe.sequential('running', { retry: 3 }, () => {
-    it('should increment the running count when a function is called', async() => {
-      const service = createWorkerService({ eager: true })
-      expect(service.running).toBe(0)
-      void service.spawn({ moduleId, name: 'factorial', parameters: [5] })
-      expect(service.running).toBe(1)
-      await service.terminate()
-    })
-
-    it('should decrement the running count when a function is resolved', async() => {
-      const service = createWorkerService({ eager: true })
-      expect(service.running).toBe(0)
-      await service.spawn({ moduleId, name: 'factorial', parameters: [5] })
-      expect(service.running).toBe(0)
-      await service.terminate()
-    })
-
-    it('should decrement the running count when a function is rejected', async() => {
-      const service = createWorkerService({ eager: true })
-      expect(service.running).toBe(0)
-      await service.spawn({ moduleId, name: 'rejects' }).catch(() => {})
-      expect(service.running).toBe(0)
-      await service.terminate()
-    })
-  })
 }

@@ -1,6 +1,7 @@
 import type { Function, MaybeArray } from '@unshared/types'
 import type { Workerized, WorkerServiceOptions, WorkerServicePayload, WorkerServiceResult } from './createWorkerService'
 import { toArray } from '@unshared/collection/toArray'
+import { Once } from '@unshared/decorators/Once'
 import { cpus } from 'node:os'
 import { WorkerService } from './createWorkerService'
 
@@ -80,6 +81,7 @@ export class WorkerPool {
    *
    * @example workerPool.createWorkers()
    */
+  @Once()
   public initialize(): void {
     const { size = cpus().length - 1 } = this.options
     for (let index = 0; index < size; index++) {
@@ -143,8 +145,9 @@ export class WorkerPool {
    * @returns A promise that resolves when all workers have been terminated.
    * @example await workerPool.destroy()
    */
+  @Once()
   public async destroy() {
-    const promises = this.workers.map(worker => worker.terminate())
+    const promises = this.workers.map(worker => worker.destroy())
     await Promise.all(promises)
     this.workers = []
   }

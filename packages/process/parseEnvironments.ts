@@ -1,5 +1,4 @@
 import { toCamelCase } from '@unshared/string'
-import { env } from 'node:process'
 
 /**
  * The default parser function that can be used to parse environment variables.
@@ -67,7 +66,7 @@ export function parseEnvironments(prefix: string, parse = DEFAULT_PARSER): Recor
   const result: Record<string, unknown> = {}
 
   // --- Iterate over all environment variables.
-  for (const key in env) {
+  for (const key in process.env) {
     if (key.startsWith(`${prefix}_`)) {
       const name = key.slice(prefix.length).replace(/^_+/, '')
       const objectKey = toCamelCase(name)
@@ -78,51 +77,4 @@ export function parseEnvironments(prefix: string, parse = DEFAULT_PARSER): Recor
 
   // --- Return the environment variables.
   return result
-}
-
-/* v8 ignore start */
-if (import.meta.vitest) {
-  beforeEach(() => {
-    vi.stubEnv('APP_NAME', 'My App')
-    vi.stubEnv('APP_VERSION', '1.0.0')
-    vi.stubEnv('APP_DATABASE_TYPE', 'sqlite')
-    vi.stubEnv('APP_DATABASE_URL', 'sqlite://localhost')
-    vi.stubEnv('APP_PORT', '3000')
-    vi.stubEnv('APP_IS_ACTIVE', 'true')
-    vi.stubEnv('OTHER_NAME', 'Other App')
-  })
-
-  afterEach(() => {
-    vi.unstubAllEnvs()
-  })
-
-  test('should return all environment variables that start with the prefix', () => {
-    const result = parseEnvironments('APP')
-    expect(result).toStrictEqual({
-      name: 'My App',
-      version: '1.0.0',
-      databaseType: 'sqlite',
-      databaseUrl: 'sqlite://localhost',
-      port: 3000,
-      isActive: true,
-    })
-    expectTypeOf(result).toEqualTypeOf<Record<string, boolean | number | string>>()
-  })
-
-  test('should return and parse all environment variables that start with the prefix', () => {
-    const result = parseEnvironments('APP', (name, value) => {
-      if (name === 'isActive') return value === 'true' ? 'active' : 'inactive'
-      if (name === 'name') return value.toUpperCase()
-      return value
-    })
-    expect(result).toStrictEqual({
-      name: 'MY APP',
-      version: '1.0.0',
-      databaseType: 'sqlite',
-      databaseUrl: 'sqlite://localhost',
-      port: '3000',
-      isActive: 'active',
-    })
-    expectTypeOf(result).toEqualTypeOf<Record<string, string>>()
-  })
 }

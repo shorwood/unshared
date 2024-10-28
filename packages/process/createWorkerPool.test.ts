@@ -1,10 +1,10 @@
 import { cpus } from 'node:os'
 import { createWorkerPool, WorkerPool } from './createWorkerPool'
 
-const moduleId = new URL('__fixtures__/module', import.meta.url)
-type Module = typeof import('./__fixtures__/module')
-
 describe('createWorkerPool', () => {
+  const moduleId = new URL('__fixtures__/module', import.meta.url)
+  type Module = typeof import('./__fixtures__/module')
+
   test('should create a worker pool', () => {
     const pool = createWorkerPool()
     expect(pool).toBeInstanceOf(WorkerPool)

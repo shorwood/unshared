@@ -1,15 +1,15 @@
 import type { Function } from '@unshared/types'
-import type { MessagePort, TransferListItem } from 'node:worker_threads'
+import type { MessagePort, TransferListItem, Worker } from 'node:worker_threads'
 import type { WorkerResponse } from './workerRegister'
 import { isArrayBuffer, isArrayBufferView } from 'node:util/types'
-import { MessageChannel, Worker } from 'node:worker_threads'
+import { MessageChannel } from 'node:worker_threads'
 
 /**
  * The time in milliseconds to wait for a heartbeat message from the worker before
  * rejecting the request. This is used to ensure that the worker is still alive and
  * listening for messages.
  */
-const WORKER_HEALTHCHECK_TIMEOUT = 1000
+const WORKER_HEALTHCHECK_TIMEOUT = 100
 
 /**
  * A common interface for the request passed to a `workerRegister` callback. This is
@@ -57,21 +57,18 @@ export interface WorkerRequest<P extends unknown[] = unknown[]> {
 export async function workerRequest<T extends Function>(worker: Worker, name: string, ...parameters: Parameters<T>): Promise<Awaited<ReturnType<T>>> {
   const { port1, port2 } = new MessageChannel()
 
-  // --- Compute the transfer list by filtering-in any `ArrayBuffer` or `MessagePort` objects.
+  // --- Push any transferable objects to the transfer list.
   const transferList: TransferListItem[] = [port1]
   for (const parameter of parameters) {
+    if (Buffer.isBuffer(parameter)) transferList.push(parameter.buffer)
     if (isArrayBufferView(parameter)) transferList.push(parameter.buffer)
     if (isArrayBuffer(parameter)) transferList.push(parameter)
   }
 
-  // --- Post the request to the worker thread.
-  worker.postMessage({ name, parameters, port: port1 }, transferList)
-
   // --- Wait for the response and resolve with the result or reject with the error.
-  return await new Promise((resolve, reject) => {
+  const result = await new Promise<Awaited<ReturnType<T>>>((resolve, reject) => {
     const error = new Error('No registered handler is listening for messages.')
     const timeout = setTimeout(reject, WORKER_HEALTHCHECK_TIMEOUT, error)
-
     port2.once('error', reject)
     port2.once('messageerror', reject)
     port2.addListener('message', (response: 'heartbeat' | WorkerResponse) => {
@@ -80,62 +77,11 @@ export async function workerRequest<T extends Function>(worker: Worker, name: st
       if (error) reject(error)
       else resolve(value as Awaited<ReturnType<T>>)
     })
-  }) as Promise<Awaited<ReturnType<T>>>
-}
 
-/* v8 ignore next */
-if (import.meta.vitest) {
-  describe.sequential('e2e', () => {
-    const urlHandlers = new URL('__fixtures__/handlers.js', import.meta.url).pathname
-    const urlModules = new URL('__fixtures__/module.js', import.meta.url).pathname
-    const workerHandlers = new Worker(urlHandlers, { stderr: true, stdout: true })
-    const workerModules = new Worker(urlModules, { stderr: true, stdout: true })
-    type Module = typeof import('./__fixtures__/module')
-
-    it('should call a sync function if the name matches and return the result', async() => {
-      const result = workerRequest<Module['factorial']>(workerHandlers, 'factorial', 10)
-      await expect(result).resolves.toBe(3628800)
-      expectTypeOf(result).toEqualTypeOf<Promise<number>>()
-    })
-
-    it('should call an async function if the name matches and return the resolved value', async() => {
-      const result = workerRequest<Module['factorialAsync']>(workerHandlers, 'factorialAsync', 10)
-      await expect(result).resolves.toBe(3628800)
-      expectTypeOf(result).toEqualTypeOf<Promise<number>>()
-    })
-
-    it('should return Buffers as an Uint8Array', async() => {
-      const result = await workerRequest<Module['buffer']>(workerHandlers, 'buffer')
-      const expected = new Uint8Array([72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33])
-      expect(result).toBeInstanceOf(Uint8Array)
-      expect(result).toStrictEqual(expected)
-    })
-
-    it('should throw an error if the function does not exist', async() => {
-      const shouldReject = workerRequest(workerHandlers, 'doesNotExist')
-      await expect(shouldReject).rejects.toThrow('Cannot execute handler: doesNotExist is not registered.')
-    })
-
-    it('should throw an error if the function throws', async() => {
-      const shouldReject = workerRequest(workerHandlers, 'throws')
-      await expect(shouldReject).rejects.toThrow(SyntaxError)
-      await expect(shouldReject).rejects.toThrow('Thrown')
-    })
-
-    it('should throw an error if the function rejects', async() => {
-      const shouldReject = workerRequest(workerHandlers, 'rejects')
-      await expect(shouldReject).rejects.toThrow(SyntaxError)
-      await expect(shouldReject).rejects.toThrow('Rejected')
-    })
-
-    it('should return the process ID', async() => {
-      const result = await workerRequest<Module['getThreadId']>(workerHandlers, 'threadId')
-      expect(result).toStrictEqual(workerHandlers.threadId)
-    })
-
-    it('should reject if the worker does not respond', async() => {
-      const shouldReject = workerRequest(workerModules, 'doesNotExist')
-      await expect(shouldReject).rejects.toThrow('No registered handler is listening for messages.')
-    })
+    // --- Send the request payload to the target worker.
+    worker.postMessage({ name, parameters, port: port1 }, transferList)
   })
+
+  // --- Return the result of the function.
+  return result as Promise<Awaited<ReturnType<T>>>
 }
