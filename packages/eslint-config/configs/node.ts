@@ -23,7 +23,9 @@ export function node(): Linter.Config[] {
         // --- Enforce the use of ECMAScript features.
         'n/no-unsupported-features/es-syntax': 'error',
         'n/no-unsupported-features/es-builtins': 'error',
-        'n/no-unsupported-features/node-builtins': 'error',
+
+        // --- Ignore experimental warnings.
+        'n/no-unsupported-features/node-builtins': 'off',
 
         // --- Prefer the use of global objects over built-in modules.
         'n/prefer-global/buffer': 'error',
@@ -40,6 +42,17 @@ export function node(): Linter.Config[] {
         // --- Prefer the use of promises over callbacks.
         'n/prefer-promises/fs': 'error',
         'n/prefer-promises/dns': 'error',
+      },
+    },
+    {
+      files: [
+        '**/*.test.ts',
+        '**/*.spec.ts',
+      ],
+      rules: {
+
+        // --- Disable the no-sync rule for tests.
+        'n/no-sync': 'off',
       },
     },
   ]
