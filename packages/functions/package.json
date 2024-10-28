@@ -76,16 +76,6 @@
       "types": "./dist/flow.d.ts",
       "import": "./dist/flow.js"
     },
-    "./garbageCollect": {
-      "require": "./dist/garbageCollect.cjs",
-      "types": "./dist/garbageCollect.d.ts",
-      "import": "./dist/garbageCollect.js"
-    },
-    "./garbageCollected": {
-      "require": "./dist/garbageCollected.cjs",
-      "types": "./dist/garbageCollected.d.ts",
-      "import": "./dist/garbageCollected.js"
-    },
     "./getCaller": {
       "require": "./dist/getCaller.cjs",
       "types": "./dist/getCaller.d.ts",
