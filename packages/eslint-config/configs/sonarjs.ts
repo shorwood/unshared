@@ -17,16 +17,35 @@ export function sonarjs(): Linter.Config[] {
         // --- Increase the default threshold to 10.
         'sonarjs/no-duplicate-string': ['error', { threshold: 10 }],
 
-        // --- We may want to use `undefined` as a return value.
+        // --- Disable unnecessary rules.
+        'sonarjs/use-type-alias': 'off',
         'sonarjs/no-use-of-empty-return-value': 'off',
+        'sonarjs/no-nested-functions': 'off',
 
-        // --- Disable redundant with TypeScript.
+        // --- Disable rules that are already covered by TypeScript.
+        'sonarjs/no-extra-arguments': 'off',
         'sonarjs/function-return-type': 'off',
+        'sonarjs/no-misused-promises': 'off',
+        'sonarjs/no-invariant-returns': 'off',
+        'sonarjs/no-unused-expressions': 'off',
         'sonarjs/different-types-comparison': 'off',
 
         // --- Allow control characters in regex.
-        'no-control-regex': 'off',
         'sonarjs/sonar-no-control-regex': 'off',
+      },
+    },
+    {
+      files: [
+        '**/*.test.ts',
+        '**/*.spec.ts',
+      ],
+      rules: {
+
+        // --- Disable unnecessary rules for test files.
+        'sonarjs/cognitive-complexity': 'off',
+        'sonarjs/no-duplicate-string': 'off',
+        'sonarjs/no-useless-constructor': 'off',
+        'sonarjs/public-static-readonly': 'off',
       },
     },
   ]
