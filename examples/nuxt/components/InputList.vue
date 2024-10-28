@@ -41,7 +41,8 @@ async function fetchUsers() {
   const data = await response.json() as User[]
   users.value = data.filter((user: User) => {
     if (!search.value) return true
-    return user.name.toLowerCase().includes(search.value.toLowerCase())
+    const searchLower = search.value.toLowerCase()
+    return user.name.toLowerCase().includes(searchLower)
   })
   loading.value = false
 }
@@ -94,10 +95,10 @@ watchDebounced(search, fetchUsers, { debounce: 500 })
         <div class="flex flex-wrap flex-nowrap items-center space-x-2">
           <div
             v-for="value in values.slice(0, 2)"
-            :key="value.text"
+            :key="value.label"
             class="flex items-center space-x-2 border border-primary-500/20 px-2 rounded-md whitespace-nowrap">
             <p class="text-sm">
-              {{ value.text }}
+              {{ value.label }}
             </p>
             <button
               class="text-primary-500 hover:text-primary-400 transition-colors duration-300"

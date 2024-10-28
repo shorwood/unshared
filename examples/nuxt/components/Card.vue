@@ -27,11 +27,11 @@ const isOpen = ref(false)
     <!-- Content -->
     <BaseCollapse
       vertical
-      :isOpen="isOpen"
+      :is-open="isOpen"
       :class="{ 'opacity-0': !isOpen }"
       class="transition-all ease-in-out duration-200">
       <div class="flex space-x-3 p-4 pt-px">
-        <slot/>
+        <slot />
       </div>
     </BaseCollapse>
   </div>

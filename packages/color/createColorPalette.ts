@@ -52,10 +52,6 @@ export interface CreateColorPaletteOptions<K extends number = number> {
   stops?: K[]
 }
 
-export type ColorPalette<K extends number = number> = {
-  [P in K]: string
-}
-
 /**
  * Generate a TailwindCSS / WindiCSS / UnoCSS color palette from a single hex color.
  *
@@ -67,7 +63,7 @@ export type ColorPalette<K extends number = number> = {
 export function createColorPalette<K extends number = ColorPaletteDefaultStops>(
   color: string,
   options: CreateColorPaletteOptions<K> = {},
-): ColorPalette<K> {
+): Record<K, string> {
   const {
     baseStop = 500,
     hueShift = 0,

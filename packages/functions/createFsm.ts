@@ -11,9 +11,7 @@ import type { MaybePromise } from '@unshared/types'
  * @template T The data of the machine.
  * @template K The allowed states of the machine.
  */
-export type FSMTransitions<T, K extends string> = {
-  [P in K]: (data: T) => MaybePromise<string | undefined | void>
-}
+export type FSMTransitions<T, K extends string> = Record<K, (data: T) => MaybePromise<string | undefined | void>>
 
 /**
  * Create an highly observeable [finite state machine](https://en.wikipedia.org/wiki/Finite-state_machine)

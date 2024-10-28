@@ -7,7 +7,7 @@ const model = useVModel(props, 'modelValue')
 
 <template>
   <BaseInputFile
-    v-slot="{ thumbnails, files }"
+    v-slot="{ thumbnails }"
     v-model="model"
     class="
       w-full min-h-64 p-4 rounded-lg cursor-pointer
