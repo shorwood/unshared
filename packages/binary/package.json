@@ -111,11 +111,6 @@
       "types": "./dist/setByte.d.ts",
       "import": "./dist/setByte.js"
     },
-    "./streamReadable": {
-      "require": "./dist/streamReadable.cjs",
-      "types": "./dist/streamReadable.d.ts",
-      "import": "./dist/streamReadable.js"
-    },
     "./toUint8Array": {
       "require": "./dist/toUint8Array.cjs",
       "types": "./dist/toUint8Array.d.ts",
