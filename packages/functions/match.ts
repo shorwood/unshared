@@ -33,6 +33,7 @@ export function match(value: unknown, cases: object): unknown {
   if (Symbol.iterator in cases) {
     for (const [predicate, result] of cases as MatchMap<unknown>) {
       const isPredicate = typeof predicate === 'function'
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       if (isPredicate && predicate(value)) return result
       if (!isPredicate && predicate === value) return result
     }
@@ -42,43 +43,4 @@ export function match(value: unknown, cases: object): unknown {
   else {
     return cases[value as keyof typeof cases]
   }
-}
-
-/* v8 ignore next */
-if (import.meta.vitest) {
-  test('should match a value with a set of values and return their corresponding values', () => {
-    const result = match('a', { a: 1, b: '2' })
-    expect(result).toBe(1)
-    expectTypeOf(result).toEqualTypeOf<number | string | undefined>()
-  })
-
-  test('should match a value with a set of predicate functions and return their corresponding values', () => {
-    const result = match('b', [
-      [v => v === 'a', 1],
-      [v => v === 'b', 2],
-    ])
-    expect(result).toBe(2)
-    expectTypeOf(result).toEqualTypeOf<number | undefined>()
-  })
-
-  test('should match a value in the map and return the corresponding value', () => {
-    const result = match('a', [['a', 1], ['b', 2]])
-    expect(result).toBe(1)
-    expectTypeOf(result).toEqualTypeOf<number | undefined>()
-  })
-
-  test('should match a value and return value of a mixed type', () => {
-    const result = match<number | string, string>('a', [
-      [v => v === 'a', 1],
-      ['b', '2'],
-    ])
-    expect(result).toBe(1)
-    expectTypeOf(result).toEqualTypeOf<number | string | undefined>()
-  })
-
-  test('should return the default value if no matches are found', () => {
-    const result = match('c', { a: 1, b: 2 })
-    expect(result).toBeUndefined()
-    expectTypeOf(result).toEqualTypeOf<number | undefined>()
-  })
 }

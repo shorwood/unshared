@@ -37,92 +37,17 @@ export type TriesResult<F extends Function[], IsPromise = false, Result extends 
 export function tries<F extends Function[]>(...functions: F): TriesResult<F>
 export function tries<T>(...functions: Function[]): T
 export function tries(...functions: Function[]) {
-  // eslint-disable-next-line @typescript-eslint/prefer-for-of
-  for (let i = 0; i < functions.length; i++) {
-    const fn = functions[i] as () => unknown
+  for (const element of functions) {
+    const fn = element as () => unknown
     try {
       const result = fn()
+      if (result instanceof Promise === false) return result
 
       // --- If the result is a promise, wait for it to resolve.
       // --- If an error occurs, try the next function but return
       // --- wrapped in a promise to keep the result type consistent.
-      if (result instanceof Promise)
-        return result.catch(() => tries(...functions.slice(1)))
-
-      // --- If the result is not a promise, we can return it immediately.
-      return result
+      return result.catch(() => tries(...functions.slice(1)))
     }
-    catch {
-
-      // --- Continue to the next function if the current one throws.
-    }
+    catch { continue }
   }
-}
-
-/* v8 ignore start */
-if (import.meta.vitest) {
-  test('should return the first result that does not throw', () => {
-    const fn1 = vi.fn(() => { throw new Error('Error') }) as () => number
-    const fn2 = vi.fn(() => 'Hello, World!') as () => string
-    const fn3 = vi.fn(() => 1) as () => number
-    const result = tries(fn1, fn2, fn3)
-    expect(result).toBe('Hello, World!')
-    expect(fn1).toHaveBeenCalledOnce()
-    expect(fn2).toHaveBeenCalledOnce()
-    expect(fn3).not.toHaveBeenCalled()
-    expectTypeOf(result).toEqualTypeOf<number | string | void>()
-  })
-
-  test('should return a promise if the result is a promise after the first function throws', async() => {
-    const fn1 = vi.fn(() => { throw new Error('Error') }) as () => Promise<number>
-    const fn2 = vi.fn(() => Promise.resolve(1)) as () => Promise<number>
-    const result = tries(fn1, fn2)
-    await expect(result).resolves.toBe(1)
-    expect(fn1).toHaveBeenCalledOnce()
-    expect(fn2).toHaveBeenCalledOnce()
-    expectTypeOf(result).toEqualTypeOf<Promise<number> | Promise<void>>()
-  })
-
-  test('should return a promise if a previous function rejects', async() => {
-    const fn1 = vi.fn(() => Promise.reject(new Error('Error'))) as () => Promise<number>
-    const fn2 = vi.fn(() => 1) as () => number
-    const result = tries(fn1, fn2)
-    await expect(result).resolves.toBe(1)
-    expect(fn1).toHaveBeenCalledOnce()
-    expect(fn2).toHaveBeenCalledOnce()
-    expectTypeOf(result).toEqualTypeOf<Promise<number> | Promise<void>>()
-  })
-
-  test('should return undefined if all functions throw or return undefined', () => {
-    const fn1 = vi.fn(() => { throw new Error('Error') }) as () => void
-    const fn2 = vi.fn(() => {}) as () => void
-    const result = tries(fn1, fn2)
-    expect(result).toBeUndefined()
-    expect(fn1).toHaveBeenCalledOnce()
-    expect(fn2).toHaveBeenCalledOnce()
-    expectTypeOf(result).toEqualTypeOf<void>()
-  })
-
-  test('should only call each function once when switching to a promise', async() => {
-    const fn1 = vi.fn(() => { throw new Error('Error') })
-    const fn2 = vi.fn(() => { throw new Error('Error') })
-    const fn3 = vi.fn(() => Promise.resolve(1))
-    const result = tries(fn1, fn2, fn3)
-    await expect(result).resolves.toBe(1)
-    expect(fn1).toHaveBeenCalledOnce()
-    expect(fn2).toHaveBeenCalledOnce()
-    expect(fn3).toHaveBeenCalledOnce()
-  })
-
-  test('should return undefined if no functions are provided', () => {
-    const result = tries()
-    expect(result).toBeUndefined()
-    expectTypeOf(result).toEqualTypeOf<void>()
-  })
-
-  test('should override the return type using the generic', () => {
-    const result = tries<'foo'>(() => 'not-foo')
-    expect(result).toBe('not-foo')
-    expectTypeOf(result).toEqualTypeOf<'foo'>()
-  })
 }

@@ -62,7 +62,7 @@ if (import.meta.vitest) {
   })
 
   test('should return the kind of a Function', () => {
-    const value = () => {}
+    const value = () => { /* noop */ }
     const result = kindOf(value)
     expect(result).toBe('function')
   })
