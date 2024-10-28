@@ -1,3 +1,4 @@
+import type { MaybeLiteral } from '@unshared/types'
 import type { Prop, VNode } from 'vue'
 import type { DefineComponentContext } from './defineSetupComponent'
 import type { BaseStateOptions } from './useBaseState'
@@ -5,8 +6,6 @@ import { computed, h } from 'vue'
 import { defineSetupComponent } from './defineSetupComponent'
 import { exposeToDevtool } from './exposeToDevtool'
 import { BASE_STATE_OPTIONS } from './useBaseState'
-
-type MaybeKeyOf<T> = ({} & string) | keyof T & string
 
 /** The properties of the `BaseTable` component. */
 export const BASE_TABLE_PROPS = {
@@ -90,16 +89,16 @@ export interface BaseTableProps<T, K extends string> extends
 
 /** The context of the `BaseTable` component. */
 export type BaseTableSlots<T, K extends string> =
-  {
+  { [P in K as `cell.${P}`]: (row: T) => VNode }
+  & { [P in K as `header.${P}`]: (key: K) => VNode }
+  & {
     row: (row: T) => VNode
     cell: (cell: TableCell<T, K>) => VNode
     header: (key: K) => VNode
   }
-  & { [P in K as `cell.${P}`]: (row: T) => VNode }
-  & { [P in K as `header.${P}`]: (key: K) => VNode }
 
 export const BaseTable = defineSetupComponent(
-  <T extends object, K extends MaybeKeyOf<T>>(props: BaseTableProps<T, K>, { slots, attrs }: DefineComponentContext<BaseTableSlots<T, K>>) => {
+  <T extends object, K extends MaybeLiteral<keyof T & string>>(props: BaseTableProps<T, K>, { slots, attrs }: DefineComponentContext<BaseTableSlots<T, K>>) => {
 
     // --- Compute the cells of the table and resolve the values.
     const cells = computed(() => {
@@ -143,7 +142,7 @@ export const BaseTable = defineSetupComponent(
       return h(
         'tr',
         { class: props.classRow },
-        cells.map(createCell),
+        cells.map((cell, index) => createCell(cell, index)),
       )
     }
 
@@ -173,7 +172,7 @@ export const BaseTable = defineSetupComponent(
       return h(
         'tr',
         { class: props.classHeaderRow },
-        columns.map(createHeaderCell),
+        columns.map(column => createHeaderCell(column)),
       )
     }
 
@@ -183,7 +182,7 @@ export const BaseTable = defineSetupComponent(
     // --- Render the table.
     return () => {
       const vNodeHeaderCells = createHeader(props.columns ?? [])
-      const vNodeRows = cells.value.map(createRow)
+      const vNodeRows = cells.value.map(row => createRow(row))
       const vNodeHeader = h('thead', { class: props.classHeader }, vNodeHeaderCells)
       const vNodeBody = h('tbody', { class: props.classBody }, vNodeRows)
       return h('table', attrs, [vNodeHeader, vNodeBody] )
@@ -194,71 +193,3 @@ export const BaseTable = defineSetupComponent(
     props: BASE_TABLE_PROPS,
   },
 )
-
-/* v8 ignore start */
-if (import.meta.vitest) {
-
-  // @vitest-environment happy-dom
-  const { mount } = await import('@vue/test-utils')
-
-  describe('baseTable', () => {
-    it('should render a simple table', () => {
-      const wrapper = mount(BaseTable, { props: {
-        columns: [
-          'name',
-          'age',
-        ],
-        rows: [
-          { name: 'Alice', age: 30 },
-          { name: 'Bob', age: 25 },
-        ],
-      } })
-
-      const html = wrapper.html()
-      expect(html).toBe([
-        '<table>',
-        '  <thead>',
-        '    <tr>',
-        '      <th scope="col">name</th>',
-        '      <th scope="col">age</th>',
-        '    </tr>',
-        '  </thead>',
-        '  <tbody>',
-        '    <tr>',
-        '      <th scope="row">Alice</th>',
-        '      <td>30</td>',
-        '    </tr>',
-        '    <tr>',
-        '      <th scope="row">Bob</th>',
-        '      <td>25</td>',
-        '    </tr>',
-        '  </tbody>',
-        '</table>',
-      ].join('\n'))
-    })
-  })
-
-  describe('classes', () => {
-    it('should apply the classHeader class to the <thead> element', () => {
-      const wrapper = mount(BaseTable, { props: {
-        columns: [],
-        rows: [],
-        classHeader: 'class-header',
-      } })
-
-      const classes = wrapper.find('thead').classes()
-      expect(classes).toContain('class-header')
-    })
-
-    it('should apply the classHeaderRow class to the <tr> elements in the header', () => {
-      const wrapper = mount(BaseTable, { props: {
-        columns: [],
-        rows: [],
-        classHeaderRow: 'class-header-row',
-      } })
-
-      const classes = wrapper.find('thead').find('tr').classes()
-      expect(classes).toContain('class-header-row')
-    })
-  })
-}

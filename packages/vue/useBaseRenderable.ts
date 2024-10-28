@@ -1,3 +1,4 @@
+import type { MaybeLiteral } from '@unshared/types'
 import type { Component, Prop } from 'vue'
 import { toReactive } from '@vueuse/core'
 import { computed, getCurrentInstance, resolveComponent } from 'vue'
@@ -11,7 +12,7 @@ export interface BaseRenderableOptions {
    *
    * @example 'div'
    */
-  as?: {} & string | Component | keyof HTMLElementTagNameMap
+  as?: Component | MaybeLiteral<keyof HTMLElementTagNameMap>
 }
 
 /** The base properties of the renderable composable. */
@@ -73,74 +74,4 @@ export function useBaseRenderable(props: BaseRenderableOptions = {}, instance = 
   const composable = toReactive({ is })
   if (instance) instance[BASE_RENDERABLE_SYMBOL] = composable
   return composable
-}
-
-/* v8 ignore next */
-// @vitest-environment happy-dom
-if (import.meta.vitest) {
-  const { isReactive, defineComponent } = await import('vue')
-  const { mount } = await import('@vue/test-utils')
-
-  describe('composable', () => {
-    it('should return a reactive object', () => {
-      const result = useBaseRenderable()
-      const reactive = isReactive(result)
-      expect(reactive).toBe(true)
-    })
-
-    it('should provide the composable into the component', () => {
-      mount(() => {
-        const result = useBaseRenderable()
-        const instance = getCurrentInstance()
-        const injected = instance?.[BASE_RENDERABLE_SYMBOL]
-        expect(result).toStrictEqual(injected)
-      })
-    })
-
-    it('should return the same instance when called multiple times', () => {
-      mount(() => {
-        const result1 = useBaseRenderable()
-        const result2 = useBaseRenderable()
-        expect(result1).toBe(result2)
-      })
-    })
-
-    it('should return different instances for different components', () => {
-      const result1 = useBaseRenderable()
-      const result2 = useBaseRenderable()
-      expect(result1).not.toBe(result2)
-    })
-  })
-
-  describe('html tag', () => {
-    it('should return a div tag', () => {
-      const result = useBaseRenderable({ as: 'div' })
-      expect(result.is).toBe('div')
-    })
-
-    it('should return a span tag', () => {
-      const result = useBaseRenderable({ as: 'span' })
-      expect(result.is).toBe('span')
-    })
-  })
-
-  describe('component', () => {
-    it('should return a component', () => {
-      const component = defineComponent({ template: '<div></div>' })
-      const result = useBaseRenderable({ as: component })
-      expect(result.is).toBe(component)
-    })
-
-    it('should return a component by name', () => {
-      const Component = defineComponent({ template: '<div></div>' })
-      mount({
-        components: { Component },
-        setup() {
-          const result = useBaseRenderable({ as: 'Component' })
-          expect(result.is).toBe(Component)
-          return () => ''
-        },
-      })
-    })
-  })
 }

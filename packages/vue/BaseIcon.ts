@@ -86,7 +86,7 @@ export const BaseIcon = /* #__PURE__ */ defineSetupComponent(
       if (props.label) return props.label
       if (type.value === 'svg') return 'svg'
       if (type.value === 'data-uri') return 'data-uri'
-      if (type.value === 'url') return (/[^/]+([^#?]+)/.exec((props.icon!)))?.[1]
+      if (type.value === 'url') return props.icon!.split('/').pop()
       return props.icon
     })
 
@@ -104,14 +104,12 @@ export const BaseIcon = /* #__PURE__ */ defineSetupComponent(
       if (!props.icon) return
       if (type.value === 'svg') return cleanSvgSize(props.icon)
       if (type.value === 'url' && props.load) return iconSvg.value
-      return
     })
 
     // --- Compute the `src` attribute based on the icon type.
     const source = computed(() => {
       if (props.load) return
       if (type.value === 'url' || type.value === 'data-uri') return props.icon
-      return
     })
 
     /**
@@ -122,9 +120,10 @@ export const BaseIcon = /* #__PURE__ */ defineSetupComponent(
      * @returns A promise that resolves when the icon content is loaded.
      */
     async function loadIcon(): Promise<void> {
-      if (type.value !== 'url') return iconSvg.value = undefined
-      if (!props.load) return iconSvg.value = undefined
-      if (!props.icon) return iconSvg.value = undefined
+      if (type.value !== 'url' || !props.load || !props.icon) {
+        iconSvg.value = undefined
+        return
+      }
 
       // --- Check if the icon is already in the cache.
       if (cache.value[props.icon]) {

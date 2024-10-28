@@ -86,9 +86,11 @@ export const BaseCollapse = /* #__PURE__ */ defineSetupComponent(
 
       // --- Wait for the next frame to set the final size.
       await new Promise(resolve => setTimeout(resolve, 0))
+      const maxHeight = isOpen ? `${element.value.scrollHeight}px` : '0'
+      const maxWidth = isOpen ? `${element.value.scrollWidth}px` : '0'
       style.value = {
-        maxHeight: vertical ? (isOpen ? `${element.value.scrollHeight}px` : '0') : undefined,
-        maxWidth: horizontal ? (isOpen ? `${element.value.scrollWidth}px` : '0') : undefined,
+        maxHeight: vertical ? maxHeight : undefined,
+        maxWidth: horizontal ? maxWidth : undefined,
       }
 
       // --- After the transition ends, let original styles take over.

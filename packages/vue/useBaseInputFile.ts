@@ -1,6 +1,7 @@
 import type { Prop, Ref } from 'vue'
 import { toReactive, useVModel } from '@vueuse/core'
 import { computed, getCurrentInstance } from 'vue'
+import { getFileUrl } from './getFileUrl'
 
 /** The symbol to provide the base toggle composable. */
 export const BASE_INPUT_FILE_SYMBOL = Symbol()
@@ -129,30 +130,15 @@ export function useBaseInputFile(options: BaseInputFileOptions = {}, instance = 
     input.setAttribute('name', options.multiple ? 'files[]' : 'file')
     input.setAttribute('accept', options.accept ?? '*')
     input.setAttribute('multiple', options.multiple ? 'multiple' : '')
-    // @ts-expect-error: `event` is a `InputEvent`.
-    input.addEventListener('change', handleChange)
+    input.addEventListener('change', event => handleChange(event as InputEvent))
     input.click()
-  }
-
-  /**
-   * Given a `File` or string, this function will return a URL to the file or URL.
-   * If the item is a `File`, it will create a URL using `URL.createObjectURL`.
-   * If the item is a string, it will return the string as is.
-   *
-   * @param item File or URL.
-   * @returns URL to the file or URL.
-   */
-  function getFileUrl(item?: File | string): string | undefined {
-    // eslint-disable-next-line n/no-unsupported-features/node-builtins
-    if (item instanceof File) return URL.createObjectURL(item)
-    return item
   }
 
   // --- List of URLs to the files.
   const thumbnails = computed(() => {
     const value = model.value
     if (!value) return []
-    if (Array.isArray(value)) return value.map(getFileUrl)
+    if (Array.isArray(value)) return value.map(value => getFileUrl(value)).filter(Boolean)
     return [getFileUrl(value)]
   })
 

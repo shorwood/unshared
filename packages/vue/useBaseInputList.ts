@@ -21,11 +21,7 @@ export const BASE_INPUT_LIST_OPTIONS = {
 } satisfies Record<keyof UseBaseInputListOptions<any, any, any>, Prop<unknown>>
 
 /** The options for the `useBaseInputList` composable. */
-export interface UseBaseInputListOptions<
-  T,
-  V = T,
-  M extends boolean = boolean,
-> {
+export interface UseBaseInputListOptions<T, V = T, M extends boolean = boolean> {
 
   /**
    * Items available for selection as an object or array. Each option should
@@ -357,7 +353,7 @@ export function useBaseInputList<T, V, M extends boolean>(options: UseBaseInputL
   // --- Computed wrapped options.
   const optionsWrapped = computed(() => {
     if (!options.options) return []
-    return Object.values(options.options).map(wrapOption)
+    return Object.values(options.options).map(option => wrapOption(option))
   })
 
   const optionsAll = ref([]) as Ref<Array<ListOption<T, V>>>

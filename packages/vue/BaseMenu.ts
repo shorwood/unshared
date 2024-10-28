@@ -141,7 +141,7 @@ export const BaseMenu = /* #__PURE__ */ defineSetupComponent(
     })
 
     const menuStyle = computed<CSSProperties>(() => ({
-      position: (top.value || bottom.value || left.value || right.value) ? 'absolute' : undefined,
+      position: (top.value ?? bottom.value ?? left.value ?? right.value) ? 'absolute' : undefined,
       top: top.value,
       bottom: bottom.value,
       left: left.value,

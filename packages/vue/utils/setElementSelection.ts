@@ -30,7 +30,7 @@ export function setElementSelection(element?: Node | null, index = 0, length = i
   }
 
   // --- Get the selection and create a new range.
-  const selection = window.getSelection()
+  const selection = globalThis.getSelection()
   const range = document.createRange()
   if (!selection) return
   range.selectNodeContents(element)

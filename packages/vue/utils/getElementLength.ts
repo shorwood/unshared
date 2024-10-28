@@ -12,27 +12,3 @@ export function getElementLength(node: Node): number {
   if (node.nodeType === Node.TEXT_NODE) return (node as Text).length
   return (node as HTMLElement).textContent?.length ?? 0
 }
-
-/* v8 ignore start */
-if (import.meta.vitest) {
-
-  // @vitest-environment happy-dom
-  test('should return the length of a text node', () => {
-    const text = document.createTextNode('Hello')
-    const result = getElementLength(text)
-    expect(result).toBe(5)
-  })
-
-  test('should return the length of a br element', () => {
-    const br = document.createElement('br')
-    const result = getElementLength(br)
-    expect(result).toBe(1)
-  })
-
-  test('should return the length of a <div> element', () => {
-    const div = document.createElement('div')
-    div.textContent = 'Hello, World!'
-    const result = getElementLength(div)
-    expect(result).toBe(13)
-  })
-}

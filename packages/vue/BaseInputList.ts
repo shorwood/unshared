@@ -179,7 +179,10 @@ export const BaseInputList = defineSetupComponent(
      * @returns The VNode for the input list.
      */
     function createSelect(): VNode {
-      const options = input.options.filter(option => option.isVisible).map(createOption)
+      const options = input.options
+        .filter(option => option.isVisible)
+        .map(option => createOption(option))
+
       return h('select', mergeProps(
         attributes.value,
         cleanAttributes({
