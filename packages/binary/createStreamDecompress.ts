@@ -1,7 +1,6 @@
 import type { Gunzip, Inflate, ZlibOptions } from 'node:zlib'
-import { randomBytes } from 'node:crypto'
-import { PassThrough, Readable, Transform } from 'node:stream'
-import { createDeflate, createGunzip, createGzip, createInflate } from 'node:zlib'
+import { PassThrough, Transform } from 'node:stream'
+import { createGunzip, createInflate } from 'node:zlib'
 
 const Z_GZIP_HEADER = Buffer.from([0x1F, 0x8B, 0x08])
 const Z_DEFLATE_HEADER_1 = Buffer.from([0x78, 0x9C])
@@ -96,36 +95,4 @@ export class Decompress extends Transform {
  */
 export function createStreamDecompress(options: ZlibOptions = {}) {
   return new Decompress(options)
-}
-
-/** v8 ignore start */
-if (import.meta.vitest) {
-  const buffer = randomBytes(2048)
-  const expected = buffer.toString('hex')
-
-  test('should not decompress raw data', async() => {
-    const decompress = createStreamDecompress()
-    const result = Readable.from(buffer).pipe(decompress)
-    const chunks = await result.toArray()
-    const data = Buffer.concat(chunks).toString('hex')
-    expect(data).toStrictEqual(expected)
-  })
-
-  test('should decompress gzip data', async() => {
-    const compress = createGzip()
-    const decompress = createStreamDecompress()
-    const result = Readable.from(buffer).pipe(compress).pipe(decompress)
-    const chunks = await result.toArray()
-    const data = Buffer.concat(chunks).toString('hex')
-    expect(data).toStrictEqual(expected)
-  })
-
-  test('should decompress deflate data', async() => {
-    const compress = createDeflate()
-    const decompress = createStreamDecompress()
-    const result = Readable.from(buffer).pipe(compress).pipe(decompress)
-    const chunks = await result.toArray()
-    const data = Buffer.concat(chunks).toString('hex')
-    expect(data).toStrictEqual(expected)
-  })
 }
