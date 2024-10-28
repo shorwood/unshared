@@ -11,16 +11,3 @@
 export function join(values: string[], separator = ''): string {
   return values.join(separator)
 }
-
-/* v8 ignore next */
-if (import.meta.vitest) {
-  test('should join an array of strings', () => {
-    const result = join(['a', 'b', 'c'], ',')
-    expect(result).toBe('a,b,c')
-  })
-
-  test('should join an array of strings with no separator', () => {
-    const result = join(['a', 'b', 'c'])
-    expect(result).toBe('abc')
-  })
-}

@@ -23,24 +23,3 @@ export function toCapitalized<S extends string>(value: S): Capitalized<S> {
   if (value.length === 1) return value.toUpperCase() as Capitalized<S>
   return value.charAt(0).toUpperCase() + value.slice(1) as Capitalized<S>
 }
-
-/* v8 ignore next */
-if (import.meta.vitest) {
-  test('should capitalize the first letter of a string', () => {
-    const result = toCapitalized('fooBar')
-    expect(result).toBe('FooBar')
-    expectTypeOf(result).toEqualTypeOf<'FooBar'>()
-  })
-
-  test('should capitalize a single character', () => {
-    const result = toCapitalized('a')
-    expect(result).toBe('A')
-    expectTypeOf(result).toEqualTypeOf<'A'>()
-  })
-
-  test('should capitalize an empty string', () => {
-    const result = toCapitalized('')
-    expect(result).toBe('')
-    expectTypeOf(result).toEqualTypeOf<''>()
-  })
-}

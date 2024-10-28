@@ -13,12 +13,3 @@ import type { Trim } from '@unshared/types'
 export function trim<S extends string>(string: S): Trim<S> {
   return string.trim() as Trim<S>
 }
-
-/* v8 ignore next */
-if (import.meta.vitest) {
-  test('should remove whitespace from both sides of a string', () => {
-    const result = trim(' Hello world ')
-    expect(result).toBe('Hello world')
-    expectTypeOf(result).toEqualTypeOf<'Hello world'>()
-  })
-}
