@@ -1,9 +1,8 @@
-import type { MaybeArray } from '@unshared/types'
 import type { Linter } from 'eslint'
 import { antfu } from './antfu'
 import { eslintComments } from './eslintComments'
 import { jsdoc } from './jsdoc'
-import { configJson } from './json'
+import { json } from './json'
 import { jsonPackage } from './jsonPackage'
 import { jsonTsconfig } from './jsonTsconfig'
 import { node } from './node'
@@ -15,23 +14,23 @@ import { vue } from './vue'
 import { yml } from './yml'
 
 export interface ESLintConfigOptions {
-  tsConfigPath?: MaybeArray<string>
+  tsConfigPath?: string | string[]
   rules?: Linter.RulesRecord
 }
 
 export function all(options: ESLintConfigOptions = {}) {
   return [
-    ...antfu(options),
-    ...eslintComments(options),
-    ...jsdoc(options),
-    ...configJson(options),
+    ...antfu(),
+    ...eslintComments(),
+    ...jsdoc(),
+    ...json(),
     ...jsonPackage(),
     ...jsonTsconfig(),
-    ...node(options),
-    ...sonarjs(options),
+    ...node(),
+    ...sonarjs(),
     ...typescript(options),
-    ...unicorn(options),
-    ...vitest(options),
+    ...unicorn(),
+    ...vitest(),
     ...vue(options),
     ...yml(),
     {
@@ -40,7 +39,7 @@ export function all(options: ESLintConfigOptions = {}) {
         '**/bin',
         '**/node_modules',
         '**/.nuxt',
-        '**/output',
+        '**/.output',
         '**/coverage',
         '**/public',
         '**/__wip__',

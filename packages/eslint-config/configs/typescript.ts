@@ -4,13 +4,13 @@ import javascript from '@eslint/js'
 import stylistic from '@stylistic/eslint-plugin'
 import { toArray } from '@unshared/collection/toArray'
 import perfectionist from 'eslint-plugin-perfectionist'
-import { cwd } from 'node:process'
 import tslint from 'typescript-eslint'
 import { getConfigRules } from '../utils'
 
-export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
+export function typescript(options: ESLintConfigOptions): Linter.Config[] {
   return [
     javascript.configs.recommended,
+    // stylistic.configs['recommended-flat'],
     {
       languageOptions: {
         // @ts-expect-error: ignore
@@ -19,7 +19,7 @@ export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
           ecmaVersion: 'latest',
           sourceType: 'module',
           project: toArray(options.tsConfigPath ?? './tsconfig.json'),
-          tsconfigRootDir: cwd(),
+          tsconfigRootDir: process.cwd(),
         },
       },
       plugins: {
@@ -30,6 +30,7 @@ export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
       files: [
         '**/*.{ts,tsx,cts,mts}',
         '**/*.{js,jsx,cjs,mjs}',
+        '**/*.vue',
       ],
       rules: {
 
@@ -40,26 +41,12 @@ export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
         ...getConfigRules(tslint.configs.recommendedTypeChecked),
         ...getConfigRules(tslint.configs.stylisticTypeChecked),
 
-        /**
-         * Age-old debate over how to style braces. This rule aims to reduce the
-         * cognitive load of reasoning about code by enforcing a consistent style.
-         *
-         * @see https://eslint.style/rules/default/brace-style
-         */
+        // --- Enforce stroustrup brace style.
         'brace-style': 'off',
         '@typescript-eslint/brace-style': 'off',
-        '@stylistic/brace-style': ['error', 'stroustrup', {
-          allowSingleLine: true,
-        }],
+        '@stylistic/brace-style': ['error', 'stroustrup', { allowSingleLine: true }],
 
-        /**
-         * Enforce an indent of 2 spaces. Aims to reduce visual noise and maintain
-         * readability of code when viewed on GitHub or GitLab.
-         *
-         * @see https://eslint.style/rules/default/no-tabs
-         * @see https://eslint.style/rules/default/indent
-         * @see https://eslint.style/rules/default/indent-binary-ops
-         */
+        // --- Enforce 2 spaces for indentation and disallow tabs.
         'no-tabs': 'off',
         'indent': 'off',
         'indent-binary-ops': 'off',
@@ -70,72 +57,28 @@ export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
         '@stylistic/indent': ['error', 2],
         '@stylistic/indent-binary-ops': ['error', 2],
 
-        /**
-         * Enforce no semi-colons. This rule aims to maintain consistency around the
-         * use or omission of trailing semicolons. Helps reduce the visual noise in
-         * the codebase. Also helps to prevent errors when refactoring and adding
-         * new lines.
-         *
-         * @see https://eslint.style/rules/default/semi
-         */
+        // --- No semicolons.
         'semi': 'off',
         '@typescript-eslint/semi': 'off',
         '@stylistic/semi': ['error', 'never'],
 
-        /**
-         * Enforce a consistent linebreak style and ensure no leading line breaks
-         * and a single trailing line break. This rule aims to maintain consistency
-         * around the use of line breaks in the codebase and reduce the amount of
-         * diff churn when making changes.
-         *
-         * @see https://eslint.style/rules/default/linebreak-style
-         */
+        // --- Consistent line breaks.
         'eol-last': 'off',
         'no-multiple-empty-lines': 'off',
         '@stylistic/eol-last': ['error', 'always'],
-        '@stylistic/no-multiple-empty-lines': ['error', {
-          max: 1,
-          maxBOF: 0,
-          maxEOF: 0,
-        }],
+        '@stylistic/no-multiple-empty-lines': ['error', { max: 1, maxBOF: 0, maxEOF: 0 }],
 
-        /**
-         * Enforce a trailing comma after the last element or property in a multiline
-         * list of properties or elements. This rule improves the clarity of diffs
-         * when an item is added or removed from an object or array.
-         *
-         * @see https://eslint.style/rules/default/comma-dangle
-         * @see https://eslint.style/rules/default/comma-spacing
-         */
+        // --- Enforce dangling commas in multiline object literals.
         'comma-dangle': 'off',
         '@typescript-eslint/comma-dangle': 'off',
         '@stylistic/comma-dangle': ['error', 'always-multiline'],
 
-        /**
-         * This rule requires empty lines before and/or after comments. It is disabled
-         * however when in an object literal, array, or type literal.
-         *
-         * @see https://eslint.style/rules/default/lines-around-comment
-         */
-
-        /**
-         * Normalize type declaration and definition. This reduces the cognitive load
-         * of reasoning about code by enforcing a consistent style.
-         *
-         * @see https://typescript-eslint.io/rules/consistent-indexed-object-style
-         */
+        // --- Enforce type interfaces over type aliases.
         '@typescript-eslint/consistent-indexed-object-style': ['error', 'record'],
         '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
         '@typescript-eslint/array-type': ['error', { default: 'array-simple', readonly: 'array-simple' }],
 
-        /**
-         * Enforce sequential declarations in the same block. This rule aims to
-         * enforce a top to bottom ordering of variable and type declarations.
-         * This reduces the likelihood of a developer skipping over a declaration
-         * when modifying code.
-         *
-         * @see https://typescript-eslint.io/rules/no-use-before-define
-         */
+        // --- Enforce declaration and usage from top to bottom.
         'no-use-before-define': 'off',
         '@typescript-eslint/no-use-before-define': ['error', {
           enums: true,
@@ -146,17 +89,7 @@ export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
           ignoreTypeReferences: true,
         }],
 
-        /**
-         * Enforce a consistent spacing around various places where spaces are optional.
-         * This rule aims to maintain consistency around the use of spaces in the codebase
-         * and reduce the amount of diff churn when making changes.
-         *
-         * @see https://eslint.style/rules/default/key-spacing
-         * @see https://eslint.style/rules/default/comma-spacing
-         * @see https://eslint.style/rules/default/block-spacing
-         * @see https://eslint.style/rules/default/arrow-spacing
-         * @see https://eslint.style/rules/default/object-curly-spacing
-         */
+        // --- Consistent spacing and line breaks between tokens.
         'key-spacing': 'off',
         'comma-spacing': 'off',
         'block-spacing': 'off',
@@ -228,15 +161,7 @@ export function typescript(options: ESLintConfigOptions): Linter.FlatConfig[] {
           },
         }],
 
-        /**
-         * Enforce the use of `@ts-expect-error` over `@ts-ignore` to silence TypeScript
-         * errors. This rule aims to ensure that TypeScript errors are never silenced
-         * without explanation or justification. When an error is fixed, the
-         * `@ts-expect-error` forces the developer to remove the comment.
-         *
-         * @see https://typescript-eslint.io/rules/prefer-ts-expect-error
-         * @see https://typescript-eslint.io/rules/ban-ts-comment
-         */
+        // --- Enforce `@ts-expect-error` over `@ts-ignore`.
         '@typescript-eslint/prefer-ts-expect-error': 'error',
         '@typescript-eslint/ban-ts-comment': ['error', {
           'ts-check': false,

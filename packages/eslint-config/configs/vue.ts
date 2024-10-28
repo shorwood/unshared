@@ -7,10 +7,10 @@ import tslint from 'typescript-eslint'
 import vueParser from 'vue-eslint-parser'
 import { typescript } from './typescript'
 
-export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
+export function vue(options: ESLintConfigOptions): Linter.Config[] {
   const TYPESCRIPT_CONFIG = typescript(options).at(1)!
   return [
-    ...vuePlugin.configs?.['flat/base'] as Linter.FlatConfig[],
+    ...vuePlugin.configs['flat/recommended'],
     {
       plugins: {
         vue: vuePlugin,
@@ -41,117 +41,54 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
         },
       },
       processor: mergeProcessors([
-        // @ts-expect-error: ignore
-        vuePlugin.processors['.vue'],
+        vuePlugin.processors.vue as Linter.Processor,
         vueProcessorBlocks(),
       ]),
       files: [
         '**/*.vue',
+        '**/*.ts',
       ],
       rules: {
-        ...TYPESCRIPT_CONFIG.rules as Linter.RulesRecord,
-        // @ts-expect-error: ignore
-        ...vuePlugin.configs['flat/recommended'].rules as Linter.RulesRecord,
-        // @ts-expect-error: ignore
-        ...vuePlugin.configs['flat/strongly-recommended'].rules as Linter.RulesRecord,
-        // @ts-expect-error: ignore
-        ...vuePlugin.configs['flat/essential'].rules as Linter.RulesRecord,
+        'vue/return-in-computed-property': 'off',
 
-        /**
-         * Disable some TypeScript rules that may conflict with the Vue SFC parser.
-         */
-        '@typescript-eslint/no-unsafe-call': 'off',
-        '@typescript-eslint/no-unsafe-return': 'off',
-        '@typescript-eslint/no-misused-promises': 'off',
-        '@typescript-eslint/no-unsafe-assignment': 'off',
-        '@typescript-eslint/no-unsafe-member-access': 'off',
+        // --- Allow multiple component definitions in a single file.
+        'vue/one-component-per-file': 'off',
 
-        /**
-         * Enforces consistent usage of type imports. This rule will enforce the use
-         * of `type` imports to make it easier for the Vue SFC compiler to analyze
-         * the code and infer the dependency graph correctly.
-         *
-         * @see https://typescript-eslint.io/rules/consistent-type-imports
-         * @see https://vuejs.github.io/vetur/guide/FAQ.html#why-does-vetur-show-cannot-find-module-xxx
-         */
-        // '@typescript-eslint/consistent-type-imports': ['error', {
-        //   disallowTypeAnnotations: false,
-        //   fixStyle: 'inline-type-imports',
-        //   prefer: 'type-imports',
-        // }],
-
-        /**
-         * Enforce the order of the top-level properties in the component. This rule
-         * helps to maintain consistency and readability by enforcing a predictable
-         * order of the top-level properties in the component.
-         *
-         * @see https://eslint.vuejs.org/rules/ordered-component-elements.html
-         */
-        'vue/block-order': ['error', {
-          order: [
-            'docs',
-            'script',
-            'template',
-            'style',
-          ],
-        }],
-
-        /**
-         * Enforce use of the Composition API and TypeScript. This rule forbids the
-         * use of the Options API and JavaScript in Vue components for better
-         * consistency and maintainability.
-         *
-         * @see https://eslint.vuejs.org/rules/vue/prefer-define-options.html
-         * @see https://eslint.vuejs.org/rules/vue/component-api-style.html
-         */
+        // --- Enforce Component API style.
         'vue/prefer-define-options': 'error',
-        'vue/component-api-style': ['error', ['script-setup']],
+        'vue/component-api-style': ['error', ['script-setup', 'composition']],
 
-        /**
-         * Enforce the component name casing to be PascalCase. This rules helps identify
-         * and distinguish between components and HTML elements. It also helps to avoid
-         * conflicts with existing and future HTML elements.
-         *
-         * @see https://eslint.vuejs.org/rules/component-name-in-template-casing.html
-         */
+        // --- Enforce PascalCase components and allow reserved and single-word names.
+        'vue/multi-word-component-names': 'off',
+        'vue/no-reserved-component-names': 'off',
         'vue/component-name-in-template-casing': ['error', 'PascalCase', {
           ignores: [String.raw`/\./`],
           registeredComponentsOnly: false,
         }],
 
-        /**
-         * Enforce consistent spacing between HTML comments and their content.
-         *
-         * @see https://eslint.vuejs.org/rules/html-comment-content-spacing.html
-         * @see https://eslint.vuejs.org/rules/html-comment-content-newline.html
-         */
-        'vue/html-comment-content-spacing': ['error', 'always'],
-        'vue/html-comment-content-newline': ['error', {
-          multiline: 'always',
-          singleline: 'never',
-        }],
-
-        /**
-         * Enforce consistent spacing between HTML / Component tags. This makes it
-         * easier to read and understand the structure of the component.
-         *
-         * @see https://eslint.vuejs.org/rules/block-spacing.html
-         * @see https://eslint.vuejs.org/rules/padding-line-between-blocks.html
-         * @see https://eslint.vuejs.org/rules/padding-line-between-tags.html
-         */
-        'vue/block-spacing': ['error', 'always'],
-        'vue/padding-line-between-blocks': ['error', 'always'],
-        'vue/padding-line-between-tags': ['error', [
-          { blankLine: 'consistent', next: '*', prev: '*' },
-          { blankLine: 'always', next: '*', prev: 'comment' },
-        ]],
-
+        // --- Consistent spacing around HTML comments.
         'vue/html-comment-indent': ['error', 2],
         'vue/multiline-html-element-content-newline': ['error', {
           allowEmptyLines: true,
           ignores: [],
           ignoreWhenEmpty: true,
         }],
+        'vue/html-comment-content-spacing': ['error', 'always'],
+        'vue/html-comment-content-newline': ['error', {
+          multiline: 'always',
+          singleline: 'never',
+        }],
+
+        // --- Consistent block order in Vue components.
+        'vue/block-order': ['error', { order: ['script', 'template', 'style', 'i18n'] }],
+
+        // --- Consistent spacing in and around the block.
+        'vue/block-spacing': ['error', 'always'],
+        'vue/padding-line-between-blocks': ['error', 'always'],
+        'vue/padding-line-between-tags': ['error', [
+          { blankLine: 'consistent', next: '*', prev: '*' },
+          { blankLine: 'always', next: '*', prev: 'comment' },
+        ]],
 
         /**
          * Enforce consistent spacing and newlines in the template. This rule helps
@@ -183,8 +120,6 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
          *
          * @see https://eslint.vuejs.org/rules/multi-word-component-names.html
          */
-        'vue/multi-word-component-names': 'off',
-        'vue/no-reserved-component-names': 'off',
 
         /**
          * Reports the destructuring or member expression of props passed to setup
@@ -264,7 +199,6 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
           script: { lang: 'ts' },
         }],
 
-        'vue/return-in-computed-property': 'off',
         'vue/no-sparse-arrays': 'error',
         'vue/no-unused-emit-declarations': 'error',
         'vue/no-use-v-else-with-v-for': 'error',
@@ -336,9 +270,31 @@ export function vue(options: ESLintConfigOptions): Linter.FlatConfig[] {
         'vue/space-infix-ops': 'error',
         'vue/space-unary-ops': ['error', { nonwords: false, words: true }],
         'vue/template-curly-spacing': 'error',
+      },
+    },
 
-        /** User-defined rules */
-        ...options.rules,
+    // --- Disable some TypeScript rules that may conflict with the Vue SFC parser.
+    {
+      files: [
+        '**/*.vue',
+      ],
+      rules: {
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-return': 'off',
+        '@typescript-eslint/no-misused-promises': 'off',
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
+      },
+    },
+
+    // --- Disable in test files.
+    {
+      files: [
+        '**/*.test.ts',
+        '**/*.spec.ts',
+      ],
+      rules: {
+        'vue/one-component-per-file': 'off',
       },
     },
   ]
