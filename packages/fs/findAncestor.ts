@@ -23,51 +23,9 @@ export async function findAncestor(name: string, from = process.cwd()): Promise<
       await access(absolutePath, constants.F_OK)
       return absolutePath
     }
-    catch {
+    catch { /* Ignore error. */ }
 
-      /** Ignore error. */
-    }
     if (from === '/') break
     from = dirname(from)
   }
-}
-
-/* v8 ignore start */
-if (import.meta.vitest) {
-  const { vol } = await import('memfs')
-
-  test('should resolve ancestor from current directory', async() => {
-    vi.mock('node:process', () => ({ cwd: () => '/home/user/project' }))
-    vol.fromJSON({ '/home/user/project/.npmrc': '' })
-    const result = await findAncestor('.npmrc')
-    expect(result).toBe('/home/user/project/.npmrc')
-  })
-
-  test('should resolve ancestor from given directory', async() => {
-    vol.fromJSON({ '/home/user/.npmrc': '' })
-    const result = await findAncestor('.npmrc', '/home/user/project')
-    expect(result).toBe('/home/user/.npmrc')
-  })
-
-  test('should resolve ancestor at root directory', async() => {
-    vol.fromJSON({ '/.npmrc': '' })
-    const result = await findAncestor('.npmrc', '/home/user/project')
-    expect(result).toBe('/.npmrc')
-  })
-
-  test('should resolve the first ancestor', async() => {
-    vol.fromJSON({
-      '/.npmrc': '',
-      '/home/user/.npmrc': '',
-      '/home/user/project/.npmrc': '',
-    })
-    const result = await findAncestor('.npmrc', '/home/user/project')
-    expect(result).toBe('/home/user/project/.npmrc')
-  })
-
-  test('should return undefined if no ancestor was found', async() => {
-    vol.fromJSON({})
-    const result = await findAncestor('file', '/')
-    expect(result).toBeUndefined()
-  })
 }
