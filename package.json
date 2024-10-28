@@ -14,12 +14,14 @@
     "node": ">=20.0.0",
     "pnpm": ">=9.0.0"
   },
+  "packageManager": "pnpm@9.12.3",
   "pnpm": {
     "peerDependencyRules": {
       "allowAny": [
         "eslint",
         "typescript",
-        "meow"
+        "meow",
+        "@typescript-eslint/parser"
       ]
     }
   },
@@ -37,9 +39,7 @@
     "commit": "tsx ./packages/scripts/cli.uncli.ts commit",
     "commit:lint": "commitlint --edit",
     "publish:ci": "tsx ./packages/scripts/cli.uncli.ts publish",
-    "release": "tsx ./packages/scripts/cli.uncli.ts release",
-    "preinstall": "node ./forcePnpm.js",
-    "prepare": "husky"
+    "release": "tsx ./packages/scripts/cli.uncli.ts release"
   },
   "devDependencies": {
     "@commitlint/config-pnpm-scopes": "19.5.0",
@@ -52,7 +52,7 @@
     "eslint": "9.13.0",
     "happy-dom": "15.7.4",
     "husky": "9.1.6",
-    "memfs": "4.8.2",
+    "memfs": "4.14.0",
     "tsx": "4.19.2",
     "typescript": "5.6.3",
     "vitest": "2.1.4"
