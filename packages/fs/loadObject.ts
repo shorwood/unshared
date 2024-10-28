@@ -3,7 +3,6 @@ import type { Reactive, ReactiveOptions } from '@unshared/reactivity/reactive'
 import type { FSWatcher, PathLike, Stats, WatchOptions } from 'node:fs'
 import { overwrite } from '@unshared/collection/overwrite'
 import { awaitable } from '@unshared/functions/awaitable'
-import { garbageCollected } from '@unshared/functions/garbageCollected'
 import { reactive } from '@unshared/reactivity/reactive'
 import { EventEmitter } from 'node:events'
 import { constants, watch } from 'node:fs'
@@ -127,11 +126,16 @@ export class FSObject<T extends object> extends EventEmitter<FSObjectEventMap<T>
       hooks: ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse'],
       ...this.options,
     })
+  }
 
-    // --- Destroy the object once this instance is garbage collected.
-    // --- This will also delete the file if it was created as a temporary file.
-    // eslint-disable-next-line sonarjs/no-async-constructor
-    void garbageCollected(this).then(() => this.destroy())
+  /**
+   * Close the file and stop watching the file and object for changes.
+   * If the file has been created as a temporary file, it will be deleted.
+   *
+   * @returns A promise that resolves when the file has been destroyed.
+   */
+  async [Symbol.asyncDispose]() {
+    return this.destroy()
   }
 
   /**

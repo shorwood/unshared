@@ -279,5 +279,12 @@ describe('loadObject', () => {
       const fileExists = existsSync('/app/packages.json')
       expect(fileExists).toBe(false)
     })
+
+    it('should destroy the object when disposed', async() => {
+      const result = new FSObject('/app/packages.json')
+      const untilDestroyed = result.untilDestroyed
+      await result[Symbol.asyncDispose]()
+      await expect(untilDestroyed).resolves.toBeUndefined()
+    })
   })
 })
