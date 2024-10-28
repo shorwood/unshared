@@ -17,7 +17,7 @@ describe('resolveComponentType', () => {
 
   const Header = defineComponent({
     name: 'Header',
-    setup: () => h('h1', { foo: 'bar' }),
+    setup: () => () => h('h1', { foo: 'bar' }),
   })
 
   test('should resolve to an HTML Tag name', () => {
