@@ -11,7 +11,7 @@ import { BaseMenu } from '@unshared/vue/BaseMenu'
         class="bg-blue/5 border border-blue/10 rounded-lg"
         :class="{ '!bg-blue/10': isOpen }"
         @contextmenu.prevent="() => open()">
-        <slot/>
+        <slot />
       </div>
     </template>
 
@@ -19,7 +19,7 @@ import { BaseMenu } from '@unshared/vue/BaseMenu'
     <template #menu="{ close, isOpen }">
       <BaseCollapse
         vertical
-        :isOpen="isOpen"
+        :is-open="isOpen"
         :class="{ 'opacity-0': !isOpen }"
         class="transition-all ease-in-out duration-100 bg-blue/5 border border-blue/10 rounded-lg backdrop-blur-2xl">
         <div class="flex flex-col space-y-1 p-4 w-48">

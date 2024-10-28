@@ -39,7 +39,7 @@ const model = useVModel(props, 'modelValue')
     </div>
 
     <!-- Label -->
-    <label v-if="label" :for="id" class="text-sm select-none" >
+    <label v-if="label" :for="id" class="text-sm select-none">
       {{ label }}
     </label>
   </BaseInputToggle>

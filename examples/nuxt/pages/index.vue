@@ -38,6 +38,7 @@ const valueEditor = ref(dedent(`
       <Card title="Checkbox">
         <InputCheckbox
           v-for="value in values"
+          :key="value.value"
           v-model="valueCheckbox"
           :label="value.label"
           :value="value.value"
@@ -48,6 +49,7 @@ const valueEditor = ref(dedent(`
       <Card title="Radio">
         <InputRadio
           v-for="value in values"
+          :key="value.value"
           v-model="valueRadio"
           :label="value.label"
           :value="value.value"
@@ -73,18 +75,18 @@ const valueEditor = ref(dedent(`
       <!-- Editor -->
       <Card class="col-span-2" title="Editor">
         <div class="w-full">
-          <InputEditor v-model="valueEditor"/>
+          <InputEditor v-model="valueEditor" />
         </div>
       </Card>
 
       <!-- File -->
       <Card class="col-span-2" title="File">
-        <InputFile/>
+        <InputFile />
       </Card>
 
       <!-- List -->
       <Card class="col-span-2" title="List">
-        <InputList v-model="valueList"/>
+        <InputList v-model="valueList" />
       </Card>
 
       <!-- Input Text -->
@@ -98,7 +100,7 @@ const valueEditor = ref(dedent(`
 
       <!-- Content Editable -->
       <Card class="col-span-2" title="Content Editable">
-        <ContentEditable v-model="valueText"/>
+        <ContentEditable v-model="valueText" />
       </Card>
 
       <!-- Context Menu -->

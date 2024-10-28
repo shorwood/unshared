@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/prop-name-casing -->
 <!-- eslint-disable @typescript-eslint/consistent-type-imports -->
 <script setup lang="ts" generic="T">
 import type { BaseInputTextOptions } from '@unshared/vue'
