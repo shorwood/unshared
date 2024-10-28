@@ -1,7 +1,6 @@
 import type { ResolveBundleOptions } from './resolveBundle'
 import { toArray } from '@unshared/collection/toArray'
 import { rm } from 'node:fs/promises'
-import { cwd as getCwd, stdout } from 'node:process'
 import { rollup, watch as rollupWatch } from 'rollup'
 import { buildIndexes } from './buildIndexes'
 import { buildPackageJson } from './buildPackageJson'
@@ -27,7 +26,7 @@ export interface BuildOptions extends ResolveBundleOptions {
  */
 export async function build(options: BuildOptions = {}) {
   const {
-    cwd = getCwd(),
+    cwd = process.cwd(),
     watch = false,
     packageNames = await resolvePackageNames(cwd),
     generateIndexes = false,
@@ -57,13 +56,13 @@ export async function build(options: BuildOptions = {}) {
       if (event.code === 'ERROR') console.error(event.error)
       if (event.code === 'START') {
         const packagesNames = packageNames.join(', ')
-        stdout.write('\u001Bc')
-        stdout.write(`Building ${packagesNames}...\n`)
+        process.stdout.write('\u001Bc')
+        process.stdout.write(`Building ${packagesNames}...\n`)
       }
 
       if (event.code === 'END') {
         for (const packageName of packageNames) await buildPackageJson(packageName, options)
-        stdout.write('Build complete.\n')
+        process.stdout.write('Build complete.\n')
       }
     })
   }
@@ -76,6 +75,6 @@ export async function build(options: BuildOptions = {}) {
       for (const output of outputs) await build.write(output)
     }
     for (const packageName of packageNames) await buildPackageJson(packageName, { cwd })
-    console.log('Build complete.')
+    process.stdout.write('Build complete.\n')
   }
 }

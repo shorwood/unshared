@@ -4,7 +4,6 @@ import { loadObject } from '@unshared/fs/loadObject'
 import { execute } from '@unshared/process/execute'
 import { createSemver } from '@unshared/string/createSemver'
 import { join } from 'node:path'
-import { cwd as getCwd } from 'node:process'
 import { resolvePackageNames } from './resolvePackageNames'
 
 export interface ReleaseOptions {
@@ -23,7 +22,7 @@ export interface ReleaseOptions {
  */
 export async function release(options: ReleaseOptions = {}) {
   const {
-    cwd = getCwd(),
+    cwd = process.cwd(),
     type = 'patch',
     packageNames = await resolvePackageNames(cwd),
   } = options

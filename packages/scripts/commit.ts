@@ -1,6 +1,6 @@
+/* eslint-disable n/no-sync */
 import { execFileSync, spawn } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
-// eslint-disable-next-line n/no-unsupported-features/node-builtins
 import { createInterface } from 'node:readline/promises'
 import { OpenAI } from 'openai'
 import { COMMIT_PROMPT } from './commitPrompt'
@@ -19,7 +19,13 @@ export async function commit(input: string, apiKey: string) {
   const diffStat = execFileSync('/usr/bin/git', ['diff', '--stat', '--cached', '--staged'], { encoding: 'utf8' })
   const lastCommits = execFileSync('/usr/bin/git', ['log', '-2', '--pretty=%B'], { encoding: 'utf8' })
   const branchName = execFileSync('/usr/bin/git', ['branch', '--show-current'], { encoding: 'utf8' })
-  const fileContents = diffPaths.split('\n').filter(Boolean).filter(existsSync).map(path => readFileSync(path, 'utf8'))
+
+  // --- Read the contents of the staged files.
+  const fileContents = diffPaths
+    .split('\n')
+    .filter(Boolean)
+    .filter(path => existsSync(path))
+    .map(path => readFileSync(path, 'utf8'))
 
   const openai = new OpenAI({ apiKey })
   const response = await openai.chat.completions.create({
@@ -72,6 +78,4 @@ export async function commit(input: string, apiKey: string) {
     const git = spawn('/usr/bin/git', ['commit', '-m', completion], { stdio: 'inherit' })
     await new Promise(resolve => git.on('exit', resolve))
   }
-
-  console.log('Done.')
 }

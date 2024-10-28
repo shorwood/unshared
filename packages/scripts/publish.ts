@@ -1,8 +1,6 @@
-/* eslint-disable n/no-unsupported-features/node-builtins */
 import { execute } from '@unshared/process/execute'
 import { createSemver } from '@unshared/string/createSemver'
 import { cp } from 'node:fs/promises'
-import { cwd as getCwd } from 'node:process'
 import { resolvePackage } from './resolvePackage'
 import { resolvePackageNames } from './resolvePackageNames'
 
@@ -59,7 +57,7 @@ async function publishOne(options: PublishOneOptions) {
 
   // --- Check if the current version is already released.
   if (npmView?.versions?.includes(packageJson.version)) {
-    console.log(`The package "${packageJson.name!}@${semver.toString()}" already exists in the registry.`)
+    process.stderr.write(`The package "${packageJson.name!}@${semver.toString()}" already exists in the registry.\n`)
     return
   }
 
@@ -97,7 +95,7 @@ async function publishOne(options: PublishOneOptions) {
  */
 export async function publish(options: PublishOptions = {}) {
   const {
-    cwd = getCwd(),
+    cwd = process.cwd(),
     tag = DEFAULT_TAG,
     registry = DEFAULT_REGISTRY,
     packageNames = await resolvePackageNames(cwd),

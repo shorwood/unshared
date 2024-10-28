@@ -2,7 +2,6 @@ import type { PackageJSON } from 'types-pkg-json'
 import { loadObject } from '@unshared/fs/loadObject'
 import { toPascalCase } from '@unshared/string/toPascalCase'
 import { relative, resolve } from 'node:path'
-import { cwd as getCwd } from 'node:process'
 
 export interface GetPackageMetadataOptions {
   cwd?: string
@@ -17,7 +16,7 @@ export interface GetPackageMetadataOptions {
  * @example resolvePackage('my-package') // { name: 'my-package', version: '0.0.1' }
  */
 export async function resolvePackage(packageName: string, options: GetPackageMetadataOptions) {
-  const { cwd = getCwd() } = options
+  const { cwd = process.cwd() } = options
   if (!packageName) throw new Error('Could not resolve the package metadata: No package name were provided.')
 
   // --- Get the package metadata.

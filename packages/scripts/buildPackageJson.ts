@@ -87,7 +87,7 @@ export async function buildPackageJson(packageName: string, options: BuildPackag
   // --- Load the root and current package.json files.
   const outPath = join(packagePath, 'dist')
   const packageRemoteUrl = await getGitRemoteUrl(packagePath)
-  const packageRemoteUrlHttps = packageRemoteUrl?.replace(/^git@(.+):(.+).git$/, 'https://$1/$2')
+  const packageRemoteUrlHttps = packageRemoteUrl?.replace(/^git@([^:]+):([^/]+)\/(.+)\.git$/, 'https://$1/$2/$3')
   const packageExports = await createPackageExports(outPath, packagePath)
   const packageBin = await createPackageBin({ outPath, packagePath, packageName, rootPackageName })
 

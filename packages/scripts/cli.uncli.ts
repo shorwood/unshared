@@ -1,12 +1,11 @@
 import { parseCliArguments } from '@unshared/process'
-import { argv } from 'node:process'
 import { build } from './build'
 import { commit } from './commit'
 import { publish } from './publish'
 import { release } from './release'
 
 function cli() {
-  const { parameters: [command, ...parameters], options } = parseCliArguments(argv)
+  const { parameters: [command, ...parameters], options } = parseCliArguments(process.argv)
 
   // --- Build the packages in the current working directory.
   if (command === 'build') {

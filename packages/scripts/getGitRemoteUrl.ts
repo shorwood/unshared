@@ -1,5 +1,4 @@
 import { execFile } from 'node:child_process'
-import { cwd } from 'node:process'
 
 /**
  * Get the remote URL of a repository at a given path.
@@ -9,7 +8,7 @@ import { cwd } from 'node:process'
  * @returns The remote URL of the repository.
  * @example await getGitRemoteUrl() // 'git@github.com:example/project.git'
  */
-export async function getGitRemoteUrl(path = cwd(), name = 'origin'): Promise<string> {
+export async function getGitRemoteUrl(path = process.cwd(), name = 'origin'): Promise<string> {
   return await new Promise<string>((resolve, reject) => {
     execFile(
       '/usr/bin/git',
