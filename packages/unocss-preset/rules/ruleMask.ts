@@ -12,11 +12,12 @@ const DIRECTIONS_KEYS = {
 }
 
 export const ruleGradientMask = [
-  /^(gradient-mask|mask-gradient-to)-(?<dir>\w{1,2})(?:-(?<start>\d{1,3})(?:\/(?<end>\d{1,3}))?)?$/,
+  /^mask-to-(?<dir>\w{1,2})(?:-(?<start>\d{1,3})(?:\/(?<end>\d{1,3}))?)?$/,
 
   // --- Resolve the direction and opacity and return CSS properties.
   (match) => {
-    const { dir, start = '0', end = '100' } = match.groups!
+    if (!match?.groups) return
+    const { dir, start = '0', end = '100' } = match.groups
     const direction = DIRECTIONS_KEYS[dir as keyof typeof DIRECTIONS_KEYS]
     if (!direction) return
     return {
@@ -28,12 +29,9 @@ export const ruleGradientMask = [
   // --- Provide autocomplete suggestions.
   {
     autocomplete: [
-      'gradient-mask-<directions>',
-      'gradient-mask-<directions>-<percent>',
-      'gradient-mask-<directions>-<percent>/<percent>',
-      'mask-gradient-to-<directions>',
-      'mask-gradient-to-<directions>-<percent>',
-      'mask-gradient-to-<directions>-<percent>/<percent>',
+      'mask-to-<directions>',
+      'mask-to-<directions>-<percent>',
+      'mask-to-<directions>-<percent>/<percent>',
     ],
   },
 ] as const satisfies Rule
