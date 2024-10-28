@@ -1,5 +1,5 @@
+import type { Function, MethodDecorator } from '@unshared/types'
 import { debounce } from '@unshared/functions/debounce'
-import { Function, MethodDecorator } from '@unshared/types'
 
 /**
  * Debounce a method so that it will only execute after the specified delay. If the method
@@ -32,66 +32,4 @@ export function Debounce<T extends Function<void>>(delay: number): MethodDecorat
     descriptor.value = debounce(method, delay) as unknown as T
     return descriptor
   }
-}
-
-/* v8 ignore start */
-/* eslint-disable sonarjs/new-cap */
-if (import.meta.vitest) {
-  beforeAll(() => {
-    vi.useFakeTimers()
-  })
-
-  test('should not call the function if the delay has not passed', () => {
-    const fn = vi.fn()
-    class Greeter { @Debounce(100) fn() { fn() } }
-    const instance = new Greeter()
-    instance.fn()
-    instance.fn()
-    instance.fn()
-    vi.advanceTimersByTime(50)
-    expect(fn).not.toHaveBeenCalled()
-  })
-
-  test('should call the function once after the delay has passed', () => {
-    const fn = vi.fn()
-    class Greeter { @Debounce(10) fn() { fn() } }
-    const instance = new Greeter()
-    instance.fn()
-    instance.fn()
-    instance.fn()
-    vi.advanceTimersByTime(100)
-    expect(fn).toHaveBeenCalledTimes(1)
-  })
-
-  test('should call the function once with the parameters of the last call', () => {
-    const fn = vi.fn()
-    class Greeter { @Debounce(10) fn(name: string) { fn(name) } }
-    const instance = new Greeter()
-    instance.fn('Alice')
-    instance.fn('Bob')
-    instance.fn('Charlie')
-    vi.advanceTimersByTime(100)
-    expect(fn).toHaveBeenCalledWith('Charlie')
-  })
-
-  test('should call the function multiple times if the delay has passed', () => {
-    const fn = vi.fn()
-    class Greeter { @Debounce(10) fn() { fn() } }
-    const instance = new Greeter()
-    instance.fn()
-    vi.advanceTimersByTime(100)
-    instance.fn()
-    vi.advanceTimersByTime(100)
-    instance.fn()
-    vi.advanceTimersByTime(100)
-    expect(fn).toHaveBeenCalledTimes(3)
-  })
-
-  test('should return undefined', () => {
-    const fn = vi.fn(() => 'foobar')
-    class Greeter { @Debounce(10) fn() { return fn() } }
-    const instance = new Greeter()
-    const result = instance.fn()
-    expect(result).toBeUndefined()
-  })
 }
