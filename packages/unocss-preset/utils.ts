@@ -13,10 +13,11 @@ import type { MaybeArray } from '@unshared/types'
  */
 export function createVariant(name: string, template: MaybeArray<string>): VariantObject {
   return {
+    name,
     autocomplete: `${name}:`,
     match: (input: string) => {
       const regexp = new RegExp(`^${name}[:-]`)
-      const match = input.match(regexp)
+      const match = regexp.exec(input)
       const queries = Array.isArray(template) ? template : [template]
       if (match) {
         return {
@@ -25,6 +26,5 @@ export function createVariant(name: string, template: MaybeArray<string>): Varia
         }
       }
     },
-    name,
   }
 }
