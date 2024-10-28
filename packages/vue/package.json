@@ -106,10 +106,10 @@
       "types": "./dist/exposeToDevtool.d.ts",
       "import": "./dist/exposeToDevtool.js"
     },
-    "./getFileInputUrl": {
-      "require": "./dist/getFileInputUrl.cjs",
-      "types": "./dist/getFileInputUrl.d.ts",
-      "import": "./dist/getFileInputUrl.js"
+    "./getFileUrl": {
+      "require": "./dist/getFileUrl.cjs",
+      "types": "./dist/getFileUrl.d.ts",
+      "import": "./dist/getFileUrl.js"
     },
     "./nuxt": {
       "require": "./dist/nuxt.cjs",
