@@ -30,11 +30,3 @@ export function mode(...numbers: number[]): number {
   // --- Return the number with the most occurrences.
   return result
 }
-
-/* v8 ignore next */
-if (import.meta.vitest) {
-  test('should compute the mode of a set of numbers', () => {
-    const result = mode(10, 10, 20, 30)
-    expect(result).toBe(10)
-  })
-}

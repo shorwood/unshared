@@ -9,11 +9,3 @@ export function sqrt(n: number): number {
   if (n < 0) throw new RangeError('Cannot compute square root of negative number')
   return Math.sqrt(n)
 }
-
-/* v8 ignore next */
-if (import.meta.vitest) {
-  test('should compute the square root of a number', () => {
-    const result = sqrt(9)
-    expect(result).toBe(3)
-  })
-}

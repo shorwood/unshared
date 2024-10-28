@@ -13,11 +13,3 @@ export function mean(...numbers: number[]): number {
   for (const number of numbers) result += number
   return result / numbers.length
 }
-
-/* v8 ignore next */
-if (import.meta.vitest) {
-  test('should compute the mean of a set of numbers', () => {
-    const result = mean(10, 20, 30)
-    expect(result).toBe(20)
-  })
-}

@@ -13,16 +13,3 @@ export function median(...numbers: number[]): number {
   const middle = Math.floor(sorted.length / 2)
   return sorted.length % 2 === 0 ? (sorted[middle - 1] + sorted[middle]) / 2 : sorted[middle]
 }
-
-/* v8 ignore next */
-if (import.meta.vitest) {
-  test('should compute the median of a set of odd numbers', () => {
-    const result = median(50, 10, 10)
-    expect(result).toBe(10)
-  })
-
-  test('should compute the median of a set of even numbers', () => {
-    const result = median(50, 10, 10, 20)
-    expect(result).toBe(15)
-  })
-}

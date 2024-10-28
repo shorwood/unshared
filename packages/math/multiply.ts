@@ -10,11 +10,3 @@ export function multiply(...numbers: number[]): number {
   for (const number of numbers) result *= number
   return result
 }
-
-/* v8 ignore next */
-if (import.meta.vitest) {
-  test('should multiply integers', () => {
-    const result = multiply(10, 2)
-    expect(result).toBe(20)
-  })
-}

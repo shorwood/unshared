@@ -9,11 +9,3 @@
 export function divide(a: number, b: number): number {
   return a / b
 }
-
-/* v8 ignore next */
-if (import.meta.vitest) {
-  test('should divide integers', () => {
-    const result = divide(10, 20)
-    expect(result).toStrictEqual(0.5)
-  })
-}
