@@ -9,7 +9,7 @@ import { MessageChannel } from 'node:worker_threads'
  * rejecting the request. This is used to ensure that the worker is still alive and
  * listening for messages.
  */
-const WORKER_HEALTHCHECK_TIMEOUT = 500
+const WORKER_HEALTHCHECK_TIMEOUT = 1000
 
 /**
  * A common interface for the request passed to a `workerRegister` callback. This is
