@@ -1,4 +1,3 @@
-import { cpus } from 'node:os'
 import { defineConfig } from 'vitest/config'
 import { resolvePackageNames } from './packages/scripts/resolvePackageNames'
 
@@ -25,8 +24,8 @@ export default defineConfig({
     pool: 'forks',
     poolOptions: {
       forks: {
-        maxForks: cpus().length,
-        minForks: 1,
+        minForks: 8,
+        maxForks: 32,
       },
     },
 
