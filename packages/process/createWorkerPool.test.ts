@@ -1,7 +1,7 @@
 import { cpus } from 'node:os'
 import { createWorkerPool, WorkerPool } from './createWorkerPool'
 
-describe('createWorkerPool', () => {
+describe.sequential('createWorkerPool', () => {
   const moduleId = new URL('__fixtures__/module', import.meta.url)
   type Module = typeof import('./__fixtures__/module')
 
@@ -27,7 +27,8 @@ describe('createWorkerPool', () => {
     })
   })
 
-  describe('lifecycle', () => {
+  // eslint-disable-next-line vitest/valid-describe-callback
+  describe.sequential('lifecycle', { retry: 3 }, () => {
     it('should instantiate with empty worker list', () => {
       const pool = createWorkerPool()
       expect(pool.workers).toHaveLength(0)

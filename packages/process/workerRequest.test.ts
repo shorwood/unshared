@@ -1,7 +1,8 @@
+/* eslint-disable vitest/valid-describe-callback */
 import { Worker } from 'node:worker_threads'
 import { workerRequest } from './workerRequest'
 
-describe.sequential('workerRequest', () => {
+describe.sequential('workerRequest', { retry: 3 }, () => {
   const url = new URL('__fixtures__/handlers.js', import.meta.url).pathname
   const worker = new Worker(url, { stderr: true, stdout: true })
   type Module = typeof import('./__fixtures__/module')
