@@ -12,7 +12,7 @@ describe('createWorkerService', () => {
     })
   })
 
-  describe.sequential('spawn', { retry: 3 }, () => {
+  describe('spawn', { retry: 3 }, () => {
     it('should spawn the default export function and return the result', async() => {
       const service = createWorkerService()
       const result = await service.spawn<Module['factorial']>({ moduleId, parameters: [5] })
@@ -91,7 +91,7 @@ describe('createWorkerService', () => {
     })
   })
 
-  describe.sequential('wrap', { retry: 3 }, () => {
+  describe('wrap', { retry: 3 }, () => {
     it('should wrap a module in a worker thread and call a named function', async() => {
       const service = createWorkerService()
       const { factorial } = service.wrap<Module>(moduleId)
@@ -135,7 +135,7 @@ describe('createWorkerService', () => {
     })
   })
 
-  describe.sequential('lifecycle', { retry: 3 }, () => {
+  describe('lifecycle', { retry: 3 }, () => {
     it('should not initialize the worker thread', async() => {
       const service = createWorkerService()
       expect(service.worker).toBeUndefined()
@@ -181,7 +181,7 @@ describe('createWorkerService', () => {
     })
   })
 
-  describe.sequential('running', () => {
+  describe('running', { retry: 3 }, () => {
     it('should increment the running count when a function is called', async() => {
       const service = createWorkerService({ eager: true })
       expect(service.running).toBe(0)
