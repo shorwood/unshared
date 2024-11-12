@@ -70,7 +70,7 @@ export type BaseDialogSlots<T = unknown> = {
 export const BaseDialog = /* #__PURE__ */ defineSetupComponent(
   <T>(props: BaseDialogProps<T>, { attrs, slots, emit }: DefineComponentContext<BaseDialogSlots<T>>) => {
     const renderable = useBaseRenderable(props)
-    const element = ref<HTMLDialogElement>()
+    const element = ref<HTMLElement>()
     const is = computed(() => renderable.is ?? 'dialog')
     const isOpen = useVModel(props, 'modelValue', emit, { passive: true, defaultValue: false })
 
@@ -79,7 +79,7 @@ export const BaseDialog = /* #__PURE__ */ defineSetupComponent(
       'aria-modal': 'true',
       'aria-hidden': isOpen.value,
       'role': 'dialog',
-      'ref': element,
+      'ref': (value) => { element.value = value as HTMLElement },
     }))
 
     /**
@@ -87,7 +87,8 @@ export const BaseDialog = /* #__PURE__ */ defineSetupComponent(
      * when the user clicks outside of the dialog or presses the escape key.
      */
     const close = () => {
-      element.value!.close()
+      if (element.value instanceof HTMLDialogElement)
+        element.value.close()
       isOpen.value = false
       emit('close')
     }
@@ -97,7 +98,8 @@ export const BaseDialog = /* #__PURE__ */ defineSetupComponent(
      * when the user clicks on the button that opens the dialog.
      */
     const open = () => {
-      element.value!.showModal()
+      if (element.value instanceof HTMLDialogElement)
+        element.value.showModal()
       isOpen.value = true
       emit('open')
     }
@@ -111,13 +113,15 @@ export const BaseDialog = /* #__PURE__ */ defineSetupComponent(
     const returnValue = (value: string) => {
       emit('return', value)
       close()
-      element.value!.returnValue = value
+      if (element.value instanceof HTMLDialogElement)
+        element.value.returnValue = value
     }
 
     // --- Observe the model value and update the dialog state.
     watch(isOpen, (value) => {
-      if (value && !element.value!.open) return open()
-      if (!value && element.value!.open) return close()
+      if (element.value instanceof HTMLDialogElement === false) return
+      if (value && !element.value.open) return open()
+      if (!value && element.value.open) return close()
     })
 
     // --- Build the slot properties.
