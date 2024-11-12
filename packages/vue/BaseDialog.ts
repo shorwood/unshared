@@ -65,7 +65,6 @@ export interface BaseDialogSlotProps<T = unknown> {
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type BaseDialogSlots<T = unknown> = {
   default: (props: BaseDialogSlotProps<T>) => VNode
-  dialog: (props: BaseDialogSlotProps<T>) => VNode
 }
 
 export const BaseDialog = /* #__PURE__ */ defineSetupComponent(
@@ -81,7 +80,6 @@ export const BaseDialog = /* #__PURE__ */ defineSetupComponent(
       'aria-hidden': isOpen.value,
       'role': 'dialog',
       'ref': element,
-      'style': isOpen ? undefined : { display: 'none' },
     }))
 
     /**
@@ -138,11 +136,11 @@ export const BaseDialog = /* #__PURE__ */ defineSetupComponent(
     })
 
     // --- Return virtual DOM node.
-    return () => {
-      const vnodeDialog = h('dialog', attributes.value, slots.dialog?.(slotProps.value))
-      const vnodeDefault = slots.default?.(slotProps.value)
-      return [vnodeDefault, vnodeDialog]
-    }
+    return () => h(
+      renderable.is ?? 'dialog',
+      attributes.value,
+      slots.default?.(slotProps.value),
+    )
   },
   {
     name: 'BaseDialog',
