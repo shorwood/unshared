@@ -211,6 +211,11 @@
       "types": "./dist/Loose.d.ts",
       "import": "./dist/Loose.js"
     },
+    "./LooseDeep": {
+      "require": "./dist/LooseDeep.cjs",
+      "types": "./dist/LooseDeep.d.ts",
+      "import": "./dist/LooseDeep.js"
+    },
     "./MapValues": {
       "require": "./dist/MapValues.cjs",
       "types": "./dist/MapValues.d.ts",
