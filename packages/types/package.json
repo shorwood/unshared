@@ -516,6 +516,11 @@
       "types": "./dist/StringNumber.d.ts",
       "import": "./dist/StringNumber.js"
     },
+    "./StringReplace": {
+      "require": "./dist/StringReplace.cjs",
+      "types": "./dist/StringReplace.d.ts",
+      "import": "./dist/StringReplace.js"
+    },
     "./StringSplit": {
       "require": "./dist/StringSplit.cjs",
       "types": "./dist/StringSplit.d.ts",
