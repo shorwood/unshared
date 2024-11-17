@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/deprecation */
 import type { TupleJoin } from './TupleJoin'
 
 describe('TupleJoin', () => {

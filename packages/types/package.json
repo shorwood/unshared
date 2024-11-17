@@ -506,6 +506,11 @@
       "types": "./dist/StringConstraint.d.ts",
       "import": "./dist/StringConstraint.js"
     },
+    "./StringJoin": {
+      "require": "./dist/StringJoin.cjs",
+      "types": "./dist/StringJoin.d.ts",
+      "import": "./dist/StringJoin.js"
+    },
     "./StringLiteral": {
       "require": "./dist/StringLiteral.cjs",
       "types": "./dist/StringLiteral.d.ts",
