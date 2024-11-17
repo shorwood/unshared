@@ -1,0 +1,7 @@
+{
+  "name": "@unshared/network",
+  "dependencies": {
+    "@unshared/types": "workspace:*",
+    "openapi-types": "12.1.3"
+  }
+}
