@@ -10,4 +10,14 @@ describe('Loose', () => {
     type Result = Loose<{ a: string | void; b: number }>
     expectTypeOf<Result>().toEqualTypeOf<{ a?: string | void; b: number }>()
   })
+
+  it('should return arrays as-is', () => {
+    type Result = Loose<string[]>
+    expectTypeOf<Result>().toEqualTypeOf<string[]>()
+  })
+
+  it('should return tuples as-is', () => {
+    type Result = Loose<[string, number]>
+    expectTypeOf<Result>().toEqualTypeOf<[string, number]>()
+  })
 })
