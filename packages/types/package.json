@@ -621,6 +621,16 @@
       "types": "./dist/Values.d.ts",
       "import": "./dist/Values.js"
     },
+    "./Writeable": {
+      "require": "./dist/Writeable.cjs",
+      "types": "./dist/Writeable.d.ts",
+      "import": "./dist/Writeable.js"
+    },
+    "./WriteableDeep": {
+      "require": "./dist/WriteableDeep.cjs",
+      "types": "./dist/WriteableDeep.d.ts",
+      "import": "./dist/WriteableDeep.js"
+    },
     ".": {
       "require": "./dist/index.cjs",
       "types": "./dist/index.d.ts",
