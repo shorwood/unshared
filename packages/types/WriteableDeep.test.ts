@@ -1,4 +1,3 @@
-
 import type { WriteableDeep } from './WriteableDeep'
 
 describe('WriteableDeep', () => {
