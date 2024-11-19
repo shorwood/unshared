@@ -6,7 +6,7 @@ export type OpenAPIReference =
   | OpenAPIV3_1.ReferenceObject
 
 /**
- * Check if a value is an OpenAPI {@linkcode OpenAPI.R}.
+ * Check if a value is an {@linkcode OpenAPIReference}.
  *
  * @param value The value to check.
  * @returns `true` if the value is a reference object.
