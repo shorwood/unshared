@@ -2,7 +2,8 @@
   "name": "@unshared/client",
   "scripts": {
     "build:httpMethods": "tsx ./scripts/buildHttpMethods.ts",
-    "build:httpHeaders": "tsx ./scripts/buildHttpHeaders.ts"
+    "build:httpHeaders": "tsx ./scripts/buildHttpHeaders.ts",
+    "build:httpStatusCodes": "tsx ./scripts/buildHttpStatusCodes.ts"
   },
   "dependencies": {
     "@unshared/types": "workspace:*",
