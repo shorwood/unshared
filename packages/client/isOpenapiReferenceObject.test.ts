@@ -1,3 +1,4 @@
+import type { OpenAPIV2 } from 'openapi-types'
 import type { OpenAPIReference } from './isOpenapiReferenceObject'
 import { isOpenapiReferenceObject } from './isOpenapiReferenceObject'
 
@@ -36,5 +37,11 @@ describe('isOpenapiReferenceObject', () => {
     const value: unknown = { $ref: '#/components/schemas/MySchema' }
     const result = isOpenapiReferenceObject(value)
     if (result) expectTypeOf(value).toEqualTypeOf<OpenAPIReference>()
+  })
+
+  it('should predicate specific version type of the ReferenceObject', () => {
+    const value: unknown = { $ref: '#/components/schemas/MySchema' }
+    const result = isOpenapiReferenceObject<OpenAPIV2.ReferenceObject>(value)
+    if (result) expectTypeOf(value).toEqualTypeOf<OpenAPIV2.ReferenceObject>()
   })
 })

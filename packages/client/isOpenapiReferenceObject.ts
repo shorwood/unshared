@@ -12,7 +12,7 @@ export type OpenAPIReference =
  * @returns `true` if the value is a reference object.
  * @example isReferenceObject({ $ref: '#/components/schemas/MySchema' }) // true
  */
-export function isOpenapiReferenceObject(value: unknown): value is OpenAPIReference {
+export function isOpenapiReferenceObject<T extends OpenAPIReference>(value: unknown): value is T {
   return typeof value === 'object'
     && value !== null
     && '$ref' in value
