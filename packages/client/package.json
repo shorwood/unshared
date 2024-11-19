@@ -1,0 +1,14 @@
+{
+  "name": "@unshared/client",
+  "scripts": {
+    "build:httpMethods": "tsx ./scripts/buildHttpMethods.ts",
+    "build:httpHeaders": "tsx ./scripts/buildHttpHeaders.ts"
+  },
+  "dependencies": {
+    "@unshared/types": "workspace:*",
+    "openapi-types": "12.1.3"
+  },
+  "devDependencies": {
+    "@unshared/scripts": "workspace:*"
+  }
+}
