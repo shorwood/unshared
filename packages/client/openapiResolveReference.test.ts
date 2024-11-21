@@ -38,14 +38,14 @@ describe('openapiResolveReference', () => {
     // @ts-expect-error: ignore type error
       const shouldThrow = () => openapiResolveReference({}, { tags: [{ name: 'foo' }] })
       expect(shouldThrow).toThrow(TypeError)
-      expect(shouldThrow).toThrow('Expected reference to be a reference object.')
+      expect(shouldThrow).toThrow('Expected value to be an OpenAPI reference object.')
     })
 
     it('should throw an error if the document is not an object', () => {
     // @ts-expect-error: ignore type error
       const shouldThrow = () => openapiResolveReference({ $ref: '#/tags' }, null)
       expect(shouldThrow).toThrow(TypeError)
-      expect(shouldThrow).toThrow('Expected specification to have a components property.')
+      expect(shouldThrow).toThrow('Expected OpenAPI specification to be an object.')
     })
 
     it('should throw an error if the reference cannot be resolved', () => {

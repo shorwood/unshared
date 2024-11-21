@@ -75,11 +75,11 @@ export function openapiResolveReference<
 
   // --- Return the source if it is not a reference.
   if (!isOpenapiReferenceObject(reference))
-    throw new TypeError('Expected reference to be a reference object.')
+    throw new TypeError('Expected value to be an OpenAPI reference object.')
 
   // --- Assert that the parameters are valid.
   if (typeof document !== 'object' || document === null)
-    throw new TypeError('Expected specification to have a components property.')
+    throw new TypeError('Expected OpenAPI specification to be an object.')
 
   // --- Resolve the component with it's reference path.
   const referenceParts = reference.$ref.replace(/^#\//, '').split('/')
