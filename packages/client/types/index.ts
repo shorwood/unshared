@@ -1,3 +1,5 @@
 export * from './HttpHeaders'
 export * from './HttpMethods'
 export * from './HttpStatusCodes'
+export * from './OpenApiV2'
+export * from './OpenApiV3'
