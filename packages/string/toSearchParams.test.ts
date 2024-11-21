@@ -53,68 +53,68 @@ describe('toSearchParams', () => {
 
   describe('indices', () => {
     it('should convert object with a single array property to query string', () => {
-      const result = toSearchParams({ key: ['value'] }, { arrayFormat: 'indices' }).toString()
+      const result = toSearchParams({ key: ['value'] }, { searchArrayFormat: 'indices' }).toString()
       expect(result).toBe('key%5B0%5D=value')
     })
 
     it('should convert object with multiple array properties to query string', () => {
-      const result = toSearchParams({ key1: ['value1'], key2: ['value2'] }, { arrayFormat: 'indices' }).toString()
+      const result = toSearchParams({ key1: ['value1'], key2: ['value2'] }, { searchArrayFormat: 'indices' }).toString()
       expect(result).toBe('key1%5B0%5D=value1&key2%5B0%5D=value2')
     })
 
     it('should convert object with multiple array properties to query string with indices', () => {
-      const result = toSearchParams({ key: ['value1', 'value2'] }, { arrayFormat: 'indices' }).toString()
+      const result = toSearchParams({ key: ['value1', 'value2'] }, { searchArrayFormat: 'indices' }).toString()
       expect(result).toBe('key%5B0%5D=value1&key%5B1%5D=value2')
     })
   })
 
   describe('comma', () => {
     it('should convert object with a single array property to query string', () => {
-      const result = toSearchParams({ key: ['value'] }, { arrayFormat: 'comma' }).toString()
+      const result = toSearchParams({ key: ['value'] }, { searchArrayFormat: 'comma' }).toString()
       expect(result).toBe('key=value')
     })
 
     it('should convert object with multiple array properties to query string', () => {
-      const result = toSearchParams({ key1: ['value1'], key2: ['value2'] }, { arrayFormat: 'comma' }).toString()
+      const result = toSearchParams({ key1: ['value1'], key2: ['value2'] }, { searchArrayFormat: 'comma' }).toString()
       expect(result).toBe('key1=value1&key2=value2')
     })
 
     it('should convert object with multiple array properties to query string with comma', () => {
-      const result = toSearchParams({ key: ['value1', 'value2'] }, { arrayFormat: 'comma' }).toString()
+      const result = toSearchParams({ key: ['value1', 'value2'] }, { searchArrayFormat: 'comma' }).toString()
       expect(result).toBe('key=value1%2Cvalue2')
     })
   })
 
   describe('path', () => {
     it('should convert object with a single array property to query string', () => {
-      const result = toSearchParams({ key: ['value'] }, { arrayFormat: 'path' }).toString()
+      const result = toSearchParams({ key: ['value'] }, { searchArrayFormat: 'path' }).toString()
       expect(result).toBe('key.0=value')
     })
 
     it('should convert object with multiple array properties to query string', () => {
-      const result = toSearchParams({ key1: ['value1'], key2: ['value2'] }, { arrayFormat: 'path' }).toString()
+      const result = toSearchParams({ key1: ['value1'], key2: ['value2'] }, { searchArrayFormat: 'path' }).toString()
       expect(result).toBe('key1.0=value1&key2.0=value2')
     })
 
     it('should convert object with multiple array properties to query string with path', () => {
-      const result = toSearchParams({ key: ['value1', 'value2'] }, { arrayFormat: 'path' }).toString()
+      const result = toSearchParams({ key: ['value1', 'value2'] }, { searchArrayFormat: 'path' }).toString()
       expect(result).toBe('key.0=value1&key.1=value2')
     })
   })
 
   describe('flat', () => {
     it('should convert object with a single array property to query string', () => {
-      const result = toSearchParams({ key: ['value'] }, { arrayFormat: 'flat' }).toString()
+      const result = toSearchParams({ key: ['value'] }, { searchArrayFormat: 'flat' }).toString()
       expect(result).toBe('key=value')
     })
 
     it('should convert object with multiple array properties to query string', () => {
-      const result = toSearchParams({ key1: ['value1'], key2: ['value2'] }, { arrayFormat: 'flat' }).toString()
+      const result = toSearchParams({ key1: ['value1'], key2: ['value2'] }, { searchArrayFormat: 'flat' }).toString()
       expect(result).toBe('key1=value1&key2=value2')
     })
 
     it('should convert object with multiple array properties to query string with flat', () => {
-      const result = toSearchParams({ key: ['value1', 'value2'] }, { arrayFormat: 'flat' }).toString()
+      const result = toSearchParams({ key: ['value1', 'value2'] }, { searchArrayFormat: 'flat' }).toString()
       expect(result).toBe('key=value1&key=value2')
     })
   })

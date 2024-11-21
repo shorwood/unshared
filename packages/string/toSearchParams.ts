@@ -4,6 +4,9 @@ import type { MaybeArray } from '@unshared/types'
 /** An object that can be converted to a query string. */
 export type SearchParamsObject = Record<string, MaybeArray<boolean | number | string> | undefined>
 
+/** The search array format options. */
+export type SearchArrayFormat = 'brackets' | 'comma' | 'flat' | 'indices' | 'path'
+
 /** Options for the query string conversion. */
 export interface SearchParamsOptions {
 
@@ -21,7 +24,7 @@ export interface SearchParamsOptions {
    *
    * @default 'brackets'
    */
-  arrayFormat?: 'brackets' | 'comma' | 'flat' | 'indices' | 'path'
+  searchArrayFormat?: SearchArrayFormat
 }
 
 /**
@@ -33,7 +36,7 @@ export interface SearchParamsOptions {
  * @returns The `URLSearchParams` object.
  */
 export function toSearchParams(object: SearchParamsObject, options: SearchParamsOptions = {}): URLSearchParams {
-  const { arrayFormat = 'brackets' } = options
+  const { searchArrayFormat = 'brackets' } = options
   const search = new URLSearchParams()
   for (const key in object) {
     const value = object[key]
@@ -41,11 +44,11 @@ export function toSearchParams(object: SearchParamsObject, options: SearchParams
 
     // --- Convert arrays based on the format.
     if (Array.isArray(value)) {
-      if (arrayFormat === 'brackets') for (const v of value) search.append(`${key}[]`, String(v))
-      else if (arrayFormat === 'indices') for (const [i, v] of value.entries()) search.append(`${key}[${i}]`, String(v))
-      else if (arrayFormat === 'comma') search.append(key, value.join(','))
-      else if (arrayFormat === 'path') for (const [i, v] of value.entries()) search.append(`${key}.${i}`, String(v))
-      else if (arrayFormat === 'flat') for (const v of value) search.append(key, String(v))
+      if (searchArrayFormat === 'brackets') for (const v of value) search.append(`${key}[]`, String(v))
+      else if (searchArrayFormat === 'indices') for (const [i, v] of value.entries()) search.append(`${key}[${i}]`, String(v))
+      else if (searchArrayFormat === 'comma') search.append(key, value.join(','))
+      else if (searchArrayFormat === 'path') for (const [i, v] of value.entries()) search.append(`${key}.${i}`, String(v))
+      else if (searchArrayFormat === 'flat') for (const v of value) search.append(key, String(v))
     }
 
     // --- Convert all values to strings.
