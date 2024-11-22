@@ -1,4 +1,4 @@
-import type { Override, Pretty } from '@unshared/types'
+import type { LooseDeep, Override, Pretty } from '@unshared/types'
 import type { OpenAPIV2 } from './OpenApiV2'
 
 export declare namespace OpenAPIV3 {
@@ -15,6 +15,11 @@ export declare namespace OpenAPIV3 {
         : string
       : never
 
+  export type ServerQuery<T> =
+    T extends { components: { securitySchemes: { api_key: { in: 'query'; name: infer U extends string } } } }
+      ? Partial<Record<U, string>>
+      : never
+
   /*************************************************************************/
   /* Request                                                               */
   /*************************************************************************/
@@ -26,52 +31,47 @@ export declare namespace OpenAPIV3 {
         : object
       : object
 
-  export type RequestData<T> =
+  export type RequestData<T, U> =
     Pretty<
-      & OpenAPIV2.Parameters<T, 'path'>
-      & OpenAPIV2.Parameters<T, 'query'>
-      & RequestBody<T>
+      & OpenAPIV2.Parameters<U, 'path'>
+      & OpenAPIV2.Parameters<U, 'query'>
+      & RequestBody<U>
+      & ServerQuery<T>
     >
 
-  export type RequestInit<T> =
+  export type RequestInit<T, U> =
     Pretty<Override<globalThis.RequestInit, {
-      body?: RequestBody<T>
-      query?: OpenAPIV2.Parameters<T, 'query'>
-      headers?: OpenAPIV2.RequestHeaders<T>
-      parameters?: OpenAPIV2.Parameters<T, 'path'>
-      data?: RequestData<T>
+      body?: RequestBody<U>
+      query?: OpenAPIV2.Parameters<U, 'query'> & ServerQuery<T>
+      headers?: OpenAPIV2.RequestHeaders<U>
+      parameters?: OpenAPIV2.Parameters<U, 'path'>
+      data?: LooseDeep<RequestData<T, U>>
     }>>
 
   /*************************************************************************/
   /* Response                                                              */
   /*************************************************************************/
 
-  export type ResponseBody<T> =
-    T extends { responses: Record<200, { content: Record<string, { schema: infer S }> }> }
-      ? OpenAPIV2.InferSchema<S>
+  export type ResponseBody<U> =
+    U extends { responses: Record<200, { content: Record<string, { schema: infer Schema }> }> }
+      ? OpenAPIV2.InferSchema<Schema>
       : never
 
-  export type Response<T> =
-    T extends { responses: infer R }
-      ? ({ [P in Exclude<keyof R, 'default'>]: R[P] extends { content: Record<string, infer U> }
+  export type Response<U> =
+    U extends { responses: infer Responses }
+      ? ({ [Status in keyof Responses]:
+        Responses[Status] extends { content: Record<'application/json', infer Schema> }
 
         // --- Override the `json` method to match the schema.
-        ? Override<globalThis.Response, {
-          status: P extends 'default' ? number : P
-          json: OpenAPIV2.InferSchema<U> extends infer V
-            ? [never] extends V ? never : () => Promise<V>
-            : never
-        }>
-        : never
+          ? Pretty<Override<globalThis.Response, {
+            status: Status
+            json: OpenAPIV2.InferSchema<Schema> extends infer V
+              ? [never] extends V ? never : () => Promise<V>
+              : never
+          }>>
+          : never
 
         // --- Collect all responses as an union.
       }) extends infer Result ? Result[keyof Result] : never
       : never
-
-  /*************************************************************************/
-  /* Fetch                                                                 */
-  /*************************************************************************/
-
-  export type Fetch<T> =
-    <P extends OpenAPIV2.Route<T>>(name: P, options: RequestInit<OpenAPIV2.OperationByRoute<T, P>>) => Promise<Response<OpenAPIV2.OperationByRoute<T, P>>>
 }
