@@ -1,5 +1,52 @@
 {
   "name": "@unshared/client",
+  "type": "module",
+  "version": "0.1.0",
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
+  "repository": {
+    "directory": "packages/client",
+    "type": "git",
+    "url": "git@github.com:shorwood/unshared.git"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./createClient": {
+      "require": "./dist/createClient.cjs",
+      "types": "./dist/createClient.d.ts",
+      "import": "./dist/createClient.js"
+    },
+    "./fetch": {
+      "require": "./dist/fetch.cjs",
+      "types": "./dist/fetch.d.ts",
+      "import": "./dist/fetch.js"
+    },
+    "./openapi": {
+      "require": "./dist/openapi.cjs",
+      "types": "./dist/openapi.d.ts",
+      "import": "./dist/openapi.js"
+    },
+    "./utils": {
+      "require": "./dist/utils.cjs",
+      "types": "./dist/utils.d.ts",
+      "import": "./dist/utils.js"
+    },
+    ".": {
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md"
+  ],
   "scripts": {
     "build:httpMethods": "tsx ./scripts/buildHttpMethods.ts",
     "build:httpHeaders": "tsx ./scripts/buildHttpHeaders.ts",
