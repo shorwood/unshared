@@ -1,5 +1,3 @@
-import type { Pretty } from './Pretty'
-
 /**
  * Override the properties of T with the properties of U and keep the rest.
  *

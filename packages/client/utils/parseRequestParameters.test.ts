@@ -7,7 +7,7 @@ describe('parseRequestParameters', () => {
     expect(context.url.toString()).toBe('https://api.example.com/users/123/profile')
   })
 
-  it.only('should replace openapi-style path parameters with data values', () => {
+  it('should replace openapi-style path parameters with data values', () => {
     const context = { init: { method: 'get' }, url: new URL('https://api.example.com/users/{id}/profile') }
     parseRequestParameters('', { data: { id: '123' } }, context)
     expect(context.url.toString()).toBe('https://api.example.com/users/123/profile')
