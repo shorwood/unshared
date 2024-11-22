@@ -2,6 +2,28 @@
 import type { OpenAPIV2 } from './OpenApiV2'
 
 describe('OpenApiV2', () => {
+  describe('ServerUrl', () => {
+    it('should infer server url types when all properties are present', () => {
+      type Result = OpenAPIV2.ServerUrl<{ host: 'api.example.com'; basePath: '/v1'; schemes: ['https'] }>
+      expectTypeOf<Result>().toEqualTypeOf<'https://api.example.com/v1'>()
+    })
+
+    it('should infer an union of server url types when multiple schemes are present', () => {
+      type Result = OpenAPIV2.ServerUrl<{ host: 'api.example.com'; basePath: '/v1'; schemes: ['http', 'https'] }>
+      expectTypeOf<Result>().toEqualTypeOf<'http://api.example.com/v1' | 'https://api.example.com/v1'>()
+    })
+
+    it('should infer server url types when only host is present', () => {
+      type Result = OpenAPIV2.ServerUrl<{ host: 'api.example.com' }>
+      expectTypeOf<Result>().toEqualTypeOf<`${string}://api.example.com${string}`>()
+    })
+
+    it('should fallback to string when host is missing', () => {
+      type Result = OpenAPIV2.ServerUrl<{ basePath: '/v1'; schemes: ['https'] }>
+      expectTypeOf<Result>().toEqualTypeOf<string>()
+    })
+  })
+
   describe('InferSchema', () => {
     describe('primitive', () => {
       it('should infer string schema types', () => {
@@ -109,55 +131,8 @@ describe('OpenApiV2', () => {
     })
   })
 
-  describe('InferRequest', () => {
-    describe('InferRequestBaseUrl', () => {
-      it('should infer server url types when all properties are present', () => {
-        type Result = OpenAPIV2.ServerUrl<{
-          swagger: '2.0'
-          info: { title: 'Example API'; version: '1.0' }
-          paths: {}
-          host: 'api.example.com'
-          basePath: '/v1'
-          schemes: ['https']
-        }>
-        expectTypeOf<Result>().toEqualTypeOf<'https://api.example.com/v1'>()
-      })
-
-      it('should infer if multiple schemes are present', () => {
-        type Result = OpenAPIV2.ServerUrl<{
-          swagger: '2.0'
-          info: { title: 'Example API'; version: '1.0' }
-          paths: {}
-          host: 'api.example.com'
-          basePath: '/v1'
-          schemes: ['http', 'https']
-        }>
-        expectTypeOf<Result>().toEqualTypeOf<'http://api.example.com/v1' | 'https://api.example.com/v1'>()
-      })
-
-      it('should infer server url types when only host is present', () => {
-        type Result = OpenAPIV2.ServerUrl<{
-          swagger: '2.0'
-          info: { title: 'Example API'; version: '1.0' }
-          paths: {}
-          host: 'api.example.com'
-        }>
-        expectTypeOf<Result>().toEqualTypeOf<`${string}://api.example.com${string}`>()
-      })
-
-      it('should fallback to string when host is missing', () => {
-        type Result = OpenAPIV2.ServerUrl<{
-          swagger: '2.0'
-          info: { title: 'Example API'; version: '1.0' }
-          basePath: '/v1'
-          schemes: ['https']
-          paths: {}
-        }>
-        expectTypeOf<Result>().toEqualTypeOf<string>()
-      })
-    })
-
-    describe('InferRequestParameters', () => {
+  describe('Request', () => {
+    describe('Parameters', () => {
       describe('optional parameters', () => {
         it('should infer request query parameters types', () => {
           type Result = OpenAPIV2.Parameters<{ responses: {}; parameters: [{ in: 'query'; name: 'name'; type: 'number' }] }, 'query'>
@@ -227,7 +202,7 @@ describe('OpenApiV2', () => {
       })
     })
 
-    describe('InferRequestBody', () => {
+    describe('RequestBody', () => {
       it('should infer request body types', () => {
         type Result = OpenAPIV2.RequestBody<{
           responses: {}
