@@ -1,5 +1,5 @@
 import type { CollectKey, MaybeArray, Override, Pretty, StringSplit, UnionMerge } from '@unshared/types'
-import type { HttpHeader } from '../types/HttpHeaders'
+import type { HttpHeader } from '../types'
 
 export declare namespace OpenAPIV2 {
 
