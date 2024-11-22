@@ -1,7 +1,8 @@
-import type { SearchArrayFormat, SearchParamsObject } from '@unshared/string'
+/* eslint-disable unicorn/prevent-abbreviations */
 import type { MaybeLiteral } from '@unshared/types'
 import type { Override } from '@unshared/types'
 import type { HttpHeader, HttpMethod } from '../types'
+import type { SearchArrayFormat, SearchParamsObject } from './toSearchParams'
 import { parseRequestBody } from './parseRequestBody'
 import { parseRequestHeaders } from './parseRequestHeaders'
 import { parseRequestParameters } from './parseRequestParameters'
