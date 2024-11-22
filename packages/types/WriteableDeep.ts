@@ -6,6 +6,7 @@
  * @returns A new type with all properties in T writeable
  * @example Writeable<{ readonly a: string; b: { readonly c: number } }> // { a: string; b: { c: number } }
  */
-export type WriteableDeep<T> = T extends object ? T extends ReadonlyArray<infer U> ? Array<WriteableDeep<U>> : {
-  -readonly [P in keyof T]: WriteableDeep<T[P]>;
-} : T
+export type WriteableDeep<T> =
+T extends object
+  ? T extends ReadonlyArray<infer U> ? Array<WriteableDeep<U>>
+    : { -readonly [P in keyof T]: WriteableDeep<T[P]>; } : T
