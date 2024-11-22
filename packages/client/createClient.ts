@@ -31,7 +31,7 @@ export type Client<T = OpenAPI.Document> =
     & { fetch: ClientFetch<T> }
   >
 
-export type ClientOptions<T> = Pretty<Override<RequestOptions, {
+export type ClientOptions<T = any> = Pretty<Override<RequestOptions, {
   baseUrl?: ClientBaseUrl<T>
 
   /**
@@ -44,9 +44,20 @@ export type ClientOptions<T> = Pretty<Override<RequestOptions, {
     : Record<string, string>
 }>>
 
+/**
+ * Create a new client instance for the given OpenAPI specification.
+ *
+ * @param document The OpenAPI specification document.
+ * @param initialOptions The initial options to use for every request.
+ * @returns The client instance.
+ * @example
+ * const client = createClient(document)
+ * await client.fetch({ ... })
+ */
+// @ts-expect-error: `ClientOptions` is not assignable to `ClientOptions<T>`.
 export function createClient<T extends OpenAPI.Document>(document: Readonly<T>, initialOptions?: ClientOptions<T>): Client<T>
 export function createClient<T extends OpenAPI.Document>(url: ClientBaseUrl<T>, initialOptions?: ClientOptions<T>): Client<T>
-export function createClient(documentOrUrl: Readonly<OpenAPI.Document> | string, initialOptions: ClientOptions<any> = {}): Client {
+export function createClient(documentOrUrl: Readonly<OpenAPI.Document> | string, initialOptions: ClientOptions = {}): Client {
   const specifications = typeof documentOrUrl === 'string' ? undefined : documentOrUrl
 
   async function fetchByOperationId(operationId: string, options: ClientOptions<any>) {
