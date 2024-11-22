@@ -451,6 +451,11 @@
       "types": "./dist/OverloadsReturnTypes.d.ts",
       "import": "./dist/OverloadsReturnTypes.js"
     },
+    "./Override": {
+      "require": "./dist/Override.cjs",
+      "types": "./dist/Override.d.ts",
+      "import": "./dist/Override.js"
+    },
     "./Path": {
       "require": "./dist/Path.cjs",
       "types": "./dist/Path.d.ts",
