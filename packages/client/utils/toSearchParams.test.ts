@@ -36,17 +36,17 @@ describe('toSearchParams', () => {
 
   describe('brackets', () => {
     it('should convert object with a single array property to query string', () => {
-      const result = toSearchParams({ key: ['value'] }).toString()
+      const result = toSearchParams({ key: ['value'] }, { searchArrayFormat: 'brackets' }).toString()
       expect(result).toBe('key%5B%5D=value')
     })
 
     it('should convert object with multiple array properties to query string', () => {
-      const result = toSearchParams({ key1: ['value1'], key2: ['value2'] }).toString()
+      const result = toSearchParams({ key1: ['value1'], key2: ['value2'] }, { searchArrayFormat: 'brackets' }).toString()
       expect(result).toBe('key1%5B%5D=value1&key2%5B%5D=value2')
     })
 
     it('should convert object with multiple array properties to query string with brackets', () => {
-      const result = toSearchParams({ key: ['value1', 'value2'] }).toString()
+      const result = toSearchParams({ key: ['value1', 'value2'] }, { searchArrayFormat: 'brackets' }).toString()
       expect(result).toBe('key%5B%5D=value1&key%5B%5D=value2')
     })
   })

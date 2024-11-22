@@ -8,7 +8,7 @@ export type SearchParamsObject = Record<string, MaybeArray<boolean | number | st
 export type SearchArrayFormat = 'brackets' | 'comma' | 'flat' | 'indices' | 'path'
 
 /** Options for the query string conversion. */
-export interface SearchParamsOptions {
+export interface ToSearchParamsOptions {
 
   /**
    * Defines how to handle arrays in the object. There is no standard way to
@@ -22,7 +22,7 @@ export interface SearchParamsOptions {
    * - `path`: Convert arrays to `key.0=value&key.1=value` format.
    * - `flat`: Convert arrays to `key=value1&key=value2` format.
    *
-   * @default 'brackets'
+   * @default 'flat'
    */
   searchArrayFormat?: SearchArrayFormat
 }
@@ -35,8 +35,8 @@ export interface SearchParamsOptions {
  * @param options The query string options.
  * @returns The `URLSearchParams` object.
  */
-export function toSearchParams(object: SearchParamsObject, options: SearchParamsOptions = {}): URLSearchParams {
-  const { searchArrayFormat = 'brackets' } = options
+export function toSearchParams(object: SearchParamsObject, options: ToSearchParamsOptions = {}): URLSearchParams {
+  const { searchArrayFormat = 'flat' } = options
   const search = new URLSearchParams()
   for (const key in object) {
     const value = object[key]

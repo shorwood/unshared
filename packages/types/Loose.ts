@@ -1,4 +1,4 @@
-import type { UnionMerge } from './UnionMerge'
+import type { Pretty } from './Pretty'
 
 /**
  * Make all `undefined` or `void` properties of T optional. This type is
@@ -13,7 +13,7 @@ import type { UnionMerge } from './UnionMerge'
 export type Loose<T> =
   T extends object
     ? T extends any[] ? T
-      : UnionMerge<
+      : Pretty<
         { [P in keyof T as undefined extends T[P] ? P : never]?: T[P]; } |
         { [P in keyof T as undefined extends T[P] ? never : P]: T[P]; }
       > : T

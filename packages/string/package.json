@@ -156,11 +156,6 @@
       "types": "./dist/toPathCase.d.ts",
       "import": "./dist/toPathCase.js"
     },
-    "./toSearchParams": {
-      "require": "./dist/toSearchParams.cjs",
-      "types": "./dist/toSearchParams.d.ts",
-      "import": "./dist/toSearchParams.js"
-    },
     "./toSlug": {
       "require": "./dist/toSlug.cjs",
       "types": "./dist/toSlug.d.ts",
