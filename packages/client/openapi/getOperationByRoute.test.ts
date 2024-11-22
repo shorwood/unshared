@@ -16,10 +16,10 @@ describe('getOperationByRoute', () => {
 
   it('should return the correct operation for a valid route name', () => {
     const result = getOperationByRoute(specifications, 'DELETE /users/{username}')
-    expect(result).toMatchObject({
-      operationId: 'getUsers',
-      method: 'GET',
-      path: '/users',
+    expect(result).toStrictEqual({
+      operationId: 'deleteUser',
+      method: 'delete',
+      path: '/users/{username}',
     })
   })
 
