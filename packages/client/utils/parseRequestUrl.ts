@@ -35,5 +35,8 @@ export function parseRequestUrl(route: string, options: Pick<RequestOptions, 'ba
   // --- Create the url and apply the method.
   context.init = context.init ?? {}
   context.init.method = methodLower
-  context.url = new URL(match.groups.path, routeBaseUrl)
+  context.url = new URL(routeBaseUrl)
+
+  // --- Append the path to the URL while making sure there are no double slashes.
+  context.url.pathname += context.url.pathname.endsWith('/') ? match.groups.path.slice(1) : match.groups.path
 }

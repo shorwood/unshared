@@ -11,6 +11,24 @@ describe('parseRequestUrl', () => {
       })
     })
 
+    it('should append the path to the baseUrl if it has a path', () => {
+      const context = { init: {} }
+      parseRequestUrl('GET /users/1', { baseUrl: 'https://api.example.com/v1' }, context)
+      expect(context).toStrictEqual({
+        init: { method: 'get' },
+        url: new URL('https://api.example.com/v1/users/1'),
+      })
+    })
+
+    it('should append the path to the baseUrl if it has a path with a trailing slash', () => {
+      const context = { init: {} }
+      parseRequestUrl('GET /users/1', { baseUrl: 'https://api.example.com/v1/' }, context)
+      expect(context).toStrictEqual({
+        init: { method: 'get' },
+        url: new URL('https://api.example.com/v1/users/1'),
+      })
+    })
+
     it('should override the method from the route name', () => {
       const context = { init: {} }
       parseRequestUrl('POST https://api.example.com/users', { method: 'get' }, context)
