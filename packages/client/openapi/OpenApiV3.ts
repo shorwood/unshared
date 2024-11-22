@@ -23,8 +23,15 @@ export declare namespace OpenAPIV3 {
     T extends { requestBody: { content: infer C } }
       ? C extends Record<string, { schema: infer S }>
         ? OpenAPIV2.InferSchema<S>
-        : never
-      : never
+        : object
+      : object
+
+  export type RequestData<T> =
+    Pretty<
+      & OpenAPIV2.Parameters<T, 'path'>
+      & OpenAPIV2.Parameters<T, 'query'>
+      & RequestBody<T>
+    >
 
   export type RequestInit<T> =
     Pretty<Override<globalThis.RequestInit, {
@@ -32,6 +39,7 @@ export declare namespace OpenAPIV3 {
       query?: OpenAPIV2.Parameters<T, 'query'>
       headers?: OpenAPIV2.RequestHeaders<T>
       parameters?: OpenAPIV2.Parameters<T, 'path'>
+      data?: RequestData<T>
     }>>
 
   /*************************************************************************/

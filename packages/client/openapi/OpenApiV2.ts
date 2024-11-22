@@ -1,5 +1,5 @@
 import type { CollectKey, MaybeArray, Override, Pretty, StringSplit, UnionMerge } from '@unshared/types'
-import type { HttpHeader } from './HttpHeaders'
+import type { HttpHeader } from '../types/HttpHeaders'
 
 export declare namespace OpenAPIV2 {
 
@@ -65,12 +65,19 @@ export declare namespace OpenAPIV2 {
       | (T extends { consumes: Array<infer C> } ? { 'Content-Type'?: C } : never)
     >
 
+  export type RequestData<T> = Pretty<
+    & NonNullable<Parameters<T, 'path'>>
+    & NonNullable<Parameters<T, 'query'>>
+    & NonNullable<RequestBody<T>>
+  >
+
   export type RequestInit<T> =
     Pretty<Override<globalThis.RequestInit, {
       body?: RequestBody<T>
       query?: Parameters<T, 'query'>
       headers?: RequestHeaders<T>
       parameters?: Parameters<T, 'path'>
+      data?: RequestData<T>
     }>>
 
   /*************************************************************************/
