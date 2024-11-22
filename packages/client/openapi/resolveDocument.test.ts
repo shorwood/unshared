@@ -1,7 +1,7 @@
-import type { OpenAPIResolved } from './openapiResolveDocument'
-import { openapiResolveDocument } from './openapiResolveDocument'
+import type { OpenAPIResolved } from './resolveDocument'
+import { resolveDocument } from './resolveDocument'
 
-describe('openapiResolveDocument', () => {
+describe('resolveDocument', () => {
   describe('resolve', () => {
     it('should resolve a reference in the document', () => {
       const document = {
@@ -16,7 +16,7 @@ describe('openapiResolveDocument', () => {
           },
         },
       } as const
-      const resolved = openapiResolveDocument(document)
+      const resolved = resolveDocument(document)
       expect(resolved.paths['/users'].get).toEqual({ type: 'object' })
     })
 
@@ -38,7 +38,7 @@ describe('openapiResolveDocument', () => {
         },
       } as const
 
-      const resolved = openapiResolveDocument(document)
+      const resolved = resolveDocument(document)
       expect(resolved.paths['/users'].get).toEqual({ type: 'string' })
     })
 
@@ -56,7 +56,7 @@ describe('openapiResolveDocument', () => {
         },
       } as const
 
-      const resolved = openapiResolveDocument(document)
+      const resolved = resolveDocument(document)
       expect(resolved.paths['/special'].get).toEqual({ type: 'string' })
     })
 
@@ -85,7 +85,7 @@ describe('openapiResolveDocument', () => {
           },
         },
       } as const
-      const resolved = openapiResolveDocument(document)
+      const resolved = resolveDocument(document)
       expect(resolved.paths['/users'].get.properties.name.type.properties).toEqual({
         first: { type: 'string' },
         last: { type: 'string' },
@@ -95,7 +95,7 @@ describe('openapiResolveDocument', () => {
 
   describe('edge cases', () => {
     it('should throw an error if the reference cannot be resolved', () => {
-      const resolved = openapiResolveDocument({
+      const resolved = resolveDocument({
         components: {
           schemas: {
             User: { $ref: '#/invalid' },

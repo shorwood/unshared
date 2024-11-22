@@ -1,8 +1,8 @@
 import type { ObjectLike } from '@unshared/types'
-import type { OpenAPIReference } from './isOpenapiReferenceObject'
-import type { OpenAPIReferenceResolved } from './openapiResolveReference'
-import { isOpenapiReferenceObject } from './isOpenapiReferenceObject'
-import { openapiResolveReference as openapiResolveReference } from './openapiResolveReference'
+import type { OpenAPIReference } from './isReferenceObject'
+import type { OpenAPIReferenceResolved } from './resolveReference'
+import { isReferenceObject } from './isReferenceObject'
+import { resolveReference as resolveReference } from './resolveReference'
 
 /**
  * Resolve a type to the type it references. If the source is not a reference,
@@ -32,7 +32,7 @@ export type OpenAPIResolved<T, D = T> =
  * @param value The OpenAPI specification.
  * @returns The resolved OpenAPI specification.
  * @example
- * const resolved = openapiResolveReferences({
+ * const resolved = resolveReferences({
  *   ...
  *   paths: {
  *     '/users': {
@@ -41,9 +41,9 @@ export type OpenAPIResolved<T, D = T> =
  *   },
  * })
  */
-export function openapiResolveDocument<T extends object>(value: Readonly<T>): OpenAPIResolved<T>
-export function openapiResolveDocument<T extends object, D>(value: Readonly<T>, document: Readonly<D>): OpenAPIResolved<T, D>
-export function openapiResolveDocument(value: Readonly<ObjectLike>, document = value): unknown {
+export function resolveDocument<T extends object>(value: Readonly<T>): OpenAPIResolved<T>
+export function resolveDocument<T extends object, D>(value: Readonly<T>, document: Readonly<D>): OpenAPIResolved<T, D>
+export function resolveDocument(value: Readonly<ObjectLike>, document = value): unknown {
   return new Proxy(value, {
     get(target, property: string) {
       let value = target[property]
@@ -52,12 +52,12 @@ export function openapiResolveDocument(value: Readonly<ObjectLike>, document = v
       if (!document) return value
 
       // --- Resolve the reference if it is a reference object.
-      if (isOpenapiReferenceObject(value))
-        value = openapiResolveReference(value, document)
+      if (isReferenceObject(value))
+        value = resolveReference(value, document)
 
       // --- Recursively resolve references in objects.
       if (typeof value === 'object' && value !== null)
-        return openapiResolveDocument(value as ObjectLike, document)
+        return resolveDocument(value as ObjectLike, document)
 
       // --- Return the value as is.
       return value

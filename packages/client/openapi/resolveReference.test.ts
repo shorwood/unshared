@@ -1,15 +1,15 @@
-import type { OpenAPIReferenceDecoded, OpenAPIReferencePath, OpenAPIReferenceResolved } from './openapiResolveReference'
-import { openapiResolveReference } from './openapiResolveReference'
+import type { OpenAPIReferenceDecoded, OpenAPIReferencePath, OpenAPIReferenceResolved } from './resolveReference'
+import { resolveReference } from './resolveReference'
 
-describe('openapiResolveReference', () => {
+describe('resolveReference', () => {
   describe('resolve', () => {
     it('should resolve a reference', () => {
-      const result = openapiResolveReference({ $ref: '#/tags' }, { tags: [{ name: 'foo' }] })
+      const result = resolveReference({ $ref: '#/tags' }, { tags: [{ name: 'foo' }] })
       expect(result).toEqual([{ name: 'foo' }])
     })
 
     it('should resolve a nested reference', () => {
-      const result = openapiResolveReference(
+      const result = resolveReference(
         { $ref: '#/components/schemas/user' },
         { components: { schemas: { user: { type: 'object' } } } } as const,
       )
@@ -17,7 +17,7 @@ describe('openapiResolveReference', () => {
     })
 
     it('should resolve a deeply nested reference', () => {
-      const result = openapiResolveReference(
+      const result = resolveReference(
         { $ref: '#/components/schemas/user/properties/name' },
         { components: { schemas: { user: { properties: { name: { type: 'string' } } } } } } as const,
       )
@@ -25,7 +25,7 @@ describe('openapiResolveReference', () => {
     })
 
     it('should handle references with special characters', () => {
-      const result = openapiResolveReference(
+      const result = resolveReference(
         { $ref: '#/components/schemas/foo~1bar~0baz' },
         { components: { schemas: { 'foo/bar~baz': { type: 'string' } } } } as const,
       )
@@ -36,20 +36,20 @@ describe('openapiResolveReference', () => {
   describe('edge cases', () => {
     it('should throw an error if the reference is not a reference object', () => {
     // @ts-expect-error: ignore type error
-      const shouldThrow = () => openapiResolveReference({}, { tags: [{ name: 'foo' }] })
+      const shouldThrow = () => resolveReference({}, { tags: [{ name: 'foo' }] })
       expect(shouldThrow).toThrow(TypeError)
       expect(shouldThrow).toThrow('Expected value to be an OpenAPI reference object.')
     })
 
     it('should throw an error if the document is not an object', () => {
     // @ts-expect-error: ignore type error
-      const shouldThrow = () => openapiResolveReference({ $ref: '#/tags' }, null)
+      const shouldThrow = () => resolveReference({ $ref: '#/tags' }, null)
       expect(shouldThrow).toThrow(TypeError)
       expect(shouldThrow).toThrow('Expected OpenAPI specification to be an object.')
     })
 
     it('should throw an error if the reference cannot be resolved', () => {
-      const shouldThrow = () => openapiResolveReference({ $ref: '#/invalid' }, { tags: [{ name: 'foo' }] })
+      const shouldThrow = () => resolveReference({ $ref: '#/invalid' }, { tags: [{ name: 'foo' }] })
       expect(shouldThrow).toThrow(Error)
       expect(shouldThrow).toThrow('Could not resolve OpenAPI component: #/invalid')
     })

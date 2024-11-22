@@ -1,6 +1,6 @@
 import type { StringJoin, StringReplace, WriteableDeep } from '@unshared/types'
-import type { OpenAPIReference } from './isOpenapiReferenceObject'
-import { isOpenapiReferenceObject } from './isOpenapiReferenceObject'
+import type { OpenAPIReference } from './isReferenceObject'
+import { isReferenceObject } from './isReferenceObject'
 
 /**
  * Decode an OpenAPI reference path by replacing the encoded characters with
@@ -66,15 +66,15 @@ export type OpenAPIReferenceResolved<
  * @param reference The reference object to resolve.
  * @param document The OpenAPI document to resolve the reference from.
  * @returns The result component.
- * @example openapiResolveReference({ $ref: '#/components/schemas/User' }, document)
+ * @example resolveReference({ $ref: '#/components/schemas/User' }, document)
  */
-export function openapiResolveReference<
+export function resolveReference<
   T extends OpenAPIReference,
   D extends object,
 >(reference: Readonly<T>, document: Readonly<D>): OpenAPIReferenceResolved<T, D> {
 
   // --- Return the source if it is not a reference.
-  if (!isOpenapiReferenceObject(reference))
+  if (!isReferenceObject(reference))
     throw new TypeError('Expected value to be an OpenAPI reference object.')
 
   // --- Assert that the parameters are valid.
