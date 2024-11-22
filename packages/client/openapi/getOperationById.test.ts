@@ -1,16 +1,18 @@
 import { getOperationById } from './getOperationById'
 
 describe('getOperationById', () => {
-  const specifications = { paths: {
-    '/users': {
-      get: { operationId: 'getUsers' },
-      post: { operationId: 'createUser' },
+  const specifications = {
+    paths: {
+      '/users': {
+        get: { operationId: 'getUsers' },
+        post: { operationId: 'createUser' },
+      },
+      '/users/{username}': {
+        get: { operationId: 'getUser' },
+        delete: { operationId: 'deleteUser' },
+      },
     },
-    '/users/{username}': {
-      get: { operationId: 'getUser' },
-      delete: { operationId: 'deleteUser' },
-    },
-  } } as const
+  } as const
 
   it('should return the correct operation for a valid operationId', () => {
     const result = getOperationById(specifications, 'deleteUser')
