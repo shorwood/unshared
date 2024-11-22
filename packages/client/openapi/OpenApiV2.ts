@@ -152,11 +152,4 @@ export declare namespace OpenAPIV2 {
           : never
         : never
       : never
-
-  /*************************************************************************/
-  /* Fetch                                                                 */
-  /*************************************************************************/
-
-  export type Fetch<T> =
-    <P extends Route<T>>(name: P, options: RequestInit<OperationByRoute<T, P>>) => Promise<Response<OperationByRoute<T, P>>>
 }
