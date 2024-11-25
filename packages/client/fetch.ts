@@ -1,3 +1,4 @@
+import type { RequestOptions } from './utils/parseRequest'
 import { parseRequest } from './utils/parseRequest'
 
 /**
@@ -9,7 +10,7 @@ import { parseRequest } from './utils/parseRequest'
  * @returns The response from the server.
  * @example fetch('GET /users', { query: { limit: 10 } })
  */
-export function fetch(route: string, options: Record<string, unknown>) {
+export function fetch(route: string, options: RequestOptions = {}) {
   const { url, init } = parseRequest(route, options)
   return globalThis.fetch(url!, init)
 }
