@@ -79,7 +79,7 @@ export interface RequestContext {
  * @param options The options to pass to the request.
  * @returns The URL and the `RequestInit` object.
  */
-export function parseRequest(route: string, options: RequestOptions = {}) {
+export function parseRequest(route: string, options: RequestOptions): RequestContext {
   const { data, body, query, headers, parameters, baseUrl, method, searchArrayFormat, ...requestInit } = options
   const context: RequestContext = { init: requestInit }
   parseRequestUrl(route, { baseUrl, method }, context)
