@@ -15,7 +15,9 @@ export type FormDataLike = FormData | Record<string, Blob | File | FileList>
 export function isFormDataLike(value: unknown): value is FormDataLike {
   if (typeof value !== 'object' || value === null) return false
   if (value instanceof FormData) return true
-  return Object.values(value).every((x) => {
+  const values = Object.values(value)
+  if (values.length === 0) return false
+  return values.every((x) => {
     if (x instanceof File) return true
     if (Array.isArray(x)) return x.every(item => item instanceof File)
     return x instanceof Blob
