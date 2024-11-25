@@ -1,3 +1,4 @@
+import type { FormDataLike } from './isFormDataLike'
 import { isFormDataLike } from './isFormDataLike'
 
 describe('isFormDataLike', () => {
@@ -57,5 +58,11 @@ describe('isFormDataLike', () => {
   it('should return false for an empty object', () => {
     const result = isFormDataLike({})
     expect(result).toBe(false)
+  })
+
+  it('should infer a `FormDataLike` type', () => {
+    const value = {} as unknown
+    const result = isFormDataLike(value)
+    if (result) expectTypeOf(value).toEqualTypeOf<FormDataLike>()
   })
 })
