@@ -8,12 +8,9 @@ import type { RequestContext, RequestOptions } from './parseRequest'
  * @param context The request context.
  */
 export function parseRequestHeaders(route: string, options: Pick<RequestOptions, 'headers'>, context: RequestContext): void {
-  const { headers } = options
+  const { headers = {} } = options
   const { init } = context
   init.headers = init.headers ?? {}
-
-  // --- If no headers are provided, return early.
-  if (!headers) return
 
   // --- Merge the headers with the existing headers.
   for (const key in headers) {
