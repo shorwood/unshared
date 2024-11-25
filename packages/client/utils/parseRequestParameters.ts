@@ -27,24 +27,20 @@ export function parseRequestParameters(route: string, options: Pick<RequestOptio
   const pathParameters = url.pathname.match(EXP_PATH_PARAMETER)
   if (!pathParameters) return
 
-  // --- If a path parameter is provided in the data, fill the path with the data.
-  if (isObjectLike(data)) {
-    for (const key in data) {
-      const value = data[key]
-      if (value === undefined) continue
-      if (typeof value !== 'string') continue
-      if (parameters[key] !== undefined) continue
-      parameters[key] = value
-      delete data[key]
-    }
-  }
-
   // --- Apply the path parameters to the URL.
   for (const parameter of pathParameters.values()) {
     const key = parameter.replaceAll(EXP_PATH_PARAMETER, '$1$2')
+
+    // --- If the parameter is provided, replace the path with the value.
     const value = parameters[key]
-    if (value === undefined) continue
-    if (typeof value !== 'string') continue
-    url.pathname = url.pathname.replace(parameter, value)
+    if (value !== undefined && typeof value === 'string') {
+      url.pathname = url.pathname.replace(parameter, value)
+    }
+
+    // --- If the data contains the parameter, use it and remove it from the data.
+    else if (isObjectLike(data) && data[key] !== undefined && typeof data[key] === 'string') {
+      url.pathname = url.pathname.replace(parameter, data[key])
+      delete data[key]
+    }
   }
 }
