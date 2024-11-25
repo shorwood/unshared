@@ -12,6 +12,10 @@ import { parseRequestUrl } from './parseRequestUrl'
 /** Headers to include in the request. */
 export type RequestHeaders = Partial<Record<MaybeLiteral<HttpHeader>, string>>
 
+/** The types of data that can be passed to the request. */
+export type RequestBody = Blob | File | FileList | FormData | ReadableStream | Record<string, unknown> | string
+
+/** Options to pass to the request. */
 export type RequestOptions = Override<RequestInit, {
 
   /**
@@ -34,7 +38,12 @@ export type RequestOptions = Override<RequestInit, {
    * parameters, query parameters, body, and form data of the request based on
    * the route method.
    */
-  data?: Blob | File | FileList | FormData | ReadableStream | Record<string, unknown> | string
+  data?: RequestBody
+
+  /**
+   * The body to include in the request.
+   */
+  body?: RequestBody
 
   /**
    * The headers to include in the request.
@@ -76,7 +85,7 @@ export function parseRequest(route: string, options: RequestOptions = {}) {
   parseRequestUrl(route, { baseUrl, method }, context)
   parseRequestParameters(route, { data, parameters }, context)
   parseRequestQuery(route, { data, query, searchArrayFormat }, context)
-  parseRequestBody(route, { body, data }, context)
+  parseRequestBody(route, { data, body }, context)
   parseRequestHeaders(route, { headers }, context)
   return context
 }
