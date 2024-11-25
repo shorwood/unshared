@@ -13,7 +13,7 @@ import { parseRequestUrl } from './parseRequestUrl'
 export type RequestHeaders = Partial<Record<MaybeLiteral<HttpHeader>, string>>
 
 /** The types of data that can be passed to the request. */
-export type RequestBody = Blob | File | FileList | FormData | ReadableStream | Record<string, unknown> | string
+export type RequestBody = File | FormData | ReadableStream | Record<string, unknown> | string
 
 /** Options to pass to the request. */
 export type RequestOptions = Override<RequestInit, {
