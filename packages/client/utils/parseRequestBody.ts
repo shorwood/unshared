@@ -11,15 +11,9 @@ import { toFormData } from './toFormData'
  * @param context The request context.
  */
 export function parseRequestBody(route: string, options: Pick<RequestOptions, 'body' | 'data'>, context: RequestContext): void {
-  const { data, body } = options
+  const { body, data = body } = options
   const { init } = context
   init.headers = init.headers ?? {}
-
-  // --- If the `body` is provided, return early.
-  if (body !== undefined) {
-    init.body = body
-    return
-  }
 
   // --- If the method is `GET`, `HEAD`, or `DELETE`, return early.
   if (['get', 'head', 'delete'].includes(init.method ?? 'get')) return
