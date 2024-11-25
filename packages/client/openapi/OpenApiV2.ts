@@ -1,4 +1,4 @@
-import type { CollectKey, MaybeArray, Override, Pretty, StringSplit, UnionMerge } from '@unshared/types'
+import type { CollectKey, Override, Pretty, StringSplit, UnionMerge } from '@unshared/types'
 import type { HttpHeader } from '../types'
 
 export declare namespace OpenAPIV2 {
@@ -26,23 +26,23 @@ export declare namespace OpenAPIV2 {
         : Record<string, unknown>
 
   type InferSchemaArray<T> =
-    T extends { items: MaybeArray<infer U>; additionalItems: MaybeArray<infer V> } ? Array<InferSchema<U | V>>
-      : T extends { items: MaybeArray<infer U> } ? Array<InferSchema<U>>
-        : T extends { additionalItems: MaybeArray<infer U> } ? Array<InferSchema<U>>
-          : unknown[]
+    T extends { items: infer U } ? Array<InferSchema<U>>
+      : T extends { additionalItems: infer U } ? Array<InferSchema<U>>
+        : unknown[]
 
   export type InferSchema<T> =
-    Pretty<(T extends { anyOf: Array<infer U> } ? InferSchema<U>
-      : T extends { oneOf: Array<infer U> } ? InferSchema<U>
-        : T extends { allOf: Array<infer U> } ? UnionMerge<InferSchema<U>>
-          : T extends { schema: infer U } ? InferSchema<U>
-            : T extends { type: 'array' } ? InferSchemaArray<T>
-              : T extends { type: 'object' } ? InferSchemaObject<T>
-                : T extends { type: 'string' } ? T extends { enum: Array<infer U> } ? U : string
-                  : T extends { type: 'integer' | 'number' } ? number
-                    : T extends { type: 'boolean' } ? boolean
-                      : never)
-                      | (T extends { nullable: true } ? undefined : never)>
+    Pretty<(
+      T extends { anyOf: Array<infer U> } ? InferSchema<U>
+        : T extends { oneOf: Array<infer U> } ? InferSchema<U>
+          : T extends { allOf: Array<infer U> } ? UnionMerge<InferSchema<U>>
+            : T extends { schema: infer U } ? InferSchema<U>
+              : T extends { type: 'array' } ? InferSchemaArray<T>
+                : T extends { type: 'object' } ? InferSchemaObject<T>
+                  : T extends { type: 'string' } ? T extends { enum: Array<infer U> } ? U : string
+                    : T extends { type: 'integer' | 'number' } ? number
+                      : T extends { type: 'boolean' } ? boolean
+                        : never)
+                        | (T extends { nullable: true } ? undefined : never)>
 
   /*************************************************************************/
   /* Request                                                               */
@@ -66,18 +66,19 @@ export declare namespace OpenAPIV2 {
     >
 
   export type RequestData<T> = Pretty<
-    & NonNullable<Parameters<T, 'path'>>
-    & NonNullable<Parameters<T, 'query'>>
-    & NonNullable<RequestBody<T>>
+    & Parameters<T, 'path'>
+    & Parameters<T, 'query'>
+    & RequestBody<T>
   >
 
-  export type RequestInit<T> =
+  export type RequestInit<T, U> =
     Pretty<Override<globalThis.RequestInit, {
-      body?: RequestBody<T>
-      query?: Parameters<T, 'query'>
-      headers?: RequestHeaders<T>
-      parameters?: Parameters<T, 'path'>
-      data?: RequestData<T>
+      baseUrl?: ServerUrl<T>
+      body?: RequestBody<U>
+      query?: Parameters<U, 'query'>
+      headers?: RequestHeaders<U>
+      parameters?: Parameters<U, 'path'>
+      data?: RequestData<U>
     }>>
 
   /*************************************************************************/
