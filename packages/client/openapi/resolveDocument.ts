@@ -1,4 +1,4 @@
-import type { ObjectLike } from '@unshared/types'
+import type { ObjectLike, Substract } from '@unshared/types'
 import type { OpenAPIReference } from './isReferenceObject'
 import type { OpenAPIReferenceResolved } from './resolveReference'
 import { isReferenceObject } from './isReferenceObject'
@@ -20,10 +20,11 @@ import { resolveReference as resolveReference } from './resolveReference'
  *   }
  * }>
  */
-export type OpenAPIResolved<T, D = T> =
-  T extends OpenAPIReference
-    ? D extends object ? OpenAPIResolved<OpenAPIReferenceResolved<T, D>, D> : never
-    : T extends object ? { -readonly [K in keyof T]: OpenAPIResolved<T[K], D> } : T
+export type OpenAPIResolved<T, D = T, N extends number = 8> =
+  N extends 0 ? T
+    : T extends OpenAPIReference
+      ? D extends object ? OpenAPIResolved<OpenAPIReferenceResolved<T, D>, D, Substract<N, 1>> : never
+      : T extends object ? { -readonly [K in keyof T]: OpenAPIResolved<T[K], D, N> } : T
 
 /**
  * Recursively resolve all references in an OpenAPI specification. This function
