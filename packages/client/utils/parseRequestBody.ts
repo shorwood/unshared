@@ -11,7 +11,7 @@ import { toFormData } from './toFormData'
  * @param context The request context.
  */
 export function parseRequestBody(route: string, options: Pick<RequestOptions, 'body' | 'data'>, context: RequestContext): void {
-  const { body, data = body } = options
+  const { data, body = data } = options
   const { init } = context
   init.headers = init.headers ?? {}
 
@@ -19,28 +19,33 @@ export function parseRequestBody(route: string, options: Pick<RequestOptions, 'b
   if (['get', 'head', 'delete'].includes(init.method ?? 'get')) return
 
   // --- If no data is provided, return early.
-  if (data === null || data === undefined) return
+  if (body === null || body === undefined) return
 
   // --- If data contains a `File` object, create a FormData object.
-  if (isFormDataLike(data)) {
-    init.body = toFormData(data)
+  if (isFormDataLike(body)) {
+    init.body = toFormData(body)
     init.headers = { ...init.headers, 'Content-Type': 'multipart/form-data' }
   }
 
   // --- If the data is a `ReadableStream`, pass it directly to the body.
-  else if (data instanceof ReadableStream) {
-    init.body = data
+  else if (body instanceof ReadableStream) {
+    init.body = body
   }
 
   // --- If the data is a Blob, pass it directly to the body.
-  else if (data instanceof File) {
-    init.body = data.stream()
+  else if (body instanceof File) {
+    init.body = body.stream()
     init.headers = { ...init.headers, 'Content-Type': 'application/octet-stream' }
   }
 
   // --- Otherwise, stringify the data and set the content type to JSON.
-  else if (isObjectLike(data)) {
-    init.body = JSON.stringify(data)
+  else if (isObjectLike(body)) {
+    init.body = JSON.stringify(body)
     init.headers = { ...init.headers, 'Content-Type': 'application/json' }
+  }
+
+  // --- For all other data types, set the body directly.
+  else {
+    init.body = body
   }
 }

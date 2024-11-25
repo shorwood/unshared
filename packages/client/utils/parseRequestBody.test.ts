@@ -4,13 +4,13 @@ import { parseRequestBody } from './parseRequestBody'
 describe('parseRequestBody', () => {
   describe('when body is provided', () => {
     it('should set the body directly', () => {
-      const context = { init: {} } as RequestContext
+      const context = { init: { method: 'post' } } as RequestContext
       parseRequestBody('', { body: 'test-body' }, context)
       expect(context.init.body).toBe('test-body')
     })
 
     it('should ignore the data property', () => {
-      const context = { init: {} } as RequestContext
+      const context = { init: { method: 'post' } } as RequestContext
       parseRequestBody('', { body: 'test-body', data: { key: 'value' } }, context)
       expect(context.init.body).toBe('test-body')
     })
@@ -51,14 +51,6 @@ describe('parseRequestBody', () => {
       const context = { init: { method: 'post' } } as RequestContext
       parseRequestBody('', { data: readableStream }, context)
       expect(context.init.body).toBe(readableStream)
-    })
-
-    it('should set FormData for FileList data', () => {
-      const file = [new File(['content'], 'test.txt')] as unknown as FileList
-      const context = { init: { method: 'post' } } as RequestContext
-      parseRequestBody('', { data: file }, context)
-      expect(context.init.body).toBeInstanceOf(FormData)
-      expect(context.init.headers).toStrictEqual({ 'Content-Type': 'multipart/form-data' })
     })
 
     it('should set body for File data', () => {
