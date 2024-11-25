@@ -1,9 +1,10 @@
 import type { MaybeLiteral, Override, Pretty } from '@unshared/types'
 import type { OpenAPI, OpenAPIV2 as V2, OpenAPIV3 as V3, OpenAPIV3_1 as V3_1 } from 'openapi-types'
+import type { OpenAPIV2, OpenAPIV3 } from './openapi/index'
 import type { RequestOptions } from './utils/index'
 import { fetch } from './fetch'
 import { getOperationById } from './openapi/getOperationById'
-import { getBaseUrl, type OpenAPIV2, type OpenAPIV3 } from './openapi/index'
+import { getBaseUrl } from './openapi/index'
 
 type ClientBaseUrl<T> =
   MaybeLiteral<
