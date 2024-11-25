@@ -17,22 +17,22 @@ describe('parseRequestHeaders', () => {
     })
   })
 
-  it('should handle empty headers', () => {
+  it('should not set headers if no headers are provided', () => {
     const context = { init: {} } as RequestContext
     parseRequestHeaders('', {}, context)
-    expect(context.init.headers).toStrictEqual({})
+    expect(context.init.headers).toBeUndefined()
   })
 
   it('should ignore undefined header values', () => {
     const context = { init: {} } as RequestContext
     parseRequestHeaders('', { headers: { 'Content-Type': undefined } }, context)
-    expect(context.init.headers).toStrictEqual({})
+    expect(context.init.headers).toBeUndefined()
   })
 
   it('should ignore non-string header values', () => {
     const context = { init: {} } as RequestContext
     // @ts-expect-error: intentionally passing a number
     parseRequestHeaders('', { headers: { 'Content-Type': 123 } }, context)
-    expect(context.init.headers).toStrictEqual({})
+    expect(context.init.headers).toBeUndefined()
   })
 })

@@ -13,7 +13,6 @@ import { toFormData } from './toFormData'
 export function parseRequestBody(route: string, options: Pick<RequestOptions, 'body' | 'data'>, context: RequestContext): void {
   const { data, body = data } = options
   const { init } = context
-  init.headers = init.headers ?? {}
 
   // --- If the method is `GET`, `HEAD`, or `DELETE`, return early.
   if (['get', 'head', 'delete'].includes(init.method ?? 'get')) return
@@ -24,6 +23,7 @@ export function parseRequestBody(route: string, options: Pick<RequestOptions, 'b
   // --- If data contains a `File` object, create a FormData object.
   if (isFormDataLike(body)) {
     init.body = toFormData(body)
+    init.headers = init.headers ?? {}
     init.headers = { ...init.headers, 'Content-Type': 'multipart/form-data' }
   }
 
@@ -35,12 +35,14 @@ export function parseRequestBody(route: string, options: Pick<RequestOptions, 'b
   // --- If the data is a Blob, pass it directly to the body.
   else if (body instanceof File) {
     init.body = body.stream()
+    init.headers = init.headers ?? {}
     init.headers = { ...init.headers, 'Content-Type': 'application/octet-stream' }
   }
 
   // --- Otherwise, stringify the data and set the content type to JSON.
   else if (isObjectLike(body)) {
     init.body = JSON.stringify(body)
+    init.headers = init.headers ?? {}
     init.headers = { ...init.headers, 'Content-Type': 'application/json' }
   }
 
