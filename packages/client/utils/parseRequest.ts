@@ -9,6 +9,9 @@ import { parseRequestParameters } from './parseRequestParameters'
 import { parseRequestQuery } from './parseRequestQuery'
 import { parseRequestUrl } from './parseRequestUrl'
 
+/** The methods to use for the request. */
+export type RequestMethod = Lowercase<keyof typeof HttpMethod> | Uppercase<keyof typeof HttpMethod>
+
 /** Headers to include in the request. */
 export type RequestHeaders = Partial<Record<MaybeLiteral<HttpHeader>, string>>
 
@@ -23,7 +26,7 @@ export type RequestOptions = Override<RequestInit, {
    *
    * @example 'GET'
    */
-  method?: Lowercase<keyof typeof HttpMethod> | Uppercase<keyof typeof HttpMethod>
+  method?: RequestMethod
 
   /**
    * The base URL to use for the request. This URL will be used to resolve the
