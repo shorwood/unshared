@@ -1,4 +1,5 @@
-import type { RequestContext, RequestOptions } from './parseRequest'
+import type { HttpMethod } from '../types'
+import type { RequestContext } from './parseRequest'
 
 /** Regular expression to match the request method and URL. */
 const EXP_REQUEST = /^((?<method>[a-z]+) )?(?<url>[^:]+?:\/{2}[^/]+)?(?<path>\/[^\s?]*)/i
@@ -6,17 +7,44 @@ const EXP_REQUEST = /^((?<method>[a-z]+) )?(?<url>[^:]+?:\/{2}[^/]+)?(?<path>\/[
 /** Valid HTTP methods. */
 const METHODS = new Set(['get', 'post', 'put', 'patch', 'delete', 'head', 'options'])
 
+/** The methods to use for the request. */
+export type RequestMethod = Lowercase<keyof typeof HttpMethod> | Uppercase<keyof typeof HttpMethod>
+
+/** The options to pass to the `parseRequestUrl` function. */
+export interface RequestUrlOptions {
+
+  /**
+   * The route name to fetch. This name should include the method and URL of the request.
+   * The method and URL can also be provided in the options object.
+   */
+  route: string
+
+  /**
+   * The method to use for the request.
+   *
+   * @example 'GET'
+   */
+  method?: RequestMethod
+
+  /**
+   * The base URL to use for the request. This URL will be used to resolve the
+   * path and query parameters of the request.
+   *
+   * @example 'https://api.example.com'
+   */
+  baseUrl?: string
+}
+
 /**
  * Parses the route name to extract the URL and method. It allows the url and method to be
  * provided in the route name, or in the options object. The method will default to 'get'.
  *
- * @param route The name of the route to fetch.
+ * @param context The request context to mutate.
  * @param options The options to pass to the request.
- * @param context The request context to modify.
  * @example parseRequestUrl('GET /users', { baseUrl: 'https://api.example.com' }, context)
  */
-export function parseRequestUrl(route: string, options: Pick<RequestOptions, 'baseUrl' | 'method'>, context: RequestContext): void {
-  const { method, baseUrl } = options
+export function parseRequestUrl(context: RequestContext, options: RequestUrlOptions): void {
+  const { method, baseUrl, route } = options
 
   // --- Extract the path, method, and base URL from the route name.
   const match = EXP_REQUEST.exec(route)

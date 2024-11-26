@@ -1,76 +1,42 @@
-/* eslint-disable unicorn/prevent-abbreviations */
-import type { MaybeLiteral } from '@unshared/types'
-import type { HttpHeader, HttpMethod } from '../types'
-import type { SearchArrayFormat, SearchParamsObject } from './toSearchParams'
+import type { ObjectLike } from '@unshared/types'
+import type { RequestBodyOptions } from './parseRequestBody'
+import type { RequestHeadersOptions } from './parseRequestHeaders'
+import type { RequestParametersOptions } from './parseRequestParameters'
+import type { RequestQueryOptions } from './parseRequestQuery'
+import type { RequestUrlOptions } from './parseRequestUrl'
+import { isObjectLike } from './isObjectLike'
 import { parseRequestBody } from './parseRequestBody'
 import { parseRequestHeaders } from './parseRequestHeaders'
 import { parseRequestParameters } from './parseRequestParameters'
 import { parseRequestQuery } from './parseRequestQuery'
 import { parseRequestUrl } from './parseRequestUrl'
 
-/** The methods to use for the request. */
-export type RequestMethod = Lowercase<keyof typeof HttpMethod> | Uppercase<keyof typeof HttpMethod>
-
-/** Headers to include in the request. */
-export type RequestHeaders = Partial<Record<MaybeLiteral<HttpHeader>, string>>
-
-/** The types of data that can be passed to the request. */
-export type RequestBody = File | FormData | ReadableStream | Record<string, unknown> | string
-
 /** Options to pass to the request. */
-export interface RequestOptions extends Omit<RequestInit, 'body' | 'headers'> {
+export interface RequestOptions<
+  Body = unknown,
+  Query extends ObjectLike = ObjectLike,
+  Headers extends ObjectLike = ObjectLike,
+  Parameters extends ObjectLike = ObjectLike,
+> extends
+  Omit<RequestUrlOptions, 'route'>,
+  RequestBodyOptions<Body>,
+  RequestQueryOptions<Query>,
+  RequestHeadersOptions<Headers>,
+  RequestParametersOptions<Parameters>,
+  Omit<RequestInit, 'body' | 'headers' | 'method'> {
 
   /**
-   * The method to use for the request.
+   * The data to include in the request. This data will be used to populate the
+   * query parameters, body, and headers of the request based on the method type.
    *
-   * @example 'GET'
+   * @example { id: 1 }
    */
-  method?: RequestMethod
-
-  /**
-   * The base URL to use for the request. This URL will be used to resolve the
-   * path and query parameters of the request.
-   *
-   * @example 'https://api.example.com'
-   */
-  baseUrl?: string
-
-  /**
-   * The data to pass to the request. This data will be used to fill the path
-   * parameters, query parameters, body, and form data of the request based on
-   * the route method.
-   */
-  data?: RequestBody
-
-  /**
-   * The body to include in the request.
-   */
-  body?: RequestBody
-
-  /**
-   * The headers to include in the request.
-   */
-  headers?: RequestHeaders
-
-  /**
-   * Query parameters to include in the request.
-   */
-  query?: SearchParamsObject
-
-  /**
-   * The format to use when serializing the query parameters.
-   */
-  searchArrayFormat?: SearchArrayFormat
-
-  /**
-   * The path parameters to include in the request.
-   */
-  parameters?: Record<string, number | string>
+  data?: unknown
 }
 
 export interface RequestContext {
   url?: URL
-  init: RequestInit
+  init?: RequestInit
 }
 
 /**
@@ -82,12 +48,21 @@ export interface RequestContext {
  * @returns The URL and the `RequestInit` object.
  */
 export function parseRequest(route: string, options: RequestOptions): RequestContext {
-  const { data, body, query, headers, parameters, baseUrl, method, searchArrayFormat, ...requestInit } = options
-  const context: RequestContext = { init: requestInit }
-  parseRequestUrl(route, { baseUrl, method }, context)
-  parseRequestParameters(route, { data, parameters }, context)
-  parseRequestQuery(route, { data, query, searchArrayFormat }, context)
-  parseRequestBody(route, { data, body }, context)
-  parseRequestHeaders(route, { headers }, context)
+  const { data, body, query, parameters, headers, method, baseUrl, searchArrayFormat, ...init } = options
+  const context: RequestContext = { init }
+  const dataObject = isObjectLike(data) ? data : undefined
+
+  // --- Parse the URL, headers and parameters.
+  parseRequestUrl(context, { route, baseUrl, method })
+  parseRequestHeaders(context, { headers })
+  parseRequestParameters(context, { parameters: parameters ?? dataObject })
+
+  // --- Depending on the method, the data will be used as the query or body.
+  const requestMethod = context.init?.method?.toLowerCase() ?? 'get'
+  const requestExpectsBody = ['post', 'put', 'patch'].includes(requestMethod)
+  parseRequestQuery(context, { searchArrayFormat, query: requestExpectsBody ? query : query ?? dataObject })
+  parseRequestBody(context, { body: requestExpectsBody ? body ?? dataObject : undefined })
+
+  // --- Return the context with the URL and the `RequestInit` object.
   return context
 }
