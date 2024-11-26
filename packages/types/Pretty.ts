@@ -27,5 +27,5 @@ import type { Function } from './Function'
 export type Pretty<T> =
   T extends Function ? T
     : T extends Array<infer U> ? Array<Pretty<U>>
-      : T extends object ? { [K in keyof T]: Pretty<T[K]> }
+      : T extends Record<string, unknown> ? { [K in keyof T]: Pretty<T[K]> }
         : T
