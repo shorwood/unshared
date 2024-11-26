@@ -1,4 +1,3 @@
-import type { OmitNever } from './OmitNever'
 import type { UnionMerge } from './UnionMerge'
 
 /**
@@ -8,4 +7,8 @@ import type { UnionMerge } from './UnionMerge'
  * @template U The object to overwrite with.
  * @example Override<{ a: string, b: number }, { a: number }> // { a: number, b: number }
  */
-export type Override<T, U> = UnionMerge<Omit<T, keyof OmitNever<U>> | OmitNever<U>>
+export type Override<T, U> =
+  UnionMerge<
+    | { [P in keyof T as P extends keyof U ? [U[P]] extends [never] ? P : never : P]: T[P] }
+    | { [P in keyof U as [U[P]] extends [never] ? never : P]: U[P] }
+  >
