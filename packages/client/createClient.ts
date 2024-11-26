@@ -1,10 +1,12 @@
 import type { MaybeLiteral, Override, Pretty } from '@unshared/types'
 import type { OpenAPI, OpenAPIV2 as V2, OpenAPIV3 as V3, OpenAPIV3_1 as V3_1 } from 'openapi-types'
 import type { OpenAPIV2, OpenAPIV3 } from './openapi/index'
-import type { RequestOptions } from './utils/index'
+import type { RequestHooks } from './utils/handleResponse'
+import type { RequestHeaders, RequestMethod, RequestOptions } from './utils/parseRequest'
 import { fetch } from './fetch'
+import { getBaseUrl } from './openapi/getBaseUrl'
 import { getOperationById } from './openapi/getOperationById'
-import { getBaseUrl } from './openapi/index'
+import { handleResponse } from './utils/handleResponse'
 
 type ClientBaseUrl<T> =
   MaybeLiteral<
@@ -32,7 +34,7 @@ export type Client<T = OpenAPI.Document> =
     & { fetch: ClientFetch<T> }
   >
 
-export type ClientOptions<T = any> = Pretty<Override<RequestOptions, {
+export type ClientOptions<T = any> = Override<RequestHooks & RequestOptions, {
   baseUrl?: ClientBaseUrl<T>
 
   /**
@@ -42,8 +44,8 @@ export type ClientOptions<T = any> = Pretty<Override<RequestOptions, {
    */
   headers?: T extends V3.Document
     ? OpenAPIV3.ServerHeaders<T>
-    : Record<string, string>
-}>>
+    : RequestHeaders
+}>
 
 /**
  * Create a new client instance for the given OpenAPI specification.
@@ -60,24 +62,18 @@ export function createClient<T extends OpenAPI.Document>(document: Readonly<T>, 
 export function createClient<T extends OpenAPI.Document>(url: ClientBaseUrl<T>, initialOptions?: ClientOptions<T>): Client<T>
 export function createClient(documentOrUrl: Readonly<OpenAPI.Document> | string, initialOptions: ClientOptions = {}): Client {
   const specifications = typeof documentOrUrl === 'string' ? undefined : documentOrUrl
-
-  if (typeof documentOrUrl === 'string')
-    initialOptions.baseUrl = documentOrUrl
+  if (typeof documentOrUrl === 'string') initialOptions.baseUrl = documentOrUrl
 
   async function fetchByOperationId(operationId: string, options: ClientOptions<any>) {
     if (!specifications) throw new Error('No OpenAPI specification provided.')
-    const operation = getOperationById(specifications, operationId) as { method: string; path: string } & OpenAPI.Operation
+    const operation = getOperationById(specifications, operationId) as { method: RequestMethod; path: string } & OpenAPI.Operation
     if (!operation) throw new Error(`Operation ID "${operationId}" not found.`)
     const { method, path, responses = {} } = operation
-    const response = await fetch(path, {
-      method,
-      baseUrl: getBaseUrl(specifications),
-      ...initialOptions,
-      ...options,
-    })
+    const fetchOptions = { method, baseUrl: getBaseUrl(specifications), ...initialOptions, ...options }
+    const response = await fetch(path, fetchOptions)
 
     // --- Return the JSON response if successful.
-    if (response.ok) return response.json() as Promise<unknown>
+    if (response.ok) return handleResponse(response, fetchOptions)
 
     // --- Throw an error if the response was not successful.
     const status = response.status.toString()

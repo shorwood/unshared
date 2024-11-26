@@ -12,7 +12,7 @@ export declare namespace OpenAPIV3 {
     T extends { servers: Array<{ variables: infer V }> }
       ? V extends { [K in keyof V]: { enum: Array<infer U> } }
         ? { [K in keyof V]: U }
-        : string
+        : never
       : never
 
   export type ServerQuery<T> =
