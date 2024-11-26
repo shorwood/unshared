@@ -1,3 +1,5 @@
+export * from './handleResponse'
+export * from './handleResponseStreamJson'
 export * from './isFormDataLike'
 export * from './isObjectLike'
 export * from './parseRequest'
