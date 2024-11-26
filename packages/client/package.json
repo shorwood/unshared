@@ -53,6 +53,7 @@
     "build:httpStatusCodes": "tsx ./scripts/buildHttpStatusCodes.ts"
   },
   "dependencies": {
+    "@unshared/functions": "workspace:*",
     "@unshared/types": "workspace:*",
     "openapi-types": "12.1.3"
   },

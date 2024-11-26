@@ -168,6 +168,9 @@ importers:
 
   packages/client:
     dependencies:
+      '@unshared/functions':
+        specifier: workspace:*
+        version: link:../functions
       '@unshared/types':
         specifier: workspace:*
         version: link:../types
