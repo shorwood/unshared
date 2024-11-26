@@ -2,7 +2,7 @@ import type { MaybeLiteral, Override, Pretty } from '@unshared/types'
 import type { OpenAPI, OpenAPIV2 as V2, OpenAPIV3 as V3, OpenAPIV3_1 as V3_1 } from 'openapi-types'
 import type { OpenAPIV2, OpenAPIV3 } from './openapi/index'
 import type { RequestHooks } from './utils/handleResponse'
-import type { RequestHeaders, RequestMethod, RequestOptions } from './utils/parseRequest'
+import type { RequestMethod, RequestOptions } from './utils/parseRequest'
 import { fetch } from './fetch'
 import { getBaseUrl } from './openapi/getBaseUrl'
 import { getOperationById } from './openapi/getOperationById'
@@ -44,7 +44,7 @@ export type ClientOptions<T = any> = Override<RequestHooks & RequestOptions, {
    */
   headers?: T extends V3.Document
     ? OpenAPIV3.ServerHeaders<T>
-    : RequestHeaders
+    : never
 }>
 
 /**
