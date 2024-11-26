@@ -21,7 +21,7 @@ describe('assertNull', () => {
     })
 
     it('should throw if value is undefined', () => {
-      const shouldThrow = () => assertNull()
+      const shouldThrow = () => assertNull(undefined)
       const { error } = attempt(shouldThrow)
       expect(error).toMatchObject({
         name: 'E_NOT_NULL',

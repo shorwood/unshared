@@ -21,7 +21,7 @@ describe('assertNotNil', () => {
     })
 
     it('should throw if value is undefined', () => {
-      const shouldThrow = () => assertNotNil()
+      const shouldThrow = () => assertNotNil(undefined)
       const { error } = attempt(shouldThrow)
       expect(error).toMatchObject({
         name: 'E_IS_NIL',

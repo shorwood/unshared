@@ -1,3 +1,4 @@
+import type { UUID } from 'node:crypto'
 import { attempt } from '@unshared/functions'
 import { assertStringUuid } from './assertStringUuid'
 

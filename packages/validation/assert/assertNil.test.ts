@@ -9,7 +9,7 @@ describe('assertNil', () => {
     })
 
     it('should pass if value is undefined', () => {
-      const result = assertNil()
+      const result = assertNil(undefined)
       expect(result).toBeUndefined()
     })
   })
