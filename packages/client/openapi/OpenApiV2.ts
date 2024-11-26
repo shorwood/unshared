@@ -26,9 +26,8 @@ export declare namespace OpenAPIV2 {
         : Record<string, unknown>
 
   type InferSchemaArray<T> =
-    T extends { items: infer U } ? Array<InferSchema<U>>
-      : T extends { additionalItems: infer U } ? Array<InferSchema<U>>
-        : unknown[]
+    T extends { items?: infer U; additionalItems?: infer U } ? Array<InferSchema<U>>
+      : unknown[]
 
   export type InferSchema<T> =
     Pretty<(
