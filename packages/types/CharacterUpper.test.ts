@@ -1,3 +1,6 @@
+import type { CharacterDigit } from './CharacterDigit'
+import type { CharacterLower } from './CharacterLower'
+import type { CharacterSymbol } from './CharacterSymbol'
 import type { CharacterUpper } from './CharacterUpper'
 
 describe('CharacterUpper', () => {

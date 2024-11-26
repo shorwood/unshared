@@ -1,4 +1,8 @@
+import type { CharacterDigit } from './CharacterDigit'
 import type { CharacterLetter } from './CharacterLetter'
+import type { CharacterLower } from './CharacterLower'
+import type { CharacterSymbol } from './CharacterSymbol'
+import type { CharacterUpper } from './CharacterUpper'
 
 describe('CharacterLetter', () => {
   test('should match lowercase letters', () => {
