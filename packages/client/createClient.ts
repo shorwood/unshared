@@ -1,4 +1,4 @@
-import type { MaybeLiteral, Override, Pretty } from '@unshared/types'
+import type { MaybeLiteral, Pretty } from '@unshared/types'
 import type { OpenAPI, OpenAPIV2 as V2, OpenAPIV3 as V3, OpenAPIV3_1 as V3_1 } from 'openapi-types'
 import type { OpenAPIV2, OpenAPIV3 } from './openapi/index'
 import type { RequestHooks } from './utils/handleResponse'
@@ -34,7 +34,7 @@ export type Client<T = OpenAPI.Document> =
     & { fetch: ClientFetch<T> }
   >
 
-export type ClientOptions<T = any> = Override<RequestHooks & RequestOptions, {
+export interface ClientOptions<T = any> extends Omit<RequestOptions, 'headers'>, RequestHooks {
   baseUrl?: ClientBaseUrl<T>
 
   /**
@@ -45,7 +45,7 @@ export type ClientOptions<T = any> = Override<RequestHooks & RequestOptions, {
   headers?: T extends V3.Document
     ? OpenAPIV3.ServerHeaders<T>
     : never
-}>
+}
 
 /**
  * Create a new client instance for the given OpenAPI specification.

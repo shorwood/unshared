@@ -1,6 +1,5 @@
 /* eslint-disable unicorn/prevent-abbreviations */
 import type { MaybeLiteral } from '@unshared/types'
-import type { Override } from '@unshared/types'
 import type { HttpHeader, HttpMethod } from '../types'
 import type { SearchArrayFormat, SearchParamsObject } from './toSearchParams'
 import { parseRequestBody } from './parseRequestBody'
@@ -19,7 +18,7 @@ export type RequestHeaders = Partial<Record<MaybeLiteral<HttpHeader>, string>>
 export type RequestBody = File | FormData | ReadableStream | Record<string, unknown> | string
 
 /** Options to pass to the request. */
-export type RequestOptions = Override<RequestInit, {
+export interface RequestOptions extends Omit<RequestInit, 'body' | 'headers'> {
 
   /**
    * The method to use for the request.
@@ -67,7 +66,7 @@ export type RequestOptions = Override<RequestInit, {
    * The path parameters to include in the request.
    */
   parameters?: Record<string, number | string>
-}>
+}
 
 export interface RequestContext {
   url?: URL
