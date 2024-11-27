@@ -24,7 +24,7 @@ export interface ToSearchParamsOptions {
    *
    * @default 'flat'
    */
-  searchArrayFormat?: SearchArrayFormat
+  format?: SearchArrayFormat
 }
 
 /**
@@ -36,7 +36,7 @@ export interface ToSearchParamsOptions {
  * @returns The `URLSearchParams` object.
  */
 export function toSearchParams(object: SearchParamsObject, options: ToSearchParamsOptions = {}): URLSearchParams {
-  const { searchArrayFormat = 'flat' } = options
+  const { format = 'flat' } = options
   const search = new URLSearchParams()
   for (const key in object) {
     const value = object[key]
@@ -44,11 +44,11 @@ export function toSearchParams(object: SearchParamsObject, options: ToSearchPara
 
     // --- Convert arrays based on the format.
     if (Array.isArray(value)) {
-      if (searchArrayFormat === 'brackets') for (const v of value) search.append(`${key}[]`, String(v))
-      else if (searchArrayFormat === 'indices') for (const [i, v] of value.entries()) search.append(`${key}[${i}]`, String(v))
-      else if (searchArrayFormat === 'comma') search.append(key, value.join(','))
-      else if (searchArrayFormat === 'path') for (const [i, v] of value.entries()) search.append(`${key}.${i}`, String(v))
-      else if (searchArrayFormat === 'flat') for (const v of value) search.append(key, String(v))
+      if (format === 'brackets') for (const v of value) search.append(`${key}[]`, String(v))
+      else if (format === 'indices') for (const [i, v] of value.entries()) search.append(`${key}[${i}]`, String(v))
+      else if (format === 'comma') search.append(key, value.join(','))
+      else if (format === 'path') for (const [i, v] of value.entries()) search.append(`${key}.${i}`, String(v))
+      else if (format === 'flat') for (const v of value) search.append(key, String(v))
     }
 
     // --- Convert all values to strings.

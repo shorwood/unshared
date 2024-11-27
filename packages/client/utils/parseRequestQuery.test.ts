@@ -28,7 +28,7 @@ describe('parseRequestQuery', () => {
 
   it('should respect searchArrayFormat option', () => {
     const context = { init: { method: 'get' }, url: new URL('https://api.example.com/users') }
-    parseRequestQuery(context, { query: { tags: ['tag1', 'tag2'] }, searchArrayFormat: 'comma' })
+    parseRequestQuery(context, { query: { tags: ['tag1', 'tag2'] }, queryArrayFormat: 'comma' })
     expect(context.url.toString()).toBe('https://api.example.com/users?tags=tag1%2Ctag2')
   })
 

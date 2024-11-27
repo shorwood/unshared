@@ -1,8 +1,8 @@
 import type { Awaitable } from '@unshared/functions/awaitable'
-import type { RequestHooks } from './handleResponse'
+import type { RequestOptions } from './request'
 import { awaitable } from '@unshared/functions/awaitable'
 
-async function * createResponseStreamJsonIterator(response: Response, options: RequestHooks): AsyncGenerator<unknown, void, unknown> {
+async function * createResponseStreamJsonIterator(response: Response, options: RequestOptions): AsyncGenerator<unknown, void, unknown> {
   const { onError, onSuccess, onData, onEnd } = options
   try {
     const body = response.body
@@ -39,7 +39,7 @@ async function * createResponseStreamJsonIterator(response: Response, options: R
  * @param options The options to pass to the request.
  * @returns An awaitable iterator that yields the parsed JSON objects.
  */
-export function handleResponseStreamJson(response: Response, options: RequestHooks): Awaitable<AsyncIterable<unknown>, unknown[]> {
+export function handleResponseStreamJson(response: Response, options: RequestOptions): Awaitable<AsyncIterable<unknown>, unknown[]> {
   const responseIterator = createResponseStreamJsonIterator(response, options)
   return awaitable(responseIterator)
 }

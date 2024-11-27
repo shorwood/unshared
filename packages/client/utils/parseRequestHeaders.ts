@@ -1,18 +1,4 @@
-import type { MaybeLiteral, ObjectLike } from '@unshared/types'
-import type { HttpHeader } from '../types'
-import type { RequestContext } from './parseRequest'
-
-/** Headers to include in the request. */
-export type RequestHeaders = Partial<Record<MaybeLiteral<HttpHeader>, number | string>>
-
-/** The options to pass to the `parseRequestHeaders` function. */
-export interface RequestHeadersOptions<T extends ObjectLike = ObjectLike> {
-
-  /**
-   * The headers to include in the request.
-   */
-  headers?: RequestHeaders & T
-}
+import type { FetchOptions, RequestContext } from './parseRequest'
 
 /**
  * Parse the request headers based on the provided data and options.
@@ -28,8 +14,8 @@ export interface RequestHeadersOptions<T extends ObjectLike = ObjectLike> {
  * // Will mutate the `init` object to include the headers.
  * console.log(context) // => { init: { headers: { 'Content-Type': 'application/json' } } }
  */
-export function parseRequestHeaders(context: RequestContext, options: RequestHeadersOptions): void {
-  const { headers = {} } = options
+export function parseRequestHeaders(context: RequestContext, options: FetchOptions): void {
+  const { headers } = options
 
   // --- Merge the headers with the existing headers.
   for (const key in headers) {

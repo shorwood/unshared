@@ -1,36 +1,5 @@
+import type { RequestOptions } from './request'
 import { handleResponseStreamJson } from './handleResponseStreamJson'
-
-export interface RequestHooks<T = unknown, R extends Response = Response > {
-
-  /**
-   * The callback that is called when an error occurs during the request.
-   */
-  onError?: (error: Error) => any
-
-  /**
-   * The callback that is called when data is received from the request. This callback
-   * will be called for each chunk of data that is received from the request.
-   */
-  onData?: (data: T) => any
-
-  /**
-   * The callback that is called when the request is successful. This callback will be
-   * called after the request is complete and all data has been received.
-   */
-  onSuccess?: (response: R) => any
-
-  /**
-   * The callback that is called when the status code is not OK. This callback will be called
-   * after the request is complete and before the data is consumed.
-   */
-  onFailure?: (response: R) => any
-
-  /**
-   * The callback that is called when the request is complete. This callback will be called
-   * after the request is complete and all data has been received.
-   */
-  onEnd?: (response: R) => any
-}
 
 /**
  * Handle a request response. This function will parse the response based on the content type and
@@ -41,7 +10,7 @@ export interface RequestHooks<T = unknown, R extends Response = Response > {
  * @param options The options to pass to the request.
  * @returns The parsed data from the response.
  */
-export async function handleResponse(response: Response, options: RequestHooks = {}): Promise<unknown> {
+export async function handleResponse(response: Response, options: RequestOptions = {}): Promise<unknown> {
   const { onError, onSuccess, onData, onEnd, onFailure } = options
   const contentType = response.headers.get('Content-Type')
 

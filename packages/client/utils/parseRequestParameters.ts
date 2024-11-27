@@ -1,17 +1,7 @@
-import type { ObjectLike } from '@unshared/types'
-import type { RequestContext } from './parseRequest'
+import type { FetchOptions, RequestContext } from './parseRequest'
 
 /** Regular expression to match path parameters in the URL. */
 const EXP_PATH_PARAMETER = /:([\w-]+)|%7B([\w-]+)%7D/g
-
-/** The options to pass to the `parseRequestParameters` function. */
-export interface RequestParametersOptions<T extends ObjectLike = ObjectLike> {
-
-  /**
-   * The path parameters to include in the request.
-   */
-  parameters?: T
-}
 
 /**
  * Parse the request parameters from the request data. This function will mutate the
@@ -20,13 +10,18 @@ export interface RequestParametersOptions<T extends ObjectLike = ObjectLike> {
  * @param context The request context to mutate.
  * @param options The options to pass to the request.
  * @example
+ *
  * // Using `express` style path parameters.
- * parseRequestParameters({ url: new URL('https://api.example.com/users/:id') }, { parameters: { id: 1 } })
+ * const context = { url: new URL('https://api.example.com/users/:id') }
+ * parseRequestParameters(context, { parameters: { id: 1 } })
+ * console.log(context.url.pathname) // 'https://api.example.com/users/1'
  *
  * // Using `OpenAPI` style path parameters.
- * parseRequestParameters({ url: new URL('https://api.example.com/users/{id}') }, { parameters: { id: 1 } })
+ * const context = { url: new URL('https://api.example.com/users/{id}') }
+ * parseRequestParameters(context, { parameters: { id: 1 } })
+ * console.log(context.url.pathname) // 'https://api.example.com/users/1'
  */
-export function parseRequestParameters(context: RequestContext, options: RequestParametersOptions): void {
+export function parseRequestParameters(context: RequestContext, options: FetchOptions): void {
   const { url } = context
   const { parameters } = options
 
