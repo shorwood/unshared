@@ -1,30 +1,39 @@
 import type { Result } from '@unshared/functions/attempt'
-import type { ObjectLike } from '@unshared/types'
+import type { Fallback, ObjectLike } from '@unshared/types'
 import type { ServiceOptions } from './createService'
-import type { OpenAPIRoutes } from './openapi'
-import type { RequestOptions } from './utils/request'
+import type { OpenAPILike, OpenAPIOptionsMap } from './openapi'
+import type { RequestOptions } from './utils'
+import type { ConnectOptions, WebSocketChannel } from './websocket'
 import { attempt } from '@unshared/functions/attempt'
 import { fetch } from './utils/fetch'
 import { request } from './utils/request'
+import { connect } from './websocket/connect'
 
 /** Define the routes that can be fetched from the API and their related options. */
-export type ClientRoutes = Record<string, RequestOptions>
+type OptionsMap = Record<string, ConnectOptions | RequestOptions>
 
 /** The route name that can be fetched from the API. */
-type Route<T extends ClientRoutes> =
-  T extends Record<infer P extends string, RequestOptions> ? P : string
+type RouteName<T extends OptionsMap> =
+  Fallback<{ [P in keyof T]: T[P] extends RequestOptions ? P : never }[keyof T] & string, string>
 
 /** The options to pass to the request based on the route name. */
-type Options<T extends ClientRoutes, P extends keyof T> =
-  T extends Record<P, infer R> ? R : RequestOptions
+type RouteOptions<T extends OptionsMap, P extends keyof T> =
+  { [K in keyof T]: T[K] extends RequestOptions ? T[K] : RequestOptions }[P]
+
+/** The channel name that can be connected to using WebSockets. */
+type ChannelName<T extends OptionsMap> =
+  Fallback<{ [P in keyof T]: T[P] extends ConnectOptions ? P : never }[keyof T] & string, string>
+
+/** The options to pass to the WebSocket connection based on the route name. */
+type ChannelOptions<T extends OptionsMap, P extends keyof T> =
+  { [K in keyof T]: T[K] extends ConnectOptions ? T[K] : ConnectOptions }[P]
 
 /** The data returned from the API based on the route name. */
-type Data<T extends ClientRoutes, P extends keyof T> =
-  Options<T, P> extends RequestOptions<any, any, any, any, any, any, infer R extends ObjectLike, any>
-    ? R
-    : unknown
+type Data<T extends OptionsMap, P extends keyof T> =
+  RouteOptions<T, P> extends RequestOptions<any, any, any, any, any, any, infer R extends ObjectLike, any>
+    ? R : unknown
 
-export class Client<T extends ClientRoutes = ClientRoutes> {
+export class Client<T extends OptionsMap = any> {
 
   /**
    * Create a new client for the application.
@@ -43,7 +52,7 @@ export class Client<T extends ClientRoutes = ClientRoutes> {
    * @param options The options to pass to the request.
    * @returns The response from the server.
    */
-  public async fetch<P extends Route<T>>(route: P, options?: Options<T, P>): Promise<Response> {
+  public async fetch<P extends RouteName<T>>(route: P, options?: RouteOptions<T, P>): Promise<Response> {
     return await fetch(route, { ...this.options, ...options })
   }
 
@@ -65,7 +74,7 @@ export class Client<T extends ClientRoutes = ClientRoutes> {
    * // Fetch the data from the API.
    * const data = request('GET /api/product/:id', { data: { id: '1' } })
    */
-  public async request<P extends Route<T>>(route: P, options?: Options<T, P>): Promise<Data<T, P>> {
+  public async request<P extends RouteName<T>>(route: P, options?: RouteOptions<T, P>): Promise<Data<T, P>> {
     return await request(route, { ...this.options, ...options }) as Data<T, P>
   }
 
@@ -89,7 +98,7 @@ export class Client<T extends ClientRoutes = ClientRoutes> {
    * if (error) console.error(error)
    * else console.log(data)
    */
-  public async requestAttempt<P extends Route<T>>(name: P, options?: Options<T, P>): Promise<Result<Data<T, P>>> {
+  public async requestAttempt<P extends RouteName<T>>(name: P, options?: RouteOptions<T, P>): Promise<Result<Data<T, P>>> {
     return await attempt(() => this.request<P>(name, options))
   }
 
@@ -101,9 +110,9 @@ export class Client<T extends ClientRoutes = ClientRoutes> {
    * @param options The options to pass to the connection.
    * @returns The WebSocket connection.
    */
-  // public connect<P extends RouteName<T>>(name: P, options: Partial<ConnectOptions<T, P>> = {}): WebSocketConnection<T, P> {
-  //   return connect<T, P>(name, { baseUrl: this.baseUrl, ...options })
-  // }
+  public connect<P extends ChannelName<T>>(name: P, options?: ChannelOptions<T, P>): WebSocketChannel<ChannelOptions<T, P>> {
+    return connect(name, { baseUrl: this.options.baseUrl, ...options }) as WebSocketChannel<ChannelOptions<T, P>>
+  }
 }
 
 /**
@@ -122,9 +131,9 @@ export class Client<T extends ClientRoutes = ClientRoutes> {
  * // Use the data from the API.
  * console.log(data) // { id: '1', name: 'John Doe' }
  */
-export function createClient<T extends ClientRoutes>(options?: RequestOptions): Client<T>
-export function createClient<T extends { swagger: string }>(options?: ServiceOptions<T>): Client<OpenAPIRoutes<T>>
-export function createClient<T extends { openapi: string }>(options?: ServiceOptions<T>): Client<OpenAPIRoutes<T>>
+export function createClient<T extends OpenAPILike>(options?: ServiceOptions<T>): Client<OpenAPIOptionsMap<T>>
+export function createClient<T extends OptionsMap>(options?: RequestOptions): Client<T>
 export function createClient(options?: RequestOptions): Client {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return new Client(options)
 }

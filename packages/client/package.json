@@ -51,6 +51,11 @@
       "types": "./dist/utils.d.ts",
       "import": "./dist/utils.js"
     },
+    "./websocket": {
+      "require": "./dist/websocket.cjs",
+      "types": "./dist/websocket.d.ts",
+      "import": "./dist/websocket.js"
+    },
     ".": {
       "require": "./dist/index.cjs",
       "types": "./dist/index.d.ts",
