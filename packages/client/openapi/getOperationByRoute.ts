@@ -1,5 +1,30 @@
+import type { CollectKey, Fallback, Pretty, StringSplit } from '@unshared/types'
 import type { OpenAPI } from 'openapi-types'
-import type { OpenAPIV2 } from './OpenApiV2'
+import type { Operation } from './getOperationById'
+
+/** Union of all operation route names in the specification. */
+export type OperationRoute<T> =
+  T extends { paths: infer P }
+    ? CollectKey<P> extends Record<string, infer R>
+      ? CollectKey<R> extends Record<string, infer O>
+        ? O extends { $key: [infer P extends string, infer M extends string] }
+          ? `${Uppercase<M>} ${P}`
+          : string
+        : string
+      : string
+    : string
+
+/** Find an operation by its route name in an OpenAPI specification. */
+export type OperationByRoute<T, U extends OperationRoute<T>> =
+  StringSplit<U, ' '> extends [infer M extends string, infer P extends string]
+    ? T extends { paths: infer U }
+      ? U extends Record<P, infer R>
+        ? R extends Record<Lowercase<M>, infer O>
+          ? Pretty<{ method: Lowercase<M>; path: P } & O>
+          : never
+        : never
+      : never
+    : never
 
 /**
  * Given an OpenAPI specification, find a route by its name.
@@ -9,13 +34,7 @@ import type { OpenAPIV2 } from './OpenApiV2'
  * @returns The resolved route.
  * @example getOperationByRoute(specification, 'GET /users') // { method: 'get', path: '/users', ... }
  */
-export function getOperationByRoute<
-  T extends object,
-  U extends OpenAPIV2.Route<T>,
->(
-  specification: Readonly<T>,
-  name: U,
-): OpenAPIV2.OperationByRoute<T, U> {
+export function getOperationByRoute<T, U extends OperationRoute<T>>(specification: Readonly<T>, name: U): Fallback<OperationByRoute<T, U>, Operation> {
 
   // --- Assert the specification has a paths object.
   if (!specification
@@ -38,6 +57,12 @@ export function getOperationByRoute<
   if (!path) throw new Error(`Route "${name}" not found in specification.`)
   if (typeof path !== 'object' || path === null) throw new Error('Invalid path object in the OpenAPI specification.')
   if (method in path === false) throw new Error(`Method "${method}" not found in path "${routePath}".`)
-  const operation = path[method as keyof typeof path] as OpenAPI.Operation
-  return { ...operation, method, path: routePath } as OpenAPIV2.OperationByRoute<T, U>
+
+  // --- Search for the operation in the specification's paths.
+  const operation = path[method as keyof typeof path]
+  if (typeof operation !== 'object' || operation === null) throw new Error('Invalid operation object in the OpenAPI specification.')
+  if ('operationId' in operation === false) throw new Error('Missing operationId in the operation object.')
+
+  // --- Return the operation with the method and path.
+  return { ...operation, method, path: routePath } as OperationByRoute<T, U>
 }

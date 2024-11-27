@@ -1,3 +1,4 @@
+import type { Operation } from './getOperationById'
 import { getOperationByRoute } from './getOperationByRoute'
 
 describe('getOperationByRoute', () => {
@@ -23,20 +24,39 @@ describe('getOperationByRoute', () => {
     })
   })
 
-  it('should throw an error for an invalid route name', () => {
-    // @ts-expect-error: Testing invalid input.
-    const shouldThrow = () => getOperationByRoute(specifications, 'INVALID /route')
-    expect(shouldThrow).toThrowError('Could not resolve the path and method from the route name.')
+  describe('inference', () => {
+    it('should infer the correct operation type', () => {
+      const result = getOperationByRoute(specifications, 'GET /users/{username}')
+      expectTypeOf(result).toEqualTypeOf<{
+        readonly operationId: 'getUser'
+        method: 'get'
+        path: '/users/{username}'
+      }>()
+    })
+
+    it('should fallback to the OpenAPI.Operation type', () => {
+    // @ts-expect-error: route name is unknown
+      const result = getOperationByRoute(specifications, 'UNKNOWN /route')
+      expectTypeOf(result).toEqualTypeOf<Operation>()
+    })
   })
 
-  it('should throw an error if the route is not found in the specification', () => {
-    // @ts-expect-error: Testing invalid input.
-    const shouldThrow = () => getOperationByRoute(specifications, 'GET /invalid')
-    expect(shouldThrow).toThrowError('Route "GET /invalid" not found in specification.')
-  })
+  describe('edge cases', () => {
+    it('should throw an error for an invalid route name', () => {
+      // @ts-expect-error: route name is invalid
+      const shouldThrow = () => getOperationByRoute(specifications, 'INVALID /route')
+      expect(shouldThrow).toThrowError('Could not resolve the path and method from the route name.')
+    })
 
-  it('should throw an error if the paths object is missing', () => {
-    const shouldThrow = () => getOperationByRoute({}, 'GET /users')
-    expect(shouldThrow).toThrowError('Missing paths object in the OpenAPI specification.')
+    it('should throw an error if the route is not found in the specification', () => {
+      // @ts-expect-error: route name is invalid
+      const shouldThrow = () => getOperationByRoute(specifications, 'GET /invalid')
+      expect(shouldThrow).toThrowError('Route "GET /invalid" not found in specification.')
+    })
+
+    it('should throw an error if the paths object is missing', () => {
+      const shouldThrow = () => getOperationByRoute({}, 'GET /users')
+      expect(shouldThrow).toThrowError('Missing paths object in the OpenAPI specification.')
+    })
   })
 })
