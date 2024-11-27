@@ -31,21 +31,13 @@ async function buildIndex(path: string): Promise<IndexFile> {
       const isIndexFile = entity.name.startsWith('index.')
 
       // --- If the entity name starts with a dot, ignore it.
+      if (isDirectory) continue
       if (entity.name.startsWith('__')) continue
       if (entity.name.startsWith('scripts')) continue
       if (entity.name.endsWith('.d.ts')) continue
       if (entity.name.endsWith('.test.ts')) continue
       if (entity.name.endsWith('cli.ts')) continue
       if (entity.name.endsWith('.worker.ts')) continue
-
-      // --- If subdirectory contains an index file, add it to the imports.
-      if (isDirectory) {
-        const directoryPath = join(path, entity.name)
-        const directoryFiles = await readdir(directoryPath, { withFileTypes: true })
-        const hasIndexFile = directoryFiles.some(file => file.name === 'index.ts')
-        if (hasIndexFile) imports.push(entity.name)
-        continue
-      }
 
       // --- Filter-out the non-matching files.
       if (!isFile || !isPatternMath || isIndexFile) continue
