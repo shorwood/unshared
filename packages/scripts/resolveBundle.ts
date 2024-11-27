@@ -1,6 +1,7 @@
 import type { MaybeArray } from '@unshared/types'
 import type { RollupOptions } from 'rollup'
 import { findAncestor, glob } from '@unshared/fs'
+import { resolve } from 'node:path'
 import { defineConfig } from 'rollup'
 import RollupDts from 'rollup-plugin-dts'
 import RollupEsbuild from 'rollup-plugin-esbuild'
@@ -26,50 +27,53 @@ export async function resolveBundle(packageName: string, options: ResolveBundleO
   const {
     cwd = process.cwd(),
     tsConfigPath = await findAncestor('tsconfig.json', cwd),
-    entrypoints = '*.ts',
+    entrypoints = ['./*.ts', './*/index.ts'],
   } = options
 
   // --- Check if the tsconfig.json file exists.
   if (!tsConfigPath) throw new Error('Cannot build the package: No tsconfig.json file found.')
 
-  // --- Get the input files and external dependencies.
+  // --- Resolve the package information.
   const { outputDirectory, packageDependencies, packagePath } = await resolvePackage(packageName, { cwd })
-  const inputPaths = await glob(entrypoints, { cwd: packagePath, exclude: ['*.d.ts', '*.test.ts'] })
-  if (inputPaths.length === 0) return []
-
-  // --- Resolve and merge the external dependencies.
   const externalExps = Object.keys(packageDependencies).map(dep => new RegExp(`^${dep}`))
-  const external = [
-    ...externalExps,
-    /^node:/,
-    'http',
-    'stream',
-  ]
+  const external = [...externalExps, /^node:/, 'http', 'stream']
+
+  const paths = await glob(entrypoints, { getRelative: true, cwd: packagePath, exclude: ['*.d.ts', '*.test.ts'] })
+  if (paths.length === 0) return []
+
+  // --- Map the inputs to their file names. If the input is a nested index file,
+  // --- use the directory name as the input name.
+  const input: Record<string, string> = {}
+  for (const path of paths) {
+    const parts = path.split('/')
+    const name = parts.at(path.endsWith('index.ts') ? -2 : -1)!.replace(/\.ts$/, '').replace(/^\.$/, 'index')
+    input[name] = resolve(packagePath, path)
+  }
 
   // --- Base Rollup configuration.
   const rollupConfig = defineConfig({
+    input,
     external,
-    input: inputPaths,
     treeshake: false,
     onwarn: (warning) => {
       if (warning.code !== 'CIRCULAR_DEPENDENCY') console.error(`(!) ${warning.message}`)
     },
     output: [
       {
-        assetFileNames: 'assets/[name].js',
-        chunkFileNames: 'chunks/[hash].js',
         dir: outputDirectory,
-        entryFileNames: '[name].js',
         format: 'esm',
         sourcemap: true,
+        entryFileNames: '[name].js',
+        assetFileNames: 'assets/[name].js',
+        chunkFileNames: 'chunks/[hash].js',
       },
       {
-        assetFileNames: 'assets/[name].cjs',
-        chunkFileNames: 'chunks/[hash].cjs',
         dir: outputDirectory,
-        entryFileNames: '[name].cjs',
         format: 'cjs',
         sourcemap: true,
+        entryFileNames: '[name].cjs',
+        assetFileNames: 'assets/[name].cjs',
+        chunkFileNames: 'chunks/[hash].cjs',
       },
     ],
     plugins: [
@@ -87,13 +91,13 @@ export async function resolveBundle(packageName: string, options: ResolveBundleO
   // --- Rollup configuration for `.d.ts` files.
   const rollupConfigDts = defineConfig({
     external,
-    input: inputPaths,
+    input,
     output: {
+      dir: outputDirectory,
+      format: 'esm',
+      entryFileNames: '[name].d.ts',
       assetFileNames: 'assets/[name].d.ts',
       chunkFileNames: 'chunks/[hash].d.ts',
-      dir: outputDirectory,
-      entryFileNames: '[name].d.ts',
-      format: 'esm',
     },
     plugins: [
       RollupDts({
