@@ -29,10 +29,10 @@ export class Client<T extends ClientRoutes = ClientRoutes> {
   /**
    * Create a new client for the application.
    *
-   * @param initialOptions The options to pass to the client.
+   * @param options The options to pass to the client.
    * @example new Client({ baseUrl: 'https://api.example.com' })
    */
-  constructor(private initialOptions: RequestOptions = {}) {}
+  constructor(public options: RequestOptions = {}) {}
 
   /**
    * Fetch a route from the API and return the `Response` object. If the client was instantiated with an
@@ -44,7 +44,7 @@ export class Client<T extends ClientRoutes = ClientRoutes> {
    * @returns The response from the server.
    */
   public async fetch<P extends Route<T>>(route: P, options?: Options<T, P>): Promise<Response> {
-    return await fetch(route, { ...this.initialOptions, ...options })
+    return await fetch(route, { ...this.options, ...options })
   }
 
   /**
@@ -66,7 +66,7 @@ export class Client<T extends ClientRoutes = ClientRoutes> {
    * const data = request('GET /api/product/:id', { data: { id: '1' } })
    */
   public async request<P extends Route<T>>(route: P, options?: Options<T, P>): Promise<Data<T, P>> {
-    return await request(route, { ...this.initialOptions, ...options }) as Data<T, P>
+    return await request(route, { ...this.options, ...options }) as Data<T, P>
   }
 
   /**
