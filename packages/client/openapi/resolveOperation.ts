@@ -1,6 +1,6 @@
 import type { CollectKey, Fallback, Pretty } from '@unshared/types'
 import type { OpenAPI } from 'openapi-types'
-import type { RequestMethod } from '../utils/parseRequestUrl'
+import type { FetchMethod } from '../utils/parseRequest'
 
 /** The HTTP methods supported by OpenAPI. */
 const methods = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch'] as const
@@ -17,6 +17,9 @@ T extends { paths: infer P }
     : string
   : string
 
+/** A union of possible Operations types in the specification. */
+export type Operation = { method: FetchMethod; path: string } & OpenAPI.Operation
+
 /** Find an operation by its operationId in an OpenAPI specification. */
 export type OperationById<T, U extends OperationId<T>> =
   T extends { paths: infer P }
@@ -29,18 +32,15 @@ export type OperationById<T, U extends OperationId<T>> =
       : never
     : never
 
-/** A union of possible Operations types in the specification. */
-export type Operation = { method: RequestMethod; path: string } & OpenAPI.Operation
-
 /**
  * Given an OpenAPI specification, find an operation by its operationId.
  *
  * @param document The OpenAPI specification document.
  * @param operationId The operationId of the operation to resolve.
  * @returns The resolved operation.
- * @example openapiGetOperation(specification, 'getUser') // { method: 'get', path: '/users/{username}', ... }
+ * @example resolveOperation(document, 'getUser') // { method: 'get', path: '/users/{username}', ... }
  */
-export function getOperationById<T, U extends OperationId<T>>(document: T, operationId: U): Fallback<OperationById<T, U>, Operation> {
+export function resolveOperation<T, U extends OperationId<T>>(document: T, operationId: U): Fallback<OperationById<T, U>, Operation> {
 
   // --- Validate the specification.
   if (!document
