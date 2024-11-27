@@ -58,6 +58,24 @@ describe('parseRequest', () => {
     })
   })
 
+  it.each(['get', 'head', 'delete', 'options'])('should dispatch data into query and params for %s requests', (method) => {
+    const options = { baseUrl: 'https://api.example.com', data: { id: '123', name: 'John' } }
+    const context = parseRequest(`${method.toUpperCase()} /users/:id`, options)
+    expect(context).toStrictEqual({
+      init: { method },
+      url: new URL('https://api.example.com/users/123?name=John'),
+    })
+  })
+
+  it.each(['post', 'put', 'patch'])('should dispatch data into body for %s requests', (method) => {
+    const options = { baseUrl: 'https://api.example.com', data: { id: '123', name: 'John' } }
+    const context = parseRequest(`${method.toUpperCase()} /users/:id`, options)
+    expect(context).toStrictEqual({
+      init: { method, body: '{"name":"John"}', headers: { 'Content-Type': 'application/json' } },
+      url: new URL('https://api.example.com/users/123'),
+    })
+  })
+
   it('should throw an error if the URL is missing', () => {
     const shouldThrow = () => parseRequest('GET /users', {})
     expect(shouldThrow).toThrowError('Could not resolve the `RequestInit` object: the `baseUrl` is missing.')
