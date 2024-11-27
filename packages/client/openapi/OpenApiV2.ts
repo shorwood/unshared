@@ -74,7 +74,7 @@ export declare namespace OpenAPIV2 {
 
   export type ResponseBody<T> =
     T extends { responses: Record<200, { schema: infer S }> }
-      ? InferSchema<S>
+      ? NonNullable<InferSchema<S>>
       : never
 
   export type Response<T> =
@@ -84,7 +84,7 @@ export declare namespace OpenAPIV2 {
         // --- Override the `json` method to match the schema.
         Override<globalThis.Response, {
           status: P extends 'default' ? number : P
-          json: InferSchema<R[P]> extends infer V
+          json: InferSchema<R[P]> extends (infer V | undefined)
             ? [never] extends V ? never : () => Promise<V>
             : never
         }>

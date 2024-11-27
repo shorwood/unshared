@@ -16,7 +16,7 @@ export declare namespace OpenAPIV3 {
       : never
 
   export type ServerQuery<T> =
-    T extends { components: { securitySchemes: { api_key: { in: 'query'; name: infer U extends string } } } }
+    T extends { components: { securitySchemes: Record<string, { in: 'query'; name: infer U extends string }> } }
       ? Partial<Record<U, string>>
       : object
 
@@ -40,7 +40,7 @@ export declare namespace OpenAPIV3 {
 
   export type ResponseBody<U> =
     U extends { responses: Record<200, { content: Record<string, { schema: infer Schema }> }> }
-      ? OpenAPIV2.InferSchema<Schema>
+      ? NonNullable<OpenAPIV2.InferSchema<Schema>>
       : never
 
   export type Response<U> =
@@ -51,7 +51,7 @@ export declare namespace OpenAPIV3 {
         // --- Override the `json` method to match the schema.
           ? Pretty<Override<globalThis.Response, {
             status: Status
-            json: OpenAPIV2.InferSchema<Schema> extends infer V
+            json: OpenAPIV2.InferSchema<Schema> extends (infer V | undefined)
               ? [never] extends V ? never : () => Promise<V>
               : never
           }>>

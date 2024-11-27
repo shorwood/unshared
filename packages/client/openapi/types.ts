@@ -24,7 +24,7 @@ export type OperationOptions<T, V extends Operation> =
         FetchMethod,
         MaybeLiteral<ServerUrl<T>>,
         OpenAPIV2.RequestParameters<V>,
-        OpenAPIV3.RequestQuery<V>,
+        OpenAPIV3.RequestQuery<V> & OpenAPIV3.ServerQuery<T>,
         OpenAPIV3.RequestBody<V>,
         OpenAPIV2.RequestHeaders<V>,
         OpenAPIV3.ResponseBody<V>,
