@@ -96,6 +96,8 @@ export async function buildIndexes(packageName: string, options: BuildIndexesOpt
   for (const entity of entities) {
     if (!entity.isDirectory()) continue
     if (entity.name === 'node_modules') continue
+    if (entity.name === 'dist') continue
+    if (entity.name === 'scripts') continue
     if (entity.name === 'index.ts') continue
     if (entity.name.startsWith('__')) continue
 
