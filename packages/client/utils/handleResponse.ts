@@ -1,6 +1,6 @@
 import { handleResponseStreamJson } from './handleResponseStreamJson'
 
-export interface RequestHooks {
+export interface RequestHooks<T = unknown, R extends Response = Response > {
 
   /**
    * The callback that is called when an error occurs during the request.
@@ -11,25 +11,25 @@ export interface RequestHooks {
    * The callback that is called when data is received from the request. This callback
    * will be called for each chunk of data that is received from the request.
    */
-  onData?: (data: unknown) => any
+  onData?: (data: T) => any
 
   /**
    * The callback that is called when the request is successful. This callback will be
    * called after the request is complete and all data has been received.
    */
-  onSuccess?: (response: Response) => any
+  onSuccess?: (response: R) => any
 
   /**
    * The callback that is called when the status code is not OK. This callback will be called
    * after the request is complete and before the data is consumed.
    */
-  onFailure?: (response: Response) => any
+  onFailure?: (response: R) => any
 
   /**
    * The callback that is called when the request is complete. This callback will be called
    * after the request is complete and all data has been received.
    */
-  onEnd?: (response: Response) => any
+  onEnd?: (response: R) => any
 }
 
 /**
@@ -65,7 +65,7 @@ export async function handleResponse(response: Response, options: RequestHooks):
       .then((data) => {
         if (onData) onData(data)
         if (onSuccess) onSuccess(response)
-        return data
+        return onData
       })
       .catch((error: Error) => {
         if (onError) onError(error)
