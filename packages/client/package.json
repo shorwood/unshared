@@ -16,15 +16,30 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
+    "./HttpHeaders": {
+      "require": "./dist/HttpHeaders.cjs",
+      "types": "./dist/HttpHeaders.d.ts",
+      "import": "./dist/HttpHeaders.js"
+    },
+    "./HttpMethods": {
+      "require": "./dist/HttpMethods.cjs",
+      "types": "./dist/HttpMethods.d.ts",
+      "import": "./dist/HttpMethods.js"
+    },
+    "./HttpStatusCodes": {
+      "require": "./dist/HttpStatusCodes.cjs",
+      "types": "./dist/HttpStatusCodes.d.ts",
+      "import": "./dist/HttpStatusCodes.js"
+    },
     "./createClient": {
       "require": "./dist/createClient.cjs",
       "types": "./dist/createClient.d.ts",
       "import": "./dist/createClient.js"
     },
-    "./fetch": {
-      "require": "./dist/fetch.cjs",
-      "types": "./dist/fetch.d.ts",
-      "import": "./dist/fetch.js"
+    "./createService": {
+      "require": "./dist/createService.cjs",
+      "types": "./dist/createService.d.ts",
+      "import": "./dist/createService.js"
     },
     "./openapi": {
       "require": "./dist/openapi.cjs",
