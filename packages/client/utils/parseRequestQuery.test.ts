@@ -75,4 +75,12 @@ describe('parseRequestQuery', () => {
     parseRequestQuery(context, { query: { id: '123' } })
     expect(context.url).toBeUndefined()
   })
+
+  it('should delete properties that are used as query parameters', () => {
+    const context = { init: { method: 'get' }, url: new URL('https://api.example.com/users/:id') }
+    const query = { id: '123', object: { key: 'value' } }
+    parseRequestQuery(context, { query })
+    expect(context.url.toString()).toBe('https://api.example.com/users/:id?id=123')
+    expect(query).toStrictEqual({ object: { key: 'value' } })
+  })
 })

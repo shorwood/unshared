@@ -47,13 +47,21 @@ describe('parseRequestParameters', () => {
 
   it('should return early if the parameters are not an object', () => {
     const context = { init: { method: 'get' }, url: new URL('https://api.example.com/users/:id') }
+    // @ts-expect-error: testing invalid input
     parseRequestParameters(context, { parameters: '123' })
     expect(context.url.toString()).toBe('https://api.example.com/users/:id')
   })
 
   it('should return early if the parameters are null', () => {
     const context = { init: { method: 'get' }, url: new URL('https://api.example.com/users/:id') }
+    // @ts-expect-error: testing invalid input
     parseRequestParameters(context, { parameters: null })
+    expect(context.url.toString()).toBe('https://api.example.com/users/:id')
+  })
+
+  it('should return early if the parameters are undefined', () => {
+    const context = { init: { method: 'get' }, url: new URL('https://api.example.com/users/:id') }
+    parseRequestParameters(context, { parameters: undefined })
     expect(context.url.toString()).toBe('https://api.example.com/users/:id')
   })
 
