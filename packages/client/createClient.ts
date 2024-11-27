@@ -1,97 +1,130 @@
-import type { MaybeLiteral, Pretty } from '@unshared/types'
-import type { OpenAPI, OpenAPIV2 as V2, OpenAPIV3 as V3, OpenAPIV3_1 as V3_1 } from 'openapi-types'
-import type { OpenAPIV2, OpenAPIV3 } from './openapi/index'
-import type { RequestHooks } from './utils/handleResponse'
-import type { RequestMethod, RequestOptions } from './utils/parseRequest'
-import { fetch } from './fetch'
-import { getBaseUrl } from './openapi/getBaseUrl'
-import { getOperationById } from './openapi/getOperationById'
-import { handleResponse } from './utils/handleResponse'
+import type { Result } from '@unshared/functions/attempt'
+import type { ObjectLike } from '@unshared/types'
+import type { ServiceOptions } from './createService'
+import type { OpenAPIRoutes } from './openapi'
+import type { RequestOptions } from './utils/request'
+import { attempt } from '@unshared/functions/attempt'
+import { fetch } from './utils/fetch'
+import { request } from './utils/request'
 
-type ClientBaseUrl<T> =
-  MaybeLiteral<
-    T extends V2.Document ? OpenAPIV2.ServerUrl<T>
-      : T extends V3.Document ? OpenAPIV3.ServerUrl<T>
-        : T extends V3_1.Document ? OpenAPIV3.ServerUrl<T>
-          : string
-  >
+/** Define the routes that can be fetched from the API and their related options. */
+export type ClientRoutes = Record<string, RequestOptions>
 
-type ClientFetch<T> =
-  T extends V2.Document ? <P extends OpenAPIV2.Route<T>>(name: P, options: OpenAPIV2.RequestInit<T, OpenAPIV2.OperationByRoute<T, P>>) => Promise<OpenAPIV2.Response<OpenAPIV2.OperationByRoute<T, P>>>
-    : T extends V3.Document ? <P extends OpenAPIV2.Route<T>>(name: P, options: OpenAPIV3.RequestInit<T, OpenAPIV2.OperationByRoute<T, P>>) => Promise<OpenAPIV3.Response<OpenAPIV2.OperationByRoute<T, P>>>
-      : T extends V3_1.Document ? <P extends OpenAPIV2.Route<T>>(name: P, options: OpenAPIV3.RequestInit<T, OpenAPIV2.OperationByRoute<T, P>>) => Promise<OpenAPIV3.Response<OpenAPIV2.OperationByRoute<T, P>>>
-        : typeof globalThis.fetch
+/** The route name that can be fetched from the API. */
+type Route<T extends ClientRoutes> =
+  T extends Record<infer P extends string, RequestOptions> ? P : string
 
-type ClientFetchOperation<T, U extends OpenAPIV2.OperationId<T>> =
-  T extends V2.Document ? (options: OpenAPIV2.RequestInit<T, OpenAPIV2.OperationById<T, U>>) => Promise<OpenAPIV2.ResponseBody<OpenAPIV2.OperationById<T, U>>>
-    : T extends V3.Document ? (options: OpenAPIV3.RequestInit<T, OpenAPIV2.OperationById<T, U>>) => Promise<OpenAPIV3.ResponseBody<OpenAPIV2.OperationById<T, U>>>
-      : T extends V3_1.Document ? (options: OpenAPIV3.RequestInit<T, OpenAPIV2.OperationById<T, U>>) => Promise<OpenAPIV3.ResponseBody<OpenAPIV2.OperationById<T, U>>>
-        : (options: RequestOptions) => Promise<Response>
+/** The options to pass to the request based on the route name. */
+type Options<T extends ClientRoutes, P extends keyof T> =
+  T extends Record<P, infer R> ? R : RequestOptions
 
-export type Client<T = OpenAPI.Document> =
-  Pretty<
-    & { [K in OpenAPIV2.OperationId<T>]: ClientFetchOperation<T, K> }
-    & { fetch: ClientFetch<T> }
-  >
+/** The data returned from the API based on the route name. */
+type Data<T extends ClientRoutes, P extends keyof T> =
+  Options<T, P> extends RequestOptions<any, any, any, any, any, any, infer R extends ObjectLike, any>
+    ? R
+    : unknown
 
-export interface ClientOptions<T = any> extends Omit<RequestOptions, 'headers'>, RequestHooks {
-  baseUrl?: ClientBaseUrl<T>
+export class Client<T extends ClientRoutes = ClientRoutes> {
 
   /**
-   * The headers to include in every request made by the client.
+   * Create a new client for the application.
    *
-   * @example { 'Authorization': 'Bearer ...' }
+   * @param initialOptions The options to pass to the client.
+   * @example new Client({ baseUrl: 'https://api.example.com' })
    */
-  headers?: T extends V3.Document
-    ? OpenAPIV3.ServerHeaders<T>
-    : never
+  constructor(private initialOptions: RequestOptions = {}) {}
+
+  /**
+   * Fetch a route from the API and return the `Response` object. If the client was instantiated with an
+   * application, the route name will be inferred from the application routes. Otherwise, you
+   * can pass the route name as a string.
+   *
+   * @param route The name of the route to fetch.
+   * @param options The options to pass to the request.
+   * @returns The response from the server.
+   */
+  public async fetch<P extends Route<T>>(route: P, options?: Options<T, P>): Promise<Response> {
+    return await fetch(route, { ...this.initialOptions, ...options })
+  }
+
+  /**
+   * Fetch a route from the API and return the data. If the client was instantiated with an
+   * application, the route name will be inferred from the application routes. Otherwise, you
+   * can pass the route name as a string.
+   *
+   * @param route The name of the route to fetch.
+   * @param options The options to pass to the request.
+   * @returns The data from the API.
+   * @example
+   * // Declare the application type.
+   * type App = Application<[ModuleProduct]>
+   *
+   * // Create a type-safe client for the application.
+   * const request = createClient<App>()
+   *
+   * // Fetch the data from the API.
+   * const data = request('GET /api/product/:id', { data: { id: '1' } })
+   */
+  public async request<P extends Route<T>>(route: P, options?: Options<T, P>): Promise<Data<T, P>> {
+    return await request(route, { ...this.initialOptions, ...options }) as Data<T, P>
+  }
+
+  /**
+   * Attempt to fetch a route from the API and return the data. If the client was instantiated with an
+   * application, the route name will be inferred from the application routes. Otherwise, you
+   * can pass the route name as a string.
+   *
+   * @param name The name of the route to fetch.
+   * @param options The options to pass to the request.
+   * @returns A result object with either the data or an error.
+   * @example
+   * // Declare the application type.
+   * type App = Application<[ModuleProduct]>
+   *
+   * // Create a type-safe client for the application.
+   * const request = createClient<App>()
+   *
+   * // Fetch the data from the API.
+   * const { data, error } = requestAttempt('GET /api/product/:id', { data: { id: '1' } })
+   * if (error) console.error(error)
+   * else console.log(data)
+   */
+  public async requestAttempt<P extends Route<T>>(name: P, options?: Options<T, P>): Promise<Result<Data<T, P>>> {
+    return await attempt(() => this.request<P>(name, options))
+  }
+
+  /**
+   * Create a new WebSocket connection to the server with the given path. The connection will
+   * automatically reconnect if the connection is closed unexpectedly.
+   *
+   * @param name The path to connect to.
+   * @param options The options to pass to the connection.
+   * @returns The WebSocket connection.
+   */
+  // public connect<P extends RouteName<T>>(name: P, options: Partial<ConnectOptions<T, P>> = {}): WebSocketConnection<T, P> {
+  //   return connect<T, P>(name, { baseUrl: this.baseUrl, ...options })
+  // }
 }
 
 /**
- * Create a new client instance for the given OpenAPI specification.
+ * Create a new type-safe client for the application. The client can be used to fetch data from
+ * the API and connect to the server using WebSockets with the given path.
  *
- * @param document The OpenAPI specification document.
- * @param initialOptions The initial options to use for every request.
- * @returns The client instance.
+ * @param options The options to pass to the client.
+ * @returns The client object with the request method.
  * @example
- * const client = createClient(document)
- * await client.fetch({ ... })
+ * // Create a type-safe client for the application.
+ * const client = createClient<[ModuleUser]>()
+ *
+ * // Fetch the data from the API.
+ * const data = await client.request('GET /api/user/:id', { id: '1' })
+ *
+ * // Use the data from the API.
+ * console.log(data) // { id: '1', name: 'John Doe' }
  */
-// @ts-expect-error: `ClientOptions` is not assignable to `ClientOptions<T>`.
-export function createClient<T extends OpenAPI.Document>(document: Readonly<T>, initialOptions?: ClientOptions<T>): Client<T>
-export function createClient<T extends OpenAPI.Document>(url: ClientBaseUrl<T>, initialOptions?: ClientOptions<T>): Client<T>
-export function createClient(documentOrUrl: Readonly<OpenAPI.Document> | string, initialOptions: ClientOptions = {}): Client {
-  const specifications = typeof documentOrUrl === 'string' ? undefined : documentOrUrl
-  if (typeof documentOrUrl === 'string') initialOptions.baseUrl = documentOrUrl
-
-  async function fetchByOperationId(operationId: string, options: ClientOptions<any>) {
-    if (!specifications) throw new Error('No OpenAPI specification provided.')
-    const operation = getOperationById(specifications, operationId) as { method: RequestMethod; path: string } & OpenAPI.Operation
-    if (!operation) throw new Error(`Operation ID "${operationId}" not found.`)
-    const { method, path, responses = {} } = operation
-    const fetchOptions = { method, baseUrl: getBaseUrl(specifications), ...initialOptions, ...options }
-    const response = await fetch(path, fetchOptions)
-
-    // --- Return the JSON response if successful.
-    if (response.ok) return handleResponse(response, fetchOptions)
-
-    // --- Throw an error if the response was not successful.
-    const status = response.status.toString()
-    if (status in responses
-      && typeof responses[status] === 'object'
-      && responses[status] !== null
-      && 'description' in responses[status]
-      && typeof responses[status].description === 'string')
-      throw new Error(responses[status].description)
-
-    // --- Throw a generic error if the response was not successful.
-    throw new Error(response.statusText)
-  }
-
-  return new Proxy({}, {
-    get(_, property: string) {
-      if (property === 'fetch') return (route: string, options: RequestOptions) => fetch(route, ({ ...initialOptions, ...options }))
-      return (options: Record<string, unknown>) => fetchByOperationId(property, options)
-    },
-  }) as unknown as Client
+export function createClient<T extends ClientRoutes>(options?: RequestOptions): Client<T>
+export function createClient<T extends { swagger: string }>(options?: ServiceOptions<T>): Client<OpenAPIRoutes<T>>
+export function createClient<T extends { openapi: string }>(options?: ServiceOptions<T>): Client<OpenAPIRoutes<T>>
+export function createClient(options?: RequestOptions): Client {
+  return new Client(options)
 }
