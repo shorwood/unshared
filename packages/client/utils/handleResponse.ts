@@ -41,7 +41,7 @@ export interface RequestHooks<T = unknown, R extends Response = Response > {
  * @param options The options to pass to the request.
  * @returns The parsed data from the response.
  */
-export async function handleResponse(response: Response, options: RequestHooks): Promise<unknown> {
+export async function handleResponse(response: Response, options: RequestHooks = {}): Promise<unknown> {
   const { onError, onSuccess, onData, onEnd, onFailure } = options
   const contentType = response.headers.get('Content-Type')
 
