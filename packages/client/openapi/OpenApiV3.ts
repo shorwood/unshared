@@ -1,4 +1,4 @@
-import type { LooseDeep, Override, Pretty } from '@unshared/types'
+import type { Override, Pretty } from '@unshared/types'
 import type { OpenAPIV2 } from './OpenApiV2'
 
 export declare namespace OpenAPIV3 {
@@ -18,7 +18,7 @@ export declare namespace OpenAPIV3 {
   export type ServerQuery<T> =
     T extends { components: { securitySchemes: { api_key: { in: 'query'; name: infer U extends string } } } }
       ? Partial<Record<U, string>>
-      : never
+      : object
 
   /*************************************************************************/
   /* Request                                                               */
@@ -31,22 +31,8 @@ export declare namespace OpenAPIV3 {
         : object
       : object
 
-  export type RequestData<T, U> =
-    Pretty<
-      & OpenAPIV2.Parameters<U, 'path'>
-      & OpenAPIV2.Parameters<U, 'query'>
-      & RequestBody<U>
-      & ServerQuery<T>
-    >
-
-  export type RequestInit<T, U> =
-    Pretty<Override<globalThis.RequestInit, {
-      body?: RequestBody<U>
-      query?: OpenAPIV2.Parameters<U, 'query'> & ServerQuery<T>
-      headers?: OpenAPIV2.RequestHeaders<U>
-      parameters?: OpenAPIV2.Parameters<U, 'path'>
-      data?: LooseDeep<RequestData<T, U>>
-    }>>
+  export type RequestQuery<T> =
+    OpenAPIV2.Parameters<T, 'query'>
 
   /*************************************************************************/
   /* Response                                                              */

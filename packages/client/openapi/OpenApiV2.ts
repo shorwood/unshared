@@ -1,5 +1,4 @@
-import type { CollectKey, Override, Pretty, StringSplit, UnionMerge } from '@unshared/types'
-import type { HttpHeader } from '../types'
+import type { Loose, Override, UnionMerge } from '@unshared/types'
 
 export declare namespace OpenAPIV2 {
 
@@ -30,7 +29,7 @@ export declare namespace OpenAPIV2 {
       : unknown[]
 
   export type InferSchema<T> =
-    Pretty<(
+    Loose<(
       T extends { anyOf: Array<infer U> } ? InferSchema<U>
         : T extends { oneOf: Array<infer U> } ? InferSchema<U>
           : T extends { allOf: Array<infer U> } ? UnionMerge<InferSchema<U>>
@@ -57,28 +56,17 @@ export declare namespace OpenAPIV2 {
   export type RequestBody<T> =
     Parameters<T, 'body'> extends Record<string, infer U> ? U : never
 
+  export type RequestQuery<T> =
+      Parameters<T, 'query'>
+
+  export type RequestParameters<T> =
+      Parameters<T, 'path'>
+
   export type RequestHeaders<T> =
     UnionMerge<
       | Parameters<T, 'header'>
-      | Partial<Record<HttpHeader, string | undefined>>
       | (T extends { consumes: Array<infer C> } ? { 'Content-Type'?: C } : never)
     >
-
-  export type RequestData<T> = Pretty<
-    & Parameters<T, 'path'>
-    & Parameters<T, 'query'>
-    & RequestBody<T>
-  >
-
-  export type RequestInit<T, U> =
-    Pretty<Override<globalThis.RequestInit, {
-      baseUrl?: ServerUrl<T>
-      body?: RequestBody<U>
-      query?: Parameters<U, 'query'>
-      headers?: RequestHeaders<U>
-      parameters?: Parameters<U, 'path'>
-      data?: RequestData<U>
-    }>>
 
   /*************************************************************************/
   /* Response                                                              */
@@ -103,53 +91,5 @@ export declare namespace OpenAPIV2 {
 
         // --- Collect all responses as an union.
       }) extends infer Result ? Result[keyof Result] : never
-      : never
-
-  /*************************************************************************/
-  /* Resolve                                                               */
-  /*************************************************************************/
-
-  export type OperationId<T> =
-  T extends { paths: infer P }
-    ? P extends Record<string, infer R>
-      ? R extends Record<string, infer O>
-        ? O extends { operationId: infer N }
-          ? N
-          : string
-        : string
-      : string
-    : string
-
-  export type Route<T> =
-    T extends { paths: infer P }
-      ? CollectKey<P> extends Record<string, infer R>
-        ? CollectKey<R> extends Record<string, infer O>
-          ? O extends { $key: [infer P extends string, infer M extends string] }
-            ? `${Uppercase<M>} ${P}`
-            : string
-          : string
-        : string
-      : string
-
-  export type OperationById<T, U extends OperationId<T>> =
-    T extends { paths: infer P }
-      ? CollectKey<P> extends Record<string, infer R>
-        ? CollectKey<R> extends Record<string, infer O>
-          ? O extends { $key: [infer P extends string, infer M extends string]; operationId: U }
-            ? Pretty<{ method: M; path: P } & Omit<O, '$key'>>
-            : never
-          : never
-        : never
-      : never
-
-  export type OperationByRoute<T, U extends Route<T>> =
-    StringSplit<U, ' '> extends [infer M extends string, infer P extends string]
-      ? T extends { paths: infer U }
-        ? U extends Record<P, infer R>
-          ? R extends Record<Lowercase<M>, infer O>
-            ? Pretty<{ method: Lowercase<M>; path: P } & O>
-            : never
-          : never
-        : never
       : never
 }
