@@ -65,7 +65,7 @@ export async function handleResponse(response: Response, options: RequestHooks):
       .then((data) => {
         if (onData) onData(data)
         if (onSuccess) onSuccess(response)
-        return onData
+        return data
       })
       .catch((error: Error) => {
         if (onError) onError(error)
