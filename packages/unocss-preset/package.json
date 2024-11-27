@@ -16,15 +16,30 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
+    "./constants": {
+      "require": "./dist/constants.cjs",
+      "types": "./dist/constants.d.ts",
+      "import": "./dist/constants.js"
+    },
     "./preset": {
       "require": "./dist/preset.cjs",
       "types": "./dist/preset.d.ts",
       "import": "./dist/preset.js"
     },
+    "./rules": {
+      "require": "./dist/rules.cjs",
+      "types": "./dist/rules.d.ts",
+      "import": "./dist/rules.js"
+    },
     "./utils": {
       "require": "./dist/utils.cjs",
       "types": "./dist/utils.d.ts",
       "import": "./dist/utils.js"
+    },
+    "./variants": {
+      "require": "./dist/variants.cjs",
+      "types": "./dist/variants.d.ts",
+      "import": "./dist/variants.js"
     },
     ".": {
       "require": "./dist/index.cjs",

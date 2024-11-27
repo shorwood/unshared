@@ -1,8 +1,8 @@
-export * from './assert/index'
-
 import type { Constructor } from '@unshared/types'
 import * as ASSERT from './assert/index'
 import { wrapAssert } from './wrapAssert'
+
+export * from './assert/index'
 
 /**
  * The `assert` object provides a set of extensible assertion functions that can be used to

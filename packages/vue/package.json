@@ -196,6 +196,11 @@
       "types": "./dist/useOutsideEvent.d.ts",
       "import": "./dist/useOutsideEvent.js"
     },
+    "./utils": {
+      "require": "./dist/utils.cjs",
+      "types": "./dist/utils.d.ts",
+      "import": "./dist/utils.js"
+    },
     "./wrapTransition": {
       "require": "./dist/wrapTransition.cjs",
       "types": "./dist/wrapTransition.d.ts",
