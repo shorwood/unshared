@@ -1,4 +1,5 @@
 import type { ObjectLike } from '@unshared/types'
+import type { UnionMerge } from '@unshared/types'
 import type { RequestBodyOptions } from './parseRequestBody'
 import type { RequestHeadersOptions } from './parseRequestHeaders'
 import type { RequestParametersOptions } from './parseRequestParameters'
@@ -12,7 +13,7 @@ import { parseRequestQuery } from './parseRequestQuery'
 import { parseRequestUrl } from './parseRequestUrl'
 
 /** Options to pass to the request. */
-export interface RequestOptions<
+export interface ParseRequestOptions<
   Body = unknown,
   Query extends ObjectLike = ObjectLike,
   Headers extends ObjectLike = ObjectLike,
@@ -31,7 +32,7 @@ export interface RequestOptions<
    *
    * @example { id: 1 }
    */
-  data?: unknown
+  data?: UnionMerge<Body | Headers | Parameters | Query>
 }
 
 export interface RequestContext {
@@ -47,21 +48,21 @@ export interface RequestContext {
  * @param options The options to pass to the request.
  * @returns The URL and the `RequestInit` object.
  */
-export function parseRequest(route: string, options: RequestOptions): RequestContext {
+export function parseRequest(route: string, options: ParseRequestOptions = {}): RequestContext {
   const { data, body, query, parameters, headers, method, baseUrl, searchArrayFormat, ...init } = options
   const context: RequestContext = { init }
   const dataObject = isObjectLike(data) ? data : undefined
 
-  // --- Parse the URL, headers and parameters.
+  // --- Parse the URL and insert the path parameters.
   parseRequestUrl(context, { route, baseUrl, method })
-  parseRequestHeaders(context, { headers })
   parseRequestParameters(context, { parameters: parameters ?? dataObject })
 
-  // --- Depending on the method, the data will be used as the query or body.
+  // --- Depending on the method, parse the query, body, and headers.
   const requestMethod = context.init?.method?.toLowerCase() ?? 'get'
   const requestExpectsBody = ['post', 'put', 'patch'].includes(requestMethod)
   parseRequestQuery(context, { searchArrayFormat, query: requestExpectsBody ? query : query ?? dataObject })
   parseRequestBody(context, { body: requestExpectsBody ? body ?? dataObject : undefined })
+  parseRequestHeaders(context, { headers })
 
   // --- Return the context with the URL and the `RequestInit` object.
   return context
