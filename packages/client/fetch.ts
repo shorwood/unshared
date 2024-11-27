@@ -1,4 +1,4 @@
-import type { RequestOptions } from './utils/parseRequest'
+import type { ParseRequestOptions } from './utils/parseRequest'
 import { parseRequest } from './utils/parseRequest'
 
 /**
@@ -10,7 +10,8 @@ import { parseRequest } from './utils/parseRequest'
  * @returns The response from the server.
  * @example fetch('GET /users', { query: { limit: 10 } })
  */
-export function fetch(route: string, options: RequestOptions = {}) {
+export async function fetch(route: string, options: ParseRequestOptions = {}): Promise<Response> {
   const { url, init } = parseRequest(route, options)
-  return globalThis.fetch(url!, init)
+  if (!url) throw new Error('Could not parse request URL')
+  return await globalThis.fetch(url, init)
 }
