@@ -1,5 +1,5 @@
 import type { MaybeLiteral } from '@unshared/types'
-import type { OpenAPIV3, OperationById, OperationId, OperationOptions, OperationResult, ServerUrl } from './openapi'
+import type { OpenAPIV3, Operation, OperationById, OperationId, OperationOptions, OperationResult, ServerUrl } from './openapi'
 import type { RequestOptions } from './utils/request'
 import { getServerUrl } from './openapi/getServerUrl'
 import { resolveOperation } from './openapi/resolveOperation'
@@ -44,8 +44,7 @@ export function createService<T extends object>(document: Readonly<T>, initialOp
 
         // --- Find the operation in the OpenAPI specification.
         const baseUrl = getServerUrl(document)
-        const operation = resolveOperation(document, id)
-        if (!operation) throw new Error(`Operation ID "${id}" not found.`)
+        const operation = resolveOperation(document, id) as Operation
 
         // --- Fetch the relevant resource from the server.
         const { method, path, responses = {} } = operation

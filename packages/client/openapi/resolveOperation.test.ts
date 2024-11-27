@@ -1,4 +1,3 @@
-import type { Operation } from './resolveOperation'
 import { resolveOperation } from './resolveOperation'
 
 describe('getOperationById', () => {
@@ -15,30 +14,25 @@ describe('getOperationById', () => {
     },
   } as const
 
-  it('should return the correct operation for a valid operationId', () => {
-    const result = resolveOperation(document, 'deleteUser')
-    expect(result).toStrictEqual({
-      operationId: 'deleteUser',
-      method: 'delete',
-      path: '/users/{username}',
+  describe('with a valid operationId', () => {
+    it('should return the correct operation for a valid operationId', () => {
+      const result = resolveOperation(document, 'deleteUser')
+      expect(result).toStrictEqual({
+        operationId: 'deleteUser',
+        method: 'delete',
+        path: '/users/{username}',
+      })
     })
   })
 
   describe('inference', () => {
     it('should infer the correct operation type', () => {
       const result = resolveOperation(document, 'getUser')
-      expectTypeOf(result).toEqualTypeOf<Operation>()
-    })
-
-    it('should fallback to the OpenAPI.Operation type for an unknown operationId', () => {
-    // @ts-expect-error: operationId is unknown
-      const result = resolveOperation(document, 'unknownOperationId')
-      expectTypeOf(result).toEqualTypeOf<Operation>()
-    })
-
-    it('should fallback to the OpenAPI.Operation type for an unknown specification', () => {
-      const result = resolveOperation({}, 'unknownOperationId')
-      expectTypeOf(result).toEqualTypeOf<Operation>()
+      expectTypeOf(result).toEqualTypeOf<{
+        readonly operationId: 'getUser'
+        method: 'get'
+        path: '/users/{username}'
+      }>()
     })
   })
 

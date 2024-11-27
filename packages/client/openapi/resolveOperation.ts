@@ -1,4 +1,4 @@
-import type { CollectKey, Fallback, Pretty } from '@unshared/types'
+import type { CollectKey, Pretty } from '@unshared/types'
 import type { OpenAPI } from 'openapi-types'
 import type { FetchMethod } from '../utils/parseRequest'
 
@@ -40,7 +40,7 @@ export type OperationById<T, U extends OperationId<T>> =
  * @returns The resolved operation.
  * @example resolveOperation(document, 'getUser') // { method: 'get', path: '/users/{username}', ... }
  */
-export function resolveOperation<T, U extends OperationId<T>>(document: T, operationId: U): Fallback<OperationById<T, U>, Operation> {
+export function resolveOperation<T, U extends OperationId<T>>(document: T, operationId: U): OperationById<T, U> {
 
   // --- Validate the specification.
   if (!document
@@ -67,7 +67,7 @@ export function resolveOperation<T, U extends OperationId<T>>(document: T, opera
         || operation.operationId !== operationId) continue
 
       // --- Route was found, return the operation.
-      return { ...route[method], method, path }
+      return { ...route[method], method, path } as OperationById<T, U>
     }
   }
 
