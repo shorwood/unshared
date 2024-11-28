@@ -27,9 +27,8 @@ export type WorkerizedExport<T> =
  */
 export type Workerized<T extends object> =
   UnionMerge<
-    {
-      -readonly [K in keyof T]: WorkerizedExport<T[K]> }
-      | { getOwnPropertyNames: () => Promise<string[]> }
+    | { -readonly [K in keyof T]: WorkerizedExport<T[K]> }
+    | { getOwnPropertyNames: () => Promise<string[]> }
   >
 
 /** The options for the `WorkerService`. */
@@ -260,9 +259,7 @@ export class WorkerService implements AsyncDisposable {
   public wrap<T extends object>(moduleId: URL | string, paths?: MaybeArray<string>): Workerized<T> {
     return new Proxy({}, {
       get: (_, name: keyof T & string) =>
-        (...parameters: unknown[]) =>
-          // eslint-disable-next-line sonarjs/no-useless-call
-          this.spawn.call(this, { moduleId, name, parameters, paths: toArray(paths) }),
+        (...parameters: unknown[]) => this.spawn({ moduleId, name, parameters, paths: toArray(paths) }),
     }) as Workerized<T>
   }
 }

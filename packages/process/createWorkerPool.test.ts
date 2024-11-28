@@ -1,9 +1,9 @@
+import type * as Module from './__fixtures__/module'
 import { cpus } from 'node:os'
 import { createWorkerPool, WorkerPool } from './createWorkerPool'
 
 describe.sequential('createWorkerPool', () => {
   const moduleId = new URL('__fixtures__/module', import.meta.url)
-  type Module = typeof import('./__fixtures__/module')
 
   test('should create a worker pool', () => {
     const pool = createWorkerPool()
@@ -13,7 +13,7 @@ describe.sequential('createWorkerPool', () => {
   describe('spawn', () => {
     it('should spawn a function in a worker thread', async() => {
       const pool = createWorkerPool()
-      const result = await pool.spawn<Module['factorial']>({ moduleId, name: 'factorial', parameters: [5] })
+      const result = await pool.spawn<typeof Module['factorial']>({ moduleId, name: 'factorial', parameters: [5] })
       expect(result).toBe(120)
     })
   })
@@ -21,7 +21,7 @@ describe.sequential('createWorkerPool', () => {
   describe('wrap', () => {
     it('should wrap a module to be executed in a separate thread', async() => {
       const pool = createWorkerPool()
-      const module = pool.wrap<Module>(moduleId)
+      const module = pool.wrap<typeof Module>(moduleId)
       const result = await module.factorial(5)
       expect(result).toBe(120)
     })
@@ -42,7 +42,7 @@ describe.sequential('createWorkerPool', () => {
 
     it('should create workers on the first function call', async() => {
       const pool = createWorkerPool({ size: 4 })
-      const module = pool.wrap<Module>(moduleId)
+      const module = pool.wrap<typeof Module>(moduleId)
       await module.factorial(5)
       expect(pool.workers).toHaveLength(4)
     })
@@ -70,7 +70,7 @@ describe.sequential('createWorkerPool', () => {
 
     it('should dispatch tasks between 4 workers', async() => {
       const pool = createWorkerPool({ size: 4 })
-      const module = pool.wrap<Module>(moduleId)
+      const module = pool.wrap<typeof Module>(moduleId)
       const promises = Array.from({ length: 8 }, () => module.getThreadId())
       const results = Promise.all(promises)
       await expect(results).resolves.toStrictEqual([
@@ -87,7 +87,7 @@ describe.sequential('createWorkerPool', () => {
 
     it('should keep track of the number of running tasks', async() => {
       const pool = createWorkerPool({ size: 4 })
-      const module = pool.wrap<Module>(moduleId)
+      const module = pool.wrap<typeof Module>(moduleId)
       const promises = Array.from({ length: 8 }, () => module.getThreadId())
       const results = Promise.all(promises)
       await expect(results).resolves.toHaveLength(8)
