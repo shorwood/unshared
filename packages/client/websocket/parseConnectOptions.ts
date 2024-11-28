@@ -142,9 +142,9 @@ function parseConnectUrl(parameters: WebSocketParameters, channel: string, optio
 
 export function parseConnectOptions(channel: string, options: ConnectOptions): WebSocketParameters {
   const { baseUrl, protocol, data, parameters = data, query = data } = options
-  const context: WebSocketParameters = { url: new URL('about:blank') }
-  parseConnectUrl(context, channel, { baseUrl, protocol })
-  parseRequestParameters(context, { parameters })
-  parseRequestQuery(context, { query })
-  return context
+  const wsParameters: WebSocketParameters = { url: new URL('about:blank') }
+  parseConnectUrl(wsParameters, channel, { baseUrl, protocol })
+  parseRequestParameters(wsParameters, { parameters })
+  parseRequestQuery(wsParameters, { query })
+  return wsParameters
 }
