@@ -60,8 +60,8 @@ export async function workerRequest<T extends Function>(worker: Worker, name: st
   // --- Push any transferable objects to the transfer list.
   const transferList: TransferListItem[] = [port1]
   for (const parameter of parameters) {
-    if (Buffer.isBuffer(parameter)) transferList.push(parameter.buffer)
-    if (isArrayBufferView(parameter)) transferList.push(parameter.buffer)
+    if (Buffer.isBuffer(parameter)) transferList.push(parameter.buffer as ArrayBuffer)
+    if (isArrayBufferView(parameter)) transferList.push(parameter.buffer as ArrayBuffer)
     if (isArrayBuffer(parameter)) transferList.push(parameter)
   }
 
