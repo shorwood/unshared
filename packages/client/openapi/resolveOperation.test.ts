@@ -1,3 +1,4 @@
+import type { Operation } from './resolveOperation'
 import { resolveOperation } from './resolveOperation'
 
 describe('getOperationById', () => {
@@ -27,12 +28,17 @@ describe('getOperationById', () => {
 
   describe('inference', () => {
     it('should infer the correct operation type', () => {
-      const result = resolveOperation(document, 'getUser')
-      expectTypeOf(result).toEqualTypeOf<{
+      const result = () => resolveOperation(document, 'getUser')
+      expectTypeOf(result).toEqualTypeOf<() => {
         readonly operationId: 'getUser'
         method: 'get'
         path: '/users/{username}'
       }>()
+    })
+
+    it('should infer a simple `Operation` type', () => {
+      const result = () => resolveOperation(document, 'UNKNOWN')
+      expectTypeOf(result).toEqualTypeOf<() => Operation>()
     })
   })
 

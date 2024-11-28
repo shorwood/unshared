@@ -40,7 +40,9 @@ export type OperationById<T, U extends OperationId<T>> =
  * @returns The resolved operation.
  * @example resolveOperation(document, 'getUser') // { method: 'get', path: '/users/{username}', ... }
  */
-export function resolveOperation<T, U extends OperationId<T>>(document: T, operationId: U): OperationById<T, U> {
+export function resolveOperation<T, U extends OperationId<T>>(document: T, operationId: U): OperationById<T, U>
+export function resolveOperation(document: object, operationId: string): Operation
+export function resolveOperation(document: object, operationId: string): Operation {
 
   // --- Validate the specification.
   if (!document
@@ -67,7 +69,7 @@ export function resolveOperation<T, U extends OperationId<T>>(document: T, opera
         || operation.operationId !== operationId) continue
 
       // --- Route was found, return the operation.
-      return { ...route[method], method, path } as OperationById<T, U>
+      return { ...route[method], method, path }
     }
   }
 
