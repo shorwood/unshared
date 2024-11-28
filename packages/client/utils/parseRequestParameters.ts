@@ -21,7 +21,7 @@ const EXP_PATH_PARAMETER = /:([\w-]+)|%7B([\w-]+)%7D/g
  * parseRequestParameters(context, { parameters: { id: 1 } })
  * console.log(context.url.pathname) // 'https://api.example.com/users/1'
  */
-export function parseRequestParameters(context: RequestContext, options: FetchOptions): void {
+export function parseRequestParameters(context: Partial<RequestContext>, options: FetchOptions): void {
   const { url } = context
   const { parameters } = options
 

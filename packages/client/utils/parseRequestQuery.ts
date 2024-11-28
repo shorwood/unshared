@@ -10,7 +10,7 @@ import { toSearchParams } from './toSearchParams'
  * @param context The request context to modify.
  * @param options The options to pass to the request.
  */
-export function parseRequestQuery(context: RequestContext, options: FetchOptions): void {
+export function parseRequestQuery(context: Partial<RequestContext>, options: FetchOptions): void {
   const { url } = context
   const { query, queryArrayFormat } = options
 

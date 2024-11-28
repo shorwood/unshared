@@ -87,8 +87,8 @@ export interface FetchOptions<
 }
 
 export interface RequestContext {
-  url?: URL
-  init?: RequestInit
+  url: URL
+  init: RequestInit
 }
 
 /**
@@ -101,7 +101,7 @@ export interface RequestContext {
  */
 export function parseRequest(route: string, options: FetchOptions = {}): RequestContext {
   const { username, password, data, body, query, parameters, headers, method, baseUrl, queryArrayFormat, ...init } = options
-  const context: RequestContext = { init }
+  const context: Partial<RequestContext> = { init }
   const dataObject = isObjectLike(data) ? data : undefined
 
   // --- Parse the URL and insert the path parameters.
@@ -117,5 +117,5 @@ export function parseRequest(route: string, options: FetchOptions = {}): Request
   parseRequestHeaders(context, { headers })
 
   // --- Return the context with the URL and the `RequestInit` object.
-  return context
+  return context as RequestContext
 }

@@ -15,7 +15,7 @@ const METHODS = new Set(['get', 'post', 'put', 'patch', 'delete', 'head', 'optio
  * @param options The options to pass to the request.
  * @example parseRequestUrl('GET /users', { baseUrl: 'https://api.example.com' }, context)
  */
-export function parseRequestUrl(context: RequestContext, route: string, options: FetchOptions): void {
+export function parseRequestUrl(context: Partial<RequestContext>, route: string, options: FetchOptions): void {
   const { method, baseUrl } = options
 
   // --- Extract the path, method, and base URL from the route name.

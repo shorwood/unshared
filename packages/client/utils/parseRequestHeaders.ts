@@ -14,7 +14,7 @@ import type { FetchOptions, RequestContext } from './parseRequest'
  * // Will mutate the `init` object to include the headers.
  * console.log(context) // => { init: { headers: { 'Content-Type': 'application/json' } } }
  */
-export function parseRequestHeaders(context: RequestContext, options: FetchOptions): void {
+export function parseRequestHeaders(context: Partial<RequestContext>, options: FetchOptions): void {
   const { headers } = options
 
   // --- Merge the headers with the existing headers.

@@ -14,7 +14,7 @@ import type { FetchOptions, RequestContext } from './parseRequest'
  * // Will mutate the `init` object to include the headers.
  * console.log(context) // => { init: { headers: { 'Authorization': 'Basic dXNlcjpwYXNz' } } }
  */
-export function parseRequestBasicAuth(context: RequestContext, options: FetchOptions): void {
+export function parseRequestBasicAuth(context: Partial<RequestContext>, options: FetchOptions): void {
   const { username, password } = options
 
   // --- Return early if the username or password is not provided.

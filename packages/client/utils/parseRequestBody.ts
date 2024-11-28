@@ -9,7 +9,7 @@ import { toFormData } from './toFormData'
  * @param context The request context.
  * @param options The request options.
  */
-export function parseRequestBody(context: RequestContext, options: FetchOptions): void {
+export function parseRequestBody(context: Partial<RequestContext>, options: FetchOptions): void {
   const { body } = options
 
   // --- If the method is `GET`, `HEAD`, or `DELETE`, return early.
