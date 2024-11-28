@@ -87,7 +87,7 @@ describe('assertFalsy', () => {
     it('should predicate a falsy value', () => {
       const value = false as unknown
       assertFalsy(value)
-      expectTypeOf(value).toEqualTypeOf<'' | 0 | false | null | undefined>()
+      expectTypeOf(value).toEqualTypeOf<0 | '' | false | null | undefined>()
     })
   })
 })

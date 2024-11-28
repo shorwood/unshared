@@ -210,7 +210,7 @@ export interface UseBaseInputListComposable<T, V = T, M extends boolean = boolea
    *
    * @example ['Alice', 'Bob']
    */
-  model: M extends true ? V[] : V | undefined
+  model: M extends true ? V[] : undefined | V
 
   /**
    * The search query to filter options by or `undefined` if no search query is
@@ -255,7 +255,7 @@ export function useBaseInputList<T, V, M extends boolean>(options: UseBaseInputL
 
   // --- Initialize model value.
   const emit = instance?.emit
-  const model = useVModel(options, 'modelValue', emit, { passive: true }) as Ref<V | V[] | undefined>
+  const model = useVModel(options, 'modelValue', emit, { passive: true }) as Ref<undefined | V | V[]>
   const search = useVModel(options, 'search', undefined, { passive: true })
 
   /**

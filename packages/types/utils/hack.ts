@@ -19,8 +19,8 @@ export type CollectKey<T> =
     ? { [K in Exclude<keyof T & string, '$key'>]:
       T[K] extends object
         ? T extends { $key: infer P extends string[] }
-          ? { $key: [...P, K] } & T[K]
-          : { $key: [K] } & T[K]
+          ? T[K] & { $key: [...P, K] }
+          : T[K] & { $key: [K] }
         : T[K]
     }
     : T

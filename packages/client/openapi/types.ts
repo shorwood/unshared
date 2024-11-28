@@ -63,7 +63,7 @@ export type OperationByRoute<T, U extends OperationRoute<T>> =
     ? T extends { paths: infer U }
       ? U extends Record<P, infer R>
         ? R extends Record<Lowercase<M>, infer O>
-          ? Pretty<{ method: Lowercase<M>; path: P } & O>
+          ? Pretty<O & { method: Lowercase<M>; path: P }>
           : never
         : never
       : never

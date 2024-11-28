@@ -46,9 +46,9 @@ export type AliasMap<T extends object = object> = Record<string, MaybeLiteral<Pa
  * }
  */
 export type Aliased<T extends object, A extends AliasMap<T>> =
-  {
+  T & {
     -readonly [K in keyof A]-?: Fallback<Get<T, A[K]>, unknown>
-  } & T
+  }
 
 /**
  * Wrap a collection in a `Proxy` that will map nested properties to top-level. Allows for

@@ -48,25 +48,25 @@ describe('alias', () => {
     it('should alias a nested property', () => {
       interface Source { foo: { bar: string } }
       type Result = Aliased<Source, { fooBar: 'foo.bar' }>
-      expectTypeOf<Result>().toEqualTypeOf<{ fooBar: string } & Source>()
+      expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: string }>()
     })
 
     it('should alias a nested array index', () => {
       interface Source { foo: { bar: [string] } }
       type Result = Aliased<Source, { fooBar: 'foo.bar.0' }>
-      expectTypeOf<Result>().toEqualTypeOf<{ fooBar: string } & Source>()
+      expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: string }>()
     })
 
     it('should alias new properties as mutable', () => {
       interface Source { foo: { bar: string } }
       type Result = Aliased<Source, { readonly fooBar: 'foo.bar' }>
-      expectTypeOf<Result>().toEqualTypeOf<{ fooBar: string } & Source>()
+      expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: string }>()
     })
 
     it('should alias as uknown if the path does not exist', () => {
       interface Source { foo: { bar: string } }
       type Result = Aliased<Source, { fooBar: 'foo.baz' }>
-      expectTypeOf<Result>().toEqualTypeOf<{ fooBar: unknown } & Source>()
+      expectTypeOf<Result>().toEqualTypeOf<Source & { fooBar: unknown }>()
     })
   })
 })

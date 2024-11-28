@@ -65,7 +65,7 @@ export interface WorkerServicePayload<T extends Function = Function<unknown, unk
    *
    * @example 'node:crypto'
    */
-  moduleId: URL | string
+  moduleId: string | URL
 
   /**
    * The name of the export to get from the module. If the named
@@ -138,7 +138,7 @@ export class WorkerService implements AsyncDisposable {
    * The `Worker` instance that is used to execute the functions. This property can
    * be used to communicate with the worker thread directly.
    */
-  public worker: Worker | undefined
+  public worker: undefined | Worker
 
   /**
    * Create a `Worker` instance with the specified options and return a `WorkerService`
@@ -256,7 +256,7 @@ export class WorkerService implements AsyncDisposable {
    * // Call the hash function in a worker thread.
    * const result = await randomBytes(128) // Uint8Array { ... }
    */
-  public wrap<T extends object>(moduleId: URL | string, paths?: MaybeArray<string>): Workerized<T> {
+  public wrap<T extends object>(moduleId: string | URL, paths?: MaybeArray<string>): Workerized<T> {
     return new Proxy({}, {
       get: (_, name: keyof T & string) =>
         (...parameters: unknown[]) => this.spawn({ moduleId, name, parameters, paths: toArray(paths) }),

@@ -3,7 +3,7 @@ import type { MaybePromise } from './MaybePromise'
 describe('MaybePromise', () => {
   test('should return U or a promise of U when U is not a promise', () => {
     type Result = MaybePromise<number>
-    expectTypeOf<Result>().toEqualTypeOf<Promise<number> | number>()
+    expectTypeOf<Result>().toEqualTypeOf<number | Promise<number>>()
   })
 
   test('should be able to infer the type of a value if it is not a promise', () => {

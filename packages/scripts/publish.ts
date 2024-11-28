@@ -53,7 +53,7 @@ async function publishOne(options: PublishOneOptions) {
   // --- Get the latest version from the registry.
   const npmView = await execute('pnpm', ['view', packageJson.name!, '--registry', registry, '--json'], 'utf8')
     .then(JSON.parse)
-    .catch(() => ({ versions: [] })) as { versions?: string[] } | undefined
+    .catch(() => ({ versions: [] })) as undefined | { versions?: string[] }
 
   // --- Check if the current version is already released.
   if (npmView?.versions?.includes(packageJson.version)) {

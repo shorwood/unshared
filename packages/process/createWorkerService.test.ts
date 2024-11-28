@@ -1,8 +1,8 @@
 /* eslint-disable vitest/valid-describe-callback */
+import type * as Module from './__fixtures__/module'
 import { createWorkerService, WorkerService } from './createWorkerService'
 
 describe('createWorkerService', () => {
-  type Module = typeof import('./__fixtures__/module')
   const moduleId = new URL('__fixtures__/module', import.meta.url)
 
   describe('createWorkerService', () => {
@@ -15,7 +15,7 @@ describe('createWorkerService', () => {
   describe('spawn', { retry: 3 }, () => {
     it('should spawn the default export function and return the result', async() => {
       const service = createWorkerService()
-      const result = await service.spawn<Module['factorial']>({ moduleId, parameters: [5] })
+      const result = await service.spawn<typeof Module['factorial']>({ moduleId, parameters: [5] })
       expect(result).toBe(120)
       expectTypeOf(result).toEqualTypeOf<number>()
       await service.destroy()
@@ -23,7 +23,7 @@ describe('createWorkerService', () => {
 
     it('should spawn a sync function return the result', async() => {
       const service = createWorkerService()
-      const result = await service.spawn<Module['factorial']>({ moduleId, name: 'factorial', parameters: [5] })
+      const result = await service.spawn<typeof Module['factorial']>({ moduleId, name: 'factorial', parameters: [5] })
       expect(result).toBe(120)
       expectTypeOf(result).toEqualTypeOf<number>()
       await service.destroy()
@@ -31,7 +31,7 @@ describe('createWorkerService', () => {
 
     it('should spawn an async function and return the result', async() => {
       const service = createWorkerService()
-      const result = await service.spawn<Module['factorialAsync']>({ moduleId, name: 'factorialAsync', parameters: [5] })
+      const result = await service.spawn<typeof Module['factorialAsync']>({ moduleId, name: 'factorialAsync', parameters: [5] })
       expect(result).toBe(120)
       expectTypeOf(result).toEqualTypeOf<number>()
       await service.destroy()
@@ -39,7 +39,7 @@ describe('createWorkerService', () => {
 
     it('should spawn a function and return an Uint8Array', async() => {
       const service = createWorkerService()
-      const result = await service.spawn<Module['buffer']>({ moduleId, name: 'buffer' })
+      const result = await service.spawn<typeof Module['buffer']>({ moduleId, name: 'buffer' })
       const expected = new Uint8Array([72, 101, 108, 108, 111, 44, 32, 87, 111, 114, 108, 100, 33])
       expect(result).toStrictEqual(expected)
       expectTypeOf(result).toEqualTypeOf<Uint8Array>()
@@ -62,7 +62,7 @@ describe('createWorkerService', () => {
 
     it('should spawn a function and return the thread ID', async() => {
       const service = createWorkerService()
-      const result = await service.spawn<Module['getThreadId']>({ moduleId, name: 'getThreadId' })
+      const result = await service.spawn<typeof Module['getThreadId']>({ moduleId, name: 'getThreadId' })
       expect(result).toStrictEqual(service.worker?.threadId)
       expectTypeOf(result).toEqualTypeOf<number>()
       await service.destroy()
@@ -94,7 +94,7 @@ describe('createWorkerService', () => {
   describe('wrap', { retry: 3 }, () => {
     it('should wrap a module in a worker thread and call a named function', async() => {
       const service = createWorkerService()
-      const { factorial } = service.wrap<Module>(moduleId)
+      const { factorial } = service.wrap<typeof Module>(moduleId)
       const result = await factorial(5)
       expect(result).toBe(120)
       await service.destroy()
@@ -102,7 +102,7 @@ describe('createWorkerService', () => {
 
     it('should get the own property names of the wrapped module', async() => {
       const service = createWorkerService()
-      const { getOwnPropertyNames } = service.wrap<Module>(moduleId)
+      const { getOwnPropertyNames } = service.wrap<typeof Module>(moduleId)
       const result = await getOwnPropertyNames()
       expect(result).toStrictEqual([
         'buffer',
@@ -119,7 +119,7 @@ describe('createWorkerService', () => {
 
     it('should infer the return type of the wrapped module', async() => {
       const service = createWorkerService()
-      const module = service.wrap<Module>(moduleId)
+      const module = service.wrap<typeof Module>(moduleId)
       await service.destroy()
       expectTypeOf(module).toEqualTypeOf<{
         buffer: () => Promise<Uint8Array>

@@ -27,7 +27,7 @@ type AssertWithoutParameters<T extends AssertRaw> = T extends AssertRaw<infer U>
  * @template T The type of the assert function.
  */
 export type Assert<T extends AssertRaw> =
-  { with(messageOrCause: Error | string): AssertWithoutParameters<T> } & AssertWithoutParameters<T>
+  AssertWithoutParameters<T> & { with(messageOrCause: Error | string): AssertWithoutParameters<T> }
 
 /**
  * Wrap an assert function so that it's error can be customized with a custom error message or error.

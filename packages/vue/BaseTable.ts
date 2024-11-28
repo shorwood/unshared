@@ -118,7 +118,7 @@ export const BaseTable = defineSetupComponent(
       const isHeader = index === 0
       const slotKey = `cell.${cell.key}` as const
 
-      let slotCell: VNode | string | undefined
+      let slotCell: string | undefined | VNode
       // @ts-expect-error: `slotKey` is a valid key.
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       if (slotKey in slots) slotCell = slots[slotKey](cell.row) as VNode

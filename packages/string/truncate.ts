@@ -75,7 +75,7 @@ export function truncate<N extends number>(string: string, length: NumberInteger
  * truncate('Hello', { length: 5, ellipsis: '...' }) // 'He...'
  */
 export function truncate<N extends number>(string: string, options: TruncateOptions<N>): string
-export function truncate(string: string, optionsOrLength: TruncateOptions | number = {}): string {
+export function truncate(string: string, optionsOrLength: number | TruncateOptions = {}): string {
   const options = typeof optionsOrLength === 'number' ? { length: optionsOrLength } : optionsOrLength
   const { breakWords = false, ellipsis = '', length = Number.MAX_SAFE_INTEGER } = options
 

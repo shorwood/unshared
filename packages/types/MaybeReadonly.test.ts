@@ -8,7 +8,7 @@ describe('MaybeReadonly', () => {
 
   test('should match an object that is either readonly or not', () => {
     type Result = MaybeReadonly<{ a: number; b: string }>
-    expectTypeOf<Result>().toEqualTypeOf<{ a: number; b: string } | Readonly<{ a: number; b: string }>>()
+    expectTypeOf<Result>().toEqualTypeOf<Readonly<{ a: number; b: string }> | { a: number; b: string }>()
   })
 
   test('should match an unknown type by default', () => {

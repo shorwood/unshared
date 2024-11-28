@@ -11,5 +11,5 @@ import type { IsUnknown } from './utils'
  */
 export type NotFunction<T = unknown> =
   IsUnknown<T> extends true
-    ? { apply?: never } & Any
+    ? Any & { apply?: never }
     : T extends (...args: any[]) => any ? never : T

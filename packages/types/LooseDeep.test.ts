@@ -23,7 +23,7 @@ describe('LooseDeep', () => {
 
   test('should return nested tuples as-is', () => {
     type Result = LooseDeep<{ a: [string, { value: number | undefined }] }>
-    expectTypeOf<Result>().toEqualTypeOf<{ a: Array<{ value?: number } | string> }>()
+    expectTypeOf<Result>().toEqualTypeOf<{ a: Array<string | { value?: number }> }>()
   })
 
   test('should loose objects in nested tuples', () => {

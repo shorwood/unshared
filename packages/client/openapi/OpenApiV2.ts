@@ -40,7 +40,7 @@ export declare namespace OpenAPIV2 {
                     : T extends { type: 'integer' | 'number' } ? number
                       : T extends { type: 'boolean' } ? boolean
                         : never)
-                        | (T extends { nullable: true } ? undefined : never)>
+                      | (T extends { nullable: true } ? undefined : never)>
 
   /*************************************************************************/
   /* Request                                                               */

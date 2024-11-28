@@ -64,13 +64,13 @@ export interface ReactiveOptions<T = unknown> {
  * @returns A reactive object.
  * @example Reactive<{ foo: string }>
  */
-export type Reactive<T = unknown> = {
+export type Reactive<T = unknown> = T & {
   [ReactiveData]: {
     callbacks: Array<ReactiveCallback<T extends unknown ? any : T>>
     source: T extends unknown ? any : T
   }
   [ReactiveFlag]: true
-} & T
+}
 
 /**
  * An object that might be reactive.

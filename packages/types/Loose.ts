@@ -14,6 +14,6 @@ export type Loose<T> =
   T extends object
     ? T extends any[] ? T
       : UnionMerge<
-        | { [P in keyof T as undefined extends T[P] ? P : never]?: T[P]; }
         | { [P in keyof T as undefined extends T[P] ? never : P]: T[P]; }
+        | { [P in keyof T as undefined extends T[P] ? P : never]?: T[P]; }
       > : T

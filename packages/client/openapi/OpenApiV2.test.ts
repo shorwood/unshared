@@ -220,7 +220,7 @@ describe('OpenApiV2', () => {
             },
           ]
         }>
-        expectTypeOf<Result>().toEqualTypeOf<{ name?: string; age?: number } | undefined>()
+        expectTypeOf<Result>().toEqualTypeOf<undefined | { name?: string; age?: number }>()
       })
 
       it('should infer request body types with required properties', () => {
@@ -241,7 +241,7 @@ describe('OpenApiV2', () => {
             },
           ]
         }>
-        expectTypeOf<Result>().toEqualTypeOf<{ name: string; age?: number } | undefined>()
+        expectTypeOf<Result>().toEqualTypeOf<undefined | { name: string; age?: number }>()
       })
 
       it('should infer request body types with nested object', () => {
@@ -261,7 +261,7 @@ describe('OpenApiV2', () => {
             },
           ]
         }>
-        expectTypeOf<Result>().toEqualTypeOf<{ name?: { first?: string }; age?: number } | undefined>()
+        expectTypeOf<Result>().toEqualTypeOf<undefined | { name?: { first?: string }; age?: number }>()
       })
     })
   })

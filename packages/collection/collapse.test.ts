@@ -41,14 +41,14 @@ describe('collapse', () => {
 
       const result = collapse({ a: null }, { keepPropertyKeys: true })
       expect(result).toStrictEqual({ a: undefined })
-      expectTypeOf(result).toEqualTypeOf<{ a: undefined } | undefined>()
+      expectTypeOf(result).toEqualTypeOf<undefined | { a: undefined }>()
     })
 
     it('should maybe collapse null values', () => {
 
       const result = collapse({ a: null as null | string })
       expect(result).toBeUndefined()
-      expectTypeOf(result).toEqualTypeOf<{ a: string } | undefined>()
+      expectTypeOf(result).toEqualTypeOf<undefined | { a: string }>()
     })
   })
 
@@ -74,7 +74,7 @@ describe('collapse', () => {
     it('should maybe collapse undefined values', () => {
       const result = collapse({ a: undefined as string | undefined })
       expect(result).toBeUndefined()
-      expectTypeOf(result).toEqualTypeOf<{ a: string } | undefined>()
+      expectTypeOf(result).toEqualTypeOf<undefined | { a: string }>()
     })
   })
 
@@ -126,13 +126,13 @@ describe('collapse', () => {
     it('should collapse empty objects but keep the keys', () => {
       const result = collapse({ a: {} }, { keepPropertyKeys: true })
       expect(result).toStrictEqual({ a: undefined })
-      expectTypeOf(result).toEqualTypeOf<{ a: undefined } | undefined>()
+      expectTypeOf(result).toEqualTypeOf<undefined | { a: undefined }>()
     })
 
     it('should maybe collapse empty objects values', () => {
       const result = collapse({ a: {} as Record<string, string> })
       expect(result).toBeUndefined()
-      expectTypeOf(result).toEqualTypeOf<{ a: Record<string, string> } | undefined>()
+      expectTypeOf(result).toEqualTypeOf<undefined | { a: Record<string, string> }>()
     })
   })
 

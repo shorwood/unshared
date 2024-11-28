@@ -7,7 +7,7 @@ describe('NotPromise', () => {
   })
 
   test('should exclude the promise type when unioned with a promise', () => {
-    type Result = NotPromise<Promise<number> | number>
+    type Result = NotPromise<number | Promise<number>>
     expectTypeOf<Result>().toEqualTypeOf<number>()
   })
 

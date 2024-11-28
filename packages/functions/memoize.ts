@@ -1,6 +1,6 @@
 import type { Function } from '@unshared/types'
 
-export type Memoized<T extends Function> = {
+export type Memoized<T extends Function> = T & {
 
   /**
    * The cache of the arguments and their results that have been memoized.
@@ -11,7 +11,7 @@ export type Memoized<T extends Function> = {
    * @example memoized.cache.get('["foo"]') // => 'bar'
    */
   cache: Map<string, unknown>
-} & T
+}
 
 export interface MemoizeOptions<T extends Function = Function> {
 

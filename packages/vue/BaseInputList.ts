@@ -187,7 +187,7 @@ export const BaseInputList = defineSetupComponent(
         attributes.value,
         cleanAttributes({
           multiple: props.multiple || undefined,
-          onInput: (event: { target: HTMLSelectElement } & InputEvent) => {
+          onInput: (event: InputEvent & { target: HTMLSelectElement }) => {
             event.preventDefault()
             event.stopPropagation()
             // @ts-expect-error: `model` is a `V[]`.
@@ -236,7 +236,7 @@ export const BaseInputList = defineSetupComponent(
             input.pushSearch()
           }
         },
-        onInput: (event: { target: HTMLInputElement } & InputEvent) => {
+        onInput: (event: InputEvent & { target: HTMLInputElement }) => {
           event.preventDefault()
           event.stopPropagation()
           input.search = event.target.value
@@ -312,7 +312,7 @@ export const BaseInputList = defineSetupComponent(
             'role': 'listbox',
             'aria-multiselectable': props.multiple,
             'aria-expanded': isOpen.value,
-            'onFocus': (event: { target: HTMLElement } & Event) => event.target.querySelector('input')?.focus(),
+            'onFocus': (event: Event & { target: HTMLElement }) => event.target.querySelector('input')?.focus(),
           }),
         ),
         [vnodeValue, vnodeSearch, vnodeList],

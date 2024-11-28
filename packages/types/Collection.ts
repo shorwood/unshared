@@ -7,5 +7,5 @@
  */
 export type Collection<T = unknown> =
   | Iterable<T>
-  | Record<PropertyKey, T>
   | readonly T[]
+  | Record<PropertyKey, T>

@@ -14,7 +14,7 @@ export class WebSocketChannel<T extends ConnectOptions = ConnectOptions> {
   constructor(public channel: string, public options: T) {}
 
   /** The WebSocket connection to the server. */
-  public webSocket: WebSocket | undefined
+  public webSocket: undefined | WebSocket
 
   /**
    * Open a new WebSocket connection to the server. The connection will be opened with the given

@@ -18,7 +18,7 @@ T extends { paths: infer P }
   : string
 
 /** A union of possible Operations types in the specification. */
-export type Operation = { method: FetchMethod; path: string } & OpenAPI.Operation
+export type Operation = OpenAPI.Operation & { method: FetchMethod; path: string }
 
 /** Find an operation by its operationId in an OpenAPI specification. */
 export type OperationById<T, U extends OperationId<T>> =
@@ -26,7 +26,7 @@ export type OperationById<T, U extends OperationId<T>> =
     ? CollectKey<P> extends Record<string, infer R>
       ? CollectKey<R> extends Record<string, infer O>
         ? O extends { $key: [infer P extends string, infer M extends string]; operationId: U }
-          ? Pretty<{ method: M; path: P } & Omit<O, '$key'>>
+          ? Pretty<Omit<O, '$key'> & { method: M; path: P }>
           : never
         : never
       : never

@@ -8,7 +8,7 @@ import type { Function } from '@unshared/types'
  * @template T The type of the function.
  * @example Once<() => number> // => () => number & { reset: () => void }
  */
-export type Onced<T extends Function = Function> = { reset: () => void } & T
+export type Onced<T extends Function = Function> = T & { reset: () => void }
 
 /**
  * Returns a function that will be executed at most one time, no matter how

@@ -9,6 +9,6 @@ describe('MaybeLiteral', () => {
 
   test('should match a literal string', () => {
     type Result = MaybeLiteral<'bar' | 'foo'>
-    expectTypeOf<Result>().toEqualTypeOf<'bar' | 'foo' | {} & string>()
+    expectTypeOf<Result>().toEqualTypeOf<'bar' | 'foo' | string & {}>()
   })
 })

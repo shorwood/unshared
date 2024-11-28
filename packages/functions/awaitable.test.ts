@@ -8,7 +8,7 @@ describe('awaitable', () => {
       const result = awaitable(object, promise)
       expect(result).toMatchObject(object)
       await expect(result).resolves.toBeUndefined()
-      expectTypeOf(result).toEqualTypeOf<{ foo: string } & Promise<void>>()
+      expectTypeOf(result).toEqualTypeOf<Promise<void> & { foo: string }>()
     })
 
     it('should wrap an object with a promise that resolves to a value', async() => {
@@ -16,7 +16,7 @@ describe('awaitable', () => {
       const result = awaitable(object, Promise.resolve('baz' as const))
       expect(result).toMatchObject({ foo: 'bar' })
       await expect(result).resolves.toBe('baz')
-      expectTypeOf(result).toEqualTypeOf<{ readonly foo: 'bar' } & Promise<'baz'>>()
+      expectTypeOf(result).toEqualTypeOf<Promise<'baz'> & { readonly foo: 'bar' }>()
     })
 
     it('should wrap an object with a promise factory that resolves with a value', async() => {
@@ -24,7 +24,7 @@ describe('awaitable', () => {
       const result = awaitable(object, () => Promise.resolve('bar' as const))
       expect(result).toMatchObject({ foo: 'bar' })
       await expect(result).resolves.toBe('bar')
-      expectTypeOf(result).toEqualTypeOf<{ readonly foo: 'bar' } & Promise<'bar'>>()
+      expectTypeOf(result).toEqualTypeOf<Promise<'bar'> & { readonly foo: 'bar' }>()
     })
 
     it('should lazily evaluate the promise factory', async() => {

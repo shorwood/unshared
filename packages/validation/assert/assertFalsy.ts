@@ -8,7 +8,7 @@ import { ValidationError } from '../createValidationError'
  * @throws `ValidationError` if the value is not falsy.
  * @example assertFalsy(false) // void
  */
-export function assertFalsy(value: unknown): asserts value is '' | 0 | false | null | undefined {
+export function assertFalsy(value: unknown): asserts value is 0 | '' | false | null | undefined {
   if (!value) return
   throw new ValidationError({
     name: 'E_NOT_FALSY',

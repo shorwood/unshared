@@ -10,4 +10,4 @@
  * @returns Literal type wrapped in a union with `string & {}`.
  * @example MaybeLiteral<'foo'> // 'foo' | (string & {})
  */
-export type MaybeLiteral<T extends string> = ({} & string) | T
+export type MaybeLiteral<T extends string> = (string & {}) | T

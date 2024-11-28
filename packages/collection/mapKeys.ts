@@ -3,7 +3,7 @@ import { get } from './get'
 import { isIterable } from './isIterable'
 
 type MappedKeysByPath<T, P extends string> =
-  T extends readonly unknown[] ? FromEntries<{ [K in keyof T]: [Get<T[K], P>, T[K]] } & Array<[PropertyKey, unknown]>> extends infer U ? { -readonly [K in keyof U]: U[K] } : never
+  T extends readonly unknown[] ? FromEntries<Array<[PropertyKey, unknown]> & { [K in keyof T]: [Get<T[K], P>, T[K]] }> extends infer U ? { -readonly [K in keyof U]: U[K] } : never
     : T extends Iterable<infer U> ? { [K in keyof T as Get<U, P> & PropertyKey]: U }
       : { -readonly [K in keyof T as Get<T[K], P> & PropertyKey]: T[K] }
 

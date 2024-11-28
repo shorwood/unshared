@@ -18,7 +18,7 @@ export type LooseDeep<T, D extends number = 16> =
       ? T extends Array<infer U> ? Array<LooseDeep<U, Substract<D, 1>>>
         : T extends ReadonlyArray<infer U> ? ReadonlyArray<LooseDeep<U, Substract<D, 1>>>
           : UnionMerge<
-            { [P in keyof T as undefined extends T[P] ? P : never]?: LooseDeep<T[P], Substract<D, 1>> } |
-            { [P in keyof T as undefined extends T[P] ? never : P]: LooseDeep<T[P], Substract<D, 1>> }
+            { [P in keyof T as undefined extends T[P] ? never : P]: LooseDeep<T[P], Substract<D, 1>> } |
+            { [P in keyof T as undefined extends T[P] ? P : never]?: LooseDeep<T[P], Substract<D, 1>> }
           >
       : T

@@ -129,7 +129,7 @@ export class WorkerPool {
    * // Call the add function in a worker thread.
    * const result = await lodash.add(1, 2) // 3
    */
-  public wrap<T extends object>(moduleId: URL | string, paths?: MaybeArray<string>): Workerized<T> {
+  public wrap<T extends object>(moduleId: string | URL, paths?: MaybeArray<string>): Workerized<T> {
     return new Proxy({}, {
       get: (_, name: keyof T & string) =>
         (...parameters: unknown[]) =>

@@ -23,4 +23,4 @@ import type { Values } from './Values'
  * // Get the paths of all items in the collection.
  * type Paths = IteratorPath<Persons> // 'age' | 'name' | 'name.first' | 'name.last'
  */
-export type IteratorPath<T> = ({} & string) | Path<Values<T>>
+export type IteratorPath<T> = Path<Values<T>> | (string & {})
