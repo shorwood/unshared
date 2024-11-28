@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-hardcoded-credentials */
 import { parseRequest } from './parseRequest'
 
 describe('parseRequest', () => {
@@ -79,5 +80,39 @@ describe('parseRequest', () => {
   it('should throw an error if the URL is missing', () => {
     const shouldThrow = () => parseRequest('GET /users', {})
     expect(shouldThrow).toThrowError('Could not resolve the `RequestInit` object: the `baseUrl` is missing.')
+  })
+
+  it('should set the Authorization header for basic authentication', () => {
+    const context = parseRequest('GET /users', {
+      baseUrl: 'https://api.example.com',
+      username: 'user',
+      password: 'pass',
+    })
+    expect(context).toStrictEqual({
+      init: {
+        method: 'get',
+        headers: { Authorization: 'Basic dXNlcjpwYXNz' },
+      },
+      url: new URL('https://api.example.com/users'),
+    })
+  })
+
+  it('should merge basic authentication with existing headers', () => {
+    const context = parseRequest('GET /users', {
+      baseUrl: 'https://api.example.com',
+      headers: { 'Content-Type': 'application/json' },
+      username: 'user',
+      password: 'pass',
+    })
+    expect(context).toStrictEqual({
+      init: {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic dXNlcjpwYXNz',
+        },
+      },
+      url: new URL('https://api.example.com/users'),
+    })
   })
 })

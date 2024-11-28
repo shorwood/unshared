@@ -4,6 +4,7 @@ import type { HttpHeader } from '../HttpHeaders'
 import type { HttpMethod } from '../HttpMethods'
 import type { SearchArrayFormat } from './toSearchParams'
 import { isObjectLike } from './isObjectLike'
+import { parseRequestBasicAuth } from './parseRequestBasicAuth'
 import { parseRequestBody } from './parseRequestBody'
 import { parseRequestHeaders } from './parseRequestHeaders'
 import { parseRequestParameters } from './parseRequestParameters'
@@ -73,6 +74,16 @@ export interface FetchOptions<
    * The headers to include in the request.
    */
   headers?: FetchHeaders & Headers
+
+  /**
+   * The username for basic authentication.
+   */
+  username?: string
+
+  /**
+   * The password for basic authentication.
+   */
+  password?: string
 }
 
 export interface RequestContext {
@@ -89,13 +100,14 @@ export interface RequestContext {
  * @returns The URL and the `RequestInit` object.
  */
 export function parseRequest(route: string, options: FetchOptions = {}): RequestContext {
-  const { data, body, query, parameters, headers, method, baseUrl, queryArrayFormat, ...init } = options
+  const { username, password, data, body, query, parameters, headers, method, baseUrl, queryArrayFormat, ...init } = options
   const context: RequestContext = { init }
   const dataObject = isObjectLike(data) ? data : undefined
 
   // --- Parse the URL and insert the path parameters.
   parseRequestUrl(context, route, { baseUrl, method })
   parseRequestParameters(context, { parameters: parameters ?? dataObject })
+  parseRequestBasicAuth(context, { username, password })
 
   // --- Depending on the method, parse the query, body, and headers.
   const requestMethod = context.init?.method?.toLowerCase() ?? 'get'
