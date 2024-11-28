@@ -1,14 +1,13 @@
-import type { ObjectLike } from '@unshared/types'
 import type { ConnectOptions } from './parseConnectOptions'
 import { parseConnectOptions } from './parseConnectOptions'
 
 type RemoveListener = () => void
 
 type ClientData<T extends ConnectOptions> =
-  T extends ConnectOptions<any, any, any, infer R extends ObjectLike, any> ? R : ObjectLike
+  T extends ConnectOptions<any, any, any, infer R, any> ? R : any
 
 type ServerData<T extends ConnectOptions> =
-  T extends ConnectOptions<any, any, any, any, infer R extends ObjectLike> ? R : ObjectLike
+  T extends ConnectOptions<any, any, any, any, infer R> ? R : any
 
 export class WebSocketChannel<T extends ConnectOptions = ConnectOptions> {
   constructor(public channel: string, public options: T) {}

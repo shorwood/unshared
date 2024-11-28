@@ -16,8 +16,8 @@ export interface ConnectOptions<
   BaseUrl extends string = string,
   Query extends ObjectLike = ObjectLike,
   Parameters extends ObjectLike = ObjectLike,
-  ClientData extends ObjectLike = ObjectLike,
-  ServerData extends ObjectLike = ObjectLike,
+  ClientData extends ObjectLike = any,
+  ServerData extends ObjectLike = any,
 > {
 
   /** The protocol to use when connecting to the server. */
