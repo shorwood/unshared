@@ -1,4 +1,6 @@
+import type { Awaitable } from '@unshared/functions'
 import type { ConnectOptions } from './parseConnectOptions'
+import { awaitable } from '@unshared/functions'
 import { parseConnectOptions } from './parseConnectOptions'
 
 type RemoveListener = () => void
@@ -19,8 +21,10 @@ export class WebSocketChannel<T extends ConnectOptions = ConnectOptions> {
    * Open a new WebSocket connection to the server. The connection will be opened with the given
    * URL and protocols. If the connection is already open, the connection will be closed before
    * opening a new connection. Also add the event listeners that were passed in the options.
+   *
+   * @returns The WebSocket connection.
    */
-  async open() {
+  async open(): Promise<this> {
     if (this.webSocket) await this.close()
     const { url, protocol } = parseConnectOptions(this.channel, this.options)
     this.webSocket = new WebSocket(url, protocol)
@@ -38,10 +42,10 @@ export class WebSocketChannel<T extends ConnectOptions = ConnectOptions> {
     }, { once: true })
 
     // --- Return a promise that resolves when the connection is opened.
-    return new Promise<void>((resolve, rejects) => {
+    return await new Promise<void>((resolve, rejects) => {
       this.webSocket!.addEventListener('open', () => resolve(), { once: true })
       this.webSocket!.addEventListener('error', () => rejects(new Error('Failed to open the WebSocket connection')), { once: true })
-    })
+    }).then(() => this)
   }
 
   /**
@@ -106,6 +110,7 @@ export class WebSocketChannel<T extends ConnectOptions = ConnectOptions> {
  * @param options The options to pass to the connection.
  * @returns The WebSocket connection.
  */
-export function connect(route: string, options: ConnectOptions): WebSocketChannel {
-  return new WebSocketChannel(route, options)
+export function connect(route: string, options: ConnectOptions): Awaitable<WebSocketChannel, WebSocketChannel> {
+  const channel = new WebSocketChannel(route, options)
+  return awaitable(channel, () => channel.open())
 }
