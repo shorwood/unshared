@@ -25,8 +25,8 @@ export class WebSocketChannel<T extends ConnectOptions = ConnectOptions> {
     if (this.webSocket) await this.close()
     const { url, protocol } = parseConnectOptions(this.channel, this.options)
     this.webSocket = new WebSocket(url, protocol)
-    if (this.options.onOpen) this.on('open', this.options.onOpen)
-    if (this.options.onClose) this.on('close', this.options.onClose)
+    if (this.options.onOpen) this.on('open', this.options.onOpen, { once: true })
+    if (this.options.onClose) this.on('close', this.options.onClose, { once: true })
     if (this.options.onError) this.on('error', this.options.onError)
     if (this.options.onMessage) this.on('message', message => this.options.onMessage!(message))
 
@@ -36,12 +36,12 @@ export class WebSocketChannel<T extends ConnectOptions = ConnectOptions> {
       if (!this.options.autoReconnect) return
       if (this.options.reconnectLimit && event.wasClean) return
       setTimeout(() => void this.open(), this.options.reconnectDelay ?? 0)
-    })
+    }, { once: true })
 
     // --- Return a promise that resolves when the connection is opened.
     return new Promise<void>((resolve, rejects) => {
-      this.webSocket!.addEventListener('open', () => resolve())
-      this.webSocket!.addEventListener('error', () => rejects(new Error('Failed to open the WebSocket connection')))
+      this.webSocket!.addEventListener('open', () => resolve(), { once: true })
+      this.webSocket!.addEventListener('error', () => rejects(new Error('Failed to open the WebSocket connection')), { once: true })
     })
   }
 
@@ -63,23 +63,27 @@ export class WebSocketChannel<T extends ConnectOptions = ConnectOptions> {
    * @param callback The callback to call when the event is received.
    * @returns A function to remove the event listener.
    */
-  on(event: 'message', callback: (data: ServerData<T>) => void): RemoveListener
-  on(event: 'close', callback: (event: CloseEvent) => void): RemoveListener
-  on(event: 'error', callback: (event: Event) => void): RemoveListener
-  on(event: 'open', callback: (event: Event) => void): RemoveListener
-  on(event: string, callback: (data: any) => void) {
+  on(event: 'message', callback: (data: ServerData<T>) => void, options?: AddEventListenerOptions): RemoveListener
+  on(event: 'close', callback: (event: CloseEvent) => void, options?: AddEventListenerOptions): RemoveListener
+  on(event: 'error', callback: (event: Event) => void, options?: AddEventListenerOptions): RemoveListener
+  on(event: 'open', callback: (event: Event) => void, options?: AddEventListenerOptions): RemoveListener
+  on(event: string, callback: (data: any) => void, options?: AddEventListenerOptions) {
     if (!this.webSocket) throw new Error('WebSocket connection has not been opened yet')
 
-    const listener = (event: CloseEvent | Event | MessageEvent<any>) => {
+    const listener = async(event: CloseEvent | Event | MessageEvent<Blob>): Promise<void> => {
+      if (event.type !== 'message') return callback(event)
       // @ts-expect-error: `data` exists on the event.
       let data = event.data as unknown
+      if (data instanceof Blob) data = await data.text()
       try { data = JSON.parse(data as string) }
-      catch { /* Ignore the error. */ }
-      callback(data as T)
+      catch { console.error('Failed to parse the message:', data) }
+      callback(data)
     }
 
-    this.webSocket.addEventListener(event, listener)
+    /* eslint-disable @typescript-eslint/no-misused-promises */
+    this.webSocket.addEventListener(event, listener, options)
     return () => this.webSocket!.removeEventListener(event, listener)
+    /* eslint-enable @typescript-eslint/no-misused-promises */
   }
 
   /**
