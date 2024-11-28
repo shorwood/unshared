@@ -32,6 +32,10 @@ export function sonarjs(): Linter.Config[] {
 
         // --- Allow control characters in regex.
         'sonarjs/sonar-no-control-regex': 'off',
+
+        // --- Disable rules that are causing issues.
+        'sonarjs/disabled-resource-integrity': 'off',
+        'sonarjs/no-ignored-return': 'off',
       },
     },
     {
