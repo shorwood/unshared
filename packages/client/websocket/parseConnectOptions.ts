@@ -16,8 +16,8 @@ export interface ConnectOptions<
   BaseUrl extends string = string,
   Query extends ObjectLike = ObjectLike,
   Parameters extends ObjectLike = ObjectLike,
-  Payload extends ObjectLike = ObjectLike,
-  Message extends ObjectLike = ObjectLike,
+  ClientData extends ObjectLike = ObjectLike,
+  ServerData extends ObjectLike = ObjectLike,
 > {
 
   /** The protocol to use when connecting to the server. */
@@ -60,7 +60,7 @@ export interface ConnectOptions<
    * The payload to send when creating the connection. Namely, the initial message
    * to send to the server when the connection is established.
    */
-  initialPayload?: Loose<Payload>
+  initialPayload?: Loose<ClientData>
 
   /**
    * Automatically open the connection when it is created. If `true`, the connection
@@ -118,7 +118,7 @@ export interface ConnectOptions<
    * The function to call when a message is received from the server. This function will
    * be called when a message is received from the server.
    */
-  onMessage?: (message: Message) => void
+  onMessage?: (data: ServerData) => void
 }
 
 export interface WebSocketParameters {

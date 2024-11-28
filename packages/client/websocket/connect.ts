@@ -4,10 +4,10 @@ import { parseConnectOptions } from './parseConnectOptions'
 
 type RemoveListener = () => void
 
-type Payload<T extends ConnectOptions> =
+type ClientData<T extends ConnectOptions> =
   T extends ConnectOptions<any, any, any, infer R extends ObjectLike, any> ? R : ObjectLike
 
-type Message<T extends ConnectOptions> =
+type ServerData<T extends ConnectOptions> =
   T extends ConnectOptions<any, any, any, any, infer R extends ObjectLike> ? R : ObjectLike
 
 export class WebSocketChannel<T extends ConnectOptions = ConnectOptions> {
@@ -50,7 +50,7 @@ export class WebSocketChannel<T extends ConnectOptions = ConnectOptions> {
    *
    * @param payload The data to send to the server.
    */
-  send(payload: Payload<T>) {
+  send(payload: ClientData<T>) {
     if (!this.webSocket) throw new Error('WebSocket connection is not open')
     const json = JSON.stringify(payload)
     this.webSocket.send(json)
@@ -63,19 +63,19 @@ export class WebSocketChannel<T extends ConnectOptions = ConnectOptions> {
    * @param callback The callback to call when the event is received.
    * @returns A function to remove the event listener.
    */
-  on(event: 'message', callback: (payload: Message<T>) => void): RemoveListener
+  on(event: 'message', callback: (data: ServerData<T>) => void): RemoveListener
   on(event: 'close', callback: (event: CloseEvent) => void): RemoveListener
   on(event: 'error', callback: (event: Event) => void): RemoveListener
   on(event: 'open', callback: (event: Event) => void): RemoveListener
-  on(event: string, callback: (payload: any) => void) {
+  on(event: string, callback: (data: any) => void) {
     if (!this.webSocket) throw new Error('WebSocket connection has not been opened yet')
 
     const listener = (event: CloseEvent | Event | MessageEvent<any>) => {
       // @ts-expect-error: `data` exists on the event.
-      let payload = event.data as unknown
-      try { payload = JSON.parse(payload as string) }
+      let data = event.data as unknown
+      try { data = JSON.parse(data as string) }
       catch { /* Ignore the error. */ }
-      callback(payload as T)
+      callback(data as T)
     }
 
     this.webSocket.addEventListener(event, listener)
@@ -94,9 +94,6 @@ export class WebSocketChannel<T extends ConnectOptions = ConnectOptions> {
     await new Promise<void>(resolve => this.webSocket!.addEventListener('close', () => resolve()))
   }
 }
-
-/** Define the routes that can be fetched from the API and their related options. */
-export type ChannelOptionsMap = Record<string, ConnectOptions>
 
 /**
  * Create a new WebSocket connection to the server with the given path. The connection will
