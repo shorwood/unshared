@@ -30,13 +30,13 @@ describe('resolveBundle', () => {
     expect(configs[0].external).toStrictEqual([/^lodash/, /^node:/, 'http', 'stream'])
   })
 
-  test('should include all ts files as input', async() => {
+  test('should include all ts files and name them correctly', async() => {
     const configs = await resolveBundle('subproject', { cwd: '/project' })
-    expect(configs[0].input).toStrictEqual([
-      '/project/packages/subproject/bar.ts',
-      '/project/packages/subproject/foo.ts',
-      '/project/packages/subproject/index.ts',
-    ])
+    expect(configs[0].input).toStrictEqual({
+      bar: '/project/packages/subproject/bar.ts',
+      foo: '/project/packages/subproject/foo.ts',
+      index: '/project/packages/subproject/index.ts',
+    })
   })
 
   test('should allow custom tsconfig.json path', async() => {
@@ -73,11 +73,11 @@ describe('resolveBundle', () => {
           'http',
           'stream',
         ],
-        input: [
-          '/project/packages/subproject/bar.ts',
-          '/project/packages/subproject/foo.ts',
-          '/project/packages/subproject/index.ts',
-        ],
+        input: {
+          bar: '/project/packages/subproject/bar.ts',
+          foo: '/project/packages/subproject/foo.ts',
+          index: '/project/packages/subproject/index.ts',
+        },
         output: [
           {
             assetFileNames: 'assets/[name].js',
@@ -106,11 +106,11 @@ describe('resolveBundle', () => {
           'http',
           'stream',
         ],
-        input: [
-          '/project/packages/subproject/bar.ts',
-          '/project/packages/subproject/foo.ts',
-          '/project/packages/subproject/index.ts',
-        ],
+        input: {
+          bar: '/project/packages/subproject/bar.ts',
+          foo: '/project/packages/subproject/foo.ts',
+          index: '/project/packages/subproject/index.ts',
+        },
         output: {
           assetFileNames: 'assets/[name].d.ts',
           chunkFileNames: 'chunks/[hash].d.ts',
