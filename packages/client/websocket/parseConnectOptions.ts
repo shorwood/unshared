@@ -63,15 +63,6 @@ export interface ConnectOptions<
   initialPayload?: Loose<ClientData>
 
   /**
-   * Automatically open the connection when it is created. If `true`, the connection
-   * will automatically open when it is created. If `false`, the connection will not
-   * open when it is created.
-   *
-   * @default false
-   */
-  autoOpen?: boolean
-
-  /**
    * Weather to reconnect the connection when it is closed unexpectedly. If `true`,
    * the connection will automatically reconnect when it is closed. If `false`, the
    * connection will not reconnect when it is closed.

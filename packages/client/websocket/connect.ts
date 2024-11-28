@@ -28,12 +28,23 @@ export class WebSocketChannel<T extends ConnectOptions = ConnectOptions> {
     if (this.webSocket) await this.close()
     const { url, protocol } = parseConnectOptions(this.channel, this.options)
     this.webSocket = new WebSocket(url, protocol)
+
+    // --- Return a promise that resolves when the connection is opened.
+    const promise = new Promise<void>((resolve, rejects) => {
+      this.webSocket!.addEventListener('error', () => rejects(new Error('Failed to open the WebSocket connection')), { once: true })
+      this.webSocket!.addEventListener('open', () => {
+        if (this.options.initialPayload) this.send(this.options.initialPayload as ClientData<T>)
+        resolve()
+      }, { once: true })
+    })
+
+    // --- Add the options' hooks to the WebSocket connection.
     if (this.options.onOpen) this.on('open', this.options.onOpen, { once: true })
     if (this.options.onClose) this.on('close', this.options.onClose, { once: true })
     if (this.options.onError) this.on('error', this.options.onError)
     if (this.options.onMessage) this.on('message', message => this.options.onMessage!(message))
 
-    // --- Reconnect to the server if the connection is closed unexpectedly.
+    // --- Handle reconnection when the connection is closed unexpectedly.
     this.webSocket.addEventListener('close', (event) => {
       if (event.code === 1000) return
       if (!this.options.autoReconnect) return
@@ -41,11 +52,7 @@ export class WebSocketChannel<T extends ConnectOptions = ConnectOptions> {
       setTimeout(() => void this.open(), this.options.reconnectDelay ?? 0)
     }, { once: true })
 
-    // --- Return a promise that resolves when the connection is opened.
-    return await new Promise<void>((resolve, rejects) => {
-      this.webSocket!.addEventListener('open', () => resolve(), { once: true })
-      this.webSocket!.addEventListener('error', () => rejects(new Error('Failed to open the WebSocket connection')), { once: true })
-    }).then(() => this)
+    return promise.then(() => this)
   }
 
   /**
