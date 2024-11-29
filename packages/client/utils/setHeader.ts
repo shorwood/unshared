@@ -22,11 +22,13 @@ export function setHeader(headers: HeadersInit, key: string, value: number | str
     if (index === -1) headers.push([key, value])
     headers[index] = [key, value]
   }
-  else {
+  else if (typeof headers === 'object' && headers !== null) {
     const keyLower = key.toLowerCase()
-    const keys = Object.keys(headers)
-    const index = keys.findIndex(k => k.toLowerCase() === keyLower)
-    if (index === -1) headers[key] = value
-    headers[keys[index]] = value
+    for (const k in headers) {
+      if (k.toLowerCase() !== keyLower) continue
+      headers[k] = value
+      return
+    }
+    headers[key] = value
   }
 }
