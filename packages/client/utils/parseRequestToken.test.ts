@@ -9,19 +9,19 @@ describe('parseRequestToken', () => {
 
   it('should append the token to the Authorization header by default and prepend with Bearer', () => {
     const context = { init: { headers: new Headers() } }
-    parseRequestToken(context, { token: 'my-token', tokenLocation: 'headers' })
+    parseRequestToken(context, { token: 'my-token', tokenLocation: 'header' })
     expect(context.init.headers.get('Authorization')).toBe('Bearer my-token')
   })
 
   it('should not prepend Bearer to the token if the tokenProperty is `Authorization`', () => {
     const context = { init: { headers: new Headers() } }
-    parseRequestToken(context, { token: 'my-token', tokenLocation: 'headers', tokenProperty: 'Authorization' })
+    parseRequestToken(context, { token: 'my-token', tokenLocation: 'header', tokenProperty: 'Authorization' })
     expect(context.init.headers.get('Authorization')).toBe('my-token')
   })
 
   it('should append the token to the given headers', () => {
     const context = { init: { headers: new Headers() } }
-    parseRequestToken(context, { token: 'my-token', tokenLocation: 'headers', tokenProperty: 'X-API-Token' })
+    parseRequestToken(context, { token: 'my-token', tokenLocation: 'header', tokenProperty: 'X-API-Token' })
     expect(context.init.headers.get('X-API-Token')).toBe('my-token')
   })
 

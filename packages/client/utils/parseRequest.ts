@@ -94,7 +94,7 @@ export interface FetchOptions<
   /**
    * The location where the token should be included in the request.
    */
-  tokenLocation?: 'cookie' | 'headers' | 'query'
+  tokenLocation?: 'cookie' | 'header' | 'query'
 
   /**
    * The name of the key to use in the request for the token.

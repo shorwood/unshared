@@ -16,7 +16,7 @@ import { setHeader } from './setHeader'
  * @example
  * // Append the `token` to the headers.
  * const context = { init: { headers: new Headers() } }
- * parseRequestToken(context, { token: 'my-token', tokenLocation: 'headers', tokenProperty: 'Authorization' })
+ * parseRequestToken(context, { token: 'my-token', tokenLocation: 'header', tokenProperty: 'Authorization' })
  * console.log(context.init.headers.get('Authorization')) // 'Bearer my-token'
  *
  * @example

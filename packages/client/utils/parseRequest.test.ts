@@ -133,7 +133,7 @@ describe('parseRequest', () => {
     const context = parseRequest('GET /users', {
       baseUrl: 'https://api.example.com',
       token: 'my-api-key',
-      tokenLocation: 'headers',
+      tokenLocation: 'header',
       tokenProperty: 'X-API-Key',
     })
     expect(context).toStrictEqual({
