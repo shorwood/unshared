@@ -1,4 +1,3 @@
-export * from './'
 export * from './getServerUrl'
 export * from './isOpenAPIV2'
 export * from './isOpenAPIV3'
