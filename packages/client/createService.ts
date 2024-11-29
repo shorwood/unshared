@@ -3,8 +3,9 @@ import type { OpenAPIV3, Operation, OperationById, OperationId, OperationOptions
 import type { RequestOptions } from './utils/request'
 import { getServerUrl } from './openapi/getServerUrl'
 import { resolveOperation } from './openapi/resolveOperation'
-import { fetch } from './utils/fetch'
+import { resolveOperationTokenOptions } from './openapi/resolveOperationTokenOptions'
 import { handleResponse } from './utils/handleResponse'
+import { parseRequest } from './utils/parseRequest'
 
 /** A service instance for the given OpenAPI specification. */
 export type Service<T> = {
@@ -45,10 +46,12 @@ export function createService<T extends object>(document: Readonly<T>, initialOp
         // --- Find the operation in the OpenAPI specification.
         const baseUrl = getServerUrl(document)
         const operation = resolveOperation(document, id) as Operation
+        const tokenOptions = resolveOperationTokenOptions(document, operation)
 
         // --- Fetch the relevant resource from the server.
         const { method, path, responses = {} } = operation
-        const response = await fetch(path, { method, baseUrl, data, ...initialOptions, ...options })
+        const { url, init } = parseRequest(path, { method, baseUrl, data, ...tokenOptions, ...initialOptions, ...options })
+        const response = await globalThis.fetch(url, init)
         if (response.ok) return handleResponse(response, { ...initialOptions, ...options })
 
         // --- Throw an error if the response was not successful.
