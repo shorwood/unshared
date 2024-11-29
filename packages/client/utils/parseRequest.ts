@@ -9,6 +9,7 @@ import { parseRequestBody } from './parseRequestBody'
 import { parseRequestHeaders } from './parseRequestHeaders'
 import { parseRequestParameters } from './parseRequestParameters'
 import { parseRequestQuery } from './parseRequestQuery'
+import { parseRequestToken } from './parseRequestToken'
 import { parseRequestUrl } from './parseRequestUrl'
 
 /** The methods to use for the request. */
@@ -84,6 +85,21 @@ export interface FetchOptions<
    * The password for basic authentication.
    */
   password?: string
+
+  /**
+   * The token for API key authentication.
+   */
+  token?: string
+
+  /**
+   * The location where the token should be included in the request.
+   */
+  tokenLocation?: 'cookie' | 'headers' | 'query'
+
+  /**
+   * The name of the key to use in the request for the token.
+   */
+  tokenProperty?: string
 }
 
 export interface RequestContext {
@@ -100,7 +116,22 @@ export interface RequestContext {
  * @returns The URL and the `RequestInit` object.
  */
 export function parseRequest(route: string, options: FetchOptions = {}): RequestContext {
-  const { username, password, data, body, query, parameters, headers, method, baseUrl, queryArrayFormat, ...init } = options
+  const {
+    username,
+    password,
+    token,
+    tokenLocation,
+    tokenProperty,
+    data,
+    body,
+    query,
+    parameters,
+    headers,
+    method,
+    baseUrl,
+    queryArrayFormat,
+    ...init
+  } = options
   const context: Partial<RequestContext> = { init }
   const dataObject = isObjectLike(data) ? data : undefined
 
@@ -108,6 +139,7 @@ export function parseRequest(route: string, options: FetchOptions = {}): Request
   parseRequestUrl(context, route, { baseUrl, method })
   parseRequestParameters(context, { parameters: parameters ?? dataObject })
   parseRequestBasicAuth(context, { username, password })
+  parseRequestToken(context, { token, tokenLocation, tokenProperty })
 
   // --- Depending on the method, parse the query, body, and headers.
   const requestMethod = context.init?.method?.toLowerCase() ?? 'get'

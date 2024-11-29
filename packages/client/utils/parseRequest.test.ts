@@ -115,4 +115,49 @@ describe('parseRequest', () => {
       url: new URL('https://api.example.com/users'),
     })
   })
+
+  it('should set the token in the query parameters', () => {
+    const context = parseRequest('GET /users', {
+      baseUrl: 'https://api.example.com',
+      token: 'my-api-key',
+      tokenLocation: 'query',
+      tokenProperty: 'api_key',
+    })
+    expect(context).toStrictEqual({
+      init: { method: 'get' },
+      url: new URL('https://api.example.com/users?api_key=my-api-key'),
+    })
+  })
+
+  it('should set the token in the headers', () => {
+    const context = parseRequest('GET /users', {
+      baseUrl: 'https://api.example.com',
+      token: 'my-api-key',
+      tokenLocation: 'headers',
+      tokenProperty: 'X-API-Key',
+    })
+    expect(context).toStrictEqual({
+      init: {
+        method: 'get',
+        headers: { 'X-API-Key': 'my-api-key' },
+      },
+      url: new URL('https://api.example.com/users'),
+    })
+  })
+
+  it('should set the token in the cookies', () => {
+    const context = parseRequest('GET /users', {
+      baseUrl: 'https://api.example.com',
+      token: 'my-api-key',
+      tokenLocation: 'cookie',
+      tokenProperty: 'token',
+    })
+    expect(context).toStrictEqual({
+      init: {
+        method: 'get',
+        headers: { Cookie: 'token=my-api-key' },
+      },
+      url: new URL('https://api.example.com/users'),
+    })
+  })
 })
