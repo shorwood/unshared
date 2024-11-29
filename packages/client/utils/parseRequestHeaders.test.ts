@@ -5,7 +5,7 @@ describe('parseRequestHeaders', () => {
   it('should set headers from options', () => {
     const context = {} as RequestContext
     parseRequestHeaders(context, { headers: { 'Content-Type': 'application/json' } })
-    expect(context.init!.headers).toStrictEqual({ 'Content-Type': 'application/json' })
+    expect(context.init.headers).toStrictEqual({ 'Content-Type': 'application/json' })
   })
 
   it('should merge headers with existing headers', () => {
@@ -26,7 +26,7 @@ describe('parseRequestHeaders', () => {
   it('should cast number values to strings', () => {
     const context = {} as RequestContext
     parseRequestHeaders(context, { headers: { 'Content-Length': 123 } })
-    expect(context.init!.headers).toStrictEqual({ 'Content-Length': '123' })
+    expect(context.init.headers).toStrictEqual({ 'Content-Length': '123' })
   })
 
   it('should ignore undefined header values', () => {

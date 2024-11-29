@@ -1,4 +1,5 @@
 import type { FetchOptions, RequestContext } from './parseRequest'
+import { setHeader } from './setHeader'
 
 /**
  * Parse the basic authentication headers based on the provided username and password.
@@ -24,5 +25,5 @@ export function parseRequestBasicAuth(context: Partial<RequestContext>, options:
   const credentials = btoa(`${username}:${password}`)
   context.init = context.init ?? {}
   context.init.headers = context.init.headers ?? {}
-  context.init.headers = { ...context.init.headers, Authorization: `Basic ${credentials}` }
+  setHeader(context.init.headers, 'Authorization', `Basic ${credentials}`)
 }

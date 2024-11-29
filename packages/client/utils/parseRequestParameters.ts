@@ -26,8 +26,7 @@ export function parseRequestParameters(context: Partial<RequestContext>, options
   const { parameters } = options
 
   // --- Return early if the parameters is not an object.
-  if (typeof parameters !== 'object' || parameters === null) return
-  if (url === undefined) return
+  if (parameters === undefined || typeof parameters !== 'object' || parameters === null || url === undefined) return
   if (url instanceof URL === false) throw new Error('The `url` must be an instance of `URL`.')
 
   // --- If the method has a parameter, fill the path with the data.

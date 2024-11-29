@@ -1,4 +1,5 @@
 import type { FetchOptions, RequestContext } from './parseRequest'
+import { setHeader } from './setHeader'
 
 /**
  * Parse the request headers based on the provided data and options.
@@ -23,6 +24,6 @@ export function parseRequestHeaders(context: Partial<RequestContext>, options: F
     if (((typeof value !== 'string' || value.length === 0) && typeof value !== 'number')) continue
     context.init = context.init ?? {}
     context.init.headers = context.init.headers ?? {}
-    context.init.headers = { ...context.init.headers, [key]: String(value) }
+    setHeader(context.init.headers, key, value)
   }
 }
