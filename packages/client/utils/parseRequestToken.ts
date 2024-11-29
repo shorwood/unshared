@@ -39,7 +39,7 @@ export function parseRequestToken(context: Partial<RequestContext>, options: Fet
   }
 
   // --- Append the token to the path parameters.
-  else if (tokenLocation === 'headers') {
+  else if (tokenLocation === 'header') {
     context.init = context.init ?? {}
     context.init.headers = context.init.headers ?? {}
     if (tokenProperty) setHeader(context.init.headers, tokenProperty, token)
