@@ -139,12 +139,12 @@ export function parseRequest(route: string, options: FetchOptions = {}): Request
   parseRequestUrl(context, route, { baseUrl, method })
   parseRequestParameters(context, { parameters: parameters ?? dataObject })
   parseRequestBasicAuth(context, { username, password })
-  parseRequestToken(context, { token, tokenLocation, tokenProperty })
 
   // --- Depending on the method, parse the query, body, and headers.
   const requestMethod = context.init?.method?.toLowerCase() ?? 'get'
   const requestExpectsBody = ['post', 'put', 'patch'].includes(requestMethod)
   parseRequestQuery(context, { queryArrayFormat, query: requestExpectsBody ? query : query ?? dataObject })
+  parseRequestToken(context, { token, tokenLocation, tokenProperty })
   parseRequestBody(context, { body: requestExpectsBody ? body ?? dataObject : undefined })
   parseRequestHeaders(context, { headers })
 

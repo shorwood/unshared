@@ -119,13 +119,14 @@ describe('parseRequest', () => {
   it('should set the token in the query parameters', () => {
     const context = parseRequest('GET /users', {
       baseUrl: 'https://api.example.com',
+      query: { page: 1 },
       token: 'my-api-key',
       tokenLocation: 'query',
       tokenProperty: 'api_key',
     })
     expect(context).toStrictEqual({
       init: { method: 'get' },
-      url: new URL('https://api.example.com/users?api_key=my-api-key'),
+      url: new URL('https://api.example.com/users?page=1&api_key=my-api-key'),
     })
   })
 
