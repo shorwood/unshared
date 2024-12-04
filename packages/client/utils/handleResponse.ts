@@ -46,7 +46,7 @@ export async function handleResponse(response: Response, options: RequestOptions
   }
 
   // --- If the response is a application/json, parse the JSON and return it.
-  if (contentType === 'application/json') {
+  if (contentType?.startsWith('application/json')) {
     return await response.json()
       .then((data) => {
         if (onData) onData(data)
@@ -63,7 +63,7 @@ export async function handleResponse(response: Response, options: RequestOptions
   }
 
   // --- If the response is a application/stream+json, return an iterator that parses the JSON.
-  if (contentType === 'application/stream+json')
+  if (contentType?.startsWith('application/stream+json'))
     return handleResponseStreamJson(response, options)
 
   // --- Otherwise, fallback to returning the response body as-is.
