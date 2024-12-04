@@ -66,6 +66,13 @@ describe('handleResponse', () => {
         await expect(result).resolves.toBe(body)
       })
 
+      it('should return text response for html content type with charset', async() => {
+        const body = '<h1>Hello, world!</h1>'
+        const response = new Response(body, { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } })
+        const result = handleResponse(response, {})
+        await expect(result).resolves.toBe(body)
+      })
+
       it('should call the onData callback if provided', async() => {
         const body = 'Hello, world!'
         const response = new Response(body, { status: 200, headers: { 'Content-Type': 'text/plain' } })
@@ -132,6 +139,13 @@ describe('handleResponse', () => {
       it('should return JSON response for application/json content type', async() => {
         const body = JSON.stringify({ key: 'value' })
         const response = new Response(body, { status: 200, headers: { 'Content-Type': 'application/json' } })
+        const result = handleResponse(response, {})
+        await expect(result).resolves.toEqual({ key: 'value' })
+      })
+
+      it('should return JSON response for application/json content type with charset', async() => {
+        const body = JSON.stringify({ key: 'value' })
+        const response = new Response(body, { status: 200, headers: { 'Content-Type': 'application/json; charset=utf-8' } })
         const result = handleResponse(response, {})
         await expect(result).resolves.toEqual({ key: 'value' })
       })
