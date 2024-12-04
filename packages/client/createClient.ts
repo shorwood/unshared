@@ -32,7 +32,7 @@ export class Client<T extends Routes = Routes, U extends Channels = Channels> {
    * @param options The options to pass to the request.
    * @returns The response from the server.
    */
-  public fetch<K extends keyof T & string, V extends T[K]>(route: K, options?: V): Promise<Response> {
+  public fetch<K extends keyof T & string>(route: K, options?: T[K]): Promise<Response & { json: () => Promise<Data<T[K]>> }> {
     return fetch(route, { ...this.options, ...options })
   }
 
@@ -54,8 +54,8 @@ export class Client<T extends Routes = Routes, U extends Channels = Channels> {
    * // Fetch the data from the API.
    * const data = request('GET /api/product/:id', { data: { id: '1' } })
    */
-  public request<K extends keyof T & string, V extends T[K]>(route: K, options?: V): Promise<Data<V>> {
-    return request(route, { ...this.options, ...options }) as Promise<Data<V>>
+  public request<K extends keyof T & string>(route: K, options?: T[K]): Promise<Data<T[K]>> {
+    return request(route, { ...this.options, ...options }) as Promise<Data<T[K]>>
   }
 
   /**
@@ -78,7 +78,7 @@ export class Client<T extends Routes = Routes, U extends Channels = Channels> {
    * if (error) console.error(error)
    * else console.log(data)
    */
-  public requestAttempt<K extends keyof T & string, V extends T[K]>(route: K, options?: V): Promise<Result<Data<V>>> {
+  public requestAttempt<K extends keyof T & string>(route: K, options?: T[K]): Promise<Result<Data<T[K]>>> {
     return attempt(() => this.request(route, options))
   }
 
@@ -90,8 +90,8 @@ export class Client<T extends Routes = Routes, U extends Channels = Channels> {
    * @param options The options to pass to the connection.
    * @returns The WebSocket connection.
    */
-  public connect<P extends keyof U & string, V extends U[P]>(channel: P, options?: V): Awaitable<WebSocketChannel<V>, WebSocketChannel<V>> {
-    return connect(channel, { baseUrl: this.options.baseUrl, ...options }) as Awaitable<WebSocketChannel<V>, WebSocketChannel<V>>
+  public connect<P extends keyof U & string>(channel: P, options?: U[P]): Awaitable<WebSocketChannel<U[P]>, WebSocketChannel<U[P]>> {
+    return connect(channel, { baseUrl: this.options.baseUrl, ...options }) as Awaitable<WebSocketChannel<U[P]>, WebSocketChannel<U[P]>>
   }
 }
 
