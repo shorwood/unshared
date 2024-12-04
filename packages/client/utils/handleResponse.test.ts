@@ -22,6 +22,15 @@ describe('handleResponse', () => {
       expect(onFailure).toHaveBeenCalledOnce()
       expect(onFailure).toHaveBeenCalledWith(response)
     })
+
+    it('should reject with the error created in the onFailure callback', async() => {
+      const response = new Response(null, { status: 400, statusText: 'Bad Request' })
+      const onFailure = vi.fn().mockImplementation(() => {
+        throw new Error('Failed to handle error')
+      })
+      const result = handleResponse(response, { onFailure })
+      await expect(result).rejects.toThrow('Failed to handle error')
+    })
   })
 
   describe('no content', () => {

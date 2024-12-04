@@ -16,7 +16,7 @@ export async function handleResponse(response: Response, options: RequestOptions
 
   // --- If the response is not OK, throw an error with the response message.
   if (!response.ok) {
-    if (onFailure) onFailure(response)
+    if (onFailure) await onFailure(response)
     if (onEnd) onEnd(response)
     throw new Error(response.statusText)
   }
