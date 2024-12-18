@@ -238,8 +238,8 @@
     }
   },
   "dependencies": {
-    "@codemirror/state": "6.4.1",
-    "@codemirror/view": "6.35.0",
+    "@codemirror/state": "6.5.0",
+    "@codemirror/view": "6.36.0",
     "@unshared/collection": "workspace:*",
     "@unshared/types": "workspace:*",
     "@vueuse/core": "12.0.0",
