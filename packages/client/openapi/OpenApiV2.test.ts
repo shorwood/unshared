@@ -80,6 +80,11 @@ describe('OpenApiV2', () => {
         }>
         expectTypeOf<Result>().toEqualTypeOf<{ age?: number; name: string }>()
       })
+
+      it('should infer object schema types with additional properties', () => {
+        type Result = OpenAPIV2.InferSchema<{ type: 'object'; additionalProperties: { type: 'number' } }>
+        expectTypeOf<Result>().toEqualTypeOf<Record<string, number>>()
+      })
     })
 
     describe('array', () => {
@@ -88,14 +93,9 @@ describe('OpenApiV2', () => {
         expectTypeOf<Result>().toEqualTypeOf<string[]>()
       })
 
-      it('should infer array schema types with additional items', () => {
-        type Result = OpenAPIV2.InferSchema<{ type: 'array'; items: { type: 'string' }; additionalItems: { type: 'number' } }>
-        expectTypeOf<Result>().toEqualTypeOf<Array<number | string>>()
-      })
-
-      it('should infer array schema types with additional items as false', () => {
-        type Result = OpenAPIV2.InferSchema<{ type: 'array'; items: { type: 'string' }; additionalItems: false }>
-        expectTypeOf<Result>().toEqualTypeOf<string[]>()
+      it('should infer array schema types with no type', () => {
+        type Result = OpenAPIV2.InferSchema<{ type: 'array' }>
+        expectTypeOf<Result>().toEqualTypeOf<unknown[]>()
       })
     })
 

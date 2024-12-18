@@ -22,10 +22,12 @@ export declare namespace OpenAPIV2 {
       )
       : T extends { properties: infer P extends Record<string, any> }
         ? { [K in keyof P]?: InferSchema<P[K]> }
-        : Record<string, unknown>
+        : T extends { additionalProperties: infer U extends Record<string, any> }
+          ? Record<string, InferSchema<U>>
+          : Record<string, unknown>
 
   type InferSchemaArray<T> =
-    T extends { items?: infer U; additionalItems?: infer U } ? Array<InferSchema<U>>
+    T extends { items?: infer U } ? Array<InferSchema<U>>
       : unknown[]
 
   export type InferSchema<T> =
