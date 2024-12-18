@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-control-regex */
 export interface DumpOptions {
 
   /**

@@ -27,7 +27,6 @@ describe.sequential('createWorkerPool', () => {
     })
   })
 
-  // eslint-disable-next-line vitest/valid-describe-callback
   describe.sequential('lifecycle', { retry: 3 }, () => {
     it('should instantiate with empty worker list', () => {
       const pool = createWorkerPool()

@@ -1,4 +1,4 @@
-/* eslint-disable sonarjs/no-hardcoded-credentials */
+/* eslint-disable sonarjs/no-hardcoded-passwords */
 import type { RequestContext } from './parseRequest'
 import { parseRequestBasicAuth } from './parseRequestBasicAuth'
 

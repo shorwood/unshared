@@ -1,4 +1,3 @@
-/* eslint-disable vitest/valid-describe-callback */
 import type * as Module from './__fixtures__/module'
 import { createWorkerService, WorkerService } from './createWorkerService'
 

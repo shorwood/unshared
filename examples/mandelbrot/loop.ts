@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-infinite-loop */
 import { createWorkerPool } from '@unshared/process/createWorkerPool'
 import { performance } from 'node:perf_hooks'
 import { emitKeypressEvents } from 'node:readline'

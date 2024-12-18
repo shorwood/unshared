@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-control-regex */
 import { createPattern } from './createPattern'
 
 describe('createPattern', () => {

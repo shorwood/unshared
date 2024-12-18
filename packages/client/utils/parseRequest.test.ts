@@ -1,4 +1,4 @@
-/* eslint-disable sonarjs/no-hardcoded-credentials */
+/* eslint-disable sonarjs/no-hardcoded-passwords */
 import { parseRequest } from './parseRequest'
 
 describe('parseRequest', () => {

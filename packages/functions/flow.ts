@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/sonar-max-params */
 import type { Function } from '@unshared/types'
 
 /**
