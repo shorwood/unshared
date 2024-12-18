@@ -14,20 +14,32 @@ export declare namespace OpenAPIV2 {
   /*************************************************************************/
   /* Schema                                                                */
   /*************************************************************************/
+
   type InferSchemaObject<T> =
-    T extends { properties: infer P extends Record<string, any>; required: Array<infer R extends string> }
+
+    // --- Handle properties.
+    & (T extends { properties: infer P extends Record<string, any>; required: Array<infer R extends string> }
       ? (
         & { [K in keyof P as K extends R ? K : never]: InferSchema<P[K]> }
         & { [K in keyof P as K extends R ? never : K]?: InferSchema<P[K]> }
       )
       : T extends { properties: infer P extends Record<string, any> }
         ? { [K in keyof P]?: InferSchema<P[K]> }
-        : T extends { additionalProperties: infer U extends Record<string, any> }
-          ? Record<string, InferSchema<U>>
-          : Record<string, unknown>
+        : object)
+
+    // --- Handle additional properties.
+    // eslint-disable-next-line perfectionist/sort-intersection-types
+      & (T extends { additionalProperties: infer U extends Record<string, any> }
+        ? Record<string, InferSchema<U>>
+        : T extends { additionalProperties: true }
+          ? Record<string, any>
+          : T extends { additionalProperties: false }
+            ? object
+            : Record<string, any>
+    )
 
   type InferSchemaArray<T> =
-    T extends { items?: infer U } ? Array<InferSchema<U>>
+    T extends { items?: infer U extends object } ? Array<InferSchema<U>>
       : unknown[]
 
   export type InferSchema<T> =

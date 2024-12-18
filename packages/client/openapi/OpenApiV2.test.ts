@@ -49,8 +49,13 @@ describe('OpenApiV2', () => {
 
     describe('object', () => {
       it('should infer object schema types', () => {
+        type Result = OpenAPIV2.InferSchema<{ type: 'object' }>
+        expectTypeOf<Result>().toEqualTypeOf<Record<string, any>>()
+      })
+
+      it('should infer object schema types with properties', () => {
         type Result = OpenAPIV2.InferSchema<{ type: 'object'; properties: { name: { type: 'string' } } }>
-        expectTypeOf<Result>().toEqualTypeOf<{ name?: string }>()
+        expectTypeOf<Result>().toEqualTypeOf<{ name?: string; [key: string]: any }>()
       })
 
       it('should infer nested object schema types', () => {
@@ -59,6 +64,7 @@ describe('OpenApiV2', () => {
           properties: {
             name: {
               type: 'object'
+              additionalProperties: false
               properties: {
                 first: { type: 'string' }
                 last: { type: 'string' }
@@ -66,7 +72,7 @@ describe('OpenApiV2', () => {
             }
           }
         }>
-        expectTypeOf<Result>().toEqualTypeOf<{ name?: { first?: string; last?: string } }>()
+        expectTypeOf<Result>().toEqualTypeOf<{ name?: { first?: string; last?: string }; [key: string]: any }>()
       })
 
       it('should infer object schema types with required properties', () => {
@@ -78,12 +84,27 @@ describe('OpenApiV2', () => {
           }
           required: ['name']
         }>
-        expectTypeOf<Result>().toEqualTypeOf<{ age?: number; name: string }>()
+        expectTypeOf<Result>().toEqualTypeOf<{ age?: number; name: string; [key: string]: any }>()
       })
 
       it('should infer object schema types with additional properties', () => {
         type Result = OpenAPIV2.InferSchema<{ type: 'object'; additionalProperties: { type: 'number' } }>
         expectTypeOf<Result>().toEqualTypeOf<Record<string, number>>()
+      })
+
+      it('should infer object schema types with no additional properties', () => {
+        type Result = OpenAPIV2.InferSchema<{ type: 'object'; additionalProperties: false }>
+        expectTypeOf<Result>().toEqualTypeOf<object>()
+      })
+
+      it('should infer object schema types with additional properties and properties', () => {
+        type Result = OpenAPIV2.InferSchema<{
+          type: 'object'
+          properties: { name: { type: 'string' } }
+          additionalProperties: { type: 'number' }
+        }>
+        // @ts-expect-error: shrodinger's type inference, `name` is a `number` and a `string` at the same time (??).
+        expectTypeOf<Result>().toEqualTypeOf<{ name?: string; [key: string]: number }>()
       })
     })
 
@@ -110,8 +131,8 @@ describe('OpenApiV2', () => {
       it('should infer allOf schema types', () => {
         type Result = OpenAPIV2.InferSchema<{
           allOf: [
-            { type: 'object'; properties: { name: { type: 'string' } } },
-            { type: 'object'; properties: { age: { type: 'number' } } },
+            { type: 'object'; properties: { name: { type: 'string' } }; additionalProperties: false },
+            { type: 'object'; properties: { age: { type: 'number' } }; additionalProperties: false },
           ]
         }>
         expectTypeOf<Result>().toEqualTypeOf<{ name?: string; age?: number }>()
@@ -122,8 +143,8 @@ describe('OpenApiV2', () => {
       it('should infer oneOf schema types', () => {
         type Result = OpenAPIV2.InferSchema<{
           oneOf: [
-            { type: 'object'; properties: { name: { type: 'string' } } },
-            { type: 'object'; properties: { age: { type: 'number' } } },
+            { type: 'object'; properties: { name: { type: 'string' } }; additionalProperties: false },
+            { type: 'object'; properties: { age: { type: 'number' } }; additionalProperties: false },
           ]
         }>
         expectTypeOf<Result>().toEqualTypeOf<{ age?: number } | { name?: string }>()
@@ -212,6 +233,7 @@ describe('OpenApiV2', () => {
               name: 'body'
               schema: {
                 type: 'object'
+                additionalProperties: false
                 properties: {
                   name: { type: 'string' }
                   age: { type: 'number' }
@@ -232,6 +254,7 @@ describe('OpenApiV2', () => {
               name: 'body'
               schema: {
                 type: 'object'
+                additionalProperties: false
                 properties: {
                   name: { type: 'string' }
                   age: { type: 'number' }
@@ -253,8 +276,9 @@ describe('OpenApiV2', () => {
               name: 'body'
               schema: {
                 type: 'object'
+                additionalProperties: false
                 properties: {
-                  name: { type: 'object'; properties: { first: { type: 'string' } } }
+                  name: { type: 'object'; properties: { first: { type: 'string' } }; additionalProperties: false }
                   age: { type: 'number' }
                 }
               }
