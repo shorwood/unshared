@@ -2,7 +2,7 @@ import type { Awaitable } from '@unshared/functions'
 import type { Result } from '@unshared/functions/attempt'
 import type { ServiceOptions } from './createService'
 import type { OpenAPILike, OpenAPIOptionsMap } from './openapi'
-import type { RequestOptions } from './utils'
+import type { FetchOptions, RequestOptions } from './utils'
 import type { ConnectOptions, WebSocketChannel } from './websocket'
 import { attempt } from '@unshared/functions/attempt'
 import { fetch } from './utils/fetch'
@@ -32,7 +32,9 @@ export class Client<T extends Routes = Routes, U extends Channels = Channels> {
    * @param options The options to pass to the request.
    * @returns The response from the server.
    */
-  public fetch<K extends keyof T & string>(route: K, options?: T[K]): Promise<Response & { json: () => Promise<Data<T[K]>> }> {
+  public fetch<K extends keyof T & string>(route: K, options?: T[K]): Promise<Response & { json: () => Promise<Data<T[K]>> }>
+  public fetch(route: string, options?: FetchOptions): Promise<Response>
+  public fetch(route: string, options?: FetchOptions): Promise<Response> {
     return fetch(route, { ...this.options, ...options })
   }
 
@@ -54,8 +56,10 @@ export class Client<T extends Routes = Routes, U extends Channels = Channels> {
    * // Fetch the data from the API.
    * const data = request('GET /api/product/:id', { data: { id: '1' } })
    */
-  public request<K extends keyof T & string>(route: K, options?: T[K]): Promise<Data<T[K]>> {
-    return request(route, { ...this.options, ...options }) as Promise<Data<T[K]>>
+  public request<K extends keyof T & string>(route: K, options?: T[K]): Promise<Data<T[K]>>
+  public request(route: string, options?: RequestOptions): Promise<unknown>
+  public request(route: string, options?: RequestOptions): Promise<unknown> {
+    return request(route, { ...this.options, ...options })
   }
 
   /**
@@ -78,7 +82,9 @@ export class Client<T extends Routes = Routes, U extends Channels = Channels> {
    * if (error) console.error(error)
    * else console.log(data)
    */
-  public requestAttempt<K extends keyof T & string>(route: K, options?: T[K]): Promise<Result<Data<T[K]>>> {
+  public requestAttempt<K extends keyof T & string>(route: K, options?: T[K]): Promise<Result<Data<T[K]>>>
+  public requestAttempt(route: string, options?: RequestOptions): Promise<Result<unknown>>
+  public requestAttempt(route: string, options?: RequestOptions): Promise<Result<unknown>> {
     return attempt(() => this.request(route, options))
   }
 
@@ -90,8 +96,10 @@ export class Client<T extends Routes = Routes, U extends Channels = Channels> {
    * @param options The options to pass to the connection.
    * @returns The WebSocket connection.
    */
-  public connect<P extends keyof U & string>(channel: P, options?: U[P]): Awaitable<WebSocketChannel<U[P]>, WebSocketChannel<U[P]>> {
-    return connect(channel, { baseUrl: this.options.baseUrl, ...options }) as Awaitable<WebSocketChannel<U[P]>, WebSocketChannel<U[P]>>
+  public connect<P extends keyof U & string>(channel: P, options?: U[P]): Awaitable<WebSocketChannel<U[P]>, WebSocketChannel<U[P]>>
+  public connect(channel: string, options?: ConnectOptions): Awaitable<WebSocketChannel, WebSocketChannel>
+  public connect(channel: string, options?: ConnectOptions): Awaitable<WebSocketChannel, WebSocketChannel> {
+    return connect(channel, { baseUrl: this.options.baseUrl, ...options })
   }
 }
 
