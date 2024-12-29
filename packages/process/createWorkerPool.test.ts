@@ -27,7 +27,7 @@ describe.sequential('createWorkerPool', () => {
     })
   })
 
-  describe.sequential('lifecycle', { retry: 3 }, () => {
+  describe('lifecycle', { retry: 3 }, () => {
     it('should instantiate with empty worker list', () => {
       const pool = createWorkerPool()
       expect(pool.workers).toHaveLength(0)

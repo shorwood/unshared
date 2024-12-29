@@ -1,7 +1,7 @@
 import type * as Module from './__fixtures__/module'
 import { createWorkerService, WorkerService } from './createWorkerService'
 
-describe('createWorkerService', () => {
+describe.sequential('createWorkerService', () => {
   const moduleId = new URL('__fixtures__/module', import.meta.url)
 
   describe('createWorkerService', () => {
