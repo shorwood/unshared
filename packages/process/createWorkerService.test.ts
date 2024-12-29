@@ -1,7 +1,7 @@
 import type * as Module from './__fixtures__/module'
 import { createWorkerService, WorkerService } from './createWorkerService'
 
-describe.sequential('createWorkerService', () => {
+describe('createWorkerService', () => {
   const moduleId = new URL('__fixtures__/module', import.meta.url)
 
   describe('createWorkerService', () => {
@@ -11,7 +11,7 @@ describe.sequential('createWorkerService', () => {
     })
   })
 
-  describe('spawn', { retry: 3 }, () => {
+  describe('spawn', () => {
     describe('call', () => {
       it('should spawn a function and return the thread ID', async() => {
         const service = createWorkerService()
@@ -127,7 +127,7 @@ describe.sequential('createWorkerService', () => {
     })
   })
 
-  describe('wrap', { retry: 3 }, () => {
+  describe('wrap', () => {
     it('should wrap a module in a worker thread and call a named function', async() => {
       const service = createWorkerService()
       const { factorial } = service.wrap<typeof Module>(moduleId)
@@ -177,7 +177,7 @@ describe.sequential('createWorkerService', () => {
     })
   })
 
-  describe('lifecycle', { retry: 3 }, () => {
+  describe('lifecycle', () => {
     it('should not initialize the worker thread', async() => {
       const service = createWorkerService()
       expect(service.worker).toBeUndefined()
@@ -223,7 +223,7 @@ describe.sequential('createWorkerService', () => {
     })
   })
 
-  describe('running', { retry: 3 }, () => {
+  describe('running', () => {
     it('should increment the running count when a function is called', async() => {
       const service = createWorkerService({ eager: true })
       expect(service.running).toBe(0)
