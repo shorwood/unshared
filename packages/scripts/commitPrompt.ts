@@ -23,11 +23,11 @@ export const COMMIT_PROMPT: CoreMessage[] = [
 
       - The scope must be the name of the package affected by the change. No sub-paths.
       - If there is a breaking change, add a "!" after the type/scope, e.g. "feat(<scope>)!:"
-      - Dont capitalize the first letter of the subject.
-      - Dont write any kind of list, only generate paragraphs, at most 3 if the changes are complex.
-      - Dont talk about implementation details in the subject.
-      - Dont clamp the body to 72 characters, allow it to wrap naturally.
-      - Dont use the "monorepo" name in the scope, prefer blank scope if the change affects multiple packages.
+      - DONT capitalize the first letter of the subject.
+      - DONT use any kind of list, only generate paragraphs, at most 3 if the changes are complex.
+      - DONT talk about implementation details in the subject.
+      - DONT clamp the body lenght, allow it to be as long as needed.
+      - DONT use the "monorepo" name in the scope, prefer blank scope if the change affects multiple packages.
     `),
   },
   {
@@ -52,10 +52,7 @@ export const COMMIT_PROMPT: CoreMessage[] = [
     content: dedent(`
       chore(reactivity): improved typing of \`useState\` function
 
-      The \`useState\` function was not correctly typed. This commit fixes
-      that by allowing the \`value\` parameter to be optional and by
-      correctly typing the return value. \`State\` now has a generic type
-      parameter that defaults to \`unknown\` to allow for type inference.
+      The \`useState\` function was not correctly typed. This commit fixes that by allowing the \`value\` parameter to be optional and by correctly typing the return value. \`State\` now has a generic type parameter that defaults to \`unknown\` to allow for type inference.
     `),
   },
 ]
