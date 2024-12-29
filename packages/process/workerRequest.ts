@@ -1,15 +1,9 @@
 import type { Function } from '@unshared/types'
-import type { MessagePort, TransferListItem, Worker } from 'node:worker_threads'
+import type { TransferListItem, Worker } from 'node:worker_threads'
 import type { WorkerResponse } from './workerRegister'
 import { isArrayBuffer, isArrayBufferView } from 'node:util/types'
+import { MessagePort } from 'node:worker_threads'
 import { MessageChannel } from 'node:worker_threads'
-
-/**
- * The time in milliseconds to wait for a heartbeat message from the worker before
- * rejecting the request. This is used to ensure that the worker is still alive and
- * listening for messages.
- */
-const WORKER_HEALTHCHECK_TIMEOUT = 1000
 
 /**
  * A common interface for the request passed to a `workerRegister` callback. This is
@@ -37,14 +31,63 @@ export interface WorkerRequest<P extends unknown[] = unknown[]> {
 }
 
 /**
+ * The options to pass to the `workerRequest` function. This is the payload of the IPC
+ * message sent to the worker thread as well as some additional options.
+ */
+export interface WorkerRequestOptions<T extends Function = Function<unknown, unknown[]>> {
+
+  /**
+   * The name of the export to get from the module. If the named
+   * export is a constant, it will be returned as is. If it is a
+   * function, it will be called with the given parameters.
+   *
+   * @default 'default'
+   * @example 'randomBytes'
+   */
+  name?: string
+
+  /**
+   * The parameters to pass to the target function as an array.
+   *
+   * @example [128]
+   * @default []
+   */
+  parameters?: Parameters<T>
+
+  /**
+   * The channel that will be used to communicate with the worker thread. This is the
+   * channel that will listen for messages from the `workerRequest` function.
+   *
+   * @default new MessageChannel()
+   */
+  channel?: MessageChannel
+
+  /**
+   * The transfer list to pass to the worker thread. This is an array of transferable
+   * objects that will be transferred to the worker thread.
+   *
+   * @default []
+   */
+  transferList?: TransferListItem[]
+
+  /**
+   * The timeout in milliseconds to wait for a response from the worker before rejecting
+   * the request. This is used to ensure that the worker is still alive and listening for
+   * messages.
+   *
+   * @default 1000
+   */
+  timeout?: number
+}
+
+/**
  * Request a registered worker function to be called in a worker thread. This function
  * will post a request to the worker thread that will trigger the function registered
  * by the given `name` to be called. It will then await for the response message and
  * resolve with the result of the function.
  *
  * @param worker The `Worker` instance to request the function from.
- * @param name The name the function was registered with.
- * @param parameters The parameters to pass to the function.
+ * @param options The options to call the registered function with.
  * @returns A promise that resolves with the result of the function.
  * @example
  * // math.worker.ts
@@ -54,12 +97,13 @@ export interface WorkerRequest<P extends unknown[] = unknown[]> {
  * const workerURL = new URL('./math.worker.ts', import.meta.url)
  * const result = await workerRequest(workerURL, 'add', 1, 2) // 3
  */
-export async function workerRequest<T extends Function>(worker: Worker, name: string, ...parameters: Parameters<T>): Promise<Awaited<ReturnType<T>>> {
-  const { port1, port2 } = new MessageChannel()
+export async function workerRequest<T extends Function>(worker: Worker, options: WorkerRequestOptions<T> = {}): Promise<Awaited<ReturnType<T>>> {
+  const { name = 'default', parameters = [], channel = new MessageChannel(), transferList = [], timeout = 100 } = options
+  const { port1, port2 } = channel
 
   // --- Push any transferable objects to the transfer list.
-  const transferList: TransferListItem[] = [port1]
   for (const parameter of parameters) {
+    if (parameter instanceof MessagePort) transferList.push(parameter)
     if (Buffer.isBuffer(parameter)) transferList.push(parameter.buffer as ArrayBuffer)
     if (isArrayBufferView(parameter)) transferList.push(parameter.buffer as ArrayBuffer)
     if (isArrayBuffer(parameter)) transferList.push(parameter)
@@ -68,18 +112,18 @@ export async function workerRequest<T extends Function>(worker: Worker, name: st
   // --- Wait for the response and resolve with the result or reject with the error.
   const result = await new Promise<Awaited<ReturnType<T>>>((resolve, reject) => {
     const error = new Error('No registered handler is listening for messages.')
-    const timeout = setTimeout(reject, WORKER_HEALTHCHECK_TIMEOUT, error)
+    const timeoutInstnace = setTimeout(reject, timeout, error)
     port2.once('error', reject)
     port2.once('messageerror', reject)
     port2.addListener('message', (response: 'heartbeat' | WorkerResponse) => {
-      if (response === 'heartbeat') return clearTimeout(timeout)
+      if (response === 'heartbeat') return clearTimeout(timeoutInstnace)
       const { error, value } = response
       if (error) reject(error)
       else resolve(value as Awaited<ReturnType<T>>)
     })
 
     // --- Send the request payload to the target worker.
-    worker.postMessage({ name, parameters, port: port1 }, transferList)
+    worker.postMessage({ name, parameters, port: port1 }, [port1, ...transferList])
   })
 
   // --- Return the result of the function.
