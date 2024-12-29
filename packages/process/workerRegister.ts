@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import type { Function } from '@unshared/types'
 import type { WorkerRequest } from './workerRequest'
 import { isMainThread, MessagePort, parentPort } from 'node:worker_threads'
@@ -96,14 +97,12 @@ export function workerRegister(name: string, callback: Function): Unregister {
   if (!parentPort) throw new Error('Cannot register handler: parentPort is not defined.')
 
   // --- Register and start listening for messages.
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   if (WORKER_HANDLERS.size === 0) parentPort.addListener('message', requestCallback)
   WORKER_HANDLERS.set(name, callback)
 
   // --- Return a function to unregister the handler.
   return () => {
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    if (WORKER_HANDLERS.size === 0) parentPort!.removeListener('message', requestCallback)
     WORKER_HANDLERS.delete(name)
+    if (WORKER_HANDLERS.size === 0) parentPort!.removeListener('message', requestCallback)
   }
 }

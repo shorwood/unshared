@@ -14,6 +14,10 @@ describe('workerRegister', () => {
         super.addEventListener('message', (event: MessageEvent) => listener(event.data))
       }
 
+      removeListener(type: string, listener: Function<void>): void {
+        super.removeEventListener('message', listener)
+      }
+
       postMessage(data: unknown): void {
         const event = new MessageEvent('message', { data })
         super.dispatchEvent(event)
