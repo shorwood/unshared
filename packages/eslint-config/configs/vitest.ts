@@ -3,7 +3,8 @@ import vitestPlugin from '@vitest/eslint-plugin'
 
 export function vitest(): Linter.Config[] {
   return [
-    vitestPlugin.configs.recommended,
+    // @ts-expect-error: the `configs` property is loosely typed.
+    vitestPlugin.configs.recommended as Linter.Config,
     {
       rules: {
 
