@@ -1,8 +1,9 @@
 /* eslint-disable n/no-sync */
+import { createAnthropic } from '@ai-sdk/anthropic'
+import { streamText } from 'ai'
 import { execFileSync, spawn } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
 import { createInterface } from 'node:readline/promises'
-import { OpenAI } from 'openai'
 import { COMMIT_PROMPT } from './commitPrompt'
 
 /**
@@ -27,9 +28,9 @@ export async function commit(input: string, apiKey: string) {
     .filter(path => existsSync(path))
     .map(path => readFileSync(path, 'utf8'))
 
-  const openai = new OpenAI({ apiKey })
-  const response = await openai.chat.completions.create({
-    max_tokens: 1024,
+  const anthropic = createAnthropic({ apiKey })
+  const response = streamText({
+    model: anthropic('claude-3-5-sonnet-20240620'),
     messages: [
       ...COMMIT_PROMPT,
       { content: `[LAST_COMMITS]\n${lastCommits}\n\n`, role: 'user' },
@@ -39,18 +40,14 @@ export async function commit(input: string, apiKey: string) {
       { content: `[DIFF}]\n${diff}`, role: 'user' },
       { content: `[INPUT]\n${input}`, role: 'user' },
     ],
-    model: 'gpt-4-turbo',
-    stream: true,
-    temperature: 0.7,
   })
 
   // --- Write the response token by token.
   const completionTokens: string[] = []
-  for await (const chunks of response) {
-    const completion = chunks.choices[0].delta.content
-    if (!completion) continue
-    completionTokens.push(completion)
-    process.stdout.write(completion)
+  for await (const text of response.textStream) {
+    if (!text) continue
+    completionTokens.push(text)
+    process.stdout.write(text)
   }
 
   process.stdout.write([

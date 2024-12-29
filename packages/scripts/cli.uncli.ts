@@ -27,9 +27,9 @@ function cli() {
 
   // --- Commit the input to the OpenAI API.
   if (command === 'commit') {
-    const apiKey = process.env.OPENAI_API_KEY
+    const apiKey = process.env.ANTHROPIC_API_KEY
     const input = parameters.join(' ')
-    if (!apiKey) throw new Error('Missing OpenAI API key.')
+    if (!apiKey) throw new Error('Missing Anthropic API key.')
     return commit(input, apiKey)
   }
 

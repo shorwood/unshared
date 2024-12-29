@@ -1,13 +1,12 @@
-import type { ChatCompletionMessageParam } from 'openai/resources'
+import type { CoreMessage } from 'ai'
 import { dedent } from '@unshared/string'
 
 /** The prompt for the commit message generator. */
-export const COMMIT_PROMPT: ChatCompletionMessageParam[] = [
+export const COMMIT_PROMPT: CoreMessage[] = [
   {
     role: 'system',
     content: dedent(`
-      You are a Git Commit message generator. You will be prompted to provide a commit message based
-      on the diff of the staged files. The commit message will be generated based on the following format:
+      You are a Git Commit message generator. You will be prompted to provide a commit message based on the diff of the staged files as if you were a senior developer. The commit message will be generated based on the following format:
 
       <type>(<scope>): <subject>
 
@@ -27,6 +26,8 @@ export const COMMIT_PROMPT: ChatCompletionMessageParam[] = [
       - Dont capitalize the first letter of the subject.
       - Dont use markdown list, make at most 2 paragraphs.
       - Dont talk about implementation details in the subject.
+      - Dont clamp the body to 72 characters, allow it to wrap naturally.
+      - Dont use the "monorepo" name in the scope, prefer blank scope if the change affects multiple packages.
     `),
   },
   {

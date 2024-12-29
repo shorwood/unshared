@@ -96,12 +96,13 @@
     "LICENSE.md"
   ],
   "dependencies": {
+    "@ai-sdk/anthropic": "1.0.6",
     "@unshared/collection": "workspace:*",
     "@unshared/fs": "workspace:*",
     "@unshared/process": "workspace:*",
     "@unshared/string": "workspace:*",
     "@unshared/types": "workspace:*",
-    "openai": "4.77.0",
+    "ai": "4.0.22",
     "rollup": "4.28.1",
     "rollup-plugin-dts": "6.1.1",
     "rollup-plugin-esbuild": "6.1.1",
