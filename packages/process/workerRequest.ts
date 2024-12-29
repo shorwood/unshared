@@ -98,7 +98,7 @@ export interface WorkerRequestOptions<T extends Function = Function<unknown, unk
  * const result = await workerRequest(workerURL, 'add', 1, 2) // 3
  */
 export async function workerRequest<T extends Function>(worker: Worker, options: WorkerRequestOptions<T> = {}): Promise<Awaited<ReturnType<T>>> {
-  const { name = 'default', parameters = [], channel = new MessageChannel(), transferList = [], timeout = 100 } = options
+  const { name = 'default', parameters = [], channel = new MessageChannel(), transferList = [], timeout = 1000 } = options
   const { port1, port2 } = channel
 
   // --- Push any transferable objects to the transfer list.
