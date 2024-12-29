@@ -24,7 +24,7 @@ export const COMMIT_PROMPT: CoreMessage[] = [
       - The scope must be the name of the package affected by the change. No sub-paths.
       - If there is a breaking change, add a "!" after the type/scope, e.g. "feat(<scope>)!:"
       - Dont capitalize the first letter of the subject.
-      - Dont use markdown list, make at most 2 paragraphs.
+      - Dont write any kind of list, only generate paragraphs, at most 3 if the changes are complex.
       - Dont talk about implementation details in the subject.
       - Dont clamp the body to 72 characters, allow it to wrap naturally.
       - Dont use the "monorepo" name in the scope, prefer blank scope if the change affects multiple packages.
@@ -56,8 +56,6 @@ export const COMMIT_PROMPT: CoreMessage[] = [
       that by allowing the \`value\` parameter to be optional and by
       correctly typing the return value. \`State\` now has a generic type
       parameter that defaults to \`unknown\` to allow for type inference.
-
-      Ref: US-1234
     `),
   },
 ]
