@@ -62,7 +62,7 @@
     "@unshared/types": "workspace:*"
   },
   "devDependencies": {
-    "@unocss/core": "0.65.1",
-    "@unocss/preset-mini": "0.65.1"
+    "@unocss/core": "0.65.3",
+    "@unocss/preset-mini": "0.65.3"
   }
 }

@@ -85,6 +85,6 @@
     "@unshared/types": "workspace:*"
   },
   "devDependencies": {
-    "memfs": "4.15.0"
+    "memfs": "4.15.1"
   }
 }

@@ -239,15 +239,15 @@
   },
   "dependencies": {
     "@codemirror/state": "6.5.0",
-    "@codemirror/view": "6.36.0",
+    "@codemirror/view": "6.36.1",
     "@unshared/collection": "workspace:*",
     "@unshared/types": "workspace:*",
-    "@vueuse/core": "12.0.0",
+    "@vueuse/core": "12.2.0",
     "codemirror": "6.0.1"
   },
   "devDependencies": {
-    "@nuxt/kit": "3.14.1592",
-    "@nuxt/schema": "3.14.1592",
+    "@nuxt/kit": "3.15.0",
+    "@nuxt/schema": "3.15.0",
     "@vue/test-utils": "2.4.6",
     "leaflet": "1.9.4",
     "markdown-it": "14.1.0",

@@ -103,7 +103,7 @@
     "@unshared/string": "workspace:*",
     "@unshared/types": "workspace:*",
     "ai": "4.0.22",
-    "rollup": "4.28.1",
+    "rollup": "4.29.1",
     "rollup-plugin-dts": "6.1.1",
     "rollup-plugin-esbuild": "6.1.1",
     "types-pkg-json": "1.2.1",
