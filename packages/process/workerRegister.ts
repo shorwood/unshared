@@ -67,7 +67,7 @@ async function requestCallback(request: WorkerRequest): Promise<void> {
 
   // --- If the handler is registered, call it.
   try {
-    port.postMessage('heartbeat')
+    port.postMessage('ping')
     const value = await fn!(...parameters) as unknown
     port.postMessage({ value })
   }

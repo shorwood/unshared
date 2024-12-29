@@ -66,12 +66,12 @@ describe('workerRegister', () => {
       expect(callback).toHaveBeenCalledWith(1, 2)
     })
 
-    it('should send a heartbeat message to the worker', async() => {
+    it('should send a ping message to the worker', async() => {
       const { port1, port2 } = new MessageChannel()
       workerRegister('fn', () => {})
       parentPort!.postMessage({ name: 'fn', parameters: [], port: port1 })
       const message = await new Promise<MessageEvent>(resolve => port2.addEventListener('message', resolve))
-      expect(message.data).toBe('heartbeat')
+      expect(message.data).toBe('ping')
     })
 
     it('should send the result of the function back to the worker', async() => {
@@ -80,7 +80,7 @@ describe('workerRegister', () => {
       parentPort!.postMessage({ name: 'fn', parameters: ['world'], port: port1 })
       const message = await new Promise<MessageEvent>((resolve) => {
         port2.addEventListener('message', (data) => {
-          if (data.data !== 'heartbeat') resolve(data)
+          if (data.data !== 'ping') resolve(data)
         })
       })
       expect(message.data).toStrictEqual({
@@ -94,7 +94,7 @@ describe('workerRegister', () => {
       parentPort!.postMessage({ name: 'fn', parameters: [], port: port1 })
       const message = await new Promise<MessageEvent>((resolve) => {
         port2.addEventListener('message', (data) => {
-          if (data.data !== 'heartbeat') resolve(data)
+          if (data.data !== 'ping') resolve(data)
         })
       })
       expect(message.data).toStrictEqual({
@@ -107,7 +107,7 @@ describe('workerRegister', () => {
       parentPort!.postMessage({ name: 'fn', parameters: [], port: port1 })
       const message = await new Promise<MessageEvent>((resolve) => {
         port2.addEventListener('message', (data) => {
-          if (data.data !== 'heartbeat') resolve(data)
+          if (data.data !== 'ping') resolve(data)
         })
       })
       expect(message.data).toStrictEqual({
@@ -125,7 +125,7 @@ describe('workerRegister', () => {
       return new Promise((resolve, reject) => {
         port2.addEventListener('error', reject)
         port2.addEventListener('message', (response) => {
-          if (response.data === 'heartbeat') return
+          if (response.data === 'ping') return
           resolve(response.data as WorkerResponse<number>)
         })
       })

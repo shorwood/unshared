@@ -115,11 +115,12 @@ export async function workerRequest<T extends Function>(worker: Worker, options:
     const timeoutInstnace = setTimeout(reject, timeout, error)
     port2.once('error', reject)
     port2.once('messageerror', reject)
-    port2.addListener('message', (response: 'heartbeat' | WorkerResponse) => {
-      if (response === 'heartbeat') return clearTimeout(timeoutInstnace)
+    port2.addListener('message', (response: 'ping' | WorkerResponse) => {
+      if (response === 'ping') return clearTimeout(timeoutInstnace)
       const { error, value } = response
       if (error) reject(error)
       else resolve(value as Awaited<ReturnType<T>>)
+      clearTimeout(timeoutInstnace)
     })
 
     // --- Send the request payload to the target worker.
