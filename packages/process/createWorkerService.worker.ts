@@ -2,12 +2,12 @@ import type { WorkerServicePayload } from './createWorkerService'
 import { createRequire } from 'node:module'
 import { workerRegister } from './workerRegister'
 
-export async function callback(request: WorkerServicePayload) {
+async function callback(request: WorkerServicePayload) {
   const { moduleId, name = 'default', parameters = [], paths } = request
 
   // --- Import the module and get the named export.
   const require = createRequire(import.meta.url)
-  const modulePath = require.resolve(moduleId as string, { paths })
+  const modulePath = require.resolve(moduleId, { paths })
   const moduleResolved = await import(modulePath) as Record<string, unknown>
 
   // --- If the named export is a special method, return the result.

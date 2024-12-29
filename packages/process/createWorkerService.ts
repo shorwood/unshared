@@ -3,8 +3,10 @@ import { Once } from '@unshared/decorators/Once'
 import { MaybeArray, UnionMerge } from '@unshared/types'
 import { Function } from '@unshared/types/Function'
 import { createRequire } from 'node:module'
+import { isArrayBuffer, isArrayBufferView } from 'node:util/types'
+import { MessagePort } from 'node:worker_threads'
 import { Worker, WorkerOptions } from 'node:worker_threads'
-import { workerRequest } from './workerRequest'
+import { workerRequest, WorkerRequestOptions } from './workerRequest'
 
 /** The result of a function when called from a `WorkerService`. */
 export type WorkerServiceResult<T> =
@@ -55,34 +57,7 @@ export interface WorkerServiceOptions extends WorkerOptions {
   workerUrl?: URL
 }
 
-export interface WorkerServicePayload<T extends Function = Function<unknown, unknown[]>> {
-
-  /**
-   * The path or URL to the module to import. Be aware that this path
-   * will be resolved using the `createRequire().resolve()` function.
-   * This means that you can use the `node:` protocol to import built-in
-   * modules or the `file:` protocol to import local modules.
-   *
-   * @example 'node:crypto'
-   */
-  moduleId: string | URL
-
-  /**
-   * The name of the export to get from the module. If the named
-   * export is a constant, it will be returned as is. If it is a
-   * function, it will be called with the given parameters.
-   *
-   * @default 'default'
-   * @example 'randomBytes'
-   */
-  name?: string
-
-  /**
-   * The parameters to pass to the target function as an array.
-   *
-   * @example [128]
-   */
-  parameters?: Parameters<T>
+export interface WorkerServiceSpawnOptions<T extends Function = Function<unknown, unknown[]>> extends WorkerRequestOptions<T> {
 
   /**
    * Additionally, you can provide the `paths` property to specify the
@@ -92,16 +67,19 @@ export interface WorkerServicePayload<T extends Function = Function<unknown, unk
    * @example ['/path/to/module']
    */
   paths?: string[]
+}
+
+export interface WorkerServicePayload<T extends Function = Function<unknown, unknown[]>> extends WorkerServiceSpawnOptions<T> {
 
   /**
-   * Additional transferable objects to pass to the worker thread. This can be used
-   * to pass `ArrayBuffer` or `MessagePort` objects to the worker thread. By default,
-   * the parameters are checked for `ArrayBuffer` and `MessagePort` objects and added
-   * to the transfer list automatically.
+   * The path or URL to the module to import. Be aware that this path
+   * will be resolved using the `createRequire().resolve()` function.
+   * This means that you can use the `node:` protocol to import built-in
+   * modules or the `file:` protocol to import local modules.
    *
-   * @example [new Buffer('Hello, World!').buffer]
+   * @example 'node:crypto'
    */
-  transferList?: Transferable[]
+  moduleId: string
 }
 
 /**
@@ -187,8 +165,6 @@ export class WorkerService implements AsyncDisposable {
     // --- Await for the worker to be online.
     await new Promise((resolve, reject) => {
       this.worker!.on('online', resolve)
-
-      // this.worker!.on('error', reject)
       this.worker!.on('messageerror', reject)
     })
   }
@@ -198,7 +174,8 @@ export class WorkerService implements AsyncDisposable {
    * You have to pass the module ID and the name of the export to spawn. The function will
    * be called with the given arguments and the result will be returned.
    *
-   * @param payload The request object that contains the module ID and the function to spawn.
+   * @param moduleId The module ID to import.
+   * @param options The request object that contains the module ID and the function to spawn.
    * @returns A promise that resolves with the result of the function.
    * @example
    * // Create a worker service.
@@ -207,11 +184,27 @@ export class WorkerService implements AsyncDisposable {
    * // Spawn the randomBytes function from the crypto module.
    * const result = await workerService.spawn('node:crypto', 'randomBytes', 128) // Uint8Array { ... }
    */
-  public async spawn<T extends Function<unknown>>(payload: WorkerServicePayload<T>): Promise<Awaited<WorkerServiceResult<T>>> {
+  public async spawn<T extends Function<unknown>>(moduleId: string | URL, options: WorkerServiceSpawnOptions<T> = {}): Promise<Awaited<WorkerServiceResult<T>>> {
     this.running++
     if (!this.worker) await this.initialize()
-    if (payload.moduleId instanceof URL) payload.moduleId = payload.moduleId.pathname
-    const request = workerRequest(this.worker!, 'WORKER_SERVICE', payload)
+    if (moduleId instanceof URL) moduleId = moduleId.pathname
+    const { name, channel, parameters = [], timeout, transferList = [], paths } = options
+
+    // --- Push any transferable objects to the transfer list.
+    for (const parameter of parameters) {
+      if (parameter instanceof MessagePort) transferList.push(parameter)
+      if (Buffer.isBuffer(parameter)) transferList.push(parameter.buffer as ArrayBuffer)
+      if (isArrayBufferView(parameter)) transferList.push(parameter.buffer as ArrayBuffer)
+      if (isArrayBuffer(parameter)) transferList.push(parameter)
+    }
+
+    const request = workerRequest(this.worker!, {
+      name: 'WORKER_SERVICE',
+      parameters: [{ moduleId, name, parameters, paths }],
+      channel,
+      timeout,
+      transferList,
+    })
     return request.finally(() => this.running--) as Awaited<WorkerServiceResult<T>>
   }
 
@@ -259,7 +252,7 @@ export class WorkerService implements AsyncDisposable {
   public wrap<T extends object>(moduleId: string | URL, paths?: MaybeArray<string>): Workerized<T> {
     return new Proxy({}, {
       get: (_, name: keyof T & string) =>
-        (...parameters: unknown[]) => this.spawn({ moduleId, name, parameters, paths: toArray(paths) }),
+        (...parameters: unknown[]) => this.spawn(moduleId, { name, parameters, paths: toArray(paths) }),
     }) as Workerized<T>
   }
 }

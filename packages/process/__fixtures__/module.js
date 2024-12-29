@@ -1,5 +1,10 @@
+/* eslint-disable unicorn/no-anonymous-default-export */
 /* eslint-disable jsdoc/no-types */
 import { threadId } from 'node:worker_threads'
+
+export default function() {
+  return 'DEFAULT'
+}
 
 /**
  * @param {number} n The number to calculate the factorial
@@ -43,6 +48,38 @@ export function buffer() {
 }
 
 /**
+ * @param {MessagePort} port The message port
+ * @returns {Promise<string>} A promise that resolves with a message
+ */
+export function messageReceive(port) {
+  return new Promise((resolve) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    port.addEventListener('message', message => resolve(message.data))
+  })
+}
+
+/**
+ * @param {MessagePort} port The message port
+ * @returns {void} Sends a message
+ */
+export function messageSend(port) {
+  port.postMessage('Hello, World!')
+}
+
+/**
+ * @param {MessagePort} port The first message port
+ * @returns {Promise<string>} A promise that resolves with a message
+ */
+export function messageEcho(port) {
+  return new Promise((resolve) => {
+    port.addEventListener('message', (message) => {
+      port.postMessage(`Echo: ${message.data}`)
+      resolve(`Echo: ${message.data}`)
+    })
+  })
+}
+
+/**
  * @returns {number} The thread id
  */
 export function getThreadId() {
@@ -51,5 +88,3 @@ export function getThreadId() {
 
 /** @type {number} */
 export const constant = 42
-
-export default factorial

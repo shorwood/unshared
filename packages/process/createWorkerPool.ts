@@ -1,5 +1,5 @@
 import type { Function, MaybeArray } from '@unshared/types'
-import type { Workerized, WorkerServiceOptions, WorkerServicePayload, WorkerServiceResult } from './createWorkerService'
+import type { Workerized, WorkerServiceOptions, WorkerServiceResult, WorkerServiceSpawnOptions } from './createWorkerService'
 import { toArray } from '@unshared/collection/toArray'
 import { Once } from '@unshared/decorators/Once'
 import { cpus } from 'node:os'
@@ -94,6 +94,7 @@ export class WorkerPool {
    * Spawn a function in a worker thread. This method will find the worker with the
    * least amount of running tasks and spawn the function on that worker.
    *
+   * @param moduleId The module ID to spawn the function from.
    * @param payload The payload to send to the worker.
    * @returns An awaitable promise that resolves with the result of the function.
    * @example
@@ -106,9 +107,9 @@ export class WorkerPool {
    * const mathUrl = new URL('./math.ts', import.meta.url)
    * const result = await workerPool.spawn(mathUrl, 'add', 1, 2) // 3
    */
-  public async spawn<T extends Function>(payload: WorkerServicePayload<T>): Promise<Awaited<WorkerServiceResult<T>>> {
+  public async spawn<T extends Function>(moduleId: string | URL, payload: WorkerServiceSpawnOptions<T>): Promise<Awaited<WorkerServiceResult<T>>> {
     const worker = this.getWorker()
-    return worker.spawn<T>(payload)
+    return worker.spawn<T>(moduleId, payload)
   }
 
   /**
@@ -133,7 +134,7 @@ export class WorkerPool {
     return new Proxy({}, {
       get: (_, name: keyof T & string) =>
         (...parameters: unknown[]) =>
-          this.spawn({ moduleId, name, parameters, paths: toArray(paths) }),
+          this.spawn(moduleId, { name, parameters, paths: toArray(paths) }),
     }) as Workerized<T>
   }
 

@@ -13,7 +13,7 @@ describe.sequential('createWorkerPool', () => {
   describe('spawn', () => {
     it('should spawn a function in a worker thread', async() => {
       const pool = createWorkerPool()
-      const result = await pool.spawn<typeof Module['factorial']>({ moduleId, name: 'factorial', parameters: [5] })
+      const result = await pool.spawn<typeof Module['factorial']>(moduleId, { name: 'factorial', parameters: [5] })
       expect(result).toBe(120)
     })
   })

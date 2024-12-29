@@ -167,7 +167,7 @@ describe('workerRegister', () => {
     })
 
     it('should handle message when in a worker thread and return the thread ID', async() => {
-      const response = await send('threadId', [])
+      const response = await send('getThreadId', [])
       expect(response).toStrictEqual({
         value: worker.threadId,
       })
