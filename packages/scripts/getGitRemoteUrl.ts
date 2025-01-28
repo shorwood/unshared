@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-os-command-from-path */
 import { execFile } from 'node:child_process'
 
 /**
@@ -11,7 +12,7 @@ import { execFile } from 'node:child_process'
 export async function getGitRemoteUrl(path = process.cwd(), name = 'origin'): Promise<string> {
   return await new Promise<string>((resolve, reject) => {
     execFile(
-      '/usr/bin/git',
+      'git',
       ['-C', path, 'config', '--get', `remote.${name}.url`],
       { encoding: 'utf8' },
       (error, stdout) => (error ? reject(error as Error) : resolve(stdout.trim())),

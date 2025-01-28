@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-os-command-from-path */
 /* eslint-disable n/no-sync */
 import { createAnthropic } from '@ai-sdk/anthropic'
 import { streamText } from 'ai'
@@ -10,16 +11,17 @@ import { COMMIT_PROMPT } from './commitPrompt'
  * Generate a commit message for the currently staged changes.
  *
  * @param input The input to use for the commit message.
- * @param apiKey The OpenAI API key to use for the completion.
+ * @param apiKey The Anthropic API key to use for generating the commit message.
  * @returns The commit message for the currently staged changes.
- * @example commit()
+ * @example commit('chore: improved typing', 'sk-1234567890abcdef')
  */
 export async function commit(input: string, apiKey: string) {
-  const diff = execFileSync('/usr/bin/git', ['diff', '--cached', '--staged'], { encoding: 'utf8' })
-  const diffPaths = execFileSync('/usr/bin/git', ['diff', '--name-only', '--cached', '--staged'], { encoding: 'utf8' })
-  const diffStat = execFileSync('/usr/bin/git', ['diff', '--stat', '--cached', '--staged'], { encoding: 'utf8' })
-  const lastCommits = execFileSync('/usr/bin/git', ['log', '-2', '--pretty=%B'], { encoding: 'utf8' })
-  const branchName = execFileSync('/usr/bin/git', ['branch', '--show-current'], { encoding: 'utf8' })
+  const gitBin = 'git'
+  const diff = execFileSync(gitBin, ['diff', '--staged'], { encoding: 'utf8' })
+  const diffPaths = execFileSync(gitBin, ['diff', '--name-only', '--staged'], { encoding: 'utf8' })
+  const diffStat = execFileSync(gitBin, ['diff', '--stat', '--staged'], { encoding: 'utf8' })
+  const lastCommits = execFileSync(gitBin, ['log', '-2', '--pretty=%B'], { encoding: 'utf8' })
+  const branchName = execFileSync(gitBin, ['branch', '--show-current'], { encoding: 'utf8' })
 
   // --- Read the contents of the staged files.
   const fileContents = diffPaths
@@ -30,7 +32,7 @@ export async function commit(input: string, apiKey: string) {
 
   const anthropic = createAnthropic({ apiKey })
   const response = streamText({
-    model: anthropic('claude-3-5-sonnet-20240620'),
+    model: anthropic('claude-3-5-sonnet-latest'),
     messages: [
       ...COMMIT_PROMPT,
       { content: `[LAST_COMMITS]\n${lastCommits}\n\n`, role: 'user' },
@@ -72,7 +74,7 @@ export async function commit(input: string, apiKey: string) {
   // --- If `yes`, commit the staged changes with the generated commit message.
   if (result) {
     const completion = `${completionTokens.join('').trim()}\n`
-    const git = spawn('/usr/bin/git', ['commit', '-m', completion], { stdio: 'inherit' })
+    const git = spawn(gitBin, ['commit', '-m', completion], { stdio: 'inherit' })
     await new Promise(resolve => git.on('exit', resolve))
   }
 }

@@ -26,8 +26,8 @@ export const COMMIT_PROMPT: CoreMessage[] = [
       - DONT capitalize the first letter of the subject.
       - DONT use any kind of list, only generate paragraphs, at most 3 if the changes are complex.
       - DONT talk about implementation details in the subject.
-      - DONT clamp the body lenght, allow it to be as long as needed.
-      - DONT use the "monorepo" name in the scope, prefer blank scope if the change affects multiple packages.
+      - DONT clamp the body length, allow it to be as long as needed.
+      - DONT use the "monorepo" name in the scope, use blank scope if the change affects multiple packages.
     `),
   },
   {
