@@ -1,6 +1,6 @@
-import type { Awaitable } from '@unshared/functions'
+import type { Awaitable } from '@unshared/functions/awaitable'
 import type { ConnectOptions } from './parseConnectOptions'
-import { awaitable } from '@unshared/functions'
+import { awaitable } from '@unshared/functions/awaitable'
 import { parseConnectOptions } from './parseConnectOptions'
 
 type RemoveListener = () => void
@@ -73,15 +73,15 @@ export class WebSocketChannel<T extends ConnectOptions = ConnectOptions> {
    * @param callback The callback to call when the event is received.
    * @returns A function to remove the event listener.
    */
-  on(event: 'message', callback: (data: ServerData<T>) => void, options?: AddEventListenerOptions): RemoveListener
-  on(event: 'close', callback: (event: CloseEvent) => void, options?: AddEventListenerOptions): RemoveListener
-  on(event: 'error', callback: (event: Event) => void, options?: AddEventListenerOptions): RemoveListener
-  on(event: 'open', callback: (event: Event) => void, options?: AddEventListenerOptions): RemoveListener
-  on(event: string, callback: (data: any) => void, options?: AddEventListenerOptions) {
+  on(event: 'message', callback: (data: ServerData<T>) => any, options?: AddEventListenerOptions): RemoveListener
+  on(event: 'close', callback: (event: CloseEvent) => any, options?: AddEventListenerOptions): RemoveListener
+  on(event: 'error', callback: (event: Event) => any, options?: AddEventListenerOptions): RemoveListener
+  on(event: 'open', callback: (event: Event) => any, options?: AddEventListenerOptions): RemoveListener
+  on(event: string, callback: (data: any) => any, options?: AddEventListenerOptions) {
     if (!this.webSocket) throw new Error('WebSocket connection has not been opened yet')
 
     const listener = async(event: CloseEvent | Event | MessageEvent<Blob>): Promise<void> => {
-      if (event.type !== 'message') return callback(event)
+      if (event.type !== 'message') callback(event)
       // @ts-expect-error: `data` exists on the event.
       let data = event.data as unknown
       if (data instanceof Blob) data = await data.text()
