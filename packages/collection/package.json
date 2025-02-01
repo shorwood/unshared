@@ -41,6 +41,11 @@
       "types": "./dist/compact.d.ts",
       "import": "./dist/compact.js"
     },
+    "./createCache": {
+      "require": "./dist/createCache.cjs",
+      "types": "./dist/createCache.d.ts",
+      "import": "./dist/createCache.js"
+    },
     "./deleteProperty": {
       "require": "./dist/deleteProperty.cjs",
       "types": "./dist/deleteProperty.d.ts",
