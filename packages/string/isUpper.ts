@@ -6,6 +6,7 @@
  * @returns `true` if the string or character code is upper case.
  * @example isUpper('A'.charCodeAt(0)) // true
  */
-export function isUpper(value: number): boolean {
+export function isUpper(value: number | string): boolean {
+  if (typeof value === 'string') value = value.codePointAt(0) ?? 0
   return value >= 65 && value <= 90
 }
