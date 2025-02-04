@@ -66,6 +66,11 @@
       "types": "./dist/escapeRegexp.d.ts",
       "import": "./dist/escapeRegexp.js"
     },
+    "./isDigit": {
+      "require": "./dist/isDigit.cjs",
+      "types": "./dist/isDigit.d.ts",
+      "import": "./dist/isDigit.js"
+    },
     "./isLower": {
       "require": "./dist/isLower.cjs",
       "types": "./dist/isLower.d.ts",
