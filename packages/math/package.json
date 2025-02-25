@@ -21,6 +21,11 @@
       "types": "./dist/ceil.d.ts",
       "import": "./dist/ceil.js"
     },
+    "./choose": {
+      "require": "./dist/choose.cjs",
+      "types": "./dist/choose.d.ts",
+      "import": "./dist/choose.js"
+    },
     "./clamp": {
       "require": "./dist/clamp.cjs",
       "types": "./dist/clamp.d.ts",

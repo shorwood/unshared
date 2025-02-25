@@ -1,4 +1,5 @@
 export * from './ceil'
+export * from './choose'
 export * from './clamp'
 export * from './divide'
 export * from './factorial'
