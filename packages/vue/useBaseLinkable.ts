@@ -17,6 +17,7 @@ export const BASE_LINKABLE_OPTIONS = {
   replace: Boolean,
   to: [Object, String],
   eager: Boolean,
+  isActive: Boolean,
 } satisfies Record<keyof BaseLinkableOptions, Prop<unknown>>
 
 /** The properties of the base linkable component. */
@@ -77,6 +78,13 @@ export interface BaseLinkableOptions {
    * @default false
    */
   eager?: boolean
+
+  /**
+   * Override the internal `isActive` value with the provided value. This is
+   * useful when state is not attached to a router or when the button is a simple
+   * switch that toggles the active state.
+   */
+  isActive?: boolean
 }
 
 /** The properties of the base linkable composable. */
@@ -135,6 +143,7 @@ export function useBaseLinkable(options: BaseLinkableOptions = {}, instance = ge
 
   // --- Determine if the link is active.
   const isActive = computed(() => {
+    if (options.isActive !== undefined) return options.isActive
     if (!isInternalLink.value) return false
     if (typeof options.to === 'string') return router.currentRoute.value.path === options.to
     if (typeof options.to === 'object') return router.currentRoute.value.matched.some(route => route.name === (options.to as RouteLocationNamedRaw).name)
