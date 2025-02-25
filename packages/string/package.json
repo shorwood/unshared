@@ -212,8 +212,15 @@
     "README.md",
     "LICENSE.md"
   ],
+  "scripts": {
+    "build:bindings": "node-gyp rebuild"
+  },
   "dependencies": {
     "@unshared/collection": "workspace:*",
     "@unshared/types": "workspace:*"
+  },
+  "devDependencies": {
+    "node-gyp": "11.0.0",
+    "vitest": "3.0.5"
   }
 }

@@ -15,5 +15,6 @@ tsconfig.vitest-temp.json
 # Dist
 packages/*/LICENSE.md
 dist/
+build/
 .nuxt/
 .output/

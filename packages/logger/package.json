@@ -1,0 +1,23 @@
+{
+  "name": "@unshared/logger",
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": false,
+  "author": "Stanley Horwood <stanley@hsjm.io>",
+  "bugs": "https://github.com/shorwood/unshared/issues",
+  "homepage": "https://github.com/shorwood/unshared#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shorwood/unshared.git",
+    "directory": "packages/logger"
+  },
+  "peerDependencies": {
+    "node-unix-socket": "^0.2"
+  },
+  "dependencies": {
+    "@unshared/string": "workspace:*"
+  },
+  "devDependencies": {
+    "node-unix-socket": "0.2.7"
+  }
+}

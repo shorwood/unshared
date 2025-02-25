@@ -25,8 +25,8 @@ export function distanceLevenshtein(a: string, b: string): number {
   // --- two strings using the Levenshtein algorithm.
   for (k = 1; k <= b.length; k++) {
     for (v = 1; v <= a.length; v++) {
-      const kChar = b.charAt(k - 1)
-      const vChar = a.charAt(v - 1)
+      const kChar = b.codePointAt(k - 1)
+      const vChar = a.codePointAt(v - 1)
 
       // --- If the characters are equal, the distance is the same as
       // --- the distance between the substrings without the last

@@ -1,0 +1,17 @@
+{
+  "configurations": [
+    {
+      "name": "Node API",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "${env:HOME}/.cache/node-gyp/22.11.0/include/node"
+      ],
+      "defines": [],
+      "compilerPath": "/etc/profiles/per-user/shorwood/bin/gcc",
+      "cStandard": "c17",
+      "cppStandard": "gnu++17",
+      "intelliSenseMode": "linux-gcc-x64"
+    }
+  ],
+  "version": 4
+}
