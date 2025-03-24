@@ -1,4 +1,3 @@
-import type { Awaitable } from '@unshared/functions'
 import type { Result } from '@unshared/functions/attempt'
 import type { ServiceOptions } from './createService'
 import type { OpenAPILike, OpenAPIOptionsMap } from './openapi'
@@ -96,9 +95,9 @@ export class Client<T extends Routes = Routes, U extends Channels = Channels> {
    * @param options The options to pass to the connection.
    * @returns The WebSocket connection.
    */
-  public connect<P extends keyof U & string>(channel: P, options?: U[P]): Awaitable<WebSocketChannel<U[P]>, WebSocketChannel<U[P]>>
-  public connect(channel: string, options?: ConnectOptions): Awaitable<WebSocketChannel, WebSocketChannel>
-  public connect(channel: string, options?: ConnectOptions): Awaitable<WebSocketChannel, WebSocketChannel> {
+  public connect<P extends keyof U & string>(channel: P, options?: U[P]): WebSocketChannel<U[P]>
+  public connect(channel: string, options?: ConnectOptions): WebSocketChannel
+  public connect(channel: string, options?: ConnectOptions): WebSocketChannel {
     return connect(channel, { baseUrl: this.options.baseUrl, ...options })
   }
 }

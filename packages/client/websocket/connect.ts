@@ -1,6 +1,4 @@
-import type { Awaitable } from '@unshared/functions/awaitable'
 import type { ConnectOptions } from './parseConnectOptions'
-import { awaitable } from '@unshared/functions/awaitable'
 import { parseConnectOptions } from './parseConnectOptions'
 
 type RemoveListener = () => void
@@ -117,7 +115,6 @@ export class WebSocketChannel<T extends ConnectOptions = ConnectOptions> {
  * @param options The options to pass to the connection.
  * @returns The WebSocket connection.
  */
-export function connect(route: string, options: ConnectOptions): Awaitable<WebSocketChannel, WebSocketChannel> {
-  const channel = new WebSocketChannel(route, options)
-  return awaitable(channel, () => channel.open())
+export function connect(route: string, options: ConnectOptions): WebSocketChannel {
+  return new WebSocketChannel(route, options)
 }
