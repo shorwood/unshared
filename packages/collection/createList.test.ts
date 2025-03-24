@@ -22,7 +22,7 @@ interface ExpectListMatchingOptions {
  *
  * @param list The list to check.
  * @param items The expected items in the list.
- * @param options
+ * @param options The options to pass to the function.
  */
 function expectListMatching(list: List, items: unknown[], options: ExpectListMatchingOptions = {}) {
   expect(list).toBeInstanceOf(List)
@@ -75,9 +75,6 @@ function expectListMatching(list: List, items: unknown[], options: ExpectListMat
 function expectArrayBehaviour(items: unknown[], method: keyof unknown[] & string, ...args: unknown[]) {
   const list = createList(items)
   const array = [...items]
-
-  const sourceList = [...list]
-  const sourceArray = [...array]
 
   // @ts-expect-error: ignore the error
   const expected = typeof array[method] === 'function' ? array[method](...args) : array[method]
