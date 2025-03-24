@@ -41,6 +41,11 @@
       "types": "./dist/createCounter.d.ts",
       "import": "./dist/createCounter.js"
     },
+    "./createEmitter": {
+      "require": "./dist/createEmitter.cjs",
+      "types": "./dist/createEmitter.d.ts",
+      "import": "./dist/createEmitter.js"
+    },
     "./createFsm": {
       "require": "./dist/createFsm.cjs",
       "types": "./dist/createFsm.d.ts",
