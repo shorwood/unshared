@@ -227,8 +227,9 @@ describe('createWorkerService', () => {
     it('should increment the running count when a function is called', async() => {
       const service = createWorkerService({ eager: true })
       expect(service.running).toBe(0)
-      void service.spawn(moduleId, { name: 'factorial', parameters: [5] })
+      const promise = service.spawn(moduleId, { name: 'factorial', parameters: [5] })
       expect(service.running).toBe(1)
+      await promise
       await service.destroy()
     })
 
