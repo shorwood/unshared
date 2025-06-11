@@ -19,7 +19,7 @@ export default defineNuxtModule({
       // --- By convention, exports starting with `Base` are components.
       // --- Anything else is either a composable or utility function.
       if (name.startsWith('Base'))
-        await addComponent({ name, export: name, filePath: `@unshared/vue/${name}` })
+        addComponent({ name, export: name, filePath: `@unshared/vue/${name}` })
       else
         addImportsSources({ imports: [name], from: `@unshared/vue/${name}` })
     }

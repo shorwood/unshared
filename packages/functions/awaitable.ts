@@ -78,19 +78,19 @@ export function awaitable(object: object, createPromise?: FunctionAsync<unknown>
     // @ts-expect-error: `then` is a new method that is not yet in the types.
     // eslint-disable-next-line unicorn/no-thenable
     object.then = (...args: Parameters<typeof Promise.prototype.then>) => {
-      if (!promise) promise = collect()
+      promise ??= collect()
       return promise.then(...args)
     }
 
     // @ts-expect-error: `catch` is a new method that is not yet in the types.
     object.catch = (...args: Parameters<typeof Promise.prototype.catch>) => {
-      if (!promise) promise = collect()
+      promise ??= collect()
       return promise.catch(...args)
     }
 
     // @ts-expect-error: `finally` is a new method that is not yet in the types.
     object.finally = (...args: Parameters<typeof Promise.prototype.finally>) => {
-      if (!promise) promise = collect()
+      promise ??= collect()
       return promise.finally(...args)
     }
 

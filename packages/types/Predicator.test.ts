@@ -20,11 +20,11 @@ describe('Predicator', () => {
 
   test('should match the predicator', () => {
     type Match = (value: unknown) => value is string
-    expectTypeOf<Match>().toMatchTypeOf<Predicator>()
+    expectTypeOf<Match>().toExtend<Predicator>()
   })
 
   test('should not match functions that return a boolean', () => {
     type Match = (value: unknown) => boolean
-    expectTypeOf<Match>().not.toMatchTypeOf<Predicator>()
+    expectTypeOf<Match>().not.toExtend<Predicator>()
   })
 })

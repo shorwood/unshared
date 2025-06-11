@@ -1,5 +1,5 @@
 import type { Function } from '@unshared/types'
-import type { TransferListItem } from 'node:worker_threads'
+import type { Transferable } from 'node:worker_threads'
 import type { WorkerResponse } from './workerRegister'
 import { parentPort } from 'node:worker_threads'
 import workerThreads from 'node:worker_threads'
@@ -121,7 +121,7 @@ describe('workerRegister', () => {
     const worker = new workerThreads.Worker(url)
     const send = (name: string, parameters: unknown[]) => {
       const { port1, port2 } = new MessageChannel()
-      worker.postMessage({ name, parameters, port: port1 }, [port1 as unknown as TransferListItem])
+      worker.postMessage({ name, parameters, port: port1 }, [port1 as unknown as Transferable])
       return new Promise((resolve, reject) => {
         port2.addEventListener('error', reject)
         port2.addEventListener('message', (response) => {

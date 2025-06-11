@@ -1,4 +1,4 @@
-import { createVariant } from '../utils'
+import { createVariant } from '../createVariant'
 
 /** Variant for selected &[selected="true"] */
 export const variantSelected = createVariant('selected', [

@@ -124,7 +124,7 @@ if (import.meta.vitest) {
       onReadable: () => void
       onResume: () => void
     }
-    expectTypeOf<Result>().toMatchTypeOf<expected>()
+    expectTypeOf<Result>().toExtend<expected>()
   })
 
   it('should infer the event map of ReadStream', () => {
@@ -138,7 +138,7 @@ if (import.meta.vitest) {
       onReady: () => void
       onResume: () => void
     }
-    expectTypeOf<Result>().toMatchTypeOf<expected>()
+    expectTypeOf<Result>().toExtend<expected>()
   })
 
   it('should infer the event map of EventEmitter', () => {

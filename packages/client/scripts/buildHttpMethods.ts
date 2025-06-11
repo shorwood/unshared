@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/prefer-top-level-await */
 import { buildEnum } from '@unshared/scripts'
 import { writeFile } from 'node:fs/promises'
-import { fetchMdn } from './utils'
+import { fetchMdn } from './fetchMdn'
 
 export async function buildHttpMethods(): Promise<void> {
   const data = await fetchMdn('/files/en-us/web/http/methods')

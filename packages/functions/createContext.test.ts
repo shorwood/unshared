@@ -4,7 +4,7 @@ describe('createContext', () => {
   test('should create a context with an initial value', () => {
     const context = createContext({ foo: 'bar' })
     expect(context.value).toStrictEqual({ foo: 'bar' })
-    expectTypeOf(context).toMatchTypeOf<{
+    expectTypeOf(context).toExtend<{
       runInContext: <U>(fn: (context: { foo: string }) => U) => U
       value: { foo: string }
     }>()

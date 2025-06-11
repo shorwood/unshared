@@ -5,18 +5,18 @@ import type { CharacterUpper } from './CharacterUpper'
 
 describe('CharacterUpper', () => {
   test('should not match lowercase letters', () => {
-    expectTypeOf<CharacterLower>().not.toMatchTypeOf<CharacterUpper>()
+    expectTypeOf<CharacterLower>().not.toExtend<CharacterUpper>()
   })
 
   test('should match uppercase letters', () => {
-    expectTypeOf<'A'>().toMatchTypeOf<CharacterUpper>()
+    expectTypeOf<'A'>().toExtend<CharacterUpper>()
   })
 
   test('should not match a digit', () => {
-    expectTypeOf<CharacterDigit>().not.toMatchTypeOf<CharacterUpper>()
+    expectTypeOf<CharacterDigit>().not.toExtend<CharacterUpper>()
   })
 
   test('should not match a symbol', () => {
-    expectTypeOf<CharacterSymbol>().not.toMatchTypeOf<CharacterUpper>()
+    expectTypeOf<CharacterSymbol>().not.toExtend<CharacterUpper>()
   })
 })

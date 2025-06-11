@@ -1,5 +1,5 @@
 import type { Function } from '@unshared/types'
-import type { TransferListItem, Worker } from 'node:worker_threads'
+import type { Transferable, Worker } from 'node:worker_threads'
 import type { WorkerResponse } from './workerRegister'
 import { isArrayBuffer, isArrayBufferView } from 'node:util/types'
 import { MessagePort } from 'node:worker_threads'
@@ -68,7 +68,7 @@ export interface WorkerRequestOptions<T extends Function = Function<unknown, unk
    *
    * @default []
    */
-  transferList?: TransferListItem[]
+  transferList?: Transferable[]
 
   /**
    * The timeout in milliseconds to wait for a response from the worker before rejecting

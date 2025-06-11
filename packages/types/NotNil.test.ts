@@ -22,7 +22,7 @@ describe('NotNil', () => {
   })
 
   test('should match non-null, non-undefined and non-void', () => {
-    expectTypeOf<number>().toMatchTypeOf<NotNil>()
+    expectTypeOf<number>().toExtend<NotNil>()
   })
 
   test('should equal to unknown when no generic is provided', () => {

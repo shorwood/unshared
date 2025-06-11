@@ -156,7 +156,7 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
         const mappedValue: T | U = mapfn ? mapfn.call(thisArgument as V, value, index++) : value
         const node: ListNode<T | U> = { value: mappedValue, previous }
         if (previous) previous.next = node
-        if (!list.head) list.head = node
+        list.head ??= node
         previous = node
         list.length++
       }
@@ -170,7 +170,7 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
         const value: T | U = mapfn ? mapfn.call(thisArgument as V, arrayLike[index], index) : arrayLike[index]
         const node: ListNode<T | U> = { value, previous }
         if (previous) previous.next = node
-        if (!list.head) list.head = node
+        list.head ??= node
         previous = node
         list.length++
       }
@@ -261,7 +261,7 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
     let tail = from
     for (const value of items) {
       tail = { value, previous: tail, next }
-      if (head === undefined) head = tail
+      head ??= tail
       if (tail.previous) tail.previous.next = tail
     }
 
@@ -400,8 +400,8 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
     // --- Link each list to the previous one.
     for (const list of lists) {
       if (!list.head) continue
-      if (!this.head) this.head = list.head
-      if (!head) head = list.head
+      this.head ??= list.head
+      head ??= list.head
 
       // --- Link the previous list to the current one.
       if (previous.tail) previous.tail.next = list.head
@@ -489,7 +489,6 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
    */
   // @ts-expect-error: This function overrides the return type from Array
   splice(start = 0, deleteCount = 0, ...items: T[]): List<T> {
-    // const from = typeof start === 'number' ? this.nodeAt(start) : undefined
     const offset = deleteCount > 0 ? 0 : -1
     const from = (start === 0) ? undefined : this.nodeAt(start + offset)
     return this.nodeSplice(from, deleteCount, ...items)
@@ -598,7 +597,7 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
         const right = split(left)
         current = split(right)
         const mergedHead = merge(left, right)
-        if (!head) head = mergedHead
+        head ??= mergedHead
         if (tail) tail.next = mergedHead
         if (tail && mergedHead) mergedHead.previous = tail
         tail = mergedHead

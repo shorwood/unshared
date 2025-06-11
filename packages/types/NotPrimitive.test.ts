@@ -7,10 +7,10 @@ describe('NotPrimitive', () => {
   })
 
   test('should match non-primitives', () => {
-    expectTypeOf<object>().toMatchTypeOf<NotPrimitive>()
+    expectTypeOf<object>().toExtend<NotPrimitive>()
   })
 
   test('should not match primitives', () => {
-    expectTypeOf<string>().not.toMatchTypeOf<NotPrimitive>()
+    expectTypeOf<string>().not.toExtend<NotPrimitive>()
   })
 })

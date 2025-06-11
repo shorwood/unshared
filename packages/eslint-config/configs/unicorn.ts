@@ -7,7 +7,7 @@ import unicornPlugin from 'eslint-plugin-unicorn'
  */
 export function unicorn(): Linter.Config[] {
   return [
-    unicornPlugin.configs['flat/recommended'],
+    unicornPlugin.configs.recommended,
     {
       rules: {
 
@@ -42,6 +42,7 @@ export function unicorn(): Linter.Config[] {
         'unicorn/prevent-abbreviations': ['error', {
           allowList: {
             args: true,
+            utils: true,
             dir: true,
             fn: true,
             i: true,

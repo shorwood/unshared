@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-commented-code */
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import type { Prop, VNode } from 'vue'
 import type { DefineComponentContext } from './defineSetupComponent'

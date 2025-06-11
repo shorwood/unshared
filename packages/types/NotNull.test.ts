@@ -7,7 +7,7 @@ describe('NotNull', () => {
   })
 
   test('should match non-null', () => {
-    expectTypeOf<number>().toMatchTypeOf<NotNull>()
+    expectTypeOf<number>().toExtend<NotNull>()
   })
 
   test('should equal to unknown when no generic is provided', () => {

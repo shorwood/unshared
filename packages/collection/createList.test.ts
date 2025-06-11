@@ -6,7 +6,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable vitest/expect-expect */
 /* eslint-disable unicorn/prefer-spread */
-
 /* eslint-disable unicorn/require-array-join-separator */
 import { createList, List } from './createList'
 
@@ -108,8 +107,8 @@ describe('createList', () => {
 
     it('should be a prototype of the Array class', () => {
       const list = new List()
-      // eslint-disable-next-line unicorn/no-instanceof-array
-      const result = list instanceof Array
+
+      const result = Array.isArray(list)
       expect(result).toBe(true)
     })
 

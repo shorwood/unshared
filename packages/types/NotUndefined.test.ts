@@ -7,10 +7,10 @@ describe('NotUndefined', () => {
   })
 
   test('should match non-undefined', () => {
-    expectTypeOf<number>().toMatchTypeOf<NotUndefined>()
+    expectTypeOf<number>().toExtend<NotUndefined>()
   })
 
   test('should not match undefined', () => {
-    expectTypeOf<undefined>().not.toMatchTypeOf<NotUndefined>()
+    expectTypeOf<undefined>().not.toExtend<NotUndefined>()
   })
 })

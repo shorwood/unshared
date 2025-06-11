@@ -7,10 +7,10 @@ describe('NotFunction', () => {
   })
 
   test('should match a non-function', () => {
-    expectTypeOf<object>().toMatchTypeOf<NotFunction>()
+    expectTypeOf<object>().toExtend<NotFunction>()
   })
 
   test('should not match a function', () => {
-    expectTypeOf<() => void>().not.toMatchTypeOf<NotFunction>()
+    expectTypeOf<() => void>().not.toExtend<NotFunction>()
   })
 })

@@ -1,4 +1,4 @@
-import { createVariant } from '../utils'
+import { createVariant } from '../createVariant'
 
 /** Variant for selected `&[aria-invalid="true"]` */
 export const variantInvalid = createVariant('error', [
