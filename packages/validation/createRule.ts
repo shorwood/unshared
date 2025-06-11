@@ -76,16 +76,13 @@ export type Rule<T extends RuleLike = RuleLike> =
  * // Validates a string against a regular expression.
  * const isEmail = createRule(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i) // (value: unknown) => string
  *
- * // Validates using a function that throws a `ValidationError` if the value is invalid.
+ * // Validates using a function that throws a `AssertionError` if the value is invalid.
  * const isString = createRule((value) => {
- *   if (typeof value !== 'string') throw new ValidationError('E_TYPE_NOT_STRING')
+ *   if (typeof value !== 'string') throw createAssertionError('E_TYPE_NOT_STRING')
  * })
  *
- * // Remove the 'http://' prefix from a string.
- * const removeHttp = createRule([/^http:\/\//, '']) // (value: string) => string
- *
- * // Transforms a string to a number.
- * const toUpperCase = createRule(Number)
+ * // Remove the 'https://' prefix from a string.
+ * const removeProtocol = createRule([/^https?:\/\//, '']) // (value: string) => string
  */
 export function createRule<T extends RuleLike>(rule: T): Rule<T>
 export function createRule(rule: RuleLike): Function {
@@ -93,8 +90,8 @@ export function createRule(rule: RuleLike): Function {
   // --- Short-circuit to the `isStringMatching` function if the rule is a regular expression.
   if (rule instanceof RegExp) {
     return (value: unknown) => {
-      assertStringMatching(value, rule)
-      return value
+      const parse = assertStringMatching(rule)
+      return parse(value) ?? value
     }
   }
 

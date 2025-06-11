@@ -43,7 +43,7 @@ describe('createRuleSet', () => {
       const shouldThrow = () => rule(5)
       const { error } = attempt(shouldThrow)
       expect(error).toMatchObject({
-        name: 'E_RULE_SET_MISMATCH',
+        name: 'E_RULE_SET_ASSERTION_FAILED',
         message: 'No rule set passed.',
         context: {
           causes: [

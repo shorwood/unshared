@@ -1,32 +1,40 @@
 import { attempt } from '@unshared/functions'
-import { assertInstance } from './assertInstance'
+import { assertInstanceOf } from './assertInstanceOf'
 
-describe('assertInstance', () => {
+describe('assertInstanceOf', () => {
   describe('pass', () => {
     it('should pass if value is an instance of the given class', () => {
-      const result = assertInstance(new Date(), Date)
+      const result = assertInstanceOf(Date)(new Date())
       expect(result).toBeUndefined()
     })
   })
 
   describe('fail', () => {
     it('should throw if value is not an instance of the given class', () => {
-      const shouldThrow = () => assertInstance({}, Date)
+      const shouldThrow = () => assertInstanceOf(Date)({})
       const { error } = attempt(shouldThrow)
       expect(error).toMatchObject({
         name: 'E_NOT_INSTANCE_OF',
         message: 'Value is not an instance of "Date"',
-        context: { expected: 'Date', received: 'object', ctor: Date },
+        context: {
+          expected: 'Date',
+          received: 'object',
+          ctor: Date,
+        },
       })
     })
 
     it('should throw if value is undefined', () => {
-      const shouldThrow = () => assertInstance(undefined, Date)
+      const shouldThrow = () => assertInstanceOf(Date)(undefined)
       const { error } = attempt(shouldThrow)
       expect(error).toMatchObject({
         name: 'E_NOT_INSTANCE_OF',
         message: 'Value is not an instance of "Date"',
-        context: { expected: 'Date', received: 'undefined', ctor: Date },
+        context: {
+          expected: 'Date',
+          received: 'undefined',
+          ctor: Date,
+        },
       })
     })
   })
@@ -34,7 +42,8 @@ describe('assertInstance', () => {
   describe('inference', () => {
     it('should predicate value as an instance of the given class', () => {
       const value: unknown = new Date()
-      assertInstance(value, Date)
+      const assertDate: (value: unknown) => asserts value is Date = assertInstanceOf(Date)
+      assertDate(value)
       expectTypeOf(value).toEqualTypeOf<Date>()
     })
   })

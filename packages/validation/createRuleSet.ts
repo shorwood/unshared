@@ -1,8 +1,8 @@
 import type { Immutable } from '@unshared/types'
 import type { RuleLike } from './createRule'
 import type { RuleChainLike, RuleChainResult } from './createRuleChain'
+import { createAssertionError } from './createAssertionError'
 import { createRuleChain } from './createRuleChain'
-import { ValidationError } from './createValidationError'
 
 /** A matrix of `RuleLike` values that can be used to create a rule set. */
 export type RuleSetLike = RuleLike[][]
@@ -31,7 +31,7 @@ export type RuleSet<T extends RuleSetLike = RuleSetLike> =
  *
  * @param chains The `RuleChain` values to create the set from.
  * @returns A rule chain that can be used to validate a value.
- * @example createRuleChain(isString, /\w+@example\.com/) // (value: unknown) => string
+ * @example createRuleSet([isStringNumber, Number.parseInt], [isNumber]) // (value: unknown) => number
  */
 export function createRuleSet<T extends RuleSetLike>(...chains: Immutable<T>): RuleSet<T> {
   const compiled = chains.map(chain => createRuleChain(...chain))
@@ -47,8 +47,8 @@ export function createRuleSet<T extends RuleSetLike>(...chains: Immutable<T>): R
 
     // --- If we reach this point, no rule chain passed. If so, throw the last error
     // --- that was caught, or throw a new validation error if no errors were caught.
-    throw new ValidationError({
-      name: 'E_RULE_SET_MISMATCH',
+    throw createAssertionError({
+      name: 'E_RULE_SET_ASSERTION_FAILED',
       message: 'No rule set passed.',
       context: { causes },
     })

@@ -1,3 +1,5 @@
+import type { JSONSchema7 } from 'json-schema'
+
 /**
  * A unique code that identifies the error. This code must start with `E_` and
  * be in uppercase snake case. It is recommended to use a concise, descriptive
@@ -15,10 +17,10 @@
  * 'E_SESSION_TOKEN_EXPIRED'
  * 'E_PASSWORD_TOO_SHORT'
  */
-export type ValidationErrorCode = `E_${Uppercase<string>}`
+export type AssertionErrorName = `E_${Uppercase<string>}`
 
-/** The options to create a new {@link ValidationError} instance. */
-export interface ValidationErrorOptions extends Pick<Error, 'message'> {
+/** The options to create a new {@link AssertionError} instance. */
+export interface AssertionErrorOptions extends Partial<Pick<Error, 'message'>> {
 
   /**
    * A unique code that identifies the error. This code must start with `E_` and
@@ -33,7 +35,7 @@ export interface ValidationErrorOptions extends Pick<Error, 'message'> {
    *
    * @example 'E_NUMBER_NOT_IN_RANGE'
    */
-  name: ValidationErrorCode
+  name?: AssertionErrorName
 
   /**
    * The context of the error. This is an object that contains additional and
@@ -44,29 +46,42 @@ export interface ValidationErrorOptions extends Pick<Error, 'message'> {
    * @example { value: 10, min: 0, max: 5 }
    */
   context?: Record<string, unknown>
+
+  /**
+   * A JSON Schema V7 compatible schema that describes the expected shape of the
+   * value that caused the error. This schema can also be used to infer the type
+   * of a parser at runtime and provide documentation for values that are passed
+   * to the function.
+   */
+  schema?: JSONSchema7
+
+  /**
+   * The cause of the error. This is the error that caused this validation error.
+   */
+  cause?: unknown
 }
 
 /**
- * A `ValidationError` is an error that is thrown when a value fails some kind
+ * A `AssertionError` is an error that is thrown when a value fails some kind
  * of validation. It is used to provide a more detailed and contextually
  * relevant error message to the user.
  *
  * @example
  * // Create a new validation error from a string.
- * throw new ValidationError('E_EMAIL_REQUIRED')
+ * throw new AssertionError('E_EMAIL_REQUIRED')
  *
  * // Create a new validation error from an error.
- * throw new ValidationError(new Error('E_EMAIL_REQUIRED'))
+ * throw new AssertionError(new Error('E_EMAIL_REQUIRED'))
  *
  * // Create a new validation error from options.
- * throw new ValidationError({
+ * throw new AssertionError({
  *   name: 'E_EMAIL_REQUIRED',
  *   message: 'An email is required.',
  *   context: { value: 'example@acme.com' },
  * })
  */
-export class ValidationError extends Error implements ValidationErrorOptions {
-  constructor(options?: Error | ValidationErrorCode | ValidationErrorOptions) {
+export class AssertionError extends Error implements AssertionErrorOptions {
+  constructor(options?: AssertionErrorName | AssertionErrorOptions | Error) {
     super()
 
     // --- If the options is a string, use it as the error code.
@@ -77,6 +92,8 @@ export class ValidationError extends Error implements ValidationErrorOptions {
     // --- If the options is an error instance, use it as the cause.
     else if (options instanceof Error) {
       this.cause = options
+      this.message = options.message
+      this.stack = options.stack
     }
 
     // --- Otherwise, copy the options to the instance.
@@ -84,16 +101,19 @@ export class ValidationError extends Error implements ValidationErrorOptions {
       if (options.name) this.name = options.name
       if (options.message) this.message = options.message
       if (options.context) this.context = options.context
+      if (options.schema) this.schema = options.schema
+      if (options.cause) this.cause = options.cause
     }
   }
 
-  name = 'E_VALIDATION_ERROR' as ValidationErrorCode
-  message = 'A validation error occurred.'
+  name = 'E_ASSERTION_ERROR' as AssertionErrorName
+  message = 'An assertion failed.'
   context: Record<string, unknown> = {}
+  schema?: JSONSchema7 = undefined
 }
 
 /**
- * Create a new `ValidationError` instance. A `ValidationError` is an error that
+ * Create a new `AssertionError` instance. A `AssertionError` is an error that
  * is thrown when a value fails some kind of validation. It is used to provide a
  * more detailed and contextually relevant error message to the user.
  *
@@ -101,14 +121,14 @@ export class ValidationError extends Error implements ValidationErrorOptions {
  * @returns The created validation error.
  * @example
  * // Create a new validation error from a string.
- * throw createValidationError('E_EMAIL_REQUIRED')
+ * throw createAssertionError('E_EMAIL_REQUIRED')
  *
  * // Create a new validation error from an error.
- * throw createValidationError(new Error('E_EMAIL_REQUIRED'))
+ * throw createAssertionError(new Error('E_EMAIL_REQUIRED'))
  *
  * // Create a new validation error from options.
- * throw createValidationError({ name: 'E_EMAIL_REQUIRED', stack: 'stack' })
+ * throw createAssertionError({ name: 'E_EMAIL_REQUIRED', stack: 'stack' })
  */
-export function createValidationError(options?: Error | ValidationErrorCode | ValidationErrorOptions): ValidationError {
-  return new ValidationError(options)
+export function createAssertionError(options?: AssertionErrorName | AssertionErrorOptions | Error): AssertionError {
+  return new AssertionError(options)
 }

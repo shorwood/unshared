@@ -1,17 +1,17 @@
 import type { RuleChainLike, RuleChainResult } from './createRuleChain'
+import type { RuleMapLike, RuleMapResult } from './createRuleMap'
 import type { RuleSetLike, RuleSetResult } from './createRuleSet'
-import type { SchemaLike, SchemaResult } from './createSchema'
 import { tries } from '@unshared/functions/tries'
 import { createRuleChain } from './createRuleChain'
+import { createRuleMap } from './createRuleMap'
 import { createRuleSet } from './createRuleSet'
-import { createSchema } from './createSchema'
 
 /** A set of rules or a schema that can be used to validate a value. */
-export type ParserLike = [SchemaLike] | RuleChainLike | RuleSetLike
+export type ParserLike = [RuleMapLike] | RuleChainLike | RuleSetLike
 
 /** The result of a parser function. */
 export type ParserResult<T extends ParserLike> =
-  T extends [SchemaLike] ? SchemaResult<T[0]> :
+  T extends [RuleMapLike] ? RuleMapResult<T[0]> :
     T extends RuleChainLike ? RuleChainResult<T> :
       T extends RuleSetLike ? RuleSetResult<T> :
         never
@@ -39,7 +39,7 @@ export function createParser<T extends ParserLike>(...rules: T): Parser<T> {
   const parse = tries(
     () => createRuleChain(...rules as RuleChainLike),
     () => createRuleSet(...rules as RuleSetLike),
-    () => createSchema(rules[0] as SchemaLike),
+    () => createRuleMap(rules[0] as RuleMapLike),
   )
 
   // --- If none of the functions return a valid parser, throw an error.

@@ -484,6 +484,9 @@ importers:
 
   packages/validation:
     dependencies:
+      '@types/json-schema':
+        specifier: 7.0.15
+        version: 7.0.15
       '@unshared/functions':
         specifier: workspace:*
         version: link:../functions
@@ -5272,6 +5275,7 @@ packages:
   rollup-plugin-visualizer@5.14.0:
     resolution: {integrity: sha512-VlDXneTDaKsHIw8yzJAFWtrzguoJ/LnQ+lMpoVfYJ3jJF4Ihe5oYLAqLklIK/35lgUY+1yEzCkHyZ1j4A5w5fA==}
     engines: {node: '>=18'}
+    deprecated: Contains unintended breaking changes
     hasBin: true
     peerDependencies:
       rolldown: 1.x

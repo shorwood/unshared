@@ -1,4 +1,4 @@
-import { ValidationError } from '../createValidationError'
+import { createAssertionError } from '../createAssertionError'
 import { assertString } from './assertString'
 
 /**
@@ -6,15 +6,16 @@ import { assertString } from './assertString'
  * string that has a length of zero or only contains whitespace characters.
  *
  * @param value The value to assert as an empty string.
- * @throws `ValidationError` if the value is not an empty string.
+ * @throws `AssertionError` if the value is not an empty string.
  * @example assertStringEmpty('') // void
  */
 export function assertStringEmpty(value: unknown): asserts value is string {
   assertString(value)
   if (value.trim().length === 0) return
-  throw new ValidationError({
+  throw createAssertionError({
     name: 'E_STRING_NOT_EMPTY',
     message: 'String is not empty.',
     context: { value },
+    schema: { type: 'string', maxLength: 0 },
   })
 }

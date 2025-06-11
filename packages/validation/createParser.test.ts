@@ -40,7 +40,7 @@ describe('createParser', () => {
     const shouldThrow = () => rule('a')
     const { error } = attempt(shouldThrow)
     expect(error).toMatchObject({
-      name: 'E_RULE_SET_MISMATCH',
+      name: 'E_RULE_SET_ASSERTION_FAILED',
       message: 'No rule set passed.',
       context: {
         causes: [

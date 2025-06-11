@@ -1,9 +1,20 @@
 import type { RuleResult } from './createRule'
 import { attempt } from '@unshared/functions'
-import { assertNumberInRange, assertString } from './assert/index'
+import { assertString } from './assert/index'
+import { createAssertionError } from './createAssertionError'
 import { createRule } from './createRule'
 
 describe('createRule', () => {
+  const assertNumberInRange = (value: unknown, min: number, max: number): asserts value is number => {
+    if (typeof value !== 'number' || value < min || value > max) {
+      throw createAssertionError({
+        name: 'E_NUMBER_OUT_OF_RANGE',
+        message: `Number is not between ${min} and ${max}.`,
+        context: { value, min, max },
+      })
+    }
+  }
+
   describe('from function', () => {
     it('should return the value if it is a string', () => {
       const rule = createRule(assertString)
@@ -76,7 +87,7 @@ describe('createRule', () => {
       expect(result).toBe(2)
     })
 
-    it('should throw a ValidationError if ype the value is out of range', () => {
+    it('should throw a AssertionError if ype the value is out of range', () => {
       const rule = createRule([assertNumberInRange, 1, 3])
       const shouldThrow = () => rule(0)
       const { error } = attempt(shouldThrow)

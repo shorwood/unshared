@@ -15,7 +15,7 @@ describe('assertStringUuid', () => {
       const shouldThrow = () => assertStringUuid('not-a-uuid')
       const { error } = attempt(shouldThrow)
       expect(error).toMatchObject({
-        name: 'E_NOT_UUID',
+        name: 'E_STRING_NOT_UUID',
         message: 'String is not a UUID.',
         context: { value: 'not-a-uuid' },
       })

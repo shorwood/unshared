@@ -1,4 +1,4 @@
-import { ValidationError } from '../createValidationError'
+import { createAssertionError } from '../createAssertionError'
 import { assertString } from './assertString'
 
 /** Regular expression that matches an email address. */
@@ -12,15 +12,16 @@ export type Email = `${string}@${string}`
  * specified by [RFC 5322](https://datatracker.ietf.org/doc/html/rfc5322).
  *
  * @param value The value to assert as an email.
- * @throws `ValidationError` if the value is not an email.
+ * @throws `AssertionError` if the value is not an email.
  * @example assertStringEmail('john.doe@acme.com') // void
  */
 export function assertStringEmail(value: unknown): asserts value is Email {
   assertString(value)
   if (EXP_EMAIL.test(value)) return
-  throw new ValidationError({
+  throw createAssertionError({
     name: 'E_STRING_NOT_EMAIL',
     message: 'String is not an email.',
     context: { value },
+    schema: { type: 'string', format: 'email' },
   })
 }

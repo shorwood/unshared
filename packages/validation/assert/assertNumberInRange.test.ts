@@ -4,24 +4,24 @@ import { assertNumberInRange } from './assertNumberInRange'
 describe('assertNumberInRange', () => {
   describe('pass', () => {
     it('should pass if value is a number between min and max', () => {
-      const result = assertNumberInRange(5, 1, 10)
+      const result = assertNumberInRange(1, 10)(5)
       expect(result).toBeUndefined()
     })
 
     it('should pass if value is equal to min', () => {
-      const result = assertNumberInRange(1, 1, 10)
+      const result = assertNumberInRange(1, 10)(1)
       expect(result).toBeUndefined()
     })
 
     it('should pass if value is equal to max', () => {
-      const result = assertNumberInRange(10, 1, 10)
+      const result = assertNumberInRange(1, 10)(10)
       expect(result).toBeUndefined()
     })
   })
 
   describe('fail', () => {
     it('should throw if value is less than min', () => {
-      const shouldThrow = () => assertNumberInRange(0, 1, 10)
+      const shouldThrow = () => assertNumberInRange(1, 10)(0)
       const { error } = attempt(shouldThrow)
       expect(error).toMatchObject({
         name: 'E_NUMBER_OUT_OF_RANGE',
@@ -31,7 +31,7 @@ describe('assertNumberInRange', () => {
     })
 
     it('should throw if value is greater than max', () => {
-      const shouldThrow = () => assertNumberInRange(11, 1, 10)
+      const shouldThrow = () => assertNumberInRange(1, 10)(11)
       const { error } = attempt(shouldThrow)
       expect(error).toMatchObject({
         name: 'E_NUMBER_OUT_OF_RANGE',
@@ -41,7 +41,7 @@ describe('assertNumberInRange', () => {
     })
 
     it('should throw if value is NaN', () => {
-      const shouldThrow = () => assertNumberInRange(Number.NaN, 1, 10)
+      const shouldThrow = () => assertNumberInRange(1, 10)(Number.NaN)
       const { error } = attempt(shouldThrow)
       expect(error).toMatchObject({
         name: 'E_NOT_NUMBER',
@@ -51,7 +51,7 @@ describe('assertNumberInRange', () => {
     })
 
     it('should throw if value is not a number', () => {
-      const shouldThrow = () => assertNumberInRange('5' as unknown, 1, 10)
+      const shouldThrow = () => assertNumberInRange(1, 10)('5' as unknown)
       const { error } = attempt(shouldThrow)
       expect(error).toMatchObject({
         name: 'E_NOT_NUMBER',
@@ -64,7 +64,8 @@ describe('assertNumberInRange', () => {
   describe('inference', () => {
     it('should predicate a number between min and max', () => {
       const value = 5 as unknown
-      assertNumberInRange(value, 1, 10)
+      const assertRange: (value: unknown) => asserts value is number = assertNumberInRange(1, 10)
+      assertRange(value)
       expectTypeOf(value).toEqualTypeOf<number>()
     })
   })

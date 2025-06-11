@@ -21,10 +21,10 @@
       "types": "./dist/assert.d.ts",
       "import": "./dist/assert.js"
     },
-    "./createArrayParser": {
-      "require": "./dist/createArrayParser.cjs",
-      "types": "./dist/createArrayParser.d.ts",
-      "import": "./dist/createArrayParser.js"
+    "./createAssertionError": {
+      "require": "./dist/createAssertionError.cjs",
+      "types": "./dist/createAssertionError.d.ts",
+      "import": "./dist/createAssertionError.js"
     },
     "./createParser": {
       "require": "./dist/createParser.cjs",
@@ -41,30 +41,25 @@
       "types": "./dist/createRuleChain.d.ts",
       "import": "./dist/createRuleChain.js"
     },
+    "./createRuleMap": {
+      "require": "./dist/createRuleMap.cjs",
+      "types": "./dist/createRuleMap.d.ts",
+      "import": "./dist/createRuleMap.js"
+    },
     "./createRuleSet": {
       "require": "./dist/createRuleSet.cjs",
       "types": "./dist/createRuleSet.d.ts",
       "import": "./dist/createRuleSet.js"
-    },
-    "./createSchema": {
-      "require": "./dist/createSchema.cjs",
-      "types": "./dist/createSchema.d.ts",
-      "import": "./dist/createSchema.js"
-    },
-    "./createValidationError": {
-      "require": "./dist/createValidationError.cjs",
-      "types": "./dist/createValidationError.d.ts",
-      "import": "./dist/createValidationError.js"
     },
     "./isRuleLike": {
       "require": "./dist/isRuleLike.cjs",
       "types": "./dist/isRuleLike.d.ts",
       "import": "./dist/isRuleLike.js"
     },
-    "./wrapAssert": {
-      "require": "./dist/wrapAssert.cjs",
-      "types": "./dist/wrapAssert.d.ts",
-      "import": "./dist/wrapAssert.js"
+    "./toAssert": {
+      "require": "./dist/toAssert.cjs",
+      "types": "./dist/toAssert.d.ts",
+      "import": "./dist/toAssert.js"
     },
     ".": {
       "require": "./dist/index.cjs",
@@ -78,6 +73,7 @@
     "LICENSE.md"
   ],
   "dependencies": {
+    "@types/json-schema": "7.0.15",
     "@unshared/functions": "workspace:*",
     "@unshared/string": "workspace:*",
     "@unshared/types": "workspace:*"
