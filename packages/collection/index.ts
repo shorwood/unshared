@@ -1,4 +1,5 @@
 export * from './alias'
+export * from './castObjectToArray'
 export * from './chunk'
 export * from './clone'
 export * from './collapse'

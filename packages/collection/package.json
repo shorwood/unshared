@@ -21,6 +21,11 @@
       "types": "./dist/alias.d.ts",
       "import": "./dist/alias.js"
     },
+    "./castObjectToArray": {
+      "require": "./dist/castObjectToArray.cjs",
+      "types": "./dist/castObjectToArray.d.ts",
+      "import": "./dist/castObjectToArray.js"
+    },
     "./chunk": {
       "require": "./dist/chunk.cjs",
       "types": "./dist/chunk.d.ts",
