@@ -32,7 +32,7 @@ export async function commit(input: string, apiKey: string) {
 
   const anthropic = createAnthropic({ apiKey })
   const response = streamText({
-    model: anthropic('claude-3-7-sonnet-latest'),
+    model: anthropic('claude-3-5-haiku-latest'),
     messages: [
       ...COMMIT_PROMPT,
       { content: `[LAST_COMMITS]\n${lastCommits}\n\n`, role: 'user' },
