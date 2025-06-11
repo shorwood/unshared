@@ -168,11 +168,12 @@ describe('loadObject', () => {
       expect(fileContent).toBe('{}\n')
     })
 
-    it('should set the `isCommitting` flag to `true` when committing', () => {
+    it('should set the `isCommitting` flag to `true` when committing', async() => {
       const result = new FSObject('/app/packages.json')
       expect(result.isCommitting).toBe(false)
-      void result.commit()
+      const promise = result.commit()
       expect(result.isCommitting).toBe(true)
+      await promise
     })
 
     it('should call the `commit` event when the file is isCommitting', async() => {
