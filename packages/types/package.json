@@ -653,9 +653,9 @@
     "LICENSE.md"
   ],
   "peerDependencies": {
-    "@types/node": ">=14.0.0"
+    "@types/node": ">=20.0.0"
   },
   "devDependencies": {
-    "@types/node": "22.10.2"
+    "@types/node": "24.0.0"
   }
 }

@@ -18,8 +18,7 @@ export default defineConfig({
     exclude,
     globals: true,
     include,
-    reporters: ['basic'],
-    setupFiles: './packages/setupTest.ts',
+    setupFiles: ['./packages/setupTest.ts'],
     testTimeout: process.env.DEBUGGER ? 100 : 0,
     pool: 'forks',
     poolOptions: {
@@ -28,6 +27,11 @@ export default defineConfig({
         maxForks: 32,
       },
     },
+
+    // --- Reporters configuration.
+    reporters: [
+      ['default', { summary: false }],
+    ],
 
     // --- Benchmark configuration.
     benchmark: {

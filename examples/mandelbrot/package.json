@@ -13,7 +13,7 @@
   "devDependencies": {
     "@chialab/esbuild-plugin-meta-url": "0.18.2",
     "@chialab/esbuild-plugin-worker": "0.18.1",
-    "tsup": "8.3.5",
-    "tsx": "4.19.2"
+    "tsup": "8.5.0",
+    "tsx": "4.20.0"
   }
 }
