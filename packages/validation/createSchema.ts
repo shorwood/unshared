@@ -3,7 +3,6 @@ import type { RuleLike, RuleResult } from './createRule'
 import type { RuleChainLike, RuleChainResult } from './createRuleChain'
 import type { RuleSetLike, RuleSetResult } from './createRuleSet'
 import { tries } from '@unshared/functions/tries'
-import { assertObject } from './assert/assertObject'
 import { createRuleChain } from './createRuleChain'
 import { createRuleSet } from './createRuleSet'
 import { ValidationError } from './createValidationError'
@@ -77,7 +76,6 @@ export function createSchema<T extends SchemaLike>(schema: Immutable<T>): Schema
   // --- Return a function that validates the value against the schema.
   // --- For each key in the schema, validate and transform the value.
   return function(object: unknown) {
-    assertObject(object)
     const result: Record<string, unknown> = {}
     const errors: Record<string, Error> = {}
 
@@ -90,8 +88,8 @@ export function createSchema<T extends SchemaLike>(schema: Immutable<T>): Schema
           const value = formValue.length > 1 ? formValue : formValue[0]
           result[key] = rule.call(object, value ?? undefined)
         }
-        else {
-          const value = object[key]
+        else if (typeof object === 'object' && object !== null) {
+          const value = object[key as keyof typeof object]
           result[key] = rule.call(object, value)
         }
       }
