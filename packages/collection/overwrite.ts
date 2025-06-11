@@ -1,10 +1,15 @@
 /**
  * Overwrites the values of `object` with the values of `source`. This method
  * is like `Object.assign` except that it deletes properties that are not in
- * the source object.
+ * the source object. Therefore mutating the original object while keeping
+ * the memory reference intact.
  *
- * @param object The object to overwrite.
- * @param source The source object.
+ * This can be useful when you want to ensure that an object only contains
+ * properties that are present in the source object, effectively resetting
+ * the object to the state defined by the source.
+ *
+ * @param object The object to overwrite with the source object.
+ * @param source The source object to overwrite the object with.
  * @returns The mutated object.
  * @example
  * // Define an object.
