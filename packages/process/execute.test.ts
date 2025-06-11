@@ -1,5 +1,5 @@
 import type { Awaitable } from '@unshared/functions'
-import { ChildProcess } from 'node:child_process'
+import { ChildProcess, spawnSync } from 'node:child_process'
 import { Readable } from 'node:stream'
 import { execute } from './execute'
 
@@ -70,9 +70,12 @@ describe('execute', () => {
   })
 
   describe('process substitution', () => {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
+    const shell = spawnSync('which', ['bash'], { encoding: 'utf8' }).stdout.trim()
+
     it('should handle Buffer arguments with process substitution', async() => {
       const buffer = Buffer.from('Hello, world!')
-      const result = await execute('cat', [buffer], { encoding: 'utf8' })
+      const result = await execute('cat', [buffer], { encoding: 'utf8', shell })
       expect(result).toBe('Hello, world!')
       expectTypeOf(result).toEqualTypeOf<string>()
     })
@@ -80,21 +83,21 @@ describe('execute', () => {
     it('should handle multiple Buffer arguments with process substitution', async() => {
       const a = Buffer.from('Hello')
       const b = Buffer.from(', world?')
-      const result = await execute('cat', [a, b], { encoding: 'utf8' })
+      const result = await execute('cat', [a, b], { encoding: 'utf8', shell })
       expect(result).toBe('Hello, world?')
       expectTypeOf(result).toEqualTypeOf<string>()
     })
 
     it('should handle Readable arguments with process substitution', async() => {
       const stream = Readable.from(['Hello, world!'])
-      const result = await execute('cat', [stream], { encoding: 'utf8' })
+      const result = await execute('cat', [stream], { encoding: 'utf8', shell })
       expect(result).toBe('Hello, world!')
       expectTypeOf(result).toEqualTypeOf<string>()
     })
 
     it('should handle Array<number> arguments with process substitution', async() => {
       const array = Uint8Array.from([0x48, 0x65, 0x6C, 0x6C, 0x6F])
-      const result = await execute('cat', [array], { encoding: 'utf8' })
+      const result = await execute('cat', [array], { encoding: 'utf8', shell })
       expect(result).toBe('Hello')
       expectTypeOf(result).toEqualTypeOf<string>()
     })

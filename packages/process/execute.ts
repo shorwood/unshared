@@ -104,7 +104,7 @@ export function execute(command: string, parameters: BinaryArgument[] | undefine
 export function execute(command: string, parameters?: BinaryArgument[]): Awaitable<ChildProcess, Buffer>
 export function execute(command: string, parameters: BinaryArgument[] = [], options: BufferEncoding | ExecuteOptions = {}): Awaitable<ChildProcess, Buffer | string> {
   if (typeof options === 'string') options = { encoding: options }
-  const { encoding, stdin, ...spawnOptions } = options
+  const { encoding, stdin, shell, ...spawnOptions } = options
   const resolvable = createResolvable<Buffer | string>()
 
   // --- If the argument is some kind of binary data, we need to create
@@ -129,9 +129,9 @@ export function execute(command: string, parameters: BinaryArgument[] = [], opti
   })
 
   // --- Spawn the process with the parameters and options. We use the
-  // --- `/bash` option to ensure that process substitution works correctly.
+  // --- `/bin/bash` option to ensure that process substitution works correctly.
   const childProcess = spawn(command, spawnParameters, {
-    shell: sockets.length > 0 ? '/bin/bash' : undefined,
+    shell: shell ?? (sockets.length > 0 ? '/bin/bash' : undefined),
     stdio: ['pipe', 'pipe', 'inherit'],
     ...spawnOptions,
   })
