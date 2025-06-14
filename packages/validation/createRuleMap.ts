@@ -4,6 +4,8 @@ import type { RuleLike, RuleResult } from './createRule'
 import type { RuleChainLike, RuleChainResult } from './createRuleChain'
 import type { RuleSetLike, RuleSetResult } from './createRuleSet'
 import { tries } from '@unshared/functions/tries'
+import { assertNotNull } from './assert/assertNotNull'
+import { assertNotUndefined } from './assert/assertNotUndefined'
 import { createAssertionError } from './createAssertionError'
 import { createRuleChain } from './createRuleChain'
 import { createRuleSet } from './createRuleSet'
@@ -92,6 +94,8 @@ export function createRuleMap<T extends RuleMapLike>(ruleMap: Immutable<T>): Rul
     const errors: Record<string, Error> = {}
 
     // --- For each key in the schema, validate and transform the value.
+    assertNotNull(object)
+    assertNotUndefined(object)
     for (const key of ruleMapkeys) {
       const rule = ruleMapObject[key]
 

@@ -170,4 +170,28 @@ describe('createRuleMap', () => {
       expect(result).toStrictEqual({ file: 'text/plain' })
     })
   })
+
+  describe('edge cases', () => {
+    it('should throw "E_IS_NULL" if the input is null', () => {
+      const parse = createRuleMap({ name: assertString })
+      const shouldThrow = () => parse(null)
+      const { error } = attempt(shouldThrow)
+      expect(error).toMatchObject({
+        name: 'E_IS_NULL',
+        message: 'Value is null.',
+        context: { value: null },
+      })
+    })
+
+    it('should throw "E_IS_UNDEFINED" if the input is undefined', () => {
+      const parse = createRuleMap({ name: assertString })
+      const shouldThrow = () => parse(undefined)
+      const { error } = attempt(shouldThrow)
+      expect(error).toMatchObject({
+        name: 'E_IS_UNDEFINED',
+        message: 'Value is undefined.',
+        context: { value: undefined },
+      })
+    })
+  })
 })
