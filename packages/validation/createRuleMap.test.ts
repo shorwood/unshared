@@ -172,6 +172,13 @@ describe('createRuleMap', () => {
   })
 
   describe('edge cases', () => {
+    it('should attempt to parse the properties of a string', () => {
+      const parse = createRuleMap({ length: assertNumber })
+      const result = parse('Hello')
+      expect(result).toStrictEqual({ length: 5 })
+      expectTypeOf(result).toMatchObjectType<{ length: number }>()
+    })
+
     it('should throw "E_IS_NULL" if the input is null', () => {
       const parse = createRuleMap({ name: assertString })
       const shouldThrow = () => parse(null)

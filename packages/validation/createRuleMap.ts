@@ -135,8 +135,8 @@ export function createRuleMap<T extends RuleMapLike>(ruleMap: Immutable<T>): Rul
             const value = formValue.length > 1 ? formValue : formValue[0]
             result[key] = rule.call(object, value ?? undefined)
           }
-          else if (typeof object === 'object' && object !== null) {
-            const value = object[key as keyof typeof object]
+          else {
+            const value = (object as object)[key as keyof typeof object]
             result[key] = rule.call(object, value)
           }
         }
