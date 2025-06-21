@@ -29,7 +29,6 @@ describe('parseRequestBody', () => {
       const context = { init: { method: 'post' } } as RequestContext
       parseRequestBody(context, { body: formData })
       expect(context.init.body).toBeInstanceOf(FormData)
-      expect(context.init.headers).toStrictEqual({ 'Content-Type': 'multipart/form-data' })
     })
 
     it('should set body for ReadableStream data', () => {

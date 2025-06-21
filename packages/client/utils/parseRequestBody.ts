@@ -23,8 +23,6 @@ export function parseRequestBody(context: Partial<RequestContext>, options: Fetc
   // --- If data contains a `File` object, create a FormData object.
   if (isFormDataLike(body)) {
     context.init.body = toFormData(body)
-    context.init.headers = context.init.headers ?? {}
-    setHeader(context.init.headers, 'Content-Type', 'multipart/form-data')
   }
 
   // --- If the data is a `ReadableStream`, pass it directly to the body.
