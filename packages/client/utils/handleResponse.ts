@@ -1,5 +1,6 @@
 import type { RequestOptions } from './request'
 import { handleResponseStreamJson } from './handleResponseStreamJson'
+import { handleResponseStreamSse } from './handleResponseStreamSse'
 
 /**
  * Handle a request response. This function will parse the response based on the content type and
@@ -28,22 +29,13 @@ export async function handleResponse(response: Response, options: RequestOptions
     return
   }
 
-  // --- If the response is a text content type, return the text response.
-  if (contentType?.startsWith('text/')) {
-    return await response.text()
-      .then((data) => {
-        if (onData) onData(data)
-        if (onSuccess) onSuccess(response)
-        return data
-      })
-      .catch((error: Error) => {
-        if (onError) onError(error)
-        throw error
-      })
-      .finally(() => {
-        if (onEnd) onEnd(response)
-      })
-  }
+  // --- If the response is a application/stream+json, return an iterator that parses the JSON.
+  if (contentType?.startsWith('application/stream+json'))
+    return handleResponseStreamJson(response, options)
+
+  // --- If the response is a text/event-stream, return an iterator that parses the SSE events.
+  if (contentType?.startsWith('text/event-stream'))
+    return handleResponseStreamSse(response, options)
 
   // --- If the response is a application/json, parse the JSON and return it.
   if (contentType?.startsWith('application/json')) {
@@ -62,9 +54,22 @@ export async function handleResponse(response: Response, options: RequestOptions
       })
   }
 
-  // --- If the response is a application/stream+json, return an iterator that parses the JSON.
-  if (contentType?.startsWith('application/stream+json'))
-    return handleResponseStreamJson(response, options)
+  // --- If the response is a text content type (but not event-stream), return the text response.
+  if (contentType?.startsWith('text/')) {
+    return await response.text()
+      .then((data) => {
+        if (onData) onData(data)
+        if (onSuccess) onSuccess(response)
+        return data
+      })
+      .catch((error: Error) => {
+        if (onError) onError(error)
+        throw error
+      })
+      .finally(() => {
+        if (onEnd) onEnd(response)
+      })
+  }
 
   // --- Otherwise, fallback to returning the response body as-is.
   if (onSuccess) onSuccess(response)

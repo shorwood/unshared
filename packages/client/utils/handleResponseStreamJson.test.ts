@@ -2,16 +2,20 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { handleResponseStreamJson } from './handleResponseStreamJson'
 
+function createResponse(...data: string[]): Response {
+  const body = new ReadableStream({
+    start(controller) {
+      for (const item of data) controller.enqueue(new TextEncoder().encode(`${item}\0`))
+      controller.close()
+    },
+  })
+  return new Response(body)
+}
+
 describe('handleResponseStreamJson', () => {
   describe('iterable', () => {
     it('should yield parsed JSON objects from the stream', async() => {
-      const body = new ReadableStream({
-        start(controller) {
-          controller.enqueue(new TextEncoder().encode('{"key":"value"}\0'))
-          controller.close()
-        },
-      })
-      const response = new Response(body)
+      const response = createResponse('{"key":"value"}')
       const result = handleResponseStreamJson(response, {})
       const data = []
       for await (const item of result) data.push(item)
@@ -19,13 +23,7 @@ describe('handleResponseStreamJson', () => {
     })
 
     it('should call onData callback for each parsed JSON object', async() => {
-      const body = new ReadableStream({
-        start(controller) {
-          controller.enqueue(new TextEncoder().encode('{"key":"value"}\0'))
-          controller.close()
-        },
-      })
-      const response = new Response(body)
+      const response = createResponse('{"key":"value"}')
       const onData = vi.fn()
       const result = handleResponseStreamJson(response, { onData })
       for await (const _ of result) { /* empty */ }
@@ -34,13 +32,7 @@ describe('handleResponseStreamJson', () => {
     })
 
     it('should call onError callback if an error occurs', async() => {
-      const body = new ReadableStream({
-        start(controller) {
-          controller.enqueue(new TextEncoder().encode('invalid json\0'))
-          controller.close()
-        },
-      })
-      const response = new Response(body)
+      const response = createResponse('invalid json\0')
       const onError = vi.fn()
       const result = handleResponseStreamJson(response, { onError })
       try { for await (const _ of result) { /* empty */ } }
@@ -50,13 +42,7 @@ describe('handleResponseStreamJson', () => {
     })
 
     it('should call onEnd callback when the stream ends', async() => {
-      const body = new ReadableStream({
-        start(controller) {
-          controller.enqueue(new TextEncoder().encode('{"key":"value"}\0'))
-          controller.close()
-        },
-      })
-      const response = new Response(body)
+      const response = createResponse('{"key":"value"}\0')
       const onEnd = vi.fn()
       const result = handleResponseStreamJson(response, { onEnd })
       for await (const _ of result) { /* empty */ }
@@ -67,14 +53,7 @@ describe('handleResponseStreamJson', () => {
 
   describe('awaitable', () => {
     it('should return an array of parsed JSON objects', async() => {
-      const body = new ReadableStream({
-        start(controller) {
-          controller.enqueue(new TextEncoder().encode('{"key":"value1"}\0'))
-          controller.enqueue(new TextEncoder().encode('{"key":"value2"}\0'))
-          controller.close()
-        },
-      })
-      const response = new Response(body)
+      const response = createResponse('{"key":"value1"}\0', '{"key":"value2"}\0')
       const result = handleResponseStreamJson(response, {})
       await expect(result).resolves.toEqual([{ key: 'value1' }, { key: 'value2' }])
     })

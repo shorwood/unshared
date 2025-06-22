@@ -1,5 +1,15 @@
 import { handleResponse } from './handleResponse'
 
+function createStreamResponse(data: string, contentType = 'text/event-stream'): Response {
+  const body = new ReadableStream({
+    start(controller) {
+      controller.enqueue(new TextEncoder().encode(data))
+      controller.close()
+    },
+  })
+  return new Response(body, { headers: { 'Content-Type': contentType } })
+}
+
 describe('handleResponse', () => {
   describe('error', () => {
     it('should throw an error for a non-OK response', async() => {
@@ -226,6 +236,46 @@ describe('handleResponse', () => {
       const response = new Response(body, { status: 200, headers: { 'Content-Type': 'application/octet-stream' } })
       const result = handleResponse(response, {})
       await expect(result).resolves.toBeInstanceOf(ReadableStream)
+    })
+  })
+
+  describe('stream json', () => {
+    it('should return stream JSON handler for application/stream+json content type', async() => {
+      const response = createStreamResponse('{"key":"value"}\0', 'application/stream+json')
+      const result = await handleResponse(response, {}) as AsyncIterable<any>
+      expect(result).toBeDefined()
+      const data = []
+      for await (const item of result) data.push(item)
+      expect(data).toEqual([{ key: 'value' }])
+    })
+
+    it('should return stream JSON handler for application/stream+json content type with charset', async() => {
+      const response = createStreamResponse('{"key":"value"}\0', 'application/stream+json; charset=utf-8')
+      const result = await handleResponse(response, {}) as AsyncIterable<any>
+      expect(result).toBeDefined()
+      const data = []
+      for await (const item of result) data.push(item)
+      expect(data).toEqual([{ key: 'value' }])
+    })
+  })
+
+  describe('sse stream', () => {
+    it('should return SSE stream handler for text/event-stream content type', async() => {
+      const response = createStreamResponse('data: Hello, world!\n\n', 'text/event-stream')
+      const result = await handleResponse(response, {}) as AsyncIterable<any>
+      expect(result).toBeDefined()
+      const data = []
+      for await (const item of result) data.push(item)
+      expect(data).toEqual([{ data: 'Hello, world!' }])
+    })
+
+    it('should return SSE stream handler for text/event-stream content type with charset', async() => {
+      const response = createStreamResponse('data: Hello, world!\n\n', 'text/event-stream; charset=utf-8')
+      const result = await handleResponse(response, {}) as AsyncIterable<any>
+      expect(result).toBeDefined()
+      const data = []
+      for await (const item of result) data.push(item)
+      expect(data).toEqual([{ data: 'Hello, world!' }])
     })
   })
 })
