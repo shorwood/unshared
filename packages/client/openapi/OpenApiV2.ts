@@ -86,9 +86,9 @@ export declare namespace OpenAPIV2 {
   /* Response                                                              */
   /*************************************************************************/
 
-  export type ResponseBody<T> =
-    T extends { responses: Record<200, { schema: infer S }> }
-      ? NonNullable<InferSchema<S>>
+  export type ResponseBody<T, Status extends number = number> =
+    T extends { responses: Record<Status, { schema: infer Schema }> }
+      ? NonNullable<InferSchema<Schema>>
       : never
 
   export type Response<T> =

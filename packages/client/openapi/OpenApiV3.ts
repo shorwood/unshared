@@ -38,8 +38,8 @@ export declare namespace OpenAPIV3 {
   /* Response                                                              */
   /*************************************************************************/
 
-  export type ResponseBody<U> =
-    U extends { responses: Record<200, { content: Record<string, { schema: infer Schema }> }> }
+  export type ResponseBody<U, Status extends number = number> =
+    U extends { responses: Record<Status, { content: Record<string, { schema: infer Schema }> }> }
       ? NonNullable<OpenAPIV2.InferSchema<Schema>>
       : never
 
