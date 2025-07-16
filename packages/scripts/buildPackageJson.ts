@@ -57,7 +57,7 @@ async function createPackageBin(options: CreatePackageBinOptions): Promise<Recor
   for await (const path of packageBinFiles) {
     const outPathRelative = relative(packagePath, outPath)
     const importPath = `./${join(outPathRelative, path)}`
-    const binName = /cli\.(?<name>.+?)\.(ts|mjs|cjs|js)$/.exec(path)?.groups?.name
+    const binName = /cli\.([a-z-]+)\.(ts|mjs|cjs|js)$/.exec(path)?.[1]
     packageBin[binName ?? defaultBinName] = importPath
   }
 
