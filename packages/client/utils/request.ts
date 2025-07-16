@@ -1,7 +1,13 @@
+import type { Awaitable } from '@unshared/functions/awaitable'
 import type { ObjectLike } from '@unshared/types'
 import type { FetchMethod, FetchOptions } from './parseRequest'
 import { fetch } from './fetch'
 import { handleResponse } from './handleResponse'
+
+export type RequestOptionsOnData<T> =
+  T extends AsyncGenerator<infer U, any, any> ? (data: U) => any
+    : T extends Awaitable<AsyncGenerator<infer U, any, any>> ? (data: U) => any
+      : (data: T) => any
 
 export interface RequestOptions<
   Method extends FetchMethod = FetchMethod,
@@ -24,7 +30,7 @@ export interface RequestOptions<
    * The callback that is called when data is received from the request. This callback
    * will be called for each chunk of data that is received from the request.
    */
-  onData?: (data: Data) => any
+  onData?: RequestOptionsOnData<Data>
 
   /**
    * The callback that is called when the request is successful. This callback will be

@@ -4,13 +4,13 @@ import type { RequestOptions } from './request'
 import { awaitable } from '@unshared/functions/awaitable'
 
 /** SSE event data structure */
-export interface SseEvent {
+export interface SseEvent<T = string> {
 
   /** The event type */
   event?: string
 
   /** The event data */
-  data: string
+  data: T
 
   /** The event ID */
   id?: string
@@ -19,121 +19,105 @@ export interface SseEvent {
   retry?: number
 }
 
-async function * createResponseStreamSseIterator(response: Response, options: RequestOptions): AsyncGenerator<SseEvent, void, unknown> {
+async function * createResponseStreamSseIterator<T>(response: Response, options: RequestOptions): AsyncGenerator<SseEvent<T>, void, unknown> {
   const { onError, onSuccess, onData, onEnd } = options
   try {
     const body = response.body
     if (body === null) throw new Error('Could not read the response body, it is empty.')
     const reader = body.getReader()
     const decoder = new TextDecoder()
-    let buffer = ''
 
     // SSE parsing state buffers according to spec
-    let dataBuffer = ''
-    let eventTypeBuffer = ''
-    let lastEventIdBuffer = ''
-    let retryBuffer: number | undefined
+    let buffer = ''
+    let bufferData = ''
+    let bufferEvent = ''
+    let bufferId = ''
+    let bufferRetry: number | undefined
+
+    function flush() {
+      if (bufferData === '') return
+      if (bufferData.endsWith('\n')) bufferData = bufferData.slice(0, -1)
+      const sseEvent = {} as SseEvent<unknown>
+
+      // --- Set `event`, `id`, and `retry` fields if they are set
+      if (bufferEvent !== '') sseEvent.event = bufferEvent
+      if (bufferId !== '') sseEvent.id = bufferId
+      if (bufferRetry !== undefined) sseEvent.retry = bufferRetry
+
+      // --- Attempt to parse the `data` field as JSON if it looks like an object
+      try { sseEvent.data = JSON.parse(bufferData) as object }
+      catch { sseEvent.data = bufferData }
+
+      // --- Reset buffers for the next event
+      bufferData = ''
+      bufferEvent = ''
+      bufferId = ''
+      bufferRetry = undefined
+
+      return sseEvent as SseEvent<T>
+    }
 
     while (true) {
       const { done, value } = await reader.read()
       if (done) break
 
+      // --- Split on all valid line endings: CRLF, LF, CR
+      // --- Additionally, keep the last incomplete line in the buffer
       buffer += decoder.decode(value, { stream: true })
-
-      // Split on all valid line endings: CRLF, LF, CR
       const lines = buffer.split(/\r\n|\n|\r/)
-
-      // Keep the last incomplete line in the buffer
       buffer = lines.pop() ?? ''
 
       for (const line of lines) {
-        // Empty line dispatches the event
+
+        // --- Empty line dispatches the event.
         if (line === '') {
-          if (dataBuffer !== '') {
-            // Remove final trailing newline from data buffer as per spec
-            if (dataBuffer.endsWith('\n'))
-              dataBuffer = dataBuffer.slice(0, -1)
-
-            const sseEvent: SseEvent = { data: dataBuffer }
-            if (eventTypeBuffer !== '') sseEvent.event = eventTypeBuffer
-            if (lastEventIdBuffer !== '') sseEvent.id = lastEventIdBuffer
-            if (retryBuffer !== undefined) sseEvent.retry = retryBuffer
-
-            if (onData) onData(sseEvent)
-            yield sseEvent
-          }
-
-          // Reset buffers
-          dataBuffer = ''
-          eventTypeBuffer = ''
-          // Note: lastEventIdBuffer and retryBuffer persist across events
+          const event = flush()
+          if (event) yield event
+          if (event && onData) onData(event)
           continue
         }
 
-        // Skip comment lines (start with colon)
+        // --- Skip comment lines (start with colon)
         if (line.startsWith(':')) continue
 
-        // Parse field
+        // --- Parse field name and value by finding the first colon.
         const colonIndex = line.indexOf(':')
         let fieldName: string
         let fieldValue: string
 
+        // --- No colon means field name only, empty value
         if (colonIndex === -1) {
-          // No colon means field name only, empty value
           fieldName = line
           fieldValue = ''
         }
         else {
           fieldName = line.slice(0, colonIndex)
           fieldValue = line.slice(colonIndex + 1)
-          // Remove single leading space if present
-          if (fieldValue.startsWith(' '))
-            fieldValue = fieldValue.slice(1)
-
+          if (fieldValue.startsWith(' ')) fieldValue = fieldValue.slice(1)
         }
 
-        // Process field according to spec
-        switch (fieldName) {
-          case 'event': {
-            eventTypeBuffer = fieldValue
-            break
-          }
-          case 'data': {
-            dataBuffer += `${fieldValue}\n`
-            break
-          }
-          case 'id': {
-            if (!fieldValue.includes('\0')) { // spec: id cannot contain null chars
-              lastEventIdBuffer = fieldValue
-            }
-            break
-          }
-          case 'retry': {
-            // Must be ASCII digits only
-            if (/^\d+$/.test(fieldValue))
-              retryBuffer = Number.parseInt(fieldValue, 10)
-
-            break
-          }
-          // Other fields are ignored per spec
+        // --- Extract event type, data, id, and retry fields according to spec
+        // --- Note that id must not contain null characters and retry must be a valid number.
+        if (fieldName === 'event') {
+          bufferEvent = fieldValue
+        }
+        else if (fieldName === 'data') {
+          bufferData += `${fieldValue}\n`
+        }
+        else if (fieldName === 'id') {
+          if (!fieldValue.includes('\0'))
+            bufferId = fieldValue
+        }
+        else if (fieldName === 'retry' && /^\d+$/.test(fieldValue)) {
+          bufferRetry = Number.parseInt(fieldValue, 10)
         }
       }
     }
 
-    // Handle any remaining event in buffer at end of stream
-    if (dataBuffer !== '') {
-      if (dataBuffer.endsWith('\n'))
-        dataBuffer = dataBuffer.slice(0, -1)
-
-      const sseEvent: SseEvent = { data: dataBuffer }
-      if (eventTypeBuffer !== '') sseEvent.event = eventTypeBuffer
-      if (lastEventIdBuffer !== '') sseEvent.id = lastEventIdBuffer
-      if (retryBuffer !== undefined) sseEvent.retry = retryBuffer
-
-      if (onData) onData(sseEvent)
-      yield sseEvent
-    }
-
+    // --- Handle any remaining event in buffer at end of stream
+    const event = flush()
+    if (event) yield event
+    if (event && onData) onData(event)
     if (onSuccess) onSuccess(response)
   }
   catch (error) {
@@ -154,7 +138,7 @@ async function * createResponseStreamSseIterator(response: Response, options: Re
  * @param options The options to pass to the request.
  * @returns An awaitable iterator that yields the parsed SSE events.
  */
-export function handleResponseStreamSse(response: Response, options: RequestOptions): Awaitable<AsyncIterable<SseEvent>, SseEvent[]> {
-  const responseIterator = createResponseStreamSseIterator(response, options)
+export function handleResponseStreamSse<T>(response: Response, options: RequestOptions): Awaitable<AsyncIterable<SseEvent<T>>, Array<SseEvent<T>>> {
+  const responseIterator = createResponseStreamSseIterator<T>(response, options)
   return awaitable(responseIterator)
 }

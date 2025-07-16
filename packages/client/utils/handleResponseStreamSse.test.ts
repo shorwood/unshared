@@ -181,4 +181,23 @@ describe('handleResponseStreamSse', () => {
       ])
     })
   })
+
+  describe('json', () => {
+    it('should try to parse JSON data', async() => {
+      const response = createEventStreamResponse('data: {"message": "Hello, world!"}\n\n')
+      const result = handleResponseStreamSse(response, {})
+      const data = []
+      for await (const item of result) data.push(item)
+      expect(data).toEqual([{ data: { message: 'Hello, world!' } }])
+    })
+
+    it('should call onData with parsed JSON data', async() => {
+      const response = createEventStreamResponse('data: {"message": "Hello, world!"}\n\n')
+      const onData = vi.fn()
+      const result = handleResponseStreamSse(response, { onData })
+      for await (const _ of result) { /* empty */ }
+      expect(onData).toHaveBeenCalledOnce()
+      expect(onData).toHaveBeenCalledWith({ data: { message: 'Hello, world!' } })
+    })
+  })
 })

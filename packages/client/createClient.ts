@@ -12,7 +12,10 @@ type Data<T extends RequestOptions> = T extends RequestOptions<any, any, any, an
 type Routes = Record<string, RequestOptions>
 type Channels = Record<string, ConnectOptions>
 
-export class Client<T extends Routes = Routes, U extends Channels = Channels> {
+export class Client<
+  T extends Routes = Routes,
+  U extends Channels = Channels,
+> {
 
   /**
    * Create a new client for the application.
