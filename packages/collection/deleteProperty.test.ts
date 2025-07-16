@@ -63,4 +63,30 @@ describe('deleteProperty', () => {
       expect(set).toMatchObject(expected)
     })
   })
+
+  describe('prevent prototype pollution', () => {
+    const dangerousKeys = ['__proto__', 'constructor', 'prototype']
+
+    for (const key of dangerousKeys) {
+      it(`should throw an error if the path is "${key}"`, () => {
+        const shouldThrow = () => deleteProperty({}, key)
+        expect(shouldThrow).toThrow(`Prototype pollution attempt detected: ${key}`)
+      })
+
+      it(`should throw an error if the path contains "${key}" at the end`, () => {
+        const shouldThrow = () => deleteProperty({ a: { b: {} } }, `a.b.${key}`)
+        expect(shouldThrow).toThrow(`Prototype pollution attempt detected: ${key}`)
+      })
+
+      it(`should throw an error if the path contains "${key}" in the middle`, () => {
+        const shouldThrow = () => deleteProperty({ a: { b: {} } }, `a.${key}.c`)
+        expect(shouldThrow).toThrow(`Prototype pollution attempt detected: ${key}`)
+      })
+
+      it(`should throw an error if the path contains "${key}" at the beginning`, () => {
+        const shouldThrow = () => deleteProperty({ a: { b: {} } }, `${key}.c`)
+        expect(shouldThrow).toThrow(`Prototype pollution attempt detected: ${key}`)
+      })
+    }
+  })
 })

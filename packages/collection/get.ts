@@ -18,15 +18,21 @@ import type { Get, Path } from '@unshared/types'
  * get(object, 'foo.bar.0') // 'baz'
  */
 export function get<T, P extends Path<T>>(object: T, path: P): Get<T, P>
-export function get(object: unknown, path: string): unknown
-export function get(object: unknown, path: string) {
+export function get(object: unknown, path: PropertyKey): unknown
+export function get(object: unknown, path: PropertyKey) {
+
+  // --- If path is not a string, return the value directly.
+  if (typeof path !== 'string') {
+    // @ts-expect-error: Invalid keys will be caught by the try/catch.
+    return object[path] as unknown
+  }
+
   const keys = path.split('.')
 
   // --- Loop through the path and get the object.
   let result = object
   for (const key of keys) {
     if (result === undefined || result === null) return
-
     // @ts-expect-error: Invalid keys will be caught by the try/catch.
     result = result[key] as unknown
   }
