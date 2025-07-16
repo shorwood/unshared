@@ -21,6 +21,11 @@
       "types": "./dist/constants.d.ts",
       "import": "./dist/constants.js"
     },
+    "./createVariant": {
+      "require": "./dist/createVariant.cjs",
+      "types": "./dist/createVariant.d.ts",
+      "import": "./dist/createVariant.js"
+    },
     "./preset": {
       "require": "./dist/preset.cjs",
       "types": "./dist/preset.d.ts",
@@ -30,11 +35,6 @@
       "require": "./dist/rules.cjs",
       "types": "./dist/rules.d.ts",
       "import": "./dist/rules.js"
-    },
-    "./utils": {
-      "require": "./dist/utils.cjs",
-      "types": "./dist/utils.d.ts",
-      "import": "./dist/utils.js"
     },
     "./variants": {
       "require": "./dist/variants.cjs",
