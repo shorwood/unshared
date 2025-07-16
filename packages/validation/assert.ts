@@ -7,7 +7,7 @@ import { toAssert } from './toAssert'
 export * from './assert/index'
 
 /** Helper type to convert `assertFoo` to `foo` */
- type AssertName<K extends string> =
+type AssertName<K extends string> =
   K extends `assert${infer Rest}` ? Uncapitalize<Rest> : never
 
 /** Type of the {@linkcode ASSERT} object, which contains all assert functions. */

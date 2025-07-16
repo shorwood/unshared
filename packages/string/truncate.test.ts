@@ -38,14 +38,12 @@ describe('truncate', () => {
     })
 
     it('should throw a type error when the length is negative', () => {
-      // @ts-expect-error: Invalid argument.
       const shouldThrow = () => truncate('Hello, World!', -1)
       expect(shouldThrow).toThrow(RangeError)
       expect(shouldThrow).toThrow('The length must be a positive integer.')
     })
 
     it('should throw a type error when the length is a float', () => {
-      // @ts-expect-error: Invalid argument.
       const shouldThrow = () => truncate('Hello, World!', 1.1)
       expect(shouldThrow).toThrow(TypeError)
       expect(shouldThrow).toThrow('The length must be a safe integer.')

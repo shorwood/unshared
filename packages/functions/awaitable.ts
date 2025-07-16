@@ -47,7 +47,7 @@ export function awaitable<T>(iterable: AsyncIterable<T>): Awaitable<AsyncIterabl
  * promise when and only when it is accessed.
  *
  * @param object The object to wrap.
- * @param promise The promise or promise factory to wrap the object with.
+ * @param createPromise The promise or promise factory to wrap the object with.
  * @returns The awaitable object.
  * @example
  * // Declare a function that resolves to a different value.
@@ -60,7 +60,7 @@ export function awaitable<T>(iterable: AsyncIterable<T>): Awaitable<AsyncIterabl
  * const itemsSync = getItems() // [{ id: 1 }, { id: 2 }, { id: 3 }]
  * await itemsSync() // [{ id: 4 }, { id: 5 }]
  */
-export function awaitable<T extends object, U>(object: T, promise: FunctionAsync<U> | Promise<U>): Awaitable<T, U>
+export function awaitable<T extends object, U>(object: T, createPromise: FunctionAsync<U> | Promise<U>): Awaitable<T, U>
 export function awaitable(object: object, createPromise?: FunctionAsync<unknown> | Promise<unknown>) {
 
   // --- If `object` is an async iterable, we must extend it with the promise methods

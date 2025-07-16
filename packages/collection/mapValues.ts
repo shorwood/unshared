@@ -46,6 +46,29 @@ export function mapValues<T, P extends string = string>(collection: T, path: Ite
  * @example map([1, 2, 3], x => x * x) // => [1, 4, 9]
  */
 export function mapValues<T, R>(collection: T, iterator: IteratorFunction<T, R>): MappedValuesByIterator<T, R>
+
+/**
+ * Iterates over an object or array, returning a new object consisting of the results
+ * of the callback function or the values at the given path.
+ *
+ * @param collection The collection to iterate over.
+ * @param iteratorOrPath The callback function to invoke for each item in the object or a path to the value to return.
+ * @returns A new object consisting of the results of the callback function or the values at the given path.
+ * @example
+ * // Declare a object.
+ * const object = {
+ *   a: { name: { first: 'John', last: 'Doe' } },
+ *   b: { name: { first: 'Jane', last: 'Doe' } },
+ *   c: { name: { first: 'Jack', last: 'Doe' } },
+ * }
+ *
+ * // Get the first name of each item in the object.
+ * mapValues(object, 'name.first') // => { a: 'John', b: 'Jane', c: 'Jack' }
+ *
+ * // Convert the names to uppercase.
+ * mapValues(object, item => item.name.first.toUpperCase()) // => { a: 'JOHN', b: 'JANE', c: 'JACK' }
+ */
+export function mapValues(collection: object, iteratorOrPath?: IteratorFunction | string): unknown
 export function mapValues(collection: object, iteratorOrPath?: IteratorFunction | string) {
 
   // --- If iterator is a value, cast as nested getter function.

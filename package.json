@@ -32,7 +32,7 @@
   "scripts": {
     "dev": "tsx ./packages/scripts/cli.uncli.ts build --watch true",
     "build": "tsx ./packages/scripts/cli.uncli.ts build --generateIndexes true",
-    "lint": "DEBUG=eslint:eslint eslint --cache",
+    "lint": "DEBUG=eslint:eslint eslint --ignore-pattern examples",
     "lint:ci": "eslint --cache --ignore-pattern examples",
     "lint:fix": "DEBUG=eslint:eslint eslint --fix --cache",
     "test": "vitest --watch",

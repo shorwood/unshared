@@ -43,6 +43,24 @@ export type OpenAPIResolved<T, D = T, N extends number = 8> =
  * })
  */
 export function resolveDocument<T extends object>(value: Readonly<T>): OpenAPIResolved<T>
+
+/**
+ * Recursively resolve all references in an OpenAPI specification. This function
+ * will return a `Proxy` object that will resolve references on the fly.
+ *
+ * @param value The OpenAPI specification.
+ * @param document The OpenAPI document to resolve references against.
+ * @returns The resolved OpenAPI specification.
+ * @example
+ * const resolved = resolveReferences({
+ *   ...
+ *   paths: {
+ *     '/users': {
+ *       get: { $ref: '#/components/routes/getUsers' },
+ *     },
+ *   },
+ * })
+ */
 export function resolveDocument<T extends object, D>(value: Readonly<T>, document: Readonly<D>): OpenAPIResolved<T, D>
 export function resolveDocument(value: Readonly<ObjectLike>, document = value): unknown {
   return new Proxy(value, {

@@ -1267,7 +1267,46 @@ export function createList<T>(length: number): List<T>
  * @example createList(['foo', 'bar', 'baz']) // List { 'foo', 'bar', 'baz' }
  */
 export function createList<T>(values: T[]): List<T>
+
+/**
+ * Creates a new list from the given values or with the specified length.
+ *
+ * @param valuesOrLength Either an array of values to populate the list, or a number specifying the length of an empty list
+ * @returns A new list instance
+ * @example
+ * ```typescript
+ * // Create a list from an array of values
+ * const list1 = createList([1, 2, 3]);
+ *
+ * // Create an empty list with specified length
+ * const list2 = createList<string>(5);
+ *
+ * // Create an empty list with default length of 0
+ * const list3 = createList();
+ * ```
+ */
 export function createList<T>(valuesOrLength?: number | T[]): List<T>
+
+/**
+ * Creates a new List instance from the given values or with the specified length.
+ *
+ * @template T The type of elements in the list
+ * @param valuesOrLength Either an array of values to populate the list, or a number specifying the length of an empty list
+ * @param args Additional arguments (not allowed - will throw an error if provided)
+ * @returns A new List instance
+ *
+ * @example
+ * ```typescript
+ * // Create a list from an array of values
+ * const list1 = createList([1, 2, 3]);
+ *
+ * // Create an empty list with specified length
+ * const list2 = createList<string>(5);
+ *
+ * // Create an empty list with default length of 0
+ * const list3 = createList();
+ * ```
+ */
 export function createList<T>(valuesOrLength: number | T[] = 0, ...args: unknown[]): List<T> {
 
   // --- Assert only one argument is provided. This is to avoid ambiguity from

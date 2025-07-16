@@ -14,6 +14,36 @@ type Callback<U, N extends number> = (...paths: Tuple<N, string>) => Promise<U> 
  * @returns A promise that resolves to the result of the function.
  */
 export async function withTemporaryDirectories<U, N extends number>(count: N, fn: Callback<U, N>): Promise<U>
+
+/**
+ * Executes a function with temporary directories that are automatically cleaned up.
+ *
+ * This function creates one or more temporary directories, passes their paths to the
+ * provided function, and ensures cleanup occurs even if the function throws an error.
+ *
+ * @param options Configuration for temporary directory creation. Can be:
+ * - A number indicating how many directories to create with default options
+ * - A single CreateTemporaryDirectoryOptions object
+ * - An array of CreateTemporaryDirectoryOptions objects
+ * @param fn The function to execute with the temporary directory paths as arguments
+ * @returns A promise that resolves to the return value of the provided function
+ *
+ * @example
+ * // Create a single temporary directory
+ * await withTemporaryDirectories({}, (tempDir) => {
+ *   // Use tempDir...
+ * });
+ *
+ * // Create multiple temporary directories
+ * await withTemporaryDirectories([{}, { prefix: 'test-' }], (dir1, dir2) => {
+ *   // Use dir1 and dir2...
+ * });
+ *
+ * // Create 3 directories with default options
+ * await withTemporaryDirectories(3, (dir1, dir2, dir3) => {
+ *   // Use all three directories...
+ * });
+ */
 export async function withTemporaryDirectories<U, T extends CreateTemporaryDirectoryOptions[]>(options: T, fn: Callback<U, TupleLength<T>>): Promise<U>
 export async function withTemporaryDirectories<U, T extends CreateTemporaryDirectoryOptions>(option: T, fn: Callback<U, 1>): Promise<U>
 export async function withTemporaryDirectories(options: MaybeArray<CreateTemporaryDirectoryOptions> | number, fn: Function<unknown>): Promise<unknown> {

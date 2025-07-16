@@ -41,7 +41,28 @@ export function pick<T, K extends PropertyKey>(collection: T, keys: MaybeArray<K
  * pick(object, value => value % 2 === 0) // => { bar: 2 }
  */
 export function pick<T, I extends IteratorFunction<T, boolean>>(collection: T, iterator: I): PickByIterator<T, I>
-export function pick(object: object, pathOrIterator: IteratorFunction<object, boolean> | MaybeArray<string>) {
+
+/**
+ * Returns a new object with the properties pickted by the iterator function or the keys.
+ *
+ * @param collection The object to iterate over.
+ * @param pathOrIterator The keys to pick or the iterator function to invoke for each item in the object.
+ * @returns A new object with the pickied properties.
+ * @example
+ * // Declare an object.
+ * const object = { foo: 1, bar: 2, baz: 3 }
+ *
+ * // Pick the `foo` property.
+ * pick(object, 'foo') // => { foo: 1 }
+ *
+ * // Pick the `foo` and `bar` properties.
+ * pick(object, ['foo', 'bar']) // => { foo: 1, bar: 2 }
+ *
+ * // Pick properties that have an even value.
+ * pick(object, value => value % 2 === 0) // => { bar: 2 }
+ */
+export function pick(collection: object, pathOrIterator: IteratorFunction<object, boolean> | MaybeArray<string>): unknown
+export function pick(collection: object, pathOrIterator: IteratorFunction<object, boolean> | MaybeArray<string>) {
   let iterator = pathOrIterator as IteratorFunction
 
   // --- If iterator is a path, cast as getter function.
@@ -51,6 +72,6 @@ export function pick(object: object, pathOrIterator: IteratorFunction<object, bo
   }
 
   // --- Filter entries.
-  const entries = Object.entries(object).filter(([key, value]) => iterator(value, key, object))
+  const entries = Object.entries(collection).filter(([key, value]) => iterator(value, key, collection))
   return Object.fromEntries(entries)
 }

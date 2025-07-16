@@ -59,6 +59,29 @@ export function groupBy<T, R extends PropertyKey>(collection: T, iterator: Itera
  * // }
  */
 export function groupBy<T, P extends IteratorPath<T>>(collection: T, path: MaybeLiteral<P>): GroupedByPath<T, P>
+
+/**
+ * Groups the elements of a collection by the result of running each element through an iterator function
+ * or by extracting a value at the specified path.
+ *
+ * @template T The type of the collection elements
+ * @template K The type of the grouping key
+ * @param collection The collection to group. Can be an object or an iterable.
+ * @param iteratorOrPath Either a function that returns a grouping key for each element, or a string path to extract the grouping key from each element.
+ * @returns An object where keys are the group identifiers and values are arrays of elements that belong to each group.
+ *
+ * @example
+ * // Group by function
+ * const users = [{ name: 'Alice', age: 25 }, { name: 'Bob', age: 30 }, { name: 'Charlie', age: 25 }]
+ * groupBy(users, user => user.age)
+ * // Returns: { 25: [{ name: 'Alice', age: 25 }, { name: 'Charlie', age: 25 }], 30: [{ name: 'Bob', age: 30 }] }
+ *
+ * @example
+ * // Group by path
+ * const products = [{ category: 'electronics' }, { category: 'books' }, { category: 'electronics' }]
+ * groupBy(products, 'category')
+ * // Returns: { electronics: [{ category: 'electronics' }, { category: 'electronics' }], books: [{ category: 'books' }] }
+ */
 export function groupBy(collection: object, iteratorOrPath: IteratorFunction<unknown, PropertyKey> | string): unknown
 export function groupBy(collection: object, iteratorOrPath: IteratorFunction<unknown, PropertyKey> | string): unknown {
 

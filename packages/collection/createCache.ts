@@ -320,6 +320,28 @@ export class Cache<K, V> extends Map<K, V> implements CacheOptions<K, V> {
 export function createCache<K, V>(entries?: ReadonlyArray<[K, V]>, options?: CacheOptions<K, V>): Cache<K, V>
 export function createCache<K, V>(entries?: Iterable<[K, V]>, options?: CacheOptions<K, V>): Cache<K, V>
 export function createCache<K, V>(options?: CacheOptions<K, V>): Cache<K, V>
+
+/**
+ * Creates a new cache instance with optional initial entries and configuration options.
+ *
+ * @template K - The type of keys stored in the cache
+ * @template V - The type of values stored in the cache
+ * @param entriesOrOptions Either an iterable of key-value pairs to initialize the cache with, or cache configuration options
+ * @param maybeOptions Additional cache configuration options when the first parameter contains initial entries
+ * @returns A new Cache instance configured with the provided options and initial entries
+ *
+ * @example
+ * ```typescript
+ * // Create empty cache with options
+ * const cache = createCache<string, number>({ maxSize: 100 });
+ *
+ * // Create cache with initial entries
+ * const cache = createCache([['key1', 'value1'], ['key2', 'value2']]);
+ *
+ * // Create cache with both initial entries and options
+ * const cache = createCache([['key1', 'value1']], { maxSize: 50 });
+ * ```
+ */
 export function createCache<K, V>(entriesOrOptions?: CacheOptions<K, V> | Iterable<[K, V]> | ReadonlyArray<[K, V]>, maybeOptions?: CacheOptions<K, V>): Cache<K, V>
 export function createCache<K, V>(entriesOrOptions?: CacheOptions<K, V> | Iterable<[K, V]> | ReadonlyArray<[K, V]>, maybeOptions?: CacheOptions<K, V>): Cache<K, V> {
   return new Cache(entriesOrOptions, maybeOptions)

@@ -75,6 +75,33 @@ export function truncate<N extends number>(string: string, length: NumberInteger
  * truncate('Hello', { length: 5, ellipsis: '...' }) // 'He...'
  */
 export function truncate<N extends number>(string: string, options: TruncateOptions<N>): string
+
+/**
+ * Truncate a string to a specified length. By default, if the string is longer
+ * than the specified length, the string is cut-off at the nearest word boundary.
+ * You can change this behavior by setting the `breakWords` option to `true`.
+ *
+ * You can provide a custom ellipsis character sequence to replace the last
+ * characters of the string when it is truncated.
+ *
+ * @param string The string to truncate.
+ * @param optionsOrLength The truncate options or the length at which to truncate the string.
+ * @returns The truncated string.
+ * @example
+ *
+ * // Truncate a string to a specified length without breaking words.
+ * truncate('Hello, world!', { length: 10 }) // 'Hello'
+ *
+ * // Truncate a string to a specified length and break words.
+ * truncate('Hello, world!', { length: 10, breakWords: true }) // 'Hello...'
+ *
+ * // Truncate a string to a specified length with an ellipsis.
+ * truncate('Hello, world!', { length: 10, ellipsis: '...' }) // 'Hello...'
+ *
+ * // Truncate a single word with an ellipsis.
+ * truncate('Hello', { length: 5, ellipsis: '...' }) // 'He...'
+ */
+export function truncate(string: string, optionsOrLength?: number | TruncateOptions): string
 export function truncate(string: string, optionsOrLength: number | TruncateOptions = {}): string {
   const options = typeof optionsOrLength === 'number' ? { length: optionsOrLength } : optionsOrLength
   const { breakWords = false, ellipsis = '', length = Number.MAX_SAFE_INTEGER } = options

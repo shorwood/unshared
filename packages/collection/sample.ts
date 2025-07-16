@@ -43,12 +43,12 @@ export function sample<T>(collection: Collection<T>, size: 1): T
  * sample(collection, 3) // => [3, 7, 1]
  */
 export function sample<T, N extends number = number>(collection: Collection<T>, size: NumberIntegerPositive<N>): Tuple<N, T>
-export function sample(object: Collection, size = 1) {
+export function sample(collection: Collection, size = 1) {
   if (typeof size === 'number' && size < 1)
     throw new RangeError('The sample size must be a positive number.')
 
   // --- Pick random items from the cloned collection.
-  const copy = Object.values(object)
+  const copy = Object.values(collection)
   const result = Array.from({ length: size })
   for (let i = 0; i < size; i++) {
     const seed = Math.random()

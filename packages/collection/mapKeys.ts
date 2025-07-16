@@ -49,6 +49,27 @@ export function mapKeys<T, P extends IteratorPath<T>>(collection: T, path: Maybe
  * mapValues(collection, key => key.toUpperCase()) // => { JOHN: { ... }, JANE: { ... } }
  */
 export function mapKeys<T, R extends PropertyKey>(collection: T, iterator: IteratorFunction<T, R>): MappedKeysByIterator<T, R>
+
+/**
+ * Iterates over an object or array and transforms the keys using a callback function or a path.
+ *
+ * @param collection The collection to iterate over.
+ * @param iteratorOrPath The callback function to invoke for each item in the collection or a path to the value to return.
+ * @returns A new object consisting of the transformed keys.
+ * @example
+ * // Declare a collection.
+ * const collection = {
+ *   john: { name: { first: 'John', last: 'Doe' } },
+ *   jane: { name: { first: 'Jane', last: 'Doe' } },
+ * }
+ *
+ * // Convert the keys to uppercase.
+ * mapKeys(collection, key => key.toUpperCase()) // => { JOHN: { ... }, JANE: { ... } }
+ *
+ * // Get the first name of each item in the collection.
+ * mapKeys(collection, 'name.first') // => { JOHN: 'John', JANE: 'Jane' }
+ */
+export function mapKeys(collection: Collection, iteratorOrPath: IteratorFunction<unknown, PropertyKey> | string): unknown
 export function mapKeys(collection: Collection, iteratorOrPath: IteratorFunction<unknown, PropertyKey> | string) {
 
   // --- If iterator is a string, cast as nested getter function.
