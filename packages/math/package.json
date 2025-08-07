@@ -81,6 +81,11 @@
       "types": "./dist/percentile.d.ts",
       "import": "./dist/percentile.js"
     },
+    "./random": {
+      "require": "./dist/random.cjs",
+      "types": "./dist/random.d.ts",
+      "import": "./dist/random.js"
+    },
     "./range": {
       "require": "./dist/range.cjs",
       "types": "./dist/range.d.ts",
