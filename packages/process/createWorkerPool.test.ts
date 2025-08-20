@@ -1,5 +1,5 @@
 import type * as Module from './__fixtures__/module'
-import { cpus } from 'node:os'
+import { availableParallelism } from 'node:os'
 import { createWorkerPool, WorkerPool } from './createWorkerPool'
 
 describe('createWorkerPool', () => {
@@ -33,10 +33,11 @@ describe('createWorkerPool', () => {
       expect(pool.workers).toHaveLength(0)
     })
 
-    it('should have a size of cpus().length - 1 by default', () => {
+    it('should have a size of availableParallelism() - 1 by default', () => {
       const pool = createWorkerPool()
       pool.initialize()
-      expect(pool.workers).toHaveLength(cpus().length - 1)
+      const expected = availableParallelism()
+      expect(pool.workers).toHaveLength(expected)
     })
 
     it('should create workers on the first function call', async() => {

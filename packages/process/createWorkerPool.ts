@@ -2,7 +2,7 @@ import type { Function, MaybeArray } from '@unshared/types'
 import type { Workerized, WorkerServiceOptions, WorkerServiceResult, WorkerServiceSpawnOptions } from './createWorkerService'
 import { toArray } from '@unshared/collection/toArray'
 import { Once } from '@unshared/decorators/Once'
-import { cpus } from 'node:os'
+import { availableParallelism } from 'node:os'
 import { WorkerService } from './createWorkerService'
 
 export interface WorkerPoolOptions extends WorkerServiceOptions {
@@ -83,7 +83,7 @@ export class WorkerPool {
    */
   @Once()
   public initialize(): void {
-    const { size = cpus().length - 1 } = this.options
+    const { size = availableParallelism() } = this.options
     for (let index = 0; index < size; index++) {
       const worker = new WorkerService(this.options)
       this.workers.push(worker)
