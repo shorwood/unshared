@@ -5,9 +5,9 @@ import { fetch } from './fetch'
 import { handleResponse } from './handleResponse'
 
 export type RequestOptionsOnData<T> =
-  T extends AsyncGenerator<infer U, any, any> ? (data: U) => any
-    : T extends Awaitable<AsyncGenerator<infer U, any, any>> ? (data: U) => any
-      : (data: T) => any
+  T extends AsyncGenerator<infer U, any, any> ? (data: U, request: RequestOptions) => any
+    : T extends Awaitable<AsyncGenerator<infer U, any, any>> ? (data: U, request: RequestOptions) => any
+      : (data: T, request: RequestOptions) => any
 
 export interface RequestOptions<
   Method extends FetchMethod = FetchMethod,
@@ -22,9 +22,11 @@ export interface RequestOptions<
   FetchOptions<Method, BaseUrl, Parameters, Query, Body, Headers> {
 
   /**
-   * The callback that is called when an error occurs during the request.
+   * The callback that is called when an error occurs during the request. Note that
+   * when defined, the function will not throw an error, but instead return `undefined`.
+   * If you want to throw an error, you have to throw it manually in the callback.
    */
-  onError?: (error: Error) => any
+  onError?: (error: Error, request: RequestOptions) => any
 
   /**
    * The callback that is called when data is received from the request. This callback
@@ -36,19 +38,19 @@ export interface RequestOptions<
    * The callback that is called when the request is successful. This callback will be
    * called after the request is complete and all data has been received.
    */
-  onSuccess?: (response: Response) => any
+  onSuccess?: (response: Response, request: RequestOptions) => any
 
   /**
-   * The callback that is called when the status code is not OK. This callback will be called
+   * The callback that is called when the status code is not OK (200-299). This callback will be called
    * after the request is complete and before the data is consumed.
    */
-  onFailure?: (response: Response) => any
+  onFailure?: (response: Response, request: RequestOptions) => any
 
   /**
    * The callback that is called when the request is complete. This callback will be called
    * after the request is complete and all data has been received.
    */
-  onEnd?: (response: Response) => any
+  onEnd?: (response: Response, request: RequestOptions) => any
 }
 
 /**
@@ -72,5 +74,10 @@ export interface RequestOptions<
 export async function request(route: string, options?: RequestOptions): Promise<unknown>
 export async function request(route: string, options: RequestOptions = {}): Promise<unknown> {
   const response = await fetch(route, options)
+    .catch((error: Error) => {
+      if (options.onError) options.onError(error, options)
+      else throw error
+    })
+  if (!response) return
   return await handleResponse(response, options)
 }

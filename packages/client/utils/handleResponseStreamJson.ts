@@ -16,17 +16,18 @@ async function * createResponseStreamJsonIterator(response: Response, options: R
       // --- For each part, parse as JSON and yield the data.
       for (const part of parts) {
         const payload = JSON.parse(part) as unknown
-        if (onData) onData(payload)
+        if (onData) await onData(payload, options)
         yield payload
       }
     }
-    if (onSuccess) onSuccess(response)
+    if (onSuccess) await onSuccess(response, options)
   }
   catch (error) {
-    if (onError) onError(error as Error)
+    if (onError) await onError(error as Error, options)
+    else throw error
   }
   finally {
-    if (onEnd) onEnd(response)
+    if (onEnd) await onEnd(response, options)
   }
 }
 

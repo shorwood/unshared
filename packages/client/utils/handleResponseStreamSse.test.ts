@@ -12,6 +12,14 @@ function createEventStreamResponse(...data: string[]): Response {
   return new Response(body)
 }
 
+function createEventStreamResponseError(): ReadableStream {
+  return new ReadableStream({
+    start(controller) {
+      controller.error(new Error('Stream error'))
+    },
+  })
+}
+
 describe('handleResponseStreamSse', () => {
   describe('iterable', () => {
     it('should yield parsed SSE events from the stream', async() => {
@@ -135,22 +143,18 @@ describe('handleResponseStreamSse', () => {
       const result = handleResponseStreamSse(response, { onData })
       for await (const _ of result) { /* empty */ }
       expect(onData).toHaveBeenCalledOnce()
-      expect(onData).toHaveBeenCalledWith({ data: 'Hello, world!' })
+      expect(onData).toHaveBeenCalledWith({ data: 'Hello, world!' }, { onData })
     })
 
     it('should call onError callback if an error occurs', async() => {
-      const body = new ReadableStream({
-        start(controller) {
-          controller.error(new Error('Stream error'))
-        },
-      })
+      const body = createEventStreamResponseError()
       const response = new Response(body)
       const onError = vi.fn()
       const result = handleResponseStreamSse(response, { onError })
       try { for await (const _ of result) { /* empty */ } }
       catch { /* empty */ }
       expect(onError).toHaveBeenCalledOnce()
-      expect(onError).toHaveBeenCalledWith(expect.any(Error))
+      expect(onError).toHaveBeenCalledWith(expect.any(Error), { onError })
     })
 
     it('should call onEnd callback when the stream ends', async() => {
@@ -159,7 +163,57 @@ describe('handleResponseStreamSse', () => {
       const result = handleResponseStreamSse(response, { onEnd })
       for await (const _ of result) { /* empty */ }
       expect(onEnd).toHaveBeenCalledOnce()
-      expect(onEnd).toHaveBeenCalledWith(response)
+      expect(onEnd).toHaveBeenCalledWith(response, { onEnd })
+    })
+
+    it('should await async onData callback', async() => {
+      const response = createEventStreamResponse('data: Hello, world!\n\n')
+      const onData = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+      const onEnd = vi.fn()
+      const result = handleResponseStreamSse(response, { onData, onEnd })
+      expect(onData).not.toHaveBeenCalled()
+      expect(onEnd).not.toHaveBeenCalled()
+      for await (const _ of result) { /* empty */ }
+      expect(onData).toHaveBeenCalledOnce()
+      expect(onEnd).toHaveBeenCalledOnce()
+      expect(onData).toHaveBeenCalledBefore(onEnd)
+    })
+
+    it('should await async onSuccess callback', async() => {
+      const response = createEventStreamResponse('data: Hello, world!\n\n')
+      const onSuccess = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+      const onEnd = vi.fn()
+      const result = handleResponseStreamSse(response, { onSuccess, onEnd })
+      expect(onSuccess).not.toHaveBeenCalled()
+      expect(onEnd).not.toHaveBeenCalled()
+      for await (const _ of result) { /* empty */ }
+      expect(onSuccess).toHaveBeenCalledOnce()
+      expect(onEnd).toHaveBeenCalledOnce()
+      expect(onSuccess).toHaveBeenCalledBefore(onEnd)
+    })
+
+    it('should await async onError callback', async() => {
+      const body = createEventStreamResponseError()
+      const response = new Response(body)
+      const onError = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+      const onEnd = vi.fn()
+      const result = handleResponseStreamSse(response, { onError, onEnd })
+      expect(onError).not.toHaveBeenCalled()
+      expect(onEnd).not.toHaveBeenCalled()
+      try { for await (const _ of result) { /* empty */ } }
+      catch { /* empty */ }
+      expect(onError).toHaveBeenCalledOnce()
+      expect(onEnd).toHaveBeenCalledOnce()
+      expect(onError).toHaveBeenCalledBefore(onEnd)
+    })
+
+    it('should await async onEnd callback', async() => {
+      const response = createEventStreamResponse('data: Hello, world!\n\n')
+      const onEnd = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+      const result = handleResponseStreamSse(response, { onEnd })
+      expect(onEnd).not.toHaveBeenCalled()
+      for await (const _ of result) { /* empty */ }
+      expect(onEnd).toHaveBeenCalledOnce()
     })
 
     it('should throw an error if response body is null', async() => {
@@ -197,7 +251,7 @@ describe('handleResponseStreamSse', () => {
       const result = handleResponseStreamSse(response, { onData })
       for await (const _ of result) { /* empty */ }
       expect(onData).toHaveBeenCalledOnce()
-      expect(onData).toHaveBeenCalledWith({ data: { message: 'Hello, world!' } })
+      expect(onData).toHaveBeenCalledWith({ data: { message: 'Hello, world!' } }, { onData })
     })
   })
 })

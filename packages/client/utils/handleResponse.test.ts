@@ -30,7 +30,7 @@ describe('handleResponse', () => {
       const result = handleResponse(response, { onFailure })
       await expect(result).rejects.toThrow()
       expect(onFailure).toHaveBeenCalledOnce()
-      expect(onFailure).toHaveBeenCalledWith(response)
+      expect(onFailure).toHaveBeenCalledWith(response, { onFailure })
     })
 
     it('should reject with the error created in the onFailure callback', async() => {
@@ -40,6 +40,25 @@ describe('handleResponse', () => {
       })
       const result = handleResponse(response, { onFailure })
       await expect(result).rejects.toThrow('Failed to handle error')
+    })
+
+    it('should await async onFailure callback', async() => {
+      const response = new Response(null, { status: 400, statusText: 'Bad Request' })
+      const onFailure = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+      const onEnd = vi.fn()
+      const result = handleResponse(response, { onFailure, onEnd })
+      await expect(result).rejects.toThrow()
+      expect(onFailure).toHaveBeenCalledOnce()
+      expect(onEnd).toHaveBeenCalledOnce()
+      expect(onFailure).toHaveBeenCalledBefore(onEnd)
+    })
+
+    it('should await async onEnd callback in error case', async() => {
+      const response = new Response(null, { status: 400, statusText: 'Bad Request' })
+      const onEnd = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+      const result = handleResponse(response, { onEnd })
+      await expect(result).rejects.toThrow()
+      expect(onEnd).toHaveBeenCalledOnce()
     })
   })
 
@@ -56,7 +75,7 @@ describe('handleResponse', () => {
       const result = handleResponse(response, { onSuccess })
       await expect(result).resolves.toBeUndefined()
       expect(onSuccess).toHaveBeenCalledOnce()
-      expect(onSuccess).toHaveBeenCalledWith(response)
+      expect(onSuccess).toHaveBeenCalledWith(response, { onSuccess })
     })
 
     it('should call the onEnd callback if provided', async() => {
@@ -65,7 +84,26 @@ describe('handleResponse', () => {
       const result = handleResponse(response, { onEnd })
       await expect(result).resolves.toBeUndefined()
       expect(onEnd).toHaveBeenCalledOnce()
-      expect(onEnd).toHaveBeenCalledWith(response)
+      expect(onEnd).toHaveBeenCalledWith(response, { onEnd })
+    })
+
+    it('should await async onSuccess callback', async() => {
+      const response = new Response(null, { status: 204, headers: { 'Content-Type': 'application/json' } })
+      const onSuccess = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+      const onEnd = vi.fn()
+      const result = handleResponse(response, { onSuccess, onEnd })
+      await expect(result).resolves.toBeUndefined()
+      expect(onSuccess).toHaveBeenCalledOnce()
+      expect(onEnd).toHaveBeenCalledOnce()
+      expect(onSuccess).toHaveBeenCalledBefore(onEnd)
+    })
+
+    it('should await async onEnd callback', async() => {
+      const response = new Response(null, { status: 204, headers: { 'Content-Type': 'application/json' } })
+      const onEnd = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+      const result = handleResponse(response, { onEnd })
+      await expect(result).resolves.toBeUndefined()
+      expect(onEnd).toHaveBeenCalledOnce()
     })
   })
 
@@ -99,7 +137,7 @@ describe('handleResponse', () => {
         const result = handleResponse(response, { onData })
         await expect(result).resolves.toBe(body)
         expect(onData).toHaveBeenCalledOnce()
-        expect(onData).toHaveBeenCalledWith(body)
+        expect(onData).toHaveBeenCalledWith(body, { onData })
       })
 
       it('should call the onSuccess callback if provided', async() => {
@@ -109,7 +147,7 @@ describe('handleResponse', () => {
         const result = handleResponse(response, { onSuccess })
         await expect(result).resolves.toBe(body)
         expect(onSuccess).toHaveBeenCalledOnce()
-        expect(onSuccess).toHaveBeenCalledWith(response)
+        expect(onSuccess).toHaveBeenCalledWith(response, { onSuccess })
       })
 
       it('should call the onEnd callback if provided', async() => {
@@ -119,7 +157,45 @@ describe('handleResponse', () => {
         const result = handleResponse(response, { onEnd })
         await expect(result).resolves.toBe(body)
         expect(onEnd).toHaveBeenCalledOnce()
-        expect(onEnd).toHaveBeenCalledWith(response)
+        expect(onEnd).toHaveBeenCalledWith(response, { onEnd })
+      })
+
+      it('should await async onData callback', async() => {
+        const body = 'Hello, world!'
+        const response = new Response(body, { status: 200, headers: { 'Content-Type': 'text/plain' } })
+        const onData = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+        const onEnd = vi.fn()
+        const result = handleResponse(response, { onData, onEnd })
+        expect(onData).not.toHaveBeenCalled()
+        expect(onEnd).not.toHaveBeenCalled()
+        await expect(result).resolves.toBe(body)
+        expect(onData).toHaveBeenCalledOnce()
+        expect(onEnd).toHaveBeenCalledOnce()
+        expect(onData).toHaveBeenCalledBefore(onEnd)
+      })
+
+      it('should await async onSuccess callback', async() => {
+        const body = 'Hello, world!'
+        const response = new Response(body, { status: 200, headers: { 'Content-Type': 'text/plain' } })
+        const onSuccess = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+        const onEnd = vi.fn()
+        const result = handleResponse(response, { onSuccess, onEnd })
+        expect(onSuccess).not.toHaveBeenCalled()
+        expect(onEnd).not.toHaveBeenCalled()
+        await expect(result).resolves.toBe(body)
+        expect(onSuccess).toHaveBeenCalledOnce()
+        expect(onEnd).toHaveBeenCalledOnce()
+        expect(onSuccess).toHaveBeenCalledBefore(onEnd)
+      })
+
+      it('should await async onEnd callback', async() => {
+        const body = 'Hello, world!'
+        const response = new Response(body, { status: 200, headers: { 'Content-Type': 'text/plain' } })
+        const onEnd = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+        const result = handleResponse(response, { onEnd })
+        expect(onEnd).not.toHaveBeenCalled()
+        await expect(result).resolves.toBe(body)
+        expect(onEnd).toHaveBeenCalledOnce()
       })
     })
 
@@ -136,9 +212,9 @@ describe('handleResponse', () => {
         response.text = () => Promise.reject(new TypeError('Failed to read text'))
         const onError = vi.fn()
         const result = handleResponse(response, { onError })
-        await expect(result).rejects.toThrow(TypeError)
+        await expect(result).resolves.toBeUndefined()
         expect(onError).toHaveBeenCalledOnce()
-        expect(onError).toHaveBeenCalledWith(expect.any(TypeError))
+        expect(onError).toHaveBeenCalledWith(expect.any(TypeError), { onError })
       })
 
       it('should call the onEnd callback if the text response fails', async() => {
@@ -148,7 +224,30 @@ describe('handleResponse', () => {
         const result = handleResponse(response, { onEnd })
         await expect(result).rejects.toThrow(TypeError)
         expect(onEnd).toHaveBeenCalledOnce()
-        expect(onEnd).toHaveBeenCalledWith(response)
+        expect(onEnd).toHaveBeenCalledWith(response, { onEnd })
+      })
+
+      it('should await async onError callback', async() => {
+        const response = new Response(null, { status: 200, headers: { 'Content-Type': 'text/plain' } })
+        response.text = () => Promise.reject(new TypeError('Failed to read text'))
+        const onError = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+        const onEnd = vi.fn()
+        const result = handleResponse(response, { onError, onEnd })
+        expect(onError).not.toHaveBeenCalled()
+        expect(onEnd).not.toHaveBeenCalled()
+        await expect(result).resolves.toBeUndefined()
+        expect(onError).toHaveBeenCalledOnce()
+        expect(onEnd).toHaveBeenCalledOnce()
+        expect(onError).toHaveBeenCalledBefore(onEnd)
+      })
+
+      it('should await async onEnd callback in error case', async() => {
+        const response = new Response(null, { status: 200, headers: { 'Content-Type': 'text/plain' } })
+        response.text = () => Promise.reject(new TypeError('Failed to read text'))
+        const onEnd = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+        const result = handleResponse(response, { onEnd })
+        await expect(result).rejects.toThrow(TypeError)
+        expect(onEnd).toHaveBeenCalledOnce()
       })
     })
   })
@@ -176,7 +275,7 @@ describe('handleResponse', () => {
         const result = handleResponse(response, { onData })
         await expect(result).resolves.toEqual({ key: 'value' })
         expect(onData).toHaveBeenCalledOnce()
-        expect(onData).toHaveBeenCalledWith({ key: 'value' })
+        expect(onData).toHaveBeenCalledWith({ key: 'value' }, { onData })
       })
 
       it('should call the onSuccess callback if provided', async() => {
@@ -186,7 +285,7 @@ describe('handleResponse', () => {
         const result = handleResponse(response, { onSuccess })
         await expect(result).resolves.toEqual({ key: 'value' })
         expect(onSuccess).toHaveBeenCalledOnce()
-        expect(onSuccess).toHaveBeenCalledWith(response)
+        expect(onSuccess).toHaveBeenCalledWith(response, { onSuccess })
       })
 
       it('should call the onEnd callback if provided', async() => {
@@ -196,7 +295,45 @@ describe('handleResponse', () => {
         const result = handleResponse(response, { onEnd })
         await expect(result).resolves.toEqual({ key: 'value' })
         expect(onEnd).toHaveBeenCalledOnce()
-        expect(onEnd).toHaveBeenCalledWith(response)
+        expect(onEnd).toHaveBeenCalledWith(response, { onEnd })
+      })
+
+      it('should await async onData callback', async() => {
+        const body = JSON.stringify({ key: 'value' })
+        const response = new Response(body, { status: 200, headers: { 'Content-Type': 'application/json' } })
+        const onData = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+        const onEnd = vi.fn()
+        const result = handleResponse(response, { onData, onEnd })
+        expect(onData).not.toHaveBeenCalled()
+        expect(onEnd).not.toHaveBeenCalled()
+        await expect(result).resolves.toEqual({ key: 'value' })
+        expect(onData).toHaveBeenCalledOnce()
+        expect(onEnd).toHaveBeenCalledOnce()
+        expect(onData).toHaveBeenCalledBefore(onEnd)
+      })
+
+      it('should await async onSuccess callback', async() => {
+        const body = JSON.stringify({ key: 'value' })
+        const response = new Response(body, { status: 200, headers: { 'Content-Type': 'application/json' } })
+        const onSuccess = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+        const onEnd = vi.fn()
+        const result = handleResponse(response, { onSuccess, onEnd })
+        expect(onSuccess).not.toHaveBeenCalled()
+        expect(onEnd).not.toHaveBeenCalled()
+        await expect(result).resolves.toEqual({ key: 'value' })
+        expect(onSuccess).toHaveBeenCalledOnce()
+        expect(onEnd).toHaveBeenCalledOnce()
+        expect(onSuccess).toHaveBeenCalledBefore(onEnd)
+      })
+
+      it('should await async onEnd callback', async() => {
+        const body = JSON.stringify({ key: 'value' })
+        const response = new Response(body, { status: 200, headers: { 'Content-Type': 'application/json' } })
+        const onEnd = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+        const result = handleResponse(response, { onEnd })
+        expect(onEnd).not.toHaveBeenCalled()
+        await expect(result).resolves.toEqual({ key: 'value' })
+        expect(onEnd).toHaveBeenCalledOnce()
       })
     })
 
@@ -213,9 +350,9 @@ describe('handleResponse', () => {
         const response = new Response(body, { status: 200, headers: { 'Content-Type': 'application/json' } })
         const onError = vi.fn()
         const result = handleResponse(response, { onError })
-        await expect(result).rejects.toThrow()
+        await expect(result).resolves.toBeUndefined()
         expect(onError).toHaveBeenCalledOnce()
-        expect(onError).toHaveBeenCalledWith(expect.any(SyntaxError))
+        expect(onError).toHaveBeenCalledWith(expect.any(SyntaxError), { onError })
       })
 
       it('should call the onEnd callback if the JSON is invalid', async() => {
@@ -225,7 +362,30 @@ describe('handleResponse', () => {
         const result = handleResponse(response, { onEnd })
         await expect(result).rejects.toThrow()
         expect(onEnd).toHaveBeenCalledOnce()
-        expect(onEnd).toHaveBeenCalledWith(response)
+        expect(onEnd).toHaveBeenCalledWith(response, { onEnd })
+      })
+
+      it('should await async onError callback', async() => {
+        const body = '{ key: value }'
+        const response = new Response(body, { status: 200, headers: { 'Content-Type': 'application/json' } })
+        const onError = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+        const onEnd = vi.fn()
+        const result = handleResponse(response, { onError, onEnd })
+        expect(onError).not.toHaveBeenCalled()
+        expect(onEnd).not.toHaveBeenCalled()
+        await expect(result).resolves.toBeUndefined()
+        expect(onError).toHaveBeenCalledOnce()
+        expect(onEnd).toHaveBeenCalledOnce()
+        expect(onError).toHaveBeenCalledBefore(onEnd)
+      })
+
+      it('should await async onEnd callback in error case', async() => {
+        const body = '{ key: value }'
+        const response = new Response(body, { status: 200, headers: { 'Content-Type': 'application/json' } })
+        const onEnd = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+        const result = handleResponse(response, { onEnd })
+        await expect(result).rejects.toThrow()
+        expect(onEnd).toHaveBeenCalledOnce()
       })
     })
   })

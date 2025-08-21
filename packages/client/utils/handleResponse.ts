@@ -17,15 +17,15 @@ export async function handleResponse(response: Response, options: RequestOptions
 
   // --- If the response is not OK, throw an error with the response message.
   if (!response.ok) {
-    if (onFailure) await onFailure(response)
-    if (onEnd) onEnd(response)
+    if (onFailure) await onFailure(response, options)
+    if (onEnd) await onEnd(response, options)
     throw new Error(response.statusText)
   }
 
   // --- If the status code is 204, return an empty response early.
   if (response.status === 204) {
-    if (onSuccess) onSuccess(response)
-    if (onEnd) onEnd(response)
+    if (onSuccess) await onSuccess(response, options)
+    if (onEnd) await onEnd(response, options)
     return
   }
 
@@ -40,39 +40,39 @@ export async function handleResponse(response: Response, options: RequestOptions
   // --- If the response is a application/json, parse the JSON and return it.
   if (contentType?.startsWith('application/json')) {
     return await response.json()
-      .then((data) => {
-        if (onData) onData(data)
-        if (onSuccess) onSuccess(response)
+      .then(async(data) => {
+        if (onData) await onData(data, options)
+        if (onSuccess) await onSuccess(response, options)
         return data as unknown
       })
-      .catch((error: Error) => {
-        if (onError) onError(error)
-        throw error
+      .catch(async(error: Error) => {
+        if (onError) await onError(error, options)
+        else throw error
       })
       .finally(() => {
-        if (onEnd) onEnd(response)
+        if (onEnd) onEnd(response, options)
       })
   }
 
   // --- If the response is a text content type (but not event-stream), return the text response.
   if (contentType?.startsWith('text/')) {
     return await response.text()
-      .then((data) => {
-        if (onData) onData(data)
-        if (onSuccess) onSuccess(response)
+      .then(async(data) => {
+        if (onData) await onData(data, options)
+        if (onSuccess) await onSuccess(response, options)
         return data
       })
-      .catch((error: Error) => {
-        if (onError) onError(error)
-        throw error
+      .catch(async(error: Error) => {
+        if (onError) await onError(error, options)
+        else throw error
       })
       .finally(() => {
-        if (onEnd) onEnd(response)
+        if (onEnd) onEnd(response, options)
       })
   }
 
   // --- Otherwise, fallback to returning the response body as-is.
-  if (onSuccess) onSuccess(response)
-  if (onEnd) onEnd(response)
+  if (onSuccess) onSuccess(response, options)
+  if (onEnd) onEnd(response, options)
   return response.body
 }

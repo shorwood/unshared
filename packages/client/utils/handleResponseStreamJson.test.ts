@@ -28,7 +28,7 @@ describe('handleResponseStreamJson', () => {
       const result = handleResponseStreamJson(response, { onData })
       for await (const _ of result) { /* empty */ }
       expect(onData).toHaveBeenCalledOnce()
-      expect(onData).toHaveBeenCalledWith({ key: 'value' })
+      expect(onData).toHaveBeenCalledWith({ key: 'value' }, { onData })
     })
 
     it('should call onError callback if an error occurs', async() => {
@@ -38,7 +38,7 @@ describe('handleResponseStreamJson', () => {
       try { for await (const _ of result) { /* empty */ } }
       catch { /* empty */ }
       expect(onError).toHaveBeenCalledOnce()
-      expect(onError).toHaveBeenCalledWith(expect.any(SyntaxError))
+      expect(onError).toHaveBeenCalledWith(expect.any(SyntaxError), { onError })
     })
 
     it('should call onEnd callback when the stream ends', async() => {
@@ -47,7 +47,56 @@ describe('handleResponseStreamJson', () => {
       const result = handleResponseStreamJson(response, { onEnd })
       for await (const _ of result) { /* empty */ }
       expect(onEnd).toHaveBeenCalledOnce()
-      expect(onEnd).toHaveBeenCalledWith(response)
+      expect(onEnd).toHaveBeenCalledWith(response, { onEnd })
+    })
+
+    it('should await async onData callback', async() => {
+      const response = createResponse('{"key":"value"}')
+      const onData = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+      const onEnd = vi.fn()
+      const result = handleResponseStreamJson(response, { onData, onEnd })
+      expect(onData).not.toHaveBeenCalled()
+      expect(onEnd).not.toHaveBeenCalled()
+      for await (const _ of result) { /* empty */ }
+      expect(onData).toHaveBeenCalledOnce()
+      expect(onEnd).toHaveBeenCalledOnce()
+      expect(onData).toHaveBeenCalledBefore(onEnd)
+    })
+
+    it('should await async onSuccess callback', async() => {
+      const response = createResponse('{"key":"value"}')
+      const onSuccess = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+      const onEnd = vi.fn()
+      const result = handleResponseStreamJson(response, { onSuccess, onEnd })
+      expect(onSuccess).not.toHaveBeenCalled()
+      expect(onEnd).not.toHaveBeenCalled()
+      for await (const _ of result) { /* empty */ }
+      expect(onSuccess).toHaveBeenCalledOnce()
+      expect(onEnd).toHaveBeenCalledOnce()
+      expect(onSuccess).toHaveBeenCalledBefore(onEnd)
+    })
+
+    it('should await async onError callback', async() => {
+      const response = createResponse('invalid json\0')
+      const onError = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+      const onEnd = vi.fn()
+      const result = handleResponseStreamJson(response, { onError, onEnd })
+      expect(onError).not.toHaveBeenCalled()
+      expect(onEnd).not.toHaveBeenCalled()
+      try { for await (const _ of result) { /* empty */ } }
+      catch { /* empty */ }
+      expect(onError).toHaveBeenCalledOnce()
+      expect(onEnd).toHaveBeenCalledOnce()
+      expect(onError).toHaveBeenCalledBefore(onEnd)
+    })
+
+    it('should await async onEnd callback', async() => {
+      const response = createResponse('{"key":"value"}')
+      const onEnd = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
+      const result = handleResponseStreamJson(response, { onEnd })
+      expect(onEnd).not.toHaveBeenCalled()
+      for await (const _ of result) { /* empty */ }
+      expect(onEnd).toHaveBeenCalledOnce()
     })
   })
 

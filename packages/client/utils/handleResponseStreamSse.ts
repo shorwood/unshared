@@ -73,7 +73,7 @@ async function * createResponseStreamSseIterator<T>(response: Response, options:
         if (line === '') {
           const event = flush()
           if (event) yield event
-          if (event && onData) onData(event)
+          if (event && onData) await onData(event, options)
           continue
         }
 
@@ -117,15 +117,15 @@ async function * createResponseStreamSseIterator<T>(response: Response, options:
     // --- Handle any remaining event in buffer at end of stream
     const event = flush()
     if (event) yield event
-    if (event && onData) onData(event)
-    if (onSuccess) onSuccess(response)
+    if (event && onData) await onData(event, options)
+    if (onSuccess) await onSuccess(response, options)
   }
   catch (error) {
-    if (onError) onError(error as Error)
-    throw error
+    if (onError) await onError(error as Error, options)
+    else throw error
   }
   finally {
-    if (onEnd) onEnd(response)
+    if (onEnd) await onEnd(response, options)
   }
 }
 
