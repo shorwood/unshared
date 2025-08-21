@@ -6,7 +6,6 @@ export default defineNuxtModule({
     configKey: '@unshared/vue',
     compatibility: {
       nuxt: '>=3.0.0',
-      bridge: false,
     },
   },
   async setup() {
