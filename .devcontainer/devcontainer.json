@@ -3,10 +3,10 @@
   "image": "mcr.microsoft.com/devcontainers/universal:2",
   "features": {
     "ghcr.io/devcontainers/features/node:1": {
-      "version": "20"
+      "version": "202"
     },
-    "ghcr.io/devcontainers-contrib/features/pnpm:2": {
-      "version": "9.5.0"
+    "ghcr.io/devcontainers-extra/features/pnpm:2": {
+      "version": "10.14.0"
     }
   }
 }
