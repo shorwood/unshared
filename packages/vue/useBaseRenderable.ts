@@ -42,9 +42,10 @@ declare module 'vue' {
 }
 
 /**
- * A composable that provides properties and methods to create a Vue link or
- * external hyperlink. This composable will dynamically determine the type of
- * link to use based on the provided properties.
+ * A composable to provide the base renderable properties to a Vue component. It allows
+ * the component to define what HTML tag or component it should render as. This is useful
+ * for components that need to be flexible in their rendering, such as input fields or
+ * buttons that can be rendered as different HTML elements or Vue components.
  *
  * @param props The properties of the component passed by the `setup` function.
  * @param instance The instance of the component to provide the composable.
