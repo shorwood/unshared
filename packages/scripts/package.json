@@ -96,15 +96,15 @@
     "LICENSE.md"
   ],
   "dependencies": {
-    "@ai-sdk/anthropic": "1.2.12",
+    "@ai-sdk/anthropic": "2.0.5",
     "@unshared/collection": "workspace:*",
     "@unshared/fs": "workspace:*",
     "@unshared/process": "workspace:*",
     "@unshared/string": "workspace:*",
     "@unshared/types": "workspace:*",
-    "ai": "4.3.19",
-    "rollup": "4.45.1",
-    "rollup-plugin-dts": "6.2.1",
+    "ai": "5.0.20",
+    "rollup": "4.47.1",
+    "rollup-plugin-dts": "6.2.3",
     "rollup-plugin-esbuild": "6.2.1",
     "types-pkg-json": "1.2.1",
     "types-tsconfig": "2.1.1"

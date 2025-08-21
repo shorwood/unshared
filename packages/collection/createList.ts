@@ -1125,6 +1125,7 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
    */
   // @ts-expect-error: Overload signatures
   toReversed(): List<T> {
+    // eslint-disable-next-line unicorn/no-array-reverse
     return this.slice().reverse()
   }
 

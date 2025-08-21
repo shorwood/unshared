@@ -1,8 +1,8 @@
-import type { CoreMessage } from 'ai'
+import type { ModelMessage } from 'ai'
 import { dedent } from '@unshared/string'
 
 /** The prompt for the commit message generator. */
-export const COMMIT_PROMPT: CoreMessage[] = [
+export const COMMIT_PROMPT: ModelMessage[] = [
   {
     role: 'system',
     content: dedent(`
@@ -24,7 +24,7 @@ export const COMMIT_PROMPT: CoreMessage[] = [
       - If there is a breaking change, add a "!" after the type/scope, e.g. "feat(<scope>)!:"
       - If the scope is not applicable, leave it blank and without parentheses.
       - DONT capitalize the first letter of the subject.
-      - DONT use any kind of list, only generate paragraphs, at most 3 if the changes are complex.
+      - DONT use put any kind of list in the body, only generate paragraphs, at most 3 if the changes are complex.
       - DONT talk about implementation details in the subject.
       - DONT clamp the body length, allow it to be as long as needed.
       - DONT use the "monorepo" name in the scope, use blank scope if the change affects multiple packages.

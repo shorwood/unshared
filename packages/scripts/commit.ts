@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/no-os-command-from-path */
 /* eslint-disable n/no-sync */
 import type { AnthropicProvider } from '@ai-sdk/anthropic'
-import type { CoreMessage } from 'ai'
+import type { ModelMessage } from 'ai'
 import { createAnthropic } from '@ai-sdk/anthropic'
 import { streamText } from 'ai'
 import { execFileSync, spawn } from 'node:child_process'
@@ -63,7 +63,7 @@ export async function commit(input: string, options: CommitOptions): Promise<voi
     (!noFileContents && { content: `[FILE_CONTENTS]\n${fileContents.join('\n')}\n\n`, role: 'user' }),
     (!noDiff && { content: `[DIFF]\n${diff}`, role: 'user' }),
     { content: `[INPUT]\n${input}`, role: 'user' },
-  ].filter(Boolean) as CoreMessage[]
+  ].filter(Boolean) as ModelMessage[]
 
   const anthropic = createAnthropic({ apiKey })
   const response = streamText({
