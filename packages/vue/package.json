@@ -201,6 +201,16 @@
       "types": "./dist/utils.d.ts",
       "import": "./dist/utils.js"
     },
+    "./vCode": {
+      "require": "./dist/vCode.cjs",
+      "types": "./dist/vCode.d.ts",
+      "import": "./dist/vCode.js"
+    },
+    "./vMarkdown": {
+      "require": "./dist/vMarkdown.cjs",
+      "types": "./dist/vMarkdown.d.ts",
+      "import": "./dist/vMarkdown.js"
+    },
     "./wrapTransition": {
       "require": "./dist/wrapTransition.cjs",
       "types": "./dist/wrapTransition.d.ts",
@@ -241,16 +251,18 @@
     "@codemirror/state": "6.5.2",
     "@codemirror/view": "6.38.1",
     "@unshared/collection": "workspace:*",
+    "@unshared/string": "workspace:*",
     "@unshared/types": "workspace:*",
     "@vueuse/core": "13.5.0",
-    "codemirror": "6.0.2"
+    "codemirror": "6.0.2",
+    "dompurify": "3.2.6",
+    "highlight.js": "11.11.1",
+    "marked": "16.2.0"
   },
   "devDependencies": {
     "@nuxt/kit": "4.0.0",
     "@nuxt/schema": "4.0.0",
     "@vue/test-utils": "2.4.6",
-    "leaflet": "1.9.4",
-    "markdown-it": "14.1.0",
     "vue": "3.5.17",
     "vue-router": "4.5.1"
   }
