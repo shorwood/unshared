@@ -10,12 +10,11 @@ import { assertStringPath } from './assertStringPath'
  */
 export function assertStringPathAbsolute(value: unknown): asserts value is string {
   assertStringPath(value)
-  if (!value.startsWith('/')) {
-    throw createAssertionError({
-      name: 'E_STRING_NOT_ABSOLUTE_PATH',
-      message: 'String is not an absolute UNIX path.',
-      context: { value },
-      schema: { type: 'string', format: 'absolute-path' },
-    })
-  }
+  if (value.startsWith('/')) return
+  throw createAssertionError({
+    name: 'E_STRING_NOT_ABSOLUTE_PATH',
+    message: 'String is not an absolute UNIX path.',
+    context: { value },
+    schema: { type: 'string', format: 'absolute-path' },
+  })
 }

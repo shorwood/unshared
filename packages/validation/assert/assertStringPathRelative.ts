@@ -10,12 +10,11 @@ import { assertStringPath } from './assertStringPath'
  */
 export function assertStringPathRelative(value: unknown): asserts value is string {
   assertStringPath(value)
-  if (value.startsWith('/')) {
-    throw createAssertionError({
-      name: 'E_STRING_NOT_RELATIVE_PATH',
-      message: 'String is not a relative UNIX path.',
-      context: { value },
-      schema: { type: 'string', format: 'relative-path' },
-    })
-  }
+  if (!value.startsWith('/')) return
+  throw createAssertionError({
+    name: 'E_STRING_NOT_RELATIVE_PATH',
+    message: 'String is not a relative UNIX path.',
+    context: { value },
+    schema: { type: 'string', format: 'relative-path' },
+  })
 }
