@@ -1,4 +1,3 @@
-import type { ObjectLike } from '@unshared/types'
 import { attempt } from '@unshared/functions'
 import { assertObjectStrict } from './assertObjectStrict'
 
@@ -56,7 +55,7 @@ describe('assertObjectStrict', () => {
     it('should predicate value as an object', () => {
       const value: unknown = {}
       assertObjectStrict(value)
-      expectTypeOf(value).toEqualTypeOf<ObjectLike>()
+      expectTypeOf(value).toEqualTypeOf<object>()
     })
   })
 })

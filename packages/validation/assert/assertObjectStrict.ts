@@ -1,4 +1,3 @@
-import type { ObjectLike } from '@unshared/types'
 import { kindOf } from '@unshared/functions/kindOf'
 import { createAssertionError } from '../createAssertionError'
 import { assertObject } from './assertObject'
@@ -11,7 +10,7 @@ import { assertObject } from './assertObject'
  * @throws `AssertionError` if the value is not an object.
  * @example assertObjectStrict({}) // void
  */
-export function assertObjectStrict<T extends ObjectLike>(value: unknown): asserts value is T {
+export function assertObjectStrict<T extends object>(value: unknown): asserts value is T {
   assertObject(value)
   const kind = kindOf(value)
   if (kind === 'object') return

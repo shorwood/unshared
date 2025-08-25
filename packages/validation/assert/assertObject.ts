@@ -1,4 +1,3 @@
-import type { ObjectLike } from '@unshared/types'
 import { kindOf } from '@unshared/functions/kindOf'
 import { createAssertionError } from '../createAssertionError'
 
@@ -8,7 +7,7 @@ import { createAssertionError } from '../createAssertionError'
  *
  * @param value The value to assert as an object.
  */
-export function assertObject<T extends ObjectLike>(value: unknown): asserts value is T {
+export function assertObject<T extends object>(value: unknown): asserts value is T {
   if (typeof value === 'object' && value !== null) return
   throw createAssertionError({
     name: 'E_NOT_OBJECT',
