@@ -1,12 +1,21 @@
+import type { Function } from '@unshared/types/Function'
 import type { AssertionErrorName } from './createAssertionError'
 import { AssertionError, createAssertionError } from './createAssertionError'
 
-export type Assert<T> = T & {
-  withName(name: AssertionErrorName): Assert<T>
-  withCause(cause: Error): Assert<T>
-  withMessage(message: string): Assert<T>
-  withContext(context: Record<string, unknown>): Assert<T>
-}
+export type Assert<T> =
+
+  // --- If R is a function, it will also be wrapped with toAssert.
+  & (T extends Function<infer R, infer P>
+    ? (...args: P) => Assert<R>
+    : T)
+
+  // --- Extend with methods to customize the error.
+  & {
+    withName(name: AssertionErrorName): Assert<T>
+    withCause(cause: Error): Assert<T>
+    withMessage(message: string): Assert<T>
+    withContext(context: Record<string, unknown>): Assert<T>
+  }
 
 export interface ToAssertOptions {
   name?: AssertionErrorName

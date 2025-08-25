@@ -219,6 +219,40 @@ describe('toAssert', () => {
         context: { expectedType: 'string' },
       })
     })
+
+    it('should override error after initial definition', () => {
+      const wrapped = toAssert(assertString)
+        .withMessage('First message')
+        .withMessage('Second message')
+        .withName('E_FIRST_NAME')
+        .withName('E_SECOND_NAME')
+        .withContext({ first: 'context' })
+        .withContext({ second: 'context' })
+
+      const shouldThrow = () => wrapped(123)
+      const { error } = attempt(shouldThrow)
+      expect(error).toBeInstanceOf(AssertionError)
+      expect(error).toMatchObject({
+        name: 'E_SECOND_NAME',
+        message: 'Second message',
+        context: { second: 'context' },
+      })
+    })
+
+    it('should preserve initial parameterization', () => {
+      const wrapped = toAssert(assertStringStartsWith)('test')
+        .withMessage('Custom message')
+        .withName('E_CUSTOM_NAME')
+
+      const shouldThrow = () => wrapped('no-match')
+      const { error } = attempt(shouldThrow)
+      expect(error).toBeInstanceOf(AssertionError)
+      expect(error).toMatchObject({
+        name: 'E_CUSTOM_NAME',
+        message: 'Custom message',
+        context: { prefix: 'test' },
+      })
+    })
   })
 
   describe('inference', () => {
