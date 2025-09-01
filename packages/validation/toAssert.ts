@@ -2,47 +2,43 @@ import type { Function } from '@unshared/types/Function'
 import type { AssertionErrorName } from './createAssertionError'
 import { AssertionError, createAssertionError } from './createAssertionError'
 
-type AssertWithMethods<T> = T & {
-
-  /**
-   * Set the name of the assertion error if it occurs. The name
-   * must start with `E_` and be constant case.
-   *
-   * @param name The name of the assertion error.
-   * @example assert.string.withName('E_CUSTOM_ASSERT_STRING')
-   */
-  withName(name: AssertionErrorName): Assert<T>
-
-  /**
-   * Set the cause of the assertion error if it occurs.
-   *
-   * @param cause The cause of the assertion error.
-   * @example assert.string.withCause(new Error('Custom cause'))
-   */
-  withCause(cause: Error): Assert<T>
-
-  /**
-   * Set the custom error message if it occurs.
-   *
-   * @param message The custom error message.
-   * @example assert.string.withMessage('Custom error message')
-   */
-  withMessage(message: string): Assert<T>
-
-  /**
-   * Set the context of the assertion error if it occurs.
-   *
-   * @param context The context of the assertion error.
-   * @example assert.string.withContext({ additional: 'context' })
-   */
-  withContext(context: Record<string, unknown>): Assert<T>
-}
-
 export type Assert<T> =
-  T extends Function<infer U, infer P>
-    ? U extends Function
-      ? AssertWithMethods<(...args: P) => AssertWithMethods<U>>
-      : AssertWithMethods<T>
+  T extends Function
+    ? (T & {
+
+      /**
+       * Set the name of the assertion error if it occurs. The name
+       * must start with `E_` and be constant case.
+       *
+       * @param name The name of the assertion error.
+       * @example assert.string.withName('E_CUSTOM_ASSERT_STRING')
+       */
+      withName(name: AssertionErrorName): Assert<T>
+
+      /**
+       * Set the cause of the assertion error if it occurs.
+       *
+       * @param cause The cause of the assertion error.
+       * @example assert.string.withCause(new Error('Custom cause'))
+       */
+      withCause(cause: Error): Assert<T>
+
+      /**
+       * Set the custom error message if it occurs.
+       *
+       * @param message The custom error message.
+       * @example assert.string.withMessage('Custom error message')
+       */
+      withMessage(message: string): Assert<T>
+
+      /**
+       * Set the context of the assertion error if it occurs.
+       *
+       * @param context The context of the assertion error.
+       * @example assert.string.withContext({ additional: 'context' })
+       */
+      withContext(context: Record<string, unknown>): Assert<T>
+    })
     : never
 
 export interface ToAssertOptions {

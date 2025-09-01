@@ -240,9 +240,9 @@ describe('toAssert', () => {
     })
 
     it('should preserve initial parameterization', () => {
-      const wrapped = toAssert(assertStringStartsWith)('test')
+      const wrapped = toAssert(assertStringStartsWith)
         .withMessage('Custom message')
-        .withName('E_CUSTOM_NAME')
+        .withName('E_CUSTOM_NAME')('test')
 
       const shouldThrow = () => wrapped('no-match')
       const { error } = attempt(shouldThrow)

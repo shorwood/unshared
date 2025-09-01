@@ -19,24 +19,6 @@ describe('assert', () => {
     })
   })
 
-  it('should allow custom error properties after parameter', () => {
-    const customCause = new Error('Custom cause')
-    const fn = assert.stringStartingWith('test')
-      .withName('E_CUSTOM_ERROR')
-      .withCause(customCause)
-      .withContext({ value: 123, received: 'number' })
-      .withMessage('Custom error message')
-    const shouldThrow = () => fn(123)
-    const { error } = attempt(shouldThrow)
-    expect(error).toBeInstanceOf(AssertionError)
-    expect(error).toMatchObject({
-      name: 'E_CUSTOM_ERROR',
-      message: 'Custom error message',
-      cause: customCause,
-      context: { value: 123, received: 'number' },
-    })
-  })
-
   it('should allow custom error properties before parameter', () => {
     const customCause = new Error('Custom cause')
     const fn = assert.stringStartingWith
