@@ -39,9 +39,9 @@ type AssertWithMethods<T> = T & {
 }
 
 export type Assert<T> =
-  T extends Function<infer U>
+  T extends Function<infer U, infer P>
     ? U extends Function
-      ? AssertWithMethods<(...args: Parameters<U>) => AssertWithMethods<U>>
+      ? AssertWithMethods<(...args: P) => AssertWithMethods<U>>
       : AssertWithMethods<T>
     : never
 
