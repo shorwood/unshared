@@ -32,10 +32,11 @@ function cli() {
 
     // --- Commit the input to the OpenAI API.
     if (command === 'commit') {
-      const apiKey = process.env.ANTHROPIC_API_KEY
+      const apiKey = process.env.GITHUB_TOKEN
+      const modelId = options.modelId ?? process.env.GITHUB_MODEL_ID
       const input = parameters.join(' ')
-      if (!apiKey) throw new Error('Missing Anthropic API key.')
-      return commit(input, { ...options, apiKey })
+      if (!apiKey) throw new Error('Missing GitHub API token.')
+      return commit(input, { ...options, apiKey, modelId })
     }
 
     throw new Error(`Unknown command: ${command}`)

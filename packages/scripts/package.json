@@ -96,7 +96,7 @@
     "LICENSE.md"
   ],
   "dependencies": {
-    "@ai-sdk/anthropic": "2.0.5",
+    "@ai-sdk/openai-compatible": "1.0.18",
     "@unshared/collection": "workspace:*",
     "@unshared/fs": "workspace:*",
     "@unshared/process": "workspace:*",

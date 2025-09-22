@@ -14,7 +14,7 @@
     "node": ">=22.0.0",
     "pnpm": ">=10.0.0"
   },
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.17.1",
   "pnpm": {
     "peerDependencyRules": {
       "allowAny": [

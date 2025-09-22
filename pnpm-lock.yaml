@@ -360,9 +360,9 @@ importers:
 
   packages/scripts:
     dependencies:
-      '@ai-sdk/anthropic':
-        specifier: 2.0.5
-        version: 2.0.5(zod@3.25.76)
+      '@ai-sdk/openai-compatible':
+        specifier: 1.0.18
+        version: 1.0.18(zod@3.25.76)
       '@unshared/collection':
         specifier: workspace:*
         version: link:../collection
@@ -539,20 +539,26 @@ importers:
 
 packages:
 
-  '@ai-sdk/anthropic@2.0.5':
-    resolution: {integrity: sha512-f0+mD3c5D+ImCWqxFxkT3buGeBg9vFOd2aTaLd1jjIJmWO8O4INLxBC2ETif7z0BfegTIw528B6acBRIeg3jIw==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4
-
   '@ai-sdk/gateway@1.0.9':
     resolution: {integrity: sha512-kIfwunyUUwyBLg2KQcaRtjRQ1bDuJYPNIs4CNWaWPpMZ4SV5cRL1hLGMuX4bhfCJYDXHMGvJGLtUK6+iAJH2ZQ==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4
 
+  '@ai-sdk/openai-compatible@1.0.18':
+    resolution: {integrity: sha512-WSxF83ZVvTpj2vKhgSNe95qr46TaTBRitF7LlX817r1vKAHw3MDFjjrxZTHbR58jcQWX6N9B3D2aX2Ro9fPBNA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4
+
   '@ai-sdk/provider-utils@3.0.4':
     resolution: {integrity: sha512-/3Z6lfUp8r+ewFd9yzHkCmPlMOJUXup2Sx3aoUyrdXLhOmAfHRl6Z4lDbIdV0uvw/QYoBcVLJnvXN7ncYeS3uQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4
+
+  '@ai-sdk/provider-utils@3.0.9':
+    resolution: {integrity: sha512-Pm571x5efqaI4hf9yW4KsVlDBDme8++UepZRnq+kqVBWWjgvGhQlzU8glaFq0YJEB9kkxZHbRRyVeHoV2sRYaQ==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4
@@ -6011,6 +6017,7 @@ packages:
   source-map@0.8.0-beta.0:
     resolution: {integrity: sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==}
     engines: {node: '>= 8'}
+    deprecated: The work that was done in this beta branch won't be included in future versions
 
   spdx-correct@3.2.0:
     resolution: {integrity: sha512-kN9dJbvnySHULIluDHy32WHRUu3Og7B9sbY7tsFLctQkIqnMh3hErYgdMjTYuqmcXX+lK5T1lnUt3G7zNswmZA==}
@@ -6993,16 +7000,16 @@ packages:
 
 snapshots:
 
-  '@ai-sdk/anthropic@2.0.5(zod@3.25.76)':
+  '@ai-sdk/gateway@1.0.9(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
       '@ai-sdk/provider-utils': 3.0.4(zod@3.25.76)
       zod: 3.25.76
 
-  '@ai-sdk/gateway@1.0.9(zod@3.25.76)':
+  '@ai-sdk/openai-compatible@1.0.18(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.4(zod@3.25.76)
+      '@ai-sdk/provider-utils': 3.0.9(zod@3.25.76)
       zod: 3.25.76
 
   '@ai-sdk/provider-utils@3.0.4(zod@3.25.76)':
@@ -7012,6 +7019,13 @@ snapshots:
       eventsource-parser: 3.0.5
       zod: 3.25.76
       zod-to-json-schema: 3.24.6(zod@3.25.76)
+
+  '@ai-sdk/provider-utils@3.0.9(zod@3.25.76)':
+    dependencies:
+      '@ai-sdk/provider': 2.0.0
+      '@standard-schema/spec': 1.0.0
+      eventsource-parser: 3.0.5
+      zod: 3.25.76
 
   '@ai-sdk/provider@2.0.0':
     dependencies:

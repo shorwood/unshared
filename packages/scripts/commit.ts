@@ -1,8 +1,7 @@
 /* eslint-disable sonarjs/no-os-command-from-path */
 /* eslint-disable n/no-sync */
-import type { AnthropicProvider } from '@ai-sdk/anthropic'
 import type { ModelMessage } from 'ai'
-import { createAnthropic } from '@ai-sdk/anthropic'
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 import { streamText } from 'ai'
 import { execFileSync, spawn } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
@@ -11,7 +10,7 @@ import { COMMIT_PROMPT } from './commitPrompt'
 
 export interface CommitOptions {
   apiKey: string
-  modelId: Parameters<AnthropicProvider>[0]
+  modelId: string
   noDiff?: boolean
   noDiffPaths?: boolean
   noDiffStat?: boolean
@@ -31,7 +30,7 @@ export interface CommitOptions {
 export async function commit(input: string, options: CommitOptions): Promise<void> {
   const {
     apiKey,
-    modelId = 'claude-3-5-haiku-latest',
+    modelId = 'mistral-ai/Codestral-2501',
     noDiff,
     noDiffPaths,
     noDiffStat,
@@ -65,12 +64,20 @@ export async function commit(input: string, options: CommitOptions): Promise<voi
     { content: `[INPUT]\n${input}`, role: 'user' },
   ].filter(Boolean) as ModelMessage[]
 
-  const anthropic = createAnthropic({ apiKey })
+  const openai = createOpenAICompatible({
+    name: 'github',
+    apiKey,
+    headers: {
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+    },
+    baseURL: 'https://models.github.ai/inference',
+  })
   const response = streamText({
-    model: anthropic(modelId),
+    model: openai(modelId),
     messages,
     onError: (error) => {
-      console.error('Error generating commit message:', error)
+      console.error(error.error)
     },
   })
 
