@@ -1,3 +1,4 @@
+import type { MaybeArray } from '@unshared/unshared'
 import type { Prop } from 'vue'
 import type { BaseStateOptions } from './useBaseState'
 import { toReactive } from '@vueuse/core'
@@ -28,13 +29,21 @@ export interface BaseClickableOptions extends BaseStateOptions {
   label?: number | string
 
   /**
-   * The callback to call when the component is clicked. This is used to
-   * handle the click event of the component and should be called when the
+   * The callback(s) to call when the component is clicked. This can be a single handler
+   * function or an array of handler functions, each of which will be called when the
    * component is clicked.
    *
-   * @default false
+   * @example
+   * // Single handler
+   * onClick: (event) => { ... }
+   *
+   * // Multiple handlers
+   * onClick: [
+   *   (event) => { ... },
+   *   (event) => { ... }
+   * ]
    */
-  onClick?: (event: MouseEvent) => unknown
+  onClick?: MaybeArray<(event: MouseEvent) => unknown>
 
   /**
    * If `true`, the click event will be triggered on mouse down instead of
@@ -91,10 +100,12 @@ export function useBaseClickable(options: BaseClickableOptions = {}, instance = 
     if (!options.onClick || state.disabled || state.readonly || state.loading) return
     try {
       state.error = undefined
-      const result = options.onClick(event)
-      if (result instanceof Promise) {
+      const handlers = Array.isArray(options.onClick) ? options.onClick : [options.onClick]
+      const results = handlers.map(handler => handler(event))
+      const promises = results.filter((result): result is Promise<unknown> => result instanceof Promise)
+      if (promises.length > 0) {
         state.loading = true
-        result
+        Promise.all(promises)
           .catch((error: Error) => state.error = error)
           .finally(() => state.loading = false)
       }
