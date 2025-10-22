@@ -46,7 +46,7 @@ export function deleteProperty<T, K extends Path<T>>(object: T, path: MaybeLiter
     && result !== null
     && 'delete' in result
     && typeof result.delete === 'function') {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    // oxlint-disable-next-line @typescript-eslint/no-unsafe-call
     result.delete(lastKey)
     return
   }

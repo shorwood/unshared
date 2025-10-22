@@ -1,4 +1,4 @@
-/* eslint-disable unicorn/filename-case */
+// oxlint-disable filename-case
 import type { OpenAPIV3 } from 'openapi-types'
 
 /**

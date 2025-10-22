@@ -1,10 +1,7 @@
 import type { Linter } from 'eslint'
-import vitestPlugin from '@vitest/eslint-plugin'
 
 export function vitest(): Linter.Config[] {
   return [
-    // @ts-expect-error: the `configs` property is loosely typed.
-    vitestPlugin.configs.recommended as Linter.Config,
     {
       rules: {
 
@@ -34,6 +31,12 @@ export function vitest(): Linter.Config[] {
         'vitest/prefer-expect-assertions': 'off',
         'vitest/padding-around-all': 'off',
         'vitest/padding-around-expect-groups': 'off',
+        "vitest/no-identical-title": "error",
+        "vitest/no-commented-out-tests": "error",
+        "vitest/valid-expect": "error",
+        "vitest/valid-describe-callback": "error",
+        "vitest/require-local-test-context-for-concurrent-snapshots": "error",
+        "vitest/no-import-node-test": "error",
       },
     },
   ]

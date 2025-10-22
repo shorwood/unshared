@@ -21,7 +21,7 @@ export function colorHexToRgb(color: string): RGB {
   const f = hex.length < 6 ? 1 : 2
 
   // --- Extract bytes from matching slice.
-  let r = Number.parseInt(hex.slice(0 * f, 1 * f), 16)
+  let r = Number.parseInt(hex.slice(0, 1 * f), 16)
   let g = Number.parseInt(hex.slice(1 * f, 2 * f), 16)
   let b = Number.parseInt(hex.slice(2 * f, 3 * f), 16)
   let a = Number.parseInt(hex.slice(3 * f, 4 * f) || 'ff', 16)

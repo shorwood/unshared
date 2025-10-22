@@ -3,7 +3,7 @@ import { colorsBrand, colorsNord } from './constants'
 import * as RULES from './rules'
 import * as VARIANTS from './variants'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+// oxlint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface PresetUnsharedOptions {}
 
 export const presetUnshared: PresetFactory<object, PresetUnsharedOptions> = (options = {}) => ({

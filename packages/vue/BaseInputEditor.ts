@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
+/* oxlint-disable @typescript-eslint/consistent-type-imports */
 import { type Extension } from '@codemirror/state'
 import { useVModel } from '@vueuse/core'
 import { EditorView, minimalSetup } from 'codemirror'

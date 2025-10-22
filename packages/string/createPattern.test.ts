@@ -67,7 +67,7 @@ describe('createPattern', () => {
 
     it('should create RegExp with [[:ascii:]] POSIX bracket expressions', () => {
       const result = createPattern('foo[[:ascii:]]')
-      // eslint-disable-next-line no-control-regex
+      // oxlint-disable-next-line no-control-regex
       expect(result).toStrictEqual(/^foo[\u0000-\u007F]$/)
     })
 
@@ -78,7 +78,7 @@ describe('createPattern', () => {
 
     it('should create RegExp with [[:cntrl:]] POSIX bracket expressions', () => {
       const result = createPattern('foo[[:cntrl:]]')
-      // eslint-disable-next-line no-control-regex
+      // oxlint-disable-next-line no-control-regex
       expect(result).toStrictEqual(/^foo[\u0000-\u001F\u007F]$/)
     })
 

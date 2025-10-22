@@ -165,7 +165,7 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
 
     // --- Handle length based on the array-like object.
     else if (typeof arrayLike?.length === 'number') {
-    // eslint-disable-next-line unicorn/no-for-loop
+    // oxlint-disable-next-line unicorn/no-for-loop
       for (let index = 0; index < arrayLike.length; index++) {
         const value: T | U = mapfn ? mapfn.call(thisArgument as V, arrayLike[index], index) : arrayLike[index]
         const node: ListNode<T | U> = { value, previous }
@@ -394,14 +394,12 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
 
     let length = this.length
     let previous = this as List<T>
-    let head: ListNode<T> | undefined = this.head
     let tail: ListNode<T> | undefined = this.tail
 
     // --- Link each list to the previous one.
     for (const list of lists) {
       if (!list.head) continue
       this.head ??= list.head
-      head ??= list.head
 
       // --- Link the previous list to the current one.
       if (previous.tail) previous.tail.next = list.head
@@ -535,6 +533,7 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
    * @returns The sorted list.
    * @example new List('foo', 'bar', 'baz').sort() // ['bar', 'baz', 'foo']
    */
+  // oxlint-disable-next-line require-returns
   sort(compareFunction?: ((a: T, b: T) => number)): this {
     if (this.head === this.tail) return this
 
@@ -543,7 +542,7 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
     // --- access to this function directly, we must first convert the list to an
     // --- array, sort it, and then convert it back to a list.
     if (typeof compareFunction !== 'function') {
-      // eslint-disable-next-line sonarjs/no-alphabetical-sort
+      // oxlint-disable-next-line sonarjs/no-alphabetical-sort
       const sorted = [...this].sort()
       const list = List.from(sorted)
       this.head = list.head
@@ -1021,7 +1020,7 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
    */
   // @ts-expect-error: Overload signatures
   flatMap<U, This = undefined>(callback: (this: This, value: T, index: number, list: List<T>) => List<U> | readonly U[] | U, thisArgument?: This ): List<U> {
-    // eslint-disable-next-line unicorn/prefer-array-flat-map, unicorn/no-array-method-this-argument
+    // oxlint-disable-next-line prefer-array-flat-map, no-array-method-this-argument, no-array-callback-reference
     return this.map(callback, thisArgument).flat() as List<U>
   }
 
@@ -1125,22 +1124,21 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
    */
   // @ts-expect-error: Overload signatures
   toReversed(): List<T> {
-    // eslint-disable-next-line unicorn/no-array-reverse
+    // oxlint-disable-next-line unicorn/no-array-reverse
     return this.slice().reverse()
   }
 
   /**
    * Returns a new list with the elements sorted according to the provided compare function.
    *
-   * @param compareFunction
    * A function that defines the sort order. If omitted, the list is sorted according to each
    * character's Unicode code point value, according to the string conversion of each element.
    * @returns A new list with the elements sorted.
    * @example new List('foo', 'bar', 'baz').toSorted() // List { 'bar', 'baz', 'foo' }
-   */
+  */
   // @ts-expect-error: Overload signatures
-  toSorted(compareFunction?: ((a: T, b: T) => number)): List<T> {
-    return this.slice().sort(compareFunction)
+  toSorted(fn?: ((a: T, b: T) => number)): List<T> {
+    return this.slice().sort(fn)
   }
 
   /**

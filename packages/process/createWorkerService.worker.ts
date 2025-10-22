@@ -20,7 +20,7 @@ async function callback(request: WorkerServicePayload) {
 
   // --- Execute the function.
   return typeof moduleExport === 'function'
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    // oxlint-disable-next-line @typescript-eslint/no-unsafe-call
     ? moduleExport(...parameters) as unknown
     : moduleExport
 }

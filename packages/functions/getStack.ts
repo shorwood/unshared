@@ -1,4 +1,4 @@
-/* eslint-disable unicorn/error-message */
+/* oxlint-disable unicorn/error-message */
 const STACK_EXP = /(?:file:\/{2})?((?:\/[^/:]+)+)\.\w+/g
 
 /**

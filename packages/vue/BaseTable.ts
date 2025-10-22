@@ -120,7 +120,7 @@ export const BaseTable = defineSetupComponent(
 
       let slotCell: string | undefined | VNode
       // @ts-expect-error: `slotKey` is a valid key.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      // oxlint-disable-next-line @typescript-eslint/no-unsafe-call
       if (slotKey in slots) slotCell = slots[slotKey](cell.row) as VNode
       else if (slots.cell) slotCell = slots.cell(cell) as VNode
       else if (cell.key in cell.row) slotCell = String(cell.row[cell.key as keyof T])

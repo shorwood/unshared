@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /** Get the base URL of an OpenAPI specification. */
 export type ServerUrl<T> =
 

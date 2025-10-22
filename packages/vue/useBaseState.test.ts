@@ -9,7 +9,7 @@ describe('useBaseState', () => {
     it('should return a reactive object', () => {
       const result = useBaseState()
       const reactive = isReactive(result)
-      expect(reactive).toBe(true)
+      expect(reactive).toBeTruthy()
     })
 
     it('should provide the composable into the component', () => {
@@ -126,7 +126,7 @@ describe('useBaseState', () => {
   describe('model', () => {
     it('should provide the disabled model', () => {
       const result = useBaseState({ disabled: true })
-      expect(result.disabled).toBe(true)
+      expect(result.disabled).toBeTruthy()
     })
 
     it('should provide the error model', () => {
@@ -136,12 +136,12 @@ describe('useBaseState', () => {
 
     it('should provide the loading model', () => {
       const result = useBaseState({ loading: true })
-      expect(result.loading).toBe(true)
+      expect(result.loading).toBeTruthy()
     })
 
     it('should provide the readonly model', () => {
       const result = useBaseState({ readonly: true })
-      expect(result.readonly).toBe(true)
+      expect(result.readonly).toBeTruthy()
     })
 
     it('should provide the error message model when the error is a string', () => {
@@ -160,7 +160,7 @@ describe('useBaseState', () => {
       const emit = vi.fn()
       // @ts-expect-error: Mocking the component instance.
       const result = useBaseState({ disabled: false }, { emit })
-      expect(result.disabled).toBe(false)
+      expect(result.disabled).toBeFalsy()
       result.disabled = true
       await nextTick()
       expect(emit).toHaveBeenCalledWith('update:disabled', true)
@@ -180,7 +180,7 @@ describe('useBaseState', () => {
       const emit = vi.fn()
       // @ts-expect-error: Mocking the component instance.
       const result = useBaseState({ loading: false }, { emit })
-      expect(result.loading).toBe(false)
+      expect(result.loading).toBeFalsy()
       result.loading = true
       await nextTick()
       expect(emit).toHaveBeenCalledWith('update:loading', true)
@@ -190,7 +190,7 @@ describe('useBaseState', () => {
       const emit = vi.fn()
       // @ts-expect-error: Mocking the component instance.
       const result = useBaseState({ readonly: false }, { emit })
-      expect(result.readonly).toBe(false)
+      expect(result.readonly).toBeFalsy()
       result.readonly = true
       await nextTick()
       expect(emit).toHaveBeenCalledWith('update:readonly', true)

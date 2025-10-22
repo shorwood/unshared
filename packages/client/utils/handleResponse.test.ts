@@ -384,7 +384,7 @@ describe('handleResponse', () => {
         const response = new Response(body, { status: 200, headers: { 'Content-Type': 'application/json' } })
         const onEnd = vi.fn(() => new Promise(resolve => setTimeout(resolve, 10)))
         const result = handleResponse(response, { onEnd })
-        await expect(result).rejects.toThrow()
+        await expect(result).rejects.toThrow(Error)
         expect(onEnd).toHaveBeenCalledOnce()
       })
     })

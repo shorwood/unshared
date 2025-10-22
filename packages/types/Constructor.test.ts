@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* oxlint-disable @typescript-eslint/no-empty-object-type */
+/* oxlint-disable @typescript-eslint/no-unused-vars */
 import type { Constructor } from './Constructor'
 import type { ConstructorStatics } from './ConstructorStatics'
 

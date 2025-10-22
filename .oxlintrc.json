@@ -1,0 +1,340 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "vue"
+  ],
+  "categories": {
+    "correctness": "off",
+    "style": "off"
+  },
+  "extends": [
+    "./packages/oxlint-config/jsdoc.jsonc",
+    "./packages/oxlint-config/unicorn.jsonc",
+    "./packages/oxlint-config/vitest.jsonc"
+  ],
+  "env": {
+    "builtin": true,
+    "es2026": true
+  },
+  "rules": {
+
+    // Stylistic Issues
+    // "curly": [
+    //   "error",
+    //   "multi-or-nest",
+    //   "consistent"
+    // ],
+
+    "for-direction": "error",
+    "no-async-promise-executor": "error",
+    "no-case-declarations": "error",
+    "no-class-assign": "error",
+    "no-compare-neg-zero": "error",
+    "no-cond-assign": "error",
+    "no-const-assign": "error",
+    "no-constant-binary-expression": "error",
+    "no-constant-condition": "error",
+    "no-control-regex": "error",
+    "no-debugger": "error",
+    "no-delete-var": "error",
+    "no-dupe-class-members": "error",
+    "no-dupe-else-if": "error",
+    "no-dupe-keys": "error",
+    "no-duplicate-case": "error",
+    "no-empty": "error",
+    "no-empty-character-class": "error",
+    "no-empty-pattern": "error",
+    "no-empty-static-block": "error",
+    "no-ex-assign": "error",
+    "no-extra-boolean-cast": "error",
+    "no-fallthrough": "error",
+    "no-func-assign": "error",
+    "no-global-assign": "error",
+    "no-import-assign": "error",
+    "no-invalid-regexp": "error",
+    "no-irregular-whitespace": "error",
+    "no-loss-of-precision": "error",
+    "no-new-native-nonconstructor": "error",
+    "no-nonoctal-decimal-escape": "error",
+    "no-obj-calls": "error",
+    "no-prototype-builtins": "error",
+    "no-redeclare": "error",
+    "no-regex-spaces": "error",
+    "no-self-assign": "error",
+    "no-setter-return": "error",
+    "no-shadow-restricted-names": "error",
+    "no-sparse-arrays": "error",
+    "no-this-before-super": "error",
+    "no-unexpected-multiline": "error",
+    "no-unsafe-finally": "error",
+    "no-unsafe-negation": "error",
+    "no-unsafe-optional-chaining": "error",
+    "no-unused-labels": "error",
+    "no-unused-private-class-members": "error",
+    "no-unused-vars": "error",
+    "no-useless-backreference": "error",
+    "no-useless-catch": "error",
+    "no-useless-escape": "error",
+    "no-with": "error",
+    "require-yield": "error",
+    "use-isnan": "error",
+    "valid-typeof": "error",
+    "no-negated-condition": "off",
+    "no-nested-ternary": "off",
+
+
+
+    "vue/no-export-in-script-setup": "error",
+    "vue/prefer-import-from-vue": "error",
+    "vue/valid-define-emits": "error",
+    "vue/valid-define-props": "error",
+    "vue/no-multiple-slot-args": "warn",
+    "vue/no-required-prop-with-default": "warn"
+  },
+  "ignorePatterns": [
+    "**/dist",
+    "**/bin",
+    "**/node_modules",
+    "**/.nuxt",
+    "**/.output",
+    "**/coverage",
+    "**/public",
+    "**/__*__",
+    "**/LICENSE*",
+    "**/CHANGELOG*",
+    "packages-lock.json",
+    "pnpm-lock.yaml",
+    "yarn.lock"
+  ]
+  // "overrides": [
+  //   {
+  //     "files": [
+  //       "*.json",
+  //       "**/*.json",
+  //       "*.json5",
+  //       "**/*.json5",
+  //       "*.jsonc",
+  //       "**/*.jsonc"
+  //     ],
+  //     "rules": {
+  //       "no-unused-expressions": "off",
+  //       "no-unused-vars": "off"
+  //     }
+  //   },
+  //   {
+  //     "files": [
+  //       "**/*.{ts,tsx,cts,mts}",
+  //       "**/*.{js,jsx,cjs,mjs}",
+  //       "**/*.vue"
+  //     ],
+  //     "rules": {
+  //       "no-class-assign": "off",
+  //       "no-const-assign": "off",
+  //       "no-dupe-class-members": "off",
+  //       "no-dupe-keys": "off",
+  //       "no-func-assign": "off",
+  //       "no-import-assign": "off",
+  //       "no-new-native-nonconstructor": "off",
+  //       "no-obj-calls": "off",
+  //       "no-setter-return": "off",
+  //       "no-this-before-super": "off",
+  //       "no-unsafe-negation": "off",
+  //       "no-var": "error",
+  //       "prefer-rest-params": "error",
+  //       "prefer-spread": "error",
+
+
+        
+  //       "typescript/ban-ts-comment": [
+  //         "error",
+  //         {
+  //           "ts-check": false,
+  //           "ts-expect-error": "allow-with-description",
+  //           "ts-ignore": false,
+  //           "ts-nocheck": false
+  //         }
+  //       ],
+  //       "no-array-constructor": "error",
+  //       "typescript/no-duplicate-enum-values": "error",
+  //       "typescript/no-empty-object-type": "error",
+  //       "typescript/no-explicit-any": "off",
+  //       "typescript/no-extra-non-null-assertion": "error",
+  //       "typescript/no-misused-new": "error",
+  //       "typescript/no-namespace": "off",
+  //       "typescript/no-non-null-asserted-optional-chain": "error",
+  //       "typescript/no-require-imports": "error",
+  //       "typescript/no-this-alias": "error",
+  //       "typescript/no-unnecessary-type-constraint": "error",
+  //       "typescript/no-unsafe-declaration-merging": "error",
+  //       "typescript/no-unsafe-function-type": "error",
+  //       "no-unused-expressions": "error",
+  //       "no-unused-vars": [
+  //         "error",
+  //         {
+  //           "argsIgnorePattern": "^_"
+  //         }
+  //       ],
+  //       "typescript/no-wrapper-object-types": "error",
+  //       "no-throw-literal": "off",
+  //       "typescript/prefer-as-const": "error",
+  //       "typescript/prefer-namespace-keyword": "error",
+  //       "prefer-promise-reject-errors": "off",
+  //       "require-await": "off",
+  //       "typescript/triple-slash-reference": "error",
+  //       "typescript/adjacent-overload-signatures": "error",
+  //       "typescript/array-type": [
+  //         "error",
+  //         {
+  //           "default": "array-simple",
+  //           "readonly": "array-simple"
+  //         }
+  //       ],
+  //       "typescript/ban-tslint-comment": "error",
+  //       "typescript/consistent-generic-constructors": "error",
+  //       "typescript/consistent-indexed-object-style": [
+  //         "error",
+  //         "record"
+  //       ],
+  //       "typescript/consistent-type-definitions": [
+  //         "error",
+  //         "interface"
+  //       ],
+  //       "typescript/no-confusing-non-null-assertion": "error",
+  //       "no-empty-function": "off",
+  //       "typescript/no-inferrable-types": "error",
+  //       "typescript/prefer-for-of": "error",
+  //       "typescript/prefer-function-type": "error",
+  //       "typescript/prefer-ts-expect-error": "error",
+  //       "no-void": "off",
+  //       "sort-imports": "off",
+  //       "typescript/consistent-type-imports": [
+  //         "error",
+  //         {
+  //           "disallowTypeAnnotations": false,
+  //           "prefer": "type-imports",
+  //           "fixStyle": "separate-type-imports"
+  //         }
+  //       ],
+  //       "no-useless-constructor": "off",
+  //       "typescript/ban-types": "off",
+  //       "typescript/explicit-function-return-type": "off",
+  //       "typescript/explicit-module-boundary-types": "off",
+  //       "typescript/no-empty-interface": "off",
+  //       "typescript/no-non-null-assertion": "off",
+  //       "array-callback-return": "error",
+  //       "arrow-body-style": [
+  //         "error",
+  //         "as-needed"
+  //       ],
+  //       "block-scoped-var": "error",
+  //       "eqeqeq": [
+  //         "error",
+  //         "smart"
+  //       ],
+  //       "no-alert": "error",
+  //       "no-cond-assign": [
+  //         "error",
+  //         "always"
+  //       ],
+  //       "no-console": [
+  //         "warn",
+  //         {
+  //           "allow": [
+  //             "warn",
+  //             "error"
+  //           ]
+  //         }
+  //       ],
+  //       "no-eval": "error",
+  //       "no-multi-str": "error",
+  //       "no-param-reassign": "off",
+  //       "no-return-assign": "off",
+  //       "no-useless-escape": "off",
+  //       "prefer-template": "error",
+  //       "vars-on-top": "error"
+  //     },
+  //     "plugins": [
+  //       "typescript"
+  //     ]
+  //   },
+  //   {
+  //     "files": [
+  //       "*.d.ts"
+  //     ],
+  //     "rules": {
+  //       "import/no-duplicates": "off"
+  //     },
+  //     "plugins": [
+  //       "import"
+  //     ]
+  //   },
+  //   {
+  //     "files": [
+  //       "**/scripts/**/*",
+  //       "cli.*"
+  //     ],
+  //     "rules": {
+  //       "no-console": "off"
+  //     }
+  //   },
+  //   {
+  //     "files": [
+  //       "**/*.test.ts",
+  //       "**/*.spec.ts"
+  //     ],
+  //     "rules": {
+  //       "unicorn/no-null": "off",
+  //       "unicorn/no-useless-undefined": "off",
+  //       "unicorn/no-static-only-class": "off"
+  //     }
+  //   },
+  //   {
+  //     "files": [
+  //       "**/*.vue"
+  //     ],
+  //     "rules": {
+  //       "vue/prefer-import-from-vue": "off"
+  //     },
+  //     "globals": {
+  //       "computed": "readonly",
+  //       "defineEmits": "readonly",
+  //       "defineExpose": "readonly",
+  //       "defineProps": "readonly",
+  //       "onMounted": "readonly",
+  //       "onUnmounted": "readonly",
+  //       "reactive": "readonly",
+  //       "ref": "readonly",
+  //       "shallowReactive": "readonly",
+  //       "shallowRef": "readonly",
+  //       "toRef": "readonly",
+  //       "toRefs": "readonly",
+  //       "watch": "readonly",
+  //       "watchEffect": "readonly"
+  //     }
+  //   },
+  //   {
+  //     "files": [
+  //       "*.yaml",
+  //       "**/*.yaml",
+  //       "*.yml",
+  //       "**/*.yml"
+  //     ],
+  //     "rules": {
+  //       "no-irregular-whitespace": "off",
+  //       "no-unused-vars": "off"
+  //     }
+  //   },
+  //   {
+  //     "files": [
+  //       "*.yaml",
+  //       "**/*.yaml",
+  //       "*.yml",
+  //       "**/*.yml"
+  //     ],
+  //     "rules": {
+  //       "no-irregular-whitespace": "off",
+  //       "no-unused-vars": "off"
+  //     }
+  //   }
+  // ]
+}

@@ -54,7 +54,7 @@ interface SlotProps {
   isActive: boolean
 }
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+// oxlint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type BaseButtonSlots = {
   default: (props: SlotProps) => VNode
 }

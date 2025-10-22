@@ -61,7 +61,7 @@ describe('awaitable', () => {
   })
 
   describe('async iterable', () => {
-    // eslint-disable-next-line unicorn/consistent-function-scoping
+    // oxlint-disable-next-line unicorn/consistent-function-scoping
     const createGenerator = async function * () {
       yield await Promise.resolve(1)
       yield await Promise.resolve(2)
@@ -83,7 +83,7 @@ describe('awaitable', () => {
     })
 
     it('should wrap an async iterable and catch when an error is thrown', async() => {
-      // eslint-disable-next-line unicorn/consistent-function-scoping
+      // oxlint-disable-next-line unicorn/consistent-function-scoping
       const createGenerator = async function * createGenerator() {
         yield await Promise.resolve(1)
         throw new Error('foo')

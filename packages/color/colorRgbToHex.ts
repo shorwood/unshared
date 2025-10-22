@@ -1,3 +1,4 @@
+// oxlint-disable prefer-math-trunc
 import type { RGBBinaryFormat } from './colorRgbToInteger'
 import type { RGB } from './createColorRgb'
 import { colorRgbToInteger } from './colorRgbToInteger'

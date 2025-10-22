@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
+/* oxlint-disable @typescript-eslint/no-empty-object-type */
 import type { CommitOptions } from './commit'
 import { parseCliArguments } from '@unshared/process'
 import { build } from './build'

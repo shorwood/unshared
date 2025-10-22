@@ -1,4 +1,4 @@
-/* eslint-disable unicorn/prefer-top-level-await */
+/* oxlint-disable unicorn/prefer-top-level-await */
 import { createService } from '../../packages/client/createService'
 import { parseCliArguments } from '../../packages/process/parseCliArguments'
 import { giphy } from './giphy'

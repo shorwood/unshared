@@ -15,14 +15,14 @@ describe('attempt', () => {
   })
 
   test('should returns value using a valid async function', async() => {
-    // eslint-disable-next-line @typescript-eslint/require-await
+    // oxlint-disable-next-line @typescript-eslint/require-await
     const result = await attempt(async() => 'Hello, world!')
     expect(result).toStrictEqual({ value: 'Hello, world!' })
     expectTypeOf(result).toEqualTypeOf<Result<string, Error>>()
   })
 
   test('should returns error using a failing async function', async() => {
-    // eslint-disable-next-line @typescript-eslint/require-await
+    // oxlint-disable-next-line @typescript-eslint/require-await
     const result = await attempt(async() => { throw new Error('Uh oh! Something went wrong!') })
     expect(result).toStrictEqual({ error: new Error('Uh oh! Something went wrong!') })
     expectTypeOf(result).toEqualTypeOf<Result<never, Error>>()

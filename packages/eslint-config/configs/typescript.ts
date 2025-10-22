@@ -13,7 +13,6 @@ export function typescript(options: ESLintConfigOptions): Linter.Config[] {
     // stylistic.configs['recommended-flat'],
     {
       languageOptions: {
-        // @ts-expect-error: ignore
         parser: tslint.parser,
         parserOptions: {
           ecmaVersion: 'latest',
@@ -243,8 +242,6 @@ export function typescript(options: ESLintConfigOptions): Linter.Config[] {
         /**
          * Enforce no unused variables. Helps keep the codebase clean and reduces
          * the chance of bugs from side-effects.
-         *
-         * @see https://typescript-eslint.io/rules/@typescript-eslint/no-unused-vars
          */
         'no-redeclare': 'off',
         'no-unused-vars': 'off',

@@ -28,5 +28,5 @@ export function colorRgbToInteger(rgb?: Partial<RGB>, format: RGBBinaryFormat = 
   }
 
   // --- Return the result.
-  return color >>> 0
+  return Math.trunc(color)
 }

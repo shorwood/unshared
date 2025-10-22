@@ -213,7 +213,7 @@ export class Queue extends EventTarget {
    * await sayHelloAsync('World') // Hello World!
    */
   public wrap<T extends Function>(fn: T): PromiseWrap<T> {
-    // eslint-disable-next-line unicorn/no-this-assignment, @typescript-eslint/no-this-alias
+    // oxlint-disable-next-line unicorn/no-this-assignment, @typescript-eslint/no-this-alias
     const queue = this
     return function(this: unknown, ...args: unknown[]) {
       return queue.call(() => fn.call(this, ...args) as Promise<unknown>)

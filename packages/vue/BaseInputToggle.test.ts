@@ -11,6 +11,8 @@ describe('BaseInputToggle', () => {
       expect(html).toBe('<input type="checkbox">')
     })
 
+    
+
     it('shoud apply the corresponding html attributes when tag is input', () => {
       const wrapper = mount(BaseInputToggle, { props: { as: 'input' } })
       const html = wrapper.html()
@@ -36,7 +38,7 @@ describe('BaseInputToggle', () => {
       const html = wrapper.html()
       const element = wrapper.find('input').element
       expect(html).toBe('<input checked="" type="checkbox">')
-      expect(element.checked).toBe(true)
+      expect(element.checked).toBeTruthy()
     })
 
     it('should apply the corresponding html attributes when tag is button', () => {
@@ -59,7 +61,7 @@ describe('BaseInputToggle', () => {
       })
       wrapper.find('input').element.click()
       await nextTick()
-      expect(wrapper.vm.modelValue).toBe(true)
+      expect(wrapper.vm.modelValue).toBeTruthy()
     })
   })
 
@@ -94,7 +96,7 @@ describe('BaseInputToggle', () => {
     })
   })
 
-  /* eslint-disable vitest/no-commented-out-tests */
+  /* oxlint-disable vitest/no-commented-out-tests */
   // describe('attributes', () => {
   //   it('should render template slots', () => {
   //     const wrapper = mount(BaseInputToggle, { slots: { default: h('span', 'slot') } })

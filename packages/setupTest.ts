@@ -1,4 +1,4 @@
-/* eslint-disable vitest/require-top-level-describe */
+/* oxlint-disable vitest/require-top-level-describe */
 import { fs, vol } from 'memfs'
 
 beforeEach(() => {

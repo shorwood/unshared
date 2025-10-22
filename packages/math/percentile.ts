@@ -13,7 +13,7 @@
  * percentile(numbers, 0.25) // 20
  */
 export function percentile(numbers: number[], percentile: number): number {
-  const sorted = [...numbers].sort((a, b) => a - b)
+  const sorted = numbers.toSorted((a, b) => a - b)
   const index = (sorted.length - 1) * percentile
   const lower = Math.floor(index)
   const upper = lower + 1

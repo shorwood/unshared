@@ -36,7 +36,7 @@ export type Attached<F extends Function> =
  */
 export function attach<T extends Function>(fn: T): Attached<T> {
   return function(this: unknown, ...parameters: unknown[]) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    // oxlint-disable-next-line @typescript-eslint/no-unsafe-return
     return fn(this, ...parameters)
   } as Attached<T>
 }

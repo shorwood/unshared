@@ -2,5 +2,19 @@
   "unocss.root": [
     "./examples/nuxt"
   ],
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+
+  "oxc.enable": true,
+  "oxc.typeAware": true,
+  "oxc.path.server": "node_modules/oxc/bin/oxc-lsp-server",
+  "oxc.fmt.experimental": true,
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+
+  // Fix all auto-fixable issues on save.
+  "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "always"
+  },
+  
+  // Save should run the oxc formatter.
+  // "editor.formatOnSave": true
 }

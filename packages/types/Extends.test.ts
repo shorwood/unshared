@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* oxlint-disable @typescript-eslint/no-unused-vars */
 import type { ConstructorStatics } from './ConstructorStatics'
 import type { Extends } from './Extends'
 

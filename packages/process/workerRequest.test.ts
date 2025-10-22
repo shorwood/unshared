@@ -57,7 +57,7 @@ describe('workerRequest', () => {
     it('should bi-directionally communicate between main and worker threads', async() => {
       const { port1, port2 } = new MessageChannel()
       const callback = vi.fn()
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      // oxlint-disable-next-line @typescript-eslint/no-unsafe-return
       port1.addEventListener('message', message => callback(message.data))
       const result = workerRequest<Module['messageEcho']>(worker, { name: 'messageEcho', parameters: [port2], timeout: 1000 })
       port1.postMessage('Hello, World!')

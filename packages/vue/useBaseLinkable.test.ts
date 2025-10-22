@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* oxlint-disable @typescript-eslint/no-unsafe-assignment */
 import { mount } from '@vue/test-utils'
 import { getCurrentInstance, isReactive } from 'vue'
 import { RouterLink } from 'vue-router'

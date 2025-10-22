@@ -47,7 +47,7 @@ export interface BaseAlertsSlotAlertProps {
 }
 
 /** The slot properties of the `BaseAlerts` component. */
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+// oxlint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type BaseAlertsSlots = {
   default: (props: BaseAlertsSlotProps) => VNode
   alert: (props: BaseAlertsSlotAlertProps) => VNode

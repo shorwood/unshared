@@ -37,10 +37,9 @@ export function ready<T = unknown>(reference: Ref<T>, condition?: ReadyCondition
       }
 
       // --- If the condition is a value, resolve once the value is equal.
-      else if (newValue !== condition) {
+      else if (newValue !== condition) 
         return
-      }
-
+      
       // --- Finaly, resolve the promise and stop watching.
       unwatch()
       resolve(newValue)

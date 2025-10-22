@@ -1,0 +1,139 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "typescript",
+    "unicorn",
+    "oxc",
+    "import",
+    "node",
+    "promise",
+    "vitest"
+  ],
+  "jsPlugins": [
+    "@eslint/json",
+    "eslint-plugin-jsonc"
+  ],
+  "categories": {
+    "style": "warn",
+    "correctness": "error",
+    "perf": "error"
+  },
+  "ignorePatterns": [
+    "**/dist",
+    "**/bin",
+    "**/node_modules",
+    "**/.nuxt",
+    "**/.output",
+    "**/coverage",
+    "**/public",
+    "**/__wip__",
+    "**/__snapshots__",
+    "**/LICENSE*",
+    "**/CHANGELOG*",
+    "packages-lock.json",
+    "pnpm-lock.yaml",
+    "yarn.lock"
+  ],
+  "rules": {
+    "jest/valid-expect": "off"
+  },
+
+  "overrides": [
+
+    // JSDoc rules
+    {
+      "files": [
+        "**/*.{ts,mts,cts,tsx,d.ts}",
+        "**/*.{js,mjs,cjs,jsx}",
+        "**/*.vue"
+      ],
+      "plugins": [
+        "jsdoc"
+      ],
+      "rules": {
+
+        // --- Reports malformed JSDoc comments.
+        "jsdoc/no-bad-blocks": "error",
+        "jsdoc/check-alignment": "error",
+        "jsdoc/check-indentation": "error",
+
+        // --- Reports invalid block tag names.
+        "jsdoc/check-tag-names": ["error", { "definedTags": ["category"] }],
+
+        // --- Do not use hyphens before param descriptions.
+        "jsdoc/require-hyphen-before-param-description": ["error", "never"],
+
+        // --- Newline after description.
+        "jsdoc/tag-lines": ["error", "any", { "startLines": 1 }]
+      }
+    },
+
+    // PackageJSON rules
+    {
+      "files": [
+        "**/package.json"
+      ],
+      "rules": {
+        "jsonc/sort-keys": [
+          "error",
+          {
+            "pathPattern": "^$",
+            "order": [
+              "name",
+              "type",
+              "version",
+              "license",
+              "private",
+              "sideEffects",
+
+              // --- Publishing
+              "description",
+              "author",
+              "keywords",
+              "bugs",
+              "funding",
+              "homepage",
+              "repository",
+
+              // --- Distribution
+              "bin",
+              "main",
+              "module",
+              "types",
+              "typings",
+              "browser",
+              "exports",
+              "files",
+
+              // --- Package Manager
+              "packageManager",
+              "pnpm",
+
+              // --- Scripts
+              "scripts",
+
+              // --- Dependencies
+              "peerDependencies",
+              "peerDependenciesMeta",
+              "optionalDependencies",
+              "dependencies",
+              "devDependencies",
+              "bundledDependencies",
+              "bundleDependencies",
+
+              // --- Config
+              "tsup",
+              "husky",
+              "lint-staged",
+              "eslintConfig"
+            ]
+          },
+          {
+            "order": { "type": "asc" },
+            "pathPattern": "^(?:dev|peer|optional|bundled)?[Dd]ependencies$"
+          }
+        ]
+      }
+    }
+  ]
+}

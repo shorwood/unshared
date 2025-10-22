@@ -33,7 +33,7 @@ export function match(value: unknown, cases: object): unknown {
   if (Symbol.iterator in cases) {
     for (const [predicate, result] of cases as MatchMap<unknown>) {
       const isPredicate = typeof predicate === 'function'
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      // oxlint-disable-next-line @typescript-eslint/no-unsafe-call
       if (isPredicate && predicate(value)) return result
       if (!isPredicate && predicate === value) return result
     }

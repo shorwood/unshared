@@ -94,14 +94,14 @@ export function computed<T, D extends readonly Reactive[] = []>(dependencies: D,
 
       // --- If the computed value is eager, we need to access the value
       // --- to trigger the recompute.
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      // oxlint-disable-next-line @typescript-eslint/no-unused-expressions
       if (eager) computed.value
     })
   }
 
   // --- If `immediate` is set, we need to access the value to trigger the
   // --- initial computation.
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+  // oxlint-disable-next-line @typescript-eslint/no-unused-expressions
   if (immediate) computed.value
 
   // --- Return the computed value.

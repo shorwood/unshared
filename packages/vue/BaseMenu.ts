@@ -98,7 +98,7 @@ export interface BaseMenuSlotProps {
 }
 
 /** The context of the `BaseMenu` component. */
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+// oxlint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type BaseMenuSlots = {
   default: (props: BaseMenuSlotProps) => VNode
   menu: (props: BaseMenuSlotProps) => VNode

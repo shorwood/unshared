@@ -1,5 +1,5 @@
 import type { ParserLike, ParserResult } from '../createParser'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// oxlint-disable-next-line @typescript-eslint/no-unused-vars
 import type { assertArrayItems } from './assertArrayItems'
 import { createAssertionError } from '../createAssertionError'
 import { createParser } from '../createParser'

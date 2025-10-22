@@ -1,14 +1,14 @@
 import { createSharedComposable } from '@vueuse/core'
 import { getCurrentInstance, onUnmounted } from 'vue'
 
-// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
-interface EventMap {
-  [key: string]: unknown[]
-}
+/** Defines a mapping of event names to their parameter types. */
+export type EventMap = Record<string, unknown[]>
 
+/** The callback type for an event listener. */
 type EventCallback<T extends EventMap, K extends keyof T> =
   (...parameters: T[K]) => void
 
+/** The unsubscribe function returned when adding an event listener. */
 type Unsubscribe = () => void
 
 export interface EventBus<T extends EventMap = EventMap> {

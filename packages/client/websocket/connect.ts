@@ -88,10 +88,10 @@ export class WebSocketChannel<T extends ConnectOptions = ConnectOptions> {
       callback(data)
     }
 
-    /* eslint-disable @typescript-eslint/no-misused-promises */
+    /* oxlint-disable @typescript-eslint/no-misused-promises */
     this.webSocket.addEventListener(event, listener, options)
     return () => this.webSocket!.removeEventListener(event, listener)
-    /* eslint-enable @typescript-eslint/no-misused-promises */
+    /* oxlint-enable @typescript-eslint/no-misused-promises */
   }
 
   /**

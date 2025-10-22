@@ -2,7 +2,7 @@ import type { ObjectLike, Substract } from '@unshared/types'
 import type { OpenAPIReference } from './isReferenceObject'
 import type { OpenAPIReferenceResolved } from './resolveReference'
 import { isReferenceObject } from './isReferenceObject'
-import { resolveReference as resolveReference } from './resolveReference'
+import { resolveReference } from './resolveReference'
 
 /**
  * Resolve a type to the type it references. If the source is not a reference,

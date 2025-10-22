@@ -30,7 +30,7 @@ export interface BaseInputFileSlotProps extends BaseInputFileComposable {
 }
 
 /** The slots of the `BaseInputFile` component. */
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+// oxlint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type BaseInputFileSlots = {
   default?: (props: BaseInputFileSlotProps) => VNode
 }

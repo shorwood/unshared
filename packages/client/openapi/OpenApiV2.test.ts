@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
+/* oxlint-disable @typescript-eslint/no-empty-object-type */
 import type { OpenAPIV2 } from './OpenApiV2'
 
 describe('OpenApiV2', () => {

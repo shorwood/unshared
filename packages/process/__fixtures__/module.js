@@ -1,4 +1,4 @@
-/* eslint-disable unicorn/no-anonymous-default-export */
+/* oxlint-disable unicorn/no-anonymous-default-export */
 /* eslint-disable jsdoc/no-types */
 import { threadId } from 'node:worker_threads'
 
@@ -53,7 +53,7 @@ export function buffer() {
  */
 export function messageReceive(port) {
   return new Promise((resolve) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    // oxlint-disable-next-line @typescript-eslint/no-unsafe-argument
     port.addEventListener('message', message => resolve(message.data))
   })
 }

@@ -76,7 +76,7 @@ export function awaitable(object: object, createPromise?: FunctionAsync<unknown>
     }
 
     // @ts-expect-error: `then` is a new method that is not yet in the types.
-    // eslint-disable-next-line unicorn/no-thenable
+    // oxlint-disable-next-line unicorn/no-thenable
     object.then = (...args: Parameters<typeof Promise.prototype.then>) => {
       promise ??= collect()
       return promise.then(...args)
@@ -105,10 +105,9 @@ export function awaitable(object: object, createPromise?: FunctionAsync<unknown>
   }
 
   // --- Otherwise, if `promise` is not a function, throw an error.
-  else if (typeof createPromise !== 'function') {
-    throw new TypeError('Cannot create awaitable object: Second parameter must be a promise or an asyncronous function')
-  }
-
+  else if (typeof createPromise !== 'function') 
+    {{throw new TypeError('Cannot create awaitable object: Second parameter must be a promise or an asyncronous function')}}
+  
   // --- Wrap the object in a proxy that handles the promise.
   return new Proxy(object, {
     get(target, property, receiver) {

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* oxlint-disable @typescript-eslint/no-unsafe-call */
 import type { VCodeBinding } from './vCode'
 import { vCode } from './vCode'
 

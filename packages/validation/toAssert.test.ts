@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* oxlint-disable @typescript-eslint/no-unsafe-assignment */
 import type { Assert } from './toAssert'
 import { attempt } from '@unshared/functions'
 import { AssertionError } from './createAssertionError'

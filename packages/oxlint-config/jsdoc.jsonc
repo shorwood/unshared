@@ -1,0 +1,53 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "jsdoc"
+  ],
+  "rules": {
+
+    "jsdoc/check-access": "error",
+    "jsdoc/check-property-names": "error",
+    "jsdoc/empty-tags": "error",
+    "jsdoc/implements-on-classes": "error",
+    "jsdoc/no-defaults": "error",
+
+    // --- Ensure @property tags are well-formed.
+    "jsdoc/require-property": "error",
+    "jsdoc/require-property-description": "error",
+    "jsdoc/require-property-name": "error",
+    "jsdoc/require-property-type": "off",
+
+    // --- Ensure @param tags are well-formed.
+    // @see: https://oxc.rs/docs/guide/usage/linter/rules/jsdoc/require-param.html
+    // "jsdoc/require-param": "error",
+    "jsdoc/require-param-description": "error",
+    "jsdoc/require-param-name": "error",
+    "jsdoc/require-param-type": "off",
+
+    // --- Ensure @returns/@yields tags are well-formed.
+    // "jsdoc/require-returns": "error",
+    "jsdoc/require-returns-description": "error",
+    "jsdoc/require-yields": "error",
+
+    // --- Redundant with TypeScript.
+    "jsdoc/require-jsdoc": "off",
+    "jsdoc/require-returns-type": "off",
+
+    // --- Reports malformed JSDoc comments.
+    "jsdoc/no-bad-blocks": "error",
+    "jsdoc/check-alignment": "error",
+    "jsdoc/check-indentation": "error",
+
+    // --- Reports invalid block tag names.
+    "jsdoc/check-tag-names": ["error", {
+      "types": true,
+      "definedTags": ["category"]
+    }],
+
+    // --- Do not use hyphens before param descriptions.
+    "jsdoc/require-hyphen-before-param-description": ["error", "never"],
+
+    // --- Newline after description.
+    "jsdoc/tag-lines": ["error", "any", { "startLines": 1 }],
+  }
+}

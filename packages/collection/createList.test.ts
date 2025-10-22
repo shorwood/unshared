@@ -1,13 +1,12 @@
-/* eslint-disable unicorn/no-array-reverse */
-/* eslint-disable unicorn/no-magic-array-flat-depth */
-/* eslint-disable unicorn/no-array-reduce */
-/* eslint-disable unicorn/no-array-method-this-argument */
-/* eslint-disable unicorn/no-array-callback-reference */
-/* eslint-disable unicorn/no-array-for-each */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable vitest/expect-expect */
-/* eslint-disable unicorn/prefer-spread */
-/* eslint-disable unicorn/require-array-join-separator */
+// oxlint-disable require-array-join-separator
+// oxlint-disable prefer-spread
+// oxlint-disable no-array-reverse
+// oxlint-disable no-array-method-this-argument
+// oxlint-disable no-array-for-each
+// oxlint-disable no-magic-array-flat-depth
+// oxlint-disable no-array-callback-reference
+// oxlint-disable no-array-reduce
+// oxlint-disable no-conditional-expect
 import { createList, List } from './createList'
 
 interface ExpectListMatchingOptions {
@@ -238,7 +237,7 @@ describe('createList', () => {
     })
 
     it('should create list from a generator function', () => {
-      // eslint-disable-next-line unicorn/consistent-function-scoping
+      // oxlint-disable-next-line unicorn/consistent-function-scoping
       const generator = function * () { yield 'foo'; yield 'bar'; yield 'baz' }
       const result = List.from(generator())
       expectListMatching(result, ['foo', 'bar', 'baz'])
@@ -257,14 +256,14 @@ describe('createList', () => {
     })
 
     it('should create list from a generator function with a mapping function', () => {
-      // eslint-disable-next-line unicorn/consistent-function-scoping
+      // oxlint-disable-next-line unicorn/consistent-function-scoping
       const generator = function * () { yield 'foo'; yield 'bar'; yield 'baz' }
       const result = List.from(generator(), value => value.toUpperCase())
       expectListMatching(result, ['FOO', 'BAR', 'BAZ'])
     })
 
     it('should create list from a generator and pass the `thisArg`, `value` and `index` to the mapping function', () => {
-      // eslint-disable-next-line unicorn/consistent-function-scoping
+      // oxlint-disable-next-line unicorn/consistent-function-scoping
       const generator = function * () { yield 'foo'; yield 'bar'; yield 'baz' }
       const result = List.from(generator(), function(value, index) { return `${this}-${value}-${index}` }, 'prefix')
       expectListMatching(result, ['prefix-foo-0', 'prefix-bar-1', 'prefix-baz-2'])
@@ -1303,8 +1302,12 @@ describe('createList', () => {
     it('should pass the `thisArg` to the callback', () => {
       const list = createList(['foo', 'bar', 'baz'])
       const thisArgument = {}
-      const callback = vi.fn(function(this: any) { expect(this).toBe(thisArgument) })
+      const callback = vi.fn()
       list.map(callback, thisArgument)
+      expect(callback).toHaveBeenCalledTimes(3)
+      expect(callback).toHaveBeenNthCalledWith(1, 'foo', 0, list)
+      expect(callback).toHaveBeenNthCalledWith(2, 'bar', 1, list)
+      expect(callback).toHaveBeenNthCalledWith(3, 'baz', 2, list)
     })
 
     it('should return an empty list for an empty list', () => {
@@ -2014,7 +2017,7 @@ describe('createList', () => {
 
   describe('Symbol.toPrimitive', () => {
     it('should implicitly stringify the list', () => {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      // oxlint-disable-next-line @typescript-eslint/restrict-template-expressions
       const result = `${createList(['foo', 'bar', 'baz'])}`
       expect(result).toBe('[ foo, bar, baz ]')
     })

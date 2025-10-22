@@ -77,7 +77,7 @@ describe('createResolvable', () => {
   test('should call the finally method when the promise is resolved', async() => {
     const result = createResolvable()
     const callback = vi.fn()
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    // oxlint-disable-next-line @typescript-eslint/no-floating-promises
     result.finally(callback)
     result.resolve()
     await result

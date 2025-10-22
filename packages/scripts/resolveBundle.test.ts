@@ -96,7 +96,7 @@ describe('resolveBundle', () => {
             sourcemap: true,
           },
         ],
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        // oxlint-disable-next-line @typescript-eslint/no-unsafe-assignment
         plugins: expect.any(Array),
       },
       {
@@ -118,7 +118,7 @@ describe('resolveBundle', () => {
           entryFileNames: '[name].d.ts',
           format: 'esm',
         },
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        // oxlint-disable-next-line @typescript-eslint/no-unsafe-assignment
         plugins: expect.any(Array),
       },
     ])

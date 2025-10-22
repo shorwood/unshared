@@ -9,6 +9,6 @@ import type { Constructor } from '@unshared/types'
  */
 export function isConstructor<T extends Constructor>(value: unknown): value is T {
   return typeof value === 'function'
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    // oxlint-disable-next-line @typescript-eslint/no-unsafe-member-access
     && value.prototype?.constructor === value
 }

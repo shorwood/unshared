@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
+/* oxlint-disable @typescript-eslint/no-misused-promises */
 import type { Function } from '@unshared/types'
 import type { WorkerRequest } from './workerRequest'
 import { isMainThread, MessagePort, parentPort } from 'node:worker_threads'

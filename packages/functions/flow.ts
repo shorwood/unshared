@@ -51,7 +51,7 @@ export function flow(value: unknown, ...transformers: Function[]) {
       const nextTransformers = transformers.slice(i + 1)
 
       // @ts-expect-error: Spread argument is of the correct type.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      // oxlint-disable-next-line @typescript-eslint/no-unsafe-return
       return result.then(value => flow(value, ...nextTransformers))
     }
   }

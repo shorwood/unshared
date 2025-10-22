@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/pseudo-random */
-/* eslint-disable @typescript-eslint/no-this-alias */
-/* eslint-disable unicorn/no-this-assignment */
+/* oxlint-disable @typescript-eslint/no-this-alias */
+/* oxlint-disable unicorn/no-this-assignment */
 import type { RandomLCGNextOptions } from './randomLcgNext'
 import { randomGaussian } from './randomGaussian'
 import { randomLcgNext } from './randomLcgNext'

@@ -1,4 +1,4 @@
-/* eslint-disable unicorn/prefer-top-level-await */
+/* oxlint-disable unicorn/prefer-top-level-await */
 import type { EnumEntry } from '@unshared/scripts'
 import { buildEnum } from '@unshared/scripts'
 import { writeFile } from 'node:fs/promises'

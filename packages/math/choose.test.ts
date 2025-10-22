@@ -19,7 +19,7 @@ describe('choose', () => {
 
   test('should handle large numbers', () => {
     const result = choose(100, 50)
-    // eslint-disable-next-line no-loss-of-precision
+    // oxlint-disable-next-line no-loss-of-precision
     expect(result).toBe(100891344545564193334812497256)
   })
 

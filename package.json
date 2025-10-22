@@ -6,13 +6,13 @@
   "private": true,
   "author": "Stanley Horwood <stanley@hsjm.io>",
   "homepage": "https://github.com/shorwood/unshared#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/shorwood/unshared.git"
-  },
   "engines": {
     "node": ">=22.0.0",
     "pnpm": ">=10.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/shorwood/unshared.git"
   },
   "packageManager": "pnpm@10.17.1",
   "pnpm": {
@@ -33,31 +33,35 @@
   "scripts": {
     "dev": "tsx ./packages/scripts/cli.uncli.ts build --watch true",
     "build": "tsx ./packages/scripts/cli.uncli.ts build --generateIndexes true",
-    "lint": "DEBUG=eslint:eslint eslint --ignore-pattern examples",
-    "lint:ci": "eslint --cache --ignore-pattern examples",
-    "lint:fix": "DEBUG=eslint:eslint eslint --fix --cache",
+    "lint": "oxlint --ignore-pattern examples",
+    "lint:ci": "oxlint --ignore-pattern examples",
+    "lint:fix": "oxlint --fix",
     "test": "vitest --watch",
     "test:ci": "vitest --typecheck --run",
+    "commit": "tsx ./packages/scripts/cli.uncli.ts commit",
     "test:ui": "vitest --ui",
     "test:types": "vitest --typecheck",
     "test:coverage": "vitest --coverage",
-    "commit": "tsx ./packages/scripts/cli.uncli.ts commit",
     "commit:lint": "commitlint --edit",
     "publish:ci": "tsx ./packages/scripts/cli.uncli.ts publish",
     "release": "tsx ./packages/scripts/cli.uncli.ts release"
   },
   "devDependencies": {
     "@commitlint/config-pnpm-scopes": "19.8.1",
+    "@eslint/json": "0.13.2",
     "@types/node": "24.3.0",
     "@unshared/eslint-config": "workspace:*",
+    "@unshared/oxlint-config": "workspace:*",
     "@vitest/coverage-v8": "3.2.4",
     "@vitest/ui": "3.2.4",
     "@vitest/utils": "3.2.4",
     "commitlint": "19.8.1",
     "eslint": "9.33.0",
+    "eslint-plugin-jsonc": "2.20.1",
     "happy-dom": "18.0.1",
     "husky": "9.1.7",
     "memfs": "4.36.3",
+    "oxlint": "1.23.0",
     "tsx": "4.20.4",
     "typescript": "5.9.2",
     "vitest": "3.2.4"

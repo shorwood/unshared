@@ -111,7 +111,7 @@ export interface BaseInputListSlotProps<T, V> {
 }
 
 /** The slots of the `BaseInputList` component. */
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+// oxlint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type BaseInputListSlots<T, V> = {
   search: (options: BaseInputListSlotProps<T, V>) => VNode
   options: (options: BaseInputListSlotProps<T, V>) => VNode

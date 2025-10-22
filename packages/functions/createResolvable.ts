@@ -142,7 +142,7 @@ export function createResolvable<T>(): Resolvable<T> {
     })
 
     // --- Bind the promise methods to the state object.
-    // eslint-disable-next-line unicorn/no-thenable
+    // oxlint-disable-next-line unicorn/no-thenable
     state.then = state.promise.then.bind(state.promise)
     state.catch = state.promise.catch.bind(state.promise)
     state.finally = state.promise.finally.bind(state.promise)

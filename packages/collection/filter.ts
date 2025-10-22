@@ -46,7 +46,7 @@ export function filter(object: Collection, iterator: IteratorFunction) {
   if (Symbol.iterator in object)
 
     // @ts-expect-error: `object` has a `Symbol.iterator` property but it's not recognized.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    // oxlint-disable-next-line @typescript-eslint/no-unsafe-return
     return [...object].filter((value, key) => iterator(value, key, object))
 
   // --- Filter entries.

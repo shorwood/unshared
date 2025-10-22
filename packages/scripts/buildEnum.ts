@@ -48,7 +48,7 @@ export function buildEnum(exportName: string, entries: EnumEntry[]) {
   const enumDeclarations: string[] = []
   for (const entry of entries) {
     const key = entry.key.includes(' ') ? `'${entry.key}'` : entry.key
-    const document = entry.document?.replace(/^/gm, ' * ')
+    const document = entry.document?.replaceAll(/^/gm, ' * ')
     const documentPart = document ? `/**\n${document}\n */\n` : ''
     const declaration = `${documentPart}${key} = ${entry.value},`
     enumDeclarations.push(declaration)

@@ -1,5 +1,5 @@
 /* eslint-disable sonarjs/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* oxlint-disable @typescript-eslint/no-unused-vars */
 import { handleResponseStreamJson } from './handleResponseStreamJson'
 
 function createResponse(...data: string[]): Response {

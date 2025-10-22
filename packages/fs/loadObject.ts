@@ -78,7 +78,7 @@ export interface FSObjectEventMap<T extends object> {
   unlock: []
 }
 
-// eslint-disable-next-line unicorn/prefer-event-target
+// oxlint-disable-next-line unicorn/prefer-event-target
 export class FSObject<T extends object> extends EventEmitter<FSObjectEventMap<T>> {
 
   /** Flag to signal the file is synchronized with the object. */

@@ -9,7 +9,7 @@ describe('useBaseInputToggle', () => {
     it('should return a reactive object', () => {
       const result = useBaseInputToggle()
       const reactive = isReactive(result)
-      expect(reactive).toBe(true)
+      expect(reactive).toBeTruthy()
     })
 
     it('should provide the composable into the component', () => {
@@ -40,18 +40,18 @@ describe('useBaseInputToggle', () => {
     describe('model', () => {
       it('should be true when the model is true', () => {
         const result = useBaseInputToggle({ modelValue: true, type: 'switch' })
-        expect(result.isActive).toBe(true)
+        expect(result.isActive).toBeTruthy()
       })
 
       it('should be false when the model is false', () => {
         const result = useBaseInputToggle({ modelValue: false, type: 'switch' })
-        expect(result.isActive).toBe(false)
+        expect(result.isActive).toBeFalsy()
       })
 
       it('should be false when the model is not a boolean', () => {
         // @ts-expect-error: ignore
         const result = useBaseInputToggle({ modelValue: 'not-true', type: 'switch' })
-        expect(result.isActive).toBe(false)
+        expect(result.isActive).toBeFalsy()
       })
 
       it('should change `isActive` when `modelValue` changes', async() => {
@@ -59,7 +59,7 @@ describe('useBaseInputToggle', () => {
         const result = useBaseInputToggle(props)
         props.modelValue = true
         await nextTick()
-        expect(result.isActive).toBe(true)
+        expect(result.isActive).toBeTruthy()
       })
 
       it('should change `model` to `true` when `modelValue` changes to `true`', async() => {
@@ -67,7 +67,7 @@ describe('useBaseInputToggle', () => {
         const result = useBaseInputToggle(props)
         props.modelValue = true
         await nextTick()
-        expect(result.model).toBe(true)
+        expect(result.model).toBeTruthy()
       })
     })
 
@@ -77,7 +77,7 @@ describe('useBaseInputToggle', () => {
         // @ts-expect-error: ignore
         const result = useBaseInputToggle({ modelValue: false, type: 'switch' }, { emit })
         result.toggle()
-        expect(result.model).toBe(true)
+        expect(result.model).toBeTruthy()
       })
 
       it('should toggle the model to false when the model is true', () => {
@@ -85,7 +85,7 @@ describe('useBaseInputToggle', () => {
         // @ts-expect-error: ignore
         const result = useBaseInputToggle({ modelValue: true, type: 'switch' }, { emit })
         result.toggle()
-        expect(result.model).toBe(false)
+        expect(result.model).toBeFalsy()
       })
 
       it('should toggle the model to true when the model is not a boolean', () => {
@@ -93,7 +93,7 @@ describe('useBaseInputToggle', () => {
         // @ts-expect-error: ignore
         const result = useBaseInputToggle({ modelValue: 'not-true', type: 'switch' }, { emit })
         result.toggle()
-        expect(result.model).toBe(true)
+        expect(result.model).toBeTruthy()
       })
     })
 
@@ -167,12 +167,12 @@ describe('useBaseInputToggle', () => {
     describe('model', () => {
       it('should be true when the model is the provided value', () => {
         const result = useBaseInputToggle({ modelValue: 'one', value: 'one', type: 'radio' })
-        expect(result.isActive).toBe(true)
+        expect(result.isActive).toBeTruthy()
       })
 
       it('should be false when the model is not the provided value', () => {
         const result = useBaseInputToggle({ modelValue: 'two', value: 'one', type: 'radio' })
-        expect(result.isActive).toBe(false)
+        expect(result.isActive).toBeFalsy()
       })
 
       it('should change `isActive` when `modelValue` changes', async() => {
@@ -180,7 +180,7 @@ describe('useBaseInputToggle', () => {
         const result = useBaseInputToggle(props)
         props.modelValue = 'one'
         await nextTick()
-        expect(result.isActive).toBe(true)
+        expect(result.isActive).toBeTruthy()
       })
 
       it('should change `model` to the provided value when `modelValue` changes to the provided value', async() => {
@@ -194,7 +194,7 @@ describe('useBaseInputToggle', () => {
       it('should default the value to the key of the component', () => {
         // @ts-expect-error: ignore
         const result = useBaseInputToggle({ modelValue: 'one', type: 'radio' }, { props: { key: 'one' } })
-        expect(result.isActive).toBe(true)
+        expect(result.isActive).toBeTruthy()
       })
     })
 
@@ -303,23 +303,23 @@ describe('useBaseInputToggle', () => {
     describe('model', () => {
       it('should be true when the model contains the provided value', () => {
         const result = useBaseInputToggle({ modelValue: ['one', 'two'], value: 'one', type: 'checkbox' })
-        expect(result.isActive).toBe(true)
+        expect(result.isActive).toBeTruthy()
       })
 
       it('should be false when the model does not contain the provided value', () => {
         const result = useBaseInputToggle({ modelValue: ['two'], value: 'one', type: 'checkbox' })
-        expect(result.isActive).toBe(false)
+        expect(result.isActive).toBeFalsy()
       })
 
       it('should be false when the model is not an array', () => {
         // @ts-expect-error: ignore
         const result = useBaseInputToggle({ modelValue: 'one', value: 'one', type: 'checkbox' })
-        expect(result.isActive).toBe(false)
+        expect(result.isActive).toBeFalsy()
       })
 
       it('should be true when the model contains all the provided values', () => {
         const result = useBaseInputToggle({ modelValue: ['one', 'two', 'three'], value: ['one', 'two'], type: 'checkbox' })
-        expect(result.isActive).toBe(true)
+        expect(result.isActive).toBeTruthy()
       })
 
       it('should be mixed when the model contains some of the provided values', () => {
@@ -332,7 +332,7 @@ describe('useBaseInputToggle', () => {
         const result = useBaseInputToggle(props)
         props.modelValue = ['one']
         await nextTick()
-        expect(result.isActive).toBe(true)
+        expect(result.isActive).toBeTruthy()
       })
 
       it('should change `model` to the provided value when `modelValue` changes to the provided value', async() => {

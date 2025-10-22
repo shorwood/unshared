@@ -52,7 +52,7 @@ export interface BaseCollapseProps extends BaseRenderableOptions {
 }
 
 /** The context of the `BaseCollapse` component. */
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+// oxlint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type BaseCollapseSlots = {
   default: () => VNode
 }

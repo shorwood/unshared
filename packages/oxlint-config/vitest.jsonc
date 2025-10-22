@@ -1,0 +1,48 @@
+
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "extends": [
+    "plugin:vitest/recommended"
+  ],
+  "plugins": [
+    "vitest"
+  ],
+  "rules": {
+      // --- Add the `expectTypeOf` function to the list of assert functions.
+      "vitest/expect-expect": ["error", {
+        "assertFunctionNames": ["expect", "expectTypeOf"]
+      }],
+
+      // --- Enforce a single top-level describe block.
+      "vitest/require-top-level-describe": ["error", { "maxNumberOfTopLevelDescribes": 1 }],
+
+      // --- Enforce "should" as the prefix for test titles.
+      "vitest/valid-title": ["error", {
+        "ignoreTypeOfDescribeName": true,
+        "mustMatch": { "test": ["^should"] }
+      }],
+
+      // --- Enforce using toBeTruthy/toBeFalsy over toBe(true)/toBe(false).
+      "vitest/prefer-to-be-truthy": "error",
+      "vitest/prefer-to-be-falsy": "error",
+
+      // --- Loosen the rules for test files.
+      "vitest/no-hooks": "off",
+      "vitest/require-hook": "off",
+      "vitest/no-conditional-in-test": "off",
+      "vitest/no-conditional-tests": "off",
+      "vitest/prefer-expect-assertions": "off",
+
+      // --- Enforce padding inside test blocks.
+      "vitest/padding-around-all": "error",
+      "vitest/padding-around-expect-groups": "error",
+
+      // --- Ensure
+      "vitest/no-identical-title": "error",
+      "vitest/no-commented-out-tests": "error",
+      "vitest/valid-expect": "error",
+      "vitest/valid-describe-callback": "error",
+      "vitest/require-local-test-context-for-concurrent-snapshots": "error",
+      "vitest/no-import-node-test": "error"
+  }
+}

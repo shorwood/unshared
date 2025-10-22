@@ -33,7 +33,7 @@ export interface BaseInputToggleSlotProps {
   isReadonly: boolean
 }
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+// oxlint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type BaseInputToggleSlots = {
   default?: (props: BaseInputToggleSlotProps) => VNode
 }

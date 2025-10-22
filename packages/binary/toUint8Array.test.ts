@@ -32,7 +32,7 @@ describe('toUint8Array', () => {
   })
 
   test('should convert an Iterator to an Uint8Array', () => {
-    // eslint-disable-next-line unicorn/consistent-function-scoping
+    // oxlint-disable-next-line unicorn/consistent-function-scoping
     const createIterator = function * () {
       yield 72
       yield 101

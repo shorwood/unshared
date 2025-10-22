@@ -13,6 +13,16 @@ export interface RandomHypergeometricOptions extends RandomLCGNextOptions {
   draws?: number
 }
 
+// --- Helper function to calculate combinations C(n,k)
+function combination(n: number, k: number): number {
+  if (k > n || k < 0) return 0
+  if (k === 0 || k === n) return 1
+  k = Math.min(k, n - k) // Take advantage of symmetry
+  let result = 1
+  for (let i = 0; i < k; i++) result = result * (n - i) / (i + 1)
+  return result
+}
+
 /**
  * Generate a random integer with hypergeometric distribution.
  * Uses the inverse transform method with cumulative probability calculation.
@@ -43,16 +53,6 @@ export function randomHypergeometric(this: number | void, options: RandomHyperge
   if (draws < 0 || draws > populationSize || !Number.isInteger(draws))
     throw new Error('Number of draws must be a non-negative integer not greater than population size')
   const u = randomLcgNext.call(this, { onNextSeed })
-
-  // --- Helper function to calculate combinations C(n,k)
-  function combination(n: number, k: number): number {
-    if (k > n || k < 0) return 0
-    if (k === 0 || k === n) return 1
-    k = Math.min(k, n - k) // Take advantage of symmetry
-    let result = 1
-    for (let i = 0; i < k; i++) result = result * (n - i) / (i + 1)
-    return result
-  }
 
   // --- Calculate hypergeometric probabilities and find the value
   const maxK = Math.min(draws, successStates)

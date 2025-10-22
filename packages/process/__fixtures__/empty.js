@@ -1,1 +1,1 @@
-// eslint-disable-next-line unicorn/no-empty-file
+'this file is intentionally left empty.'
