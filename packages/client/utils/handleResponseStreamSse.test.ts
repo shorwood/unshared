@@ -142,8 +142,7 @@ describe('handleResponseStreamSse', () => {
       const onData = vi.fn()
       const result = handleResponseStreamSse(response, { onData })
       for await (const _ of result) { /* empty */ }
-      expect(onData).toHaveBeenCalledOnce()
-      expect(onData).toHaveBeenCalledWith({ data: 'Hello, world!' }, { onData })
+      expect(onData).toHaveBeenCalledExactlyOnceWith({ data: 'Hello, world!' }, { onData })
     })
 
     it('should call onError callback if an error occurs', async() => {
@@ -153,8 +152,7 @@ describe('handleResponseStreamSse', () => {
       const result = handleResponseStreamSse(response, { onError })
       try { for await (const _ of result) { /* empty */ } }
       catch { /* empty */ }
-      expect(onError).toHaveBeenCalledOnce()
-      expect(onError).toHaveBeenCalledWith(expect.any(Error), { onError })
+      expect(onError).toHaveBeenCalledExactlyOnceWith(expect.any(Error), { onError })
     })
 
     it('should call onEnd callback when the stream ends', async() => {
@@ -162,8 +160,7 @@ describe('handleResponseStreamSse', () => {
       const onEnd = vi.fn()
       const result = handleResponseStreamSse(response, { onEnd })
       for await (const _ of result) { /* empty */ }
-      expect(onEnd).toHaveBeenCalledOnce()
-      expect(onEnd).toHaveBeenCalledWith(response, { onEnd })
+      expect(onEnd).toHaveBeenCalledExactlyOnceWith(response, { onEnd })
     })
 
     it('should await async onData callback', async() => {
@@ -250,8 +247,7 @@ describe('handleResponseStreamSse', () => {
       const onData = vi.fn()
       const result = handleResponseStreamSse(response, { onData })
       for await (const _ of result) { /* empty */ }
-      expect(onData).toHaveBeenCalledOnce()
-      expect(onData).toHaveBeenCalledWith({ data: { message: 'Hello, world!' } }, { onData })
+      expect(onData).toHaveBeenCalledExactlyOnceWith({ data: { message: 'Hello, world!' } }, { onData })
     })
   })
 })

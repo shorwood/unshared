@@ -22,6 +22,8 @@ export function jsdoc(): Linter.Config[] {
         // --- Redudant with TypeScript.
         'jsdoc/require-jsdoc': 'off',
         'jsdoc/require-param-type': 'off',
+        'jsdoc/require-yields-type': 'off',
+        'jsdoc/require-throws-type': 'off',
         'jsdoc/require-returns-type': 'off',
 
         // --- Reports malformed JSDoc comments.

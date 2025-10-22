@@ -29,8 +29,7 @@ describe('handleResponse', () => {
       const onFailure = vi.fn()
       const result = handleResponse(response, { onFailure })
       await expect(result).rejects.toThrow()
-      expect(onFailure).toHaveBeenCalledOnce()
-      expect(onFailure).toHaveBeenCalledWith(response, { onFailure })
+      expect(onFailure).toHaveBeenCalledExactlyOnceWith(response, { onFailure })
     })
 
     it('should reject with the error created in the onFailure callback', async() => {
@@ -74,8 +73,7 @@ describe('handleResponse', () => {
       const onSuccess = vi.fn()
       const result = handleResponse(response, { onSuccess })
       await expect(result).resolves.toBeUndefined()
-      expect(onSuccess).toHaveBeenCalledOnce()
-      expect(onSuccess).toHaveBeenCalledWith(response, { onSuccess })
+      expect(onSuccess).toHaveBeenCalledExactlyOnceWith(response, { onSuccess })
     })
 
     it('should call the onEnd callback if provided', async() => {
@@ -83,8 +81,7 @@ describe('handleResponse', () => {
       const onEnd = vi.fn()
       const result = handleResponse(response, { onEnd })
       await expect(result).resolves.toBeUndefined()
-      expect(onEnd).toHaveBeenCalledOnce()
-      expect(onEnd).toHaveBeenCalledWith(response, { onEnd })
+      expect(onEnd).toHaveBeenCalledExactlyOnceWith(response, { onEnd })
     })
 
     it('should await async onSuccess callback', async() => {
@@ -136,8 +133,7 @@ describe('handleResponse', () => {
         const onData = vi.fn()
         const result = handleResponse(response, { onData })
         await expect(result).resolves.toBe(body)
-        expect(onData).toHaveBeenCalledOnce()
-        expect(onData).toHaveBeenCalledWith(body, { onData })
+        expect(onData).toHaveBeenCalledExactlyOnceWith(body, { onData })
       })
 
       it('should call the onSuccess callback if provided', async() => {
@@ -146,8 +142,7 @@ describe('handleResponse', () => {
         const onSuccess = vi.fn()
         const result = handleResponse(response, { onSuccess })
         await expect(result).resolves.toBe(body)
-        expect(onSuccess).toHaveBeenCalledOnce()
-        expect(onSuccess).toHaveBeenCalledWith(response, { onSuccess })
+        expect(onSuccess).toHaveBeenCalledExactlyOnceWith(response, { onSuccess })
       })
 
       it('should call the onEnd callback if provided', async() => {
@@ -156,8 +151,7 @@ describe('handleResponse', () => {
         const onEnd = vi.fn()
         const result = handleResponse(response, { onEnd })
         await expect(result).resolves.toBe(body)
-        expect(onEnd).toHaveBeenCalledOnce()
-        expect(onEnd).toHaveBeenCalledWith(response, { onEnd })
+        expect(onEnd).toHaveBeenCalledExactlyOnceWith(response, { onEnd })
       })
 
       it('should await async onData callback', async() => {
@@ -213,8 +207,7 @@ describe('handleResponse', () => {
         const onError = vi.fn()
         const result = handleResponse(response, { onError })
         await expect(result).resolves.toBeUndefined()
-        expect(onError).toHaveBeenCalledOnce()
-        expect(onError).toHaveBeenCalledWith(expect.any(TypeError), { onError })
+        expect(onError).toHaveBeenCalledExactlyOnceWith(expect.any(TypeError), { onError })
       })
 
       it('should call the onEnd callback if the text response fails', async() => {
@@ -223,8 +216,7 @@ describe('handleResponse', () => {
         const onEnd = vi.fn()
         const result = handleResponse(response, { onEnd })
         await expect(result).rejects.toThrow(TypeError)
-        expect(onEnd).toHaveBeenCalledOnce()
-        expect(onEnd).toHaveBeenCalledWith(response, { onEnd })
+        expect(onEnd).toHaveBeenCalledExactlyOnceWith(response, { onEnd })
       })
 
       it('should await async onError callback', async() => {
@@ -274,8 +266,7 @@ describe('handleResponse', () => {
         const onData = vi.fn()
         const result = handleResponse(response, { onData })
         await expect(result).resolves.toEqual({ key: 'value' })
-        expect(onData).toHaveBeenCalledOnce()
-        expect(onData).toHaveBeenCalledWith({ key: 'value' }, { onData })
+        expect(onData).toHaveBeenCalledExactlyOnceWith({ key: 'value' }, { onData })
       })
 
       it('should call the onSuccess callback if provided', async() => {
@@ -284,8 +275,7 @@ describe('handleResponse', () => {
         const onSuccess = vi.fn()
         const result = handleResponse(response, { onSuccess })
         await expect(result).resolves.toEqual({ key: 'value' })
-        expect(onSuccess).toHaveBeenCalledOnce()
-        expect(onSuccess).toHaveBeenCalledWith(response, { onSuccess })
+        expect(onSuccess).toHaveBeenCalledExactlyOnceWith(response, { onSuccess })
       })
 
       it('should call the onEnd callback if provided', async() => {
@@ -294,8 +284,7 @@ describe('handleResponse', () => {
         const onEnd = vi.fn()
         const result = handleResponse(response, { onEnd })
         await expect(result).resolves.toEqual({ key: 'value' })
-        expect(onEnd).toHaveBeenCalledOnce()
-        expect(onEnd).toHaveBeenCalledWith(response, { onEnd })
+        expect(onEnd).toHaveBeenCalledExactlyOnceWith(response, { onEnd })
       })
 
       it('should await async onData callback', async() => {
@@ -351,8 +340,7 @@ describe('handleResponse', () => {
         const onError = vi.fn()
         const result = handleResponse(response, { onError })
         await expect(result).resolves.toBeUndefined()
-        expect(onError).toHaveBeenCalledOnce()
-        expect(onError).toHaveBeenCalledWith(expect.any(SyntaxError), { onError })
+        expect(onError).toHaveBeenCalledExactlyOnceWith(expect.any(SyntaxError), { onError })
       })
 
       it('should call the onEnd callback if the JSON is invalid', async() => {
@@ -361,8 +349,7 @@ describe('handleResponse', () => {
         const onEnd = vi.fn()
         const result = handleResponse(response, { onEnd })
         await expect(result).rejects.toThrow()
-        expect(onEnd).toHaveBeenCalledOnce()
-        expect(onEnd).toHaveBeenCalledWith(response, { onEnd })
+        expect(onEnd).toHaveBeenCalledExactlyOnceWith(response, { onEnd })
       })
 
       it('should await async onError callback', async() => {

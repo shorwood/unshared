@@ -66,8 +66,7 @@ describe('loadObject', () => {
       const result = new FSObject('/app/packages.json')
       result.addListener('load', fn)
       await result.load()
-      expect(fn).toHaveBeenCalledOnce()
-      expect(fn).toHaveBeenCalledWith({ foo: 'bar' })
+      expect(fn).toHaveBeenCalledExactlyOnceWith({ foo: 'bar' })
     })
 
     it('should resolve the `untilLoaded` property once the file is loaded', async() => {
@@ -110,8 +109,7 @@ describe('loadObject', () => {
       const result = new FSObject('/app/packages.json', { parse })
       await result.load()
       expect(result.object).toMatchObject({ json: '{"foo":"bar"}' })
-      expect(parse).toHaveBeenCalledOnce()
-      expect(parse).toHaveBeenCalledWith('{"foo":"bar"}')
+      expect(parse).toHaveBeenCalledExactlyOnceWith('{"foo":"bar"}')
     })
 
     it('should reject if the file does not exist', async() => {
@@ -137,8 +135,7 @@ describe('loadObject', () => {
       result.watch()
       writeFileSync('/app/packages.json', '{"bar":"baz"}')
       await result.untilLoaded
-      expect(fn).toHaveBeenCalledOnce()
-      expect(fn).toHaveBeenCalledWith({ bar: 'baz' })
+      expect(fn).toHaveBeenCalledExactlyOnceWith({ bar: 'baz' })
     })
 
     it('should not watch for changes on the file when `ignoreFileChanges` is `true`', async() => {
@@ -181,8 +178,7 @@ describe('loadObject', () => {
       const fn = vi.fn()
       result.addListener('commit', fn)
       await result.commit()
-      expect(fn).toHaveBeenCalledOnce()
-      expect(fn).toHaveBeenCalledWith({ foo: 'bar' })
+      expect(fn).toHaveBeenCalledExactlyOnceWith({ foo: 'bar' })
     })
 
     it('should commit the given object to the file', async() => {
@@ -214,8 +210,7 @@ describe('loadObject', () => {
       result.addListener('commit', fn)
       result.object.foo = 'baz'
       await result.untilCommitted
-      expect(fn).toHaveBeenCalledOnce()
-      expect(fn).toHaveBeenCalledWith({ foo: 'baz' })
+      expect(fn).toHaveBeenCalledExactlyOnceWith({ foo: 'baz' })
     })
 
     it('should use the provided `serialize` function to serialize the object', async() => {
@@ -224,8 +219,7 @@ describe('loadObject', () => {
       await result.commit()
       const fileContent = readFileSync('/app/packages.json', 'utf8')
       expect(fileContent).toBe('[object Object]\n')
-      expect(serialize).toHaveBeenCalledOnce()
-      expect(serialize).toHaveBeenCalledWith({ foo: 'bar' })
+      expect(serialize).toHaveBeenCalledExactlyOnceWith({ foo: 'bar' })
     })
 
     it('should not commit the object to the file when the `ignoreObjectChanges` option is set to `true`', async() => {

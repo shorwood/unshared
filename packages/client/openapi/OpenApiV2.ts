@@ -71,10 +71,10 @@ export declare namespace OpenAPIV2 {
     Parameters<T, 'body'> extends Record<string, infer U> ? U : never
 
   export type RequestQuery<T> =
-      Parameters<T, 'query'>
+    Parameters<T, 'query'>
 
   export type RequestParameters<T> =
-      Parameters<T, 'path'>
+    Parameters<T, 'path'>
 
   export type RequestHeaders<T> =
     UnionMerge<

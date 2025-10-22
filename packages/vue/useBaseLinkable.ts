@@ -1,3 +1,4 @@
+/* eslint-disable vue/return-in-computed-property */
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import type { Component, Prop } from 'vue'
 import type { RouteLocationNamedRaw, RouteLocationRaw } from 'vue-router'

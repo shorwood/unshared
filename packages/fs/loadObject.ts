@@ -104,7 +104,7 @@ export class FSObject<T extends object> extends EventEmitter<FSObjectEventMap<T>
    *
    * @param path The path or file descriptor of the file to load.
    * @param options Options for the watcher.
-   * @throws If the file is not a JSON object.
+   * @throws {Error} if the file cannot be accessed or parsed.
    */
   constructor(public path: PathLike, public options: FSObjectOptions<T> = {}) {
     super()

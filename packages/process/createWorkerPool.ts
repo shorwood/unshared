@@ -70,7 +70,7 @@ export class WorkerPool {
    */
   private getWorker(): WorkerService {
     if (this.workers.length === 0) this.initialize()
-    return [...this.workers].sort((a, b) => a.running - b.running)[0]
+    return this.workers.toSorted((a, b) => a.running - b.running)[0]
   }
 
   /**

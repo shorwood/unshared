@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-array-sort */
 /* eslint-disable unicorn/no-array-reverse */
 /* eslint-disable unicorn/no-magic-array-flat-depth */
 /* eslint-disable unicorn/no-array-reduce */

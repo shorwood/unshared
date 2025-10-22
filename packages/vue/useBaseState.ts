@@ -1,3 +1,4 @@
+/* eslint-disable vue/return-in-computed-property */
 import type { Prop, Ref } from 'vue'
 import { toReactive, useVModel } from '@vueuse/core'
 import { computed, getCurrentInstance } from 'vue'

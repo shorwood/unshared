@@ -63,7 +63,7 @@ describe('sample', () => {
   test('should return a copy of the array when the sample size is the same as the array length', () => {
     const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     const result = sample(array, array.length)
-    const sorted = [...array].sort((a, b) => a - b)
+    const sorted = array.toSorted((a, b) => a - b)
     expect(array).not.toBe(result)
     expect(result).lengthOf(10)
     expect(sorted).toStrictEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])

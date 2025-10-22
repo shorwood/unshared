@@ -15,8 +15,7 @@ describe('reactive', () => {
     const object = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
     result.foo = 'baz'
-    expect(callback).toHaveBeenCalledWith({ foo: 'baz' })
-    expect(callback).toHaveBeenCalledOnce()
+    expect(callback).toHaveBeenCalledExactlyOnceWith({ foo: 'baz' })
     expectTypeOf(result).toEqualTypeOf<Reactive<typeof object>>()
   })
 
@@ -27,8 +26,7 @@ describe('reactive', () => {
 
     // @ts-expect-error: ignore
     result.baz = 'qux'
-    expect(callback).toHaveBeenCalledWith({ baz: 'qux', foo: 'bar' })
-    expect(callback).toHaveBeenCalledOnce()
+    expect(callback).toHaveBeenCalledExactlyOnceWith({ baz: 'qux', foo: 'bar' })
     expectTypeOf(result).toEqualTypeOf<Reactive<typeof object>>()
   })
 
@@ -37,8 +35,7 @@ describe('reactive', () => {
     const object: { foo?: string } = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
     delete result.foo
-    expect(callback).toHaveBeenCalledWith({})
-    expect(callback).toHaveBeenCalledOnce()
+    expect(callback).toHaveBeenCalledExactlyOnceWith({})
   })
 
   test('should trigger when Object.assign is used', () => {
@@ -46,8 +43,7 @@ describe('reactive', () => {
     const object = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
     Object.assign(result, { baz: 'qux' })
-    expect(callback).toHaveBeenCalledWith({ baz: 'qux', foo: 'bar' })
-    expect(callback).toHaveBeenCalledOnce()
+    expect(callback).toHaveBeenCalledExactlyOnceWith({ baz: 'qux', foo: 'bar' })
   })
 
   test('should trigger when a property is set with Object.defineProperty', () => {
@@ -55,8 +51,7 @@ describe('reactive', () => {
     const object = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
     Object.defineProperty(result, 'foo', { value: 'baz' })
-    expect(callback).toHaveBeenCalledWith({ foo: 'baz' })
-    expect(callback).toHaveBeenCalledOnce()
+    expect(callback).toHaveBeenCalledExactlyOnceWith({ foo: 'baz' })
   })
 
   test('should trigger when a property is set with Object.defineProperties', () => {
@@ -64,8 +59,7 @@ describe('reactive', () => {
     const object = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
     Object.defineProperties(result, { foo: { value: 'baz' } })
-    expect(callback).toHaveBeenCalledWith({ foo: 'baz' })
-    expect(callback).toHaveBeenCalledOnce()
+    expect(callback).toHaveBeenCalledExactlyOnceWith({ foo: 'baz' })
   })
 
   test('should trigger when the prototype is set', () => {
@@ -73,8 +67,7 @@ describe('reactive', () => {
     const object = { foo: 'bar' }
     const result = reactive(object, { callbacks: [callback] })
     Object.setPrototypeOf(result, { baz: 'qux' })
-    expect(callback).toHaveBeenCalledWith({ foo: 'bar' })
-    expect(callback).toHaveBeenCalledOnce()
+    expect(callback).toHaveBeenCalledExactlyOnceWith({ foo: 'bar' })
   })
 
   test('should trigger when a nested property is set', () => {
@@ -82,8 +75,7 @@ describe('reactive', () => {
     const object = { foo: { bar: { baz: 'qux' } } }
     const result = reactive(object, { callbacks: [callback], deep: true })
     result.foo.bar.baz = 'quux'
-    expect(callback).toHaveBeenCalledWith({ foo: { bar: { baz: 'quux' } } })
-    expect(callback).toHaveBeenCalledOnce()
+    expect(callback).toHaveBeenCalledExactlyOnceWith({ foo: { bar: { baz: 'quux' } } })
   })
 
   test('should trigger when an item is pushed to an array', () => {
@@ -92,8 +84,7 @@ describe('reactive', () => {
     const result = reactive(object, { callbacks: [callback], hooks: ['push'] })
     const resultPush = result.push('baz')
     expect(resultPush).toBe(2)
-    expect(callback).toHaveBeenCalledWith(['bar', 'baz'])
-    expect(callback).toHaveBeenCalledOnce()
+    expect(callback).toHaveBeenCalledExactlyOnceWith(['bar', 'baz'])
   })
 
   test('should trigger when an items is pushed to a nested array', () => {
@@ -102,8 +93,7 @@ describe('reactive', () => {
     const result = reactive(object, { callbacks: [callback], deep: true, hooks: ['push'] })
     const resultPush = result.foo.push('baz')
     expect(resultPush).toBe(2)
-    expect(callback).toHaveBeenCalledWith({ foo: ['bar', 'baz'] })
-    expect(callback).toHaveBeenCalledOnce()
+    expect(callback).toHaveBeenCalledExactlyOnceWith({ foo: ['bar', 'baz'] })
   })
 
   test('should not trigger when a property is set to the same value', () => {

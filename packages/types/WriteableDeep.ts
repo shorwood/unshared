@@ -7,6 +7,6 @@
  * @example Writeable<{ readonly a: string; b: { readonly c: number } }> // { a: string; b: { c: number } }
  */
 export type WriteableDeep<T> =
-T extends object
-  ? T extends ReadonlyArray<infer U> ? Array<WriteableDeep<U>>
-    : { -readonly [P in keyof T]: WriteableDeep<T[P]>; } : T
+  T extends object
+    ? T extends ReadonlyArray<infer U> ? Array<WriteableDeep<U>>
+      : { -readonly [P in keyof T]: WriteableDeep<T[P]>; } : T

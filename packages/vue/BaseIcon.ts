@@ -1,3 +1,4 @@
+/* eslint-disable vue/return-in-computed-property */
 import type { Prop } from 'vue'
 import type { DefineComponentContext } from './defineSetupComponent'
 import type { BaseRenderableOptions } from './useBaseRenderable'

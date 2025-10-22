@@ -7,15 +7,15 @@ const methods = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch'] as 
 
 /** Union of all operation IDs in the specification. */
 export type OperationId<T> =
-T extends { paths: infer P }
-  ? P extends Record<string, infer R>
-    ? R extends Record<string, infer O>
-      ? O extends { operationId: infer N }
-        ? N
+  T extends { paths: infer P }
+    ? P extends Record<string, infer R>
+      ? R extends Record<string, infer O>
+        ? O extends { operationId: infer N }
+          ? N
+          : string
         : string
       : string
     : string
-  : string
 
 /** A union of possible Operations types in the specification. */
 export type Operation = OpenAPI.Operation & { method: FetchMethod; path: string }

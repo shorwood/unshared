@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-array-sort */
 /**
  * A linked list node.
  *
@@ -394,14 +395,12 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
 
     let length = this.length
     let previous = this as List<T>
-    let head: ListNode<T> | undefined = this.head
     let tail: ListNode<T> | undefined = this.tail
 
     // --- Link each list to the previous one.
     for (const list of lists) {
       if (!list.head) continue
       this.head ??= list.head
-      head ??= list.head
 
       // --- Link the previous list to the current one.
       if (previous.tail) previous.tail.next = list.head

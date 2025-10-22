@@ -22,8 +22,7 @@ describe('reference', () => {
     const callback = vi.fn()
     const result = reference(1, { callbacks: [callback] })
     result.value = 2
-    expect(callback).toHaveBeenCalledOnce()
-    expect(callback).toHaveBeenCalledWith({ [ReferenceFlag]: true, value: 2 })
+    expect(callback).toHaveBeenCalledExactlyOnceWith({ [ReferenceFlag]: true, value: 2 })
   })
 
   test('should return as-is if the value is already reactive reference', () => {

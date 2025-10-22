@@ -1,3 +1,5 @@
+/* eslint-disable vue/no-reserved-component-names */
+/* eslint-disable vue/multi-word-component-names */
 import { mount } from '@vue/test-utils'
 import { defineComponent, h } from 'vue'
 import { resolveComponentType } from './resolveComponentType'

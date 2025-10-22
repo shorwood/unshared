@@ -29,8 +29,7 @@ describe('once', () => {
     expect(resultFirst).toBe(1)
     expect(resultSecond).toBe(1)
     expect(resultThird).toBe(1)
-    expect(fn).toHaveBeenCalledOnce()
-    expect(fn).toHaveBeenCalledWith(1)
+    expect(fn).toHaveBeenCalledExactlyOnceWith(1)
   })
 
   test('should call the function again after reset', () => {
