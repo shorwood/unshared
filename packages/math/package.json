@@ -31,6 +31,11 @@
       "types": "./dist/clamp.d.ts",
       "import": "./dist/clamp.js"
     },
+    "./cosineSimilarity": {
+      "require": "./dist/cosineSimilarity.cjs",
+      "types": "./dist/cosineSimilarity.d.ts",
+      "import": "./dist/cosineSimilarity.js"
+    },
     "./divide": {
       "require": "./dist/divide.cjs",
       "types": "./dist/divide.d.ts",

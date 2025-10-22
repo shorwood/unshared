@@ -1,6 +1,7 @@
 export * from './ceil'
 export * from './choose'
 export * from './clamp'
+export * from './cosineSimilarity'
 export * from './divide'
 export * from './factorial'
 export * from './fibonacci'

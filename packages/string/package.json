@@ -36,6 +36,11 @@
       "types": "./dist/dedent.d.ts",
       "import": "./dist/dedent.js"
     },
+    "./distanceDiceCoefficient": {
+      "require": "./dist/distanceDiceCoefficient.cjs",
+      "types": "./dist/distanceDiceCoefficient.d.ts",
+      "import": "./dist/distanceDiceCoefficient.js"
+    },
     "./distanceJaroWinkler": {
       "require": "./dist/distanceJaroWinkler.cjs",
       "types": "./dist/distanceJaroWinkler.d.ts",
