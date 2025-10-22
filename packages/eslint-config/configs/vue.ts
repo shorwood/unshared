@@ -46,7 +46,6 @@ export function vue(options: ESLintConfigOptions): Linter.Config[] {
       ]),
       files: [
         '**/*.vue',
-        '**/*.ts',
       ],
       rules: {
         'vue/return-in-computed-property': 'off',
