@@ -96,14 +96,14 @@
     "LICENSE.md"
   ],
   "dependencies": {
-    "@ai-sdk/openai-compatible": "1.0.18",
+    "@ai-sdk/openai-compatible": "1.0.22",
     "@unshared/collection": "workspace:*",
     "@unshared/fs": "workspace:*",
     "@unshared/process": "workspace:*",
     "@unshared/string": "workspace:*",
     "@unshared/types": "workspace:*",
-    "ai": "5.0.20",
-    "rollup": "4.47.1",
+    "ai": "5.0.76",
+    "rollup": "4.52.5",
     "rollup-plugin-dts": "6.2.3",
     "rollup-plugin-esbuild": "6.2.1",
     "types-pkg-json": "1.2.1",
