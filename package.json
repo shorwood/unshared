@@ -33,9 +33,9 @@
   "scripts": {
     "dev": "tsx ./packages/scripts/cli.uncli.ts build --watch true",
     "build": "NODE_OPTIONS=--max-old-space-size=8192 tsx ./packages/scripts/cli.uncli.ts build --generateIndexes true",
-    "lint": "DEBUG=eslint:eslint eslint --ignore-pattern examples --concurrency auto",
+    "lint": "eslint --ignore-pattern examples --concurrency auto",
     "lint:ci": "eslint --cache --ignore-pattern examples",
-    "lint:fix": "DEBUG=eslint:eslint eslint --fix --cache",
+    "lint:fix": "eslint --fix --cache",
     "test": "vitest --watch",
     "test:ci": "vitest --typecheck --run",
     "test:ui": "vitest --ui",

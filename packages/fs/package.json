@@ -77,6 +77,9 @@
     "README.md",
     "LICENSE.md"
   ],
+  "peerDependencies": {
+    "memfs": ">=4.0.0"
+  },
   "dependencies": {
     "@unshared/collection": "workspace:*",
     "@unshared/functions": "workspace:*",
