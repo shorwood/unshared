@@ -71,6 +71,11 @@
       "types": "./dist/escapeRegexp.d.ts",
       "import": "./dist/escapeRegexp.js"
     },
+    "./gotmpl": {
+      "require": "./dist/gotmpl.cjs",
+      "types": "./dist/gotmpl.d.ts",
+      "import": "./dist/gotmpl.js"
+    },
     "./isDigit": {
       "require": "./dist/isDigit.cjs",
       "types": "./dist/isDigit.d.ts",
