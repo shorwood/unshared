@@ -1,3 +1,4 @@
+import type { MaybeArray } from '@unshared/unshared'
 import type { Prop, VNode } from 'vue'
 import type { DefineComponentContext } from './defineSetupComponent'
 import type { BaseRenderableOptions } from './useBaseRenderable'
@@ -25,7 +26,7 @@ export interface BaseDialogProps<T = unknown> extends BaseRenderableOptions {
    * dialog is hidden.
    */
   modelValue?: boolean
-  'onUpdate:modelValue'?: (value: boolean) => void
+  'onUpdate:modelValue'?: MaybeArray<(value: boolean) => void>
 
   /**
    * The event emitted when the dialog is closed. This is used to notify the parent
