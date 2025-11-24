@@ -21,12 +21,6 @@ export default defineConfig({
     setupFiles: ['./packages/setupTest.ts'],
     testTimeout: process.env.DEBUGGER ? 100 : 0,
     pool: 'forks',
-    poolOptions: {
-      forks: {
-        minForks: 8,
-        maxForks: 32,
-      },
-    },
 
     // --- Reporters configuration.
     reporters: [
@@ -55,6 +49,7 @@ export default defineConfig({
     typecheck: {
       checker: 'tsc',
       enabled: false,
+      spawnTimeout: 100,
       include,
       exclude,
       ignoreSourceErrors: true,

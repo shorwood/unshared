@@ -1,3 +1,4 @@
+/* eslint-disable n/no-extraneous-import */
 import { vol } from 'memfs'
 import { statSync } from 'node:fs'
 import { touch } from './touch'

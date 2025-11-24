@@ -1,3 +1,4 @@
+/* eslint-disable n/no-extraneous-import */
 import type { Awaitable } from '@unshared/functions'
 import type { Stats } from 'node:fs'
 import { vol } from 'memfs'

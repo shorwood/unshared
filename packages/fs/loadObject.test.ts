@@ -1,3 +1,4 @@
+/* eslint-disable n/no-extraneous-import */
 import { reactive } from '@unshared/reactivity'
 import { vol } from 'memfs'
 import EventEmitter from 'node:events'

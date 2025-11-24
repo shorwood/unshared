@@ -1,3 +1,4 @@
+/* eslint-disable n/no-extraneous-import */
 import { vol } from 'memfs'
 import { readFile } from 'node:fs/promises'
 import { updateFile } from './updateFile'

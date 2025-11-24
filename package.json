@@ -11,7 +11,7 @@
     "url": "git+ssh://git@github.com/shorwood/unshared.git"
   },
   "engines": {
-    "node": ">=24.0.0",
+    "node": ">=22.0.0",
     "pnpm": ">=10.0.0"
   },
   "packageManager": "pnpm@10.20.0",
@@ -33,8 +33,8 @@
     "lint:ci": "eslint --cache --ignore-pattern examples",
     "lint:fix": "eslint --fix --cache",
     "test": "vitest --watch",
-    "test:run": "vitest --run",
-    "test:ci": "vitest --typecheck --run",
+    "test:run": "vitest run",
+    "test:ci": "vitest run --typecheck",
     "test:ui": "vitest --ui",
     "test:types": "vitest --typecheck",
     "test:coverage": "vitest --coverage",
