@@ -50,10 +50,28 @@ const model = useVModel(props, 'modelValue', undefined, { passive: true })
     v-model="model"
     line-wrapping
     :extensions="[basicSetup, theme]"
-    class="
-     bg-secondary-900
-      w-full border-primary-600/20 border rounded-md
-      focus:ring-2 focus:ring-primary-600/50 p-4
-    "
+    class="input-editor"
   />
 </template>
+
+<style scoped>
+.input-editor {
+  background-color: var(--color-base-surface-bg);
+  color: var(--color-base-surface-fg);
+  width: 100%;
+  border: 1px solid var(--color-base-muted-border);
+  border-radius: 0.375rem;
+  padding: 1rem;
+  transition: all 200ms ease-in-out;
+}
+
+.input-editor:hover {
+  border-color: var(--color-primary-muted-hover-border);
+}
+
+.input-editor:focus {
+  outline: 2px solid var(--color-primary-interactive-focus-border);
+  outline-offset: 2px;
+  border-color: var(--color-primary-interactive-border);
+}
+</style>

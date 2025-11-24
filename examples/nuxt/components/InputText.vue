@@ -10,13 +10,36 @@ const props = defineProps<BaseInputTextOptions<T>>()
     v-bind="props"
     label="Text"
     placeholder="Type something..."
-    class="
-      flex items-center space-x-2 px-2 outline-none
-      hover:bg-primary-600/30 bg-primary-600/20
-      placeholder-primary-300
-      ring-1 ring-primary-900/10 hover:ring-primary-600/100
-      transition-all duration-200 ease-in-out
-      px-4 py-2 rounded-md w-full
-    "
+    class="input-text"
   />
 </template>
+
+<style scoped>
+.input-text {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-base-surface-bg);
+  color: var(--color-base-surface-fg);
+  width: 100%;
+  border-radius: 0.375rem;
+  border: 1px solid var(--color-base-muted-border);
+  transition: all 200ms ease-in-out;
+}
+
+.input-text:hover {
+  background-color: var(--color-base-surface-hover-bg);
+  border-color: var(--color-primary-muted-hover-border);
+}
+
+.input-text:focus {
+  outline: 2px solid var(--color-primary-interactive-focus-border);
+  outline-offset: 2px;
+  border-color: var(--color-primary-interactive-border);
+}
+
+.input-text::placeholder {
+  color: var(--color-base-muted-fg);
+}
+</style>

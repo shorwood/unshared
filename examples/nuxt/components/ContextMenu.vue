@@ -8,8 +8,8 @@ import { BaseMenu } from '@unshared/vue/BaseMenu'
     <!-- Trigger -->
     <template #default="{ isOpen, open }">
       <div
-        class="bg-blue/5 border border-blue/10 rounded-lg"
-        :class="{ '!bg-blue/10': isOpen }"
+        class="context-trigger"
+        :class="{ 'open': isOpen }"
         @contextmenu.prevent="() => open()">
         <slot />
       </div>
@@ -21,12 +21,12 @@ import { BaseMenu } from '@unshared/vue/BaseMenu'
         vertical
         :is-open="isOpen"
         :class="{ 'opacity-0': !isOpen }"
-        class="transition-all ease-in-out duration-100 bg-blue/5 border border-blue/10 rounded-lg backdrop-blur-2xl">
-        <div class="flex flex-col space-y-1 p-4 w-48">
+        class="context-menu">
+        <div class="context-items">
           <BaseButton
             v-for="i in 5"
             :key="i"
-            class="block w-full p-2 text-left whitespace-nowrap hover:bg-blue/10 rounded-lg"
+            class="context-item"
             @click="() => { close(); return 1 }">
             Item {{ i }}
           </BaseButton>
@@ -35,3 +35,49 @@ import { BaseMenu } from '@unshared/vue/BaseMenu'
     </template>
   </BaseMenu>
 </template>
+
+<style scoped>
+.context-trigger {
+  background-color: var(--color-base-surface-bg);
+  border: 1px solid var(--color-base-surface-border);
+  border-radius: 0.5rem;
+  transition: all 200ms ease-in-out;
+}
+
+.context-trigger.open {
+  background-color: var(--color-primary-surface-bg);
+  border-color: var(--color-primary-surface-border);
+}
+
+.context-menu {
+  transition: all 100ms ease-in-out;
+  background-color: var(--color-base-muted-bg);
+  border: 1px solid var(--color-base-muted-border);
+  border-radius: 0.5rem;
+  backdrop-filter: blur(2rem);
+}
+
+.context-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem;
+  width: 12rem;
+}
+
+.context-item {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  text-align: left;
+  white-space: nowrap;
+  border-radius: 0.5rem;
+  color: var(--color-fg);
+  transition: all 200ms ease-in-out;
+}
+
+.context-item:hover {
+  background-color: var(--color-primary-surface-hover-bg);
+  color: var(--color-primary-surface-hover-fg);
+}
+</style>

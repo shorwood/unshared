@@ -17,38 +17,76 @@ const model = useVModel(props, 'modelValue')
     v-model="model"
     as="div"
     :value="value"
-    class-active="bg-primary-600/20"
+    class-active="active"
     type="radio"
-    class="
-      flex items-center space-x-2 px-2
-      hover:bg-primary-600/10 active:bg-primary-600/20
-      ring-1 ring-primary-900/10 hover:ring-primary-600/100
-      transition-all duration-200 ease-in-out
-      px-4 py-2 rounded-lg
-    ">
+    class="input-radio">
 
     <!-- Circle when active -->
-    <div
-      class="
-        rounded-lg w-4 h-4 relative
-        bg-primary-600 p-1.2 flex items-center justify-center
-      ">
+    <div class="radio-circle">
       <div
         :class="{
           'opacity-0 scale-0': !isActive,
           'opacity-100 scale-100': isActive,
         }"
-        class="
-         bg-white rounded-md w-full h-full
-          transform transition-all duration-200 ease-in-out
-        "
+        class="radio-inner"
       />
 
     </div>
 
     <!-- Label -->
-    <label v-if="label" :for="id" class="text-sm select-none">
+    <label v-if="label" :for="id" class="radio-label">
       {{ label }}
     </label>
   </BaseInputToggle>
 </template>
+
+<style scoped>
+.input-radio {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--color-base-surface-bg);
+  border: 1px solid var(--color-base-surface-border);
+  transition: all 200ms ease-in-out;
+}
+
+.input-radio:hover {
+  background-color: var(--color-base-surface-hover-bg);
+  border-color: var(--color-primary-muted-hover-border);
+}
+
+.input-radio.active {
+  background-color: var(--color-primary-surface-bg);
+  border-color: var(--color-primary-surface-border);
+}
+
+.radio-circle {
+  border-radius: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+  position: relative;
+  background-color: var(--color-primary-interactive-bg);
+  border: 1px solid var(--color-primary-interactive-border);
+  padding: 0.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radio-inner {
+  background-color: var(--color-primary-interactive-fg);
+  border-radius: 0.375rem;
+  width: 100%;
+  height: 100%;
+  transform: scale(1);
+  transition: all 200ms ease-in-out;
+}
+
+.radio-label {
+  font-size: 0.875rem;
+  user-select: none;
+  color: var(--color-fg);
+}
+</style>

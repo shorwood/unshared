@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useElementSelection } from '@unshared/vue/useElementSelection';
+import { ref } from 'vue';
+
 const props = defineProps<{ modelValue?: string }>()
 const element = ref<HTMLElement>()
 const model = useVModel(props, 'modelValue', undefined, { passive: true })
@@ -11,13 +14,7 @@ const cursor = useElementSelection(element)
     <BaseContentEditable
       ref="element"
       v-model="model"
-      class="
-        px-2 outline-none
-        bg-transparent w-full h-24
-        ring-1 ring-primary-900/10 hover:ring-primary-600/100
-        transition-all duration-200 ease-in-out
-        px-4 py-2 rounded-md w-full
-      "
+      class="content-editable"
     />
 
     <pre>CURSOR: {{ cursor ?? 'NONE' }}</pre>
@@ -25,3 +22,27 @@ const cursor = useElementSelection(element)
     <pre>V-MODEL: {{ model ?? 'undefined' }}</pre>
   </div>
 </template>
+
+<style scoped>
+.content-editable {
+  padding: 0.5rem 1rem;
+  background-color: var(--color-base-surface-bg);
+  color: var(--color-base-surface-fg);
+  width: 100%;
+  height: 6rem;
+  border: 1px solid var(--color-base-muted-border);
+  transition: all 200ms ease-in-out;
+  border-radius: 0.375rem;
+}
+
+.content-editable:hover {
+  border-color: var(--color-primary-muted-hover-border);
+  background-color: var(--color-base-surface-hover-bg);
+}
+
+.content-editable:focus {
+  outline: 2px solid var(--color-primary-interactive-focus-border);
+  outline-offset: 2px;
+  border-color: var(--color-primary-interactive-border);
+}
+</style>

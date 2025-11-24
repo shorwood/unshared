@@ -73,35 +73,21 @@ watchDebounced(search, fetchUsers, { debounce: 500 })
       :option-filter="(search, x) => x.name.toLowerCase().includes(search.toLowerCase())"
       :multiple="multiple"
       allow-custom-value
-      class-search="
-        w-full rounded-md
-        transition-all duration-300 bg-transparent outline-none
-      "
-      class-options="
-        absolute top-full left-0 w-full max-h-60 overflow-y-auto
-        p-2 !mx-0 mt-2 rounded-md transition-all duration-300
-        bg-primary-900 border-1 border-primary-500
-      "
-      class="
-        flex flex-nowrap items-center w-full
-        relative w-full border-1 p-2 rounded-md outline-none
-        gap-2 items-center cursor-pointer
-        bg-primary-900/50 hover:bg-primary-900
-        border-primary-500/50 hover:border-primary-500
-        transition-all duration-300
-      ">
+      class-search="list-search"
+      class-options="list-options"
+      class="input-list">
 
       <template #values="{ values }">
         <div class="flex flex-wrap flex-nowrap items-center space-x-2">
           <div
             v-for="value in values.slice(0, 2)"
             :key="value.label"
-            class="flex items-center space-x-2 border border-primary-500/20 px-2 rounded-md whitespace-nowrap">
+            class="list-value">
             <p class="text-sm">
               {{ value.label }}
             </p>
             <button
-              class="text-primary-500 hover:text-primary-400 transition-colors duration-300"
+              class="list-value-remove"
               @click.prevent="() => value.off()">
               X
             </button>
@@ -109,7 +95,7 @@ watchDebounced(search, fetchUsers, { debounce: 500 })
 
           <div
             v-if="values.length > 2"
-            class="flex items-center space-x-2 border border-primary-500/20 px-2 rounded-md whitespace-nowrap">
+            class="list-value">
             <p class="text-sm">
               +{{ values.length - 2 }}
             </p>
@@ -119,12 +105,12 @@ watchDebounced(search, fetchUsers, { debounce: 500 })
 
       <template #option="{ option, isSelected }">
         <div
-          class="flex flex-col items-start last:mb-0 mb-2 hover:bg-primary-800/50 p-2 rounded-md cursor-pointer"
-          :class="{ '!bg-primary-800 font-bold': isSelected() }">
+          class="list-option"
+          :class="{ 'selected': isSelected() }">
           <p class="text-sm">
             {{ option.name }}
           </p>
-          <p class="text-xs text-primary-500">
+          <p class="list-option-email">
             {{ option.email }}
           </p>
         </div>
@@ -133,9 +119,110 @@ watchDebounced(search, fetchUsers, { debounce: 500 })
 
     <!-- Debug value -->
     <pre
-      class="text-xs text-white border border-primary-500 p-2"
+      class="list-debug"
       v-text="JSON.stringify(model, null, 2)"
     />
 
   </div>
 </template>
+
+<style scoped>
+.input-list {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 50%, transparent);
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  outline: none;
+  gap: 0.5rem;
+  cursor: pointer;
+  background-color: color-mix(in srgb, var(--color-primary) 10%, var(--color-base));
+  transition: all 300ms;
+}
+
+.input-list:hover {
+  background-color: color-mix(in srgb, var(--color-primary) 15%, var(--color-base));
+  border-color: var(--color-primary);
+}
+
+.list-search {
+  width: 100%;
+  border-radius: 0.375rem;
+  transition: all 300ms;
+  background-color: transparent;
+  outline: none;
+}
+
+.list-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 15rem;
+  overflow-y: auto;
+  padding: 0.5rem;
+  margin: 0;
+  margin-top: 0.5rem;
+  border-radius: 0.375rem;
+  transition: all 300ms;
+  background-color: color-mix(in srgb, var(--color-primary) 15%, var(--color-base));
+  border: 1px solid var(--color-primary);
+}
+
+.list-value {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+  padding: 0 0.5rem;
+  border-radius: 0.375rem;
+  white-space: nowrap;
+}
+
+.list-value-remove {
+  color: var(--color-primary);
+  transition: color 300ms;
+}
+
+.list-value-remove:hover {
+  color: color-mix(in srgb, var(--color-primary) 80%, white);
+}
+
+.list-option {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+
+.list-option:hover {
+  background-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+
+.list-option:last-child {
+  margin-bottom: 0;
+}
+
+.list-option.selected {
+  background-color: color-mix(in srgb, var(--color-primary) 25%, transparent);
+  font-weight: bold;
+}
+
+.list-option-email {
+  font-size: 0.75rem;
+  color: var(--color-primary);
+}
+
+.list-debug {
+  font-size: 0.75rem;
+  color: white;
+  border: 1px solid var(--color-primary);
+  padding: 0.5rem;
+}
+</style>
