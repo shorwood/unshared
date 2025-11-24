@@ -16,55 +16,85 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    "./colorHexToRgb": {
-      "require": "./dist/colorHexToRgb.cjs",
-      "types": "./dist/colorHexToRgb.d.ts",
-      "import": "./dist/colorHexToRgb.js"
+    "./cmyk": {
+      "require": "./dist/cmyk.cjs",
+      "types": "./dist/cmyk.d.ts",
+      "import": "./dist/cmyk.js"
     },
-    "./colorHslToRgb": {
-      "require": "./dist/colorHslToRgb.cjs",
-      "types": "./dist/colorHslToRgb.d.ts",
-      "import": "./dist/colorHslToRgb.js"
-    },
-    "./colorIntegerToRgb": {
-      "require": "./dist/colorIntegerToRgb.cjs",
-      "types": "./dist/colorIntegerToRgb.d.ts",
-      "import": "./dist/colorIntegerToRgb.js"
-    },
-    "./colorRgbToHex": {
-      "require": "./dist/colorRgbToHex.cjs",
-      "types": "./dist/colorRgbToHex.d.ts",
-      "import": "./dist/colorRgbToHex.js"
-    },
-    "./colorRgbToHsl": {
-      "require": "./dist/colorRgbToHsl.cjs",
-      "types": "./dist/colorRgbToHsl.d.ts",
-      "import": "./dist/colorRgbToHsl.js"
-    },
-    "./colorRgbToInteger": {
-      "require": "./dist/colorRgbToInteger.cjs",
-      "types": "./dist/colorRgbToInteger.d.ts",
-      "import": "./dist/colorRgbToInteger.js"
-    },
-    "./createColorHsl": {
-      "require": "./dist/createColorHsl.cjs",
-      "types": "./dist/createColorHsl.d.ts",
-      "import": "./dist/createColorHsl.js"
+    "./createColor": {
+      "require": "./dist/createColor.cjs",
+      "types": "./dist/createColor.d.ts",
+      "import": "./dist/createColor.js"
     },
     "./createColorPalette": {
       "require": "./dist/createColorPalette.cjs",
       "types": "./dist/createColorPalette.d.ts",
       "import": "./dist/createColorPalette.js"
     },
-    "./createColorRgb": {
-      "require": "./dist/createColorRgb.cjs",
-      "types": "./dist/createColorRgb.d.ts",
-      "import": "./dist/createColorRgb.js"
+    "./createTheme": {
+      "require": "./dist/createTheme.cjs",
+      "types": "./dist/createTheme.d.ts",
+      "import": "./dist/createTheme.js"
+    },
+    "./gamut": {
+      "require": "./dist/gamut.cjs",
+      "types": "./dist/gamut.d.ts",
+      "import": "./dist/gamut.js"
+    },
+    "./hex": {
+      "require": "./dist/hex.cjs",
+      "types": "./dist/hex.d.ts",
+      "import": "./dist/hex.js"
+    },
+    "./hsl": {
+      "require": "./dist/hsl.cjs",
+      "types": "./dist/hsl.d.ts",
+      "import": "./dist/hsl.js"
+    },
+    "./hsv": {
+      "require": "./dist/hsv.cjs",
+      "types": "./dist/hsv.d.ts",
+      "import": "./dist/hsv.js"
+    },
+    "./lab": {
+      "require": "./dist/lab.cjs",
+      "types": "./dist/lab.d.ts",
+      "import": "./dist/lab.js"
+    },
+    "./lch": {
+      "require": "./dist/lch.cjs",
+      "types": "./dist/lch.d.ts",
+      "import": "./dist/lch.js"
+    },
+    "./oklab": {
+      "require": "./dist/oklab.cjs",
+      "types": "./dist/oklab.d.ts",
+      "import": "./dist/oklab.js"
+    },
+    "./oklch": {
+      "require": "./dist/oklch.cjs",
+      "types": "./dist/oklch.d.ts",
+      "import": "./dist/oklch.js"
+    },
+    "./rgb": {
+      "require": "./dist/rgb.cjs",
+      "types": "./dist/rgb.d.ts",
+      "import": "./dist/rgb.js"
+    },
+    "./srgb": {
+      "require": "./dist/srgb.cjs",
+      "types": "./dist/srgb.d.ts",
+      "import": "./dist/srgb.js"
     },
     "./types": {
       "require": "./dist/types.cjs",
       "types": "./dist/types.d.ts",
       "import": "./dist/types.js"
+    },
+    "./xyz": {
+      "require": "./dist/xyz.cjs",
+      "types": "./dist/xyz.d.ts",
+      "import": "./dist/xyz.js"
     },
     ".": {
       "require": "./dist/index.cjs",
@@ -78,6 +108,8 @@
     "LICENSE.md"
   ],
   "dependencies": {
+    "@unshared/decorators": "workspace:*",
+    "@unshared/functions": "workspace:*",
     "@unshared/math": "workspace:*",
     "@unshared/types": "workspace:*"
   }

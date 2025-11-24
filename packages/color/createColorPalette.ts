@@ -1,17 +1,16 @@
 import { clamp } from '@unshared/math/clamp'
-import { colorHexToRgb } from './colorHexToRgb'
-import { colorHslToRgb } from './colorHslToRgb'
-import { colorRgbToHex } from './colorRgbToHex'
-import { colorRgbToHsl } from './colorRgbToHsl'
+import { hexFromRgb } from './hex'
+import { hslFromSrgb } from './hsl'
+import { rgbFromHex, rgbFromSrgb } from './rgb'
+import { srgbFromHsl, srgbFromRgb } from './srgb'
 
 /** The default stops for a color palette. */
 const COLOR_PALETTE_DEFAULT_STOPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900] as const
 
-/** The default stops for a color palette. */
-type ColorPaletteDefaultStops = typeof COLOR_PALETTE_DEFAULT_STOPS[number]
-
 /** Options for palette creation. */
-export interface CreateColorPaletteOptions<K extends number = number> {
+export interface CreateColorPaletteOptions<
+  Stops extends number = typeof COLOR_PALETTE_DEFAULT_STOPS[number],
+> {
 
   /**
    * The base stop of the palette. This is the stop that will be used to generate the
@@ -49,7 +48,7 @@ export interface CreateColorPaletteOptions<K extends number = number> {
    * @default
    * [50, 100, 200, 300, 400, 500, 600, 700, 800, 900]
    */
-  stops?: K[]
+  stops?: Stops[]
 }
 
 /**
@@ -60,10 +59,12 @@ export interface CreateColorPaletteOptions<K extends number = number> {
  * @returns A palette of colors
  * @see https://github.com/anheric/tailwindshades/blob/master/src/components/Shades.vue#L336
  */
-export function createColorPalette<K extends number = ColorPaletteDefaultStops>(
+export function createColorPalette<
+  Stops extends number = typeof COLOR_PALETTE_DEFAULT_STOPS[number],
+>(
   color: string,
-  options: CreateColorPaletteOptions<K> = {},
-): Record<K, string> {
+  options: CreateColorPaletteOptions<Stops> = {},
+): Record<Stops, string> {
   const {
     baseStop = 500,
     hueShift = 0,
@@ -73,8 +74,9 @@ export function createColorPalette<K extends number = ColorPaletteDefaultStops>(
   } = options
 
   // --- Convert color to HSL.
-  const rgb = colorHexToRgb(color)
-  const hsl = colorRgbToHsl(rgb)
+  const rgb = rgbFromHex(color)
+  const srgb = srgbFromRgb(rgb)
+  const hsl = hslFromSrgb(srgb)
 
   // --- Generate shades.
   const shades = stops.map((stop) => {
@@ -94,11 +96,12 @@ export function createColorPalette<K extends number = ColorPaletteDefaultStops>(
 
     // --- Return result as hexadecimal color string.
     const key = stop.toFixed(0)
-    const rgb = colorHslToRgb({ h, l, s })
-    const hex = colorRgbToHex(rgb, 'rgb')
-    return [key, `#${hex}`]
+    const srgb = srgbFromHsl({ h, l, s })
+    const rgb = rgbFromSrgb(srgb)
+    const hex = hexFromRgb(rgb, 'rgb')
+    return [key, hex]
   })
 
   // --- Return palette.
-  return Object.fromEntries(shades) as Record<K, string>
+  return Object.fromEntries(shades) as Record<Stops, string>
 }

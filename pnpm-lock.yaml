@@ -190,6 +190,12 @@ importers:
 
   packages/color:
     dependencies:
+      '@unshared/decorators':
+        specifier: workspace:*
+        version: link:../decorators
+      '@unshared/functions':
+        specifier: 0.7.6
+        version: 0.7.6(@types/node@24.9.1)
       '@unshared/math':
         specifier: workspace:*
         version: link:../math
@@ -2475,6 +2481,14 @@ packages:
     resolution: {integrity: sha512-GZ0z/Hmn9goL4zidnS6/Bf2AMFkNm0bp34JBJzfmhAoOxL1Hc20+WxjpyvGcq/U/ChObN0efojbvylDGQWTySg==}
     peerDependencies:
       webpack: ^4 || ^5
+
+  '@unshared/functions@0.7.6':
+    resolution: {integrity: sha512-ELxz/tgyt+9Baex8bmzVYGc5/WCr1BVG+wwYw+8RD8elysTcuuppkDK0JyNInfNFKpW5lyKvPjcV/hWQav8Cmw==}
+
+  '@unshared/types@0.7.6':
+    resolution: {integrity: sha512-I84B+51t/r38OAXaMAJrT73TNOK66bQtuBlScX2ymbfEeZjAWY3IWVwEuugY0OBmxXqWOTSBknWHWa3Gm95sjA==}
+    peerDependencies:
+      '@types/node': '>=20.0.0'
 
   '@vercel/nft@0.30.3':
     resolution: {integrity: sha512-UEq+eF0ocEf9WQCV1gktxKhha36KDs7jln5qii6UpPf5clMqDc0p3E7d9l2Smx0i9Pm1qpq4S4lLfNl97bbv6w==}
@@ -8668,6 +8682,16 @@ snapshots:
       unplugin-utils: 0.3.1
       webpack: 5.95.0
       webpack-sources: 3.3.3
+
+  '@unshared/functions@0.7.6(@types/node@24.9.1)':
+    dependencies:
+      '@unshared/types': 0.7.6(@types/node@24.9.1)
+    transitivePeerDependencies:
+      - '@types/node'
+
+  '@unshared/types@0.7.6(@types/node@24.9.1)':
+    dependencies:
+      '@types/node': 24.9.1
 
   '@vercel/nft@0.30.3(rollup@4.52.5)':
     dependencies:
