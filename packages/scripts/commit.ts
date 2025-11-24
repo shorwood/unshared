@@ -30,7 +30,7 @@ export interface CommitOptions {
 export async function commit(input: string, options: CommitOptions): Promise<void> {
   const {
     apiKey,
-    modelId = 'mistral-ai/Mistral-Large-2411',
+    modelId = 'openai/gpt-4o-mini',
     noDiff,
     noDiffPaths,
     noDiffStat,
