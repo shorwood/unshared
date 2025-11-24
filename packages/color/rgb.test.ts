@@ -195,37 +195,28 @@ describe('rgb', () => {
 
   describe('rgbFromBinary', () => {
     it('should parse binary color in rgba format', () => {
-      const result = rgbFromBinary(0x80402010, 'rgba')
-      expect(result.r).toBe(16)
-      expect(result.g).toBe(32)
-      expect(result.b).toBe(64)
-      expect(result.alpha).toBeCloseTo(0.5, 2)
+      const result = rgbFromBinary(0x80402010)
+      expect(result).toStrictEqual({ b: 16, g: 32, r: 64, alpha: 0x80 / 255 })
     })
 
     it('should parse binary color in rgb format', () => {
       const result = rgbFromBinary(0x102040, 'rgb')
-      expect(result).toEqual({ r: 64, g: 32, b: 16, alpha: undefined })
+      expect(result).toEqual({ b: 64, g: 32, r: 16, alpha: undefined })
     })
 
     it('should parse binary color in argb format', () => {
       const result = rgbFromBinary(0x80102040, 'argb')
-      expect(result.r).toBe(32)
-      expect(result.g).toBe(16)
-      expect(result.b).toBe(128)
-      expect(result.alpha).toBeCloseTo(0.25, 2)
+      expect(result).toStrictEqual({ b: 64, g: 32, r: 16, alpha: 0x80 / 255 })
     })
 
     it('should parse binary color in bgr format', () => {
       const result = rgbFromBinary(0x102040, 'bgr')
-      expect(result).toEqual({ r: 16, g: 32, b: 64, alpha: undefined })
+      expect(result).toEqual({ r: 64, g: 32, b: 16, alpha: undefined })
     })
 
     it('should parse binary color in abgr format', () => {
       const result = rgbFromBinary(0x80102040, 'abgr')
-      expect(result.r).toBe(128)
-      expect(result.g).toBe(16)
-      expect(result.b).toBe(32)
-      expect(result.alpha).toBeCloseTo(0.25, 2)
+      expect(result).toStrictEqual({ r: 64, g: 32, b: 16, alpha: 0x80 / 255 })
     })
 
     it('should parse white in rgba format', () => {
@@ -250,12 +241,12 @@ describe('rgb', () => {
 
     it('should handle green in rgba format', () => {
       const result = rgbFromBinary(0x00FF00FF, 'rgba')
-      expect(result).toEqual({ r: 255, g: 0, b: 255, alpha: 0 })
+      expect(result).toEqual({ r: 0, g: 255, b: 0, alpha: 1 })
     })
 
     it('should handle blue in rgba format', () => {
       const result = rgbFromBinary(0x0000FFFF, 'rgba')
-      expect(result).toEqual({ r: 255, g: 255, b: 0, alpha: 0 })
+      expect(result).toEqual({ r: 0, g: 0, b: 255, alpha: 1 })
     })
   })
 
