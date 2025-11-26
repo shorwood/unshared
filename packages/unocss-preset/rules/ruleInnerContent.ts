@@ -1,6 +1,6 @@
-import type { Rule } from '@unocss/core'
+import type { DynamicRule } from '@unocss/core'
 
-export const ruleInnerContent: Rule = [
+export const ruleInnerContent: DynamicRule = [
   /^inner-content(?:-(.*))?$/,
-  ([, content = '']: string[]) => ({ content: `"${content}"` }),
+  ([, content = '']) => ({ content: `"${content}"` }),
 ]

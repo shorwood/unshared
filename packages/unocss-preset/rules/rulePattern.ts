@@ -4,7 +4,7 @@ import { parseColor } from '@unocss/preset-mini'
 import { patterns } from '../constants/patterns'
 
 export const rulePattern: Rule = [
-  new RegExp(`^bg-(${Object.keys(patterns).join('|')})-([^\\/]+)(?:\\/(\\d{1,3}))?$`),
+  new RegExp(`^bg-pattern-(${Object.keys(patterns).join('|')})-([^\\/]+)(?:\\/(\\d{1,3}))?$`),
 
   // --- Resolve the pattern name, color, and opacity and return CSS properties.
   ([,pattern, color, opacity]: string[], { theme }: { theme: Theme }) => {
@@ -26,9 +26,9 @@ export const rulePattern: Rule = [
   // --- Provide autocomplete suggestions.
   {
     autocomplete: [
-      `bg-(${Object.keys(patterns).join('|')})`,
-      `bg-(${Object.keys(patterns).join('|')})-$colors`,
-      `bg-(${Object.keys(patterns).join('|')})-$colors/<num>`,
+      `bg-pattern-(${Object.keys(patterns).join('|')})`,
+      `bg-pattern-(${Object.keys(patterns).join('|')})-$colors`,
+      `bg-pattern-(${Object.keys(patterns).join('|')})-$colors/<num>`,
     ],
   },
 ]

@@ -1,4 +1,4 @@
-import type { Rule } from '@unocss/core'
+import type { DynamicRule } from '@unocss/core'
 
 const DIRECTIONS_KEYS = {
   b: 'to bottom',
@@ -11,8 +11,8 @@ const DIRECTIONS_KEYS = {
   tr: 'to top right',
 }
 
-export const ruleGradientMask = [
-  /^mask-to-(?<dir>\w{1,2})(?:-(?<start>\d{1,3})(?:\/(?<end>\d{1,3}))?)?$/,
+export const ruleGradientMask: DynamicRule = [
+  /^mask-gradient-to-(?<dir>\w{1,2})(?:-(?<start>\d{1,3})(?:\/(?<end>\d{1,3}))?)?$/,
 
   // --- Resolve the direction and opacity and return CSS properties.
   (match) => {
@@ -29,9 +29,9 @@ export const ruleGradientMask = [
   // --- Provide autocomplete suggestions.
   {
     autocomplete: [
-      'mask-to-<directions>',
-      'mask-to-<directions>-<percent>',
-      'mask-to-<directions>-<percent>/<percent>',
+      'mask-gradient-to-<directions>',
+      'mask-gradient-to-<directions>-<percent>',
+      'mask-gradient-to-<directions>-<percent>/<percent>',
     ],
   },
-] as const satisfies Rule
+]

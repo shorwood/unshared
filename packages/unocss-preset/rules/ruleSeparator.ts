@@ -1,5 +1,4 @@
-import type { Rule } from '@unocss/core'
-import type { Theme } from '@unocss/preset-mini'
+import type { DynamicRule } from '@unocss/core'
 import { parseColor } from '@unocss/preset-mini'
 import { separators } from '../constants/separators'
 
@@ -13,14 +12,14 @@ import { separators } from '../constants/separators'
  * <div class="separator-dots-blue-50/75" />
  * ```
  */
-export const ruleSeparator: Rule = [
+export const ruleSeparator: DynamicRule = [
   new RegExp(`^separator-(${Object.keys(separators).join('|')})-([^\\/]+)(?:\\/(\\d{1,3}))?$`),
 
   // --- Resolve the image URL and return CSS properties.
-  ([, separator, color, opacity]: string[], { theme }: { theme: Theme }) => {
+  ([, separator, color, opacity]: string[], context) => {
 
     // --- Resolve color.
-    const themeColor = parseColor(color, theme)
+    const themeColor = parseColor(color, context.theme)
     if (!themeColor?.color) return
 
     // --- Resolve pattern
