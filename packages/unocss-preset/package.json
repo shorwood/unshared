@@ -58,6 +58,7 @@
   },
   "dependencies": {
     "@unshared/collection": "workspace:*",
+    "@unshared/color": "workspace:*",
     "@unshared/string": "workspace:*",
     "@unshared/types": "workspace:*"
   },

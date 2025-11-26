@@ -1,16 +1,54 @@
 import type { PresetFactory } from '@unocss/core'
+import type { Theme as ColorTheme } from '@unshared/color'
 import { colorsBrand, colorsNord } from './constants'
-import * as RULES from './rules'
-import * as VARIANTS from './variants'
+import {
+  createRuleTheme,
+  createRuleThemeBackground,
+  createRuleThemeBorder,
+  createRuleThemeRing,
+  createRuleThemeText,
+  ruleGradientMask,
+  ruleInnerContent,
+  rulePattern,
+  ruleSeparator,
+  ruleUnsplash,
+} from './rules'
+import {
+  variantCurrentPage,
+  variantInvalid,
+  variantLoading,
+  variantSelected,
+} from './variants'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface PresetUnsharedOptions {}
+export interface ThemeOptions {
+  presets?: Record<string, ColorTheme>
+  defaultColor?: string
+  defaultRole?: string
+  defaultState?: string
+  defaultTarget?: string
+}
 
-export const presetUnshared: PresetFactory<object, PresetUnsharedOptions> = (options = {}) => ({
-  name: '@hsjm/unocss-preset',
+export const presetUnshared: PresetFactory<object, ThemeOptions> = (options = {}) => ({
+  name: '@unshared/unocss-preset',
   options,
-  rules: Object.values(RULES),
-  variants: Object.values(VARIANTS),
+  rules: [
+    ruleInnerContent,
+    rulePattern,
+    ruleSeparator,
+    ruleUnsplash,
+    ruleGradientMask,
+    createRuleTheme(options),
+    createRuleThemeBackground(options),
+    createRuleThemeText(options),
+    createRuleThemeBorder(options),
+    createRuleThemeRing(options),
+  ],
+  variants: [
+    variantCurrentPage,
+    variantInvalid,
+    variantLoading,
+    variantSelected,
+  ],
   theme: {
     colors: {
       ...colorsNord,

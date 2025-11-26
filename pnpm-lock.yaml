@@ -424,6 +424,9 @@ importers:
       '@unshared/collection':
         specifier: workspace:*
         version: link:../collection
+      '@unshared/color':
+        specifier: workspace:*
+        version: link:../color
       '@unshared/string':
         specifier: workspace:*
         version: link:../string
