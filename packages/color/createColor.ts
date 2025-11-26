@@ -3,18 +3,18 @@ import type { IColor } from './types'
 import { Once } from '@unshared/decorators/Once'
 import { tries } from '@unshared/functions/tries'
 import { clamp } from '@unshared/math/clamp'
-import { cmyk, cmykFromSrgb, isCmyk } from './cmyk'
+import { cmyk, cmykFromSrgb, cmykToCss, isCmyk } from './cmyk'
 import { fitLchToSrgbGamut } from './gamut'
 import { binaryFromRgb, hexFromRgb } from './hex'
-import { hsl, hslFromCss, hslFromSrgb, isHsl } from './hsl'
+import { hsl, hslFromCss, hslFromSrgb, hslToCss, isHsl } from './hsl'
 import { hsv, hsvFromSrgb, isHsv } from './hsv'
-import { isLab, lab, labFromCss, labFromLch, labFromXyz } from './lab'
-import { isLch, lch, lchFromCss, lchFromLab } from './lch'
-import { oklab, oklabFromCss, oklabFromOklch, oklabFromSrgb } from './oklab'
-import { oklch, oklchFromCss, oklchFromOklab } from './oklch'
-import { isRgb, rgb, rgbFromBinary, rgbFromCss, rgbFromHex, rgbFromSrgb, rgbToAnsiBackground, rgbToAnsiText } from './rgb'
+import { isLab, lab, labFromCss, labFromLch, labFromXyz, labToCss } from './lab'
+import { isLch, lch, lchFromCss, lchFromLab, lchToCss } from './lch'
+import { oklab, oklabFromCss, oklabFromOklch, oklabFromSrgb, oklabToCss } from './oklab'
+import { oklch, oklchFromCss, oklchFromOklab, oklchToCss } from './oklch'
+import { isRgb, rgb, rgbFromBinary, rgbFromCss, rgbFromHex, rgbFromSrgb, rgbToAnsiBackground, rgbToAnsiText, rgbToCss } from './rgb'
 import { srgb, srgbFromCmyk, srgbFromHsl, srgbFromHsv, srgbFromOklab, srgbFromRgb, srgbFromXyz, srgbToLinearRgb } from './srgb'
-import { isXyz, xyz, xyzFromLab, xyzFromSrgb } from './xyz'
+import { isXyz, xyz, xyzFromLab, xyzFromSrgb, xyzToCss } from './xyz'
 
 export interface ColorContrastOptions {
   targetRatio?: number
@@ -25,6 +25,17 @@ export interface ColorContrastOptions {
   lightnessWhenDark?: number
   lightnessWhenLight?: number
 }
+
+export type ColorStringFormat =
+  | 'css-cmyk'
+  | 'css-hsl'
+  | 'css-lab'
+  | 'css-lch'
+  | 'css-oklab'
+  | 'css-oklch'
+  | 'css-rgb'
+  | 'css-xyz'
+  | 'hex'
 
 /**
  * A color manipulation class that stores colors internally in the LCH (CIELCh) color space
@@ -38,7 +49,7 @@ export class Color {
     l: 0,
     c: 0,
     h: 0,
-    alpha: 1,
+    alpha: undefined,
   }
 
   /**
@@ -390,20 +401,6 @@ export class Color {
   }
 
   /**
-   * Convert this color to a hexadecimal color string.
-   *
-   * @param format The binary format to use (default is 'ARGB').
-   * @returns The hexadecimal color string with '#' prefix.
-   * @example
-   * const color = Color.fromHex('#FF0000')
-   * color.hex() // '#FFFF0000'
-   * color.hex('RGB') // '#FF0000'
-   */
-  hex(format?: IColor.BinaryFormat): string {
-    return hexFromRgb(this.rgb(), format)
-  }
-
-  /**
    * Convert this color to a binary integer representation.
    *
    * @param format The binary format to use (default is 'ARGB').
@@ -740,6 +737,34 @@ export class Color {
       c: finalChroma,
       h: hue,
     })
+  }
+
+  /**
+   * Serialize this color to the given format.
+   *
+   * @param format The color format to serialize to.
+   * @returns The color as a string in the specified format.
+   * @example
+   * const color = Color.fromHex('#FF0000')
+   * color.toString() // '#FF0000'
+   * color.toString('css-rgb') // 'rgb(255, 0, 0)'
+   */
+  toString(format: ColorStringFormat = 'hex'): string {
+    if (format === 'css-rgb') return rgbToCss(this.rgb())
+    if (format === 'css-hsl') return hslToCss(this.hsl())
+    if (format === 'css-lab') return labToCss(this.lab())
+    if (format === 'css-lch') return lchToCss(this.lch())
+    if (format === 'css-oklab') return oklabToCss(this.oklab())
+    if (format === 'css-oklch') return oklchToCss(this.oklch())
+    if (format === 'css-xyz') return xyzToCss(this.xyz())
+    if (format === 'css-cmyk') return cmykToCss(this.cmyk())
+
+    // --- If hexadecimal format, only append alpha is not undefined and less than 1
+    const hex = hexFromRgb(this.rgb())
+    const alpha = this.rgb().alpha
+    return (alpha === undefined || alpha >= 1)
+      ? hex.slice(0, 7)
+      : hex
   }
 }
 

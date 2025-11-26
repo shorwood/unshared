@@ -232,8 +232,10 @@ describe('Color', () => {
   describe('fromHex', () => {
     it('should create Color from 6-digit hex', () => {
       const color = Color.fromHex('#FF0000')
-      const hex = color.hex('rgb')
-      expect(hex.toLowerCase()).toBe('#ff0000')
+      const result = color.rgb()
+      expect(result.r).toBeCloseTo(255, 0)
+      expect(result.g).toBeCloseTo(0, 0)
+      expect(result.b).toBeCloseTo(0, 0)
     })
 
     it('should create Color from 3-digit hex', () => {
@@ -551,26 +553,6 @@ describe('Color', () => {
       const color = Color.fromRgb({ r: 255, g: 0, b: 0 })
       const rgb = color.rgb()
       expect(Object.isFrozen(rgb)).toBe(true)
-    })
-  })
-
-  describe('hex', () => {
-    it('should convert to hex with default RGBA format', () => {
-      const color = Color.fromRgb({ r: 255, g: 0, b: 0, alpha: 1 })
-      const hex = color.hex()
-      expect(hex).toBe('#ff0000ff')
-    })
-
-    it('should convert to hex with RGB format', () => {
-      const color = Color.fromRgb({ r: 255, g: 128, b: 64 })
-      const hex = color.hex('rgb')
-      expect(hex).toBe('#ff8040')
-    })
-
-    it('should convert to hex with RGBA format', () => {
-      const color = Color.fromRgb({ r: 255, g: 0, b: 0, alpha: 0.5 })
-      const hex = color.hex('rgba')
-      expect(hex).toBe('#ff000080')
     })
   })
 
@@ -1044,6 +1026,116 @@ describe('Color', () => {
       const bg = Color.fromSrgb({ r: 0.5, g: 0.5, b: 0.5 })
       const textColor = bg.contrast({ minimumChroma: 0.02 })
       expect(textColor.oklch().c).toBeGreaterThanOrEqual(0)
+    })
+  })
+
+  describe('toString', () => {
+    it('should return hex string by default with alpha', () => {
+      const color = Color.fromSrgb({ r: 1, g: 0, b: 0, alpha: 0.5 })
+      const result = color.toString()
+      expect(result).toBe('#ff000080')
+    })
+
+    it('should return hex string with specified format without alpha', () => {
+      const color = Color.fromSrgb({ r: 0, g: 1, b: 0 })
+      const resultHex = color.toString('hex')
+      expect(resultHex).toBe('#00ff00')
+    })
+
+    it('should return rgb() string with alpha', () => {
+      const color = Color.fromSrgb({ r: 0, g: 0, b: 1, alpha: 0.75 })
+      const resultRgb = color.toString('css-rgb')
+      expect(resultRgb).toBe('rgba(0, 0, 255, 0.75)')
+    })
+
+    it('should return rgb() string without alpha', () => {
+      const color = Color.fromSrgb({ r: 1, g: 1, b: 0 })
+      const resultRgb = color.toString('css-rgb')
+      expect(resultRgb).toBe('rgb(255, 255, 0)')
+    })
+
+    it('should return hsl() string with alpha', () => {
+      const color = Color.fromHsl({ h: 240, s: 1, l: 0.5, alpha: 0.3 })
+      const resultHsl = color.toString('css-hsl')
+      expect(resultHsl).toBe('hsla(240, 100%, 50%, 0.3)')
+    })
+
+    it('should return hsl() string without alpha', () => {
+      const color = Color.fromHsl({ h: 120, s: 1, l: 0.25 })
+      const resultHsl = color.toString('css-hsl')
+      expect(resultHsl).toBe('hsl(120, 100%, 25%)')
+    })
+
+    it('should return lab() string with alpha', () => {
+      const color = Color.fromLab({ l: 50, a: 25, b: -25, alpha: 0.5 })
+      const resultLab = color.toString('css-lab')
+      expect(resultLab).toBe('lab(50 25 -25 / 0.5)')
+    })
+
+    it('should return lab() string without alpha', () => {
+      const color = Color.fromLab({ l: 50, a: 25, b: -25 })
+      const resultLab = color.toString('css-lab')
+      expect(resultLab).toBe('lab(50 25 -25)')
+    })
+
+    it('should return lch() string with alpha', () => {
+      const color = Color.fromLch({ l: 50, c: 30, h: 120, alpha: 0.8 })
+      const resultLch = color.toString('css-lch')
+      expect(resultLch).toBe('lch(50 30 120 / 0.8)')
+    })
+
+    it('should return lch() string without alpha', () => {
+      const color = Color.fromLch({ l: 50, c: 30, h: 120 })
+      const resultLch = color.toString('css-lch')
+      expect(resultLch).toBe('lch(50 30 120)')
+    })
+
+    it('should return oklab() string with alpha', () => {
+      const color = Color.fromOklab({ l: 0.5, a: 0.1, b: -0.1, alpha: 0.6 })
+      const resultOklab = color.toString('css-oklab')
+      expect(resultOklab).toBe('oklab(50% 0.1 -0.1 / 0.6)')
+    })
+
+    it('should return oklab() string without alpha', () => {
+      const color = Color.fromOklab({ l: 0.5, a: 0.1, b: -0.1 })
+      const resultOklab = color.toString('css-oklab')
+      expect(resultOklab).toBe('oklab(50% 0.1 -0.1)')
+    })
+
+    it('should return oklch() string with alpha', () => {
+      const color = Color.fromOklch({ l: 0.5, c: 0.1, h: 120, alpha: 0.4 })
+      const resultOklch = color.toString('css-oklch')
+      expect(resultOklch).toBe('oklch(50% 10% 120 / 0.4)')
+    })
+
+    it('should return oklch() string without alpha', () => {
+      const color = Color.fromOklch({ l: 0.5, c: 0.1, h: 120 })
+      const resultOklch = color.toString('css-oklch')
+      expect(resultOklch).toBe('oklch(50% 10% 120)')
+    })
+
+    it('should return xyz() string with alpha', () => {
+      const color = Color.fromXyz({ x: 0.5, y: 0.5, z: 0.5, alpha: 0.7 })
+      const resultXyz = color.toString('css-xyz')
+      expect(resultXyz).toBe('color(xyz-d65 0.5 0.5 0.5 / 0.7)')
+    })
+
+    it('should return xyz() string without alpha', () => {
+      const color = Color.fromXyz({ x: 0.5, y: 0.5, z: 0.5 })
+      const resultXyz = color.toString('css-xyz')
+      expect(resultXyz).toBe('color(xyz-d65 0.5 0.5 0.5)')
+    })
+
+    it('should return cmyk() string with alpha', () => {
+      const color = Color.fromCmyk({ c: 0, m: 1, y: 1, k: 0, alpha: 0.9 })
+      const resultCmyk = color.toString('css-cmyk')
+      expect(resultCmyk).toBe('device-cmyk(0 1 1 0 / 0.9)')
+    })
+
+    it('should return cmyk() string without alpha', () => {
+      const color = Color.fromCmyk({ c: 0, m: 1, y: 1, k: 0 })
+      const resultCmyk = color.toString('css-cmyk')
+      expect(resultCmyk).toBe('device-cmyk(0 1 1 0)')
     })
   })
 })

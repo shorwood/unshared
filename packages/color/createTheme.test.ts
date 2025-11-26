@@ -2,141 +2,43 @@
 import { Color } from './createColor'
 import { createTheme } from './createTheme'
 
+const expectedTargets = {
+  background: expect.any(Color),
+  foreground: expect.any(Color),
+  muted: expect.any(Color),
+  border: expect.any(Color),
+}
+
+const expectedStates = {
+  default: expectedTargets,
+  hover: expectedTargets,
+  focus: expectedTargets,
+  active: expectedTargets,
+  disabled: expectedTargets,
+}
+
+const expectedRoles = {
+  default: expectedStates,
+  surface: expectedStates,
+  emphasis: expectedStates,
+  interactive: expectedStates,
+}
+
 describe('createTheme', () => {
   it('should create a theme with default roles and states', () => {
-    const result = createTheme({ colors: { primary: Color.fromHex('#ff0000') } })
-    expect(result).toMatchObject({
+    const options = {
       colors: {
-        primary: {
-          default: {
-            default: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-            hover: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-            focus: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-            active: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-            disabled: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-          },
-          surface: {
-            default: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-            hover: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-            focus: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-            active: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-            disabled: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-          },
-          emphasis: {
-            default: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-            hover: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-            focus: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-            active: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-            disabled: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-          },
-          interactive: {
-            default: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-            hover: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-            focus: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-            active: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-            disabled: {
-              background: expect.any(Color),
-              foreground: expect.any(Color),
-              muted: expect.any(Color),
-              border: expect.any(Color),
-            },
-          },
-        },
+        primary: Color.fromHex('#ff0000'),
+        secondary: Color.fromHex('#00ff00'),
+      },
+    }
+    const result = createTheme(options)
+    expect(result).toStrictEqual({
+      isDark: false,
+      options,
+      colors: {
+        primary: expectedRoles,
+        secondary: expectedRoles,
       },
     })
   })
