@@ -144,9 +144,13 @@ export function xyzD50ToD65(color: IColor.XYZ): IColor.XYZ {
 export function xyzToCss(color: IColor.XYZ, illuminant: 'd50' | 'd65' = 'd65'): string {
   const { x, y, z, alpha } = xyz(color)
   const space = `xyz-${illuminant}`
-  return alpha === undefined
-    ? `color(${space} ${x} ${y} ${z})`
-    : `color(${space} ${x} ${y} ${z} / ${alpha})`
+  const xValue = Math.round(x * 100) / 100
+  const yValue = Math.round(y * 100) / 100
+  const zValue = Math.round(z * 100) / 100
+  const alphaValue = alpha === undefined ? undefined : Math.round(alpha * 100) / 100
+  return alphaValue === undefined
+    ? `color(${space} ${xValue} ${yValue} ${zValue})`
+    : `color(${space} ${xValue} ${yValue} ${zValue} / ${alphaValue})`
 }
 
 /**

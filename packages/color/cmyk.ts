@@ -81,9 +81,14 @@ export function cmykFromSrgb(srgb: IColor.SRGB): IColor.CMYK {
  */
 export function cmykToCss(color: IColor.CMYK): string {
   const { c, m, y, k, alpha } = cmyk(color)
-  return alpha === undefined
-    ? `device-cmyk(${c} ${m} ${y} ${k})`
-    : `device-cmyk(${c} ${m} ${y} ${k} / ${alpha})`
+  const cValue = Math.round(c * 100) / 100
+  const mValue = Math.round(m * 100) / 100
+  const yValue = Math.round(y * 100) / 100
+  const kValue = Math.round(k * 100) / 100
+  const alphaValue = alpha === undefined ? undefined : Math.round(alpha * 100) / 100
+  return alphaValue === undefined
+    ? `device-cmyk(${cValue} ${mValue} ${yValue} ${kValue})`
+    : `device-cmyk(${cValue} ${mValue} ${yValue} ${kValue} / ${alphaValue})`
 }
 
 /**

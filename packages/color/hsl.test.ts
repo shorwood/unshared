@@ -200,19 +200,19 @@ describe('hsl', () => {
       expect(result).toBe('hsla(120, 100%, 50%, 1)')
     })
 
-    it('should round hue to nearest integer', () => {
+    it('should round hue to 2 decimal places', () => {
       const result = hslToCss({ h: 120.7, s: 0.5, l: 0.5 })
-      expect(result).toBe('hsl(121, 50%, 50%)')
+      expect(result).toBe('hsl(120.7, 50%, 50%)')
     })
 
-    it('should round saturation percentage to nearest integer', () => {
+    it('should round saturation percentage to 2 decimal places', () => {
       const result = hslToCss({ h: 120, s: 0.557, l: 0.5 })
-      expect(result).toBe('hsl(120, 56%, 50%)')
+      expect(result).toBe('hsl(120, 55.7%, 50%)')
     })
 
-    it('should round lightness percentage to nearest integer', () => {
+    it('should round lightness percentage to 2 decimal places', () => {
       const result = hslToCss({ h: 120, s: 0.5, l: 0.557 })
-      expect(result).toBe('hsl(120, 50%, 56%)')
+      expect(result).toBe('hsl(120, 50%, 55.7%)')
     })
 
     it('should handle zero values', () => {

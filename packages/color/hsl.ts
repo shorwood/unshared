@@ -90,12 +90,13 @@ export function hslFromSrgb(rgb: IColor.SRGB): IColor.HSL {
  */
 export function hslToCss(color: IColor.HSL): string {
   const { h, s, l, alpha } = hsl(color)
-  const hValue = Math.round(h)
-  const sPercent = Math.round(s * 100)
-  const lPercent = Math.round(l * 100)
-  return alpha === undefined
+  const hValue = Math.round(h * 100) / 100
+  const sPercent = Math.round(s * 10000) / 100
+  const lPercent = Math.round(l * 10000) / 100
+  const alphaValue = alpha === undefined ? undefined : Math.round(alpha * 100) / 100
+  return alphaValue === undefined
     ? `hsl(${hValue}, ${sPercent}%, ${lPercent}%)`
-    : `hsla(${hValue}, ${sPercent}%, ${lPercent}%, ${alpha})`
+    : `hsla(${hValue}, ${sPercent}%, ${lPercent}%, ${alphaValue})`
 }
 
 /**

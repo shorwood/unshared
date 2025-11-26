@@ -117,9 +117,13 @@ export function labFromLch(lchColor: IColor.LCH): IColor.LAB {
  */
 export function labToCss(color: IColor.LAB): string {
   const { l, a, b, alpha } = lab(color)
-  return alpha === undefined
-    ? `lab(${l} ${a} ${b})`
-    : `lab(${l} ${a} ${b} / ${alpha})`
+  const lValue = Math.round(l * 100) / 100
+  const aValue = Math.round(a * 100) / 100
+  const bValue = Math.round(b * 100) / 100
+  const alphaValue = alpha === undefined ? undefined : Math.round(alpha * 100) / 100
+  return alphaValue === undefined
+    ? `lab(${lValue} ${aValue} ${bValue})`
+    : `lab(${lValue} ${aValue} ${bValue} / ${alphaValue})`
 }
 
 /**

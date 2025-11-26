@@ -70,9 +70,10 @@ export function lchToCss(color: IColor.LCH): string {
   const lValue = Math.round(l * 100) / 100
   const cValue = Math.round(c * 100) / 100
   const hValue = Math.round(h * 100) / 100
-  return alpha === undefined
+  const alphaValue = alpha === undefined ? undefined : Math.round(alpha * 100) / 100
+  return alphaValue === undefined
     ? `lch(${lValue} ${cValue} ${hValue})`
-    : `lch(${lValue} ${cValue} ${hValue} / ${alpha})`
+    : `lch(${lValue} ${cValue} ${hValue} / ${alphaValue})`
 }
 
 /**

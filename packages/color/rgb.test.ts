@@ -253,12 +253,12 @@ describe('rgb', () => {
   describe('rgbFromHex', () => {
     it('should parse 6-digit hex without hash', () => {
       const result = rgbFromHex('FF8040')
-      expect(result).toEqual({ r: 255, g: 128, b: 64, alpha: 1 })
+      expect(result).toEqual({ r: 255, g: 128, b: 64, alpha: undefined })
     })
 
     it('should parse 6-digit hex with hash', () => {
       const result = rgbFromHex('#FF8040')
-      expect(result).toEqual({ r: 255, g: 128, b: 64, alpha: 1 })
+      expect(result).toEqual({ r: 255, g: 128, b: 64, alpha: undefined })
     })
 
     it('should parse 8-digit hex with alpha', () => {
@@ -271,7 +271,7 @@ describe('rgb', () => {
 
     it('should parse 3-digit hex', () => {
       const result = rgbFromHex('#F84')
-      expect(result).toEqual({ r: 255, g: 136, b: 68, alpha: 1 })
+      expect(result).toEqual({ r: 255, g: 136, b: 68, alpha: undefined })
     })
 
     it('should parse 4-digit hex with alpha', () => {
@@ -284,32 +284,32 @@ describe('rgb', () => {
 
     it('should parse white', () => {
       const result = rgbFromHex('#FFF')
-      expect(result).toEqual({ r: 255, g: 255, b: 255, alpha: 1 })
+      expect(result).toEqual({ r: 255, g: 255, b: 255, alpha: undefined })
     })
 
     it('should parse black', () => {
       const result = rgbFromHex('#000')
-      expect(result).toEqual({ r: 0, g: 0, b: 0, alpha: 1 })
+      expect(result).toEqual({ r: 0, g: 0, b: 0, alpha: undefined })
     })
 
     it('should parse red', () => {
       const result = rgbFromHex('#F00')
-      expect(result).toEqual({ r: 255, g: 0, b: 0, alpha: 1 })
+      expect(result).toEqual({ r: 255, g: 0, b: 0, alpha: undefined })
     })
 
     it('should parse green', () => {
       const result = rgbFromHex('#0F0')
-      expect(result).toEqual({ r: 0, g: 255, b: 0, alpha: 1 })
+      expect(result).toEqual({ r: 0, g: 255, b: 0, alpha: undefined })
     })
 
     it('should parse blue', () => {
       const result = rgbFromHex('#00F')
-      expect(result).toEqual({ r: 0, g: 0, b: 255, alpha: 1 })
+      expect(result).toEqual({ r: 0, g: 0, b: 255, alpha: undefined })
     })
 
     it('should parse case insensitively', () => {
       const result = rgbFromHex('#ff8040')
-      expect(result).toEqual({ r: 255, g: 128, b: 64, alpha: 1 })
+      expect(result).toEqual({ r: 255, g: 128, b: 64, alpha: undefined })
     })
 
     it('should throw error for invalid hex', () => {

@@ -127,18 +127,19 @@ export function rgbFromHex(color: string): IColor.RGB {
   let r = Number.parseInt(hex.slice(0 * f, 1 * f), 16)
   let g = Number.parseInt(hex.slice(1 * f, 2 * f), 16)
   let b = Number.parseInt(hex.slice(2 * f, 3 * f), 16)
-  let alpha = Number.parseInt(hex.slice(3 * f, 4 * f) || 'ff', 16)
+  const alphaHex = hex.slice(3 * f, 4 * f)
+  let alpha = alphaHex ? Number.parseInt(alphaHex, 16) : undefined
 
   // --- If it's a 3/4 digit hex, copy the bytes to the left.
   if (f === 1) {
     r = r | (r << 4)
     g = g | (g << 4)
     b = b | (b << 4)
-    alpha = alpha | (alpha << 4)
+    if (alpha !== undefined) alpha = alpha | (alpha << 4)
   }
 
   // --- Return RGB object with alpha normalized to 0-1 range.
-  return rgb({ r, g, b, alpha: alpha / 255 })
+  return rgb({ r, g, b, alpha: alpha === undefined ? undefined : alpha / 255 })
 }
 
 /**
@@ -151,9 +152,13 @@ export function rgbFromHex(color: string): IColor.RGB {
  */
 export function rgbToCss(color: IColor.RGB): string {
   const { r, g, b, alpha } = rgb(color)
-  return alpha === undefined
-    ? `rgb(${r}, ${g}, ${b})`
-    : `rgba(${r}, ${g}, ${b}, ${alpha})`
+  const rValue = Math.round(r * 100) / 100
+  const gValue = Math.round(g * 100) / 100
+  const bValue = Math.round(b * 100) / 100
+  const alphaValue = alpha === undefined ? undefined : Math.round(alpha * 100) / 100
+  return alphaValue === undefined
+    ? `rgb(${rValue}, ${gValue}, ${bValue})`
+    : `rgba(${rValue}, ${gValue}, ${bValue}, ${alphaValue})`
 }
 
 /**

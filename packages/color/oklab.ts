@@ -100,9 +100,13 @@ export function oklabFromOklch(oklch: IColor.OKLCH): IColor.OKLAB {
  */
 export function oklabToCss(color: IColor.OKLAB): string {
   const { l, a, b, alpha } = oklab(color)
-  return alpha === undefined
-    ? `oklab(${l} ${a} ${b})`
-    : `oklab(${l} ${a} ${b} / ${alpha})`
+  const lPercent = Math.round(l * 10000) / 100
+  const aValue = Math.round(a * 100) / 100
+  const bValue = Math.round(b * 100) / 100
+  const alphaValue = alpha === undefined ? undefined : Math.round(alpha * 100) / 100
+  return alphaValue === undefined
+    ? `oklab(${lPercent}% ${aValue} ${bValue})`
+    : `oklab(${lPercent}% ${aValue} ${bValue} / ${alphaValue})`
 }
 
 /**

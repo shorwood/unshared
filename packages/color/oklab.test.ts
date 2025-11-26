@@ -286,42 +286,42 @@ describe('oklab', () => {
   describe('oklabToCss', () => {
     it('should convert oklab to css with alpha', () => {
       const result = oklabToCss({ l: 0.5, a: 0.1, b: -0.2, alpha: 0.8 })
-      expect(result).toBe('oklab(0.5 0.1 -0.2 / 0.8)')
+      expect(result).toBe('oklab(50% 0.1 -0.2 / 0.8)')
     })
 
     it('should convert oklab to css without alpha', () => {
       const result = oklabToCss({ l: 0.5, a: 0.1, b: -0.2 })
-      expect(result).toBe('oklab(0.5 0.1 -0.2)')
+      expect(result).toBe('oklab(50% 0.1 -0.2)')
     })
 
     it('should normalize out-of-range values', () => {
       const result = oklabToCss({ l: 1.5, a: 0.6, b: -0.6 })
-      expect(result).toBe('oklab(1 0.4 -0.4)')
+      expect(result).toBe('oklab(100% 0.4 -0.4)')
     })
 
     it('should handle zero values', () => {
       const result = oklabToCss({ l: 0, a: 0, b: 0 })
-      expect(result).toBe('oklab(0 0 0)')
+      expect(result).toBe('oklab(0% 0 0)')
     })
 
     it('should handle negative a value', () => {
       const result = oklabToCss({ l: 0.5, a: -0.3, b: 0.2 })
-      expect(result).toBe('oklab(0.5 -0.3 0.2)')
+      expect(result).toBe('oklab(50% -0.3 0.2)')
     })
 
     it('should handle positive b value', () => {
       const result = oklabToCss({ l: 0.5, a: 0.1, b: 0.3 })
-      expect(result).toBe('oklab(0.5 0.1 0.3)')
+      expect(result).toBe('oklab(50% 0.1 0.3)')
     })
 
     it('should handle alpha 0', () => {
       const result = oklabToCss({ l: 0.5, a: 0.1, b: -0.2, alpha: 0 })
-      expect(result).toBe('oklab(0.5 0.1 -0.2 / 0)')
+      expect(result).toBe('oklab(50% 0.1 -0.2 / 0)')
     })
 
     it('should handle alpha 1', () => {
       const result = oklabToCss({ l: 0.5, a: 0.1, b: -0.2, alpha: 1 })
-      expect(result).toBe('oklab(0.5 0.1 -0.2 / 1)')
+      expect(result).toBe('oklab(50% 0.1 -0.2 / 1)')
     })
   })
 

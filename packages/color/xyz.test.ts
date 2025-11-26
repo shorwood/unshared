@@ -404,9 +404,9 @@ describe('xyz', () => {
       expect(result).toBe('color(xyz-d65 1 0 0.8)')
     })
 
-    it('should handle decimal values', () => {
+    it('should round decimal values to 2 places', () => {
       const result = xyzToCss({ x: 0.4124, y: 0.2126, z: 0.0193 })
-      expect(result).toContain('color(xyz-d65 0.4124 0.2126 0.0193')
+      expect(result).toBe('color(xyz-d65 0.41 0.21 0.02)')
     })
 
     it('should handle different x, y, z values', () => {
@@ -414,9 +414,9 @@ describe('xyz', () => {
       expect(result).toBe('color(xyz-d65 0.2 0.5 0.9)')
     })
 
-    it('should preserve small decimal values', () => {
+    it('should round small decimal values to 2 places', () => {
       const result = xyzToCss({ x: 0.001, y: 0.002, z: 0.003 })
-      expect(result).toBe('color(xyz-d65 0.001 0.002 0.003)')
+      expect(result).toBe('color(xyz-d65 0 0 0)')
     })
   })
 

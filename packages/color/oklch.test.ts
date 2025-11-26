@@ -236,47 +236,47 @@ describe('oklch', () => {
   describe('oklchToCss', () => {
     it('should convert oklch to css with alpha', () => {
       const result = oklchToCss({ l: 0.5, c: 0.3, h: 120, alpha: 1 })
-      expect(result).toBe('oklch(0.5 0.3 120 / 1)')
+      expect(result).toBe('oklch(50% 30% 120 / 1)')
     })
 
     it('should convert oklch to css without alpha', () => {
       const result = oklchToCss({ l: 0.5, c: 0.3, h: 120 })
-      expect(result).toBe('oklch(0.5 0.3 120)')
+      expect(result).toBe('oklch(50% 30% 120)')
     })
 
     it('should normalize out-of-range values', () => {
       const result = oklchToCss({ l: 1.5, c: 1.5, h: 400 })
-      expect(result).toBe('oklch(1 1 40)')
+      expect(result).toBe('oklch(100% 100% 40)')
     })
 
     it('should handle zero values', () => {
       const result = oklchToCss({ l: 0, c: 0, h: 0 })
-      expect(result).toBe('oklch(0 0 0)')
+      expect(result).toBe('oklch(0% 0% 0)')
     })
 
     it('should normalize negative hue', () => {
       const result = oklchToCss({ l: 0.5, c: 0.3, h: -30 })
-      expect(result).toBe('oklch(0.5 0.3 330)')
+      expect(result).toBe('oklch(50% 30% 330)')
     })
 
     it('should handle alpha 0', () => {
       const result = oklchToCss({ l: 0.5, c: 0.3, h: 120, alpha: 0 })
-      expect(result).toBe('oklch(0.5 0.3 120 / 0)')
+      expect(result).toBe('oklch(50% 30% 120 / 0)')
     })
 
     it('should handle alpha 1', () => {
       const result = oklchToCss({ l: 0.5, c: 0.3, h: 120, alpha: 1 })
-      expect(result).toBe('oklch(0.5 0.3 120 / 1)')
+      expect(result).toBe('oklch(50% 30% 120 / 1)')
     })
 
     it('should handle hue 360', () => {
       const result = oklchToCss({ l: 0.5, c: 0.3, h: 360 })
-      expect(result).toBe('oklch(0.5 0.3 0)')
+      expect(result).toBe('oklch(50% 30% 0)')
     })
 
     it('should handle decimal hue', () => {
       const result = oklchToCss({ l: 0.5, c: 0.3, h: 120.5 })
-      expect(result).toBe('oklch(0.5 0.3 120.5)')
+      expect(result).toBe('oklch(50% 30% 120.5)')
     })
   })
 
