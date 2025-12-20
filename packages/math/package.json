@@ -56,6 +56,11 @@
       "types": "./dist/floor.d.ts",
       "import": "./dist/floor.js"
     },
+    "./lerp": {
+      "require": "./dist/lerp.cjs",
+      "types": "./dist/lerp.d.ts",
+      "import": "./dist/lerp.js"
+    },
     "./mean": {
       "require": "./dist/mean.cjs",
       "types": "./dist/mean.d.ts",
