@@ -1,5 +1,30 @@
-export type EmitterEvents = Record<string, any[]>
+/* eslint-disable @typescript-eslint/consistent-indexed-object-style */
+export type EmitterEvents = { [P in string]: any[] }
 
+export namespace Emitter {
+
+  /** A map of event names to their corresponding listener functions. */
+  export type Events = object
+
+  export namespace Event {
+
+    /** The names of the events in the emitter. */
+    export type Name<T extends Events> = keyof T & string
+
+    /** The payload of a specific event in the emitter. */
+    export type Payload<T extends Events, K extends Name<T>> =
+      T[K] extends any[] ? T[K] : [T[K]]
+
+    /** A listener function for a specific event in the emitter. */
+    export type Listener<T extends Events, K extends Name<T>> =
+      (...payload: Payload<T, K>) => any
+  }
+}
+
+/**
+ * An event that is dispatched by the emitter. This event contains the payload
+ * that is passed to the listeners when the event is dispatched.
+ */
 export class EmitterEvent<T extends any[] = any[]> extends Event {
   constructor(type: string, public payload: T) {
     super(type)
@@ -11,13 +36,13 @@ export class EmitterEvent<T extends any[] = any[]> extends Event {
  * emitter is used to create a custom event system that can be used to communicate
  * between different parts of the application.
  */
-export class Emitter<T extends EmitterEvents> {
+export class Emitter<T extends Emitter.Events> {
 
   /** The event target that is used to dispatch events. */
   private eventTarget = new EventTarget()
 
   /** The event handlers that are currently active. */
-  public eventListeners: Array<[keyof T & string, EventListener]> = []
+  public eventListeners: Array<[Emitter.Event.Name<T>, EventListener]> = []
 
   /**
    * Add a listener for the specified event. The listener will be called whenever
@@ -39,8 +64,8 @@ export class Emitter<T extends EmitterEvents> {
    * emitter.dispatch('data', 'Hello, World !')
    * // 'Hello, World !'
    */
-  on<K extends keyof T & string>(eventName: K, listener: (...payload: T[K]) => any) {
-    const handler = ((event: EmitterEvent) => { listener(...event.payload as T[K]) }) as EventListener
+  on<K extends Emitter.Event.Name<T>>(eventName: K, listener: Emitter.Event.Listener<T, K>) {
+    const handler = ((event: EmitterEvent) => { listener(...event.payload as Emitter.Event.Payload<T, K>) }) as EventListener
     this.eventTarget.addEventListener(eventName, handler)
     this.eventListeners.push([eventName, handler])
     return () => this.eventTarget.removeEventListener(eventName, handler)
@@ -66,9 +91,9 @@ export class Emitter<T extends EmitterEvents> {
    * emitter.dispatch('data', 'Hello, World !')
    * // 'Hello, World !'
    */
-  once<K extends keyof T & string>(eventName: K, listener: (...payload: T[K]) => any) {
+  once<K extends Emitter.Event.Name<T>>(eventName: K, listener: Emitter.Event.Listener<T, K>) {
     const handler = ((event: EmitterEvent) => {
-      listener(...event.payload as T[K])
+      listener(...event.payload as Emitter.Event.Payload<T, K>)
       this.eventTarget.removeEventListener(eventName, handler)
     }) as EventListener
     this.eventTarget.addEventListener(eventName, handler)
@@ -95,7 +120,7 @@ export class Emitter<T extends EmitterEvents> {
    * emitter.dispatch('data', 'Hello, World !')
    * // 'Hello, World !'
    */
-  dispatch<K extends keyof T & string>(eventName: K, ...payload: T[K]) {
+  dispatch<K extends Emitter.Event.Name<T>>(eventName: K, ...payload: Emitter.Event.Payload<T, K>) {
     const event = new EmitterEvent(eventName, payload)
     this.eventTarget.dispatchEvent(event)
   }
@@ -128,6 +153,6 @@ export class Emitter<T extends EmitterEvents> {
  * // Create a new emitter instance.
  * const emitter = createEmitter()
  */
-export function createEmitter<T extends EmitterEvents>() {
+export function createEmitter<T extends Emitter.Events>() {
   return new Emitter<T>()
 }
