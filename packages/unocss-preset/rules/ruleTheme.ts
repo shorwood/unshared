@@ -2,7 +2,7 @@ import type { DynamicRule } from '@unocss/core'
 import type { Color } from '@unshared/color/createColor'
 import type { ThemeOptions } from '../preset'
 
-export function createRuleTheme(options: ThemeOptions): DynamicRule {
+export function ruleTheme<Theme extends object>(options: ThemeOptions): DynamicRule<Theme> {
   return [
     /^theme-(?<specifier>.+)$/,
     (match) => {

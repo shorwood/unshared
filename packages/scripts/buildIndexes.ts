@@ -8,6 +8,17 @@ interface IndexFile {
   path: string
 }
 
+export const EXCLUDE_FROM_INDEX = [
+  'index.*',
+  '.*',
+  '__*',
+  '*.d.ts',
+  'cli.*',
+  '*.worker.ts',
+  '*.test.ts',
+  '*.fixtures.ts',
+]
+
 /**
  * Generates an index file from all the TypeScript files in a directory.
  *
@@ -19,28 +30,15 @@ async function buildIndex(path: string): Promise<IndexFile> {
   const entities = await readdir(path, { withFileTypes: true })
   const imports: string[] = []
   const pattern = createPattern('*.{ts,tsx,js,jsx}')
+  const excludePatterns = EXCLUDE_FROM_INDEX.map(pattern => createPattern(pattern))
 
   // --- Iterate over the directory entities.
   for (const entity of entities) {
     try {
-
-      // --- Find subdirectories containing an index file.
-      const isDirectory = entity.isDirectory()
-      const isFile = entity.isFile()
-      const isPatternMath = pattern.test(entity.name)
-      const isIndexFile = entity.name.startsWith('index.')
-
-      // --- If the entity name starts with a dot, ignore it.
-      if (isDirectory) continue
-      if (entity.name.startsWith('__')) continue
-      if (entity.name.startsWith('scripts')) continue
-      if (entity.name.endsWith('.d.ts')) continue
-      if (entity.name.endsWith('.test.ts')) continue
-      if (entity.name.endsWith('cli.ts')) continue
-      if (entity.name.endsWith('.worker.ts')) continue
-
-      // --- Filter-out the non-matching files.
-      if (!isFile || !isPatternMath || isIndexFile) continue
+      if (entity.isDirectory()) continue
+      if (!entity.isFile()) continue
+      if (!pattern.test(entity.name)) continue
+      if (excludePatterns.some(exclude => exclude.test(entity.name))) continue
 
       // --- Push the import.
       const importId = entity.name.split('.').slice(0, -1).join('.')

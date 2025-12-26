@@ -13,6 +13,15 @@ export interface ResolveBundleOptions {
   entrypoints?: MaybeArray<string>
 }
 
+export const EXCLUDE_FROM_EXPORTS = [
+  '.*',
+  '__*',
+  'scripts',
+  '*.d.ts',
+  '*.test.ts',
+  '*.fixtures.ts',
+]
+
 /**
  * Build a single package in the current working directory. This will generate
  * CommonJS, ESM, IIFE, UMD, and Typescript declaration files. The IIFE and UMD
@@ -38,7 +47,7 @@ export async function resolveBundle(packageName: string, options: ResolveBundleO
   const externalExps = Object.keys(packageDependencies).map(dep => new RegExp(`^${dep}`))
   const external = [...externalExps, /^node:/, 'http', 'stream']
 
-  const paths = await glob(entrypoints, { getRelative: true, cwd: packagePath, exclude: ['*.d.ts', '*.test.ts'] })
+  const paths = await glob(entrypoints, { getRelative: true, cwd: packagePath, exclude: EXCLUDE_FROM_EXPORTS })
   if (paths.length === 0) return []
 
   // --- Map the inputs to their file names. If the input is a nested index file,

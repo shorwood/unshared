@@ -275,6 +275,32 @@ export namespace IColor {
    * @example '#F00', '#FF0000', '#FF0000FF'
    */
   export type Hex = `#${string}`
+
+  /** The name of a color space supported by the Color class. */
+  export type Space =
+    | 'cmyk'
+    | 'hsl'
+    | 'hsv'
+    | 'lab'
+    | 'lch'
+    | 'oklab'
+    | 'oklch'
+    | 'rgb'
+    | 'srgb'
+    | 'xyz'
+
+  /** Union type of all color representations contained in an object. */
+  export type Object =
+    | IColor.CMYK
+    | IColor.HSL
+    | IColor.HSV
+    | IColor.LAB
+    | IColor.LCH
+    | IColor.OKLAB
+    | IColor.OKLCH
+    | IColor.RGB
+    | IColor.SRGB
+    | IColor.XYZ
 }
 
 export type IColor =

@@ -1,8 +1,8 @@
 import type { RuleContext } from '@unocss/core'
 import { Color, createTheme } from '@unshared/color'
-import { createRuleThemeText } from './createRuleThemeText'
+import { ruleThemeRing } from './ruleThemeRing'
 
-describe('createRuleThemeText', () => {
+describe('createRuleThemeRing', () => {
   const options = {
     presets: {
       primary: createTheme({
@@ -11,32 +11,33 @@ describe('createRuleThemeText', () => {
     },
   }
 
-  const [regex, handler] = createRuleThemeText(options)
+  const [regex, handler] = ruleThemeRing(options)
   const context = {} as RuleContext
 
   it('should not match when specifier does not exist in theme', () => {
-    const match = regex.exec('text-nonexistent')
+    const match = regex.exec('ring-nonexistent')
     if (!match) return
     const result = handler(match, context)
     expect(result).toBeUndefined()
   })
 
-  it('should generate text color without opacity', () => {
-    const match = regex.exec('text-primary')
+  it('should generate ring color without opacity', () => {
+    const match = regex.exec('ring-primary')
     if (!match) throw new Error('Pattern should match')
     const result = handler(match, context)
     expect(result).toStrictEqual({
-      color: 'oklch(var(--theme-primary-default-default-foreground) / var(--un-text-opacity, 1))',
+      '--un-ring-opacity': '100%',
+      '--un-ring-color': 'oklch(var(--theme-primary-default-default-border) / var(--un-ring-opacity, 1))',
     })
   })
 
-  it('should generate text color with opacity', () => {
-    const match = regex.exec('text-primary/75')
+  it('should generate ring color with opacity', () => {
+    const match = regex.exec('ring-primary/80')
     if (!match) throw new Error('Pattern should match')
     const result = handler(match, context)
     expect(result).toStrictEqual({
-      '--un-text-opacity': '75%',
-      'color': 'oklch(var(--theme-primary-default-default-foreground) / var(--un-text-opacity, 1))',
+      '--un-ring-opacity': '80%',
+      '--un-ring-color': 'oklch(var(--theme-primary-default-default-border) / var(--un-ring-opacity, 1))',
     })
   })
 })

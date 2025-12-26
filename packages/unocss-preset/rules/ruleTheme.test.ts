@@ -1,6 +1,6 @@
 import type { RuleContext } from '@unocss/core'
 import { Color, createTheme } from '@unshared/color'
-import { createRuleTheme } from './createRuleTheme'
+import { ruleTheme } from './ruleTheme'
 
 describe('createRuleTheme', () => {
   const options = {
@@ -11,7 +11,7 @@ describe('createRuleTheme', () => {
     },
   }
 
-  const [regex, handler] = createRuleTheme(options)
+  const [regex, handler] = ruleTheme(options)
   const context = {} as RuleContext
 
   it('should not match when theme does not exist', () => {
