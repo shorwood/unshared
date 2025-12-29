@@ -11,7 +11,7 @@ import type { MaybeArray } from '@unshared/types'
  * createVariant('current', '&[aria-current="page"]')
  * // => { name: 'current', match: ..., autocomplete: 'current:' }
  */
-export function createVariant(name: string, template: MaybeArray<string>): VariantObject {
+export function createVariant<Theme extends object = object>(name: string, template: MaybeArray<string>): VariantObject<Theme> {
   return {
     name,
     autocomplete: `${name}:`,
