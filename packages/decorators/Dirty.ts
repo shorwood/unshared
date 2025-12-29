@@ -84,10 +84,12 @@ export namespace Dirty {
  * to automatically track changes with optional tags.
  *
  * @example
- * // Using @DirtyProperty for automatic property tracking
+ * ```ts
+ * // Using \@DirtyProperty for automatic property tracking
  * class Document extends Dirty {
  *   \@DirtyProperty() title = ''
  *   \@DirtyProperty({ tags: 'content' }) body = ''
+ *   \@DirtyTrigger() submit() { ... }
  * }
  *
  * const doc = new Document()
@@ -95,43 +97,7 @@ export namespace Dirty {
  * doc.isDirty() // true
  * doc.clearDirty()
  * doc.isDirty() // false
- *
- * @example
- * // Using @DirtyTrigger for method-based tracking
- * class Canvas extends Dirty {
- *   shapes: Shape[] = []
- *
- *   \@DirtyTrigger({ tags: 'shapes' })
- *   addShape(shape: Shape) {
- *     this.shapes.push(shape)
- *   }
- *
- *   \@DirtyTrigger({ tags: 'shapes' })
- *   removeShape(index: number) {
- *     this.shapes.splice(index, 1)
- *   }
- * }
- *
- * const canvas = new Canvas()
- * canvas.addShape(new Circle())
- * canvas.isDirty('shapes') // true
- *
- * @example
- * // Combining property and method tracking with tags
- * class Form extends Dirty {
- *   \@DirtyProperty({ tags: 'profile' }) name = ''
- *   \@DirtyProperty({ tags: 'credentials' }) password = ''
- *
- *   \@DirtyTrigger({ tags: 'submission' })
- *   submit() { ... }
- * }
- *
- * const form = new Form()
- * form.name = 'Alice'
- * form.isDirty('profile') // true
- * form.isDirty('credentials') // false
- * form.clearDirty('profile')
- * form.isDirty() // false
+ * ```
  */
 export abstract class Dirty {
 
