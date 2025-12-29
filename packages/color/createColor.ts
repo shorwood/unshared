@@ -38,41 +38,41 @@ export type ColorStringFormat =
   | 'hex'
 
 /**
- * A color manipulation class that stores colors internally in the LCH (CIELCh) color space
- * for maximum color accuracy and precision. LCH is device-independent and based on
- * human perception, making it ideal for accurate color representation.
+ * A color manipulation class that stores colors internally in their original color space
+ * for maximum accuracy and minimal conversion overhead. Colors are only converted when
+ * explicitly requested through the conversion methods.
  */
 export class Color {
 
-  /** Internal LCH representation of the color. */
-  private readonly internalValue: IColor.LCH = {
-    l: 0,
-    c: 0,
-    h: 0,
-    alpha: undefined,
-  }
+  /** Internal color value in its native color space. */
+  readonly value: IColor.Object
+
+  /** The color space of the internal value. */
+  readonly space: IColor.Space
 
   /**
-   * Build a Color instance from an LCH color. This is a private constructor
+   * Build a Color instance from a color value. This is a private constructor
    * that is used internally by the static factory methods.
    *
-   * @param value The LCH color to use.
+   * @param value The color value to use.
+   * @param space The color space of the value.
    */
-  constructor(value: IColor.LCH) {
-    this.internalValue = { ...value }
+  constructor(value: IColor.Object, space: IColor.Space) {
+    this.value = { ...value }
+    this.space = space
   }
 
   /**
    * Create a new {@linkcode Color} instance from an {@linkcode IColor.LCH} color object.
    * LCH is a cylindrical representation of the LAB color space with lightness, chroma,
-   * and hue channels. This is the internal representation used by the Color class.
+   * and hue channels.
    *
    * @param value The LCH color to parse.
    * @returns The created Color instance.
    * @example Color.fromLch({ l: 50, c: 30, h: 120 })
    */
   static fromLch(value: Partial<IColor.LCH>): Color {
-    return new this(lch(value))
+    return new this(lch(value), 'lch')
   }
 
   /**
@@ -84,7 +84,7 @@ export class Color {
    * @example Color.fromLab({ l: 50, a: 25, b: -25 })
    */
   static fromLab(value: Partial<IColor.LAB>): Color {
-    return Color.fromLch(lchFromLab(lab(value)))
+    return new this(lab(value), 'lab')
   }
 
   /**
@@ -96,7 +96,7 @@ export class Color {
    * @example Color.fromXyz({ x: 0.5, y: 0.5, z: 0.5 })
    */
   static fromXyz(value: Partial<IColor.XYZ>): Color {
-    return Color.fromLab(labFromXyz(xyz(value)))
+    return new this(xyz(value), 'xyz')
   }
 
   /**
@@ -109,7 +109,7 @@ export class Color {
    * @example Color.fromSrgb({ r: 1, g: 0, b: 0 })
    */
   static fromSrgb(value: Partial<IColor.SRGB>): Color {
-    return Color.fromXyz(xyzFromSrgb(srgb(value)))
+    return new this(srgb(value), 'srgb')
   }
 
   /**
@@ -121,7 +121,7 @@ export class Color {
    * @example Color.fromOklab({ l: 0.5, a: 0.1, b: -0.1 })
    */
   static fromOklab(value: Partial<IColor.OKLAB>): Color {
-    return Color.fromSrgb(srgbFromOklab(oklab(value)))
+    return new this(oklab(value), 'oklab')
   }
 
   /**
@@ -133,7 +133,7 @@ export class Color {
    * @example Color.fromOklch({ l: 0.5, c: 0.1, h: 120 })
    */
   static fromOklch(value: Partial<IColor.OKLCH>): Color {
-    return Color.fromOklab(oklabFromOklch(oklch(value)))
+    return new this(oklch(value), 'oklch')
   }
 
   /**
@@ -146,7 +146,7 @@ export class Color {
    * @example Color.fromHsl({ h: 120, s: 1, l: 0.5 })
    */
   static fromHsl(value: Partial<IColor.HSL>): Color {
-    return Color.fromSrgb(srgbFromHsl(hsl(value)))
+    return new this(hsl(value), 'hsl')
   }
 
   /**
@@ -159,7 +159,7 @@ export class Color {
    * @example Color.fromHsv({ h: 120, s: 1, v: 1 })
    */
   static fromHsv(value: Partial<IColor.HSV>): Color {
-    return Color.fromSrgb(srgbFromHsv(hsv(value)))
+    return new this(hsv(value), 'hsv')
   }
 
   /**
@@ -172,7 +172,7 @@ export class Color {
    * @example Color.fromCmyk({ c: 0, m: 1, y: 1, k: 0 })
    */
   static fromCmyk(value: Partial<IColor.CMYK>): Color {
-    return Color.fromSrgb(srgbFromCmyk(cmyk(value)))
+    return new this(cmyk(value), 'cmyk')
   }
 
   /**
@@ -185,7 +185,7 @@ export class Color {
    * @example Color.fromRgb({ r: 255, g: 0, b: 0 })
    */
   static fromRgb(value: Partial<IColor.RGB>): Color {
-    return Color.fromSrgb(srgbFromRgb(rgb(value)))
+    return new this(rgb(value), 'rgb')
   }
 
   /**
@@ -270,8 +270,7 @@ export class Color {
   }
 
   /**
-   * Convert this color to LCH color space. This returns the internal representation
-   * and is the most efficient conversion. The result is memoized.
+   * Convert this color to LCH color space. The result is memoized.
    *
    * @returns The color in LCH format.
    * @example
@@ -280,7 +279,8 @@ export class Color {
    */
   @Once()
   lch(): IColor.LCH {
-    return Object.freeze({ ...this.internalValue })
+    if (this.space === 'lch') return Object.freeze({ ...this.value as IColor.LCH })
+    return Object.freeze(lchFromLab(this.lab()))
   }
 
   /**
@@ -293,7 +293,11 @@ export class Color {
    */
   @Once()
   lab(): IColor.LAB {
-    return Object.freeze(labFromLch(this.internalValue))
+    if (this.space === 'lab') return Object.freeze({ ...this.value as IColor.LAB })
+    if (this.space === 'lch') return Object.freeze(labFromLch(this.value as IColor.LCH))
+    if (this.space === 'xyz') return Object.freeze(labFromXyz(this.value as IColor.XYZ))
+    // For all other color spaces, go through sRGB → XYZ → LAB
+    return Object.freeze(labFromXyz(xyzFromSrgb(this.srgb())))
   }
 
   /**
@@ -306,7 +310,12 @@ export class Color {
    */
   @Once()
   xyz(): IColor.XYZ {
-    return Object.freeze(xyzFromLab(this.lab()))
+    if (this.space === 'xyz') return Object.freeze({ ...this.value as IColor.XYZ })
+    if (this.space === 'srgb') return Object.freeze(xyzFromSrgb(this.value as IColor.SRGB))
+    if (this.space === 'lab') return Object.freeze(xyzFromLab(this.value as IColor.LAB))
+    if (this.space === 'lch') return Object.freeze(xyzFromLab(labFromLch(this.value as IColor.LCH)))
+    // For all other color spaces, go through sRGB → XYZ
+    return Object.freeze(xyzFromSrgb(this.srgb()))
   }
 
   /**
@@ -319,6 +328,13 @@ export class Color {
    */
   @Once()
   srgb(): IColor.SRGB {
+    if (this.space === 'srgb') return Object.freeze({ ...this.value as IColor.SRGB })
+    if (this.space === 'rgb') return Object.freeze(srgbFromRgb(this.value as IColor.RGB))
+    if (this.space === 'hsl') return Object.freeze(srgbFromHsl(this.value as IColor.HSL))
+    if (this.space === 'hsv') return Object.freeze(srgbFromHsv(this.value as IColor.HSV))
+    if (this.space === 'cmyk') return Object.freeze(srgbFromCmyk(this.value as IColor.CMYK))
+    if (this.space === 'oklab') return Object.freeze(srgbFromOklab(this.value as IColor.OKLAB))
+    if (this.space === 'oklch') return Object.freeze(srgbFromOklab(oklabFromOklch(this.value as IColor.OKLCH)))
     return Object.freeze(srgbFromXyz(this.xyz()))
   }
 
@@ -332,6 +348,7 @@ export class Color {
    */
   @Once()
   oklch(): IColor.OKLCH {
+    if (this.space === 'oklch') return Object.freeze({ ...this.value as IColor.OKLCH })
     return Object.freeze(oklchFromOklab(this.oklab()))
   }
 
@@ -345,6 +362,8 @@ export class Color {
    */
   @Once()
   oklab(): IColor.OKLAB {
+    if (this.space === 'oklab') return Object.freeze({ ...this.value as IColor.OKLAB })
+    if (this.space === 'oklch') return Object.freeze(oklabFromOklch(this.value as IColor.OKLCH))
     return Object.freeze(oklabFromSrgb(this.srgb()))
   }
 
@@ -358,6 +377,7 @@ export class Color {
    */
   @Once()
   hsl(): IColor.HSL {
+    if (this.space === 'hsl') return Object.freeze({ ...this.value as IColor.HSL })
     return Object.freeze(hslFromSrgb(this.srgb()))
   }
 
@@ -371,6 +391,7 @@ export class Color {
    */
   @Once()
   hsv(): IColor.HSV {
+    if (this.space === 'hsv') return Object.freeze({ ...this.value as IColor.HSV })
     return Object.freeze(hsvFromSrgb(this.srgb()))
   }
 
@@ -384,6 +405,7 @@ export class Color {
    */
   @Once()
   cmyk(): IColor.CMYK {
+    if (this.space === 'cmyk') return Object.freeze({ ...this.value as IColor.CMYK })
     return Object.freeze(cmykFromSrgb(this.srgb()))
   }
 
@@ -397,6 +419,7 @@ export class Color {
    */
   @Once()
   rgb(): IColor.RGB {
+    if (this.space === 'rgb') return Object.freeze({ ...this.value as IColor.RGB })
     return Object.freeze(rgbFromSrgb(this.srgb()))
   }
 
@@ -455,7 +478,7 @@ export class Color {
    * @see https://www.w3.org/WAI/GL/wiki/Relative_luminance
    */
   @Once()
-  relativeLuminance(): number {
+  getRelativeLuminance(): number {
     const { r, g, b } = this.srgb()
     const R = srgbToLinearRgb(r)
     const G = srgbToLinearRgb(g)
@@ -471,9 +494,9 @@ export class Color {
    * @see https://www.w3.org/WAI/GL/wiki/Contrast_ratio
    */
   @Once()
-  contrastRatio(other: Color): number {
-    const lum1 = this.relativeLuminance()
-    const lum2 = other.relativeLuminance()
+  getContrastRatio(other: Color): number {
+    const lum1 = this.getRelativeLuminance()
+    const lum2 = other.getRelativeLuminance()
     const lighter = Math.max(lum1, lum2)
     const darker = Math.min(lum1, lum2)
     return (lighter + 0.05) / (darker + 0.05)
@@ -497,7 +520,7 @@ export class Color {
    * const textLum = textColor.relativeLuminanceAPCA(true, false)
    * const bgLum = bgColor.relativeLuminanceAPCA(false, false)
    */
-  relativeLuminanceAPCA(isText = false, isDark = this.isDark()): number {
+  getRelativeLuminanceAPCA(isText = false, isDark = this.isDark()): number {
     const { r, g, b } = this.srgb()
     const rLin = srgbToLinearRgb(r)
     const gLin = srgbToLinearRgb(g)
@@ -544,9 +567,9 @@ export class Color {
    * const contrast2 = lightText.contrastAPCA(darkBg) // Negative value ~-108
    */
   @Once()
-  contrastRatioAPCA(background: Color, isDark = background.isDark()): number {
-    const foregroundLuminance = this.relativeLuminanceAPCA(true, isDark)
-    const backgroundLuminance = background.relativeLuminanceAPCA(false, isDark)
+  getContrastRatioAPCA(background: Color, isDark = background.isDark()): number {
+    const foregroundLuminance = this.getRelativeLuminanceAPCA(true, isDark)
+    const backgroundLuminance = background.getRelativeLuminanceAPCA(false, isDark)
     const contrast = (backgroundLuminance - foregroundLuminance) * 1.14
     const absScaled = Math.abs(contrast)
     if (absScaled < 0.1) return 0 // Contrast too low
@@ -575,7 +598,7 @@ export class Color {
    */
   @Once()
   toSrgbGamut(epsilon?: number): Color {
-    return new Color(fitLchToSrgbGamut(this.internalValue, epsilon))
+    return new Color(fitLchToSrgbGamut(this.lch(), epsilon), 'lch')
   }
 
   /**
@@ -670,22 +693,19 @@ export class Color {
     const c1 = this.oklch()
     const c2 = color.oklch()
 
-    // --- Handle hue interpolation (shortest path around the circle)
-    const h1 = c1.h
-    let h2 = c2.h
-    const diff = h2 - h1
-    if (diff > 180) h2 -= 360
-    else if (diff < -180) h2 += 360
-    const hInterp = h1 * invF + h2 * f
-    const hNorm = ((hInterp % 360) + 360) % 360
-
     // --- Interpolate in OKLCH space - this may produce out-of-gamut colors
     // --- We let the sRGB conversion handle clamping naturally to avoid discontinuities
+    const alpha1 = c1.alpha
+    const alpha2 = c2.alpha
+    const hasAlpha = alpha1 !== undefined || alpha2 !== undefined
+
     return Color.fromOklch({
       l: c1.l * invF + c2.l * f,
       c: c1.c * invF + c2.c * f,
-      h: hNorm,
-      alpha: (c1.alpha ?? 1) * invF + (c2.alpha ?? 1) * f,
+      h: c1.h + f * (((c2.h - c1.h + 540) % 360) - 180),
+      alpha: hasAlpha
+        ? (alpha1 ?? 1) * invF + (alpha2 ?? 1) * f
+        : undefined,
     })
   }
 
@@ -712,20 +732,20 @@ export class Color {
     } = options
 
     const hue = this.oklch().h
-    const isDark = this.relativeLuminance() < darknessThreshold
+    const isDark = this.getRelativeLuminance() < darknessThreshold
     const targetLightness = isDark ? lightnessWhenDark : lightnessWhenLight
 
     // --- Try target chroma with target lightness first
     let finalChroma = Math.min(targetChroma, maximumChroma)
     let targetColor = Color.fromOklch({ l: targetLightness, c: finalChroma, h: hue })
-    let targetContrast = Math.abs(targetColor.contrastRatioAPCA(this, isDark))
+    let targetContrast = Math.abs(targetColor.getContrastRatioAPCA(this, isDark))
 
     // --- If target chroma doesn't meet contrast, try reducing chroma
     if (targetContrast < targetRatio) {
       // Try minimum chroma
       finalChroma = Math.min(minimumChroma, maximumChroma)
       targetColor = Color.fromOklch({ l: targetLightness, c: finalChroma, h: hue })
-      targetContrast = Math.abs(targetColor.contrastRatioAPCA(this, isDark))
+      targetContrast = Math.abs(targetColor.getContrastRatioAPCA(this, isDark))
 
       // If still not enough, fall back to grayscale
       if (targetContrast < targetRatio) finalChroma = 0
@@ -737,6 +757,34 @@ export class Color {
       c: finalChroma,
       h: hue,
     })
+  }
+
+  /**
+   * Clone this Color instance.
+   *
+   * @returns A new Color instance with the same value and space.
+   * @example
+   * const original = Color.fromHex('#FF0000')
+   * const copy = original.clone()
+   * console.log(copy.toString()) // '#FF0000'
+   */
+  clone(): Color {
+    return new Color({ ...this.value }, this.space)
+  }
+
+  /**
+   * Instantiate a copy of this Color with the alpha channel set to the given value.
+   *
+   * @param alpha The alpha value to set (0-1, or undefined for fully opaque).
+   * @returns A new Color instance with the specified alpha.
+   * @example
+   * const color = Color.fromRgb({ r: 255, g: 0, b: 0 })
+   * const semiTransparent = color.withAlpha(0.5)
+   * console.log(semiTransparent.rgb()) // { r: 255, g: 0, b: 0, alpha: 0.5 }
+   */
+  withAlpha(alpha: number | undefined): Color {
+    const newValue = { ...this.value, alpha }
+    return new Color(newValue, this.space)
   }
 
   /**

@@ -5,20 +5,18 @@ describe('Color', () => {
     it('should create Color from LCH values', () => {
       const color = Color.fromLch({ l: 50, c: 30, h: 120 })
       const lch = color.lch()
-      expect(lch).toEqual({ l: 50, c: 30, h: 120, alpha: undefined })
+      expect(lch).toStrictEqual({ l: 50, c: 30, h: 120, alpha: undefined })
     })
 
     it('should create Color from partial LCH with defaults', () => {
       const color = Color.fromLch({ l: 50 })
       const lch = color.lch()
-      expect(lch.l).toBe(50)
-      expect(lch.c).toBe(0)
-      expect(lch.h).toBe(0)
+      expect(lch).toStrictEqual({ l: 50, c: 0, h: 0, alpha: undefined })
     })
 
     it('should preserve alpha channel', () => {
       const color = Color.fromLch({ l: 50, c: 30, h: 120, alpha: 0.5 })
-      expect(color.lch().alpha).toBe(0.5)
+      expect(color.lch()).toStrictEqual({ l: 50, c: 30, h: 120, alpha: 0.5 })
     })
   })
 
@@ -26,9 +24,7 @@ describe('Color', () => {
     it('should create Color from LAB values', () => {
       const color = Color.fromLab({ l: 50, a: 25, b: -25 })
       const lab = color.lab()
-      expect(lab.l).toBeCloseTo(50, 1)
-      expect(lab.a).toBeCloseTo(25, 1)
-      expect(lab.b).toBeCloseTo(-25, 1)
+      expect(lab).toStrictEqual({ l: 50, a: 25, b: -25, alpha: undefined })
     })
 
     it('should convert LAB to internal LCH', () => {
@@ -44,17 +40,13 @@ describe('Color', () => {
     it('should create Color from XYZ values', () => {
       const color = Color.fromXyz({ x: 0.5, y: 0.5, z: 0.5 })
       const xyz = color.xyz()
-      expect(xyz.x).toBeCloseTo(0.5, 1)
-      expect(xyz.y).toBeCloseTo(0.5, 1)
-      expect(xyz.z).toBeCloseTo(0.5, 1)
+      expect(xyz).toStrictEqual({ x: 0.5, y: 0.5, z: 0.5, alpha: undefined })
     })
 
     it('should handle white point', () => {
       const color = Color.fromXyz({ x: 0.95047, y: 1, z: 1.08883 })
       const xyz = color.xyz()
-      expect(xyz.x).toBeCloseTo(0.95047, 2)
-      expect(xyz.y).toBeCloseTo(1, 2)
-      expect(xyz.z).toBeCloseTo(1)
+      expect(xyz).toStrictEqual({ x: 0.95047, y: 1, z: 1, alpha: undefined })
     })
   })
 
@@ -62,33 +54,25 @@ describe('Color', () => {
     it('should create Color from sRGB values', () => {
       const color = Color.fromSrgb({ r: 1, g: 0, b: 0 })
       const srgb = color.srgb()
-      expect(srgb.r).toBeCloseTo(1, 2)
-      expect(srgb.g).toBeCloseTo(0, 2)
-      expect(srgb.b).toBeCloseTo(0, 2)
+      expect(srgb).toStrictEqual({ r: 1, g: 0, b: 0, alpha: undefined })
     })
 
     it('should convert red to sRGB', () => {
       const color = Color.fromSrgb({ r: 1, g: 0, b: 0 })
       const srgb = color.srgb()
-      expect(srgb.r).toBeCloseTo(1, 2)
-      expect(srgb.g).toBeCloseTo(0, 2)
-      expect(srgb.b).toBeCloseTo(0, 2)
+      expect(srgb).toStrictEqual({ r: 1, g: 0, b: 0, alpha: undefined })
     })
 
     it('should convert green to sRGB', () => {
       const color = Color.fromSrgb({ r: 0, g: 1, b: 0 })
       const srgb = color.srgb()
-      expect(srgb.r).toBeCloseTo(0, 2)
-      expect(srgb.g).toBeCloseTo(1, 2)
-      expect(srgb.b).toBeCloseTo(0, 2)
+      expect(srgb).toStrictEqual({ r: 0, g: 1, b: 0, alpha: undefined })
     })
 
     it('should convert blue to sRGB', () => {
       const color = Color.fromSrgb({ r: 0, g: 0, b: 1 })
       const srgb = color.srgb()
-      expect(srgb.r).toBeCloseTo(0, 2)
-      expect(srgb.g).toBeCloseTo(0, 2)
-      expect(srgb.b).toBeCloseTo(1, 2)
+      expect(srgb).toStrictEqual({ r: 0, g: 0, b: 1, alpha: undefined })
     })
   })
 
@@ -96,16 +80,13 @@ describe('Color', () => {
     it('should create Color from OKLAB values', () => {
       const color = Color.fromOklab({ l: 0.5, a: 0.1, b: -0.1 })
       const oklab = color.oklab()
-      expect(oklab.l).toBeCloseTo(0.5, 2)
-      expect(oklab.a).toBeCloseTo(0.1, 2)
-      expect(oklab.b).toBeCloseTo(-0.1, 2)
+      expect(oklab).toStrictEqual({ l: 0.5, a: 0.1, b: -0.1, alpha: undefined })
     })
 
     it('should handle neutral gray', () => {
       const color = Color.fromOklab({ l: 0.5, a: 0, b: 0 })
       const oklab = color.oklab()
-      expect(oklab.a).toBeCloseTo(0, 2)
-      expect(oklab.b).toBeCloseTo(0, 2)
+      expect(oklab).toStrictEqual({ l: 0.5, a: 0, b: 0, alpha: undefined })
     })
   })
 
@@ -113,15 +94,13 @@ describe('Color', () => {
     it('should create Color from OKLCH values', () => {
       const color = Color.fromOklch({ l: 0.5, c: 0.1, h: 120 })
       const oklch = color.oklch()
-      expect(oklch.l).toBeCloseTo(0.5, 2)
-      expect(oklch.c).toBeCloseTo(0.1, 2)
-      expect(oklch.h).toBeCloseTo(120, 1)
+      expect(oklch).toStrictEqual({ l: 0.5, c: 0.1, h: 120, alpha: undefined })
     })
 
     it('should handle zero chroma', () => {
       const color = Color.fromOklch({ l: 0.5, c: 0, h: 0 })
       const oklch = color.oklch()
-      expect(oklch.c).toBeCloseTo(0, 2)
+      expect(oklch).toStrictEqual({ l: 0.5, c: 0, h: 0, alpha: undefined })
     })
   })
 
@@ -129,31 +108,25 @@ describe('Color', () => {
     it('should create Color from HSL values', () => {
       const color = Color.fromHsl({ h: 120, s: 1, l: 0.5 })
       const hsl = color.hsl()
-      expect(hsl.h).toBeCloseTo(120, 1)
-      expect(hsl.s).toBeCloseTo(1, 2)
-      expect(hsl.l).toBeCloseTo(0.5, 2)
+      expect(hsl).toStrictEqual({ h: 120, s: 1, l: 0.5, alpha: undefined })
     })
 
     it('should convert pure red', () => {
       const color = Color.fromHsl({ h: 0, s: 1, l: 0.5 })
       const hsl = color.hsl()
-      expect(hsl.h).toBeCloseTo(0, 1)
-      expect(hsl.s).toBeCloseTo(1, 5)
-      expect(hsl.l).toBeCloseTo(0.5, 5)
+      expect(hsl).toStrictEqual({ h: 0, s: 1, l: 0.5, alpha: undefined })
     })
 
     it('should convert pure green', () => {
       const color = Color.fromHsl({ h: 120, s: 1, l: 0.5 })
       const hsl = color.hsl()
-      expect(hsl.h).toBeCloseTo(120, 1)
-      expect(hsl.s).toBeCloseTo(1, 2)
+      expect(hsl).toStrictEqual({ h: 120, s: 1, l: 0.5, alpha: undefined })
     })
 
     it('should convert pure blue', () => {
       const color = Color.fromHsl({ h: 240, s: 1, l: 0.5 })
       const hsl = color.hsl()
-      expect(hsl.h).toBeCloseTo(240, 1)
-      expect(hsl.s).toBeCloseTo(1, 2)
+      expect(hsl).toStrictEqual({ h: 240, s: 1, l: 0.5, alpha: undefined })
     })
   })
 
@@ -161,22 +134,19 @@ describe('Color', () => {
     it('should create Color from HSV values', () => {
       const color = Color.fromHsv({ h: 120, s: 1, v: 1 })
       const hsv = color.hsv()
-      expect(hsv.h).toBeCloseTo(120, 1)
-      expect(hsv.s).toBeCloseTo(1, 2)
-      expect(hsv.v).toBeCloseTo(1, 2)
+      expect(hsv).toStrictEqual({ h: 120, s: 1, v: 1, alpha: undefined })
     })
 
     it('should handle black (v=0)', () => {
       const color = Color.fromHsv({ h: 0, s: 0, v: 0 })
       const hsv = color.hsv()
-      expect(hsv.v).toBe(0)
+      expect(hsv).toStrictEqual({ h: 0, s: 0, v: 0, alpha: undefined })
     })
 
     it('should handle white (s=0, v=1)', () => {
       const color = Color.fromHsv({ h: 0, s: 0, v: 1 })
       const hsv = color.hsv()
-      expect(hsv.s).toBeCloseTo(0, 1)
-      expect(hsv.v).toBeCloseTo(1, 2)
+      expect(hsv).toStrictEqual({ h: 0, s: 0, v: 1, alpha: undefined })
     })
   })
 
@@ -184,24 +154,21 @@ describe('Color', () => {
     it('should create Color from CMYK values', () => {
       const color = Color.fromCmyk({ c: 0, m: 1, y: 1, k: 0 })
       const cmyk = color.cmyk()
-      expect(cmyk.c).toBeCloseTo(0, 2)
-      expect(cmyk.m).toBeCloseTo(1, 2)
-      expect(cmyk.y).toBeCloseTo(1, 2)
-      expect(cmyk.k).toBeCloseTo(0, 2)
+      expect(cmyk).toStrictEqual({ c: 0, m: 1, y: 1, k: 0, alpha: undefined })
     })
 
     it('should handle pure black (k=1)', () => {
       const color = Color.fromCmyk({ c: 0, m: 0, y: 0, k: 1 })
       const cmyk = color.cmyk()
-      expect(cmyk.k).toBe(1)
+      expect(cmyk).toStrictEqual({ c: 0, m: 0, y: 0, k: 1, alpha: undefined })
     })
 
     it('should handle white (k=0, c=m=y=0)', () => {
       const color = Color.fromCmyk({ c: 0, m: 0, y: 0, k: 0 })
       const rgb = color.rgb()
       expect(rgb.r).toBeCloseTo(255)
-      expect(rgb.g).toBeCloseTo(254, -1)
-      expect(rgb.b).toBeCloseTo(244, -1)
+      expect(rgb.g).toBeCloseTo(255)
+      expect(rgb.b).toBeCloseTo(255)
     })
   })
 
@@ -209,23 +176,19 @@ describe('Color', () => {
     it('should create Color from RGB values', () => {
       const color = Color.fromRgb({ r: 255, g: 0, b: 0 })
       const rgb = color.rgb()
-      expect(rgb.r).toBeCloseTo(255, 0)
-      expect(rgb.g).toBeCloseTo(0, 0)
-      expect(rgb.b).toBeCloseTo(0, 0)
+      expect(rgb).toStrictEqual({ r: 255, g: 0, b: 0, alpha: undefined })
     })
 
     it('should handle partial RGB with defaults', () => {
       const color = Color.fromRgb({ r: 128 })
       const rgb = color.rgb()
-      expect(rgb.r).toBeCloseTo(128, 0)
-      expect(rgb.g).toBeCloseTo(0, 0)
-      expect(rgb.b).toBeCloseTo(0, 0)
+      expect(rgb).toStrictEqual({ r: 128, g: 0, b: 0, alpha: undefined })
     })
 
     it('should preserve alpha', () => {
       const color = Color.fromRgb({ r: 255, g: 0, b: 0, alpha: 0.5 })
       const rgb = color.rgb()
-      expect(rgb.alpha).toBe(0.5)
+      expect(rgb).toStrictEqual({ r: 255, g: 0, b: 0, alpha: 0.5 })
     })
   })
 
@@ -394,7 +357,7 @@ describe('Color', () => {
     it('should return LCH representation', () => {
       const color = Color.fromLch({ l: 50, c: 30, h: 120 })
       const lch = color.lch()
-      expect(lch).toEqual({ l: 50, c: 30, h: 120, alpha: undefined })
+      expect(lch).toStrictEqual({ l: 50, c: 30, h: 120, alpha: undefined })
     })
 
     it('should return frozen object', () => {
@@ -415,9 +378,7 @@ describe('Color', () => {
     it('should convert to LAB', () => {
       const color = Color.fromLab({ l: 50, a: 25, b: -25 })
       const lab = color.lab()
-      expect(lab.l).toBeCloseTo(50, 1)
-      expect(lab.a).toBeCloseTo(25, 1)
-      expect(lab.b).toBeCloseTo(-25, 1)
+      expect(lab).toStrictEqual({ l: 50, a: 25, b: -25, alpha: undefined })
     })
 
     it('should return frozen object', () => {
@@ -431,9 +392,7 @@ describe('Color', () => {
     it('should convert to XYZ', () => {
       const color = Color.fromXyz({ x: 0.5, y: 0.5, z: 0.5 })
       const xyz = color.xyz()
-      expect(xyz.x).toBeCloseTo(0.5, 1)
-      expect(xyz.y).toBeCloseTo(0.5, 1)
-      expect(xyz.z).toBeCloseTo(0.5, 1)
+      expect(xyz).toStrictEqual({ x: 0.5, y: 0.5, z: 0.5, alpha: undefined })
     })
 
     it('should return frozen object', () => {
@@ -447,9 +406,7 @@ describe('Color', () => {
     it('should convert to sRGB', () => {
       const color = Color.fromSrgb({ r: 1, g: 0.5, b: 0.25 })
       const srgb = color.srgb()
-      expect(srgb.r).toBeCloseTo(1, 2)
-      expect(srgb.g).toBeCloseTo(0.5, 2)
-      expect(srgb.b).toBeCloseTo(0.25, 2)
+      expect(srgb).toStrictEqual({ r: 1, g: 0.5, b: 0.25, alpha: undefined })
     })
 
     it('should return frozen object', () => {
@@ -463,9 +420,7 @@ describe('Color', () => {
     it('should convert to OKLCH', () => {
       const color = Color.fromOklch({ l: 0.5, c: 0.1, h: 120 })
       const oklch = color.oklch()
-      expect(oklch.l).toBeCloseTo(0.5, 2)
-      expect(oklch.c).toBeCloseTo(0.1, 2)
-      expect(oklch.h).toBeCloseTo(120, 1)
+      expect(oklch).toStrictEqual({ l: 0.5, c: 0.1, h: 120, alpha: undefined })
     })
 
     it('should return frozen object', () => {
@@ -479,9 +434,7 @@ describe('Color', () => {
     it('should convert to OKLAB', () => {
       const color = Color.fromOklab({ l: 0.5, a: 0.1, b: -0.1 })
       const oklab = color.oklab()
-      expect(oklab.l).toBeCloseTo(0.5, 2)
-      expect(oklab.a).toBeCloseTo(0.1, 2)
-      expect(oklab.b).toBeCloseTo(-0.1, 2)
+      expect(oklab).toStrictEqual({ l: 0.5, a: 0.1, b: -0.1, alpha: undefined })
     })
 
     it('should return frozen object', () => {
@@ -495,9 +448,7 @@ describe('Color', () => {
     it('should convert to HSL', () => {
       const color = Color.fromHsl({ h: 120, s: 1, l: 0.5 })
       const hsl = color.hsl()
-      expect(hsl.h).toBeCloseTo(120, 1)
-      expect(hsl.s).toBeCloseTo(1, 2)
-      expect(hsl.l).toBeCloseTo(0.5, 2)
+      expect(hsl).toStrictEqual({ h: 120, s: 1, l: 0.5, alpha: undefined })
     })
 
     it('should return frozen object', () => {
@@ -511,9 +462,7 @@ describe('Color', () => {
     it('should convert to HSV', () => {
       const color = Color.fromHsv({ h: 120, s: 1, v: 1 })
       const hsv = color.hsv()
-      expect(hsv.h).toBeCloseTo(120, 1)
-      expect(hsv.s).toBeCloseTo(1, 2)
-      expect(hsv.v).toBeCloseTo(1, 2)
+      expect(hsv).toStrictEqual({ h: 120, s: 1, v: 1, alpha: undefined })
     })
 
     it('should return frozen object', () => {
@@ -527,10 +476,7 @@ describe('Color', () => {
     it('should convert to CMYK', () => {
       const color = Color.fromCmyk({ c: 0, m: 1, y: 1, k: 0 })
       const cmyk = color.cmyk()
-      expect(cmyk.c).toBeCloseTo(0, 2)
-      expect(cmyk.m).toBeCloseTo(1, 2)
-      expect(cmyk.y).toBeCloseTo(1, 2)
-      expect(cmyk.k).toBeCloseTo(0, 2)
+      expect(cmyk).toStrictEqual({ c: 0, m: 1, y: 1, k: 0, alpha: undefined })
     })
 
     it('should return frozen object', () => {
@@ -544,9 +490,7 @@ describe('Color', () => {
     it('should convert to RGB', () => {
       const color = Color.fromRgb({ r: 255, g: 128, b: 64 })
       const rgb = color.rgb()
-      expect(rgb.r).toBeCloseTo(255, 0)
-      expect(rgb.g).toBeCloseTo(128, 0)
-      expect(rgb.b).toBeCloseTo(64, 0)
+      expect(rgb).toStrictEqual({ r: 255, g: 128, b: 64, alpha: undefined })
     })
 
     it('should return frozen object', () => {
@@ -622,128 +566,128 @@ describe('Color', () => {
     })
   })
 
-  describe('relativeLuminance', () => {
+  describe('getRelativeLuminance', () => {
     it('should return 1 for white', () => {
       const color = Color.fromSrgb({ r: 1, g: 1, b: 1 })
-      const luminance = color.relativeLuminance()
+      const luminance = color.getRelativeLuminance()
       expect(luminance).toBeCloseTo(1, 1)
     })
 
     it('should return 0 for black', () => {
       const color = Color.fromSrgb({ r: 0, g: 0, b: 0 })
-      const luminance = color.relativeLuminance()
+      const luminance = color.getRelativeLuminance()
       expect(luminance).toBeCloseTo(0, 2)
     })
 
     it('should return intermediate value for gray', () => {
       const color = Color.fromSrgb({ r: 0.5, g: 0.5, b: 0.5 })
-      const luminance = color.relativeLuminance()
+      const luminance = color.getRelativeLuminance()
       expect(luminance).toBeGreaterThan(0)
       expect(luminance).toBeLessThan(1)
     })
 
     it('should be memoized', () => {
       const color = Color.fromSrgb({ r: 0.5, g: 0.5, b: 0.5 })
-      const lum1 = color.relativeLuminance()
-      const lum2 = color.relativeLuminance()
+      const lum1 = color.getRelativeLuminance()
+      const lum2 = color.getRelativeLuminance()
       expect(lum1).toBe(lum2)
     })
   })
 
-  describe('contrastRatio', () => {
+  describe('getContrastRatio', () => {
     it('should return 21 for black vs white', () => {
       const black = Color.fromSrgb({ r: 0, g: 0, b: 0 })
       const white = Color.fromSrgb({ r: 1, g: 1, b: 1 })
-      const ratio = black.contrastRatio(white)
+      const ratio = black.getContrastRatio(white)
       expect(ratio).toBeCloseTo(21, 0)
     })
 
     it('should return 1 for identical colors', () => {
       const color1 = Color.fromSrgb({ r: 0.5, g: 0.5, b: 0.5 })
       const color2 = Color.fromSrgb({ r: 0.5, g: 0.5, b: 0.5 })
-      const ratio = color1.contrastRatio(color2)
+      const ratio = color1.getContrastRatio(color2)
       expect(ratio).toBeCloseTo(1, 1)
     })
 
     it('should be symmetric', () => {
       const red = Color.fromSrgb({ r: 1, g: 0, b: 0 })
       const blue = Color.fromSrgb({ r: 0, g: 0, b: 1 })
-      const ratio1 = red.contrastRatio(blue)
-      const ratio2 = blue.contrastRatio(red)
+      const ratio1 = red.getContrastRatio(blue)
+      const ratio2 = blue.getContrastRatio(red)
       expect(ratio1).toBeCloseTo(ratio2, 5)
     })
 
     it('should be memoized', () => {
       const color1 = Color.fromSrgb({ r: 1, g: 0, b: 0 })
       const color2 = Color.fromSrgb({ r: 0, g: 0, b: 1 })
-      const ratio1 = color1.contrastRatio(color2)
-      const ratio2 = color1.contrastRatio(color2)
+      const ratio1 = color1.getContrastRatio(color2)
+      const ratio2 = color1.getContrastRatio(color2)
       expect(ratio1).toBe(ratio2)
     })
   })
 
-  describe('relativeLuminanceAPCA', () => {
+  describe('getRelativeLuminanceAPCA', () => {
     it('should calculate APCA luminance for text', () => {
       const color = Color.fromSrgb({ r: 1, g: 1, b: 1 })
-      const luminance = color.relativeLuminanceAPCA(true, false)
+      const luminance = color.getRelativeLuminanceAPCA(true, false)
       expect(luminance).toBeGreaterThan(0)
     })
 
     it('should calculate APCA luminance for background', () => {
       const color = Color.fromSrgb({ r: 0, g: 0, b: 0 })
-      const luminance = color.relativeLuminanceAPCA(false, true)
+      const luminance = color.getRelativeLuminanceAPCA(false, true)
       expect(luminance).toBeGreaterThanOrEqual(0)
     })
 
     it('should differ based on polarity', () => {
       const color = Color.fromSrgb({ r: 0.5, g: 0.5, b: 0.5 })
-      const lightOnDark = color.relativeLuminanceAPCA(true, true)
-      const darkOnLight = color.relativeLuminanceAPCA(true, false)
+      const lightOnDark = color.getRelativeLuminanceAPCA(true, true)
+      const darkOnLight = color.getRelativeLuminanceAPCA(true, false)
       expect(lightOnDark).not.toBeCloseTo(darkOnLight, 2)
     })
 
     it('should be memoized', () => {
       const color = Color.fromSrgb({ r: 0.5, g: 0.5, b: 0.5 })
-      const lum1 = color.relativeLuminanceAPCA(true, false)
-      const lum2 = color.relativeLuminanceAPCA(true, false)
+      const lum1 = color.getRelativeLuminanceAPCA(true, false)
+      const lum2 = color.getRelativeLuminanceAPCA(true, false)
       expect(lum1).toBe(lum2)
     })
   })
 
-  describe('contrastRatioAPCA', () => {
+  describe('getContrastRatioAPCA', () => {
     it('should calculate APCA contrast', () => {
       const text = Color.fromSrgb({ r: 0, g: 0, b: 0 })
       const bg = Color.fromSrgb({ r: 1, g: 1, b: 1 })
-      const contrast = text.contrastRatioAPCA(bg, false)
+      const contrast = text.getContrastRatioAPCA(bg, false)
       expect(Math.abs(contrast)).toBeGreaterThan(0)
     })
 
     it('should return positive for dark on light', () => {
       const text = Color.fromSrgb({ r: 0, g: 0, b: 0 })
       const bg = Color.fromSrgb({ r: 1, g: 1, b: 1 })
-      const contrast = text.contrastRatioAPCA(bg, false)
+      const contrast = text.getContrastRatioAPCA(bg, false)
       expect(contrast).toBeGreaterThan(0)
     })
 
     it('should return negative for light on dark', () => {
       const text = Color.fromSrgb({ r: 1, g: 1, b: 1 })
       const bg = Color.fromSrgb({ r: 0, g: 0, b: 0 })
-      const contrast = text.contrastRatioAPCA(bg, true)
+      const contrast = text.getContrastRatioAPCA(bg, true)
       expect(contrast).toBeLessThan(0)
     })
 
     it('should return 0 for very low contrast', () => {
       const text = Color.fromSrgb({ r: 0.5, g: 0.5, b: 0.5 })
       const bg = Color.fromSrgb({ r: 0.5, g: 0.5, b: 0.5 })
-      const contrast = text.contrastRatioAPCA(bg, false)
+      const contrast = text.getContrastRatioAPCA(bg, false)
       expect(contrast).toBe(0)
     })
 
     it('should be memoized', () => {
       const text = Color.fromSrgb({ r: 0, g: 0, b: 0 })
       const bg = Color.fromSrgb({ r: 1, g: 1, b: 1 })
-      const contrast1 = text.contrastRatioAPCA(bg, false)
-      const contrast2 = text.contrastRatioAPCA(bg, false)
+      const contrast1 = text.getContrastRatioAPCA(bg, false)
+      const contrast2 = text.getContrastRatioAPCA(bg, false)
       expect(contrast1).toBe(contrast2)
     })
   })
@@ -916,37 +860,38 @@ describe('Color', () => {
 
   describe('interpolate', () => {
     it('should return first color with factor 0', () => {
-      const red = Color.fromOklch({ l: 0.6, c: 0.2, h: 0 })
-      const blue = Color.fromOklch({ l: 0.5, c: 0.2, h: 240 })
-      const result = red.interpolate(blue, 0)
-      const oklch = result.oklch()
-      expect(oklch.l).toBeCloseTo(0.6, 1)
-      expect(oklch.h).toBeCloseTo(0, 0)
+      const c1 = Color.fromOklch({ l: 0.6, c: 0.2, h: 0 })
+      const c2 = Color.fromOklch({ l: 0.5, c: 0.2, h: 240 })
+      const result = c1.interpolate(c2, 0).oklch()
+      expect(result).toStrictEqual({ alpha: undefined, c: 0.2, h: 0, l: 0.6 })
     })
 
     it('should return second color with factor 1', () => {
-      const red = Color.fromOklch({ l: 0.6, c: 0.2, h: 0 })
-      const blue = Color.fromOklch({ l: 0.5, c: 0.2, h: 240 })
-      const result = red.interpolate(blue, 1)
-      const oklch = result.oklch()
-      expect(oklch.l).toBeCloseTo(0.5, 1)
-      expect(oklch.h).toBeCloseTo(254, 0)
+      const c1 = Color.fromOklch({ l: 0.6, c: 0.2, h: 0 })
+      const c2 = Color.fromOklch({ l: 0.5, c: 0.2, h: 240 })
+      const result = c1.interpolate(c2, 1).oklch()
+      expect(result).toStrictEqual({ alpha: undefined, c: 0.2, h: 240, l: 0.5 })
     })
 
     it('should interpolate midway with factor 0.5', () => {
-      const red = Color.fromOklch({ l: 0.6, c: 0.2, h: 0 })
-      const blue = Color.fromOklch({ l: 0.4, c: 0.2, h: 240 })
-      const result = red.interpolate(blue, 0.5)
-      const oklch = result.oklch()
-      expect(oklch.l).toBeCloseTo(0.5, 1)
+      const c1 = Color.fromOklch({ l: 0.6, c: 0.2, h: 0 })
+      const c2 = Color.fromOklch({ l: 0.5, c: 0.2, h: 100 })
+      const result = c1.interpolate(c2, 0.5).oklch()
+      expect(result).toStrictEqual({ alpha: undefined, c: 0.2, h: 50, l: 0.55 })
     })
 
-    it('should use shortest hue path', () => {
-      const color1 = Color.fromOklch({ l: 0.5, c: 0.2, h: 10 })
-      const color2 = Color.fromOklch({ l: 0.5, c: 0.2, h: 350 })
+    it('should use shortest hue path when interpolating hue', () => {
+      const c1 = Color.fromOklch({ l: 0.5, c: 0.2, h: 10 })
+      const c2 = Color.fromOklch({ l: 0.5, c: 0.2, h: 350 })
+      const result = c1.interpolate(c2, 0.5).oklch()
+      expect(result).toStrictEqual({ alpha: undefined, c: 0.2, h: 0, l: 0.5 })
+    })
+
+    it('should omit alpha when both inputs lack alpha', () => {
+      const color1 = Color.fromOklch({ l: 0.4, c: 0.2, h: 120 })
+      const color2 = Color.fromOklch({ l: 0.8, c: 0.05, h: 300 })
       const result = color1.interpolate(color2, 0.5)
-      const oklch = result.oklch()
-      expect(oklch.h).toBeCloseTo(0, 1)
+      expect(result.oklch().alpha).toBeUndefined()
     })
 
     it('should interpolate alpha', () => {
@@ -998,8 +943,8 @@ describe('Color', () => {
       const bg = Color.fromSrgb({ r: 0.5, g: 0.5, b: 0.5 })
       const textLowRatio = bg.contrast({ targetRatio: 30 })
       const textHighRatio = bg.contrast({ targetRatio: 100 })
-      const contrastLow = Math.abs(textLowRatio.contrastRatioAPCA(bg))
-      const contrastHigh = Math.abs(textHighRatio.contrastRatioAPCA(bg))
+      const contrastLow = Math.abs(textLowRatio.getContrastRatioAPCA(bg))
+      const contrastHigh = Math.abs(textHighRatio.getContrastRatioAPCA(bg))
       expect(contrastLow).toBeLessThan(contrastHigh + 10)
     })
 
@@ -1136,6 +1081,78 @@ describe('Color', () => {
       const color = Color.fromCmyk({ c: 0, m: 1, y: 1, k: 0 })
       const resultCmyk = color.toString('css-cmyk')
       expect(resultCmyk).toBe('device-cmyk(0 1 1 0)')
+    })
+  })
+
+  describe('clone', () => {
+    it('should create an identical copy of the color', () => {
+      const original = Color.fromHex('#FF0000')
+      const copy = original.clone()
+      expect(copy.rgb()).toStrictEqual(original.rgb())
+    })
+
+    it('should preserve the color space', () => {
+      const original = Color.fromOklch({ l: 0.5, c: 0.1, h: 120 })
+      const copy = original.clone()
+      expect(copy.space).toBe('oklch')
+      expect(copy.oklch()).toStrictEqual(original.oklch())
+    })
+
+    it('should preserve alpha channel', () => {
+      const original = Color.fromSrgb({ r: 1, g: 0, b: 0, alpha: 0.5 })
+      const copy = original.clone()
+      expect(copy.srgb()).toStrictEqual({ r: 1, g: 0, b: 0, alpha: 0.5 })
+    })
+
+    it('should create an independent copy', () => {
+      const original = Color.fromHex('#FF0000')
+      const copy = original.clone()
+      expect(copy).not.toBe(original)
+      expect(copy.value).not.toBe(original.value)
+    })
+  })
+
+  describe('withAlpha', () => {
+    it('should set alpha channel on a color without alpha', () => {
+      const color = Color.fromRgb({ r: 255, g: 0, b: 0 })
+      const withAlpha = color.withAlpha(0.5)
+      expect(withAlpha.rgb()).toStrictEqual({ r: 255, g: 0, b: 0, alpha: 0.5 })
+    })
+
+    it('should override existing alpha channel', () => {
+      const color = Color.fromSrgb({ r: 1, g: 0, b: 0, alpha: 0.8 })
+      const withAlpha = color.withAlpha(0.3)
+      expect(withAlpha.srgb()).toStrictEqual({ r: 1, g: 0, b: 0, alpha: 0.3 })
+    })
+
+    it('should remove alpha channel when set to undefined', () => {
+      const color = Color.fromSrgb({ r: 1, g: 0, b: 0, alpha: 0.5 })
+      const withoutAlpha = color.withAlpha(undefined)
+      expect(withoutAlpha.srgb()).toStrictEqual({ r: 1, g: 0, b: 0, alpha: undefined })
+    })
+
+    it('should return a new Color instance', () => {
+      const original = Color.fromHex('#FF0000')
+      const withAlpha = original.withAlpha(0.5)
+      expect(withAlpha).not.toBe(original)
+    })
+
+    it('should preserve the color space', () => {
+      const original = Color.fromOklch({ l: 0.5, c: 0.1, h: 120 })
+      const withAlpha = original.withAlpha(0.75)
+      expect(withAlpha.space).toBe('oklch')
+    })
+
+    it('should set alpha to 0 for fully transparent', () => {
+      const color = Color.fromHex('#FF0000')
+      const transparent = color.withAlpha(0)
+      expect(transparent.rgb().alpha).toBe(0)
+    })
+
+    it('should set alpha to 1 for fully opaque', () => {
+      const color = Color.fromHex('#FF0000')
+      const opaque = color.withAlpha(1)
+      expect(opaque.rgb().alpha).toBe(1)
     })
   })
 })
