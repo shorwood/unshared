@@ -21,12 +21,7 @@ import { once } from '@unshared/functions/once'
 export function Once<This, Arguments extends unknown[], Return>() {
   return function(
     originalMethod: (this: This, ...args: Arguments) => Return,
-    context: ClassMethodDecoratorContext<This, (this: This, ...args: Arguments) => Return>,
   ): (this: This, ...args: Arguments) => Return {
-
-    // --- Ensure decorator is applied to a method.
-    if (context.kind !== 'method')
-      throw new TypeError('@Once can only be applied to methods.')
 
     // --- Create a once version per instance using a WeakMap.
     const instances = new WeakMap<object, (this: This, ...args: Arguments) => Return>()

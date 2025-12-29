@@ -29,12 +29,7 @@ import { throttle } from '@unshared/functions/throttle'
 export function Throttle<This, Arguments extends unknown[]>(delay: number) {
   return function(
     originalMethod: (this: This, ...args: Arguments) => void,
-    context: ClassMethodDecoratorContext<This, (this: This, ...args: Arguments) => void>,
   ): (this: This, ...args: Arguments) => void {
-
-    // --- Ensure decorator is applied to a method.
-    if (context.kind !== 'method')
-      throw new TypeError('@Throttle can only be applied to methods.')
 
     // --- Create a throttled version per instance using a WeakMap.
     const instances = new WeakMap<object, (...args: Arguments) => void>()

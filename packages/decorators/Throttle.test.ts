@@ -47,9 +47,30 @@ describe('Throttle', () => {
 
   test('should return undefined', () => {
     const fn = vi.fn(() => 'foobar')
+    // @ts-expect-error: Testing return value
     class Greeter { @Throttle(100) fn() { return fn() } }
     const instance = new Greeter()
     const result = instance.fn()
     expect(result).toBeUndefined()
+  })
+
+  test('should throw a TypeError when applied to a class field', () => {
+    const shouldThrow = () => {
+      // @ts-expect-error: Decorator should not be applied to class fields
+      class Greeter { @Throttle(100) fn = () => {} }
+      return new Greeter()
+    }
+    expect(shouldThrow).toThrow(TypeError)
+  })
+
+  test('should throw a TypeError when applied to an accessor', () => {
+    const shouldThrow = () => {
+      class Greeter {
+        // @ts-expect-error: Decorator should not be applied to accessors
+        @Throttle(100) accessor value = 'foo'
+      }
+      return new Greeter()
+    }
+    expect(shouldThrow).toThrow(TypeError)
   })
 })

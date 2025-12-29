@@ -43,4 +43,24 @@ describe('Once', () => {
     const result2 = instance2.getValue()
     expect(result1).not.toStrictEqual(result2)
   })
+
+  test('should throw a TypeError when applied to a class field', () => {
+    const shouldThrow = () => {
+      // @ts-expect-error: Decorator should not be applied to class fields
+      class MyClass { @Once() fn = () => {} }
+      return new MyClass()
+    }
+    expect(shouldThrow).toThrow(TypeError)
+  })
+
+  test('should throw a TypeError when applied to an accessor', () => {
+    const shouldThrow = () => {
+      class MyClass {
+        // @ts-expect-error: Decorator should not be applied to accessors
+        @Once() accessor value = 'foo'
+      }
+      return new MyClass()
+    }
+    expect(shouldThrow).toThrow(TypeError)
+  })
 })
