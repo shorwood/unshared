@@ -1,9 +1,9 @@
-import type { Rule } from '@unocss/core'
+import type { DynamicRule } from '@unocss/core'
 import type { Theme } from '@unocss/preset-mini'
 import { parseColor } from '@unocss/preset-mini'
 import { patterns } from '../constants/patterns'
 
-export function rulePattern<T extends object>(): Rule<T> {
+export function rulePattern<T extends object>(): DynamicRule<T> {
   return [
     new RegExp(`^bg-pattern-(${Object.keys(patterns).join('|')})-([^\\/]+)(?:\\/(\\d{1,3}))?$`),
 

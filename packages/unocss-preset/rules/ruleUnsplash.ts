@@ -1,11 +1,11 @@
-import type { Rule } from '@unocss/core'
+import type { DynamicRule } from '@unocss/core'
 
 /**
  * Generate classes for dynamic background images from Unsplash.
  *
  * @returns The UnoCSS rule for Unsplash backgrounds.
  */
-export function ruleUnsplash<Theme extends object>(): Rule<Theme> {
+export function ruleUnsplash<Theme extends object>(): DynamicRule<Theme> {
   return [
     /^bg-unsplash-(.{11})-?(\d+)?$/,
 
