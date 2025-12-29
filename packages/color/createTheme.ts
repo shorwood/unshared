@@ -3,22 +3,22 @@ import { clamp } from '@unshared/math/clamp'
 import { Color } from './createColor'
 
 export const DEFAULT_THEME_ROLES = {
-  surface: (base: Color, isDark: boolean) => new Color({
+  surface: (base: Color, isDark: boolean) => Color.fromOklch({
     ...base.lch(),
     l: (isDark ? 10 : 98),
     c: (isDark ? 8 : 5),
   }),
-  default: (base: Color, isDark: boolean) => new Color({
+  default: (base: Color, isDark: boolean) => Color.fromOklch({
     ...base.lch(),
     l: (isDark ? 18 : 92),
     c: (isDark ? 15 : 12),
   }),
-  emphasis: (base: Color, isDark: boolean) => new Color({
+  emphasis: (base: Color, isDark: boolean) => Color.fromOklch({
     ...base.lch(),
     l: (isDark ? 30 : 80),
     c: (isDark ? 30 : 25),
   }),
-  interactive: (base: Color, isDark: boolean) => new Color({
+  interactive: (base: Color, isDark: boolean) => Color.fromOklch({
     ...base.lch(),
     l: (isDark ? 50 : 60),
     c: (isDark ? 60 : 55),
@@ -27,44 +27,27 @@ export const DEFAULT_THEME_ROLES = {
 
 export const DEFAULT_THEME_STATES = {
   default: (base: Color) => base,
-  hover: (base: Color, isDark: boolean) => new Color({
+  hover: (base: Color, isDark: boolean) => Color.fromOklch({
     l: clamp(base.lch().l + (isDark ? 8 : -8), 0, 100),
     c: clamp(base.lch().c * 1.15, 0, 100),
     h: base.lch().h,
   }),
-  focus: (base: Color, isDark: boolean) => new Color({
+  focus: (base: Color, isDark: boolean) => Color.fromOklch({
     l: clamp(base.lch().l + (isDark ? 12 : -12), 0, 100),
     c: clamp(base.lch().c * 1.25, 0, 100),
     h: base.lch().h,
   }),
-  active: (base: Color, isDark: boolean) => new Color({
+  active: (base: Color, isDark: boolean) => Color.fromOklch({
     l: clamp(base.lch().l + (isDark ? 18 : -18), 0, 100),
     c: clamp(base.lch().c * 1.35, 0, 100),
     h: base.lch().h,
   }),
-  disabled: (base: Color, isDark: boolean) => new Color({
+  disabled: (base: Color, isDark: boolean) => Color.fromOklch({
     l: clamp(base.lch().l * (isDark ? 0.5 : 0.95), 10, 95),
     c: clamp(base.lch().c * 0.3, 0, 15),
     h: base.lch().h,
   }),
 } as const satisfies Record<string, (base: Color, isDark: boolean) => Color>
-
-export function DEFAULT_THEME_BORDER(base: Color, isDark = base.isDark()): Color {
-  const sign = isDark ? 1 : -1
-  return Color.fromLch({
-    l: clamp(base.lch().l + (sign * 15), 0, 100),
-    c: base.lch().c * 0.8,
-    h: base.lch().h,
-  })
-}
-
-export function DEFAULT_THEME_MUTED(base: Color, isDark = base.isDark()): Color {
-  return Color.fromLch({
-    l: clamp(base.lch().l + (isDark ? 35 : -35), 15, 90),
-    c: base.lch().c * 0.25,
-    h: base.lch().h,
-  })
-}
 
 export const DEFAULT_CONTRAST_OPTIONS: ColorContrastOptions = {
   targetRatio: 75, // APCA contrast ratio target for normal text
@@ -79,8 +62,20 @@ export const DEFAULT_CONTRAST_OPTIONS: ColorContrastOptions = {
 export const DEFAULT_THEME_TARGETS = {
   background: (base: Color) => base,
   foreground: (base: Color) => base.contrast(DEFAULT_CONTRAST_OPTIONS),
-  border: (base: Color, isDark: boolean) => DEFAULT_THEME_BORDER(base, isDark),
-  muted: (base: Color, isDark: boolean) => DEFAULT_THEME_MUTED(base, isDark),
+  border: (base: Color, isDark: boolean) => {
+    const sign = isDark ? 1 : -1
+    return Color.fromLch({
+      l: clamp(base.lch().l + (sign * 15), 0, 100),
+      c: base.lch().c * 0.8,
+      h: base.lch().h,
+    })
+  },
+  muted: (base: Color, isDark: boolean) =>
+    Color.fromLch({
+      l: clamp(base.lch().l + (isDark ? 35 : -35), 15, 90),
+      c: base.lch().c * 0.25,
+      h: base.lch().h,
+    }),
 } as const satisfies Record<string, (base: Color, isDark: boolean) => Color>
 
 export namespace Theme {
