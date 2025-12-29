@@ -2,7 +2,7 @@ import type { RuleContext } from '@unocss/core'
 import { ruleGradientMask } from './ruleMask'
 
 describe('ruleGradientMask', () => {
-  const [matcher, handler] = ruleGradientMask
+  const [matcher, handler, options] = ruleGradientMask()
   const context = {} as RuleContext
 
   describe('directions', () => {
@@ -101,7 +101,7 @@ describe('ruleGradientMask', () => {
 
   describe('autocomplete', () => {
     it('should provide autocomplete suggestions', () => {
-      const result = ruleGradientMask[2]!.autocomplete
+      const result = options!.autocomplete
       expect(result).toMatchObject([
         'mask-gradient-to-<directions>',
         'mask-gradient-to-<directions>-<percent>',

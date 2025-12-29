@@ -2,7 +2,7 @@ import type { RuleContext } from '@unocss/core'
 import { ruleInnerContent } from './ruleInnerContent'
 
 describe('ruleInnerContent', () => {
-  const [matcher, handler] = ruleInnerContent
+  const [matcher, handler] = ruleInnerContent()
   const context = {} as RuleContext
 
   describe('basic content', () => {
