@@ -1,9 +1,9 @@
 import type { RuleContext } from '@unocss/core'
 import { Color } from '@unshared/color'
 import { createTheme } from '@unshared/color'
-import { createRuleThemeBackground } from './createRuleThemeBackground'
+import { ruleThemeBackground } from './ruleThemeBackground'
 
-describe('createRuleThemeBackground', () => {
+describe('ruleThemeBackground', () => {
   const options = {
     presets: {
       primary: createTheme({
@@ -12,7 +12,7 @@ describe('createRuleThemeBackground', () => {
     },
   }
 
-  const [regex, handler] = createRuleThemeBackground(options)
+  const [regex, handler] = ruleThemeBackground(options)
   const context = {} as RuleContext
 
   it('should not match when specifier does not exist in theme', () => {
@@ -27,6 +27,7 @@ describe('createRuleThemeBackground', () => {
     if (!match) throw new Error('Pattern should match')
     const result = handler(match, context)
     expect(result).toStrictEqual({
+      '--un-bg-opacity': '100%',
       'background-color': 'oklch(var(--theme-primary-default-default-background) / var(--un-bg-opacity, 1))',
     })
   })

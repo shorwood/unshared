@@ -1,8 +1,8 @@
 import type { RuleContext } from '@unocss/core'
 import { Color, createTheme } from '@unshared/color'
-import { createRuleThemeBorder } from './createRuleThemeBorder'
+import { ruleThemeBorder } from './ruleThemeBorder'
 
-describe('createRuleThemeBorder', () => {
+describe('ruleThemeBorder', () => {
   const options = {
     presets: {
       primary: createTheme({
@@ -11,7 +11,7 @@ describe('createRuleThemeBorder', () => {
     },
   }
 
-  const [regex, handler] = createRuleThemeBorder(options)
+  const [regex, handler] = ruleThemeBorder(options)
   const context = {} as RuleContext
 
   it('should not match when specifier does not exist in theme', () => {
@@ -26,6 +26,7 @@ describe('createRuleThemeBorder', () => {
     if (!match) throw new Error('Pattern should match')
     const result = handler(match, context)
     expect(result).toStrictEqual({
+      '--un-border-opacity': '100%',
       'border-color': 'oklch(var(--theme-primary-default-default-border) / var(--un-border-opacity, 1))',
     })
   })
@@ -45,6 +46,7 @@ describe('createRuleThemeBorder', () => {
     if (!match) throw new Error('Pattern should match')
     const result = handler(match, context)
     expect(result).toStrictEqual({
+      '--un-border-opacity': '100%',
       'border-top-color': 'oklch(var(--theme-primary-default-default-border) / var(--un-border-opacity, 1))',
     })
   })
@@ -54,6 +56,7 @@ describe('createRuleThemeBorder', () => {
     if (!match) throw new Error('Pattern should match')
     const result = handler(match, context)
     expect(result).toStrictEqual({
+      '--un-border-opacity': '100%',
       'border-color': 'oklch(var(--theme-primary-default-default-border) / var(--un-border-opacity, 1))',
     })
   })
@@ -63,6 +66,7 @@ describe('createRuleThemeBorder', () => {
     if (!match) throw new Error('Pattern should match')
     const result = handler(match, context)
     expect(result).toStrictEqual({
+      '--un-border-opacity': '100%',
       'border-left-color': 'oklch(var(--theme-primary-default-default-border) / var(--un-border-opacity, 1))',
       'border-right-color': 'oklch(var(--theme-primary-default-default-border) / var(--un-border-opacity, 1))',
     })
