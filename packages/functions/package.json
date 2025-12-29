@@ -41,6 +41,11 @@
       "types": "./dist/createCounter.d.ts",
       "import": "./dist/createCounter.js"
     },
+    "./createEcs": {
+      "require": "./dist/createEcs.cjs",
+      "types": "./dist/createEcs.d.ts",
+      "import": "./dist/createEcs.js"
+    },
     "./createEmitter": {
       "require": "./dist/createEmitter.cjs",
       "types": "./dist/createEmitter.d.ts",
@@ -76,10 +81,10 @@
       "types": "./dist/debounce.d.ts",
       "import": "./dist/debounce.js"
     },
-    "./ecs": {
-      "require": "./dist/ecs.cjs",
-      "types": "./dist/ecs.d.ts",
-      "import": "./dist/ecs.js"
+    "./dirty": {
+      "require": "./dist/dirty.cjs",
+      "types": "./dist/dirty.d.ts",
+      "import": "./dist/dirty.js"
     },
     "./flow": {
       "require": "./dist/flow.cjs",

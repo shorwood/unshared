@@ -17,7 +17,6 @@
     "@unshared/binary": "workspace:*",
     "@unshared/collection": "workspace:*",
     "@unshared/color": "workspace:*",
-    "@unshared/decorators": "workspace:*",
     "@unshared/eslint-config": "workspace:*",
     "@unshared/fs": "workspace:*",
     "@unshared/functions": "workspace:*",

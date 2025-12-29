@@ -108,7 +108,6 @@
     "LICENSE.md"
   ],
   "dependencies": {
-    "@unshared/decorators": "workspace:*",
     "@unshared/functions": "workspace:*",
     "@unshared/math": "workspace:*",
     "@unshared/types": "workspace:*"

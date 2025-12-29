@@ -36,11 +36,6 @@
       "types": "./dist/color.d.ts",
       "import": "./dist/color.js"
     },
-    "./decorators": {
-      "require": "./dist/decorators.cjs",
-      "types": "./dist/decorators.d.ts",
-      "import": "./dist/decorators.js"
-    },
     "./fs": {
       "require": "./dist/fs.cjs",
       "types": "./dist/fs.d.ts",
@@ -97,9 +92,8 @@
     "@unshared/boolean": "workspace:*",
     "@unshared/collection": "workspace:*",
     "@unshared/color": "workspace:*",
-    "@unshared/decorators": "workspace:*",
-    "@unshared/fs": "workspace:*",
     "@unshared/functions": "workspace:*",
+    "@unshared/fs": "workspace:*",
     "@unshared/math": "workspace:*",
     "@unshared/process": "workspace:*",
     "@unshared/reactivity": "workspace:*",

@@ -1,6 +1,3 @@
-import type { MaybeArray } from '@unshared/types'
-import { toArray } from '@unshared/collection/toArray'
-
 /** Symbol used to store the dirty state in the instance. */
 export const DIRTY_STATE = Symbol('dirtyState')
 
@@ -33,7 +30,7 @@ export namespace Dirty {
        * Tag(s) for categorizing this change.
        * Enables selective dirty checking and reset.
        */
-      tags?: MaybeArray<string>
+      tags?: string[]
 
       /**
        * Custom comparison function for property changes.
@@ -67,7 +64,7 @@ export namespace Dirty {
        * Tag(s) for categorizing this change.
        * Enables selective dirty checking and reset.
        */
-      tags?: MaybeArray<string>
+      tags?: string[]
 
       /**
        * Condition to check before marking dirty.
@@ -184,7 +181,7 @@ export abstract class Dirty {
  * }
  */
 export function DirtyProperty<This extends Dirty, Value>(options: Dirty.Property.Options<Value> = {}) {
-  const { condition, equals = Object.is, tags } = options
+  const { condition, equals = Object.is, tags = [] } = options
 
   return function(
     target: ClassAccessorDecoratorTarget<This, Value>,
@@ -211,7 +208,7 @@ export function DirtyProperty<This extends Dirty, Value>(options: Dirty.Property
 
         // --- Only mark dirty after initialization and if value changed.
         if (isInitialized && !isEqual && isEnabled)
-          this.markDirty(...toArray(tags))
+          this.markDirty(...tags)
 
         target.set.call(this, newValue)
       },
@@ -266,7 +263,7 @@ export function DirtyProperty<This extends Dirty, Value>(options: Dirty.Property
 export function DirtyTrigger<This extends Dirty, Arguments extends unknown[], Return>(
   options: Dirty.Trigger.Options = {},
 ) {
-  const { condition, tags } = options
+  const { condition, tags = [] } = options
 
   return function(
     originalMethod: (this: This, ...args: Arguments) => Return,
@@ -279,7 +276,7 @@ export function DirtyTrigger<This extends Dirty, Arguments extends unknown[], Re
 
     return function(this: This, ...parameters: Arguments): Return {
       const isEnabled = condition ? condition({ instance: this, parameters }) : true
-      if (isEnabled) this.markDirty(...toArray(tags))
+      if (isEnabled) this.markDirty(...tags)
       return originalMethod.apply(this, parameters)
     }
   }

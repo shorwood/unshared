@@ -1,55 +1,137 @@
-import { debounce } from './debounce'
+import { debounce, Debounce } from './debounce'
 
 describe('debounce', () => {
-  beforeAll(() => {
-    vi.useFakeTimers()
+  describe('debounce', () => {
+    beforeAll(() => {
+      vi.useFakeTimers()
+    })
+
+    test('should not call the function if the delay has not passed', () => {
+      const fn = vi.fn()
+      const debounced = debounce(fn, 100)
+      debounced()
+      debounced()
+      debounced()
+      vi.advanceTimersByTime(50)
+      expect(fn).not.toHaveBeenCalled()
+    })
+
+    test('should call the function once after the delay has passed', () => {
+      const fn = vi.fn()
+      const debounced = debounce(fn, 10)
+      debounced()
+      debounced()
+      debounced()
+      vi.advanceTimersByTime(100)
+      expect(fn).toHaveBeenCalledTimes(1)
+    })
+
+    test('should call the function once with the parameters of the last call', () => {
+      const fn = vi.fn()
+      const debounced = debounce(fn, 10)
+      debounced('Alice')
+      debounced('Bob')
+      debounced('Charlie')
+      vi.advanceTimersByTime(100)
+      expect(fn).toHaveBeenCalledWith('Charlie')
+    })
+
+    test('should call the function multiple times if the delay has passed', () => {
+      const fn = vi.fn()
+      const debounced = debounce(fn, 10)
+      debounced()
+      vi.advanceTimersByTime(100)
+      debounced()
+      vi.advanceTimersByTime(100)
+      debounced()
+      vi.advanceTimersByTime(100)
+      expect(fn).toHaveBeenCalledTimes(3)
+    })
+
+    test('should return undefined', () => {
+      const debounced = debounce(() => 'foobar', 100)
+      const result = debounced()
+      expect(result).toBeUndefined()
+    })
   })
 
-  test('should not call the function if the delay has not passed', () => {
-    const fn = vi.fn()
-    const debounced = debounce(fn, 100)
-    debounced()
-    debounced()
-    debounced()
-    vi.advanceTimersByTime(50)
-    expect(fn).not.toHaveBeenCalled()
-  })
+  describe('Debounce', () => {
+    beforeAll(() => vi.useFakeTimers())
+    afterAll(() => vi.useRealTimers())
 
-  test('should call the function once after the delay has passed', () => {
-    const fn = vi.fn()
-    const debounced = debounce(fn, 10)
-    debounced()
-    debounced()
-    debounced()
-    vi.advanceTimersByTime(100)
-    expect(fn).toHaveBeenCalledTimes(1)
-  })
+    test('should not call the function if the delay has not passed', () => {
+      const fn = vi.fn()
+      class Greeter { @Debounce(100) fn() { fn() } }
+      const instance = new Greeter()
+      instance.fn()
+      instance.fn()
+      instance.fn()
+      vi.advanceTimersByTime(50)
+      expect(fn).not.toHaveBeenCalled()
+    })
 
-  test('should call the function once with the parameters of the last call', () => {
-    const fn = vi.fn()
-    const debounced = debounce(fn, 10)
-    debounced('Alice')
-    debounced('Bob')
-    debounced('Charlie')
-    vi.advanceTimersByTime(100)
-    expect(fn).toHaveBeenCalledWith('Charlie')
-  })
+    test('should call the function once after the delay has passed', () => {
+      const fn = vi.fn()
+      class Greeter { @Debounce(10) fn() { fn() } }
+      const instance = new Greeter()
+      instance.fn()
+      instance.fn()
+      instance.fn()
+      vi.advanceTimersByTime(100)
+      expect(fn).toHaveBeenCalledTimes(1)
+    })
 
-  test('should call the function multiple times if the delay has passed', () => {
-    const fn = vi.fn()
-    const debounced = debounce(fn, 10)
-    debounced()
-    vi.advanceTimersByTime(100)
-    debounced()
-    vi.advanceTimersByTime(100)
-    debounced()
-    vi.advanceTimersByTime(100)
-    expect(fn).toHaveBeenCalledTimes(3)
-  })
+    test('should call the function once with the parameters of the last call', () => {
+      const fn = vi.fn()
+      class Greeter { @Debounce(10) fn(name: string) { fn(name) } }
+      const instance = new Greeter()
+      instance.fn('Alice')
+      instance.fn('Bob')
+      instance.fn('Charlie')
+      vi.advanceTimersByTime(100)
+      expect(fn).toHaveBeenCalledWith('Charlie')
+    })
 
-  test('should return undefined', () => {
-    const debounced = debounce(() => 'foobar', 100)
-    const result = debounced()
-    expect(result).toBeUndefined()
+    test('should call the function multiple times if the delay has passed', () => {
+      const fn = vi.fn()
+      class Greeter { @Debounce(10) fn() { fn() } }
+      const instance = new Greeter()
+      instance.fn()
+      vi.advanceTimersByTime(100)
+      instance.fn()
+      vi.advanceTimersByTime(100)
+      instance.fn()
+      vi.advanceTimersByTime(100)
+      expect(fn).toHaveBeenCalledTimes(3)
+    })
+
+    test('should return undefined', () => {
+      const fn = vi.fn(() => 'foobar')
+      // @ts-expect-error: Testing return value
+      class Greeter { @Debounce(10) fn() { return fn() } }
+      const instance = new Greeter()
+      const result = instance.fn()
+      expect(result).toBeUndefined()
+    })
+
+    test('should throw a TypeError when applied to a class field', () => {
+      const shouldThrow = () => {
+      // @ts-expect-error: Decorator should not be applied to class fields
+        class Greeter { @Debounce(10) fn = () => {} }
+        return new Greeter()
+      }
+      expect(shouldThrow).toThrow(TypeError)
+    })
+
+    test('should throw a TypeError when applied to an accessor', () => {
+      const shouldThrow = () => {
+        class Greeter {
+        // @ts-expect-error: Decorator should not be applied to accessors
+          @Debounce(10) accessor value = 'foo'
+        }
+        return new Greeter()
+      }
+      expect(shouldThrow).toThrow(TypeError)
+    })
   })
 })

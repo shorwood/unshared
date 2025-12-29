@@ -75,7 +75,6 @@
   "dependencies": {
     "@unshared/binary": "workspace:*",
     "@unshared/collection": "workspace:*",
-    "@unshared/decorators": "workspace:*",
     "@unshared/functions": "workspace:*",
     "@unshared/string": "workspace:*",
     "@unshared/types": "workspace:*"

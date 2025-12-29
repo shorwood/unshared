@@ -1,7 +1,7 @@
 import type { Function, MaybeArray } from '@unshared/types'
 import type { Workerized, WorkerServiceOptions, WorkerServiceResult, WorkerServiceSpawnOptions } from './createWorkerService'
 import { toArray } from '@unshared/collection/toArray'
-import { Once } from '@unshared/decorators/Once'
+import { Once } from '@unshared/functions/once'
 import { availableParallelism } from 'node:os'
 import { WorkerService } from './createWorkerService'
 

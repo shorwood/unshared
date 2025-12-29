@@ -1,6 +1,6 @@
 /* eslint-disable sonarjs/no-nested-conditional */
 import type { IColor } from './types'
-import { Once } from '@unshared/decorators/Once'
+import { Once } from '@unshared/functions/once'
 import { tries } from '@unshared/functions/tries'
 import { clamp } from '@unshared/math/clamp'
 import { cmyk, cmykFromSrgb, cmykToCss, isCmyk } from './cmyk'

@@ -102,7 +102,7 @@ importers:
       '@unshared/color':
         specifier: workspace:*
         version: link:../../packages/color
-      '@unshared/decorators':
+      '@unshared/functions':
         specifier: workspace:*
         version: link:../../packages/decorators
       '@unshared/eslint-config':
@@ -196,7 +196,7 @@ importers:
 
   packages/color:
     dependencies:
-      '@unshared/decorators':
+      '@unshared/functions':
         specifier: workspace:*
         version: link:../decorators
       '@unshared/functions':
@@ -350,7 +350,7 @@ importers:
       '@unshared/collection':
         specifier: workspace:*
         version: link:../collection
-      '@unshared/decorators':
+      '@unshared/functions':
         specifier: workspace:*
         version: link:../decorators
       '@unshared/functions':
@@ -459,7 +459,7 @@ importers:
       '@unshared/color':
         specifier: workspace:*
         version: link:../color
-      '@unshared/decorators':
+      '@unshared/functions':
         specifier: workspace:*
         version: link:../decorators
       '@unshared/fs':

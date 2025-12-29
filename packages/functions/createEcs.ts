@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/redundant-type-aliases */
 import type { Constructor } from '@unshared/types'
-import { Dirty } from '@unshared/decorators/Dirty'
 import { Emitter } from './createEmitter'
+import { Dirty } from './dirty'
 
 /** Unique identifier for an entity. */
 export type EcsEntity = number
@@ -1048,4 +1048,32 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
   [Symbol.dispose](): void {
     this.dispose()
   }
+}
+
+/**
+ * Create a new Entity-Component-System (ECS) world instance. The world manages
+ * entities, components, systems, resources, and plugins in an ECS architecture
+ * pattern.
+ *
+ * @returns A new EcsWorld instance.
+ * @example
+ * // Create a new ECS world.
+ * const world = createEcs()
+ *
+ * // Define components.
+ * class Position extends EcsComponent { x = 0; y = 0 }
+ * class Velocity extends EcsComponent { dx = 0; dy = 0 }
+ *
+ * // Spawn entities with components.
+ * const entity = world.spawn(new Position(), new Velocity())
+ *
+ * // Query and update entities.
+ * for (const { entity, components } of world.queryAll([Position, Velocity])) {
+ *   const [pos, vel] = components
+ *   pos.x += vel.dx
+ *   pos.y += vel.dy
+ * }
+ */
+export function createEcs(): EcsWorld {
+  return new EcsWorld()
 }

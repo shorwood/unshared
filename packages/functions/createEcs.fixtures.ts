@@ -1,5 +1,5 @@
-import type { EcsWorld } from './ecs'
-import { EcsComponent, EcsPlugin, EcsResource, EcsSystem } from './ecs'
+import type { EcsWorld } from './createEcs'
+import { EcsComponent, EcsPlugin, EcsResource, EcsSystem } from './createEcs'
 
 // --- Component fixtures ---
 

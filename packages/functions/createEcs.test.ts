@@ -1,5 +1,5 @@
-import type { EcsSystem } from './ecs'
-import { EcsPlugin, EcsWorld } from './ecs'
+import type { EcsSystem } from './createEcs'
+import { createEcs, EcsPlugin, EcsWorld } from './createEcs'
 import {
   AudioSystem,
   ConfigResource,
@@ -20,9 +20,29 @@ import {
   RenderSystem,
   TextureRegistry,
   VelocityComponent,
-} from './ecs.fixtures'
+} from './createEcs.fixtures'
 
 describe('ecsWorld', () => {
+  describe('createEcs', () => {
+    it('should create a new EcsWorld instance', () => {
+      const world = createEcs()
+      expect(world).toBeInstanceOf(EcsWorld)
+    })
+
+    it('should create independent world instances', () => {
+      const world1 = createEcs()
+      const world2 = createEcs()
+      expect(world1).not.toBe(world2)
+    })
+
+    it('should create a functional world that can spawn entities', () => {
+      const world = createEcs()
+      const entity = world.spawn()
+      expect(entity).toBe(0)
+      expect(world.exists(entity)).toBe(true)
+    })
+  })
+
   describe('entity management', () => {
     it('should create entities with unique IDs', () => {
       const world = new EcsWorld()

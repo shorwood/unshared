@@ -1,4 +1,4 @@
-import { Dirty, DirtyProperty, DirtyTrigger } from './Dirty'
+import { Dirty, DirtyProperty, DirtyTrigger } from './dirty'
 
 describe('Dirty', () => {
   describe('base class', () => {
@@ -78,7 +78,7 @@ describe('Dirty', () => {
 
     test('should mark as dirty with specified tags', () => {
       class MyClass extends Dirty {
-        @DirtyProperty({ tags: 'content' }) accessor title = ''
+        @DirtyProperty({ tags: ['content'] }) accessor title = ''
       }
       const instance = new MyClass()
       instance.title = 'Hello'
@@ -153,9 +153,9 @@ describe('Dirty', () => {
 
     test('should work with multiple properties', () => {
       class MyClass extends Dirty {
-        @DirtyProperty({ tags: 'name' }) accessor firstName = ''
-        @DirtyProperty({ tags: 'name' }) accessor lastName = ''
-        @DirtyProperty({ tags: 'email' }) accessor email = ''
+        @DirtyProperty({ tags: ['name'] }) accessor firstName = ''
+        @DirtyProperty({ tags: ['name'] }) accessor lastName = ''
+        @DirtyProperty({ tags: ['email'] }) accessor email = ''
       }
       const instance = new MyClass()
       instance.firstName = 'John'
@@ -183,7 +183,7 @@ describe('Dirty', () => {
 
     test('should mark as dirty with specified tags', () => {
       class MyClass extends Dirty {
-        @DirtyTrigger({ tags: 'action' }) doSomething() {}
+        @DirtyTrigger({ tags: ['action'] }) doSomething() {}
       }
       const instance = new MyClass()
       instance.doSomething()
@@ -251,8 +251,8 @@ describe('Dirty', () => {
   describe('combined usage', () => {
     test('should track both property and method changes', () => {
       class Form extends Dirty {
-        @DirtyProperty({ tags: 'input' }) accessor username = ''
-        @DirtyTrigger({ tags: 'submit' }) submit() {}
+        @DirtyProperty({ tags: ['input'] }) accessor username = ''
+        @DirtyTrigger({ tags: ['submit'] }) submit() {}
       }
       const form = new Form()
       expect(form.isDirty()).toBe(false)
