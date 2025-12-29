@@ -76,6 +76,11 @@
       "types": "./dist/debounce.d.ts",
       "import": "./dist/debounce.js"
     },
+    "./ecs": {
+      "require": "./dist/ecs.cjs",
+      "types": "./dist/ecs.d.ts",
+      "import": "./dist/ecs.js"
+    },
     "./flow": {
       "require": "./dist/flow.cjs",
       "types": "./dist/flow.d.ts",
