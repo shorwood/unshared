@@ -21,6 +21,11 @@
       "types": "./dist/Debounce.d.ts",
       "import": "./dist/Debounce.js"
     },
+    "./Dirty": {
+      "require": "./dist/Dirty.cjs",
+      "types": "./dist/Dirty.d.ts",
+      "import": "./dist/Dirty.js"
+    },
     "./Memoize": {
       "require": "./dist/Memoize.cjs",
       "types": "./dist/Memoize.d.ts",
@@ -48,6 +53,7 @@
     "LICENSE.md"
   ],
   "dependencies": {
+    "@unshared/collection": "workspace:*",
     "@unshared/functions": "workspace:*",
     "@unshared/types": "workspace:*"
   }
