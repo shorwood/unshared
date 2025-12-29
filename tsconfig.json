@@ -2,8 +2,6 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "target": "ESNext",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
     "module": "ESNext",
     "moduleResolution": "Node",
     "paths": {
