@@ -1,4 +1,3 @@
-import type { Function, MethodDecorator } from '@unshared/types'
 import { once } from '@unshared/functions/once'
 
 /**
@@ -6,12 +5,12 @@ import { once } from '@unshared/functions/once'
  * it will return the same result without executing the method again, **even if the
  * method is called with different arguments**.
  *
- * @returns The method descriptor.
+ * @returns The method decorator.
  * @example
  * // Declare a class with a onced method.
  * class Greeter {
- * ->@Once()
- *  greet(name: string) { return `Hello, ${name}! - ${Math.random()}` }
+ *   \@Once()
+ *   greet(name: string) { return `Hello, ${name}! - ${Math.random()}` }
  * }
  *
  * // The first call to the method will be executed.
@@ -19,10 +18,26 @@ import { once } from '@unshared/functions/once'
  * instance.greet('Alice') // 'Hello, Alice! - 0.123456789'
  * instance.greet('Bob')   // 'Hello, Alice! - 0.123456789'
  */
-export function Once<T extends Function>(): MethodDecorator<T> {
-  return (target, propertyName, descriptor) => {
-    const method = descriptor.value!
-    descriptor.value = once(method) as unknown as T
-    return descriptor
+export function Once<This, Arguments extends unknown[], Return>() {
+  return function(
+    originalMethod: (this: This, ...args: Arguments) => Return,
+    context: ClassMethodDecoratorContext<This, (this: This, ...args: Arguments) => Return>,
+  ): (this: This, ...args: Arguments) => Return {
+
+    // --- Ensure decorator is applied to a method.
+    if (context.kind !== 'method')
+      throw new TypeError('@Once can only be applied to methods.')
+
+    // --- Create a once version per instance using a WeakMap.
+    const instances = new WeakMap<object, (this: This, ...args: Arguments) => Return>()
+
+    return function(this: This, ...args: Arguments): Return {
+      let oncedMethod = instances.get(this as object)
+      if (!oncedMethod) {
+        oncedMethod = once(originalMethod.bind(this) as (...args: Arguments) => Return)
+        instances.set(this as object, oncedMethod)
+      }
+      return oncedMethod.call(this, ...args)
+    }
   }
 }

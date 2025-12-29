@@ -1,4 +1,3 @@
-import type { Function, MethodDecorator } from '@unshared/types'
 import { debounce } from '@unshared/functions/debounce'
 
 /**
@@ -9,12 +8,12 @@ import { debounce } from '@unshared/functions/debounce'
  * **Note:** This decorator will omit the return value of the method and return `undefined`.
  *
  * @param delay The delay in milliseconds to wait before executing the method.
- * @returns The method descriptor.
+ * @returns The method decorator.
  * @example
  * // Declare a class with a debounced method.
  * class Greeter {
- * ->@Debounce(100)
- *  greet(name: string) { return `Hello, ${name}! - ${Date.now()}` }
+ *   \@Debounce(100)
+ *   greet(name: string) { return `Hello, ${name}! - ${Date.now()}` }
  * }
  *
  * // The first call to the method will be executed.
@@ -26,10 +25,26 @@ import { debounce } from '@unshared/functions/debounce'
  * // After 100ms the method will be called with the parameters of the last call.
  * // => Hello, Charlie!
  */
-export function Debounce<T extends Function<void>>(delay: number): MethodDecorator<T> {
-  return (target, propertyName, descriptor) => {
-    const method = descriptor.value!
-    descriptor.value = debounce(method, delay) as unknown as T
-    return descriptor
+export function Debounce<This, Arguments extends unknown[]>(delay: number) {
+  return function(
+    originalMethod: (this: This, ...args: Arguments) => void,
+    context: ClassMethodDecoratorContext<This, (this: This, ...args: Arguments) => void>,
+  ): (this: This, ...args: Arguments) => void {
+
+    // --- Ensure decorator is applied to a method.
+    if (context.kind !== 'method')
+      throw new TypeError('@Debounce can only be applied to methods.')
+
+    // --- Create a debounced version per instance using a WeakMap.
+    const instances = new WeakMap<object, (...args: Arguments) => void>()
+
+    return function(this: This, ...args: Arguments): void {
+      let debouncedMethod = instances.get(this as object)
+      if (!debouncedMethod) {
+        debouncedMethod = debounce(originalMethod.bind(this) as (...args: Arguments) => void, delay)
+        instances.set(this as object, debouncedMethod)
+      }
+      debouncedMethod(...args)
+    }
   }
 }

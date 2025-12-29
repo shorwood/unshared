@@ -1,5 +1,4 @@
 import type { MemoizeOptions } from '@unshared/functions/memoize'
-import type { Function, MethodDecorator } from '@unshared/types'
 import { memoize } from '@unshared/functions/memoize'
 
 /**
@@ -8,11 +7,11 @@ import { memoize } from '@unshared/functions/memoize'
  * **unless the arguments change**.
  *
  * @param options The memoization options.
- * @returns The method descriptor.
+ * @returns The method decorator.
  * @example
  * // Declare a class with a memoized method.
  * class Greeter {
- * ->@Memoize()
+ *   \@Memoize()
  *   greet(name: string) { return `Hello, ${name}! - ${Math.random()}` }
  * }
  *
@@ -22,10 +21,28 @@ import { memoize } from '@unshared/functions/memoize'
  * instance.greet('Alice') // 'Hello, Alice! - 0.123456789'
  * instance.greet('Bob')   // 'Hello, Bob!   - 0.987654321'
  */
-export function Memoize<T extends Function>(options?: MemoizeOptions<T>): MethodDecorator<T> {
-  return function(_target, _propertyName, descriptor) {
-    const method = descriptor.value!
-    descriptor.value = memoize(method, options) as unknown as T
-    return descriptor
+export function Memoize<This, Arguments extends unknown[], Return>(
+  options?: MemoizeOptions<(this: This, ...args: Arguments) => Return>,
+) {
+  return function(
+    originalMethod: (this: This, ...args: Arguments) => Return,
+    context: ClassMethodDecoratorContext<This, (this: This, ...args: Arguments) => Return>,
+  ): (this: This, ...args: Arguments) => Return {
+
+    // --- Ensure decorator is applied to a method.
+    if (context.kind !== 'method')
+      throw new TypeError('@Memoize can only be applied to methods.')
+
+    // --- Create a memoized version per instance using a WeakMap.
+    const instances = new WeakMap<object, (this: This, ...args: Arguments) => Return>()
+
+    return function(this: This, ...args: Arguments): Return {
+      let memoizedMethod = instances.get(this as object)
+      if (!memoizedMethod) {
+        memoizedMethod = memoize(originalMethod.bind(this) as (...args: Arguments) => Return, options)
+        instances.set(this as object, memoizedMethod)
+      }
+      return memoizedMethod.call(this, ...args)
+    }
   }
 }

@@ -52,6 +52,7 @@ describe('Debounce', () => {
 
   test('should return undefined', () => {
     const fn = vi.fn(() => 'foobar')
+    // @ts-expect-error: Testing return value
     class Greeter { @Debounce(10) fn() { return fn() } }
     const instance = new Greeter()
     const result = instance.fn()
