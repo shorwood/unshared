@@ -1,6 +1,5 @@
 /* eslint-disable sonarjs/no-nested-conditional */
 import type { IColor } from './types'
-import { Once } from '@unshared/functions/once'
 import { tries } from '@unshared/functions/tries'
 import { clamp } from '@unshared/math/clamp'
 import { cmyk, cmykFromSrgb, cmykToCss, isCmyk } from './cmyk'
@@ -277,7 +276,6 @@ export class Color {
    * const color = Color.fromHex('#FF0000')
    * const lch = color.lch() // { l: 53.24, c: 104.57, h: 40.85, alpha: 1 }
    */
-  @Once()
   lch(): IColor.LCH {
     if (this.space === 'lch') return Object.freeze({ ...this.value as IColor.LCH })
     return Object.freeze(lchFromLab(this.lab()))
@@ -291,7 +289,6 @@ export class Color {
    * const color = Color.fromHex('#FF0000')
    * const lab = color.lab() // { l: 53.24, a: 80.09, b: 67.20, alpha: 1 }
    */
-  @Once()
   lab(): IColor.LAB {
     if (this.space === 'lab') return Object.freeze({ ...this.value as IColor.LAB })
     if (this.space === 'lch') return Object.freeze(labFromLch(this.value as IColor.LCH))
@@ -308,7 +305,6 @@ export class Color {
    * const color = Color.fromHex('#FF0000')
    * const xyz = color.xyz() // { x: 0.412, y: 0.213, z: 0.019, alpha: 1 }
    */
-  @Once()
   xyz(): IColor.XYZ {
     if (this.space === 'xyz') return Object.freeze({ ...this.value as IColor.XYZ })
     if (this.space === 'srgb') return Object.freeze(xyzFromSrgb(this.value as IColor.SRGB))
@@ -326,7 +322,6 @@ export class Color {
    * const color = Color.fromHex('#FF0000')
    * const srgb = color.srgb() // { r: 1, g: 0, b: 0, alpha: 1 }
    */
-  @Once()
   srgb(): IColor.SRGB {
     if (this.space === 'srgb') return Object.freeze({ ...this.value as IColor.SRGB })
     if (this.space === 'rgb') return Object.freeze(srgbFromRgb(this.value as IColor.RGB))
@@ -346,7 +341,6 @@ export class Color {
    * const color = Color.fromHex('#FF0000')
    * const oklch = color.oklch() // { l: 0.628, c: 0.258, h: 29.23, alpha: 1 }
    */
-  @Once()
   oklch(): IColor.OKLCH {
     if (this.space === 'oklch') return Object.freeze({ ...this.value as IColor.OKLCH })
     return Object.freeze(oklchFromOklab(this.oklab()))
@@ -360,7 +354,6 @@ export class Color {
    * const color = Color.fromHex('#FF0000')
    * const oklab = color.oklab() // { l: 0.628, a: 0.225, b: 0.126, alpha: 1 }
    */
-  @Once()
   oklab(): IColor.OKLAB {
     if (this.space === 'oklab') return Object.freeze({ ...this.value as IColor.OKLAB })
     if (this.space === 'oklch') return Object.freeze(oklabFromOklch(this.value as IColor.OKLCH))
@@ -375,7 +368,6 @@ export class Color {
    * const color = Color.fromHex('#FF0000')
    * const hsl = color.hsl() // { h: 0, s: 1, l: 0.5, alpha: 1 }
    */
-  @Once()
   hsl(): IColor.HSL {
     if (this.space === 'hsl') return Object.freeze({ ...this.value as IColor.HSL })
     return Object.freeze(hslFromSrgb(this.srgb()))
@@ -389,7 +381,6 @@ export class Color {
    * const color = Color.fromHex('#FF0000')
    * const hsv = color.hsv() // { h: 0, s: 1, v: 1, alpha: 1 }
    */
-  @Once()
   hsv(): IColor.HSV {
     if (this.space === 'hsv') return Object.freeze({ ...this.value as IColor.HSV })
     return Object.freeze(hsvFromSrgb(this.srgb()))
@@ -403,7 +394,6 @@ export class Color {
    * const color = Color.fromHex('#FF0000')
    * const cmyk = color.cmyk() // { c: 0, m: 1, y: 1, k: 0, alpha: 1 }
    */
-  @Once()
   cmyk(): IColor.CMYK {
     if (this.space === 'cmyk') return Object.freeze({ ...this.value as IColor.CMYK })
     return Object.freeze(cmykFromSrgb(this.srgb()))
@@ -417,7 +407,6 @@ export class Color {
    * const color = Color.fromHex('#FF0000')
    * const rgb = color.rgb() // { r: 255, g: 0, b: 0, alpha: 1 }
    */
-  @Once()
   rgb(): IColor.RGB {
     if (this.space === 'rgb') return Object.freeze({ ...this.value as IColor.RGB })
     return Object.freeze(rgbFromSrgb(this.srgb()))
@@ -447,7 +436,6 @@ export class Color {
    * const red = Color.fromHex('#FF0000')
    * console.log(red.ansiText('Error')) // Displays 'Error' in red
    */
-  @Once()
   ansiText(content: string): string {
     return rgbToAnsiText(this.rgb(), content)
   }
@@ -462,7 +450,6 @@ export class Color {
    * const red = Color.fromHex('#FF0000')
    * console.log(red.ansiBackground('Alert')) // Displays 'Alert' with red background
    */
-  @Once()
   ansiBackground(content: string): string {
     return rgbToAnsiBackground(this.rgb(), content)
   }
@@ -477,7 +464,6 @@ export class Color {
    * @returns The relative luminance (0-1).
    * @see https://www.w3.org/WAI/GL/wiki/Relative_luminance
    */
-  @Once()
   getRelativeLuminance(): number {
     const { r, g, b } = this.srgb()
     const R = srgbToLinearRgb(r)
@@ -493,7 +479,6 @@ export class Color {
    * @returns The contrast ratio (1-21).
    * @see https://www.w3.org/WAI/GL/wiki/Contrast_ratio
    */
-  @Once()
   getContrastRatio(other: Color): number {
     const lum1 = this.getRelativeLuminance()
     const lum2 = other.getRelativeLuminance()
@@ -566,7 +551,6 @@ export class Color {
    * const darkBg = Color.fromHex('#000000')
    * const contrast2 = lightText.contrastAPCA(darkBg) // Negative value ~-108
    */
-  @Once()
   getContrastRatioAPCA(background: Color, isDark = background.isDark()): number {
     const foregroundLuminance = this.getRelativeLuminanceAPCA(true, isDark)
     const backgroundLuminance = background.getRelativeLuminanceAPCA(false, isDark)
@@ -596,7 +580,6 @@ export class Color {
    * @param epsilon The precision for the binary search (default: 0.01).
    * @returns A new Color instance that is within the sRGB gamut.
    */
-  @Once()
   toSrgbGamut(epsilon?: number): Color {
     return new Color(fitLchToSrgbGamut(this.lch(), epsilon), 'lch')
   }
@@ -648,7 +631,6 @@ export class Color {
    *
    * const partial = red.complementary(0.5) // Halfway to complement
    */
-  @Once()
   complementary(factor = 1): Color {
     const f = clamp(factor, 0, 1)
     const c = this.oklch()
