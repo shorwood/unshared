@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/require-param */
+/* eslint-disable jsdoc/check-param-names */
 /** Symbol used to store the dirty state in the instance. */
 export const DIRTY_STATE = Symbol('dirtyState')
 
@@ -46,6 +48,11 @@ export namespace Dirty {
        */
       condition?: (context: Context<T>) => boolean
     }
+
+    export type Decorator<This extends Dirty, T> = (
+      target: ClassAccessorDecoratorTarget<This, T>,
+      context: ClassAccessorDecoratorContext<This, T>,
+    ) => ClassAccessorDecoratorResult<This, T>
   }
 
   export namespace Trigger {
@@ -72,6 +79,11 @@ export namespace Dirty {
        */
       condition?: (context: Context) => boolean
     }
+
+    export type Decorator<This extends Dirty, Arguments extends unknown[], Return> = (
+      originalMethod: (this: This, ...args: Arguments) => Return,
+      context: ClassMethodDecoratorContext<This, (this: This, ...args: Arguments) => Return>,
+    ) => (this: This, ...args: Arguments) => Return
   }
 }
 
@@ -92,7 +104,7 @@ export namespace Dirty {
  * const doc = new Document()
  * doc.title = 'Hello'
  * doc.isDirty() // true
- * doc.clearDirty()
+ * doc.markClean()
  * doc.isDirty() // false
  * ```
  */
@@ -134,7 +146,7 @@ export abstract class Dirty {
    *
    * @param tags Optional tags to reset. If empty, resets all.
    */
-  clearDirty(...tags: string[]): void {
+  markClean(...tags: string[]): void {
     const state = this[DIRTY_STATE]
     if (tags.length === 0) {
       state.isDirty = false
@@ -180,8 +192,19 @@ export abstract class Dirty {
  *   accessor content = ''
  * }
  */
-export function DirtyProperty<This extends Dirty, Value>(options: Dirty.Property.Options<Value> = {}) {
-  const { condition, equals = Object.is, tags = [] } = options
+export function DirtyProperty<This extends Dirty, Value>(...tags: string[]): Dirty.Property.Decorator<This, Value>
+export function DirtyProperty<This extends Dirty, Value>(options?: Dirty.Property.Options<Value>): Dirty.Property.Decorator<This, Value>
+export function DirtyProperty<This extends Dirty, Value>(options?: Dirty.Property.Options<Value> | string, ...tags: string[]): Dirty.Property.Decorator<This, Value> {
+
+  // --- Normalize parameters.
+  let condition: ((context: Dirty.Property.Context<Value>) => boolean) | undefined
+  let equals: (oldValue: Value, newValue: Value) => boolean = Object.is
+  if (typeof options === 'string') { tags = [options, ...tags] }
+  else if (options) {
+    condition = options.condition
+    if (options.equals) equals = options.equals
+    if (options.tags) tags = [...options.tags, ...tags]
+  }
 
   return function(
     target: ClassAccessorDecoratorTarget<This, Value>,
@@ -226,6 +249,7 @@ export function DirtyProperty<This extends Dirty, Value>(options: Dirty.Property
  * Must be used within a class extending `Dirty`.
  *
  * @param options The options for this trigger.
+ * @param tags The tags to associate with this trigger.
  * @returns The method decorator.
  * @example
  * // Basic method triggering
@@ -239,31 +263,38 @@ export function DirtyProperty<This extends Dirty, Value>(options: Dirty.Property
  * }
  *
  * @example
+ * // With tags using simple signature
+ * class Form extends Dirty {
+ *   \@DirtyTrigger('validation')
+ *   validate() {}
+ *
+ *   \@DirtyTrigger('submission', 'content')
+ *   submit() {}
+ * }
+ *
+ * @example
  * // With condition based on arguments
  * class Editor extends Dirty {
  *   \@DirtyTrigger({
- *     tags: 'content',
+ *     tags: ['content'],
  *     condition: ({ parameters }) => parameters[0] !== 'auto-save'
  *   })
  *   save(source: 'manual' | 'auto-save') {
  *     // Only marks dirty if source !== 'auto-save'
  *   }
  * }
- *
- * @example
- * // With tags for selective reset
- * class Form extends Dirty {
- *   \@DirtyTrigger({ tags: 'validation' })
- *   validate() {}
- *
- *   \@DirtyTrigger({ tags: 'submission' })
- *   submit() {}
- * }
  */
-export function DirtyTrigger<This extends Dirty, Arguments extends unknown[], Return>(
-  options: Dirty.Trigger.Options = {},
-) {
-  const { condition, tags = [] } = options
+export function DirtyTrigger<This extends Dirty, Arguments extends unknown[], Return>(...tags: string[]): Dirty.Trigger.Decorator<This, Arguments, Return>
+export function DirtyTrigger<This extends Dirty, Arguments extends unknown[], Return>(options?: Dirty.Trigger.Options): Dirty.Trigger.Decorator<This, Arguments, Return>
+export function DirtyTrigger<This extends Dirty, Arguments extends unknown[], Return>(options?: Dirty.Trigger.Options | string, ...tags: string[]): Dirty.Trigger.Decorator<This, Arguments, Return> {
+
+  // --- Normalize parameters.
+  let condition: ((context: Dirty.Trigger.Context) => boolean) | undefined
+  if (typeof options === 'string') { tags = [options, ...tags] }
+  else if (options) {
+    condition = options.condition
+    if (options.tags) tags = [...options.tags, ...tags]
+  }
 
   return function(
     originalMethod: (this: This, ...args: Arguments) => Return,

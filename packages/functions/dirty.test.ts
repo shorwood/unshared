@@ -25,21 +25,21 @@ describe('Dirty', () => {
       expect(instance.isDirty('tag3')).toBe(false)
     })
 
-    test('should clear all dirty state when clearDirty is called without arguments', () => {
+    test('should clear all dirty state when markClean is called without arguments', () => {
       class MyClass extends Dirty {}
       const instance = new MyClass()
       instance.markDirty('tag1', 'tag2')
-      instance.clearDirty()
+      instance.markClean()
       expect(instance.isDirty()).toBe(false)
       expect(instance.isDirty('tag1')).toBe(false)
       expect(instance.isDirty('tag2')).toBe(false)
     })
 
-    test('should clear specific tags when clearDirty is called with arguments', () => {
+    test('should clear specific tags when markClean is called with arguments', () => {
       class MyClass extends Dirty {}
       const instance = new MyClass()
       instance.markDirty('tag1', 'tag2', 'tag3')
-      instance.clearDirty('tag1')
+      instance.markClean('tag1')
       expect(instance.isDirty()).toBe(true)
       expect(instance.isDirty('tag1')).toBe(false)
       expect(instance.isDirty('tag2')).toBe(true)
@@ -50,7 +50,7 @@ describe('Dirty', () => {
       class MyClass extends Dirty {}
       const instance = new MyClass()
       instance.markDirty('tag1', 'tag2')
-      instance.clearDirty('tag1', 'tag2')
+      instance.markClean('tag1', 'tag2')
       expect(instance.isDirty()).toBe(false)
     })
   })
@@ -71,14 +71,14 @@ describe('Dirty', () => {
         @DirtyProperty() accessor title = 'Hello'
       }
       const instance = new MyClass()
-      instance.clearDirty()
+      instance.markClean()
       instance.title = 'Hello'
       expect(instance.isDirty()).toBe(false)
     })
 
     test('should mark as dirty with specified tags', () => {
       class MyClass extends Dirty {
-        @DirtyProperty({ tags: ['content'] }) accessor title = ''
+        @DirtyProperty('content') accessor title = ''
       }
       const instance = new MyClass()
       instance.title = 'Hello'
@@ -88,7 +88,7 @@ describe('Dirty', () => {
 
     test('should mark as dirty with multiple tags', () => {
       class MyClass extends Dirty {
-        @DirtyProperty({ tags: ['tag1', 'tag2'] }) accessor title = ''
+        @DirtyProperty('tag1', 'tag2') accessor title = ''
       }
       const instance = new MyClass()
       instance.title = 'Hello'
@@ -102,7 +102,7 @@ describe('Dirty', () => {
         accessor title = 'hello'
       }
       const instance = new MyClass()
-      instance.clearDirty()
+      instance.markClean()
       instance.title = 'HELLO'
       expect(instance.isDirty()).toBe(false)
       instance.title = 'World'
@@ -161,7 +161,7 @@ describe('Dirty', () => {
       instance.firstName = 'John'
       expect(instance.isDirty('name')).toBe(true)
       expect(instance.isDirty('email')).toBe(false)
-      instance.clearDirty('name')
+      instance.markClean('name')
       expect(instance.isDirty()).toBe(false)
       instance.email = 'john@example.com'
       expect(instance.isDirty('email')).toBe(true)
@@ -264,12 +264,12 @@ describe('Dirty', () => {
       form.submit()
       expect(form.isDirty('submit')).toBe(true)
 
-      form.clearDirty('input')
+      form.markClean('input')
       expect(form.isDirty('input')).toBe(false)
       expect(form.isDirty('submit')).toBe(true)
       expect(form.isDirty()).toBe(true)
 
-      form.clearDirty()
+      form.markClean()
       expect(form.isDirty()).toBe(false)
     })
 
