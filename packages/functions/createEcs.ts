@@ -41,15 +41,43 @@ export abstract class EcsResource extends Dirty {}
  */
 export abstract class EcsSystem {
 
+  /** Priority for systems that must run before all others. */
+  static readonly PRIORITY_FIRST = -2000
+
+  /** Priority for systems in the pre-update phase (input, event processing). */
+  static readonly PRIORITY_PRE_UPDATE = -1000
+
+  /** Priority for systems in the default update phase. */
+  static readonly PRIORITY_UPDATE = 0
+
+  /** Priority for systems in the post-update phase (physics, transforms). */
+  static readonly PRIORITY_POST_UPDATE = 1000
+
+  /** Priority for systems that must run after all others (rendering, cleanup). */
+  static readonly PRIORITY_LAST = 2000
+
+  /**
+   * The priority of this system. Lower values run first.
+   * Use the `PRIORITY_*` constants for common stages:
+   * - `PRIORITY_FIRST` (-2000): Before everything
+   * - `PRIORITY_PRE_UPDATE` (-1000): Input, events
+   * - `PRIORITY_UPDATE` (0): Main game logic (default)
+   * - `PRIORITY_POST_UPDATE` (1000): Physics, transforms
+   * - `PRIORITY_LAST` (2000): Rendering, cleanup
+   *
+   * Within the same priority, `runAfter`/`runBefore` constraints are applied.
+   */
+  static readonly priority?: number
+
   /**
    * List of system types that this system should run after.
-   * The execution order will be resolved using topological sort.
+   * The execution order will be resolved using topological sort within the same priority.
    */
   static readonly runAfter?: Array<Constructor<EcsSystem>>
 
   /**
    * List of system types that this system should run before.
-   * The execution order will be resolved using topological sort.
+   * The execution order will be resolved using topological sort within the same priority.
    */
   static readonly runBefore?: Array<Constructor<EcsSystem>>
 
@@ -169,7 +197,7 @@ export namespace EcsWorld {
     components: T
 
     /** Get a specific component by type. */
-    get<C extends T[number]>(type: Constructor<C>): C
+    get: <C extends T[number]>(type: Constructor<C>) => C
   }
 
   /** Result object from a queryAny query, where entities match at least one component type. */
@@ -182,10 +210,10 @@ export namespace EcsWorld {
     components: { [K in keyof T]: T[K] | undefined }
 
     /** Get a specific component by type, or undefined if not present. */
-    get<C extends T[number]>(type: Constructor<C>): C | undefined
+    get: <C extends T[number]>(type: Constructor<C>) => C | undefined
 
     /** Get a specific component by type, or throw if not present. */
-    getOrFail<C extends T[number]>(type: Constructor<C>): C
+    getOrFail: <C extends T[number]>(type: Constructor<C>) => C
   }
 }
 
@@ -196,131 +224,18 @@ export namespace EcsWorld {
  */
 export class EcsWorld extends Emitter<EcsWorld.Events> {
 
-  /** Counter for generating unique entity IDs. */
-  private nextEntityId: EcsEntity = 0
-
   /** Map of component type to entity-component map. */
   private componentEntities = new Map<Constructor<EcsComponent>, Map<EcsEntity, EcsComponent>>()
 
   /** Reverse index: entity to set of component types it has. Also tracks entity existence. */
   private entityComponents = new Map<EcsEntity, Set<Constructor<EcsComponent>>>()
 
-  /** Registered systems in the world, keyed by their constructor type. */
-  private systems = new Map<Constructor<EcsSystem>, EcsSystem>()
-
-  /** Global resources, keyed by their constructor type. */
-  private resources = new Map<Constructor<EcsResource>, EcsResource>()
-
-  /** Registered plugins in the world, keyed by their constructor type. */
-  private plugins = new Map<Constructor<EcsPlugin>, EcsPlugin>()
+  /****************************************************/
+  /* Component Registration.                          */
+  /****************************************************/
 
   /** Set of explicitly registered component types (for strict mode). */
   private registeredComponents = new Set<Constructor<EcsComponent>>()
-
-  /** When true, only explicitly registered component types can be used. */
-  private strictComponents = false
-
-  /** Cached sorted order of systems for execution. Invalidated when systems change. */
-  private sortedSystems: EcsSystem[] | undefined
-
-  /**
-   * Perform a topological sort on systems based on their runBefore/runAfter dependencies.
-   * Uses Kahn's algorithm to detect cycles and produce a valid execution order.
-   *
-   * @returns Sorted array of systems.
-   * @throws Error if a circular dependency is detected.
-   */
-  /**
-   * Add an edge in the system dependency graph.
-   *
-   * @param from The system type that runs first.
-   * @param to The system type that runs after.
-   * @param edges The adjacency list.
-   * @param inDegree The in-degree map.
-   */
-  private addSystemEdge(
-    from: Constructor<EcsSystem>,
-    to: Constructor<EcsSystem>,
-    edges: Map<Constructor<EcsSystem>, Set<Constructor<EcsSystem>>>,
-    inDegree: Map<Constructor<EcsSystem>, number>,
-  ): void {
-    edges.get(from)!.add(to)
-    inDegree.set(to, inDegree.get(to)! + 1)
-  }
-
-  private sortSystems(): EcsSystem[] {
-    const systemTypes = [...this.systems.keys()]
-    const systemMap = this.systems
-
-    // --- Build adjacency list: edges go from "runs before" to "runs after".
-    const inDegree = new Map<Constructor<EcsSystem>, number>()
-    const edges = new Map<Constructor<EcsSystem>, Set<Constructor<EcsSystem>>>()
-
-    // --- Initialize.
-    for (const type of systemTypes) {
-      inDegree.set(type, 0)
-      edges.set(type, new Set())
-    }
-
-    // --- Process runAfter: if A.runAfter includes B, then B -> A (B runs before A).
-    for (const type of systemTypes) {
-      const SystemClass = type as typeof EcsSystem
-      if (!SystemClass.runAfter) continue
-      for (const dependency of SystemClass.runAfter)
-        if (systemMap.has(dependency)) this.addSystemEdge(dependency, type, edges, inDegree)
-    }
-
-    // --- Process runBefore: if A.runBefore includes B, then A -> B (A runs before B).
-    for (const type of systemTypes) {
-      const SystemClass = type as typeof EcsSystem
-      if (!SystemClass.runBefore) continue
-      for (const successor of SystemClass.runBefore)
-        if (systemMap.has(successor)) this.addSystemEdge(type, successor, edges, inDegree)
-    }
-
-    // --- Kahn's algorithm: start with nodes that have no incoming edges.
-    const queue: Array<Constructor<EcsSystem>> = []
-    for (const [type, degree] of inDegree)
-      if (degree === 0) queue.push(type)
-
-    const sorted: Array<Constructor<EcsSystem>> = []
-    while (queue.length > 0) {
-      const current = queue.shift()!
-      sorted.push(current)
-
-      for (const neighbor of edges.get(current)!) {
-        const newDegree = inDegree.get(neighbor)! - 1
-        inDegree.set(neighbor, newDegree)
-        if (newDegree === 0) queue.push(neighbor)
-      }
-    }
-
-    // --- Check for cycles.
-    if (sorted.length !== systemTypes.length) {
-      const remaining = systemTypes.filter(t => !sorted.includes(t)).map(t => t.name)
-      throw new Error(`Circular dependency detected among systems: ${remaining.join(', ')}`)
-    }
-
-    return sorted.map(type => systemMap.get(type)!)
-  }
-
-  /**
-   * Get the sorted list of systems for execution. Caches the result until
-   * systems are added or removed.
-   *
-   * @returns Sorted array of systems.
-   */
-  private getSortedSystems(): EcsSystem[] {
-    this.sortedSystems ??= this.sortSystems()
-    return this.sortedSystems
-  }
-
-  /**
-   * Invalidate the sorted systems cache. Called when systems are added or removed.
-   */
-  private invalidateSystemOrder(): void {
-    this.sortedSystems = undefined
-  }
 
   /**
    * Register a component type with the world. This is optional unless strict mode
@@ -355,6 +270,32 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
   }
 
   /**
+   * Unregister a component type from the world. This removes the component type
+   * from the registry but does not remove existing components of this type from
+   * entities.
+   *
+   * @param type The component type to unregister.
+   * @returns This world instance for chaining.
+   * @example world.unregisterComponent(PositionComponent)
+   */
+  unregisterComponent<T extends EcsComponent>(type: Constructor<T>): this {
+    this.registeredComponents.delete(type)
+    return this
+  }
+
+  /**
+   * Unregister multiple component types from the world.
+   *
+   * @param types The component types to unregister.
+   * @returns This world instance for chaining.
+   * @example world.unregisterComponents(PositionComponent, VelocityComponent)
+   */
+  unregisterComponents(...types: Array<Constructor<EcsComponent>>): this {
+    for (const type of types) this.unregisterComponent(type)
+    return this
+  }
+
+  /**
    * Check if a component type is registered.
    *
    * @param type The component type to check.
@@ -372,6 +313,13 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
   getRegisteredComponents(): Array<Constructor<EcsComponent>> {
     return [...this.registeredComponents]
   }
+
+  /****************************************************/
+  /* Strict Component Mode.                           */
+  /****************************************************/
+
+  /** When true, only explicitly registered component types can be used. */
+  private strictComponents = false
 
   /**
    * Enable or disable strict component mode. When enabled, only explicitly
@@ -399,6 +347,13 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
     return this.strictComponents
   }
 
+  /****************************************************/
+  /* Entity Management.                               */
+  /****************************************************/
+
+  /** Counter for generating unique entity IDs. */
+  private nextEntityId: EcsEntity = 0
+
   /**
    * Spawn a new entity and return its ID. Optionally, you can pass components
    * to be added to the entity at creation time.
@@ -421,12 +376,41 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
   }
 
   /**
-   * Destroy an entity and all its components.
+   * Destroy an entity and all its components. If the entity has children
+   * and recursive is true (default), they will be destroyed as well.
    *
    * @param entity The entity to destroy.
-   * @example world.destroy(0) // void
+   * @param recursive If true (default), destroy all children recursively.
+   * @example
+   * world.destroy(entity) // Destroys entity and all children
+   * world.destroy(entity, false) // Destroys only the entity, children become orphans
    */
-  destroy(entity: EcsEntity): void {
+  destroy(entity: EcsEntity, recursive = true): void {
+
+    // --- Recursively destroy children first (depth-first).
+    if (recursive) {
+      const children = this.entityChildren.get(entity)
+      if (children) {
+        for (const child of children)
+          this.destroy(child, true)
+      }
+    }
+
+    // --- Remove this entity from its parent's children set.
+    const parent = this.entityParent.get(entity)
+    if (parent !== undefined)
+      this.entityChildren.get(parent)?.delete(entity)
+    this.entityParent.delete(entity)
+
+    // --- If not recursive, orphan the children (remove their parent reference).
+    if (!recursive) {
+      const children = this.entityChildren.get(entity)
+      if (children) {
+        for (const child of children)
+          this.entityParent.delete(child)
+      }
+    }
+    this.entityChildren.delete(entity)
 
     // --- Use the reverse index to only iterate over component types this entity has.
     const componentTypes = this.entityComponents.get(entity)
@@ -455,6 +439,226 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
   exists(entity: EcsEntity): boolean {
     return this.entityComponents.has(entity)
   }
+
+  /****************************************************/
+  /* Hierarchy System.                                */
+  /****************************************************/
+
+  /** Map of entity to its parent entity. */
+  private entityParent = new Map<EcsEntity, EcsEntity>()
+
+  /** Map of entity to its children entities. */
+  private entityChildren = new Map<EcsEntity, Set<EcsEntity>>()
+
+  /**
+   * Spawn a new entity as a child of an existing entity.
+   *
+   * @param parent The parent entity.
+   * @param components Optional components to add to the child entity.
+   * @returns The newly created child entity ID.
+   * @example
+   * const parent = world.spawn()
+   * const child = world.spawnChild(parent, new Position(), new Velocity())
+   */
+  spawnChild(parent: EcsEntity, ...components: EcsComponent[]): EcsEntity {
+    const child = this.spawn(...components)
+    this.setParent(child, parent)
+    return child
+  }
+
+  /**
+   * Set the parent of an entity. This will update the hierarchy of both
+   * the child and the parent. If the child already has a parent, it will
+   * be removed from the old parent's children set.
+   *
+   * @param child The child entity.
+   * @param parent The new parent entity, or undefined to remove the parent.
+   * @returns This world instance for chaining.
+   * @example
+   * const parent = world.spawn()
+   * const child = world.spawn()
+   * world.setParent(child, parent)
+   */
+  setParent(child: EcsEntity, parent: EcsEntity | undefined): this {
+
+    // --- Remove from old parent's children set.
+    const oldParent = this.entityParent.get(child)
+    if (oldParent !== undefined)
+      this.entityChildren.get(oldParent)?.delete(child)
+
+    // --- Clear parent if undefined.
+    if (parent === undefined) {
+      this.entityParent.delete(child)
+      return this
+    }
+
+    // --- Set the new parent.
+    this.entityParent.set(child, parent)
+
+    // --- Add to new parent's children set.
+    let children = this.entityChildren.get(parent)
+    if (!children) {
+      children = new Set()
+      this.entityChildren.set(parent, children)
+    }
+    children.add(child)
+
+    return this
+  }
+
+  /**
+   * Get the parent entity of an entity.
+   *
+   * @param entity The entity to get the parent of.
+   * @returns The parent entity, or undefined if the entity has no parent.
+   */
+  getParent(entity: EcsEntity): EcsEntity | undefined {
+    return this.entityParent.get(entity)
+  }
+
+  /**
+   * Get all direct children of an entity.
+   *
+   * @param entity The entity to get the children of.
+   * @returns An array of child entity IDs.
+   */
+  getChildren(entity: EcsEntity): EcsEntity[] {
+    const children = this.entityChildren.get(entity)
+    return children ? [...children] : []
+  }
+
+  /**
+   * Get all ancestors of an entity (parent, grandparent, etc.).
+   *
+   * @param entity The entity to get ancestors of.
+   * @returns An array of ancestor entity IDs, from parent to root.
+   */
+  getAncestors(entity: EcsEntity): EcsEntity[] {
+    const ancestors: EcsEntity[] = []
+    let current = this.entityParent.get(entity)
+    while (current !== undefined) {
+      ancestors.push(current)
+      current = this.entityParent.get(current)
+    }
+    return ancestors
+  }
+
+  /**
+   * Get all descendants of an entity (children, grandchildren, etc.).
+   *
+   * @param entity The entity to get descendants of.
+   * @returns An array of descendant entity IDs.
+   */
+  getDescendants(entity: EcsEntity): EcsEntity[] {
+    const descendants: EcsEntity[] = []
+    const stack = this.getChildren(entity)
+    while (stack.length > 0) {
+      const child = stack.pop()!
+      descendants.push(child)
+      stack.push(...this.getChildren(child))
+    }
+    return descendants
+  }
+
+  /**
+   * Get the root ancestor of an entity (the topmost parent).
+   *
+   * @param entity The entity to get the root of.
+   * @returns The root entity, or the entity itself if it has no parent.
+   */
+  getRoot(entity: EcsEntity): EcsEntity {
+    let current = entity
+    let parent = this.entityParent.get(current)
+    while (parent !== undefined) {
+      current = parent
+      parent = this.entityParent.get(current)
+    }
+    return current
+  }
+
+  /**
+   * Check if an entity has children.
+   *
+   * @param entity The entity to check.
+   * @returns True if the entity has children.
+   */
+  hasChildren(entity: EcsEntity): boolean {
+    const children = this.entityChildren.get(entity)
+    return children !== undefined && children.size > 0
+  }
+
+  /**
+   * Check if an entity has a parent.
+   *
+   * @param entity The entity to check.
+   * @returns True if the entity has a parent.
+   */
+  hasParent(entity: EcsEntity): boolean {
+    return this.entityParent.has(entity)
+  }
+
+  /**
+   * Check if an entity is the parent of another.
+   *
+   * @param parent The potential parent entity.
+   * @param child The potential child entity.
+   * @returns True if parent is the parent of child.
+   */
+  isParentOf(parent: EcsEntity, child: EcsEntity): boolean {
+    return this.entityParent.get(child) === parent
+  }
+
+  /**
+   * Check if an entity is the child of another.
+   *
+   * @param child The potential child entity.
+   * @param parent The potential parent entity.
+   * @returns True if child is the child of parent.
+   */
+  isChildOf(child: EcsEntity, parent: EcsEntity): boolean {
+    return this.isParentOf(parent, child)
+  }
+
+  /**
+   * Check if one entity is an ancestor of another.
+   *
+   * @param ancestor The potential ancestor entity.
+   * @param descendant The potential descendant entity.
+   * @returns True if ancestor is an ancestor of descendant.
+   */
+  isAncestorOf(ancestor: EcsEntity, descendant: EcsEntity): boolean {
+    let current = this.entityParent.get(descendant)
+    while (current !== undefined) {
+      if (current === ancestor) return true
+      current = this.entityParent.get(current)
+    }
+    return false
+  }
+
+  /**
+   * Check if one entity is a descendant of another.
+   *
+   * @param descendant The potential descendant entity.
+   * @param ancestor The potential ancestor entity.
+   * @returns True if descendant is a descendant of ancestor.
+   */
+  isDescendantOf(descendant: EcsEntity, ancestor: EcsEntity): boolean {
+    return this.isAncestorOf(ancestor, descendant)
+  }
+
+  /**
+   * Check if an entity is a root (has no parent).
+   *
+   * @param entity The entity to check.
+   * @returns True if the entity is a root.
+   */
+  isRoot(entity: EcsEntity): boolean {
+    return !this.hasParent(entity)
+  }
+
+  /****************************************************/
+  /* Component Management.                            */
+  /****************************************************/
 
   /**
    * Add one component to an entity.
@@ -555,6 +759,10 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
       this.entityComponents.get(entity)?.delete(type)
     }
   }
+
+  /****************************************************/
+  /* Querying.                                        */
+  /****************************************************/
 
   /**
    * Query all entities that have a specific component.
@@ -752,6 +960,13 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
     return result
   }
 
+  /****************************************************/
+  /* System Management.                               */
+  /****************************************************/
+
+  /** Registered systems in the world, keyed by their constructor type. */
+  private systems = new Map<Constructor<EcsSystem>, EcsSystem>()
+
   /**
    * Register a single system with the world. Each system type can only be registered once.
    * Calls the system's `onCreate` lifecycle method after registration.
@@ -816,6 +1031,164 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
   removeSystems(...types: Array<Constructor<EcsSystem>>): void {
     for (const type of types) this.removeSystem(type)
   }
+
+  /****************************************************/
+  /* Sorting Systems.                                 */
+  /****************************************************/
+
+  /** Cached sorted order of systems for execution. Invalidated when systems change. */
+  private sortedSystems: EcsSystem[] | undefined
+
+  /**
+   * Add an edge in the system dependency graph.
+   *
+   * @param from The system type that runs first.
+   * @param to The system type that runs after.
+   * @param edges The adjacency list.
+   * @param inDegree The in-degree map.
+   */
+  private addSystemEdge(
+    from: Constructor<EcsSystem>,
+    to: Constructor<EcsSystem>,
+    edges: Map<Constructor<EcsSystem>, Set<Constructor<EcsSystem>>>,
+    inDegree: Map<Constructor<EcsSystem>, number>,
+  ): void {
+    edges.get(from)!.add(to)
+    inDegree.set(to, inDegree.get(to)! + 1)
+  }
+
+  private getSystemPriority(type: Constructor<EcsSystem>): number {
+    return (type as unknown as typeof EcsSystem).priority ?? 0
+  }
+
+  private getSystemRunAfter(type: Constructor<EcsSystem>): Array<Constructor<EcsSystem>> | undefined {
+    return (type as unknown as typeof EcsSystem).runAfter
+  }
+
+  private getSystemRunBefore(type: Constructor<EcsSystem>): Array<Constructor<EcsSystem>> | undefined {
+    return (type as unknown as typeof EcsSystem).runBefore
+  }
+
+  private sortSystemGroup(
+    systemTypes: Array<Constructor<EcsSystem>>,
+    systemMap: Map<Constructor<EcsSystem>, EcsSystem>,
+  ): EcsSystem[] {
+    if (systemTypes.length === 0) return []
+    if (systemTypes.length === 1) return [systemMap.get(systemTypes[0])!]
+
+    const typeSet = new Set(systemTypes)
+
+    // --- Build adjacency list: edges go from "runs before" to "runs after".
+    const inDegree = new Map<Constructor<EcsSystem>, number>()
+    const edges = new Map<Constructor<EcsSystem>, Set<Constructor<EcsSystem>>>()
+
+    // --- Initialize.
+    for (const type of systemTypes) {
+      inDegree.set(type, 0)
+      edges.set(type, new Set())
+    }
+
+    // --- Process runAfter: if A.runAfter includes B, then B -> A (B runs before A).
+    // --- Only consider dependencies within the same priority group.
+    for (const type of systemTypes) {
+      const runAfter = this.getSystemRunAfter(type)
+      if (!runAfter) continue
+      for (const dependency of runAfter)
+        if (typeSet.has(dependency)) this.addSystemEdge(dependency, type, edges, inDegree)
+    }
+
+    // --- Process runBefore: if A.runBefore includes B, then A -> B (A runs before B).
+    // --- Only consider dependencies within the same priority group.
+    for (const type of systemTypes) {
+      const runBefore = this.getSystemRunBefore(type)
+      if (!runBefore) continue
+      for (const successor of runBefore)
+        if (typeSet.has(successor)) this.addSystemEdge(type, successor, edges, inDegree)
+    }
+
+    // --- Kahn's algorithm: start with nodes that have no incoming edges.
+    const queue: Array<Constructor<EcsSystem>> = []
+    for (const [type, degree] of inDegree)
+      if (degree === 0) queue.push(type)
+
+    const sorted: Array<Constructor<EcsSystem>> = []
+    while (queue.length > 0) {
+      const current = queue.shift()!
+      sorted.push(current)
+
+      for (const neighbor of edges.get(current)!) {
+        const newDegree = inDegree.get(neighbor)! - 1
+        inDegree.set(neighbor, newDegree)
+        if (newDegree === 0) queue.push(neighbor)
+      }
+    }
+
+    // --- Check for cycles.
+    if (sorted.length !== systemTypes.length) {
+      const remaining = systemTypes.filter(t => !sorted.includes(t)).map(t => t.name)
+      throw new Error(`Circular dependency detected among systems: ${remaining.join(', ')}`)
+    }
+
+    return sorted.map(type => systemMap.get(type)!)
+  }
+
+  /**
+   * Perform a topological sort on systems based on their runBefore/runAfter dependencies.
+   * Uses Kahn's algorithm to detect cycles and produce a valid execution order.
+   *
+   * @returns Sorted array of systems.
+   * @throws Error if a circular dependency is detected.
+   */
+  private sortSystems(): EcsSystem[] {
+    const systemTypes = [...this.systems.keys()]
+    const systemMap = this.systems
+
+    // --- Group systems by priority.
+    const priorityGroups = new Map<number, Array<Constructor<EcsSystem>>>()
+    for (const type of systemTypes) {
+      const priority = this.getSystemPriority(type)
+      if (!priorityGroups.has(priority)) priorityGroups.set(priority, [])
+      priorityGroups.get(priority)!.push(type)
+    }
+
+    // --- Sort priorities (lower runs first).
+    const sortedPriorities = [...priorityGroups.keys()].toSorted((a, b) => a - b)
+
+    // --- Sort each group independently, then concatenate.
+    const result: EcsSystem[] = []
+    for (const priority of sortedPriorities) {
+      const group = priorityGroups.get(priority)!
+      const sortedGroup = this.sortSystemGroup(group, systemMap)
+      result.push(...sortedGroup)
+    }
+
+    return result
+  }
+
+  /**
+   * Get the sorted list of systems for execution. Caches the result until
+   * systems are added or removed.
+   *
+   * @returns Sorted array of systems.
+   */
+  private getSortedSystems(): EcsSystem[] {
+    this.sortedSystems ??= this.sortSystems()
+    return this.sortedSystems
+  }
+
+  /**
+   * Invalidate the sorted systems cache. Called when systems are added or removed.
+   */
+  private invalidateSystemOrder(): void {
+    this.sortedSystems = undefined
+  }
+
+  /****************************************************/
+  /* Resource Management.                             */
+  /****************************************************/
+
+  /** Global resources, keyed by their constructor type. */
+  private resources = new Map<Constructor<EcsResource>, EcsResource>()
 
   /**
    * Add a single resource to the world. Resources are singletons that exist
@@ -897,6 +1270,13 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
     for (const type of types) this.removeResource(type)
   }
 
+  /****************************************************/
+  /* Plugin Management.                               */
+  /****************************************************/
+
+  /** Registered plugins in the world, keyed by their constructor type. */
+  private plugins = new Map<Constructor<EcsPlugin>, EcsPlugin>()
+
   /**
    * Add a plugin to the world. Plugins are self-contained modules that bundle
    * related systems, resources, and configuration together. Dependencies are
@@ -964,6 +1344,20 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
     plugin.cleanup?.(this)
     this.plugins.delete(type)
   }
+
+  /**
+   * Remove multiple plugins from the world. Calls each plugin's `cleanup` method
+   * if defined.
+   *
+   * @param types The plugin types to remove.
+   */
+  removePlugins(...types: Array<Constructor<EcsPlugin>>): void {
+    for (const type of types) this.removePlugin(type)
+  }
+
+  /****************************************************/
+  /* Lifecycle.                                       */
+  /****************************************************/
 
   /**
    * Update all systems in their sorted order based on dependencies.
@@ -1036,6 +1430,8 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
     this.systems.clear()
     this.entityComponents.clear()
     this.componentEntities.clear()
+    this.entityParent.clear()
+    this.entityChildren.clear()
     this.resources.clear()
     this.plugins.clear()
     this.registeredComponents.clear()

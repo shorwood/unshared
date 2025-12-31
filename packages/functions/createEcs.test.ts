@@ -4,21 +4,32 @@ import {
   AudioSystem,
   ConfigResource,
   CorePlugin,
+  CustomPriorityEarlySystem,
+  CustomPriorityLateSystem,
   CyclicSystemA,
   CyclicSystemB,
+  DefaultPrioritySystem,
   ErrorOnUpdateSystem,
+  FirstPrioritySystem,
   GamePlugin,
   HealthComponent,
   HealthSystem,
   InputSystem,
+  LastPrioritySystem,
   LifecycleSystem,
   MovementSystem,
   PhysicsPlugin,
   PhysicsSystem,
   PositionComponent,
+  PostUpdatePrioritySystem,
+  PreUpdatePrioritySystem,
+  PrioritySystemA,
+  PrioritySystemB,
+  PrioritySystemC,
   RenderingPlugin,
   RenderSystem,
   TextureRegistry,
+  UpdatePrioritySystem,
   VelocityComponent,
 } from './createEcs.fixtures'
 
@@ -119,6 +130,203 @@ describe('ecsWorld', () => {
       expect(handler).toHaveBeenCalledTimes(2)
       expect(handler).toHaveBeenCalledWith(entity, expect.any(PositionComponent))
       expect(handler).toHaveBeenCalledWith(entity, expect.any(VelocityComponent))
+    })
+  })
+
+  describe('hierarchy management', () => {
+    it('should spawn a child entity', () => {
+      const world = new EcsWorld()
+      const parent = world.spawn()
+      const child = world.spawnChild(parent)
+      expect(world.exists(child)).toBe(true)
+      expect(world.getParent(child)).toBe(parent)
+    })
+
+    it('should spawn a child entity with components', () => {
+      const world = new EcsWorld()
+      const parent = world.spawn()
+      const child = world.spawnChild(parent, new PositionComponent(10, 20))
+      expect(world.hasComponent(child, PositionComponent)).toBe(true)
+      expect(world.getComponent(child, PositionComponent)?.x).toBe(10)
+    })
+
+    it('should set parent of an entity', () => {
+      const world = new EcsWorld()
+      const parent = world.spawn()
+      const child = world.spawn()
+      world.setParent(child, parent)
+      expect(world.getParent(child)).toBe(parent)
+      expect(world.getChildren(parent)).toContain(child)
+    })
+
+    it('should remove parent when setting parent to undefined', () => {
+      const world = new EcsWorld()
+      const parent = world.spawn()
+      const child = world.spawnChild(parent)
+      world.setParent(child, undefined)
+      expect(world.getParent(child)).toBeUndefined()
+      expect(world.getChildren(parent)).not.toContain(child)
+    })
+
+    it('should change parent of an entity', () => {
+      const world = new EcsWorld()
+      const parent1 = world.spawn()
+      const parent2 = world.spawn()
+      const child = world.spawnChild(parent1)
+      world.setParent(child, parent2)
+      expect(world.getParent(child)).toBe(parent2)
+      expect(world.getChildren(parent1)).not.toContain(child)
+      expect(world.getChildren(parent2)).toContain(child)
+    })
+
+    it('should get parent of an entity', () => {
+      const world = new EcsWorld()
+      const parent = world.spawn()
+      const child = world.spawnChild(parent)
+      expect(world.getParent(child)).toBe(parent)
+    })
+
+    it('should return undefined for entity without parent', () => {
+      const world = new EcsWorld()
+      const entity = world.spawn()
+      expect(world.getParent(entity)).toBeUndefined()
+    })
+
+    it('should get children of an entity', () => {
+      const world = new EcsWorld()
+      const parent = world.spawn()
+      const child1 = world.spawnChild(parent)
+      const child2 = world.spawnChild(parent)
+      const children = world.getChildren(parent)
+      expect(children).toHaveLength(2)
+      expect(children).toContain(child1)
+      expect(children).toContain(child2)
+    })
+
+    it('should return empty array for entity without children', () => {
+      const world = new EcsWorld()
+      const entity = world.spawn()
+      expect(world.getChildren(entity)).toEqual([])
+    })
+
+    it('should check if entity has children', () => {
+      const world = new EcsWorld()
+      const parent = world.spawn()
+      expect(world.hasChildren(parent)).toBe(false)
+      world.spawnChild(parent)
+      expect(world.hasChildren(parent)).toBe(true)
+    })
+
+    it('should check if entity has parent', () => {
+      const world = new EcsWorld()
+      const parent = world.spawn()
+      const child = world.spawn()
+      expect(world.hasParent(child)).toBe(false)
+      world.setParent(child, parent)
+      expect(world.hasParent(child)).toBe(true)
+    })
+
+    it('should get ancestors of an entity', () => {
+      const world = new EcsWorld()
+      const grandparent = world.spawn()
+      const parent = world.spawnChild(grandparent)
+      const child = world.spawnChild(parent)
+      const ancestors = world.getAncestors(child)
+      expect(ancestors).toEqual([parent, grandparent])
+    })
+
+    it('should return empty array for entity without ancestors', () => {
+      const world = new EcsWorld()
+      const entity = world.spawn()
+      expect(world.getAncestors(entity)).toEqual([])
+    })
+
+    it('should get descendants of an entity', () => {
+      const world = new EcsWorld()
+      const grandparent = world.spawn()
+      const parent = world.spawnChild(grandparent)
+      const child1 = world.spawnChild(parent)
+      const child2 = world.spawnChild(parent)
+      const descendants = world.getDescendants(grandparent)
+      expect(descendants).toHaveLength(3)
+      expect(descendants).toContain(parent)
+      expect(descendants).toContain(child1)
+      expect(descendants).toContain(child2)
+    })
+
+    it('should return empty array for entity without descendants', () => {
+      const world = new EcsWorld()
+      const entity = world.spawn()
+      expect(world.getDescendants(entity)).toEqual([])
+    })
+
+    it('should get root of an entity', () => {
+      const world = new EcsWorld()
+      const grandparent = world.spawn()
+      const parent = world.spawnChild(grandparent)
+      const child = world.spawnChild(parent)
+      expect(world.getRoot(child)).toBe(grandparent)
+      expect(world.getRoot(parent)).toBe(grandparent)
+      expect(world.getRoot(grandparent)).toBe(grandparent)
+    })
+
+    it('should destroy children recursively by default', () => {
+      const world = new EcsWorld()
+      const parent = world.spawn()
+      const child1 = world.spawnChild(parent)
+      const child2 = world.spawnChild(parent)
+      const grandchild = world.spawnChild(child1)
+      world.destroy(parent)
+      expect(world.exists(parent)).toBe(false)
+      expect(world.exists(child1)).toBe(false)
+      expect(world.exists(child2)).toBe(false)
+      expect(world.exists(grandchild)).toBe(false)
+    })
+
+    it('should not destroy children when recursive is false', () => {
+      const world = new EcsWorld()
+      const parent = world.spawn()
+      const child1 = world.spawnChild(parent)
+      const child2 = world.spawnChild(parent)
+      world.destroy(parent, false)
+      expect(world.exists(parent)).toBe(false)
+      expect(world.exists(child1)).toBe(true)
+      expect(world.exists(child2)).toBe(true)
+    })
+
+    it('should orphan children when parent is destroyed non-recursively', () => {
+      const world = new EcsWorld()
+      const parent = world.spawn()
+      const child = world.spawnChild(parent)
+      world.destroy(parent, false)
+      expect(world.getParent(child)).toBeUndefined()
+      expect(world.hasParent(child)).toBe(false)
+    })
+
+    it('should remove entity from parent children set when destroyed', () => {
+      const world = new EcsWorld()
+      const parent = world.spawn()
+      const child1 = world.spawnChild(parent)
+      const child2 = world.spawnChild(parent)
+      world.destroy(child1)
+      expect(world.getChildren(parent)).toEqual([child2])
+    })
+
+    it('should clear hierarchy on dispose', () => {
+      const world = new EcsWorld()
+      const parent = world.spawn()
+      const child = world.spawnChild(parent)
+      world.dispose()
+      expect(world.exists(parent)).toBe(false)
+      expect(world.exists(child)).toBe(false)
+    })
+
+    it('should allow chaining setParent', () => {
+      const world = new EcsWorld()
+      const parent = world.spawn()
+      const child = world.spawn()
+      const result = world.setParent(child, parent)
+      expect(result).toBe(world)
     })
   })
 
@@ -298,12 +506,9 @@ describe('ecsWorld', () => {
   describe('queries', () => {
     it('should query all entities with a specific component', () => {
       const world = new EcsWorld()
-      const entity1 = world.spawn()
-      const entity2 = world.spawn()
-      const entity3 = world.spawn()
-      world.addComponents(entity1, new PositionComponent(1, 1))
-      world.addComponents(entity2, new PositionComponent(2, 2))
-      world.addComponents(entity3, new VelocityComponent(1, 1))
+      const entity1 = world.spawn(new PositionComponent(1, 1))
+      const entity2 = world.spawn(new PositionComponent(2, 2))
+      world.spawn(new VelocityComponent(1, 1))
 
       // Note: result object is reused, so capture entities during iteration
       const entities: number[] = []
@@ -1145,6 +1350,106 @@ describe('ecsWorld', () => {
       expect(() => world.update(16)).not.toThrow()
       expect(executionOrder.some(s => s instanceof PhysicsSystem)).toBe(true)
       expect(executionOrder.some(s => s instanceof RenderSystem)).toBe(true)
+    })
+
+    it('should run systems with lower priority first', () => {
+      const world = new EcsWorld()
+      const executionOrder: EcsSystem[] = []
+      world.on('updated', system => executionOrder.push(system))
+
+      // Add in reverse priority order
+      world.addSystem(new LastPrioritySystem(world))
+      world.addSystem(new UpdatePrioritySystem(world))
+      world.addSystem(new FirstPrioritySystem(world))
+      world.update(16)
+
+      expect(executionOrder[0]).toBeInstanceOf(FirstPrioritySystem)
+      expect(executionOrder[1]).toBeInstanceOf(UpdatePrioritySystem)
+      expect(executionOrder[2]).toBeInstanceOf(LastPrioritySystem)
+    })
+
+    it('should order systems using all priority stages', () => {
+      const world = new EcsWorld()
+      const executionOrder: EcsSystem[] = []
+      world.on('updated', system => executionOrder.push(system))
+
+      // Add in random order
+      world.addSystem(new PostUpdatePrioritySystem(world))
+      world.addSystem(new FirstPrioritySystem(world))
+      world.addSystem(new LastPrioritySystem(world))
+      world.addSystem(new PreUpdatePrioritySystem(world))
+      world.addSystem(new UpdatePrioritySystem(world))
+      world.update(16)
+
+      expect(executionOrder[0]).toBeInstanceOf(FirstPrioritySystem)
+      expect(executionOrder[1]).toBeInstanceOf(PreUpdatePrioritySystem)
+      expect(executionOrder[2]).toBeInstanceOf(UpdatePrioritySystem)
+      expect(executionOrder[3]).toBeInstanceOf(PostUpdatePrioritySystem)
+      expect(executionOrder[4]).toBeInstanceOf(LastPrioritySystem)
+    })
+
+    it('should apply runAfter/runBefore within the same priority', () => {
+      const world = new EcsWorld()
+      const executionOrder: EcsSystem[] = []
+      world.on('updated', system => executionOrder.push(system))
+
+      // Add in reverse order
+      world.addSystem(new PrioritySystemC(world))
+      world.addSystem(new PrioritySystemA(world))
+      world.addSystem(new PrioritySystemB(world))
+      world.update(16)
+
+      expect(executionOrder[0]).toBeInstanceOf(PrioritySystemA)
+      expect(executionOrder[1]).toBeInstanceOf(PrioritySystemB)
+      expect(executionOrder[2]).toBeInstanceOf(PrioritySystemC)
+    })
+
+    it('should respect priority over runAfter/runBefore across different priorities', () => {
+      const world = new EcsWorld()
+      const executionOrder: EcsSystem[] = []
+      world.on('updated', system => executionOrder.push(system))
+
+      world.addSystem(new LastPrioritySystem(world))
+      world.addSystem(new UpdatePrioritySystem(world))
+      world.addSystem(new FirstPrioritySystem(world))
+      world.update(16)
+
+      // Priority takes precedence, runAfter only applies within same priority
+      expect(executionOrder[0]).toBeInstanceOf(FirstPrioritySystem)
+      expect(executionOrder[1]).toBeInstanceOf(UpdatePrioritySystem)
+      expect(executionOrder[2]).toBeInstanceOf(LastPrioritySystem)
+    })
+
+    it('should allow custom numeric priorities between stages', () => {
+      const world = new EcsWorld()
+      const executionOrder: EcsSystem[] = []
+      world.on('updated', system => executionOrder.push(system))
+
+      world.addSystem(new LastPrioritySystem(world))
+      world.addSystem(new CustomPriorityLateSystem(world))
+      world.addSystem(new FirstPrioritySystem(world))
+      world.addSystem(new CustomPriorityEarlySystem(world))
+      world.update(16)
+
+      expect(executionOrder[0]).toBeInstanceOf(FirstPrioritySystem)
+      expect(executionOrder[1]).toBeInstanceOf(CustomPriorityEarlySystem)
+      expect(executionOrder[2]).toBeInstanceOf(CustomPriorityLateSystem)
+      expect(executionOrder[3]).toBeInstanceOf(LastPrioritySystem)
+    })
+
+    it('should use priority 0 (PRIORITY_UPDATE) by default', () => {
+      const world = new EcsWorld()
+      const executionOrder: EcsSystem[] = []
+      world.on('updated', system => executionOrder.push(system))
+
+      world.addSystem(new LastPrioritySystem(world))
+      world.addSystem(new DefaultPrioritySystem(world))
+      world.addSystem(new FirstPrioritySystem(world))
+      world.update(16)
+
+      expect(executionOrder[0]).toBeInstanceOf(FirstPrioritySystem)
+      expect(executionOrder[1]).toBeInstanceOf(DefaultPrioritySystem)
+      expect(executionOrder[2]).toBeInstanceOf(LastPrioritySystem)
     })
   })
 })
