@@ -1,17 +1,29 @@
 import type { MaybePromise } from '@unshared/types'
 
-/**
- * A map of states and their transitions. The keys of the map are the names of
- * the states and the values are the transition functions.
- *
- * Each transition function is called with the last state of the machine and
- * returns the next state of the machine. If the transition function returns
- * `undefined` the machine stays in the same state.
- *
- * @template T The data of the machine.
- * @template K The allowed states of the machine.
- */
-export type FSMTransitions<T, K extends string> = Record<K, (data: T) => MaybePromise<string | undefined | void>>
+export namespace FSM {
+
+  /**
+   * A transition function that takes the data of the machine and
+   * returns the next state of the machine, or `undefined` to stay
+   * in the same state.
+   *
+   * @template T The data of the machine.
+   */
+  export type Transition<T> = (data: T) => MaybePromise<string | undefined | void>
+
+  /**
+   * A map of states and their transitions. The keys of the map are the names of
+   * the states and the values are the transition functions.
+   *
+   * Each transition function is called with the last state of the machine and
+   * returns the next state of the machine. If the transition function returns
+   * `undefined` the machine stays in the same state.
+   *
+   * @template T The data of the machine.
+   * @template K The allowed states of the machine.
+   */
+  export type Transitions<T, K extends string> = Record<K, Transition<T>>
+}
 
 /**
  * Create an highly observeable [finite state machine](https://en.wikipedia.org/wiki/Finite-state_machine)
@@ -63,7 +75,7 @@ export class FSM<T extends object, K extends string> extends EventTarget {
    */
   public state: K | undefined | void
 
-  constructor(initialData: T, private transitions: FSMTransitions<T, K>) {
+  constructor(initialData: T, private transitions: FSM.Transitions<T, K>) {
     super()
     this.data = initialData
   }
@@ -145,6 +157,6 @@ export class FSM<T extends object, K extends string> extends EventTarget {
  * // Run the machine.
  * const result = await rombaFSM.run('init') // => { battery: 0, position: { x: 10, y: 10 } }
  */
-export function createFsm<T extends object, K extends string>(initialData: T, transitions: FSMTransitions<T, K>): FSM<T, K> {
+export function createFsm<T extends object, K extends string>(initialData: T, transitions: FSM.Transitions<T, K>): FSM<T, K> {
   return new FSM<T, K>(initialData, transitions)
 }
