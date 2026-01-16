@@ -100,19 +100,18 @@ export namespace Theme {
    * A specific color state with background, foreground, and border.
    * Everything needed to render a UI element.
    */
-  export interface ColorTargetSet {
-    background: Color
-    foreground: Color
-    border: Color
-    muted: Color
-  }
+  export type ColorTargetSet<Targets extends string = string> =
+    Record<Targets, Color>
 
   /**
    * A color token with all necessary variations for UI implementation.
    * Contains the color itself plus interaction states and contrast colors.
    */
-  export type ColorStateSet<States extends string = string> =
-    Record<States, ColorTargetSet>
+  export type ColorStateSet<
+    States extends string = string,
+    Targets extends string = string,
+  > =
+    Record<States, ColorTargetSet<Targets>>
 
   /**
    * Color intensity scale from subtle backgrounds to vibrant accents.
@@ -121,8 +120,9 @@ export namespace Theme {
   export type ColorRoleSet<
     Roles extends string = string,
     States extends string = string,
+    Targets extends string = string,
   > =
-    Record<Roles, Theme.ColorStateSet<States>>
+    Record<Roles, Theme.ColorStateSet<States, Targets>>
 }
 
 /**
@@ -136,7 +136,7 @@ export interface Theme<
   Targets extends string = string,
 > {
   isDark: boolean
-  colors: Record<Colors, Theme.ColorRoleSet<Roles, States>>
+  colors: Record<Colors, Theme.ColorRoleSet<Roles, States, Targets>>
   options: Theme.Options<Colors, Roles, States, Targets>
 }
 
@@ -167,17 +167,17 @@ export function createTheme<
       const stateEntries = Object.entries(states).map(([stateName, stateFunction]) => {
         const stateColor = stateFunction(roleColor, isDark)
         const targetEntries = Object.entries(targets).map(([targetName, targetFunction]) => [targetName, targetFunction(stateColor, isDark)])
-        return [stateName, Object.fromEntries(targetEntries) as Theme.ColorTargetSet]
+        return [stateName, Object.fromEntries(targetEntries) as Theme.ColorTargetSet<Targets>]
       })
-      return [roleName, Object.fromEntries(stateEntries) as Theme.ColorStateSet<States>]
+      return [roleName, Object.fromEntries(stateEntries) as Theme.ColorStateSet<States, Targets>]
     })
-    return [colorName, Object.fromEntries(roleEntries) as Theme.ColorRoleSet<Roles, States>]
+    return [colorName, Object.fromEntries(roleEntries) as Theme.ColorRoleSet<Roles, States, Targets>]
   })
 
   // --- Return the complete theme object
   return {
     isDark,
     options,
-    colors: Object.fromEntries(colorEntries) as Record<Colors, Theme.ColorRoleSet<Roles, States>>,
+    colors: Object.fromEntries(colorEntries) as Record<Colors, Theme.ColorRoleSet<Roles, States, Targets>>,
   }
 }
