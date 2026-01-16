@@ -4,54 +4,56 @@ import type { PromiseWrap } from '@unshared/types/PromiseWrap'
 import type { Awaitable } from './awaitable'
 import { awaitable } from './awaitable'
 
-export interface QueueTask<T = unknown> {
+export namespace Queue {
+  export interface Task<T = unknown> {
 
-  /**
-   * Abort the task.
-   */
-  cancel(): void
+    /**
+     * Abort the task.
+     */
+    cancel(): void
 
-  /**
-   * The queued function.
-   */
-  fn: Function<Promise<T> | T>
+    /**
+     * The queued function.
+     */
+    fn: Function<Promise<T> | T>
 
-  /**
-   * Is the task running?
-   */
-  isRunning: boolean
+    /**
+     * Is the task running?
+     */
+    isRunning: boolean
 
-  /**
-   * The promise that resolves when the task is complete.
-   */
-  promise: Promise<T>
-}
+    /**
+     * The promise that resolves when the task is complete.
+     */
+    promise: Promise<T>
+  }
 
-export interface QueueOptions {
+  export interface Options {
 
-  /**
-   * The maximum number of functions that can run concurrently. You can also provide a
-   * function that returns the concurrency; The result will be evaluated each time a task
-   * is added to the queue.
-   *
-   * @default 1
-   * @example
-   * // Scale concurrency with the RAM usage.
-   * const queue = new Queue({ concurrency: () => os.freemem() / os.totalmem() * 10 })
-   */
-  concurrency?: MaybeFunction<number>
+    /**
+     * The maximum number of functions that can run concurrently. You can also provide a
+     * function that returns the concurrency; The result will be evaluated each time a task
+     * is added to the queue.
+     *
+     * @default 1
+     * @example
+     * // Scale concurrency with the RAM usage.
+     * const queue = new Queue({ concurrency: () => os.freemem() / os.totalmem() * 10 })
+     */
+    concurrency?: MaybeFunction<number>
 
-  /**
-   * The time in milliseconds to wait before starting the next function. You can also provide
-   * a function that returns the time to wait; The result will be evaluated each time a task
-   * has completed and the next task is about to start.
-   *
-   * @default 0
-   * @example
-   * // Scale cooldown with the RAM usage.
-   * const queue = new Queue({ cooldown: () => os.freemem() / os.totalmem() * 1000 })
-   */
-  cooldown?: MaybeFunction<number>
+    /**
+     * The time in milliseconds to wait before starting the next function. You can also provide
+     * a function that returns the time to wait; The result will be evaluated each time a task
+     * has completed and the next task is about to start.
+     *
+     * @default 0
+     * @example
+     * // Scale cooldown with the RAM usage.
+     * const queue = new Queue({ cooldown: () => os.freemem() / os.totalmem() * 1000 })
+     */
+    cooldown?: MaybeFunction<number>
+  }
 }
 
 /**
@@ -86,7 +88,7 @@ export class Queue extends EventTarget {
   /**
    * An array of the queued functions.
    */
-  protected tasks: QueueTask[] = []
+  protected tasks: Queue.Task[] = []
 
   /**
    * The number of tasks that are currently waiting for their turn to run.
@@ -107,7 +109,7 @@ export class Queue extends EventTarget {
    * // Wrap the listener of an express route to queue the execution.
    * app.get('/route', queue.wrap(async (req, res) => { ... }))
    */
-  constructor(options: QueueOptions = {}) {
+  constructor(options: Queue.Options = {}) {
     super()
     if (options.concurrency) this.internalConcurency = options.concurrency
     if (options.cooldown) this.internalCooldown = options.cooldown
@@ -123,7 +125,7 @@ export class Queue extends EventTarget {
    *
    * @param task The task to abort.
    */
-  private dispatchTaskCancel(task: QueueTask): void {
+  private dispatchTaskCancel(task: Queue.Task): void {
     if (task.isRunning) return
     const error = new Error('Task canceled')
     this.dispatchTaskError(task, error)
@@ -135,7 +137,7 @@ export class Queue extends EventTarget {
    * @param task The task that completed.
    * @param value The result of the task.
    */
-  private dispatchTaskComplete(task: QueueTask, value: unknown): void {
+  private dispatchTaskComplete(task: Queue.Task, value: unknown): void {
     const event = new CustomEvent('complete', { detail: { task, value } })
     this.running--
     this.tasks.shift()
@@ -148,7 +150,7 @@ export class Queue extends EventTarget {
    * @param task The task that failed.
    * @param error The error that caused the task to fail.
    */
-  private dispatchTaskError(task: QueueTask, error: Error): void {
+  private dispatchTaskError(task: Queue.Task, error: Error): void {
     const event = new CustomEvent('error', { detail: { error, task } })
     this.running--
     this.tasks.shift()
@@ -188,20 +190,20 @@ export class Queue extends EventTarget {
    * const task = (name: string) => `Hello ${name}!`
    * await queue.call(task, 'World') // Hello World!
    */
-  public call<T>(fn: Function<Promise<T> | T>): Awaitable<QueueTask<T>, T> {
-    const task: QueueTask<T> = {
+  public call<T>(fn: Function<Promise<T> | T>): Awaitable<Queue.Task<T>, T> {
+    const task: Queue.Task<T> = {
       cancel: () => this.dispatchTaskCancel(task),
       fn,
       isRunning: false,
       promise: new Promise<T>((resolve, reject) => {
         const onComplete = (event: Event) => {
-          const { detail } = event as CustomEvent<{ task: QueueTask; value: T }>
+          const { detail } = event as CustomEvent<{ task: Queue.Task; value: T }>
           if (detail.task !== task) return
           resolve(detail.value)
           this.removeEventListener('complete', onComplete)
         }
         const onError = (event: Event) => {
-          const { detail } = event as CustomEvent<{ error: Error; task: QueueTask }>
+          const { detail } = event as CustomEvent<{ error: Error; task: Queue.Task }>
           if (detail.task !== task) return
           reject(detail.error)
           this.removeEventListener('error', onError)
@@ -310,6 +312,6 @@ export class Queue extends EventTarget {
  * const result = await queue.call(task, 'World') // Hello World!
  * ```
  */
-export function createQueue(options: QueueOptions = {}): Queue {
+export function createQueue(options: Queue.Options = {}): Queue {
   return new Queue(options)
 }
