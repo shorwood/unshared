@@ -54,6 +54,22 @@ export interface QueueOptions {
   cooldown?: MaybeFunction<number>
 }
 
+/**
+ * A queue that manages the execution of functions, allowing you to control
+ * the concurrency of the executions and the cooldown between them.
+ *
+ * @example
+ * // Create a queue with a concurrency of 4.
+ * const queue = new Queue({ concurrency: 4 })
+ * const app = express()
+ *
+ * // Wrap the listener of an express route to queue the execution.
+ * app.get('/route', queue.wrap(async (req, res) => { ... }))
+ *
+ * // Another example is to queue individual tasks.
+ * const task = (name: string) => `Hello ${name}!`
+ * const result = await queue.call(task, 'World') // Hello World!
+ */
 export class Queue extends EventTarget {
 
   /** The maximum number of functions that can run concurrently. */
@@ -279,6 +295,20 @@ export class Queue extends EventTarget {
  *
  * @param options The queue options
  * @returns The queue object
+ * @example
+ * ```ts
+ *
+ * // Create a queue with a concurrency of 4.
+ * const queue = createQueue({ concurrency: 4 })
+ * const app = express()
+ *
+ * // Wrap the listener of an express route to queue the execution.
+ * app.get('/route', queue.wrap(async (req, res) => { ... }))
+ *
+ * // Another example is to queue individual tasks.
+ * const task = (name: string) => `Hello ${name}!`
+ * const result = await queue.call(task, 'World') // Hello World!
+ * ```
  */
 export function createQueue(options: QueueOptions = {}): Queue {
   return new Queue(options)
