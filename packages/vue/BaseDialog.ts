@@ -1,4 +1,4 @@
-import type { MaybeArray } from '@unshared/unshared'
+import type { MaybeArray } from '@unshared/types'
 import type { Prop, VNode } from 'vue'
 import type { DefineComponentContext } from './defineSetupComponent'
 import type { BaseRenderableOptions } from './useBaseRenderable'

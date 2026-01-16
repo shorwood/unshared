@@ -1,4 +1,4 @@
-import type { MaybeArray } from '@unshared/unshared'
+import type { MaybeArray } from '@unshared/types'
 import type { Prop } from 'vue'
 import type { BaseStateOptions } from './useBaseState'
 import { toReactive } from '@vueuse/core'
