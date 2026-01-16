@@ -30,6 +30,9 @@ export type MaybeResolvable<T, P extends any[] = []> = MaybeFunction<MaybePromis
  *
  * // Return the value by calling the function and awaiting the promise
  * const value4 = resolve(() => Promise.resolve('Hello, World!')) // 'Hello, World!'
+ *
+ * // Call the function with arguments
+ * const value5 = resolve((name: string) => `Hello, ${name}!`, 'Alice') // 'Hello, Alice!'
  */
 export async function resolve<T, P extends any[]>(value: MaybeResolvable<T, P>, ...args: P): Promise<T> {
   let result = value
