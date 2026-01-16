@@ -9,32 +9,35 @@ import { hsl, hslFromCss, hslFromSrgb, hslToCss, isHsl } from './hsl'
 import { hsv, hsvFromSrgb, isHsv } from './hsv'
 import { isLab, lab, labFromCss, labFromLch, labFromXyz, labToCss } from './lab'
 import { isLch, lch, lchFromCss, lchFromLab, lchToCss } from './lch'
+import { binaryFromName, isName } from './name'
 import { oklab, oklabFromCss, oklabFromOklch, oklabFromSrgb, oklabToCss } from './oklab'
 import { oklch, oklchFromCss, oklchFromOklab, oklchToCss } from './oklch'
 import { isRgb, rgb, rgbFromBinary, rgbFromCss, rgbFromHex, rgbFromSrgb, rgbToAnsiBackground, rgbToAnsiText, rgbToCss } from './rgb'
 import { srgb, srgbFromCmyk, srgbFromHsl, srgbFromHsv, srgbFromOklab, srgbFromRgb, srgbFromXyz, srgbToLinearRgb } from './srgb'
 import { isXyz, xyz, xyzFromLab, xyzFromSrgb, xyzToCss } from './xyz'
 
-export interface ColorContrastOptions {
-  targetRatio?: number
-  targetChroma?: number
-  minimumChroma?: number
-  maximumChroma?: number
-  darknessThreshold?: number
-  lightnessWhenDark?: number
-  lightnessWhenLight?: number
-}
+export namespace Color {
+  export interface ContrastOptions {
+    targetRatio?: number
+    targetChroma?: number
+    minimumChroma?: number
+    maximumChroma?: number
+    darknessThreshold?: number
+    lightnessWhenDark?: number
+    lightnessWhenLight?: number
+  }
 
-export type ColorStringFormat =
-  | 'css-cmyk'
-  | 'css-hsl'
-  | 'css-lab'
-  | 'css-lch'
-  | 'css-oklab'
-  | 'css-oklch'
-  | 'css-rgb'
-  | 'css-xyz'
-  | 'hex'
+  export type StringFormat =
+    | 'css-cmyk'
+    | 'css-hsl'
+    | 'css-lab'
+    | 'css-lch'
+    | 'css-oklab'
+    | 'css-oklch'
+    | 'css-rgb'
+    | 'css-xyz'
+    | 'hex'
+}
 
 /**
  * A color manipulation class that stores colors internally in their original color space
@@ -44,7 +47,7 @@ export type ColorStringFormat =
 export class Color {
 
   /** Internal color value in its native color space. */
-  readonly value: IColor.Object
+  readonly value: Readonly<IColor.Object>
 
   /** The color space of the internal value. */
   readonly space: IColor.Space
@@ -218,6 +221,20 @@ export class Color {
   }
 
   /**
+   * Create a new {@linkcode Color} instance from a {@linkcode IColor.Name} color name.
+   * The color name is case-sensitive and must be a valid CSS color name.
+   *
+   * @param name The color name to parse.
+   * @returns The created Color instance.
+   * @example Color.fromName('red') // Red
+   */
+  static fromName(name: IColor.Name): Color {
+    const hex = binaryFromName(name)
+    if (hex === undefined) throw new Error(`Unknown color name: ${name}`)
+    return Color.fromRgb(rgbFromBinary(hex, 'rgb'))
+  }
+
+  /**
    * Parse a color from various input formats into a Color instance. The input
    * can be an object-like color, a CSS color string, a hexadecimal string,
    * or an integer binary color.
@@ -242,6 +259,7 @@ export class Color {
   static parse(value: IColor, format?: IColor.BinaryFormat): Color {
 
     // --- Base object-like colors.
+    if (isName(value)) return Color.fromName(value)
     if (isRgb(value)) return Color.fromRgb(value)
     if (isHsl(value)) return Color.fromHsl(value)
     if (isHsv(value)) return Color.fromHsv(value)
@@ -702,7 +720,7 @@ export class Color {
    * const background = Color.fromHex('#333333')
    * const textColor = Color.contrast(background) // Light text with sufficient contrast
    */
-  contrast(options: ColorContrastOptions = {}): Color {
+  contrast(options: Color.ContrastOptions = {}): Color {
     const {
       targetRatio = 80, // APCA contrast ratio target for normal text
       targetChroma = 0.05, // Subtle tinting for text
@@ -779,7 +797,7 @@ export class Color {
    * color.toString() // '#FF0000'
    * color.toString('css-rgb') // 'rgb(255, 0, 0)'
    */
-  toString(format: ColorStringFormat = 'hex'): string {
+  toString(format: Color.StringFormat = 'hex'): string {
     if (format === 'css-rgb') return rgbToCss(this.rgb())
     if (format === 'css-hsl') return hslToCss(this.hsl())
     if (format === 'css-lab') return labToCss(this.lab())
@@ -789,7 +807,7 @@ export class Color {
     if (format === 'css-xyz') return xyzToCss(this.xyz())
     if (format === 'css-cmyk') return cmykToCss(this.cmyk())
 
-    // --- If hexadecimal format, only append alpha is not undefined and less than 1
+    // --- If hexadecimal format, only append alpha if not undefined and less than 1
     const hex = hexFromRgb(this.rgb())
     const alpha = this.rgb().alpha
     return (alpha === undefined || alpha >= 1)

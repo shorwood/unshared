@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-redeclare */
-import type { CharacterHex, StringCombinaison, StringConstraint } from '@unshared/types'
+import type { CharacterHex, MaybeLiteral, StringCombinaison, StringConstraint } from '@unshared/types'
+import type { NAMES } from './name'
 
 export namespace IColor {
 
@@ -276,6 +277,9 @@ export namespace IColor {
    */
   export type Hex = `#${string}`
 
+  /** The literal names of colors supported by the Color class. */
+  export type Name = keyof typeof NAMES
+
   /** The name of a color space supported by the Color class. */
   export type Space =
     | 'cmyk'
@@ -314,5 +318,5 @@ export type IColor =
   | IColor.RGB
   | IColor.SRGB
   | IColor.XYZ
+  | MaybeLiteral<IColor.Name>
   | number
-  | string

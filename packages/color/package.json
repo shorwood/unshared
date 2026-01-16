@@ -66,6 +66,11 @@
       "types": "./dist/lch.d.ts",
       "import": "./dist/lch.js"
     },
+    "./name": {
+      "require": "./dist/name.cjs",
+      "types": "./dist/name.d.ts",
+      "import": "./dist/name.js"
+    },
     "./oklab": {
       "require": "./dist/oklab.cjs",
       "types": "./dist/oklab.d.ts",

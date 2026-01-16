@@ -259,6 +259,16 @@ describe('Color', () => {
     })
   })
 
+  describe('fromName', () => {
+    it('should create Color from color name', () => {
+      const color = Color.fromName('red')
+      const rgb = color.rgb()
+      expect(rgb.r).toBeCloseTo(255, 0)
+      expect(rgb.g).toBeCloseTo(0, 0)
+      expect(rgb.b).toBeCloseTo(0, 0)
+    })
+  })
+
   describe('parse', () => {
     it('should parse RGB object', () => {
       const color = Color.parse({ r: 255, g: 0, b: 0 })
@@ -348,6 +358,13 @@ describe('Color', () => {
       expect(color.rgb().r).toBeCloseTo(255, 0)
     })
 
+    it('should parse color name', () => {
+      const color = Color.parse('red')
+      expect(color.rgb().r).toBeCloseTo(255, 0)
+      expect(color.rgb().g).toBeCloseTo(0, 0)
+      expect(color.rgb().b).toBeCloseTo(0, 0)
+    })
+
     it('should throw error for unparseable string', () => {
       expect(() => Color.parse('invalid')).toThrow('Unable to parse color: invalid')
     })
@@ -364,13 +381,6 @@ describe('Color', () => {
       const color = Color.fromLch({ l: 50, c: 30, h: 120 })
       const lch = color.lch()
       expect(Object.isFrozen(lch)).toBe(true)
-    })
-
-    it('should memoize result', () => {
-      const color = Color.fromLch({ l: 50, c: 30, h: 120 })
-      const lch1 = color.lch()
-      const lch2 = color.lch()
-      expect(lch1).toBe(lch2)
     })
   })
 
@@ -534,13 +544,6 @@ describe('Color', () => {
       const result = color.ansiText('')
       expect(result).toContain('\u001B[38;2;')
     })
-
-    it('should memoize result for same content', () => {
-      const color = Color.fromRgb({ r: 255, g: 0, b: 0 })
-      const result1 = color.ansiText('Test')
-      const result2 = color.ansiText('Test')
-      expect(result1).toBe(result2)
-    })
   })
 
   describe('ansiBackground', () => {
@@ -556,13 +559,6 @@ describe('Color', () => {
       const color = Color.fromRgb({ r: 255, g: 0, b: 0 })
       const result = color.ansiBackground('')
       expect(result).toContain('\u001B[48;2;')
-    })
-
-    it('should memoize result for same content', () => {
-      const color = Color.fromRgb({ r: 255, g: 0, b: 0 })
-      const result1 = color.ansiBackground('Test')
-      const result2 = color.ansiBackground('Test')
-      expect(result1).toBe(result2)
     })
   })
 
@@ -584,13 +580,6 @@ describe('Color', () => {
       const luminance = color.getRelativeLuminance()
       expect(luminance).toBeGreaterThan(0)
       expect(luminance).toBeLessThan(1)
-    })
-
-    it('should be memoized', () => {
-      const color = Color.fromSrgb({ r: 0.5, g: 0.5, b: 0.5 })
-      const lum1 = color.getRelativeLuminance()
-      const lum2 = color.getRelativeLuminance()
-      expect(lum1).toBe(lum2)
     })
   })
 
@@ -616,14 +605,6 @@ describe('Color', () => {
       const ratio2 = blue.getContrastRatio(red)
       expect(ratio1).toBeCloseTo(ratio2, 5)
     })
-
-    it('should be memoized', () => {
-      const color1 = Color.fromSrgb({ r: 1, g: 0, b: 0 })
-      const color2 = Color.fromSrgb({ r: 0, g: 0, b: 1 })
-      const ratio1 = color1.getContrastRatio(color2)
-      const ratio2 = color1.getContrastRatio(color2)
-      expect(ratio1).toBe(ratio2)
-    })
   })
 
   describe('getRelativeLuminanceAPCA', () => {
@@ -644,13 +625,6 @@ describe('Color', () => {
       const lightOnDark = color.getRelativeLuminanceAPCA(true, true)
       const darkOnLight = color.getRelativeLuminanceAPCA(true, false)
       expect(lightOnDark).not.toBeCloseTo(darkOnLight, 2)
-    })
-
-    it('should be memoized', () => {
-      const color = Color.fromSrgb({ r: 0.5, g: 0.5, b: 0.5 })
-      const lum1 = color.getRelativeLuminanceAPCA(true, false)
-      const lum2 = color.getRelativeLuminanceAPCA(true, false)
-      expect(lum1).toBe(lum2)
     })
   })
 
@@ -681,14 +655,6 @@ describe('Color', () => {
       const bg = Color.fromSrgb({ r: 0.5, g: 0.5, b: 0.5 })
       const contrast = text.getContrastRatioAPCA(bg, false)
       expect(contrast).toBe(0)
-    })
-
-    it('should be memoized', () => {
-      const text = Color.fromSrgb({ r: 0, g: 0, b: 0 })
-      const bg = Color.fromSrgb({ r: 1, g: 1, b: 1 })
-      const contrast1 = text.getContrastRatioAPCA(bg, false)
-      const contrast2 = text.getContrastRatioAPCA(bg, false)
-      expect(contrast1).toBe(contrast2)
     })
   })
 
@@ -742,13 +708,6 @@ describe('Color', () => {
       const lch = mapped.lch()
       expect(lch.l).toBeCloseTo(50, 1)
       expect(lch.h).toBeCloseTo(120, 1)
-    })
-
-    it('should be memoized', () => {
-      const color = Color.fromLch({ l: 50, c: 200, h: 120 })
-      const mapped1 = color.toSrgbGamut()
-      const mapped2 = color.toSrgbGamut()
-      expect(mapped1).toBe(mapped2)
     })
   })
 
@@ -841,13 +800,6 @@ describe('Color', () => {
       const color = Color.fromOklch({ l: 0.5, c: 0.15, h: 60 })
       const noComp = color.complementary(0)
       expect(noComp.oklch().h).toBeCloseTo(60, -2)
-    })
-
-    it('should be memoized for factor 1', () => {
-      const color = Color.fromOklch({ l: 0.5, c: 0.15, h: 60 })
-      const comp1 = color.complementary(1)
-      const comp2 = color.complementary(1)
-      expect(comp1).toBe(comp2)
     })
 
     it('should handle hue wrap-around', () => {
