@@ -19,6 +19,10 @@ export type Onced<T extends Function = Function> = T & { reset: () => void }
  * You can reset the function by calling the `reset` method on the returned
  * function.
  *
+ * Note: The once behavior is scoped to the `this` context. This means that if
+ * you call the function with different `this` contexts, it will execute once
+ * per context.
+ *
  * @param fn The function to wrap in a call guard.
  * @returns A function that will be executed at most one time.
  * @example
