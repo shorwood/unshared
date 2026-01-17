@@ -52,12 +52,32 @@ export interface ToDefaultOptions<N extends number, C extends boolean> {
  * @param options The options for defaulting the objects.
  * @returns A new object with the default properties.
  * @example
- * // Define the target and source objects.
- * const object = { foo: 1, deep: { bar: 2 } }
- * const source = { foo: 2, deep: { bar: 3, baz: 4 } }
+ * // Example 1: Simple defaulting
+ * const target1 = { a: 1 }
+ * const source1 = { a: 2, b: 3 }
+ * toDefault(target1, source1)
+ * // => { a: 1, b: 3 }
  *
- * // Merge the objects.
- * toDefault(object, source) // => { foo: 2, deep: { bar: 2, baz: 4 } }
+ * @example
+ * // Example 2: Nested objects with depth
+ * const target2 = { a: { b: 1 } }
+ * const source2 = { a: { b: 2, c: 3 } }
+ * toDefault(target2, source2, { depth: 2 })
+ * // => { a: { b: 1, c: 3 } }
+ *
+ * @example
+ * // Example 3: Arrays with concat option
+ * const target3 = { arr: [1, 2] }
+ * const source3 = { arr: [3, 4] }
+ * toDefault(target3, source3, { concat: true })
+ * // => { arr: [1, 2, 3, 4] }
+ *
+ * @example
+ * // Example 4: Nullish values
+ * const target4 = { a: null, b: undefined }
+ * const source4 = { a: 5, b: 6 }
+ * toDefault(target4, source4)
+ * // => { a: 5, b: 6 }
  */
 export function toDefault<T1, T2, N extends number, C extends boolean>(target: T1, source: T2, options: ToDefaultOptions<N, C> = {}): Default<T1, T2, N, C> {
   const { concat = false, depth = 1 } = options
