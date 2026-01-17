@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { Awaitable } from './awaitable'
-import type { QueueTask } from './createQueue'
+import type { Queue } from './createQueue'
 import { createQueue } from './createQueue'
 import { sleep } from './sleep'
 
@@ -18,7 +18,7 @@ describe('createQueue', () => {
       const task = queue.call(Math.random)
       expect(task.isRunning).toBe(true)
       expect(task.fn).toBeTypeOf('function')
-      expectTypeOf(task).toEqualTypeOf<Awaitable<QueueTask<number>, number>>()
+      expectTypeOf(task).toEqualTypeOf<Awaitable<Queue.Task<number>, number>>()
     })
 
     it('should queue a function and resolve the result', async() => {

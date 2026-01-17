@@ -255,6 +255,7 @@ describe('createList', () => {
 
     it('should pass the `thisArg`, `value` and `index` to the mapping function', () => {
       const result = List.from({ length: 3 }, function(value: undefined, index) { return `${this}-${value}-${index}` }, 'prefix')
+      // @ts-expect-error: ignore
       const expected = Array.from({ length: 3 }, function(value: undefined, index) { return `${this}-${value}-${index}` }, 'prefix')
       expectListMatching(result, expected)
     })
