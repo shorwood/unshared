@@ -1,6 +1,7 @@
 export * from './createPattern'
 export * from './createSemver'
 export * from './deburr'
+export * from './decodeHtmlEntities'
 export * from './dedent'
 export * from './distanceDiceCoefficient'
 export * from './distanceJaroWinkler'

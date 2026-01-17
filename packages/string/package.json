@@ -31,6 +31,11 @@
       "types": "./dist/deburr.d.ts",
       "import": "./dist/deburr.js"
     },
+    "./decodeHtmlEntities": {
+      "require": "./dist/decodeHtmlEntities.cjs",
+      "types": "./dist/decodeHtmlEntities.d.ts",
+      "import": "./dist/decodeHtmlEntities.js"
+    },
     "./dedent": {
       "require": "./dist/dedent.cjs",
       "types": "./dist/dedent.d.ts",
