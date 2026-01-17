@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/no-new-array */
+/* eslint-disable @typescript-eslint/no-array-constructor */
 /* eslint-disable unicorn/no-array-sort */
 /* eslint-disable unicorn/no-array-reverse */
 /* eslint-disable unicorn/no-magic-array-flat-depth */
@@ -94,22 +96,21 @@ describe('createList', () => {
   describe('constructor', () => {
     it('should create an empty list', () => {
       const result = new List()
-      expectListMatching(result, [])
+      expectListMatching(result, new Array())
     })
 
     it('should create list with given elements', () => {
       const result = new List('foo', 'bar', 'baz')
-      expectListMatching(result, ['foo', 'bar', 'baz'])
+      expectListMatching(result, new Array('foo', 'bar', 'baz'))
     })
 
     it('should create list with given length', () => {
       const result = new List(3)
-      expectListMatching(result, [undefined, undefined, undefined])
+      expectListMatching(result, new Array(3))
     })
 
     it('should be a prototype of the Array class', () => {
       const list = new List()
-
       const result = Array.isArray(list)
       expect(result).toBe(true)
     })
@@ -212,63 +213,67 @@ describe('createList', () => {
   describe('of', () => {
     it('should create list using the `of` method', () => {
       const result = List.of('foo', 'bar', 'baz')
-      expectListMatching(result, ['foo', 'bar', 'baz'])
+      expectListMatching(result, Array.of('foo', 'bar', 'baz'))
     })
   })
 
   describe('from', () => {
     it('should create list given a length', () => {
       const result = List.from({ length: 3 })
-      expectListMatching(result, [undefined, undefined, undefined])
+      expectListMatching(result, Array.from({ length: 3 }))
     })
 
     it('should create list from an array', () => {
       const result = List.from(['foo', 'bar', 'baz'])
-      expectListMatching(result, ['foo', 'bar', 'baz'])
+      expectListMatching(result, Array.from(['foo', 'bar', 'baz']))
     })
 
     it('should create list from a string', () => {
       const result = List.from('foo')
-      expectListMatching(result, ['f', 'o', 'o'])
+      expectListMatching(result, Array.from('foo'))
     })
 
     it('should create list from an iterable', () => {
       const iterable = new Set(['foo', 'bar', 'baz'])
       const result = List.from(iterable)
-      expectListMatching(result, ['foo', 'bar', 'baz'])
+      expectListMatching(result, Array.from(iterable))
     })
 
     it('should create list from a generator function', () => {
       // eslint-disable-next-line unicorn/consistent-function-scoping
       const generator = function * () { yield 'foo'; yield 'bar'; yield 'baz' }
       const result = List.from(generator())
-      expectListMatching(result, ['foo', 'bar', 'baz'])
+      expectListMatching(result, Array.from(generator()))
     })
   })
 
   describe('from with mapping function', () => {
     it('should create a list given a length and a mapping function', () => {
       const result = List.from({ length: 3 }, (_, index) => index)
-      expectListMatching(result, [0, 1, 2])
+      expectListMatching(result, Array.from({ length: 3 }, (_, index) => index))
     })
 
     it('should pass the `thisArg`, `value` and `index` to the mapping function', () => {
       const result = List.from({ length: 3 }, function(value: undefined, index) { return `${this}-${value}-${index}` }, 'prefix')
-      expectListMatching(result, ['prefix-undefined-0', 'prefix-undefined-1', 'prefix-undefined-2'])
+      const expected = Array.from({ length: 3 }, function(value: undefined, index) { return `${this}-${value}-${index}` }, 'prefix')
+      expectListMatching(result, expected)
     })
 
     it('should create list from a generator function with a mapping function', () => {
       // eslint-disable-next-line unicorn/consistent-function-scoping
       const generator = function * () { yield 'foo'; yield 'bar'; yield 'baz' }
       const result = List.from(generator(), value => value.toUpperCase())
-      expectListMatching(result, ['FOO', 'BAR', 'BAZ'])
+      const expected = Array.from(generator(), value => value.toUpperCase())
+      expectListMatching(result, expected)
     })
 
     it('should create list from a generator and pass the `thisArg`, `value` and `index` to the mapping function', () => {
       // eslint-disable-next-line unicorn/consistent-function-scoping
       const generator = function * () { yield 'foo'; yield 'bar'; yield 'baz' }
       const result = List.from(generator(), function(value, index) { return `${this}-${value}-${index}` }, 'prefix')
-      expectListMatching(result, ['prefix-foo-0', 'prefix-bar-1', 'prefix-baz-2'])
+      // @ts-expect-error: ignore the error
+      const expected = Array.from(generator(), function(value, index) { return `${this}-${value}-${index}` }, 'prefix')
+      expectListMatching(result, expected)
     })
   })
 
@@ -2018,6 +2023,9 @@ describe('createList', () => {
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       const result = `${createList(['foo', 'bar', 'baz'])}`
       expect(result).toBe('[ foo, bar, baz ]')
+      // @ts-expect-error: testing built-in behaviour
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      expectArrayBehaviour(['foo', 'bar', 'baz'], Array.prototype[Symbol.toPrimitive], 'string')
     })
   })
 })
