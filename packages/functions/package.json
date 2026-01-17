@@ -41,6 +41,11 @@
       "types": "./dist/createCounter.d.ts",
       "import": "./dist/createCounter.js"
     },
+    "./createCron": {
+      "require": "./dist/createCron.cjs",
+      "types": "./dist/createCron.d.ts",
+      "import": "./dist/createCron.js"
+    },
     "./createEcs": {
       "require": "./dist/createEcs.cjs",
       "types": "./dist/createEcs.d.ts",
@@ -150,6 +155,16 @@
       "require": "./dist/resolve.cjs",
       "types": "./dist/resolve.d.ts",
       "import": "./dist/resolve.js"
+    },
+    "./rethrow": {
+      "require": "./dist/rethrow.cjs",
+      "types": "./dist/rethrow.d.ts",
+      "import": "./dist/rethrow.js"
+    },
+    "./retry": {
+      "require": "./dist/retry.cjs",
+      "types": "./dist/retry.d.ts",
+      "import": "./dist/retry.js"
     },
     "./setPrototypeChain": {
       "require": "./dist/setPrototypeChain.cjs",
