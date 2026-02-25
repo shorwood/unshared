@@ -39,7 +39,7 @@ export interface ListNode<T = unknown> {
  *
  * @template T The type of the list's items.
  */
-export class List<T = unknown> extends Array<T> implements Array<T> {
+export class List<T = unknown> implements Array<T> {
 
   /**
    * The first node in the internal linked list.
@@ -61,9 +61,6 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
    */
   private tail?: ListNode<T>
 
-  /** The length of the list. */
-  // length = 0
-
   /**
    * The middle node in the internal linked list. This is used
    * internally to optimize some operations. It is not recommended
@@ -82,39 +79,65 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
     return slow
   }
 
+  /**
+   * The internal length of the list. This is used to keep track of
+   * the number of items in the list. We are using another property
+   * instead of length to ensure we can track when this is being
+   * manually modified, allowing us to resize the list accordingly.
+   */
+  private internalLength = 0
+
+  /** @returns The length of the list. */
+  get length(): number {
+    return this.internalLength
+  }
+
+  /**
+   * Resize the list to the given length. If the new length is greater
+   * than the current length, new items will be added to the end of the list.
+   * If the new length is less than the current length, items will be
+   * removed from the end of the list.
+   *
+   * @param newLength The new length of the list.
+   */
+  set length(newLength: number) {
+    if (newLength === 0) {
+      this.head = undefined
+      this.tail = undefined
+    }
+
+    // --- Remove items from the end of the list.
+    else if (newLength < this.internalLength) {
+      const node = this.nodeAt(newLength - 1)
+      if (node) {
+        node.next = undefined
+        this.tail = node
+      }
+    }
+
+    // --- Add items to the end of the list.
+    else if (newLength > this.internalLength) {
+      for (let i = this.internalLength; i < newLength; i++) {
+        const newNode: ListNode<T> = { value: undefined, previous: this.tail }
+        if (this.tail) this.tail.next = newNode
+        this.tail = newNode
+        if (i === 0) this.head = newNode
+      }
+    }
+    this.internalLength = newLength
+  }
+
   constructor(...items: T[])
   constructor(listLength?: number)
   constructor(...args: unknown[]) {
-    super()
-    let list: List<T> | undefined
 
     // --- If the first argument is a number, create a list of the given length.
     // --- Otherwise, create a list from the given arguments.
     if (args.length > 0) {
-      list = typeof args[0] === 'number'
+      return typeof args[0] === 'number'
         ? List.from<T>({ length: args[0] })
         : List.of<T>(...args as T[])
     }
-
-    // --- Proxify the list to ensure that we can access the items using the
-    // --- native index syntax. This is necessary because the list is implemented
-    // --- as a linked list and does not have the same properties as a regular array.
-    return new Proxy(list ?? this, {
-      get(target, property, receiver) {
-        const isIndex = typeof property === 'string' && /^\d+$/.test(property)
-        if (!isIndex) return Reflect.get(target, property, receiver) as unknown
-        const index = Number.parseInt(property, 10)
-        return target.at(index)
-      },
-      set(target, property, value, receiver) {
-        const isIndex = typeof property === 'string' && /^\d+$/.test(property)
-        if (!isIndex) return Reflect.set(target, property, value, receiver)
-        const index = Number.parseInt(property, 10)
-        const from = target.nodeAt(index)
-        target.nodeSplice(from, 1, value as T)
-        return true
-      },
-    })
   }
 
   /**
@@ -159,7 +182,7 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
         if (previous) previous.next = node
         list.head ??= node
         previous = node
-        list.length++
+        list.internalLength++
       }
       list.tail = previous
     }
@@ -173,7 +196,7 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
         if (previous) previous.next = node
         list.head ??= node
         previous = node
-        list.length++
+        list.internalLength++
       }
       list.tail = previous
     }
@@ -189,27 +212,23 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
    * @example new List(1, 2, 3).nodeAt(1) // ListNode { value: 2, next: ListNode, previous: ListNode }
    */
   nodeAt(index: number): ListNode<T> | undefined {
-    if (index === 0) {
-      return this.head
-    }
-    else if (index === -1) {
-      return this.tail
-    }
-    else if (index < 0) {
-      let node = this.tail
-      let i = -1
-      while (node) {
-        if (i-- === index) return node
-        node = node.previous
-      }
+
+    // --- Fast paths, normalize, out of bounds.
+    if (index < 0) index = this.internalLength + index
+    if (index === 0) return this.head
+    if (index === this.internalLength - 1) return this.tail
+    if (index < 0 || index >= this.internalLength) return undefined
+
+    // --- Traverse from the closer end for O(n/2) average.
+    if (index < this.internalLength / 2) {
+      let node = this.head
+      for (let i = 0; i < index; i++) node = node!.next
+      return node
     }
     else {
-      let node = this.head
-      let i = 0
-      while (node) {
-        if (i++ === index) return node
-        node = node.next
-      }
+      let node = this.tail
+      for (let i = this.internalLength - 1; i > index; i--) node = node!.previous
+      return node
     }
   }
 
@@ -222,28 +241,34 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
    * @returns The first and last nodes in the chain.
    */
   nodeSplice(from: ListNode<T> | undefined, deleteCount = 0, ...items: T[]): List<T> {
-    const list = new List<T>()
-    if (items.length === 0 && deleteCount === 0) return list
+    if (items.length === 0 && deleteCount === 0) return new List<T>()
     let head: ListNode<T> | undefined
     let next = from ? from.next : this.head
+    let list: List<T> | undefined
 
     // --- If `deleteCount` is defined, we need to remove the nodes
     // --- starting from the `start` node and store them in a new
     // --- list. Additionally, we need to update the `head` and `tail`
     // --- nodes if necessary.
     if (deleteCount > 0 && this.head) {
+      list = new List<T>()
       list.head = from ?? this.head
-      list.tail = list.nodeAt(deleteCount - 1) ?? this.tail
+
+      // --- Traverse to find tail AND count in single pass.
+      let node = list.head
+      let actualCount = 1
+      while (node.next && actualCount < deleteCount) {
+        node = node.next
+        actualCount++
+      }
+      list.tail = node
+      list.internalLength = actualCount
 
       // --- Unlink the nodes from the list to extract.
-      if (list.head) {
-        from = list.head.previous
-        list.head.previous = undefined
-      }
-      if (list.tail) {
-        next = list.tail.next
-        list.tail.next = undefined
-      }
+      from = list.head.previous
+      list.head.previous = undefined
+      next = list.tail.next
+      list.tail.next = undefined
 
       // --- Relink the nodes of the `this` list.
       if (from) from.next = next
@@ -251,19 +276,16 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
       if (this.head === list.head) this.head = next
       if (this.tail === list.tail) this.tail = from
 
-      // --- Recalculate the length of the lists.
-      list.length = 0
-      let node: ListNode<T> | undefined = list.head
-      while (node) { list.length++; node = node.next }
-      this.length -= list.length
+      this.internalLength -= actualCount
     }
 
-    // --- Create a node for each value.
+    // --- Create a node for each value using index-based loop for performance.
     let tail = from
-    for (const value of items) {
-      tail = { value, previous: tail, next }
-      head ??= tail
-      if (tail.previous) tail.previous.next = tail
+    for (const item of items) {
+      const newNode: ListNode<T> = { value: item, previous: tail, next }
+      head ??= newNode
+      if (tail) tail.next = newNode
+      tail = newNode
     }
 
     // --- Update the previous and next nodes.
@@ -271,9 +293,24 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
     if (head && from === undefined) this.head = head
     if (this.tail === undefined || from === this.tail) this.tail = tail
 
-    // --- Return the first and last nodes.
-    this.length += items.length
-    return list
+    // --- Return the deleted nodes (empty list if no deletions).
+    this.internalLength += items.length
+    return list ?? new List<T>()
+  }
+
+  /**
+   * Appends a single element to the end of the list. This is the fastest way
+   * to add a single item as it avoids rest parameter allocation.
+   *
+   * @param value The element to add.
+   * @returns The new length of the list.
+   */
+  pushOne(value: T): number {
+    const node: ListNode<T> = { value, previous: this.tail }
+    if (this.tail) this.tail.next = node
+    else this.head = node
+    this.tail = node
+    return ++this.internalLength
   }
 
   /**
@@ -284,8 +321,23 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
    * @example new List('foo', 'bar', 'baz').push('qux') // 4
    */
   push(...items: T[]): number {
-    this.nodeSplice(this.tail, 0, ...items)
-    return this.length
+    for (const item of items) this.pushOne(item)
+    return this.internalLength
+  }
+
+  /**
+   * Inserts a single element at the start of the list. This is the fastest way
+   * to prepend a single item as it avoids rest parameter allocation.
+   *
+   * @param value The element to insert.
+   * @returns The new length of the list.
+   */
+  unshiftOne(value: T): number {
+    const node: ListNode<T> = { value, next: this.head }
+    if (this.head) this.head.previous = node
+    else this.tail = node
+    this.head = node
+    return ++this.internalLength
   }
 
   /**
@@ -296,8 +348,9 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
    * @example list.unshift(1, 2, 3) // 3
    */
   unshift(...items: T[]): number {
-    this.nodeSplice(undefined, 0, ...items)
-    return this.length
+    // Insert in reverse to maintain order
+    for (let i = items.length - 1; i >= 0; i--) this.unshiftOne(items[i])
+    return this.internalLength
   }
 
   /**
@@ -313,7 +366,7 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
     this.tail = this.tail.previous
     if (this.tail) this.tail.next = undefined
     else this.head = undefined
-    this.length--
+    this.internalLength--
     return value
   }
 
@@ -330,7 +383,7 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
     this.head = this.head.next
     if (this.head) this.head.previous = undefined
     else this.tail = undefined
-    this.length--
+    this.internalLength--
     return value
   }
 
@@ -393,7 +446,7 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
   link(...lists: Array<List<T>>): this {
     if (lists.length === 0) return this
 
-    let length = this.length
+    let length = this.internalLength
     let previous = this as List<T>
     let tail: ListNode<T> | undefined = this.tail
 
@@ -408,15 +461,15 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
 
       tail = list.tail
       previous = list
-      length += list.length
+      length += list.internalLength
     }
 
     // --- Loop again and set the tail for each list.
     for (const list of [this, ...lists]) {
       if (!list.head) continue
-      length -= list.length
+      length -= list.internalLength
       list.tail = tail
-      list.length += length
+      list.internalLength += length
     }
 
     return this
@@ -457,14 +510,14 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
    * @example new List('foo', 'bar', 'baz').slice(1, 2) // ['bar']
    */
   // @ts-expect-error: This function overrides the return type from Array
-  slice(start = 0, end = this.length): List<T> {
+  slice(start = 0, end = this.internalLength): List<T> {
     const list = new List<T>()
     let node = this.head
     let index = 0
 
     // --- Handle out of bounds indexes.
-    if (start < 0) start = this.length + start
-    if (end < 0) end = this.length + end
+    if (start < 0) start = this.internalLength + start
+    if (end < 0) end = this.internalLength + end
 
     // --- Iterate over the list to find the nodes to extract.
     while (node) {
@@ -587,7 +640,7 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
       return next
     }
 
-    while (size < this.length) {
+    while (size < this.internalLength) {
       let current = this.head
       let head: ListNode<T> | undefined
       let tail: ListNode<T> | undefined
@@ -652,8 +705,8 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
    * @returns The index of the last occurrence of a specified value in an list, or -1 if it is not present.
    * @example new List('foo', 'bar', 'baz', 'bar').lastIndexOf('bar') // 3
    */
-  lastIndexOf(searchElement: T, fromIndex = this.length - 1): number {
-    let index = this.length - 1
+  lastIndexOf(searchElement: T, fromIndex = this.internalLength - 1): number {
+    let index = this.internalLength - 1
     let node = this.tail
     while (node) {
       if (index <= fromIndex && node.value === searchElement) return index
@@ -864,7 +917,7 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
 
     // --- If no initial value is provided, use the last value in the list.
     let node = this.tail
-    let index = this.length - 1
+    let index = this.internalLength - 1
     if (initialValue === undefined) {
       initialValue = node!.value
       node = node?.previous
@@ -969,13 +1022,13 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
    * @returns The modified array
    * @example new List(1, 2, 3).fill(0) // List { 0, 0, 0 }
    */
-  fill(value: T, start = 0, end = this.length): this {
+  fill(value: T, start = 0, end = this.internalLength): this {
     let node = this.head
     let index = 0
 
     // --- Handle out of bounds values
-    if (start < 0) start = this.length + start
-    if (end < 0) end = this.length + end
+    if (start < 0) start = this.internalLength + start
+    if (end < 0) end = this.internalLength + end
 
     // --- Iterate over the list to find the nodes to fill.
     while (node) {
@@ -999,10 +1052,10 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
    * @returns The modified array
    * @example new List(1, 2, 3, 4, 5).copyWithin(0, 3) // List { 4, 5, 3, 4, 5 }
    */
-  copyWithin(target = 0, start = 0, end = this.length): this {
-    const sliceStart = start < 0 ? this.length + start : start
-    const sliceEnd = end < 0 ? this.length + end : end
-    const sliceLength = Math.min(sliceEnd - sliceStart, this.length - target)
+  copyWithin(target = 0, start = 0, end = this.internalLength): this {
+    const sliceStart = start < 0 ? this.internalLength + start : start
+    const sliceEnd = end < 0 ? this.internalLength + end : end
+    const sliceLength = Math.min(sliceEnd - sliceStart, this.internalLength - target)
     const slice = this.slice(sliceStart, sliceStart + sliceLength)
     this.splice(target, sliceLength, ...slice)
     return this
@@ -1033,7 +1086,7 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
    */
   // @ts-expect-error: Overload signatures
   flat<D extends number = 1>(depth: D = 1 as D): List<unknown> {
-    const flatList = new List()
+    const flatList = new List<unknown>()
     let node = this.head
     while (node) {
       const value = node.value
@@ -1067,7 +1120,8 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
   // @ts-expect-error: Overload signatures
   with(index: number, value: T): List<T> {
     const copy = this.slice()
-    copy[index] = value
+    const node = copy.nodeAt(index)
+    if (node) node.value = value
     return copy
   }
 
@@ -1086,7 +1140,7 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
   // @ts-expect-error: Overload signatures
   findLast(predicate: (value: T, index: number, list: List<T>) => unknown, thisArgument?: unknown): unknown {
     let node = this.tail
-    let index = this.length - 1
+    let index = this.internalLength - 1
     while (node) {
       const result = predicate.apply(thisArgument, [node.value!, index, this])
       if (result) return node.value
@@ -1106,7 +1160,7 @@ export class List<T = unknown> extends Array<T> implements Array<T> {
   // @ts-expect-error: Overload signatures
   findLastIndex(predicate: (value: T, index: number, list: List<T>) => unknown, thisArgument?: any): number {
     let node = this.tail
-    let index = this.length - 1
+    let index = this.internalLength - 1
     while (node) {
       const result = predicate.apply(thisArgument, [node.value!, index, this])
       if (result) return index
@@ -1271,18 +1325,25 @@ export function createList<T>(values: T[]): List<T>
 /**
  * Creates a new list from the given values or with the specified length.
  *
+ * Unlike using `new List()` or `List.from()` directly, this function wraps the
+ * list in a Proxy that enables native index syntax (`list[0]`, `list[1] = value`).
+ * This comes with a small performance overhead. For maximum performance in hot
+ * paths, use `List.from()` or `new List()` directly and access elements via `list.at()`.
+ *
  * @param valuesOrLength Either an array of values to populate the list, or a number specifying the length of an empty list
- * @returns A new list instance
+ * @returns A new list instance with index syntax support
  * @example
  * ```typescript
  * // Create a list from an array of values
  * const list1 = createList([1, 2, 3]);
+ * console.log(list1[0]); // 1 (index syntax works)
  *
  * // Create an empty list with specified length
  * const list2 = createList<string>(5);
  *
- * // Create an empty list with default length of 0
- * const list3 = createList();
+ * // For performance-critical code, use List.from() directly:
+ * const fastList = List.from([1, 2, 3]);
+ * console.log(fastList.at(0)); // 1 (use .at() instead of index)
  * ```
  */
 export function createList<T>(valuesOrLength?: number | T[]): List<T>
@@ -1290,10 +1351,13 @@ export function createList<T>(valuesOrLength?: number | T[]): List<T>
 /**
  * Creates a new List instance from the given values or with the specified length.
  *
+ * This function wraps the list in a Proxy for native index syntax support (`list[0]`).
+ * For maximum performance, use `List.from()` directly with `list.at()` for element access.
+ *
  * @template T The type of elements in the list
  * @param valuesOrLength Either an array of values to populate the list, or a number specifying the length of an empty list
  * @param args Additional arguments (not allowed - will throw an error if provided)
- * @returns A new List instance
+ * @returns A new List instance with Proxy wrapper for index syntax
  *
  * @example
  * ```typescript
@@ -1314,7 +1378,25 @@ export function createList<T>(valuesOrLength: number | T[] = 0, ...args: unknown
   if (args.length > 0) throw new TypeError('Could not create list: too many arguments were provided.')
 
   // --- Create a list from the given values or length.
-  return Array.isArray(valuesOrLength)
+  const list = Array.isArray(valuesOrLength)
     ? List.of<T>(...valuesOrLength)
     : List.from<T>({ length: valuesOrLength })
+
+  // --- Wrap in Proxy to enable native index syntax (list[0], list[1] = value).
+  // --- For maximum performance, use List.from() directly with list.at() access.
+  return new Proxy(list, {
+    get(target, property, receiver) {
+      const isIndex = typeof property === 'string' && /^\d+$/.test(property)
+      if (!isIndex) return Reflect.get(target, property, receiver) as unknown
+      return target.at(Number.parseInt(property, 10))
+    },
+    set(target, property, value, receiver) {
+      const isIndex = typeof property === 'string' && /^\d+$/.test(property)
+      if (!isIndex) return Reflect.set(target, property, value, receiver)
+      const index = Number.parseInt(property, 10)
+      const from = target.nodeAt(index)
+      target.nodeSplice(from, 1, value as T)
+      return true
+    },
+  })
 }

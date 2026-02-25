@@ -3,6 +3,7 @@ import { resolvePackageNames } from './packages/scripts/resolvePackageNames'
 
 const packageNames = await resolvePackageNames()
 const include = packageNames.map(name => `./packages/${name}/**/*.test.ts`)
+const includeBench = packageNames.map(name => `./packages/${name}/**/*.bench.ts`)
 
 const exclude = [
   '**/node_modules/**',
@@ -30,7 +31,7 @@ export default defineConfig({
     // --- Benchmark configuration.
     benchmark: {
       exclude,
-      include,
+      include: includeBench,
       outputFile: './benchmark/results.json',
       reporters: ['verbose'],
     },

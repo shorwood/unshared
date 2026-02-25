@@ -40,8 +40,8 @@ function expectListMatching(list: List, items: unknown[], options: ExpectListMat
     let node = head
     let index = 0
     while (node) {
-      const value = items[index++]
-      expect(node.value, `Node value at index ${index} from the start"`).toStrictEqual(value)
+      const expected = items[index++]
+      expect(node.value, `Node value at index ${index} from the start"`).toStrictEqual(expected)
       if (!node.next) break
       node = node.next
     }
@@ -55,8 +55,8 @@ function expectListMatching(list: List, items: unknown[], options: ExpectListMat
     let node = tail
     let index = 0
     while (node) {
-      const value = items.at(--index)
-      expect(node.value, `Node value at index ${index} from the end`).toStrictEqual(value)
+      const expected = items.at(--index)
+      expect(node.value, `Node value at index ${index} from the end`).toStrictEqual(expected)
       if (!node.previous) break
       node = node.previous
     }
@@ -108,18 +108,6 @@ describe('createList', () => {
       const result = new List(3)
       expectListMatching(result, new Array(3))
     })
-
-    it('should be a prototype of the Array class', () => {
-      const list = new List()
-      const result = Array.isArray(list)
-      expect(result).toBe(true)
-    })
-
-    it('should return true for the `isArray` method', () => {
-      const list = new List()
-      const result = Array.isArray(list)
-      expect(result).toBe(true)
-    })
   })
 
   describe('at', () => {
@@ -161,25 +149,33 @@ describe('createList', () => {
   describe('get list[index]', () => {
     it('should get the value at the specified index', () => {
       const result = createList(['foo', 'bar', 'baz'])
+      // @ts-expect-error: untyped access
       expect(result[0]).toBe('foo')
+      // @ts-expect-error: untyped access
       expect(result[1]).toBe('bar')
+      // @ts-expect-error: untyped access
       expect(result[2]).toBe('baz')
     })
 
     it('should return undefined if the index is out of range', () => {
       const result = createList(['foo', 'bar', 'baz'])
+      // @ts-expect-error: untyped access
       expect(result[3]).toBe(undefined)
     })
 
     it('should get undefined if the index is negative', () => {
       const result = createList(['foo', 'bar', 'baz'])
+      // @ts-expect-error: untyped access
       expect(result[-1]).toBe(undefined)
+      // @ts-expect-error: untyped access
       expect(result[-2]).toBe(undefined)
+      // @ts-expect-error: untyped access
       expect(result[-3]).toBe(undefined)
     })
 
     it('should return undefined if the list is empty', () => {
       const result = createList(0)
+      // @ts-expect-error: untyped access
       expect(result[0]).toBe(undefined)
     })
   })
@@ -187,24 +183,28 @@ describe('createList', () => {
   describe('set list[index]', () => {
     it('should set the value at 0', () => {
       const result = createList(['foo', 'bar', 'baz'])
+      // @ts-expect-error: untyped access
       result[0] = 'FOO'
       expectListMatching(result, ['FOO', 'bar', 'baz'])
     })
 
     it('should set the value at 1', () => {
       const result = createList(['foo', 'bar', 'baz'])
+      // @ts-expect-error: untyped access
       result[1] = 'BAR'
       expectListMatching(result, ['foo', 'BAR', 'baz'])
     })
 
     it('should set the value at 2', () => {
       const result = createList(['foo', 'bar', 'baz'])
+      // @ts-expect-error: untyped access
       result[2] = 'BAZ'
       expectListMatching(result, ['foo', 'bar', 'BAZ'])
     })
 
     it('should not set using negative index', () => {
       const result = createList(['foo', 'bar', 'baz'])
+      // @ts-expect-error: untyped access
       result[-1] = 'qux'
       expectListMatching(result, ['foo', 'bar', 'baz'])
     })
@@ -1979,6 +1979,32 @@ describe('createList', () => {
       const list = createList(0)
       const iterator = list[Symbol.iterator]()
       expect(iterator.next()).toEqual({ value: undefined, done: true })
+    })
+  })
+
+  describe('length', () => {
+    it('should return the number of elements in the list', () => {
+      const list = createList(['foo', 'bar', 'baz'])
+      expect(list.length).toBe(3)
+    })
+
+    it('should return 0 for an empty list', () => {
+      const list = createList(0)
+      expect(list.length).toBe(0)
+    })
+
+    it('should clear the list when set to 0', () => {
+      const list = createList(['foo', 'bar', 'baz'])
+      list.length = 0
+      expect(list.length).toBe(0)
+      expectListMatching(list, [])
+    })
+
+    it('should truncate the list when set to a smaller value', () => {
+      const list = createList(['foo', 'bar', 'baz'])
+      list.length = 2
+      expect(list.length).toBe(2)
+      expectListMatching(list, ['foo', 'bar'])
     })
   })
 
