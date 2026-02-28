@@ -152,101 +152,20 @@ export class ErrorOnCleanupPlugin extends EcsPlugin {
   }
 }
 
-// --- System ordering fixtures ---
+// --- Generic system fixtures for ordering tests ---
 
-export class InputSystem extends EcsSystem {
+export class SystemA extends EcsSystem {
   onUpdate(_deltaTime: number): void {}
 }
 
-export class PhysicsSystem extends EcsSystem {
-  static readonly runAfter = [InputSystem]
-
+export class SystemB extends EcsSystem {
   onUpdate(_deltaTime: number): void {}
 }
 
-export class RenderSystem extends EcsSystem {
-  static readonly runAfter = [PhysicsSystem]
-
+export class SystemC extends EcsSystem {
   onUpdate(_deltaTime: number): void {}
 }
 
-export class AudioSystem extends EcsSystem {
-  static readonly runBefore = [RenderSystem]
-
-  onUpdate(_deltaTime: number): void {}
-}
-
-// Forward declaration workaround: use a function to defer resolution
-export class CyclicSystemB extends EcsSystem {
-  static readonly runAfter: Array<new (...args: any[]) => EcsSystem> = []
-
-  onUpdate(_deltaTime: number): void {}
-}
-
-export class CyclicSystemA extends EcsSystem {
-  static readonly runAfter = [CyclicSystemB]
-
-  onUpdate(_deltaTime: number): void {}
-}
-
-// Complete the cycle after both classes are defined
-CyclicSystemB.runAfter.push(CyclicSystemA)
-
-// --- Priority-based system ordering fixtures ---
-
-export class FirstPrioritySystem extends EcsSystem {
-  static readonly priority = EcsSystem.PRIORITY_FIRST
-  onUpdate(_deltaTime: number): void {}
-}
-
-export class PreUpdatePrioritySystem extends EcsSystem {
-  static readonly priority = EcsSystem.PRIORITY_PRE_UPDATE
-  onUpdate(_deltaTime: number): void {}
-}
-
-export class UpdatePrioritySystem extends EcsSystem {
-  static readonly priority = EcsSystem.PRIORITY_UPDATE
-  onUpdate(_deltaTime: number): void {}
-}
-
-export class PostUpdatePrioritySystem extends EcsSystem {
-  static readonly priority = EcsSystem.PRIORITY_POST_UPDATE
-  onUpdate(_deltaTime: number): void {}
-}
-
-export class LastPrioritySystem extends EcsSystem {
-  static readonly priority = EcsSystem.PRIORITY_LAST
-  onUpdate(_deltaTime: number): void {}
-}
-
-export class CustomPriorityEarlySystem extends EcsSystem {
-  static readonly priority = -500 // Between FIRST (-2000) and UPDATE (0)
-  onUpdate(_deltaTime: number): void {}
-}
-
-export class CustomPriorityLateSystem extends EcsSystem {
-  static readonly priority = 500 // Between UPDATE (0) and POST_UPDATE (1000)
-  onUpdate(_deltaTime: number): void {}
-}
-
-export class DefaultPrioritySystem extends EcsSystem {
-  // No priority set, should default to 0 (PRIORITY_UPDATE)
-  onUpdate(_deltaTime: number): void {}
-}
-
-export class PrioritySystemA extends EcsSystem {
-  static readonly priority = EcsSystem.PRIORITY_UPDATE
-  onUpdate(_deltaTime: number): void {}
-}
-
-export class PrioritySystemB extends EcsSystem {
-  static readonly priority = EcsSystem.PRIORITY_UPDATE
-  static readonly runAfter = [PrioritySystemA]
-  onUpdate(_deltaTime: number): void {}
-}
-
-export class PrioritySystemC extends EcsSystem {
-  static readonly priority = EcsSystem.PRIORITY_UPDATE
-  static readonly runAfter = [PrioritySystemB]
+export class SystemD extends EcsSystem {
   onUpdate(_deltaTime: number): void {}
 }

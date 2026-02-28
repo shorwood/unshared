@@ -28,58 +28,26 @@ export abstract class EcsResource extends Dirty {}
  *
  * @example
  * class RenderSystem extends EcsSystem {
- *   // This system runs after MovementSystem and PhysicsSystem
- *   static runAfter = [MovementSystem, PhysicsSystem]
- *
- *   // This system runs before UISystem
- *   static runBefore = [UISystem]
- *
  *   onUpdate(deltaTime: number) {
  *     // Render logic
  *   }
  * }
+ *
+ * // Create with fluent ordering API
+ * new RenderSystem(world)
+ *   .updateAfter(PhysicsSystem)
+ *   .withPriority(EcsSystem.Priority.PostUpdate)
  */
 export abstract class EcsSystem {
 
-  /** Priority for systems that must run before all others. */
-  static readonly PRIORITY_FIRST = -2000
+  /** The priority of this system instance. Lower values run first. */
+  private internalPriority = 0
 
-  /** Priority for systems in the pre-update phase (input, event processing). */
-  static readonly PRIORITY_PRE_UPDATE = -1000
+  /** List of system types that this system should run after. */
+  private internalUpdateAfter: Array<Constructor<EcsSystem>> = []
 
-  /** Priority for systems in the default update phase. */
-  static readonly PRIORITY_UPDATE = 0
-
-  /** Priority for systems in the post-update phase (physics, transforms). */
-  static readonly PRIORITY_POST_UPDATE = 1000
-
-  /** Priority for systems that must run after all others (rendering, cleanup). */
-  static readonly PRIORITY_LAST = 2000
-
-  /**
-   * The priority of this system. Lower values run first.
-   * Use the `PRIORITY_*` constants for common stages:
-   * - `PRIORITY_FIRST` (-2000): Before everything
-   * - `PRIORITY_PRE_UPDATE` (-1000): Input, events
-   * - `PRIORITY_UPDATE` (0): Main game logic (default)
-   * - `PRIORITY_POST_UPDATE` (1000): Physics, transforms
-   * - `PRIORITY_LAST` (2000): Rendering, cleanup
-   *
-   * Within the same priority, `runAfter`/`runBefore` constraints are applied.
-   */
-  static readonly priority?: number
-
-  /**
-   * List of system types that this system should run after.
-   * The execution order will be resolved using topological sort within the same priority.
-   */
-  static readonly runAfter?: Array<Constructor<EcsSystem>>
-
-  /**
-   * List of system types that this system should run before.
-   * The execution order will be resolved using topological sort within the same priority.
-   */
-  static readonly runBefore?: Array<Constructor<EcsSystem>>
+  /** List of system types that this system should run before. */
+  private internalUpdateBefore: Array<Constructor<EcsSystem>> = []
 
   /**
    * Initialize the system with a reference to the world.
@@ -87,6 +55,74 @@ export abstract class EcsSystem {
    * @param world The ECS world instance.
    */
   constructor(protected world: EcsWorld) {}
+
+  /**
+   * Get the priority of this system.
+   *
+   * @returns The priority value.
+   */
+  get priority(): number {
+    return this.internalPriority
+  }
+
+  /**
+   * Get the list of system types that this system should run after.
+   *
+   * @returns Array of system types.
+   */
+  get shouldUpdateAfter(): Array<Constructor<EcsSystem>> {
+    return this.internalUpdateAfter
+  }
+
+  /**
+   * Get the list of system types that this system should run before.
+   *
+   * @returns Array of system types.
+   */
+  get shouldUpdateBefore(): Array<Constructor<EcsSystem>> {
+    return this.internalUpdateBefore
+  }
+
+  /**
+   * Set the priority of this system. Lower values run first.
+   *
+   * @param priority The priority value or `EcsSystem.Priority` enum value.
+   * @returns This system instance for chaining.
+   * @example
+   * new RenderSystem(world).withPriority(EcsSystem.Priority.Last)
+   */
+  withPriority(priority: number): this {
+    this.internalPriority = priority
+    return this
+  }
+
+  /**
+   * Specify that this system should run after the given system types.
+   * The execution order will be resolved using topological sort within the same priority.
+   *
+   * @param systems The system types that this system should run after.
+   * @returns This system instance for chaining.
+   * @example
+   * new RenderSystem(world).updateAfter(PhysicsSystem, MovementSystem)
+   */
+  updateAfter(...systems: Array<Constructor<EcsSystem>>): this {
+    this.internalUpdateAfter.push(...systems)
+    return this
+  }
+
+  /**
+   * Specify that this system should run before the given system types.
+   * The execution order will be resolved using topological sort within the same priority.
+   *
+   * @param systems The system types that this system should run before.
+   * @returns This system instance for chaining.
+   * @example
+   * new AudioSystem(world).updateBefore(RenderSystem)
+   */
+  updateBefore(...systems: Array<Constructor<EcsSystem>>): this {
+    this.internalUpdateBefore.push(...systems)
+    return this
+  }
 
   /**
    * Called when the system is first added to the world.
@@ -106,6 +142,26 @@ export abstract class EcsSystem {
   onUpdate?(deltaTime: number): void
 }
 
+export namespace EcsSystem {
+  export enum Priority {
+
+    /** Priority for systems that must run before all others. */
+    First = -2000,
+
+    /** Priority for systems in the pre-update phase (input, event processing). */
+    PreUpdate = -1000,
+
+    /** Priority for systems in the default update phase. */
+    Update = 0,
+
+    /** Priority for systems in the post-update phase (physics, transforms). */
+    PostUpdate = 1000,
+
+    /** Priority for systems that must run after all others (rendering, cleanup). */
+    Last = 2000,
+  }
+}
+
 /**
  * Base class for plugins. Plugins are self-contained modules that bundle
  * related systems, resources, and configuration together. They provide a
@@ -119,7 +175,7 @@ export abstract class EcsSystem {
  *   build(world: EcsWorld) {
  *     world.addResource(new PhysicsConfig())
  *     world.addSystem(new GravitySystem(world))
- *     world.addSystem(new CollisionSystem(world))
+ *     world.addSystem(new CollisionSystem(world).updateAfter(GravitySystem))
  *   }
  *
  *   cleanup(world: EcsWorld) {
@@ -158,13 +214,72 @@ export abstract class EcsPlugin {
   cleanup?(world: EcsWorld): void
 }
 
+/**
+ * Base class for bundles. Bundles are reusable collections of components
+ * that are commonly spawned together. They simplify entity creation by
+ * grouping related components into a single unit.
+ *
+ * @example
+ * class TransformBundle extends EcsBundle {
+ *   constructor(
+ *     private x = 0,
+ *     private y = 0,
+ *   ) { super() }
+ *
+ *   components() {
+ *     return [
+ *       new Position(this.x, this.y),
+ *       new Rotation(0),
+ *       new Scale(1, 1),
+ *     ]
+ *   }
+ * }
+ *
+ * class SpriteBundle extends EcsBundle {
+ *   constructor(private texture: string) { super() }
+ *
+ *   // Bundles can include other bundles
+ *   bundles() {
+ *     return [new TransformBundle()]
+ *   }
+ *
+ *   components() {
+ *     return [
+ *       new Sprite(this.texture),
+ *       new Visible(true),
+ *     ]
+ *   }
+ * }
+ *
+ * // Spawn an entity with all components from the bundle
+ * const entity = world.spawn(new SpriteBundle('player.png'))
+ */
+export abstract class EcsBundle {
+
+  /**
+   * Return nested bundles that should be included.
+   * Override this to compose bundles from other bundles.
+   *
+   * @returns An array of bundles to include, or undefined.
+   */
+  bundles?(): EcsBundle[]
+
+  /**
+   * Return the components that make up this bundle.
+   *
+   * @returns An array of component instances.
+   */
+  abstract components(): EcsComponent[]
+}
+
 export namespace EcsWorld {
   export interface Events {
     'spawned': [entity: EcsEntity]
     'destroyed': [entity: EcsEntity]
     'added': [entity: EcsEntity, component: EcsComponent]
     'removed': [entity: EcsEntity, component: EcsComponent]
-    'updated': [system: EcsSystem, deltaTime: number]
+    'beforeUpdate': [system: EcsSystem, deltaTime: number]
+    'afterUpdate': [system: EcsSystem, elapsedTime: number]
     'error': [system: EcsSystem, error: Error]
   }
 
@@ -356,9 +471,9 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
 
   /**
    * Spawn a new entity and return its ID. Optionally, you can pass components
-   * to be added to the entity at creation time.
+   * and/or bundles to be added to the entity at creation time.
    *
-   * @param components Optional components to add to the entity.
+   * @param spawnables Optional components or bundles to add to the entity.
    * @returns The newly created entity ID.
    * @example
    * // Create an empty entity
@@ -366,11 +481,18 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
    *
    * // Create an entity with components
    * world.spawn(new PositionComponent(10, 20), new VelocityComponent(1, 2))
+   *
+   * // Create an entity with a bundle
+   * world.spawn(new SpriteBundle('player.png'))
+   *
+   * // Mix components and bundles
+   * world.spawn(new TransformBundle(), new Health(100), new PlayerTag())
    */
-  spawn(...components: EcsComponent[]): EcsEntity {
+  spawn(...spawnables: Array<EcsBundle | EcsComponent>): EcsEntity {
     const entity = this.nextEntityId++
     this.entityComponents.set(entity, new Set())
     this.dispatch('spawned', entity)
+    const components = this.resolveSpawnables(spawnables)
     for (const component of components) this.addComponent(entity, component)
     return entity
   }
@@ -454,14 +576,17 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
    * Spawn a new entity as a child of an existing entity.
    *
    * @param parent The parent entity.
-   * @param components Optional components to add to the child entity.
+   * @param spawnables Optional components or bundles to add to the child entity.
    * @returns The newly created child entity ID.
    * @example
    * const parent = world.spawn()
    * const child = world.spawnChild(parent, new Position(), new Velocity())
+   *
+   * // Spawn a child with a bundle
+   * const child = world.spawnChild(parent, new SpriteBundle('child.png'))
    */
-  spawnChild(parent: EcsEntity, ...components: EcsComponent[]): EcsEntity {
-    const child = this.spawn(...components)
+  spawnChild(parent: EcsEntity, ...spawnables: Array<EcsBundle | EcsComponent>): EcsEntity {
+    const child = this.spawn(...spawnables)
     this.setParent(child, parent)
     return child
   }
@@ -520,44 +645,41 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
    * Get all direct children of an entity.
    *
    * @param entity The entity to get the children of.
-   * @returns An array of child entity IDs.
+   * @yields Each child entity ID.
    */
-  getChildren(entity: EcsEntity): EcsEntity[] {
+  * getChildren(entity: EcsEntity): IterableIterator<EcsEntity> {
     const children = this.entityChildren.get(entity)
-    return children ? [...children] : []
+    if (!children) return
+    for (const child of children) yield child
   }
 
   /**
    * Get all ancestors of an entity (parent, grandparent, etc.).
    *
    * @param entity The entity to get ancestors of.
-   * @returns An array of ancestor entity IDs, from parent to root.
+   * @yields Each ancestor entity ID.
    */
-  getAncestors(entity: EcsEntity): EcsEntity[] {
-    const ancestors: EcsEntity[] = []
-    let current = this.entityParent.get(entity)
-    while (current !== undefined) {
-      ancestors.push(current)
-      current = this.entityParent.get(current)
+  * getAncestors(entity: EcsEntity): IterableIterator<EcsEntity> {
+    let parent = this.entityParent.get(entity)
+    while (parent !== undefined) {
+      yield parent
+      parent = this.entityParent.get(parent)
     }
-    return ancestors
   }
 
   /**
    * Get all descendants of an entity (children, grandchildren, etc.).
    *
    * @param entity The entity to get descendants of.
-   * @returns An array of descendant entity IDs.
+   * @yields Each descendant entity ID.
    */
-  getDescendants(entity: EcsEntity): EcsEntity[] {
-    const descendants: EcsEntity[] = []
-    const stack = this.getChildren(entity)
-    while (stack.length > 0) {
-      const child = stack.pop()!
-      descendants.push(child)
-      stack.push(...this.getChildren(child))
+  * getDescendants(entity: EcsEntity): IterableIterator<EcsEntity> {
+    const children = this.entityChildren.get(entity)
+    if (!children) return
+    for (const child of children) {
+      yield child
+      yield* this.getDescendants(child)
     }
-    return descendants
   }
 
   /**
@@ -757,6 +879,120 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
 
       // --- Maintain reverse index.
       this.entityComponents.get(entity)?.delete(type)
+    }
+  }
+
+  /****************************************************/
+  /* Bundle Management.                               */
+  /****************************************************/
+
+  /**
+   * Flatten a bundle into an array of components, resolving nested bundles.
+   * Components from nested bundles are added first (depth-first), followed
+   * by the bundle's own components.
+   *
+   * @param bundle The bundle to flatten.
+   * @returns Array of all components from the bundle and its nested bundles.
+   */
+  private flattenBundle(bundle: EcsBundle): EcsComponent[] {
+    const components: EcsComponent[] = []
+
+    // --- Recursively collect components from nested bundles.
+    const nestedBundles = bundle.bundles?.()
+    if (nestedBundles) {
+      for (const nested of nestedBundles)
+        components.push(...this.flattenBundle(nested))
+    }
+
+    // --- Add this bundle's own components.
+    components.push(...bundle.components())
+
+    return components
+  }
+
+  /**
+   * Resolve an array of spawnables (components and/or bundles) into a flat
+   * array of components. Bundles are flattened recursively.
+   *
+   * @param spawnables The spawnables to resolve.
+   * @returns Array of all components.
+   */
+  private resolveSpawnables(spawnables: Array<EcsBundle | EcsComponent>): EcsComponent[] {
+    const components: EcsComponent[] = []
+    for (const spawnable of spawnables) {
+      if (spawnable instanceof EcsBundle) components.push(...this.flattenBundle(spawnable))
+      else components.push(spawnable)
+    }
+    return components
+  }
+
+  /**
+   * Add all components from a bundle to an existing entity.
+   *
+   * @param entity The entity to add components to.
+   * @param bundle The bundle containing components to add.
+   * @returns The added components.
+   * @example
+   * const entity = world.spawn()
+   * world.addBundle(entity, new PhysicsBundle())
+   */
+  addBundle(entity: EcsEntity, bundle: EcsBundle): EcsComponent[] {
+    const components = this.flattenBundle(bundle)
+    return this.addComponents(entity, ...components)
+  }
+
+  /**
+   * Add multiple bundles to an existing entity.
+   *
+   * @param entity The entity to add components to.
+   * @param bundles The bundles containing components to add.
+   * @returns The added components.
+   * @example
+   * const entity = world.spawn()
+   * world.addBundles(entity, new PhysicsBundle(), new RenderBundle())
+   */
+  addBundles(entity: EcsEntity, ...bundles: EcsBundle[]): EcsComponent[] {
+    const allComponents: EcsComponent[] = []
+    for (const bundle of bundles) {
+      const components = this.flattenBundle(bundle)
+      allComponents.push(...components)
+    }
+    return this.addComponents(entity, ...allComponents)
+  }
+
+  /**
+   * Remove all component types from a bundle from an entity.
+   * This removes components matching the types in the bundle, not the
+   * exact instances.
+   *
+   * @param entity The entity to remove components from.
+   * @param bundle The bundle containing component types to remove.
+   * @example
+   * world.removeBundle(entity, new PhysicsBundle())
+   */
+  removeBundle(entity: EcsEntity, bundle: EcsBundle): void {
+    const components = this.flattenBundle(bundle)
+    for (const component of components) {
+      const type = component.constructor as Constructor<EcsComponent>
+      this.removeComponent(entity, type)
+    }
+  }
+
+  /**
+   * Remove multiple bundles from an entity.
+   *
+   * @param entity The entity to remove components from.
+   * @param bundles The bundles containing component types to remove.
+   * @example
+   * world.removeBundles(entity, new PhysicsBundle(), new RenderBundle())
+   */
+  removeBundles(entity: EcsEntity, ...bundles: EcsBundle[]): void {
+    for (const bundle of bundles) {
+      const components = this.flattenBundle(bundle)
+      for (const component of components) {
+        const type = component.constructor as Constructor<EcsComponent>
+        this.removeComponent(entity, type)
+      }
     }
   }
 
@@ -1040,7 +1276,8 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
   private sortedSystems: EcsSystem[] | undefined
 
   /**
-   * Add an edge in the system dependency graph.
+   * Add an edge in the system dependency graph. Only adds the edge if it
+   * doesn't already exist to prevent duplicate counting in topological sort.
    *
    * @param from The system type that runs first.
    * @param to The system type that runs after.
@@ -1053,20 +1290,10 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
     edges: Map<Constructor<EcsSystem>, Set<Constructor<EcsSystem>>>,
     inDegree: Map<Constructor<EcsSystem>, number>,
   ): void {
-    edges.get(from)!.add(to)
+    const edgeSet = edges.get(from)!
+    if (edgeSet.has(to)) return // Edge already exists, don't increment inDegree again
+    edgeSet.add(to)
     inDegree.set(to, inDegree.get(to)! + 1)
-  }
-
-  private getSystemPriority(type: Constructor<EcsSystem>): number {
-    return (type as unknown as typeof EcsSystem).priority ?? 0
-  }
-
-  private getSystemRunAfter(type: Constructor<EcsSystem>): Array<Constructor<EcsSystem>> | undefined {
-    return (type as unknown as typeof EcsSystem).runAfter
-  }
-
-  private getSystemRunBefore(type: Constructor<EcsSystem>): Array<Constructor<EcsSystem>> | undefined {
-    return (type as unknown as typeof EcsSystem).runBefore
   }
 
   private sortSystemGroup(
@@ -1074,9 +1301,19 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
     systemMap: Map<Constructor<EcsSystem>, EcsSystem>,
   ): EcsSystem[] {
     if (systemTypes.length === 0) return []
-    if (systemTypes.length === 1) return [systemMap.get(systemTypes[0])!]
 
     const typeSet = new Set(systemTypes)
+
+    // --- Check for self-referential cycles before early return.
+    for (const type of systemTypes) {
+      const system = systemMap.get(type)!
+      if (system.shouldUpdateAfter.includes(type))
+        throw new Error(`Circular dependency detected among systems: ${type.name}`)
+      if (system.shouldUpdateBefore.includes(type))
+        throw new Error(`Circular dependency detected among systems: ${type.name}`)
+    }
+
+    if (systemTypes.length === 1) return [systemMap.get(systemTypes[0])!]
 
     // --- Build adjacency list: edges go from "runs before" to "runs after".
     const inDegree = new Map<Constructor<EcsSystem>, number>()
@@ -1091,36 +1328,40 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
     // --- Process runAfter: if A.runAfter includes B, then B -> A (B runs before A).
     // --- Only consider dependencies within the same priority group.
     for (const type of systemTypes) {
-      const runAfter = this.getSystemRunAfter(type)
-      if (!runAfter) continue
-      for (const dependency of runAfter)
+      const system = systemMap.get(type)!
+      for (const dependency of system.shouldUpdateAfter)
         if (typeSet.has(dependency)) this.addSystemEdge(dependency, type, edges, inDegree)
     }
 
     // --- Process runBefore: if A.runBefore includes B, then A -> B (A runs before B).
     // --- Only consider dependencies within the same priority group.
     for (const type of systemTypes) {
-      const runBefore = this.getSystemRunBefore(type)
-      if (!runBefore) continue
-      for (const successor of runBefore)
+      const system = systemMap.get(type)!
+      for (const successor of system.shouldUpdateBefore)
         if (typeSet.has(successor)) this.addSystemEdge(type, successor, edges, inDegree)
     }
 
     // --- Kahn's algorithm: start with nodes that have no incoming edges.
+    // --- Use deterministic tie-breaking by class name to avoid insertion-order dependency.
     const queue: Array<Constructor<EcsSystem>> = []
     for (const [type, degree] of inDegree)
       if (degree === 0) queue.push(type)
+    queue.sort((a, b) => a.name.localeCompare(b.name))
 
     const sorted: Array<Constructor<EcsSystem>> = []
     while (queue.length > 0) {
       const current = queue.shift()!
       sorted.push(current)
 
+      // --- Collect neighbors that become ready, then sort before adding to queue.
+      const ready: Array<Constructor<EcsSystem>> = []
       for (const neighbor of edges.get(current)!) {
         const newDegree = inDegree.get(neighbor)! - 1
         inDegree.set(neighbor, newDegree)
-        if (newDegree === 0) queue.push(neighbor)
+        if (newDegree === 0) ready.push(neighbor)
       }
+      ready.sort((a, b) => a.name.localeCompare(b.name))
+      queue.push(...ready)
     }
 
     // --- Check for cycles.
@@ -1146,7 +1387,8 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
     // --- Group systems by priority.
     const priorityGroups = new Map<number, Array<Constructor<EcsSystem>>>()
     for (const type of systemTypes) {
-      const priority = this.getSystemPriority(type)
+      const system = systemMap.get(type)!
+      const priority = system.priority
       if (!priorityGroups.has(priority)) priorityGroups.set(priority, [])
       priorityGroups.get(priority)!.push(type)
     }
@@ -1368,8 +1610,11 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
     for (const system of this.getSortedSystems()) {
       if (system.onUpdate) {
         try {
+          this.dispatch('beforeUpdate', system, deltaTime)
+          const startTime = performance.now()
           system.onUpdate(deltaTime)
-          this.dispatch('updated', system, deltaTime)
+          const elapsedTime = performance.now() - startTime
+          this.dispatch('afterUpdate', system, elapsedTime)
         }
         catch (error) {
           this.dispatch('error', system, error as Error)
@@ -1392,8 +1637,8 @@ export class EcsWorld extends Emitter<EcsWorld.Events> {
     const loop = (time: number) => {
       const deltaTime = time - lastTime
       lastTime = time
-      this.update(deltaTime)
       if (onFrame) onFrame(deltaTime)
+      else this.update(deltaTime)
       this.animationFrameLoopHandle = requestAnimationFrame(loop)
     }
     this.animationFrameLoopHandle = requestAnimationFrame(loop)
