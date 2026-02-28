@@ -16,6 +16,13 @@ export type Modulo<A extends number, B extends number, R extends number = 0> = I
 export type Minimum<A extends number, B extends number> = IsLower<A, B> extends true ? A : B
 export type Maximum<A extends number, B extends number> = IsLower<A, B> extends true ? B : A
 
+// --- Decrement/Increase using lookup tables
+// --- Mainly useful for limiting recursion depth.
+interface DecrementLookup { 0: never; 1: 0; 2: 1; 3: 2; 4: 3; 5: 4; 6: 5; 7: 6; 8: 7 }
+interface IncrementLookup { 0: 1; 1: 2; 2: 3; 3: 4; 4: 5; 5: 6; 6: 7; 7: 8 }
+export type Decrement<N extends number> = N extends keyof DecrementLookup ? DecrementLookup[N] : Substract<N, 1>
+export type Increment<N extends number> = N extends keyof IncrementLookup ? IncrementLookup[N] : Add<N, 1>
+
 // --- Number predicate. (No range safety).
 export type IsLower<A extends number, B extends number> = Substract<A, B> extends never ? true : false
 export type IsGreater<A extends number, B extends number> = BooleanNor<IsLower<A, B>, IsEqual<A, B>>

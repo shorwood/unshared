@@ -1,4 +1,4 @@
-import type { Substract } from './utils'
+import type { Decrement } from './utils'
 
 /**
  * Literal string constrained by character and length.
@@ -20,4 +20,4 @@ export type StringConstraint<C extends string, L extends number, P extends strin
         : L extends 0 ? P
 
           // --- Append character recursively
-          : `${P}${C}${StringConstraint<C, Substract<L, 1>>}`
+          : `${P}${C}${StringConstraint<C, Decrement<L>>}`

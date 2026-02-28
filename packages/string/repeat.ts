@@ -1,9 +1,9 @@
-import type { Substract } from '@unshared/types'
+import type { Decrement } from '@unshared/types'
 
 export type Repeated<T extends string, N extends number, S extends string = ''> =
   N extends 0 ? '' :
     N extends 1 ? T :
-      `${T}${S}${Repeated<T, Substract<N, 1>, S>}`
+      `${T}${S}${Repeated<T, Decrement<N>, S>}`
 
 /**
  * Repeats the given string n times and returns the result.

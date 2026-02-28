@@ -1,4 +1,4 @@
-import type { IsZero, Substract } from './utils'
+import type { Decrement, IsZero } from './utils'
 
 /**
  * Extract all of the nested keys of an object. The keys are returned as a
@@ -27,7 +27,7 @@ export type Path<T, N extends number = 8, P extends string = ''> =
       // --- If T is an Array and its items are objects, recurse.
       : T extends Array<infer U>
         ? U extends object
-          ? Path<U, Substract<N, 1>, `${P}${number}.`>
+          ? Path<U, Decrement<N>, `${P}${number}.`>
           : (P extends '' ? `${number}` : `${P}${number}`)
 
         // --- For each key of T, collect the path.
@@ -37,7 +37,7 @@ export type Path<T, N extends number = 8, P extends string = ''> =
           ? (P extends '' ? `${K}` : `${P}${K}`)
 
           // --- If the value is an object, recurse.
-          | (T[K] extends object ? Path<T[K], Substract<N, 1>, `${P}${K}.`> : `${P}${K}`)
+          | (T[K] extends object ? Path<T[K], Decrement<N>, `${P}${K}.`> : `${P}${K}`)
 
           // --- Ignore symbols.
           : never
