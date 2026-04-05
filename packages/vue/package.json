@@ -81,6 +81,11 @@
       "types": "./dist/BaseMenu.d.ts",
       "import": "./dist/BaseMenu.js"
     },
+    "./BaseSmoothDimensions": {
+      "require": "./dist/BaseSmoothDimensions.cjs",
+      "types": "./dist/BaseSmoothDimensions.d.ts",
+      "import": "./dist/BaseSmoothDimensions.js"
+    },
     "./BaseTable": {
       "require": "./dist/BaseTable.cjs",
       "types": "./dist/BaseTable.d.ts",
