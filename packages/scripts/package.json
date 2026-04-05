@@ -96,17 +96,17 @@
     "LICENSE.md"
   ],
   "dependencies": {
-    "@ai-sdk/openai-compatible": "1.0.22",
+    "@ai-sdk/openai-compatible": "2.0.38",
     "@unshared/collection": "workspace:*",
     "@unshared/fs": "workspace:*",
     "@unshared/process": "workspace:*",
     "@unshared/string": "workspace:*",
     "@unshared/types": "workspace:*",
-    "ai": "5.0.76",
-    "rollup": "4.52.5",
-    "rollup-plugin-dts": "6.2.3",
+    "ai": "6.0.146",
+    "rollup": "4.60.1",
+    "rollup-plugin-dts": "6.4.1",
     "rollup-plugin-esbuild": "6.2.1",
-    "types-pkg-json": "1.2.1",
+    "types-pkg-json": "2.0.0",
     "types-tsconfig": "2.1.1"
   }
 }
